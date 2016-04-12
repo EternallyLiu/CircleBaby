@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">CircleBaby</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_base_recycler_view">BaseRecyclerViewActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="tag_index">传递下标</string>
+    <string name="tag_obj">传递对象</string>
+    <string name="tag_ex">传递扩展信息</string>
+</resources>
