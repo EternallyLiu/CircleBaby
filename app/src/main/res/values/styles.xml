@@ -25,4 +25,17 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="FooterNavText">
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:textColor">@drawable/text_main_foot_color</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="pop_menu_anim_style">
+        <item name="android:windowEnterAnimation">@anim/popu_menu_show</item>
+        <item name="android:windowExitAnimation">@anim/popu_menu_hide</item>
+    </style>
+
+
 </resources>

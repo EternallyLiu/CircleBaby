@@ -7,9 +7,8 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 
-import org.greenrobot.eventbus.EventBus;
-
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 

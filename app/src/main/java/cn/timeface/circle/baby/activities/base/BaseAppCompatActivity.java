@@ -3,13 +3,14 @@ package cn.timeface.circle.baby.activities.base;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import com.umeng.analytics.MobclickAgent;
 
-import org.greenrobot.eventbus.EventBus;
+import de.greenrobot.event.EventBus;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -29,6 +30,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
         }
@@ -77,6 +79,9 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     }
 
     public void addSubscription(Subscription s) {
+        if (s == null) {
+            return;
+        }
         if (this.mCompositeSubscription == null) {
             this.mCompositeSubscription = new CompositeSubscription();
         }

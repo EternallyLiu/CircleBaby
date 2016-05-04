@@ -11,15 +11,16 @@ import android.support.v7.widget.Toolbar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.R;
 
 public class MainActivity extends AppCompatActivity {
 
     @Bind(cn.timeface.circle.baby.R.id.toolbar)
     Toolbar toolbar;
-    @Bind(cn.timeface.circle.baby.R.id.rv_content)
-    RecyclerView rvContent;
-    @Bind(cn.timeface.circle.baby.R.id.srl_refresh_layout)
-    SwipeRefreshLayout srlRefreshLayout;
+    @Bind(R.id.content_recycler_view)
+    RecyclerView contentRecyclerView;
+    @Bind(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
@@ -34,6 +35,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rvContent.setLayoutManager(layoutManager);
+        contentRecyclerView.setLayoutManager(layoutManager);
     }
 }

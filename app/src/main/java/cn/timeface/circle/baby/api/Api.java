@@ -3,13 +3,16 @@ package cn.timeface.circle.baby.api;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.api.services.ApiService;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import cn.timeface.circle.baby.api.services.WechatApiService;
+import cn.timeface.circle.baby.utils.NetUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.RxJavaCallAdapterFactory;
+import retrofit2.GsonConverterFactory;
 
 
 /**
@@ -17,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * email : sy0725work@gmail.com
  */
 public class Api {
-    public static final String BASE_URL = "http://some/api/";
+    final WechatApiService apiWechatService;
     final ApiService apiService;
 
     Api() {
@@ -27,9 +30,11 @@ public class Api {
         httpClientBuilder.readTimeout(60, TimeUnit.SECONDS);
         httpClientBuilder.networkInterceptors().add(chain -> {
             Request.Builder req = chain.request().newBuilder();
+            for (Map.Entry<String, String> entry : NetUtils.getHttpHeaders().entrySet()) {
+                req.addHeader(entry.getKey(), entry.getValue());
+            }
             return chain.proceed(req.build());
         });
-
 
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -40,7 +45,7 @@ public class Api {
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
 
         Retrofit retrofit = retrofitBuilder
-                .baseUrl(BASE_URL)
+                .baseUrl(BuildConfig.API_URL)
                 .client(httpClientBuilder.build())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
@@ -48,10 +53,22 @@ public class Api {
 
         apiService = retrofit.create(ApiService.class);
 
+        retrofit = retrofitBuilder
+                .baseUrl(WechatApiService.BASE_URL)
+                .client(httpClientBuilder.build())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiWechatService = retrofit.create(WechatApiService.class);
+
     }
 
     public ApiService getApiService() {
         return apiService;
+    }
+
+    public WechatApiService getApiWechatService() {
+        return apiWechatService;
     }
 
 }

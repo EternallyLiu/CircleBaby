@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':timeface-common'
+project(':timeface-common').projectDir = new File('timeface-common')

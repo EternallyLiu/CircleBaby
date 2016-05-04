@@ -5,4 +5,5 @@ package cn.timeface.circle.baby.managers.listeners;
  * email : sy0725work@gmail.com
  */
 public interface IEventBus {
+    public void onEvent(Object event);
 }

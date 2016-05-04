@@ -6,22 +6,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
+import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 
 public class BaseRecyclerViewActivity extends AppCompatActivity {
 
 
-
     @Bind(cn.timeface.circle.baby.R.id.toolbar)
     protected Toolbar toolbar;
-    @Bind(cn.timeface.circle.baby.R.id.rv_content)
-    protected RecyclerView rvContent;
-    @Bind(cn.timeface.circle.baby.R.id.srl_refresh_layout)
-    protected SwipeRefreshLayout srlRefreshLayout;
+    @Bind(R.id.content_recycler_view)
+    protected RecyclerView contentRecyclerView;
+    @Bind(R.id.swipe_refresh_layout)
+    protected SwipeRefreshLayout swipeRefreshLayout;
 
     protected TFPTRRecyclerViewHelper tfptrListViewHelper;
     protected IPTRRecyclerListener ptrListener = null;
@@ -36,7 +35,7 @@ public class BaseRecyclerViewActivity extends AppCompatActivity {
 
     protected void setupPTR() {
         tfptrListViewHelper =
-                new TFPTRRecyclerViewHelper(this, rvContent, srlRefreshLayout)
+                new TFPTRRecyclerViewHelper(this, contentRecyclerView, swipeRefreshLayout)
                         .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
                         .tfPtrListener(ptrListener);
     }

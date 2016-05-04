@@ -3,8 +3,12 @@ package cn.timeface.circle.baby;
 import android.app.Application;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.tumblr.remember.Remember;
 import com.umeng.analytics.AnalyticsConfig;
+
+import cn.timeface.circle.baby.managers.recorders.SimpleUploadRecorder;
+import cn.timeface.circle.baby.oss.uploadservice.UploadService;
+import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 
 /**
  * author: rayboot  Created on 15/12/3.
@@ -20,6 +24,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ourInstance = this;
 
         //数据库ORM
         FlowManager.init(this);
@@ -29,6 +34,10 @@ public class App extends Application {
 
         //友盟key
         AnalyticsConfig.setAppkey(this, "");
+
+        UploadService.setRecorder(new SimpleUploadRecorder());
+
+        GlideUtil.init(this);
 
     }
 

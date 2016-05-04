@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/size_56"
+    android:background="@color/bg18"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/bg23"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/menu_home_tv"
+            style="@style/FooterNavText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:drawableTop="@drawable/selector_footer_nav_home"
+            android:onClick="clickTab"
+            android:padding="@dimen/view_space_normal"
+            android:tag="0"
+            android:text="时光宝贝"/>
+
+
+        <ImageView
+            android:id="@+id/iv_publish"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="clickPublish"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_foot_nav_publish"/>
+        <TextView
+            android:id="@+id/menu_mime_tv"
+            style="@style/FooterNavText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:drawableTop="@drawable/selector_footer_nav_mine"
+            android:onClick="clickTab"
+            android:padding="@dimen/view_space_normal"
+            android:tag="1"
+            android:text="我的"/>
+
+    </LinearLayout>
+</LinearLayout>

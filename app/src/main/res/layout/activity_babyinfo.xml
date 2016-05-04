@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color4"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_color1"
+        android:clipToPadding="true"
+        android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingTop="@dimen/toolbar_padding_top">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="返回"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_medium" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="宝宝信息"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_large" />
+
+            <TextView
+                android:id="@+id/tv_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="@dimen/size_12"
+                android:text="下一步"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_medium" />
+
+        </FrameLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="@dimen/size_80"
+        android:layout_height="@dimen/size_80"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/size_12"
+        android:src="@color/bg_color5" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="点击上传宝宝头像"
+        android:textSize="@dimen/text_small" />
+
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/text_color1"
+        android:drawableLeft="@drawable/ic_login_qq"
+        android:drawablePadding="@dimen/size_12"
+        android:hint="请输入宝宝的小名"
+        android:padding="@dimen/size_12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:orientation="horizontal"
+        android:padding="@dimen/size_12">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_login_qq" />
+
+        <RadioButton
+            android:id="@+id/rb_w"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/size_12"
+            android:text="女孩"
+            android:textColor="@color/text_color2"
+            android:textSize="@dimen/text_medium" />
+
+        <RadioButton
+            android:id="@+id/rb_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/size_12"
+            android:text="男孩"
+            android:textColor="@color/text_color2"
+            android:textSize="@dimen/text_medium" />
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6" />
+
+    <EditText
+        android:id="@+id/et_birthday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:drawableLeft="@drawable/ic_login_qq"
+        android:drawablePadding="@dimen/size_12"
+        android:hint="请输入宝宝的生日"
+        android:padding="@dimen/size_12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6" />
+
+    <EditText
+        android:id="@+id/et_relationship"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:drawableLeft="@drawable/ic_login_qq"
+        android:drawablePadding="@dimen/size_12"
+        android:hint="与宝宝的关系"
+        android:padding="@dimen/size_12" />
+
+    <TextView
+        android:id="@+id/tv_focus"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/size_48"
+        android:layout_marginTop="@dimen/size_24"
+        android:layout_marginLeft="@dimen/size_36"
+        android:background="@color/text_color1"
+        android:gravity="center"
+        android:text="亲友已经创建过宝宝，去关注他"
+        android:textSize="@dimen/text_normal" />
+</LinearLayout>

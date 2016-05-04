@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CircleBaby</string>
+    <string name="app_name">亲子圈</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_base_recycler_view">BaseRecyclerViewActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
@@ -16,4 +16,66 @@
     <string name="tag_index">传递下标</string>
     <string name="tag_obj">传递对象</string>
     <string name="tag_ex">传递扩展信息</string>
+    <string name="tip_exit">再次点击退出应用！</string>
+    <string name="sdk_login_error">登录发生了错误</string>
+
+    <!-- icon fonts -->
+    <string name="icon_expand">&#xe62d;</string>
+    <string name="icon_empty">&#xe608;</string>
+    <string name="icon_photo">&#xe606;</string>
+    <string name="icon_setting">&#xe614;</string>
+    <string name="icon_back">&#xe609;</string>
+    <string name="icon_level_1">&#xe615;</string>
+    <string name="icon_level_2">&#xe616;</string>
+    <string name="icon_level_3">&#xe617;</string>
+    <string name="icon_level_4">&#xe620;</string>
+    <string name="icon_level_5">&#xe61f;</string>
+    <string name="icon_level_6">&#xe61e;</string>
+    <string name="icon_chat">&#xe60a;</string>
+    <string name="icon_share">&#xe600;</string>
+    <string name="icon_data">&#xe601;</string>
+    <string name="icon_more">&#xe602;</string>
+    <string name="icon_agreement">&#xe618;</string>
+    <string name="icon_updata">&#xe62f;</string>
+    <string name="icon_feedback">&#xe630;</string>
+    <string name="icon_like">&#xe603;</string>
+    <string name="icon_add">&#xe60b;</string>
+    <string name="icon_check_in">&#xe605;</string>
+    <string name="icon_letter">&#xe619;</string>
+    <string name="icon_clean">&#xe622;</string>
+    <string name="icon_comment">&#xe604;</string>
+    <string name="icon_notification">&#xe61b;</string>
+    <string name="icon_group_chat">&#xe60c;</string>
+    <string name="icon_favor">&#xe61c;</string>
+    <string name="icon_about">&#xe61d;</string>
+    <string name="icon_delete">&#xe60d;</string>
+    <string name="icon_speaker">&#xe60e;</string>
+    <string name="icon_wechat_chat">&#xe60f;</string>
+    <string name="icon_add_message">&#xe610;</string>
+    <string name="icon_check">&#xe611;</string>
+    <string name="icon_close">&#xe612;</string>
+    <string name="icon_delete2">&#xe607;</string>
+    <string name="icon_group">&#xe613;</string>
+    <string name="icon_star">&#xe623;</string>
+    <string name="icon_person">&#xe624;</string>
+    <string name="icon_follow">&#xe625;</string>
+    <string name="icon_following">&#xe626;</string>
+    <!-- 微信图标 -->
+    <string name="icon_wechat">&#xe62b;</string>
+    <!--朋友圈图标-->
+    <string name="icon_moment">&#xe62a;</string>
+    <string name="icon_qq">&#xe627;</string>
+    <!--QQ空间-->
+    <string name="icon_q_zone">&#xe628;</string>
+    <!--微博-->
+    <string name="icon_weibo">&#xe629;</string>
+    <string name="mine">我的</string>
+
+    <string name="picker_photo">选择图片</string>
+    <string name="all_photo">全部图片</string>
+    <string name="preview_selector_paths">预览(%1$d/%2$d)</string>
+    <string name="photo_count">%1$d张</string>
+    <string name="done">完成</string>
+    <string name="done_selector_size">完成(%1$d/%2$d)</string>
+    <string name="clear_photo">清理图片</string>
 </resources>
