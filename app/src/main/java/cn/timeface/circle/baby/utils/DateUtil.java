@@ -2,6 +2,8 @@ package cn.timeface.circle.baby.utils;
 
 import android.text.format.DateFormat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -163,5 +165,16 @@ public class DateUtil {
             disTime = "刚刚";
         }
         return disTime;
+    }
+
+    public static long getTime(String time , String format) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        long time1 = 0;
+        try {
+            time1 = simpleDateFormat.parse(time).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return time1;
     }
 }

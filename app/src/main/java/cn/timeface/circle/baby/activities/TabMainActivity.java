@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Gravity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -20,23 +20,25 @@ import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.views.MainCircleMenuPopup;
 import de.greenrobot.event.EventBus;
 
-public class TabMainActivity extends BaseAppCompatActivity implements MainCircleMenuPopup.OnMenuClickListener {
+public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener {
     @Bind(R.id.menu_home_tv)
     TextView menuHomeTv;
     @Bind(R.id.menu_mime_tv)
     TextView menuMimeTv;
     @Bind(R.id.iv_publish)
     ImageView ivPublish;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.foot_menu_ll)
+    View footMenu;
     private long lastPressedTime = 0;
     private static final int TAB1 = 0;
     private static final int TAB2 = 1;
     @Bind(R.id.container)
     FrameLayout container;
     private BaseFragment currentFragment = null;
-    private MainCircleMenuPopup circleMenuPopu;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, TabMainActivity.class));
@@ -47,8 +49,10 @@ public class TabMainActivity extends BaseAppCompatActivity implements MainCircle
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_main);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
 
-        clickTab(findViewById(R.id.menu_home_tv));
+        clickTab(menuHomeTv);
+        ivPublish.setOnClickListener(this);
 
         EventBus.getDefault().post(new EventTabMainWake());
     }
@@ -57,21 +61,16 @@ public class TabMainActivity extends BaseAppCompatActivity implements MainCircle
 
         switch (view.getId()) {
             case R.id.menu_home_tv:
+                menuHomeTv.setSelected(true);
+                menuMimeTv.setSelected(false);
                 showContent(TAB1);
                 break;
             case R.id.menu_mime_tv:
+                menuHomeTv.setSelected(false);
+                menuMimeTv.setSelected(true);
                 showContent(TAB2);
                 break;
         }
-    }
-
-    public void clickPublish(View view){
-        if (circleMenuPopu == null) {
-            circleMenuPopu = new MainCircleMenuPopup(this);
-            circleMenuPopu.setOnMenuClickListener(this);
-        }
-        circleMenuPopu.showAtLocation(getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-
     }
 
     public BaseFragment getFragment(int navType) {
@@ -107,6 +106,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements MainCircle
             ft.add(R.id.container, fragment, navType + "");
         }
         ft.commitAllowingStateLoss();
+        currentFragment = fragment;
     }
 
     @Override
@@ -138,24 +138,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements MainCircle
     }
 
     @Override
-    public void clickMenu(View view) {
-        switch (view.getId()) {
-            case R.id.tv_photo://相机
-//                PublishEditActivity.open(this, PublishEditActivity.TYPE_TAKE_PHOTO, "", "");
-                break;
-            case R.id.tv_video://扫描仪
-//                if (!Utils.getArchType(this).equals(Utils.CPU_ARCHITECTURE_TYPE_64)) {
-//                    PublishEditActivity.open(this, PublishEditActivity.TYPE_SCAN, "", "");
-//                } else {
-//                    Toast.makeText(MainActivity.this, "很抱歉，此机型不支持使用扫描仪！", Toast.LENGTH_SHORT).show();
-//                }
-                break;
-            case R.id.tv_diary://相册
-//                PublishEditActivity.open(this, PublishEditActivity.TYPE_PHOTO, "", "");
-                break;
-            case R.id.tv_card://文本
-//                PublishEditActivity.open(this, PublishEditActivity.TYPE_TEXT, "", "");
-                break;
-        }
+    public void onClick(View v) {
+        Intent intent = new Intent(this, SelectPublishActivity.class);
+        startActivity(intent);
     }
 }

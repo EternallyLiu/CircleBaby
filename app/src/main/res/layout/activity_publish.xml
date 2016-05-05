@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_color2"
     android:orientation="vertical">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -9,9 +9,9 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:background="@color/bg_color1"
+        android:clipToPadding="true"
         android:fitsSystemWindows="true"
         android:paddingTop="@dimen/toolbar_padding_top">
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -19,29 +19,33 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="切换宝宝"
+                android:layout_gravity="center"
+                android:text="发布"
                 android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_large" />
 
             <TextView
-                android:id="@+id/tv_register"
+                android:id="@+id/tv_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="@dimen/size_12"
-                android:text="消息"
+                android:text="完成"
                 android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_large" />
         </FrameLayout>
-
     </android.support.v7.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/content"
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="100dp"
+        android:hint="点击记录照片后的故事"
+        android:background="@color/text_color1"
+        android:gravity="start"
+        android:padding="@dimen/size_12"
+        />
+
+
+
 
 </LinearLayout>

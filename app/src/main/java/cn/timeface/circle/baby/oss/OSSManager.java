@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.alibaba.sdk.android.oss.ClientConfiguration;
@@ -15,21 +16,18 @@ import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
 import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
 import com.alibaba.sdk.android.oss.common.OSSLog;
 import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider;
-import com.alibaba.sdk.android.oss.common.auth.OSSPlainTextAKSKCredentialProvider;
+import com.alibaba.sdk.android.oss.common.auth.OSSFederationCredentialProvider;
+import com.alibaba.sdk.android.oss.common.auth.OSSFederationToken;
 import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
 import com.alibaba.sdk.android.oss.model.ObjectMetadata;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.util.Locale;
 
 import cn.timeface.circle.baby.BuildConfig;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.encode.AES;
+import cn.timeface.circle.baby.oss.token.FederationTokenGetter;
 
 
 /**
@@ -53,9 +51,27 @@ public class OSSManager {
             e.printStackTrace();
         }
         endPoint = info.metaData.getString("END_POINT");
+        final String sts = info.metaData.getString("ALI_STS");
         bucket = info.metaData.getString("ALI_BUCKET");
 
-        OSSCredentialProvider credentialProvider = new OSSPlainTextAKSKCredentialProvider(new AES().decrypt(FastData.getUploadak()), new AES().decrypt(FastData.getUploadsk()));
+        if (TextUtils.isEmpty(endPoint) || TextUtils.isEmpty(sts) || TextUtils.isEmpty(bucket)) {
+            throw new IllegalArgumentException("you must set END_POINT,ALI_STS, ALI_BUCKET in manifests ");
+        }
+
+        //sts服务
+        OSSCredentialProvider credentialProvider = new OSSFederationCredentialProvider() {
+
+            @Override
+            public OSSFederationToken getFederationToken() {
+
+                // 为指定的用户拿取服务其授权需求的FederationToken
+                OSSFederationToken token = FederationTokenGetter.getToken(sts);
+                if (token == null) {
+                    Log.e("aliyun", "获取FederationToken失败!!!");
+                }
+                return token;
+            }
+        };
 
         //配置
         ClientConfiguration conf = new ClientConfiguration();
@@ -92,12 +108,12 @@ public class OSSManager {
      * @return true 已存在
      */
     public boolean checkFileExist(String objectKey) {
-        OkHttpClient httpClient = new OkHttpClient();
+        okhttp3.OkHttpClient httpClient = new okhttp3.OkHttpClient();
         String url = String.format("http://%s.%s/%s", this.bucket, this.endPoint.replace("http://", ""), objectKey);
-        Request request = new Request.Builder().head()
+        okhttp3.Request request = new okhttp3.Request.Builder().head()
                 .url(url)
                 .build();
-        Response response = null;
+        okhttp3.Response response = null;
         try {
             response = httpClient.newCall(request).execute();
         } catch (IOException e) {
@@ -135,6 +151,81 @@ public class OSSManager {
         put.setProgressCallback(progressCallback);
         return oss.asyncPutObject(put, completedCallback);
     }
+
+
+//    public Observable<PutObjectResult> upload(final String objectKey, final String uploadFilePath) {
+//        return Observable.create(new Observable.OnSubscribe<PutObjectResult>() {
+//            @Override
+//            public void call(Subscriber<? super PutObjectResult> subscriber) {
+//
+//                PutObjectRequest put = getPutRequest(bucket, objectKey, uploadFilePath);
+//                try {
+//                    PutObjectResult putResult = oss.putObject(put);
+//                    subscriber.onNext(putResult);
+//                    subscriber.onCompleted();
+//                    Log.d("PutObject", "UploadSuccess");
+//                    Log.d("ETag", putResult.getETag());
+//                    Log.d("RequestId", putResult.getRequestId());
+//                } catch (ClientException e) {
+//                    // 本地异常如网络异常等
+//                    subscriber.onError(e);
+//                    e.printStackTrace();
+//                } catch (ServiceException e) {
+//                    // 服务异常
+//                    Log.e("RequestId", e.getRequestId());
+//                    Log.e("ErrorCode", e.getErrorCode());
+//                    Log.e("HostId", e.getHostId());
+//                    Log.e("RawMessage", e.getRawMessage());
+//                    subscriber.onError(e);
+//                }
+//            }
+//        });
+//    }
+//
+//    public Observable<Integer> uploadWithProgress(final String objectKey, final String uploadFilePath) {
+//        return Observable.create(new Observable.OnSubscribe<Integer>() {
+//            @Override
+//            public void call(final Subscriber<? super Integer> subscriber) {
+//                PutObjectRequest put = getPutRequest(bucket, objectKey, uploadFilePath);
+//                // 异步上传时可以设置进度回调
+//                put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
+//                    @Override
+//                    public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
+//                        subscriber.onNext((int) (currentSize * 100 / totalSize));
+//                        Log.d("PutObject", "currentSize: " + currentSize + " totalSize: " + totalSize);
+//                    }
+//                });
+//
+//                OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+//                    @Override
+//                    public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+//                        Log.d("PutObject", "UploadSuccess");
+//                        Log.d("ETag", result.getETag());
+//                        Log.d("RequestId", result.getRequestId());
+//                        subscriber.onCompleted();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+//                        // 请求异常
+//                        subscriber.onError(clientExcepion != null ? clientExcepion : serviceException);
+//                        if (clientExcepion != null) {
+//                            // 本地异常如网络异常等
+//                            clientExcepion.printStackTrace();
+//                        }
+//                        if (serviceException != null) {
+//                            // 服务异常
+//                            Log.e("ErrorCode", serviceException.getErrorCode());
+//                            Log.e("RequestId", serviceException.getRequestId());
+//                            Log.e("HostId", serviceException.getHostId());
+//                            Log.e("RawMessage", serviceException.getRawMessage());
+//                        }
+//                    }
+//                });
+//                task.waitUntilFinished();
+//            }
+//        });
+//    }
 
     public PutObjectRequest getPutRequest(String bucket, String objectKey, String uploadFilePath) {
         // 构造上传请求

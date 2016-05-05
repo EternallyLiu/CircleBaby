@@ -9,6 +9,11 @@ public class Relationship extends BaseObj {
     String relationName;
     int relationId;
 
+    public Relationship(String relationName, int relationId) {
+        this.relationName = relationName;
+        this.relationId = relationId;
+    }
+
     public String getRelationName() {
         return relationName;
     }

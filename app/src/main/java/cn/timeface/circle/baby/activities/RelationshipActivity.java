@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +43,6 @@ public class RelationshipActivity extends BaseAppCompatActivity implements View.
     TextView tvCreate;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
-    @Bind(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
     private RelationshipAdapter adapter;
     private List<Relationship> dataList;
 
@@ -64,21 +64,11 @@ public class RelationshipActivity extends BaseAppCompatActivity implements View.
         tvCreate.setOnClickListener(this);
         adapter = new RelationshipAdapter(this, new ArrayList<>());
         adapter.setOnClickListener(this);
+        contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         contentRecyclerView.setAdapter(adapter);
         contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.TRANSPARENT).sizeResId(R.dimen.view_space_small).build());
 
         reqData();
-
-//        lv.setAdapter(new ArrayAdapter<String>(this, R.layout.item_relationship, strs));
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent();
-//                intent.putExtra("relationship", strs[position]);
-//                setResult(RESULT_OK, intent);
-//                finish();
-//            }
-//        });
 
     }
 
@@ -107,12 +97,13 @@ public class RelationshipActivity extends BaseAppCompatActivity implements View.
                     return;
                 }
 
-                apiService.addRelationship(relationship)
+                apiService.addRelationship(URLEncoder.encode(relationship))
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(relationshipResponse -> {
                             if (relationshipResponse.success()) {
+                                Relationship relation = new Relationship(relationship, relationshipResponse.getRelationId());
                                 Intent intent = new Intent();
-                                intent.putExtra("relationship", relationship);
+                                intent.putExtra("relationship", relation);
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {

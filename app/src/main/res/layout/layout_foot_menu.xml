@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_56"
     android:background="@color/bg18"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <View
         android:layout_width="match_parent"
@@ -38,7 +39,6 @@
             android:layout_weight="1.0"
             android:clickable="true"
             android:gravity="center"
-            android:onClick="clickPublish"
             android:scaleType="centerInside"
             android:src="@drawable/ic_foot_nav_publish"/>
         <TextView

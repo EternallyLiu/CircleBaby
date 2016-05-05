@@ -66,6 +66,19 @@
             android:name="cn.timeface.circle.baby.utils.glide.TFGlideModule"
             android:value="GlideModule" />
 
+        <!-- ************************ALI START*************** -->
+
+        <meta-data
+            android:name="END_POINT"
+            android:value="http://oss-cn-hangzhou.aliyuncs.com" />
+        <meta-data
+            android:name="ALI_STS"
+            android:value="http://auth.timeface.cn/aliyun/sts" />
+        <meta-data
+            android:name="ALI_BUCKET"
+            android:value="timeface-image01" />
+        <!-- ************************ALI END*************** -->
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name" />
@@ -95,6 +108,9 @@
         <activity android:name=".activities.InviteCodeActivity"/>
         <activity android:name=".activities.RelationshipActivity"/>
         <activity android:name="com.wechat.photopicker.PickerPhotoActivity"/>
+        <activity android:name=".activities.SelectPublishActivity"/>
+        <activity android:name=".activities.PublishActivity"/>
+
 
     </application>
 

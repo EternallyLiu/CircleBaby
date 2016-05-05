@@ -19,13 +19,8 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 public class MineFragment extends BaseFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    @Bind(cn.timeface.circle.baby.R.id.content)
-    TextView content;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
 
 
@@ -33,14 +28,6 @@ public class MineFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment MineFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MineFragment newInstance(String param1) {
         MineFragment fragment = new MineFragment();
         Bundle args = new Bundle();
@@ -60,10 +47,8 @@ public class MineFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(cn.timeface.circle.baby.R.layout.fragment_mine, container, false);
         ButterKnife.bind(this, view);
-        content.setText(mParam1);
         return view;
     }
 

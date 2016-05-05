@@ -20,6 +20,8 @@ import com.alibaba.sdk.android.oss.ServiceException;
 
 import java.io.Serializable;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -95,6 +97,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         rbM.setOnClickListener(this);
         etBirthday.setOnClickListener(this);
         etRelationship.setOnClickListener(this);
+        tvFocus.setOnClickListener(this);
     }
 
 
@@ -124,8 +127,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     Toast.makeText(this, "请设置与宝宝关系", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Date date = new Date(birthday);
-                apiService.createBaby(date.getTime(), gender, imagePath, URLEncoder.encode(name), relationship.getRelationId())
+                long time = DateUtil.getTime(birthday, "yyyy-MM-dd");
+                apiService.createBaby(time, gender, imagePath, URLEncoder.encode(name), relationship.getRelationId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(userLoginResponse -> {
                             FastData.setUserInfo(userLoginResponse.getUserInfo());

@@ -8,6 +8,4 @@
     android:textSize="@dimen/text_medium"
     android:textColor="@color/text_color2"
     android:id="@+id/tv_relationship"
-    >
-
-</TextView>
+    />
