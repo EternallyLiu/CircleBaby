@@ -2,6 +2,9 @@ package cn.timeface.circle.baby.api.services;
 
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
+import cn.timeface.circle.baby.api.models.responses.MilestoneIdResponse;
+import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.api.models.responses.RegisterResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationIdResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationshipResponse;
@@ -77,7 +80,27 @@ public interface ApiService {
     @GET("baby/addRelationship")
     Observable<RelationIdResponse> addRelationship(@Query("name") String name);
 
+    //宝宝详情
+    @GET("baby/queryBabyInfoDetail")
+    Observable<BabyInfoResponse> queryBabyInfoDetail(@Query("babyId") int babyId);
+
     //获取关系列表
     @GET("baby/queryBabyFamilyTypeInfoList")
     Observable<RelationshipResponse> queryBabyFamilyTypeInfoList(@Query("key") String key);
+
+    //发布
+    @GET("babyTime/publish")
+    Observable<UserLoginResponse> publish(@Query("birthday") long birthday,
+                                             @Query("gender") int gender,
+                                             @Query("imgUrl") String imgUrl,
+                                             @Query("name") String name,
+                                             @Query("relationId") int relationId);
+
+    //获取里程碑列表
+    @GET("babyTime/queryMilestoneList")
+    Observable<MilestoneResponse> queryMilestoneList(@Query("key") String key);
+
+    //添加里程碑
+    @GET("babyTime/addMilestone")
+    Observable<MilestoneIdResponse> addMilestone(@Query("milestoneName") String milestoneName);
 }

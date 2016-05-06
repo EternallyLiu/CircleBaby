@@ -54,7 +54,7 @@ public class SelectPublishActivity extends BaseAppCompatActivity implements View
         setContentView(R.layout.activity_selectpublish);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ivBack.setOnClickListener(this);
         tvPhoto.setOnClickListener(this);
@@ -71,6 +71,7 @@ public class SelectPublishActivity extends BaseAppCompatActivity implements View
                 finish();
                 break;
             case R.id.tv_photo:
+                PublishActivity.open(this);
                 break;
             case R.id.tv_video:
                 break;

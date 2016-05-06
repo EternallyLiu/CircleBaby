@@ -3,15 +3,17 @@
     android:layout_height="match_parent"
     android:background="@color/bg_color2"
     android:orientation="vertical">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
         android:background="@color/bg_color1"
         android:clipToPadding="true"
         android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
         android:paddingTop="@dimen/toolbar_padding_top">
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -36,16 +38,76 @@
         </FrameLayout>
     </android.support.v7.widget.Toolbar>
 
+
     <EditText
+        android:id="@+id/et_content"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:hint="点击记录照片后的故事"
         android:background="@color/text_color1"
         android:gravity="start"
-        android:padding="@dimen/size_12"
-        />
+        android:hint="点击记录照片后的故事"
+        android:padding="@dimen/size_12" />
 
+    <cn.timeface.circle.baby.views.NoScrollGridView
+        android:id="@+id/gv_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
+    <RelativeLayout
+        android:id="@+id/rl_mile_stone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="里程碑"
+            android:background="@color/text_color1"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/tv_mile_stone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="第一次笑"
+            android:background="@color/text_color1"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:drawableRight="@drawable/mine_data_go"
+            android:drawablePadding="@dimen/size_12"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="记录时间"
+            android:background="@color/text_color1"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2016.3.2"
+            android:background="@color/text_color1"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:drawableRight="@drawable/mine_data_go"
+            android:drawablePadding="@dimen/size_12"
+            />
+    </RelativeLayout>
 
 
 </LinearLayout>

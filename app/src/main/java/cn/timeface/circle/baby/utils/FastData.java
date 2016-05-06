@@ -212,7 +212,16 @@ public class FastData extends Remember {
         setBabyObj(userObj.getBabyObj());
     }
 
-    private static void setBabyObj(BabyObj babyObj) {
+    public static UserObj getUserInfo() {
+        String userName = getUserName();
+        String userId = getUserId();
+        String avatar = getAvatar();
+        BabyObj babyObj = getBabyObj();
+
+        return new UserObj(avatar, babyObj, userName, userId);
+    }
+
+    public static void setBabyObj(BabyObj babyObj) {
         if (null == babyObj) {
             return;
         }
@@ -226,36 +235,81 @@ public class FastData extends Remember {
         setBabyName(babyObj.getName());
     }
 
-    private static void setBabyName(String name) {
+    public static BabyObj getBabyObj() {
+        String babyAge = getBabyAge();
+        String babyAvatar = getBabyAvatar();
+        int babyId = getBabyId();
+        int babyBithday = getBabyBithday();
+        String babyBlood = getBabyBlood();
+        String babyConstellation = getBabyConstellation();
+        int babyGender = getBabyGender();
+        String babyName = getBabyName();
+        BabyObj babyObj = new BabyObj(babyAge, babyAvatar, babyId, babyBithday, babyBlood, babyConstellation, babyGender, babyName);
+        return babyObj;
+    }
+
+    public static void setBabyName(String name) {
         putString(BABY_Name, name);
     }
 
-    private static void setBabyGender(int gender) {
+    public static String getBabyName() {
+        return getString(BABY_Name, "");
+    }
+
+    public static void setBabyGender(int gender) {
         putInt(BABY_Gender, gender);
     }
 
-    private static void setBabyConstellation(String constellation) {
+    public static int getBabyGender() {
+        return getInt(BABY_Gender, 0);
+    }
+
+    public static void setBabyConstellation(String constellation) {
         putString(BABY_Constellation, constellation);
     }
 
-    private static void setBabyBlood(String blood) {
+    public static String getBabyConstellation() {
+        return getString(BABY_Constellation, "");
+    }
+
+    public static void setBabyBlood(String blood) {
         putString(BABY_Blood, blood);
     }
 
-    private static void setBabyBithday(int bithday) {
+    public static String getBabyBlood() {
+        return getString(BABY_Blood, "");
+    }
+
+    public static void setBabyBithday(int bithday) {
         putInt(BABY_Bithday, bithday);
     }
 
-    private static void setBabyId(int babyId) {
+    public static int getBabyBithday() {
+        return getInt(BABY_Bithday, 0);
+    }
+
+    public static void setBabyId(int babyId) {
         putInt(BABY_ID, babyId);
     }
 
-    private static void setBabyAvatar(String avatar) {
+    public static int getBabyId() {
+        return getInt(BABY_ID, 0);
+    }
+
+    public static void setBabyAvatar(String avatar) {
         putString(BABY_Avatar, avatar);
     }
 
-    private static void setBabyAge(String age) {
+    public static String getBabyAvatar() {
+        return getString(BABY_Avatar, "");
+    }
+
+    public static void setBabyAge(String age) {
         putString(BABY_AGE, age);
+    }
+
+    public static String getBabyAge() {
+        return getString(BABY_AGE, "");
     }
 
     /**

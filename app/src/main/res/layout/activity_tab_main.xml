@@ -5,12 +5,14 @@
     android:background="@android:color/white">
 
     <android.support.v7.widget.Toolbar
-        android:clickable="true"
-        android:onClick="clickTopBar"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"/>
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorAccent"
+        android:clipToPadding="true"
+        android:fitsSystemWindows="true"
+        android:paddingTop="@dimen/toolbar_padding_top"/>
 
     <FrameLayout
         android:id="@+id/container"

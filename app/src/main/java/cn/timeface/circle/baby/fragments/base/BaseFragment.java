@@ -1,7 +1,9 @@
 package cn.timeface.circle.baby.fragments.base;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.services.ApiService;
@@ -53,4 +55,13 @@ public class BaseFragment extends Fragment {
             ((BaseAppCompatActivity) getActivity()).addSubscription(s);
         }
     }
+    public void setActionBar(android.support.v7.widget.Toolbar view){
+        if (getActivity() instanceof AppCompatActivity) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ((AppCompatActivity) getActivity()).setSupportActionBar(view);
+            }
+        }
+
+    }
+
 }
