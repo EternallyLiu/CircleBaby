@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item_root"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="@drawable/selector_album_item"
+    android:clickable="true"
+    android:gravity="center_vertical"
+    android:onClick="clickAlbumSelect"
+    android:paddingBottom="@dimen/view_space_normal"
+    android:paddingLeft="@dimen/view_space_medium"
+    android:paddingRight="@dimen/view_space_medium"
+    android:paddingTop="@dimen/view_space_normal">
+
+    <FrameLayout
+        android:id="@+id/fl_photo"
+        android:layout_width="@dimen/size_48"
+        android:layout_height="@dimen/size_48"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/view_space_medium"
+        android:background="@drawable/timelist_book_bg">
+
+        <ImageView
+            android:id="@+id/ivPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/login_default" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/fl_photo"
+        android:layout_toLeftOf="@+id/ivSel"
+        android:layout_toRightOf="@+id/fl_photo"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginTop="4dp"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:text="Small Text"
+            android:textColor="@color/selector_select_album_text"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tvCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLength="20"
+            android:singleLine="true"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/text_color2" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivSel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:src="@drawable/ic_album_select" />
+</RelativeLayout>
+

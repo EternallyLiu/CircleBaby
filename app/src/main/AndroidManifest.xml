@@ -113,6 +113,8 @@
         <activity android:name=".activities.MileStoneActivity"/>
         <activity android:name=".activities.SelectTimeActivity"/>
         <activity android:name="com.wechat.photopicker.BigImageShowActivity"/>
+        <activity android:name=".activities.PhotoSelectionActivity"/>
+        <activity android:name=".activities.PhotoViewerNewActivity"/>
 
 
 

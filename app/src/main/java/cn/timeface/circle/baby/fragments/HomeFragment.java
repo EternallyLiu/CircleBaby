@@ -12,15 +12,18 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.adapters.RecodeAdapter;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -49,6 +52,7 @@ public class HomeFragment extends BaseFragment {
 
 
     private String mParam1;
+    private RecodeAdapter adapter;
 
 
     public HomeFragment() {
@@ -78,8 +82,11 @@ public class HomeFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
 
-        reqBabyInfo();
+        adapter = new RecodeAdapter(getActivity(), new ArrayList<>());
+        adapter.setOnClickListener(this);
+        contentRecyclerView.setAdapter(adapter);
 
+        reqBabyInfo();
 
         return view;
     }
@@ -102,5 +109,10 @@ public class HomeFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

@@ -15,16 +15,19 @@ import cn.timeface.circle.baby.utils.Remember;
  * email : sy0725work@gmail.com
  */
 public class App extends Application {
-    private static App ourInstance = new App();
+    private static App app = new App();
 
     public static App getInstance() {
-        return ourInstance;
+        if (app == null) {
+            app = new App();
+        }
+        return app;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        ourInstance = this;
+        app = this;
 
         //数据库ORM
         FlowManager.init(this);

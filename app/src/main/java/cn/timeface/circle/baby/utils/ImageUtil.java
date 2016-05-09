@@ -1,7 +1,9 @@
 package cn.timeface.circle.baby.utils;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -9,13 +11,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.media.ExifInterface;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+
+import com.alibaba.sdk.android.oss.common.utils.IOUtils;
+//import com.lightbox.android.photoprocessing.PhotoProcessing;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -23,31 +31,38 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.utils.album.ImageItem;
+import cn.timeface.common.utils.StorageUtil;
 
 /**
  * @author rayboot
  * @from 14/10/28 16:14
  * @TODO Image compress factory class
  */
-public class ImageFactory {
-    private static ImageFactory imageFactory;
+public class ImageUtil {
+    private static ImageUtil imageUtil;
     //正在压缩的列表  保证不大于3
     final int MAX_TASK;
     final int MAX_PIXELS = 4000 * 4000;
     final int MAX_SIZE = 500;
+    private List<ImageItem> compressList = new ArrayList<ImageItem>(10);
+    //需要压缩的列表
+    private List<ImageItem> compressingList = new ArrayList<ImageItem>(10);
 
-    public ImageFactory() {
+    public ImageUtil() {
         MAX_TASK = (int) Math.round(Runtime.getRuntime().availableProcessors()
                 * 1.5);
     }
 
-    public static ImageFactory getDefault() {
-        if (imageFactory == null) {
-            imageFactory = new ImageFactory();
+    public static ImageUtil getDefault() {
+        if (imageUtil == null) {
+            imageUtil = new ImageUtil();
         }
-        return imageFactory;
+        return imageUtil;
     }
 
     /**
@@ -61,6 +76,18 @@ public class ImageFactory {
         newOpts.inInputShareable = true;
         // Do not compress
         newOpts.inSampleSize = 1;
+        newOpts.inPreferredConfig = Config.RGB_565;
+        return BitmapFactory.decodeFile(imgPath, newOpts);
+    }
+
+    public Bitmap getBitmap(String imgPath, int sample) {
+        // Get bitmap through image path
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        newOpts.inJustDecodeBounds = false;
+        newOpts.inPurgeable = true;
+        newOpts.inInputShareable = true;
+        // Do not compress
+        newOpts.inSampleSize = sample;
         newOpts.inPreferredConfig = Config.RGB_565;
         return BitmapFactory.decodeFile(imgPath, newOpts);
     }
@@ -90,8 +117,16 @@ public class ImageFactory {
     public void storeImage(Bitmap bitmap, String outPath, int quality)
             throws FileNotFoundException {
         if (bitmap != null) {
-            FileOutputStream os = new FileOutputStream(outPath);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, os);
+            FileOutputStream os = null;
+            try {
+                os = new FileOutputStream(outPath);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, os);
+                os.close();
+            } catch (IOException e) {
+                Log.e("DEBUG", "ignore this error.", e);
+            } finally {
+                IOUtils.safeClose(os);
+            }
         }
     }
 
@@ -183,7 +218,7 @@ public class ImageFactory {
         if (be <= 0) {
             be = 1;
         }
-        newOpts.inSampleSize = be;//设置缩放比例
+        newOpts.inSampleSize = be;//设置缩放比例 2的N次方
         //重新读入图片，注意此时已经把options.inJustDecodeBounds 设回false了
         is = new ByteArrayInputStream(os.toByteArray());
         bitmap = BitmapFactory.decodeStream(is, null, newOpts);
@@ -203,18 +238,18 @@ public class ImageFactory {
             throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         // scale
-        int options = 100;
+        int options = 90;
         // Store the bitmap into output stream(no compress)
         image.compress(Bitmap.CompressFormat.JPEG, options, os);
         // Compress by loop
         while (os.toByteArray().length / 1024 > maxSize) {
-            if (options <= 10) {
+            if (options <= 60) {
                 break;
             }
             // Clean up os
             os.reset();
             // interval 10
-            options -= 10;
+            options -= 5;
             image.compress(Bitmap.CompressFormat.JPEG, options, os);
         }
 
@@ -235,7 +270,7 @@ public class ImageFactory {
      */
     public void compressAndGenImage(String imgPath, String outPath, int maxSize,
                                     boolean needsDelete) throws IOException {
-        compressAndGenImage(compressBySize(imgPath, 1080, 720), outPath, maxSize);
+        compressAndGenImage(getBitmap(imgPath), outPath, maxSize);
 
         // Delete original file
         if (needsDelete) {
@@ -309,6 +344,35 @@ public class ImageFactory {
         return options.outWidth * options.outHeight;
     }
 
+    //使用JNI来压缩处理图片尺寸，速度比较慢，但是压缩尺寸精准
+    public void TFAdvanceCompress(ImageItem item, File outFile)
+            throws IOException {
+        if (getMaxPixels(item.getImagePath()) <= MAX_PIXELS) {
+            //如果本身尺寸小于最大尺寸，则进行图片质量压缩
+            compressAndGenImage(item.getImagePath(), outFile.getAbsolutePath(), MAX_SIZE, false);
+            //StorageUtil.copyFile(item.imagePath, outFile.getAbsolutePath());
+        } else {
+            //如果本身尺寸大于最大尺寸，则先使用jni对尺寸压缩，然后再对质量压缩
+//            int resultCode = PhotoProcessing.nativeLoadResizedBitmap(item.getImagePath(), MAX_PIXELS);
+//            if (resultCode == PhotoProcessing.RESULT_OK) {
+//                Bitmap resultBitmap = PhotoProcessing.getBitmapFromNative(null);
+//                compressAndGenImage(resultBitmap, outFile.getAbsolutePath(), MAX_SIZE);
+//            }
+
+        }
+        item.setImageOrientation(outFile.getAbsolutePath());
+    }
+
+    //使用jni来压缩图片尺寸，比较毫时间
+    public void TFPost2AdvanceCompressTask(ImageItem imageItem) {
+        if (this.compressingList.size() < MAX_TASK) {
+            this.compressingList.add(imageItem);
+            new TFCompressTask().execute(imageItem);
+        } else {
+            this.compressList.add(imageItem);
+        }
+    }
+
     public Bitmap getBrightnessBitmap(Bitmap srcBitmap, int brightness) {
         if (srcBitmap.isRecycled()) {
             return null;
@@ -341,82 +405,45 @@ public class ImageFactory {
         return result;
     }
 
-    public static String getSDPath(Context context) {
-        File sdDir = null;
-        boolean sdCardExist = Environment.getExternalStorageState()
-                .equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
-        if (sdCardExist) {
-            sdDir = Environment.getExternalStorageDirectory();//获取根目录
-        } else {
-            String absolutePath = context.getCacheDir().getAbsolutePath();// 获取内置内存卡目录
-            return absolutePath;
+    class TFCompressTask extends AsyncTask<ImageItem, Void, ImageItem> {
+        @Override
+        protected ImageItem doInBackground(ImageItem... params) {
+            ImageItem item = params[0];
+            File outFile =
+                    StorageUtil.getTFPhotoPath(item.getTFCompressFileName());
+            if (!outFile.exists()) {
+                try {
+                    TFAdvanceCompress(item, outFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return item;
         }
-        return sdDir.toString();
-    }
 
-    public static String getAppPath(Context context) {
-        String appDir = "";
-        boolean sdCardExist = Environment.getExternalStorageState()
-                .equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
-        if (sdCardExist) {
-            appDir = context.getCacheDir().getAbsolutePath();// 获取内置内存卡目录
-        }
-        return appDir;
-    }
-
-    public static Bitmap compressBySize(String pathName, int targetWidth,
-                                        int targetHeight) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;// 不去真的解析图片，只是获取图片的头部信息，包含宽高等；
-        Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
-
-        // 得到图片的宽度、高度；
-        float imgWidth = options.outWidth;
-        float imgHeight = options.outHeight;
-
-        // 分别计算图片宽度、高度与目标宽度、高度的比例；取大于等于该比例的最小整数；
-        int widthRatio = (int) Math.ceil(imgWidth / (float) targetWidth);
-        int heightRatio = (int) Math.ceil(imgHeight / (float) targetHeight);
-        options.inSampleSize = 1;
-
-        // 如果尺寸接近则不压缩，否则进行比例压缩
-        if (widthRatio > 1 || widthRatio > 1) {
-            if (widthRatio > heightRatio) {
-                options.inSampleSize = widthRatio;
-            } else {
-                options.inSampleSize = heightRatio;
+        @Override
+        protected void onPostExecute(ImageItem imageItem) {
+            super.onPostExecute(imageItem);
+            for (ImageItem item : compressingList) {
+                if (imageItem.equals(item)) {
+                    compressingList.remove(item);
+                    break;
+                }
+            }
+            synchronized (this) {
+                if (compressList.size() > 0
+                        && compressingList.size() < MAX_TASK) {
+                    ImageItem item = compressList.get(0);
+                    compressingList.add(item);
+                    new TFCompressTask().execute(item);
+                    compressList.remove(item);
+                }
             }
         }
-
-        //设置好缩放比例后，加载图片进内容；
-        options.inJustDecodeBounds = false; // 这里一定要设置false
-        bitmap = BitmapFactory.decodeFile(pathName, options);
-        return bitmap;
     }
 
-    public static void saveImage(Bitmap bitmap) {
-
-        String fileName = System.currentTimeMillis() + ".jpg";
-        File file = new File("/mnt/sdcard/habit");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        File outDir = new File(file, fileName);//将要保存图片的路径，android推荐这种写法，将目录名和文件名分开，不然容易报错。
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(outDir);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (FileNotFoundException e)  {
-            e.printStackTrace();
-        } catch (IOException e)  {
-            e.printStackTrace();
-        }
-
-    }
-
-
+    // And to convert the image URI to the direct file system path of the image
+    // file
     public static String getPathFromContentUri(ContentResolver cr, Uri contentUri) {
         if (BuildConfig.DEBUG) {
             Log.d("Utils", "Getting file path for Uri: " + contentUri);
@@ -441,6 +468,129 @@ public class ImageFactory {
         }
 
         return returnValue;
+    }
+
+    public static Bitmap decodeImage(final ContentResolver resolver, final Uri uri,
+                                     final int MAX_DIM)
+            throws FileNotFoundException {
+
+        // Get original dimensions
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        try {
+            BitmapFactory.decodeStream(resolver.openInputStream(uri), null, o);
+        } catch (SecurityException se) {
+            se.printStackTrace();
+            return null;
+        }
+
+        final int origWidth = o.outWidth;
+        final int origHeight = o.outHeight;
+
+        // Holds returned bitmap
+        Bitmap bitmap;
+
+        o.inJustDecodeBounds = false;
+        o.inScaled = false;
+        o.inPurgeable = true;
+        o.inInputShareable = true;
+        o.inDither = true;
+        o.inPreferredConfig = Config.RGB_565;
+
+        if (origWidth > MAX_DIM || origHeight > MAX_DIM) {
+            int k = 1;
+            int tmpHeight = origHeight, tmpWidth = origWidth;
+            while ((tmpWidth / 2) >= MAX_DIM || (tmpHeight / 2) >= MAX_DIM) {
+                tmpWidth /= 2;
+                tmpHeight /= 2;
+                k *= 2;
+            }
+            o.inSampleSize = k;
+
+            bitmap = BitmapFactory.decodeStream(resolver.openInputStream(uri), null, o);
+        } else {
+            bitmap = BitmapFactory.decodeStream(resolver.openInputStream(uri), null, o);
+        }
+
+        if (null != bitmap) {
+            if (BuildConfig.DEBUG) {
+                Log.d("Utils",
+                        "Resized bitmap to: " + bitmap.getWidth() + "x" + bitmap.getHeight());
+            }
+        }
+
+        return bitmap;
+    }
+
+    public static boolean hasCamera(Context context) {
+        PackageManager pm = context.getPackageManager();
+        return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)
+                || pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
+    }
+
+    public static Bitmap rotate(Bitmap original, final int angle) {
+        if ((angle % 360) == 0) {
+            return original;
+        }
+
+        final boolean dimensionsChanged = angle == 90 || angle == 270;
+        final int oldWidth = original.getWidth();
+        final int oldHeight = original.getHeight();
+        final int newWidth = dimensionsChanged ? oldHeight : oldWidth;
+        final int newHeight = dimensionsChanged ? oldWidth : oldHeight;
+
+        Bitmap bitmap = Bitmap.createBitmap(newWidth, newHeight, original.getConfig());
+        Canvas canvas = new Canvas(bitmap);
+
+        Matrix matrix = new Matrix();
+        matrix.preTranslate((newWidth - oldWidth) / 2f, (newHeight - oldHeight) / 2f);
+        matrix.postRotate(angle, bitmap.getWidth() / 2f, bitmap.getHeight() / 2);
+        canvas.drawBitmap(original, matrix, null);
+
+        original.recycle();
+
+        return bitmap;
+    }
+
+    public static void scanMediaJpegFile(final Context context, final File file,
+                                         final MediaScannerConnection.OnScanCompletedListener listener) {
+        MediaScannerConnection
+                .scanFile(context, new String[]{file.getAbsolutePath()}, new String[]{"image/jpg"},
+                        listener);
+    }
+
+    public static File getCameraPhotoFile() {
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return new File(dir, "tf_" + System.currentTimeMillis() + ".jpg");
+    }
+
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID},
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            cursor.close();
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
     }
 
 }

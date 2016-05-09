@@ -37,5 +37,37 @@
         <item name="android:windowExitAnimation">@anim/popu_menu_hide</item>
     </style>
 
+    <style name="PhotosGridView">
+        <item name="android:horizontalSpacing">1dp</item>
+        <item name="android:listSelector">@drawable/selectable_background_photup</item>
+        <item name="android:numColumns">auto_fit</item>
+        <item name="android:stretchMode">columnWidth</item>
+        <item name="android:verticalSpacing">1dp</item>
+    </style>
+
+
+    <style name="TFDialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">
+            @android:style/Animation.Dialog
+        </item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan
+        </item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 自己想要的背景 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 背景遮罩 -->
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="TFProgressDialogStyle" parent="TFDialogStyle">
+        <item name="android:windowBackground">@drawable/shape_dialog_bg</item>
+        <!-- 自己想要的背景 -->
+        <item name="android:backgroundDimEnabled">false</item>
+        <!-- 模糊 -->
+    </style>
 
 </resources>

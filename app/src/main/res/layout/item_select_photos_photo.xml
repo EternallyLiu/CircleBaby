@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ratio="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/view_space_small">
+
+    <cn.timeface.views.photoselectview.PhotoSelectImageView
+        android:clickable="true"
+        android:onClick="clickPhotoView"
+        android:id="@+id/iv_img0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/view_space_small"
+        android:paddingRight="@dimen/view_space_small"
+        ratio:fixRatio="fixWidth"
+        ratio:heightRatio="1"
+        ratio:widthRatio="1" />
+
+    <cn.timeface.views.photoselectview.PhotoSelectImageView
+        android:clickable="true"
+        android:onClick="clickPhotoView"
+        android:id="@+id/iv_img1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/view_space_small"
+        android:paddingRight="@dimen/view_space_small"
+        ratio:fixRatio="fixWidth"
+        ratio:heightRatio="1"
+        ratio:widthRatio="1" />
+
+    <cn.timeface.views.photoselectview.PhotoSelectImageView
+        android:clickable="true"
+        android:onClick="clickPhotoView"
+        android:id="@+id/iv_img2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/view_space_small"
+        android:paddingRight="@dimen/view_space_small"
+        ratio:fixRatio="fixWidth"
+        ratio:heightRatio="1"
+        ratio:widthRatio="1" />
+
+</LinearLayout>

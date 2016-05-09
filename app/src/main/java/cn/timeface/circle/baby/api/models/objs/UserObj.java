@@ -1,12 +1,15 @@
 package cn.timeface.circle.baby.api.models.objs;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import cn.timeface.circle.baby.api.models.base.BaseObj;
 
 /**
  * author: rayboot  Created on 15/12/3.
  * email : sy0725work@gmail.com
  */
-public class UserObj extends BaseObj {
+public class UserObj extends BaseObj implements Parcelable {
     String avatar;
     BabyObj babyObj;
     String nickName;
@@ -52,5 +55,19 @@ public class UserObj extends BaseObj {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.userId);
+        dest.writeString(this.nickName);
+        dest.writeString(this.avatar);
+        dest.writeSerializable(this.babyObj);
+
     }
 }

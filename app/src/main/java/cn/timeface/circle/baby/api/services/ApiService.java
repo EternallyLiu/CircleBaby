@@ -28,6 +28,8 @@ public interface ApiService {
      */
     String BASE_URL = BuildConfig.API_URL;
 
+    String IMAGE_BASE_URL = "http://img1.timeface.cn/";
+
 
     //登录
     @GET("auth/login")

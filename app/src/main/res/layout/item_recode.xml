@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ratio="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_habit_detail"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginTop="@dimen/view_space_normal"
+    android:background="@drawable/shape_adapter_bg"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/size_12">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/main_blue"
+            android:orientation="vertical"
+            android:padding="@dimen/size_6">
+
+            <TextView
+                android:id="@+id/tv_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="15"
+                android:textColor="@color/text_color1" />
+
+            <TextView
+                android:id="@+id/tv_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="2015.03"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/size_12"
+            android:paddingRight="@dimen/size_12">
+
+            <TextView
+                android:id="@+id/tv_jieqi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_normal"
+                tools:text="谷雨" />
+
+            <TextView
+                android:id="@+id/tv_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_small"
+                tools:text="2岁3个月9天" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/gv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:horizontalSpacing="@dimen/size_6"
+        android:numColumns="3"
+        android:verticalSpacing="@dimen/size_6"
+        android:visibility="gone"></GridView>
+
+    <FrameLayout
+
+        android:id="@+id/rfl_picture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/fl_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"></FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_cover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:src="@color/bg_color7" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:padding="@dimen/size_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        tools:text="宝宝今天真听话呀！"/>
+</LinearLayout>

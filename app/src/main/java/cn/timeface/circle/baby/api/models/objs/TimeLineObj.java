@@ -1,0 +1,111 @@
+package cn.timeface.circle.baby.api.models.objs;
+
+import java.util.List;
+
+import cn.timeface.circle.baby.api.models.base.BaseObj;
+
+/**
+ * Created by lidonglin on 2016/5/9.
+ */
+public class TimeLineObj extends BaseObj {
+
+    String age;                 //年龄描述  2岁2个月9天
+    UserObj author;             //作者
+    int commentCount;           //评论个数
+    long date;                  //时间戳
+    String dateEx;              //谷雨，周日上午之类
+    int like;                   //是否已赞  0 否 1 是
+    int likeCount;              //赞的个数
+    List<MediaObj> mediaList;   //图片列表
+    String milestone;           //里程碑
+    int timeId;
+    int type;                   //0 照片 1 视频 2 日记 3 识图
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public UserObj getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(UserObj author) {
+        this.author = author;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public String getDateEx() {
+        return dateEx;
+    }
+
+    public void setDateEx(String dateEx) {
+        this.dateEx = dateEx;
+    }
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public List<MediaObj> getMediaList() {
+        return mediaList;
+    }
+
+    public void setMediaList(List<MediaObj> mediaList) {
+        this.mediaList = mediaList;
+    }
+
+    public String getMilestone() {
+        return milestone;
+    }
+
+    public void setMilestone(String milestone) {
+        this.milestone = milestone;
+    }
+
+    public int getTimeId() {
+        return timeId;
+    }
+
+    public void setTimeId(int timeId) {
+        this.timeId = timeId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+}

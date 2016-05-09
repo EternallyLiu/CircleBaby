@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.Remember;
 import de.greenrobot.event.EventBus;
 
 public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -50,6 +52,11 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_tab_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        int width = wm.getDefaultDisplay().getWidth()/3;
+        Remember.putInt("width", width);
+
 
         clickTab(menuHomeTv);
         ivPublish.setOnClickListener(this);
