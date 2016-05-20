@@ -1,0 +1,219 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color2"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/bg_color1"
+        android:paddingTop="@dimen/toolbar_padding_top">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="宝宝信息"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_large" />
+
+            <TextView
+                android:id="@+id/tv_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="@dimen/size_12"
+                android:text="删除"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_medium" />
+        </FrameLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/size_80"
+            android:layout_height="@dimen/size_80"
+            android:layout_margin="@dimen/size_12"
+            android:src="@color/bg_color5" />
+        <TextView
+            android:id="@+id/tv_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="2岁3个月12天"
+            android:textSize="@dimen/text_small" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="宝宝小名"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="小宝"
+            android:textSize="@dimen/text_normal"
+            android:layout_toLeftOf="@+id/iv_name"
+            android:layout_marginRight="@dimen/size_12"
+            />
+        <ImageView
+            android:id="@+id/iv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_12"
+            android:src="@drawable/mine_data_go"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6"/>
+    <RelativeLayout
+        android:id="@+id/rl_brithday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="生日"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/tv_brithday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="2015.02.12"
+            android:textSize="@dimen/text_normal"
+            android:layout_toLeftOf="@+id/iv_brithday"
+            android:layout_marginRight="@dimen/size_12"
+            />
+        <ImageView
+            android:id="@+id/iv_brithday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_12"
+            android:src="@drawable/mine_data_go"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6"/>
+    <RelativeLayout
+        android:id="@+id/rl_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="性别"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            />
+        <RadioButton
+            android:id="@+id/rb_girl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_toLeftOf="@+id/rb_boy"
+            android:layout_marginRight="@dimen/size_12"
+            android:text="女孩"
+            android:textColor="@color/text_color2"
+            android:textSize="@dimen/text_normal" />
+
+        <RadioButton
+            android:id="@+id/rb_boy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/size_12"
+            android:layout_alignParentRight="true"
+            android:text="男孩"
+            android:textColor="@color/text_color2"
+            android:textSize="@dimen/text_normal" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6"/>
+    <RelativeLayout
+        android:id="@+id/rl_blood"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="血型"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/tv_blood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="未填写"
+            android:textSize="@dimen/text_normal"
+            android:layout_toLeftOf="@+id/iv_blood"
+            android:layout_marginRight="@dimen/size_12"
+            />
+        <ImageView
+            android:id="@+id/iv_blood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_12"
+            android:src="@drawable/mine_data_go"/>
+    </RelativeLayout>
+
+
+
+</LinearLayout>

@@ -34,6 +34,12 @@ public class DateUtil {
         return formatDate(format, timeInMillis);
     }
 
+    public static String getYear2(long timeInMillis) {
+        String format = "yyyy.MM.dd";
+
+        return formatDate(format, timeInMillis);
+    }
+
     /**
      * @return kk点mm分
      */
@@ -51,6 +57,11 @@ public class DateUtil {
 
     public static String getTime3(long timeInMillis) {
         String format = "MM.dd";
+        return formatDate(format, timeInMillis);
+    }
+
+    public static String getTime4(long timeInMillis) {
+        String format = "mm:ss";
         return formatDate(format, timeInMillis);
     }
 

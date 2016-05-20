@@ -1,23 +1,149 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color2"
+    android:background="@color/bg_color8"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_cover_bg"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@color/bg_color1" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/tran_30_black">
+
+                <RelativeLayout
+                    android:id="@+id/ll_mine_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/size_80">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/iv_avatar"
+                        android:layout_width="@dimen/size_56"
+                        android:layout_height="@dimen/size_56"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/size_12"
+                        android:src="@color/bg_color5" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/iv_avatar"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="小宝"
+                            android:textColor="@color/text_color1"
+                            android:textSize="@dimen/text_medium" />
+
+                        <TextView
+                            android:id="@+id/tv_constellation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="水瓶座"
+                            android:textColor="@color/text_color1"
+                            android:textSize="@dimen/text_small" />
+
+                        <TextView
+                            android:id="@+id/tv_age"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="2岁3个月9天"
+                            android:textColor="@color/text_color1"
+                            android:textSize="@dimen/text_small" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </FrameLayout>
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/bg_color6" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_album"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="@dimen/size_12"
+                android:text="云相册" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/bg_color6" />
+
+            <TextView
+                android:id="@+id/tv_milestone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="@dimen/size_12"
+                android:text="成长里程碑" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/bg_color6" />
+
+            <TextView
+                android:id="@+id/tv_relative"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="@dimen/size_12"
+                android:text="亲友团" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/bg_color6" />
+
+        <include layout="@layout/content_recycler_view" />
+    </LinearLayout>
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#00000000"
         android:minHeight="?attr/actionBarSize"
-        android:background="@color/bg_color1"
         android:paddingTop="@dimen/toolbar_padding_top">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/tv_changebaby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -26,7 +152,7 @@
                 android:textSize="@dimen/text_medium" />
 
             <TextView
-                android:id="@+id/tv_register"
+                android:id="@+id/tv_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
@@ -35,110 +161,5 @@
                 android:textColor="@color/text_color1"
                 android:textSize="@dimen/text_medium" />
         </FrameLayout>
-
     </android.support.v7.widget.Toolbar>
-
-    <RelativeLayout
-        android:id="@+id/ll_mine_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/text_color1">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/iv_avatar"
-            android:layout_width="@dimen/size_56"
-            android:layout_height="@dimen/size_56"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/size_12"
-            android:src="@color/bg_color5" />
-        
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/iv_avatar"
-            android:layout_centerVertical="true"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="小宝"
-                android:background="@color/text_color1"
-                android:textSize="@dimen/text_medium"
-                />
-            <TextView
-                android:id="@+id/tv_constellation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="水瓶座"
-                android:background="@color/text_color1"
-                android:textSize="@dimen/text_small"
-                />
-            <TextView
-                android:id="@+id/tv_age"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="2岁3个月9天"
-                android:background="@color/text_color1"
-                android:textSize="@dimen/text_small"
-                />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_color6" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/tv_album"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="@dimen/size_12"
-            android:gravity="center"
-            android:text="云相册"/>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/bg_color6" />
-
-        <TextView
-            android:id="@+id/tv_milestone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="@dimen/size_12"
-            android:gravity="center"
-            android:text="成长里程碑"/>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/bg_color6" />
-
-        <TextView
-            android:id="@+id/tv_relative"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="@dimen/size_12"
-            android:gravity="center"
-            android:text="亲友团"/>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_color6" />
-
-    <include
-        layout="@layout/content_recycler_view"/>
-
-
-</LinearLayout>
+</RelativeLayout>

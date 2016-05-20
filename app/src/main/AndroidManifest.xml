@@ -104,18 +104,23 @@
         <activity android:name=".activities.ConfirmPasswordActivity"/>
         <activity android:name=".activities.ForgetPasswordActivity"/>
         <activity android:name=".activities.SetPasswordActivity"/>
-        <activity android:name=".activities.BabyInfoActivity"/>
+        <activity android:name=".activities.CreateBabyActivity"/>
         <activity android:name=".activities.InviteCodeActivity"/>
         <activity android:name=".activities.RelationshipActivity"/>
         <activity android:name="com.wechat.photopicker.PickerPhotoActivity"/>
+        <activity android:name="com.wechat.photopicker.PickerVideoActivity"/>
         <activity android:name=".activities.SelectPublishActivity"/>
         <activity android:name=".activities.PublishActivity"/>
+        <activity android:name=".activities.DiaryPublishActivity"/>
         <activity android:name=".activities.MileStoneActivity"/>
         <activity android:name=".activities.SelectTimeActivity"/>
         <activity android:name="com.wechat.photopicker.BigImageShowActivity"/>
         <activity android:name=".activities.PhotoSelectionActivity"/>
         <activity android:name=".activities.PhotoViewerNewActivity"/>
-
+        <activity android:name=".activities.VideoEditActivity"/>
+        <activity android:name=".activities.PhotoRecodeDetailActivity"/>
+        <activity android:name=".activities.PhotoEditActivity"/>
+        <activity android:name=".activities.FragmentBridgeActivity"/>
 
 
     </application>

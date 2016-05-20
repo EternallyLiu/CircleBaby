@@ -84,6 +84,7 @@ public class ImgObj implements Parcelable {
     private String localPath;
     private String md5;
     private String content;
+    public String date;
 
     public ImgObj() {
     }
@@ -113,6 +114,13 @@ public class ImgObj implements Parcelable {
             this.width = size.x;
             this.height = size.y;
         }
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+    public String getDate(){
+        return date;
     }
 
     public double getLat() {
@@ -446,6 +454,7 @@ public class ImgObj implements Parcelable {
         dest.writeString(this.localPath);
         dest.writeString(this.md5);
         dest.writeString(this.content);
+        dest.writeString(this.date);
     }
 
     protected ImgObj(Parcel in) {
@@ -468,6 +477,7 @@ public class ImgObj implements Parcelable {
         this.localPath = in.readString();
         this.md5 = in.readString();
         this.content = in.readString();
+        this.date = in.readString();
     }
 
     public static final Creator<ImgObj> CREATOR = new Creator<ImgObj>() {
@@ -501,4 +511,5 @@ public class ImgObj implements Parcelable {
     public String getAliKey() {
         return url.replace("http://img1.timeface.cn/", "");
     }
+
 }

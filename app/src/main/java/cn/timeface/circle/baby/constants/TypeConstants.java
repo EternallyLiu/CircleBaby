@@ -27,10 +27,9 @@ public class TypeConstants {
 
     //修改不同的东西
     public static final int EDIT_NAME = 0;
-    public static final int EDIT_SCHOOL = 1;
-    public static final int EDIT_GRADE = 2;
-    public static final int EDIT_COUNT = 3;//班级人数
-    public static final int EDIT_PROBLEM = 4;
+    public static final int EDIT_BLOOD = 1;
+    public static final int EDIT_RELATIONNAME = 2;
+    public static final int EDIT_NICKNAME = 3;
 
     public static final int PUSH_OPEN = 0;
     public static final int PUSH_CLOSE = 1;

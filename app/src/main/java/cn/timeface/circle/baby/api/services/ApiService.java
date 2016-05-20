@@ -1,14 +1,25 @@
 package cn.timeface.circle.baby.api.services;
 
+import java.util.List;
+
 import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.api.models.PhotoRecode;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
+import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
+import cn.timeface.circle.baby.api.models.responses.DiaryTextResponse;
+import cn.timeface.circle.baby.api.models.responses.FamilyListResponse;
+import cn.timeface.circle.baby.api.models.responses.InviteResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneIdResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
+import cn.timeface.circle.baby.api.models.responses.MsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.RegisterResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationIdResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationshipResponse;
+import cn.timeface.circle.baby.api.models.responses.SystemMsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.UserLoginResponse;
+import cn.timeface.circle.baby.fragments.DiaryTextFragment;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -90,13 +101,39 @@ public interface ApiService {
     @GET("baby/queryBabyFamilyTypeInfoList")
     Observable<RelationshipResponse> queryBabyFamilyTypeInfoList(@Query("key") String key);
 
+    //获取亲友团列表
+    @GET("baby/queryBabyFamilyLoginInfoList")
+    Observable<FamilyListResponse> queryBabyFamilyLoginInfoList();
+
+    //亲友团-邀请家人
+    @GET("baby/inviteFamily")
+    Observable<InviteResponse> inviteFamily(@Query("relationName") String relationName);
+
+    //亲友团-删除亲友
+    @GET("baby/delRelationship")
+    Observable<BaseResponse> delRelationship(@Query("userId") String userId);
+
+    //亲友团-修改亲友信息
+    @GET("baby/updateFamilyRelationshipInfo")
+    Observable<BaseResponse> updateFamilyRelationshipInfo(@Query("nickName") String nickName,
+                                                          @Query("relationName") String relationName,
+                                                          @Query("userId") String userId);
+
+    //获取宝宝列表
+    @GET("baby/queryBabyInfoList")
+    Observable<BabyInfoListResponse> queryBabyInfoList();
+
+    //获取消息列表
+    @GET("baby/queryMsgList")
+    Observable<MsgListResponse> queryMsgList();
+
+    //获取系统消息列表
+    @GET("baby/querySystemMsgList")
+    Observable<SystemMsgListResponse> querySystemMsgList();
+
     //发布
-    @GET("babyTime/publish")
-    Observable<UserLoginResponse> publish(@Query("birthday") long birthday,
-                                             @Query("gender") int gender,
-                                             @Query("imgUrl") String imgUrl,
-                                             @Query("name") String name,
-                                             @Query("relationId") int relationId);
+//    @GET("babyTime/publish")
+//    Observable<BaseResponse> publish(@Query("dataList") List<PhotoRecode>);
 
     //获取里程碑列表
     @GET("babyTime/queryMilestoneList")
@@ -105,4 +142,12 @@ public interface ApiService {
     //添加里程碑
     @GET("babyTime/addMilestone")
     Observable<MilestoneIdResponse> addMilestone(@Query("milestoneName") String milestoneName);
+
+    //日记发布-获取日记文本列表
+    @GET("babyTime/getTextList")
+    Observable<DiaryTextResponse> getTextList();
+
+    //日记发布-获取日记背景信纸列表
+    @GET("babyTime/getPaperList")
+    Observable<DiaryPaperResponse> getPaperList();
 }

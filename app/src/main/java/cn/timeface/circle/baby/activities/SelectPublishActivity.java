@@ -71,13 +71,16 @@ public class SelectPublishActivity extends BaseAppCompatActivity implements View
                 finish();
                 break;
             case R.id.tv_photo:
-                PublishActivity.open(this);
+                PublishActivity.open(this , PublishActivity.PHOTO);
                 break;
             case R.id.tv_video:
+                PublishActivity.open(this , PublishActivity.VIDEO);
                 break;
             case R.id.tv_diary:
+                PublishActivity.open(this , PublishActivity.DIALY);
                 break;
             case R.id.tv_card:
+                PublishActivity.open(this , PublishActivity.CARD);
                 break;
         }
 

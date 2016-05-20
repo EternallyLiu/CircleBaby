@@ -14,15 +14,56 @@ public class UserObj extends BaseObj implements Parcelable {
     BabyObj babyObj;
     String nickName;
     String userId;
+    String relationName;
+    int isCreator;
 
     public UserObj() {
     }
 
-    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId) {
+    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId, String relationName, int isCreator) {
         this.avatar = avatar;
         this.babyObj = babyObj;
         this.nickName = nickName;
         this.userId = userId;
+        this.relationName = relationName;
+        this.isCreator = isCreator;
+    }
+
+
+    protected UserObj(Parcel in) {
+        avatar = in.readString();
+        nickName = in.readString();
+        userId = in.readString();
+        relationName = in.readString();
+        isCreator = in.readInt();
+    }
+
+    public static final Creator<UserObj> CREATOR = new Creator<UserObj>() {
+        @Override
+        public UserObj createFromParcel(Parcel in) {
+            return new UserObj(in);
+        }
+
+        @Override
+        public UserObj[] newArray(int size) {
+            return new UserObj[size];
+        }
+    };
+
+    public String getRelationName() {
+        return relationName;
+    }
+
+    public void setRelationName(String relationName) {
+        this.relationName = relationName;
+    }
+
+    public int getIsCreator() {
+        return isCreator;
+    }
+
+    public void setIsCreator(int isCreator) {
+        this.isCreator = isCreator;
     }
 
     public String getAvatar() {
@@ -68,6 +109,7 @@ public class UserObj extends BaseObj implements Parcelable {
         dest.writeString(this.nickName);
         dest.writeString(this.avatar);
         dest.writeSerializable(this.babyObj);
-
+        dest.writeString(this.relationName);
+        dest.writeInt(this.isCreator);
     }
 }

@@ -53,6 +53,7 @@ public class PhotoViewerNewActivity extends BaseAppCompatActivity implements IEv
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
 
         maxCount = getIntent().getIntExtra("max_count", 0);
         imageItems = PhotoDataResult.getInstance().getImgObjs();

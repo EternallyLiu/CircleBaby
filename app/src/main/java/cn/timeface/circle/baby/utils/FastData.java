@@ -43,6 +43,16 @@ public class FastData extends Remember {
     public static final String AVATAR = "avatar";
 
     /**
+     * RELATION_NAME
+     */
+    public static final String RELATION_NAME = "relation_name";
+
+    /**
+     * is_creator
+     */
+    public static final String IS_CREATOR = "relation_name";
+
+    /**
      * Account
      */
     public static final String ACCOUNT = "account";
@@ -195,7 +205,7 @@ public class FastData extends Remember {
      * 获取UserName
      */
     public static String getUserName() {
-        return getString(USER_NAME, null);
+        return getString(USER_NAME, "");
     }
 
     /**
@@ -205,11 +215,29 @@ public class FastData extends Remember {
         putString(USER_NAME, userName);
     }
 
+    private static void setRelationName(String relationName) {
+        putString(RELATION_NAME, relationName);
+    }
+
+    private static String getRelationName() {
+        return getString(RELATION_NAME,"");
+    }
+
+    private static void setIsCreator(int creator) {
+        putInt(IS_CREATOR, creator);
+    }
+
+    private static int getIsCreator() {
+        return getInt(IS_CREATOR, 0);
+    }
+
     public static void setUserInfo(UserObj userObj) {
         setUserName(userObj.getNickName());
         setUserId(userObj.getUserId());
         setAvatar(userObj.getAvatar());
         setBabyObj(userObj.getBabyObj());
+        setRelationName(userObj.getRelationName());
+        setIsCreator(userObj.getIsCreator());
     }
 
     public static UserObj getUserInfo() {
@@ -217,8 +245,10 @@ public class FastData extends Remember {
         String userId = getUserId();
         String avatar = getAvatar();
         BabyObj babyObj = getBabyObj();
+        String relationName = getRelationName();
+        int isCreator = getIsCreator();
 
-        return new UserObj(avatar, babyObj, userName, userId);
+        return new UserObj(avatar, babyObj, userName, userId,relationName,isCreator);
     }
 
     public static void setBabyObj(BabyObj babyObj) {

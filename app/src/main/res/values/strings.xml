@@ -78,4 +78,6 @@
     <string name="done">完成</string>
     <string name="done_selector_size">完成(%1$d/%2$d)</string>
     <string name="clear_photo">清理图片</string>
+
+    <string name="picker_video">选择视频</string>
 </resources>

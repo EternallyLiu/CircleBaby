@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:padding="@dimen/view_space_small">
 
-    <cn.timeface.views.photoselectview.PhotoSelectImageView
+    <cn.timeface.circle.baby.views.PhotoSelectImageView
         android:clickable="true"
         android:onClick="clickPhotoView"
         android:id="@+id/iv_img0"
@@ -19,7 +19,7 @@
         ratio:heightRatio="1"
         ratio:widthRatio="1" />
 
-    <cn.timeface.views.photoselectview.PhotoSelectImageView
+    <cn.timeface.circle.baby.views.PhotoSelectImageView
         android:clickable="true"
         android:onClick="clickPhotoView"
         android:id="@+id/iv_img1"
@@ -32,7 +32,7 @@
         ratio:heightRatio="1"
         ratio:widthRatio="1" />
 
-    <cn.timeface.views.photoselectview.PhotoSelectImageView
+    <cn.timeface.circle.baby.views.PhotoSelectImageView
         android:clickable="true"
         android:onClick="clickPhotoView"
         android:id="@+id/iv_img2"

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_habit_detail"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_adapter_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/size_6">
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:text="2016.05.22"
+        android:padding="@dimen/size_6" />
+
+    <GridView
+        android:id="@+id/gv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:horizontalSpacing="@dimen/size_6"
+        android:numColumns="3"
+        android:verticalSpacing="@dimen/size_6"></GridView>
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@color/bg_color7" />
+
+    <TextView
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:gravity="start"
+        android:hint="点击记录照片后的故事"
+        android:textColor="@color/black_overlay"
+        android:enabled="false"
+        android:padding="@dimen/size_12" />
+</LinearLayout>

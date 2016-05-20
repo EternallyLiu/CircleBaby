@@ -359,6 +359,15 @@ public class PhotoSelectionActivity extends BaseAppCompatActivity implements
         }
     }
 
+    private void takeVideo() {
+        if (null == mPhotoFile) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            mPhotoFile = StorageUtil.genSystemPhotoFile();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
+            startActivityForResult(takePictureIntent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -369,8 +378,7 @@ public class PhotoSelectionActivity extends BaseAppCompatActivity implements
 
     public void clickOK() {
         Intent data = new Intent();
-//        data.putParcelableArrayListExtra("result_select_image_list", (ArrayList<? extends Parcelable>) mPhotoAdapter.getSelImgs());
-        data.putStringArrayListExtra("result_select_image_list", mPhotoAdapter.getSelImgPaths());
+        data.putParcelableArrayListExtra("result_select_image_list", (ArrayList<? extends Parcelable>) mPhotoAdapter.getSelImgs());
         setResult(RESULT_OK, data);
         finish();
     }

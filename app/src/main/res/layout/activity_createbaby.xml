@@ -97,7 +97,7 @@
             android:src="@drawable/ic_login_qq" />
 
         <RadioButton
-            android:id="@+id/rb_w"
+            android:id="@+id/rb_girl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -107,7 +107,7 @@
             android:textSize="@dimen/text_medium" />
 
         <RadioButton
-            android:id="@+id/rb_m"
+            android:id="@+id/rb_boy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

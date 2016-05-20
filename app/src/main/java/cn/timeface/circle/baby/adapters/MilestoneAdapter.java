@@ -43,7 +43,7 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<Milestone> {
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = (ViewHolder) viewHolder;
         Milestone item = getItem(position);
-        holder.tvRelationship.setText(item.getMilestoneName());
+        holder.tvRelationship.setText(item.getMilestone());
         holder.onClickListener = onClickListener;
         holder.milestone = item;
 

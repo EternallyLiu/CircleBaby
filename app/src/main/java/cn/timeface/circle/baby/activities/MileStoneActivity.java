@@ -69,7 +69,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements View.OnC
         adapter.setOnClickListener(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         contentRecyclerView.setAdapter(adapter);
-        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.TRANSPARENT).sizeResId(R.dimen.view_space_small).build());
+        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.TRANSPARENT).sizeResId(R.dimen.view_space_small2).build());
 
         reqData();
 

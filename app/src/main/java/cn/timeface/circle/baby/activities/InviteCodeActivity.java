@@ -31,9 +31,8 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
     @Bind(R.id.btn_test)
     Button btnTest;
 
-    public static void open(Context context, String account) {
+    public static void open(Context context) {
         Intent intent = new Intent(context, InviteCodeActivity.class);
-        intent.putExtra("account", account);
         context.startActivity(intent);
     }
 
@@ -67,7 +66,7 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
                         .subscribe(userLoginResponse -> {
                             if (userLoginResponse.success()) {
                                 Toast.makeText(this, userLoginResponse.getInfo(), Toast.LENGTH_SHORT).show();
-                                //跳转到宝宝主页
+                                //跳转到关系界面
 
                             }
                         }, error -> {

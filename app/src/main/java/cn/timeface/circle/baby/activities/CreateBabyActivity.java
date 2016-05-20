@@ -17,13 +17,10 @@ import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.wechat.photopicker.PickerPhotoActivity;
 
-import java.io.Serializable;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,11 +35,8 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
-import rx.android.schedulers.AndroidSchedulers;
 
-import com.wechat.photopicker.PickerPhotoActivity;
-
-public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class CreateBabyActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
 
     @Bind(R.id.tv_back)
@@ -57,10 +51,10 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     CircleImageView ivAvatar;
     @Bind(R.id.et_name)
     EditText etName;
-    @Bind(R.id.rb_w)
-    RadioButton rbW;
-    @Bind(R.id.rb_m)
-    RadioButton rbM;
+    @Bind(R.id.rb_girl)
+    RadioButton rbGirl;
+    @Bind(R.id.rb_boy)
+    RadioButton rbBoy;
     @Bind(R.id.et_birthday)
     EditText etBirthday;
     @Bind(R.id.et_relationship)
@@ -78,14 +72,14 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     private Relationship relationship;
 
     public static void open(Context context) {
-        Intent intent = new Intent(context, BabyInfoActivity.class);
+        Intent intent = new Intent(context, CreateBabyActivity.class);
         context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_babyinfo);
+        setContentView(R.layout.activity_createbaby);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -93,8 +87,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         tvBack.setOnClickListener(this);
         tvNext.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);
-        rbW.setOnClickListener(this);
-        rbM.setOnClickListener(this);
+        rbGirl.setOnClickListener(this);
+        rbBoy.setOnClickListener(this);
         etBirthday.setOnClickListener(this);
         etRelationship.setOnClickListener(this);
         tvFocus.setOnClickListener(this);
@@ -141,13 +135,13 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
             case R.id.iv_avatar:
                 startPhotoPick();
                 break;
-            case R.id.rb_w:
+            case R.id.rb_girl:
                 gender = 0;
-                rbM.setChecked(false);
+                rbBoy.setChecked(false);
                 break;
-            case R.id.rb_m:
+            case R.id.rb_boy:
                 gender = 1;
-                rbW.setChecked(false);
+                rbGirl.setChecked(false);
                 break;
             case R.id.et_birthday:
                 Calendar calendar = Calendar.getInstance();

@@ -1,0 +1,97 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color8"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/bg_color1"
+        android:paddingTop="@dimen/toolbar_padding_top">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="宝宝日记"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_large" />
+
+            <TextView
+                android:id="@+id/tv_complete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="@dimen/size_12"
+                android:text="完成"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_medium" />
+        </FrameLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/iv_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bg_qq_phono_guide"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/text_color3"
+                android:textSize="@dimen/text_normal"
+                android:text="2016.05.20"
+                android:layout_marginTop="@dimen/size_12"/>
+            
+            <ImageView
+                android:id="@+id/iv_diary"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/size_12"
+
+                />
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/text_color3"
+                android:textSize="@dimen/text_normal"
+                android:text="[穿衣歌]\n小胳膊，穿袖子，穿上衣，扣扣子，\n小脚丫，穿裤子，穿上袜子穿鞋子。"
+                android:layout_marginTop="@dimen/size_12"
+                android:lineSpacingMultiplier="1.2"/>
+            
+        </LinearLayout>
+
+        <cn.timeface.circle.baby.views.HorizontalListView
+            android:id="@+id/lv_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:background="#BB000000"
+            >
+
+
+        </cn.timeface.circle.baby.views.HorizontalListView>
+
+    </RelativeLayout>
+</LinearLayout>

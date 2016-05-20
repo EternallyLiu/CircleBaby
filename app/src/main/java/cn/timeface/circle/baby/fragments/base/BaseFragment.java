@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.fragments.base;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
@@ -61,7 +62,16 @@ public class BaseFragment extends Fragment {
                 ((AppCompatActivity) getActivity()).setSupportActionBar(view);
             }
         }
+    }
 
+    public ActionBar getActionBar(){
+        if (getActivity() instanceof AppCompatActivity) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                return supportActionBar;
+            }
+        }
+        return null;
     }
 
 }

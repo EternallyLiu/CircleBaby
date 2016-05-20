@@ -6,27 +6,27 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
  * Created by lidonglin on 2016/5/4.
  */
 public class Milestone extends BaseObj {
-    String milestoneName;
-    int milestoneId;
+    String milestone;
+    int id;
 
-    public Milestone(String milestoneName, int milestoneId) {
-        this.milestoneName = milestoneName;
-        this.milestoneId = milestoneId;
+    public Milestone(String milestone, int id) {
+        this.milestone = milestone;
+        this.id = id;
     }
 
-    public String getMilestoneName() {
-        return milestoneName;
+    public String getMilestone() {
+        return milestone;
     }
 
-    public void setMilestoneName(String milestoneName) {
-        this.milestoneName = milestoneName;
+    public void setMilestone(String milestone) {
+        this.milestone = milestone;
     }
 
-    public int getMilestoneId() {
-        return milestoneId;
+    public int getId() {
+        return id;
     }
 
-    public void setMilestoneId(int milestoneId) {
-        this.milestoneId = milestoneId;
+    public void setId(int id) {
+        this.id = id;
     }
 }

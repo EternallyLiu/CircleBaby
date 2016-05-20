@@ -1,0 +1,117 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color8"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/bg_color1"
+        android:paddingTop="@dimen/toolbar_padding_top">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="亲友信息"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_large" />
+
+        </FrameLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:id="@+id/rl_relation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/size_12"
+        android:padding="@dimen/size_12">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="与宝宝的关系"
+            android:textColor="@color/text_color3"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/tv_relation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="阿姨"
+            android:textSize="@dimen/text_medium"
+            android:layout_toLeftOf="@+id/iv_relation"
+            android:layout_marginRight="@dimen/size_12"
+            />
+        <ImageView
+            android:id="@+id/iv_relation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_12"
+            android:src="@drawable/mine_data_go"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6"/>
+    <RelativeLayout
+        android:id="@+id/rl_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="@dimen/size_12">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="昵称"
+            android:textColor="@color/text_color3"
+            android:textSize="@dimen/text_medium"
+            android:layout_centerVertical="true"
+            />
+        <TextView
+            android:id="@+id/tv_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Jully"
+            android:textSize="@dimen/text_medium"
+            android:layout_toLeftOf="@+id/iv_nickname"
+            android:layout_marginRight="@dimen/size_12"
+            />
+        <ImageView
+            android:id="@+id/iv_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_12"
+            android:src="@drawable/mine_data_go"/>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_48"
+        android:background="@drawable/selector_btn_login"
+        android:text="删除"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_medium" />
+
+</LinearLayout>

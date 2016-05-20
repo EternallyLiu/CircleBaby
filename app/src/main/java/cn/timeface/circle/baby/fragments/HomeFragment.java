@@ -1,8 +1,10 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,7 +19,9 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.RecodeAdapter;
+import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -27,8 +31,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.tv_register)
-    TextView tvRegister;
+    @Bind(R.id.tv_message)
+    TextView tvMessage;
+    @Bind(R.id.tv_changebaby)
+    TextView tvChangebaby;
     @Bind(R.id.iv_avatar)
     CircleImageView ivAvatar;
     @Bind(R.id.tv_name)
@@ -53,6 +59,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     private String mParam1;
     private RecodeAdapter adapter;
+    public BabyInfoResponse babyInfoResponse;
 
 
     public HomeFragment() {
@@ -84,9 +91,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
         adapter = new RecodeAdapter(getActivity(), new ArrayList<>());
         adapter.setOnClickListener(this);
+        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         contentRecyclerView.setAdapter(adapter);
 
         reqBabyInfo();
+
+        tvAlbum.setOnClickListener(this);
+        tvMilestone.setOnClickListener(this);
+        tvRelative.setOnClickListener(this);
+        tvChangebaby.setOnClickListener(this);
+        tvMessage.setOnClickListener(this);
+        ivAvatar.setOnClickListener(this);
 
         return view;
     }
@@ -95,6 +110,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         apiService.queryBabyInfoDetail(FastData.getBabyId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(babyInfoResponse -> {
+                    this.babyInfoResponse = babyInfoResponse;
                     tvName.setText(babyInfoResponse.getBabyInfo().getName());
                     tvConstellation.setText(babyInfoResponse.getBabyInfo().getConstellation());
                     tvAge.setText(babyInfoResponse.getBabyInfo().getAge());
@@ -113,6 +129,19 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.tv_changebaby:
+                FragmentBridgeActivity.open(getActivity(),"ChangeBabyFragment");
+                break;
+            case R.id.tv_message:
+                FragmentBridgeActivity.open(getActivity(),"MessageFragment");
+                break;
+            case R.id.tv_relative:
+                FragmentBridgeActivity.open(getActivity(),"FamilyMemberFragment");
+                break;
+            case R.id.iv_avatar:
+                FragmentBridgeActivity.openBabyInfoFragment(getActivity(),babyInfoResponse.getBabyInfo());
+                break;
+        }
     }
 }

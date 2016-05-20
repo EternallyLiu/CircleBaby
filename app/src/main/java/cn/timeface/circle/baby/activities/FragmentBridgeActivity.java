@@ -19,7 +19,19 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.ActivityObj;
+import cn.timeface.circle.baby.api.models.objs.BabyObj;
+import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.fragments.BabyInfoFragment;
+import cn.timeface.circle.baby.fragments.ChangeBabyFragment;
+import cn.timeface.circle.baby.fragments.ChangeInfoFragment;
+import cn.timeface.circle.baby.fragments.DiaryPreviewFragment;
+import cn.timeface.circle.baby.fragments.DiaryTextFragment;
+import cn.timeface.circle.baby.fragments.FamilyMemberFragment;
+import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
+import cn.timeface.circle.baby.fragments.InviteFragment;
+import cn.timeface.circle.baby.fragments.MessageFragment;
+import cn.timeface.circle.baby.fragments.SystemMessageFragment;
 
 /**
  * Created by JieGuo on 1/22/16.
@@ -29,22 +41,12 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
     public static final String FRAGMENT_NAME = "fragment_name";
     public static final String ACTION_BAR_TITLE = "action_bar_title";
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
 //    public static void openSinUpFragment(Context context, MyActivityListItemResponse activityObj) {
 //        Bundle bundle = new Bundle();
 //        bundle.putSerializable("activityObj", activityObj);
 //        open(context, "SinUpActivityFragment", activityObj.getActivityInfo().getName(), bundle);
 //    }
 
-
-
-    public static void openArticleDetailFragment(Context context, int id) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("id", id);
-        open(context, "ArticleDetailFragment", "文章详情", bundle);
-    }
     public static void openBigimageFragment(Context context, ArrayList<String> paths, int index) {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
@@ -52,6 +54,52 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         open(context, "BigImageFragment", "", bundle);
     }
 
+    public static void openBabyInfoFragment(Context context, BabyObj baby) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("babyObj", baby);
+        open(context, "BabyInfoFragment", bundle);
+    }
+
+    public static void openChangeInfoFragment(Fragment context, int requestCode, String info) {
+        Bundle bundle = new Bundle();
+        bundle.putString("info", info);
+        String title = "名字";
+        switch (requestCode) {
+            case TypeConstants.EDIT_NAME:
+                title = "名字";
+                break;
+            case TypeConstants.EDIT_BLOOD:
+                title = "血型";
+                break;
+            case TypeConstants.EDIT_RELATIONNAME:
+                title = "与宝宝的关系";
+                break;
+            case TypeConstants.EDIT_NICKNAME:
+                title = "昵称";
+                break;
+        }
+        openForResult(context, "ChangeInfoFragment", title, bundle, requestCode);
+    }
+
+    public static void openInviteFragment(Context context, String relationName) {
+        Bundle bundle = new Bundle();
+        bundle.putString("relationName", relationName);
+        open(context, "InviteFragment", bundle);
+    }
+
+    public static void openFamilyMemberInfoFragment(Context context, UserObj userObj) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userObj", userObj);
+        open(context, "FamilyMemberInfoFragment", bundle);
+    }
+
+    public static void openDiaryPreviewFragment(Context context, String time, String content, String url) {
+        Bundle bundle = new Bundle();
+        bundle.putString("time",time);
+        bundle.putString("content", content);
+        bundle.putString("url",url);
+        open(context, "DiaryPreviewFragment", bundle);
+    }
 
 
     public static void open(Context context, String fragmentName) {
@@ -59,7 +107,7 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         context.startActivity(intent);
     }
 
-    public static void open(Context context, String fragmentName,Bundle fragmentArgs) {
+    public static void open(Context context, String fragmentName, Bundle fragmentArgs) {
         Intent intent = generateIntent(context, fragmentName);
         intent.putExtras(fragmentArgs);
         context.startActivity(intent);
@@ -76,6 +124,11 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         intent.putExtra(ACTION_BAR_TITLE, actionBarTitle);
         intent.putExtras(fragmentArgs);
         context.startActivity(intent);
+    }
+
+    public static void openForResult(Activity context, String fragmentName, int requestId) {
+        Intent intent = generateIntent(context, fragmentName);
+        context.startActivityForResult(intent, requestId);
     }
 
     public static void openForResult(Fragment context, String fragmentName, String actionBarTitle, Bundle args, int requestId) {
@@ -126,9 +179,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         setContentView(R.layout.activity_fragment_bridge);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
 
-        resetActionBar();
+//        resetActionBar();
 
         if (getIntent().hasExtra(FRAGMENT_NAME)) {
 
@@ -161,6 +214,36 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         switch (fragmentName) {
             case "BigImageFragment":
                 return new BigImageFragment();
+
+            case "FamilyMemberFragment":
+                return new FamilyMemberFragment();
+
+            case "MessageFragment":
+                return new MessageFragment();
+
+            case "SystemMessageFragment":
+                return new SystemMessageFragment();
+
+            case "ChangeBabyFragment":
+                return new ChangeBabyFragment();
+
+            case "BabyInfoFragment":
+                return new BabyInfoFragment();
+
+            case "ChangeInfoFragment":
+                return new ChangeInfoFragment();
+
+            case "InviteFragment":
+                return new InviteFragment();
+
+            case "FamilyMemberInfoFragment":
+                return new FamilyMemberInfoFragment();
+
+            case "DiaryTextFragment":
+                return new DiaryTextFragment();
+
+            case "DiaryPreviewFragment":
+                return new DiaryPreviewFragment();
 
 //            case "SubtractGroupUsersFragment":
 //                return new SubtractGroupUsersFragment();
