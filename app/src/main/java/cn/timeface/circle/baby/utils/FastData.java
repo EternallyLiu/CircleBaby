@@ -269,7 +269,7 @@ public class FastData extends Remember {
         String babyAge = getBabyAge();
         String babyAvatar = getBabyAvatar();
         int babyId = getBabyId();
-        int babyBithday = getBabyBithday();
+        long babyBithday = getBabyBithday();
         String babyBlood = getBabyBlood();
         String babyConstellation = getBabyConstellation();
         int babyGender = getBabyGender();
@@ -310,12 +310,12 @@ public class FastData extends Remember {
         return getString(BABY_Blood, "");
     }
 
-    public static void setBabyBithday(int bithday) {
-        putInt(BABY_Bithday, bithday);
+    public static void setBabyBithday(long bithday) {
+        putLong(BABY_Bithday, bithday);
     }
 
-    public static int getBabyBithday() {
-        return getInt(BABY_Bithday, 0);
+    public static long getBabyBithday() {
+        return getLong(BABY_Bithday,0);
     }
 
     public static void setBabyId(int babyId) {

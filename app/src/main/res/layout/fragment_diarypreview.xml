@@ -3,18 +3,19 @@
     android:layout_height="match_parent"
     android:background="@color/bg_color8"
     android:orientation="vertical">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
         android:background="@color/bg_color1"
+        android:minHeight="?attr/actionBarSize"
         android:paddingTop="@dimen/toolbar_padding_top">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,56 +40,63 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
             android:id="@+id/iv_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/bg_qq_phono_guide"
-            />
-        <LinearLayout
+            android:scaleType="fitXY"
+            android:src="@drawable/diary_bg" />
+
+        <RelativeLayout
+            android:id="@+id/rldiary"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:layout_above="@+id/lv_horizontal">
+
+            <RelativeLayout
+                android:id="@+id/rl_diary"
+                android:layout_width="@dimen/size_260"
+                android:layout_height="@dimen/size_260"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:background="@color/white"
+                android:padding="@dimen/size_6">
+
+            </RelativeLayout>
+
             <TextView
                 android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/text_color3"
-                android:textSize="@dimen/text_normal"
+                android:layout_above="@+id/tv_content"
+                android:layout_alignLeft="@+id/tv_content"
                 android:text="2016.05.20"
-                android:layout_marginTop="@dimen/size_12"/>
-            
-            <ImageView
-                android:id="@+id/iv_diary"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/size_12"
-
-                />
+                android:textColor="@color/text_color4"
+                android:textSize="@dimen/text_medium" />
 
             <TextView
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/text_color3"
-                android:textSize="@dimen/text_normal"
-                android:text="[穿衣歌]\n小胳膊，穿袖子，穿上衣，扣扣子，\n小脚丫，穿裤子，穿上袜子穿鞋子。"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="@dimen/size_12"
                 android:layout_marginTop="@dimen/size_12"
-                android:lineSpacingMultiplier="1.2"/>
-            
-        </LinearLayout>
+                android:lineSpacingMultiplier="1.2"
+                android:text="[穿衣歌]\n小胳膊，穿袖子，穿上衣，扣扣子，\n小脚丫，穿裤子，穿上袜子穿鞋子。"
+                android:textColor="@color/text_color4"
+                android:textSize="@dimen/text_normal" />
+
+
+        </RelativeLayout>
 
         <cn.timeface.circle.baby.views.HorizontalListView
             android:id="@+id/lv_horizontal"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
             android:layout_alignParentBottom="true"
-            android:background="#BB000000"
-            >
+            android:background="#BB000000">
 
 
         </cn.timeface.circle.baby.views.HorizontalListView>

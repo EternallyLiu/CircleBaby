@@ -8,21 +8,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 
 import com.wechat.photopicker.fragment.BigImageFragment;
 import com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.BabyObj;
+import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.fragments.BabyInfoFragment;
+import cn.timeface.circle.baby.fragments.CardPreviewFragment;
 import cn.timeface.circle.baby.fragments.ChangeBabyFragment;
 import cn.timeface.circle.baby.fragments.ChangeInfoFragment;
 import cn.timeface.circle.baby.fragments.DiaryPreviewFragment;
@@ -54,9 +53,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         open(context, "BigImageFragment", "", bundle);
     }
 
-    public static void openBabyInfoFragment(Context context, BabyObj baby) {
+    public static void openBabyInfoFragment(Context context, String user) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("babyObj", baby);
+        bundle.putString("userObj", user);
         open(context, "BabyInfoFragment", bundle);
     }
 
@@ -93,12 +92,18 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         open(context, "FamilyMemberInfoFragment", bundle);
     }
 
-    public static void openDiaryPreviewFragment(Context context, String time, String content, String url) {
+    public static void openDiaryPreviewFragment(Context context, String time, String content, ImgObj imgObj) {
         Bundle bundle = new Bundle();
-        bundle.putString("time",time);
+        bundle.putString("time", time);
         bundle.putString("content", content);
-        bundle.putString("url",url);
+        bundle.putSerializable("imgObj", imgObj);
         open(context, "DiaryPreviewFragment", bundle);
+    }
+
+    public static void openCardPreviewFragment(Context context, ImgObj imgObj) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("imgObj", imgObj);
+        open(context, "CardPreviewFragment", bundle);
     }
 
 
@@ -244,6 +249,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "DiaryPreviewFragment":
                 return new DiaryPreviewFragment();
+
+            case "CardPreviewFragment":
+                return new CardPreviewFragment();
 
 //            case "SubtractGroupUsersFragment":
 //                return new SubtractGroupUsersFragment();

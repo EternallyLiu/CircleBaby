@@ -55,14 +55,6 @@
                             android:textSize="@dimen/text_medium" />
 
                         <TextView
-                            android:id="@+id/tv_constellation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="水瓶座"
-                            android:textColor="@color/text_color1"
-                            android:textSize="@dimen/text_small" />
-
-                        <TextView
                             android:id="@+id/tv_age"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -162,4 +154,14 @@
                 android:textSize="@dimen/text_medium" />
         </FrameLayout>
     </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_toensurerelation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/bg_color7"
+        android:padding="@dimen/size_12"
+        android:text="快去完善与宝宝的关系"
+        android:visibility="gone" />
 </RelativeLayout>

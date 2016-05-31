@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,17 +62,22 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
                 if (TextUtils.isEmpty(code)) {
                     Toast.makeText(this, "请填写邀请码", Toast.LENGTH_SHORT).show();
                 }
-                apiService.babyAttention(code)
+                apiService.verifiedInviteCode(code)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(userLoginResponse -> {
                             if (userLoginResponse.success()) {
                                 Toast.makeText(this, userLoginResponse.getInfo(), Toast.LENGTH_SHORT).show();
-                                //跳转到关系界面
-
+                                //跳转到确认关系界面
+                                Intent intent = new Intent(this,ConfirmRelationActivity.class);
+                                intent.putExtra("code",code);
+                                startActivity(intent);
+                            }else{
+                                Toast.makeText(this, "邀请码校验失败", Toast.LENGTH_SHORT).show();
                             }
                         }, error -> {
-                            Toast.makeText(this, "邀请码校验失败", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "verifiedInviteCode:");
                         });
+
                 break;
         }
     }

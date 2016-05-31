@@ -70,7 +70,7 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
     }
 
     private void timeRun() {
-        tvGetCode.setClickable(false);
+        tvGetCode.setEnabled(false);
         final int[] sec = {60};
 
         Handler handler = new Handler() {
@@ -81,7 +81,7 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
                     tvGetCode.setText(sec[0] + "秒后再次获取");
                 } else {
                     tvGetCode.setText("获取验证码");
-                    tvGetCode.setClickable(true);
+                    tvGetCode.setEnabled(true);
                     timer.cancel();
                     task.cancel();
                 }
@@ -161,11 +161,11 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
                 s = apiService.verifyCode(mobile, code)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            if (!response.success()) {
-                                Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
+                            if (response.success()) {
+                                ConfirmPasswordActivity.open(RegisterActivity.this, mobile);
+                                finish();
                             }
-                            ConfirmPasswordActivity.open(RegisterActivity.this, mobile);
                             return;
                         }, throwable -> {
                             Log.e(TAG,"verifyCode:");

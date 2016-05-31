@@ -2,7 +2,6 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,14 +25,14 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class MessageFragment extends BaseFragment implements View.OnClickListener {
 
+    @Bind(R.id.tv_title)
+    TextView tvTitle;
     @Bind(R.id.tv_read)
     TextView tvRead;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
-    @Bind(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
     private MessageAdapter adapter;
 
     public MessageFragment() {
@@ -96,7 +95,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         switch (v.getId()) {
             case R.id.rl_message:
                 Msg msg = (Msg) v.getTag(R.string.tag_ex);
-                switch (msg.getType()){
+                switch (msg.getType()) {
                     case 0://系统消息，跳转系统消息列表
                         FragmentBridgeActivity.open(getActivity(), "SystemMessageFragment");
                         break;

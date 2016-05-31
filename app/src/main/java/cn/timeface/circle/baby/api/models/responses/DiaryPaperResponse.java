@@ -3,19 +3,19 @@ package cn.timeface.circle.baby.api.models.responses;
 import java.util.List;
 
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
-import cn.timeface.circle.baby.api.models.objs.Paper;
+import cn.timeface.circle.baby.api.models.objs.TemplateObj;
 
 /**
  * Created by lidonglin on 2016/5/6.
  */
 public class DiaryPaperResponse extends BaseResponse {
-    List<Paper> dataList;
+    List<TemplateObj> dataList;
 
-    public List<Paper> getDataList() {
+    public List<TemplateObj> getDataList() {
         return dataList;
     }
 
-    public void setDataList(List<Paper> dataList) {
+    public void setDataList(List<TemplateObj> dataList) {
         this.dataList = dataList;
     }
 }

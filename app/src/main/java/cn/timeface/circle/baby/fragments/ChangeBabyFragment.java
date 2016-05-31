@@ -21,7 +21,8 @@ import cn.timeface.circle.baby.activities.CreateBabyActivity;
 import cn.timeface.circle.baby.activities.InviteCodeActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
-import cn.timeface.circle.baby.api.models.objs.BabyListInfo;
+import cn.timeface.circle.baby.api.models.objs.BabyObj;
+import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -84,7 +85,7 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
 
     }
 
-    private void setDataList(List<BabyListInfo> dataList) {
+    private void setDataList(List<UserObj> dataList) {
         adapter.getListData().clear();
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
@@ -99,18 +100,16 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_create:
+            case R.id.tv_createbaby:
                 CreateBabyActivity.open(getActivity());
                 break;
-            case R.id.tv_focus:
+            case R.id.tv_focusbaby:
                 InviteCodeActivity.open(getActivity());
                 break;
             case R.id.rl_baby:
-                BabyListInfo info = (BabyListInfo) v.getTag(R.string.tag_ex);
-                FastData.getUserInfo().setBabyObj(info.getBabyInfo());
-                FastData.getUserInfo().setIsCreator(info.getOwner());
+                UserObj info = (UserObj) v.getTag(R.string.tag_ex);
+                FastData.setUserInfo(info);
 
-                TabMainActivity.open(getActivity());
                 getActivity().finish();
                 break;
         }

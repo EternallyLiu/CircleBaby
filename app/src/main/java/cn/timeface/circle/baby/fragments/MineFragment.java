@@ -4,28 +4,29 @@ package cn.timeface.circle.baby.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import android.widget.RelativeLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.LoginActivity;
+import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MineFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class MineFragment extends BaseFragment {
+public class MineFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
 
     private String mParam1;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.ll_set)
+    RelativeLayout llSet;
 
 
     public MineFragment() {
@@ -53,6 +54,9 @@ public class MineFragment extends BaseFragment {
         View view = inflater.inflate(cn.timeface.circle.baby.R.layout.fragment_mine, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+
+        llSet.setOnClickListener(this);
+
         return view;
     }
 
@@ -60,5 +64,23 @@ public class MineFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.ll_set:
+                apiService.logout()
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            FastData.setAccount("");
+                            LoginActivity.open(getActivity());
+                            getActivity().finish();
+                        }, throwable -> {
+                            Log.e(TAG, "logout:");
+                        });
+
+                break;
+        }
     }
 }

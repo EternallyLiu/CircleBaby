@@ -73,12 +73,12 @@ public class RelationshipActivity extends BaseAppCompatActivity implements View.
     }
 
     private void reqData() {
-        apiService.queryBabyFamilyTypeInfoList("")
+        apiService.queryBabyFamilyTypeInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(relationshipResponse -> {
-                        setDataList(relationshipResponse.getDataList());
-                },throwable -> {
-                    Log.e(TAG,"getRelationshipList:",throwable);
+                    setDataList(relationshipResponse.getDataList());
+                }, throwable -> {
+                    Log.e(TAG, "getRelationshipList:", throwable);
                 });
     }
 
@@ -99,15 +99,15 @@ public class RelationshipActivity extends BaseAppCompatActivity implements View.
 
                 apiService.addRelationship(URLEncoder.encode(relationship))
                         .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(relationshipResponse -> {
-                            if (relationshipResponse.success()) {
-                                Relationship relation = new Relationship(relationship, relationshipResponse.getRelationId());
+                        .subscribe(relationIdResponse -> {
+                            if (relationIdResponse.success()) {
+                                Relationship relation = new Relationship(relationship, relationIdResponse.getRelationId());
                                 Intent intent = new Intent();
                                 intent.putExtra("relationship", relation);
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {
-                                Toast.makeText(this, relationshipResponse.getInfo(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, relationIdResponse.getInfo(), Toast.LENGTH_SHORT).show();
                             }
                         }, throwable -> {
                             Log.e(TAG, "addRelationship:", throwable);

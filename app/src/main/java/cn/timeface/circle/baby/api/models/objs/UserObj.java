@@ -112,4 +112,16 @@ public class UserObj extends BaseObj implements Parcelable {
         dest.writeString(this.relationName);
         dest.writeInt(this.isCreator);
     }
+
+    @Override
+    public String toString() {
+        return "UserObj{" +
+                "avatar='" + avatar + '\'' +
+                ", babyObj=" + babyObj +
+                ", nickName='" + nickName + '\'' +
+                ", userId='" + userId + '\'' +
+                ", relationName='" + relationName + '\'' +
+                ", isCreator=" + isCreator +
+                '}';
+    }
 }

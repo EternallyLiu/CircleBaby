@@ -101,6 +101,7 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
                         .subscribe(response -> {
                             if (response.success()) {
                                 SetPasswordActivity.open(ForgetPasswordActivity.this, mobile);
+                                finish();
                                 return;
                             }
                             Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
@@ -116,7 +117,7 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
     }
 
     private void timeRun() {
-        tvGetCode.setClickable(false);
+        tvGetCode.setEnabled(false);
         final int[] sec = {60};
 
         Handler handler = new Handler() {
@@ -127,7 +128,7 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
                     tvGetCode.setText(sec[0] + "秒后再次获取");
                 } else {
                     tvGetCode.setText("获取验证码");
-                    tvGetCode.setClickable(true);
+                    tvGetCode.setEnabled(true);
                     timer.cancel();
                     task.cancel();
                 }

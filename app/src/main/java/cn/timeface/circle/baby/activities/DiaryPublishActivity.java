@@ -5,58 +5,52 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.wechat.photopicker.PickerVideoActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.adapters.PhotoGridAdapter;
-import cn.timeface.circle.baby.adapters.PublishPhotoAdapter;
-import cn.timeface.circle.baby.api.models.PhotoRecode;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.Milestone;
+import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.events.MediaObjEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
+import de.greenrobot.event.Subscribe;
 
-public class DiaryPublishActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class DiaryPublishActivity extends BaseAppCompatActivity implements View.OnClickListener , IEventBus{
 
 
     protected final int PHOTO_COUNT_MAX = 1;
+
+    public final int PICTURE = 0;
+    public final int DIARYTEXT = 1;
     @Bind(R.id.tv_next)
     TextView tvNext;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.tv_time)
-    EditText tvTime;
+    TextView tvTime;
     @Bind(R.id.iv_diary)
     ImageView ivDiary;
     @Bind(R.id.tv_content)
-    EditText tvContent;
+    TextView tvContent;
     @Bind(R.id.ll_single_date)
-
-    private HashSet<String> imageUrls = new HashSet<>();
-    public final int PICTURE = 0;
-    public final int DIARYTEXT = 1;
-
+    LinearLayout llSingleDate;
     private List<ImgObj> selImages = new ArrayList<>();
 
     public static void open(Context context) {
@@ -73,6 +67,13 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvTime.setText(DateUtil.getYear2(System.currentTimeMillis()));
+
+        int width = Remember.getInt("width",0)*3;
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) ivDiary.getLayoutParams();
+        layoutParams.height = width/2;
+        layoutParams.width = width/2;
+        ivDiary.setLayoutParams(layoutParams);
+
 
         tvTime.setOnClickListener(this);
         tvNext.setOnClickListener(this);
@@ -123,12 +124,14 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
                     ToastUtil.showToast("请选择一张图片");
                     return;
                 }
-                if(TextUtils.isEmpty(content)){
+                if (TextUtils.isEmpty(content)) {
                     ToastUtil.showToast("记录宝宝今天的成长吧~");
                     return;
                 }
                 //跳转到预览界面
-                FragmentBridgeActivity.openDiaryPreviewFragment(this,time,content,selImages.get(0).getLocalPath());
+                ImgObj imgObj = selImages.get(0);
+                FragmentBridgeActivity.openDiaryPreviewFragment(this, time, content, imgObj);
+
                 break;
             case R.id.tv_time:
                 Calendar calendar = Calendar.getInstance();
@@ -148,7 +151,12 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
                 FragmentBridgeActivity.openForResult(this, "DiaryTextFragment", DIARYTEXT);
                 break;
         }
-
     }
 
+    @Subscribe
+    public void onEvent(Object event) {
+        if(event instanceof MediaObjEvent){
+            finish();
+        }
+    }
 }

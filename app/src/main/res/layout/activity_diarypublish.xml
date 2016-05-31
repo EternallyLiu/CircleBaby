@@ -8,12 +8,14 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
         android:background="@color/bg_color1"
+        android:minHeight="?attr/actionBarSize"
         android:paddingTop="@dimen/toolbar_padding_top">
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -21,6 +23,7 @@
                 android:text="宝宝日记"
                 android:textColor="@color/text_color1"
                 android:textSize="@dimen/text_large" />
+
             <TextView
                 android:id="@+id/tv_next"
                 android:layout_width="wrap_content"
@@ -30,6 +33,7 @@
                 android:text="下一步"
                 android:textColor="@color/text_color1"
                 android:textSize="@dimen/text_large" />
+
         </FrameLayout>
     </android.support.v7.widget.Toolbar>
 
@@ -40,27 +44,35 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/text_color1"
-            android:text="2016.05.20"
-            android:padding="@dimen/size_12" />
-
         <ImageView
             android:id="@+id/iv_diary"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/bg_qq_phono_guide"
-            />
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/size_12"
+            android:src="@drawable/bg_qq_phono_guide" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/size_12"
+            android:layout_marginRight="@dimen/size_12"
+            android:background="@drawable/shape_dash_bg"
+            android:padding="@dimen/size_12"
+            android:text="编辑日期" />
+
+
         <TextView
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/text_color1"
-            android:text="宝宝今天最让你感动的是什么？"
-            android:padding="@dimen/size_12" />
+            android:layout_marginLeft="@dimen/size_12"
+            android:layout_marginRight="@dimen/size_12"
+            android:background="@drawable/shape_dash_bg"
+            android:padding="@dimen/size_12"
+            android:text="请输入文本内容（60字以内）"
+            android:layout_marginTop="@dimen/size_12"/>
 
     </LinearLayout>
 

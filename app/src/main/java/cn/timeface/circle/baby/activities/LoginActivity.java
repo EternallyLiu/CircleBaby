@@ -19,7 +19,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import de.greenrobot.event.Subscribe;
 
@@ -88,7 +90,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
         String account = FastData.getAccount();
         String password = FastData.getPassword();
-        if(!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)){
+        if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
             login(account, password, 0);
         }
 
@@ -139,33 +141,46 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
             case R.id.btn_sign_in:
                 String account = etPhone.getText().toString().trim();
                 String psw = new AES().encrypt(etPassword.getText().toString().trim().getBytes());
-                s = login(account , psw , 0);
+                s = login(account, psw, 0);
                 break;
         }
         addSubscription(s);
     }
 
 
-    private Subscription login(String account , String psw , int type) {
+    private Subscription login(String account, String psw, int type) {
         Subscription s;
-        s = apiService.login(account, psw , type)
+        s = apiService.login(account, psw, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(userLoginResponse -> {
-                    if(userLoginResponse.success()){
+                    if (userLoginResponse.success()) {
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
                         FastData.setAccount(account);
                         FastData.setPassword(psw);
-//                    Gson gson = new Gson();
-//                    FastData.putString("userObj", gson.toJson(response.getUserInfo()));
 
-//                    FastData.setUserInfo(userLoginResponse.getUserInfo());
+                        Gson gson = new Gson();
+                        FastData.putString("userObj", gson.toJson(userLoginResponse.getUserInfo()));
+//                        String userObj = FastData.getString("userObj", "");
+//                        UserObj o = gson.fromJson(userObj, UserObj.class);
+
+                        FastData.setUserInfo(userLoginResponse.getUserInfo());
                         ToastUtil.showToast(userLoginResponse.getInfo());
-                        startActivity(new Intent(this, TabMainActivity.class));
+
+                        if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
+                            CreateBabyActivity.open(this);
+                        } else {
+                            startActivity(new Intent(this, TabMainActivity.class));
+                        }
+//                     else if (userLoginResponse.getUserInfo().getNickName() == null || TextUtils.isEmpty(userLoginResponse.getUserInfo().getNickName())) {
+//                        Remember.putInt("ensureRelation",0);
+//                        startActivity(new Intent(this, TabMainActivity.class));
+//                    }
+
                     }
 
                 }, throwable -> {
-                    Log.e(TAG,"login:",throwable);
+                    Log.e(TAG, "login:", throwable);
                 });
         return s;
     }

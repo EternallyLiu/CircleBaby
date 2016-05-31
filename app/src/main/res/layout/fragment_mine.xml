@@ -1,15 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bg_color2">
+    android:background="@color/bg_color2"
+    android:orientation="vertical">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
         android:background="@color/bg_color1"
         android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
         android:paddingTop="@dimen/toolbar_padding_top">
 
         <TextView
@@ -26,8 +27,9 @@
         android:id="@+id/ll_mine_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/text_color1"
-        android:layout_marginTop="@dimen/size_24">
+        android:layout_marginTop="@dimen/size_24"
+        android:background="@color/text_color1">
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_avatar"
             android:layout_width="@dimen/size_56"
@@ -40,12 +42,12 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="小宝的麻麻"
-            android:background="@color/text_color1"
-            android:textSize="@dimen/text_medium"
-            android:layout_toRightOf="@+id/iv_avatar"
             android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:background="@color/text_color1"
+            android:text="小宝的麻麻"
+            android:textSize="@dimen/text_medium"
 
             />
 
@@ -55,8 +57,9 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_12"
-            android:src="@drawable/mine_data_go"/>
+            android:src="@drawable/mine_data_go" />
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -65,8 +68,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/bg_color6"
-        android:layout_marginTop="@dimen/size_24"/>
+        android:layout_marginTop="@dimen/size_24"
+        android:background="@color/bg_color6" />
 
     <RelativeLayout
         android:id="@+id/ll_mine_product"
@@ -75,27 +78,30 @@
         android:background="@color/text_color1"
 
         android:padding="@dimen/size_12">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="我的作品"
-            android:background="@color/text_color1"
-            android:textSize="@dimen/text_medium"
             android:layout_centerVertical="true"
-            />
+            android:layout_gravity="center_vertical"
+            android:background="@color/text_color1"
+            android:text="我的作品"
+            android:textSize="@dimen/text_medium" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_12"
-            android:src="@drawable/mine_data_go"/>
+            android:src="@drawable/mine_data_go" />
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
+
     <RelativeLayout
         android:id="@+id/ll_mine_order"
         android:layout_width="match_parent"
@@ -103,27 +109,30 @@
         android:background="@color/text_color1"
 
         android:padding="@dimen/size_12">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="我的订单"
-            android:background="@color/text_color1"
-            android:textSize="@dimen/text_medium"
             android:layout_centerVertical="true"
-            />
+            android:layout_gravity="center_vertical"
+            android:background="@color/text_color1"
+            android:text="我的订单"
+            android:textSize="@dimen/text_medium" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_12"
-            android:src="@drawable/mine_data_go"/>
+            android:src="@drawable/mine_data_go" />
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
+
     <RelativeLayout
         android:id="@+id/ll_mine_car"
         android:layout_width="match_parent"
@@ -131,27 +140,30 @@
         android:background="@color/text_color1"
 
         android:padding="@dimen/size_12">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="我的印刷车"
-            android:background="@color/text_color1"
-            android:textSize="@dimen/text_medium"
             android:layout_centerVertical="true"
-            />
+            android:layout_gravity="center_vertical"
+            android:background="@color/text_color1"
+            android:text="我的印刷车"
+            android:textSize="@dimen/text_medium" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_12"
-            android:src="@drawable/mine_data_go"/>
+            android:src="@drawable/mine_data_go" />
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
+
     <RelativeLayout
         android:id="@+id/ll_set"
         android:layout_width="match_parent"
@@ -159,23 +171,25 @@
         android:background="@color/text_color1"
 
         android:padding="@dimen/size_12">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="设置"
-            android:background="@color/text_color1"
-            android:textSize="@dimen/text_medium"
             android:layout_centerVertical="true"
-            />
+            android:layout_gravity="center_vertical"
+            android:background="@color/text_color1"
+            android:text="设置"
+            android:textSize="@dimen/text_medium" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_12"
-            android:src="@drawable/mine_data_go"/>
+            android:src="@drawable/mine_data_go" />
     </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

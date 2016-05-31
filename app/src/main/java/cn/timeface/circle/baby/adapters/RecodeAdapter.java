@@ -3,11 +3,13 @@ package cn.timeface.circle.baby.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,24 +22,29 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.circle.baby.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.Record;
+import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.RecordObj;
+import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by JieGuo on 1/28/16.
  */
-public class RecodeAdapter extends BaseRecyclerAdapter<Record> {
+public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
     private View.OnClickListener onClickListener;
     int normalColor;
     public static Context context;
     private ViewHolder holder;
-    public List<Record> listData;
+    public List<TimeLineObj> listData;
 
-    public RecodeAdapter(Context mContext, List<Record> listData) {
+    public RecodeAdapter(Context mContext, List<TimeLineObj> listData) {
         super(mContext, listData);
         this.listData = listData;
         this.context = mContext;
@@ -58,35 +65,35 @@ public class RecodeAdapter extends BaseRecyclerAdapter<Record> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = ((ViewHolder) viewHolder);
-        Record record = getItem(position);
-//        GlideUtil.displayImage(record.getRecordObj().getUserInfo().getAvatar(), holder.ivAvatar);
-        holder.tvContent.setText(record.getRecordObj().getContent());
+        TimeLineObj item = getItem(position);
+        holder.tvContent.setText(item.getContent());
+        holder.tvAuthor.setText(item.getAuthor().getNickName());
+        holder.tvDate.setText(DateUtil.getTime2(item.getDate()));
 
-        if (record.getRecordObj().getImgObjList().size() == 1) {
+        if (item.getMediaList().size() == 1) {
             holder.gv.setVisibility(View.GONE);
-            holder.rflPicture.setVisibility(View.VISIBLE);
-            String url = record.getRecordObj().getImgObjList().get(0).getUrl();
+            holder.ivCover.setVisibility(View.VISIBLE);
+            String url = item.getMediaList().get(0).getImgUrl();
             GlideUtil.displayImage(url, holder.ivCover);
-//            holder.tvTag.setText("共" + record.getRecordObj().getImgObjList().size() + "张");
         } else {
-            holder.rflPicture.setVisibility(View.GONE);
+            holder.ivCover.setVisibility(View.GONE);
         }
 
-        if (record.getRecordObj().getImgObjList().size() > 1) {
+        if (item.getMediaList().size() > 1) {
             holder.gv.setVisibility(View.VISIBLE);
-            List<ImgObj> imgObjList = record.getRecordObj().getImgObjList();
+            List<MediaObj> imgObjList = item.getMediaList();
             ArrayList<String> urls = new ArrayList<>();
-            for (ImgObj imgObj : imgObjList) {
-                urls.add(imgObj.getUrl());
+            for (MediaObj mediaObj : imgObjList) {
+                urls.add(mediaObj.getImgUrl());
             }
             MyAdapter myAdapter = new MyAdapter(context, urls);
             holder.gv.setAdapter(myAdapter);
             ViewGroup.LayoutParams layoutParams = holder.gv.getLayoutParams();
             layoutParams.height = Remember.getInt("width", 0);
-            if (record.getRecordObj().getImgObjList().size() > 3) {
+            if (item.getMediaList().size() > 3) {
                 layoutParams.height = Remember.getInt("width", 0) * 2;
             }
-            if (record.getRecordObj().getImgObjList().size() > 6) {
+            if (item.getMediaList().size() > 6) {
                 layoutParams.height = Remember.getInt("width", 0) * 3;
             }
             holder.gv.setLayoutParams(layoutParams);
@@ -96,63 +103,68 @@ public class RecodeAdapter extends BaseRecyclerAdapter<Record> {
         }
 
         holder.onClickListener = onClickListener;
-        holder.itemView.setTag(R.string.tag_ex, record.getRecordObj());
-        holder.setRecordObj(record.getRecordObj());
+        holder.itemView.setTag(R.string.tag_ex, item);
+        holder.setRecordObj(item);
 
 
-//        if (record.getGoodList().size() > 0) {
-//            holder.extrasHolder.flListUserBar.setVisibility(View.VISIBLE);
-//            holder.extrasHolder.tvLikeCount.setText(record.getGoodList().size() + "人赞");
-//        } else {
-//            holder.extrasHolder.flListUserBar.setVisibility(View.GONE);
-//        }
-//        int comments = record.getCommentList().size() > 3 ? 3 : record.getCommentList().size();
-//        for (int i = 0; i < comments; i++) {
-//            CommentObj commentObj = record.getCommentList().get(i);
-//            holder.extrasHolder.llCommentWrapper.addView(initCommentItemView(commentObj));
-//        }
-//
-//        if (record.getCommentList().size() > 3) {
-//            holder.extrasHolder.tvMoreComment.setVisibility(View.VISIBLE);
-//        } else {
-//            holder.extrasHolder.tvMoreComment.setVisibility(View.GONE);
-//        }
-//
-//        for (UserObj u : record.getGoodList()) {
-//            ImageView imageView = initPraiseItem();
-//            imageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
+        if (item.getLikeCount() > 0) {
+            holder.hsv.setVisibility(View.VISIBLE);
+        } else {
+            holder.hsv.setVisibility(View.GONE);
+        }
+        if(item.getCommentCount() >0){
+            int comments = item.getCommentCount() > 3 ? 3 : item.getCommentCount();
+            for (int i = 0; i < comments; i++) {
+                CommentObj commentObj = item.getCommentList().get(i);
+                holder.llCommentWrapper.addView(initCommentItemView(commentObj));
+            }
+        }else{
+            holder.llCommentWrapper.setVisibility(View.GONE);
+        }
+
+
+
+        if (item.getCommentCount() > 3) {
+            holder.tvMoreComment.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvMoreComment.setVisibility(View.GONE);
+        }
+
+        for (UserObj u : item.getLikeList()) {
+            ImageView imageView = initPraiseItem();
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 //                    FragmentBridgeActivity.openUserInfoFragment(v.getContext(), u);
-//                }
-//            });
-//            holder.extrasHolder.llGoodListUsersBar.addView(imageView);
-//            GlideUtil.displayImage(u.getAvatar(), imageView);
-//        }
+                }
+            });
+            holder.llGoodListUsersBar.addView(imageView);
+            GlideUtil.displayImage(u.getAvatar(), imageView);
+        }
     }
 
 
-//    private static ImageView initPraiseItem() {
-//        CircleImageView imageView = new CircleImageView(context);
-//        imageView.setImageResource(R.color.gray_pressed);
-//        int width = context.getResources().getDimensionPixelSize(R.dimen.size_36);
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
-//        int margin = context.getResources().getDimensionPixelSize(R.dimen.size_2);
-//        params.setMargins(margin, margin, margin, margin);
-//        imageView.setLayoutParams(params);
-//        return imageView;
-//    }
+    private static ImageView initPraiseItem() {
+        CircleImageView imageView = new CircleImageView(context);
+        imageView.setImageResource(R.color.gray_pressed);
+        int width = context.getResources().getDimensionPixelSize(R.dimen.size_36);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
+        int margin = context.getResources().getDimensionPixelSize(R.dimen.size_2);
+        params.setMargins(margin, margin, margin, margin);
+        imageView.setLayoutParams(params);
+        return imageView;
+    }
 
-//    private TextView initCommentItemView(CommentObj comment) {
-//        TextView textView = new TextView(context);
-//        int size = context.getResources().getDimensionPixelSize(R.dimen.size_2);
-//        textView.setPadding(size, size, size, size);
-//        textView.setText(Html.fromHtml("<font color='#00b6f8'>name</font>".replace("name", comment.getUserinfo().getUserName()) + ":" + comment.getContent()));
-//        textView.setTextColor(context.getResources().getColorStateList(R.color.text_color6));
-////        textView.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_small_4));
-//        textView.setLineSpacing(0, 1.2f);
-//        return textView;
-//    }
+    private TextView initCommentItemView(CommentObj comment) {
+        TextView textView = new TextView(context);
+        int size = context.getResources().getDimensionPixelSize(R.dimen.size_2);
+        textView.setPadding(size, size, size, size);
+        textView.setText(Html.fromHtml("<font color='#00b6f8'>name</font>".replace("name", comment.getUserInfo().getNickName()) + ":" + comment.getContent()));
+        textView.setTextColor(context.getResources().getColorStateList(R.color.text_color3));
+//        textView.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_small_4));
+        textView.setLineSpacing(0, 1.2f);
+        return textView;
+    }
 
     @Override
     public int getItemType(int position) {
@@ -165,26 +177,26 @@ public class RecodeAdapter extends BaseRecyclerAdapter<Record> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.tv_day)
-        TextView tvDay;
-        @Bind(R.id.tv_year)
-        TextView tvYear;
-        @Bind(R.id.tv_jieqi)
-        TextView tvJieqi;
-        @Bind(R.id.tv_age)
-        TextView tvAge;
-        @Bind(R.id.gv)
-        GridView gv;
-        @Bind(R.id.fl_photo)
-        FrameLayout flPhoto;
-        @Bind(R.id.iv_cover)
-        ImageView ivCover;
-        @Bind(R.id.rfl_picture)
-        FrameLayout rflPicture;
         @Bind(R.id.tv_content)
         TextView tvContent;
+        @Bind(R.id.gv)
+        GridView gv;
+        @Bind(R.id.tv_author)
+        TextView tvAuthor;
+        @Bind(R.id.tv_date)
+        TextView tvDate;
+        @Bind(R.id.ll_good_list_users_bar)
+        LinearLayout llGoodListUsersBar;
+        @Bind(R.id.hsv)
+        HorizontalScrollView hsv;
+        @Bind(R.id.ll_comment_wrapper)
+        LinearLayout llCommentWrapper;
+        @Bind(R.id.tv_more_comment)
+        TextView tvMoreComment;
         @Bind(R.id.ll_habit_detail)
         LinearLayout llHabitDetail;
+        @Bind(R.id.iv_cover)
+        ImageView ivCover;
 
         View.OnClickListener onClickListener = null;
 
@@ -202,9 +214,9 @@ public class RecodeAdapter extends BaseRecyclerAdapter<Record> {
             }
         }
 
-        public void setRecordObj(RecordObj recordObj) {
+        public void setRecordObj(TimeLineObj timeLineObj) {
 //            ivCover.setTag(R.string.tag_ex, recordObj);
-            itemView.setTag(R.string.tag_ex, recordObj);
+            itemView.setTag(R.string.tag_ex, timeLineObj);
         }
     }
 

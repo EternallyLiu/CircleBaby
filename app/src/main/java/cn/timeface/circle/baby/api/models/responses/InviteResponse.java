@@ -1,9 +1,6 @@
 package cn.timeface.circle.baby.api.models.responses;
 
-import java.util.List;
-
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
-import cn.timeface.circle.baby.api.models.objs.BabyListInfo;
 
 /**
  * Created by lidonglin on 2016/5/6.

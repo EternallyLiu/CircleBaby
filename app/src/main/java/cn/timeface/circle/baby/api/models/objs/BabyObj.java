@@ -9,7 +9,7 @@ public class BabyObj extends BaseObj {
     String age;
     String avatar;
     int babyId;
-    int bithday;
+    long bithday;
     String blood;
     String constellation;
     int gender;
@@ -18,7 +18,7 @@ public class BabyObj extends BaseObj {
     public BabyObj() {
     }
 
-    public BabyObj(String age, String avatar, int babyId, int bithday, String blood, String constellation, int gender, String name) {
+    public BabyObj(String age, String avatar, int babyId, long bithday, String blood, String constellation, int gender, String name) {
         this.age = age;
         this.avatar = avatar;
         this.babyId = babyId;
@@ -53,11 +53,11 @@ public class BabyObj extends BaseObj {
         this.babyId = babyId;
     }
 
-    public int getBithday() {
+    public long getBithday() {
         return bithday;
     }
 
-    public void setBithday(int bithday) {
+    public void setBithday(long bithday) {
         this.bithday = bithday;
     }
 
@@ -91,5 +91,19 @@ public class BabyObj extends BaseObj {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "BabyObj{" +
+                "age='" + age + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", babyId=" + babyId +
+                ", bithday=" + bithday +
+                ", blood='" + blood + '\'' +
+                ", constellation='" + constellation + '\'' +
+                ", gender=" + gender +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

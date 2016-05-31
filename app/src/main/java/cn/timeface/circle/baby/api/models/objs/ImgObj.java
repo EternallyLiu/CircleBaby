@@ -27,6 +27,7 @@ import java.util.List;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.api.models.base.BaseObj;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ImageUtil;
 
@@ -37,7 +38,7 @@ import cn.timeface.circle.baby.utils.ImageUtil;
  * @TODO
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class ImgObj implements Parcelable {
+public class ImgObj extends BaseObj implements Parcelable {
 
     @JsonIgnore
     public static final int STATE_UPLOAD_COMPLETED = 5;

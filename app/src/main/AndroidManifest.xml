@@ -112,6 +112,7 @@
         <activity android:name=".activities.SelectPublishActivity"/>
         <activity android:name=".activities.PublishActivity"/>
         <activity android:name=".activities.DiaryPublishActivity"/>
+        <activity android:name=".activities.CardPublishActivity"/>
         <activity android:name=".activities.MileStoneActivity"/>
         <activity android:name=".activities.SelectTimeActivity"/>
         <activity android:name="com.wechat.photopicker.BigImageShowActivity"/>

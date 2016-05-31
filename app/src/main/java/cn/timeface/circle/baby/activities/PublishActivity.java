@@ -4,13 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +20,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,11 +33,19 @@ import cn.timeface.circle.baby.adapters.PhotoGridAdapter;
 import cn.timeface.circle.baby.adapters.PublishPhotoAdapter;
 import cn.timeface.circle.baby.api.models.PhotoRecode;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
+import cn.timeface.circle.baby.api.models.objs.PublishObj;
+import cn.timeface.circle.baby.events.MediaObjEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
+import de.greenrobot.event.Subscribe;
 
-public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
     public static final int NOMAL = 0;
     public static final int PHOTO = 1;
@@ -67,6 +75,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     LinearLayout llSingleDate;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
+    @Bind(R.id.iv_card)
+    ImageView ivCard;
     private PhotoGridAdapter adapter;
     private HashSet<String> imageUrls = new HashSet<>();
     public final int PICTURE = 0;
@@ -84,6 +94,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private List<String> titles = new ArrayList<>();
     private List<ImgObj>[] imagelLists;
     private PublishPhotoAdapter publishPhotoAdapter;
+    private int type;
+    private MediaObj mediaObj;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -116,6 +128,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     case VIDEO:
                         selectVideos();
                         break;
+                    case DIALY:
+                        DiaryPublishActivity.open(this);
+                        break;
+                    case CARD:
+                        CardPublishActivity.open(this);
+                        break;
 
                 }
 
@@ -129,19 +147,20 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
         switch (publishType) {
             case PHOTO:
+                type = 0;
                 selectImages();
                 break;
             case VIDEO:
+                type = 1;
                 selectVideos();
                 break;
             case DIALY:
-                PhotoSelectionActivity.openForResult(
-                        this,
-                        "选择照片",
-                        selImages,
-                        1,
-                        false,
-                        PICTURE_DIALY, false);
+                type = 2;
+                DiaryPublishActivity.open(this);
+                break;
+            case CARD:
+                type = 3;
+                CardPublishActivity.open(this);
                 break;
         }
     }
@@ -149,7 +168,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private void selectImages() {
 //        Intent intent = new Intent(this, PickerPhotoActivity.class);
 //        startActivityForResult(intent, PICTURE);
-
         PhotoSelectionActivity.openForResult(
                 this,
                 "选择照片",
@@ -202,7 +220,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
                         contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
                         contentRecyclerView.setAdapter(publishPhotoAdapter);
-                    }else{
+                    } else {
                         llSingleDate.setVisibility(View.VISIBLE);
                         contentRecyclerView.setVisibility(View.GONE);
 
@@ -214,11 +232,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     }
 
 
-
                     break;
                 case MILESTONE:
                     milestone = (Milestone) data.getSerializableExtra("milestone");
                     tvMileStone.setText(milestone.getMilestone());
+                    if (photoRecodes.size() > 0) {
+                        photoRecodes.get(0).setMileStone(milestone);
+                    }
                     break;
                 case TIME:
                     String time = data.getStringExtra("time");
@@ -226,22 +246,11 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     break;
                 case PHOTO_RECORD_DETAIL:
                     photoRecodes = data.getParcelableArrayListExtra("result_photo_record_detail");
-                    if(publishPhotoAdapter == null){
+                    if (publishPhotoAdapter == null) {
                         publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
                     }
                     publishPhotoAdapter.setListData(photoRecodes);
                     publishPhotoAdapter.notifyDataSetChanged();
-                    break;
-                case PICTURE_DIALY:
-                    selImages = data.getParcelableArrayListExtra("result_select_image_list");
-                    String path = selImages.get(0).getLocalPath();
-
-                    PhotoEditActivity.open(this,path);
-
-                    break;
-
-                case PICTURE_CARD:
-
                     break;
                 case VIDEO_SELECT:
 
@@ -261,12 +270,16 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_next:
-
-                Gson gson = new Gson();
-                String s = gson.toJson(photoRecodes);
-                System.out.println(s);
-
-//                postRecord();
+                switch (type) {
+                    case 0:
+                    case 1:
+                        postRecord();
+                        break;
+                    case 2:
+                    case 3:
+                        publishDiary();
+                        break;
+                }
                 break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, MileStoneActivity.class);
@@ -280,6 +293,41 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
     }
 
+    //发布日记
+    private void publishDiary() {
+        String content = etContent.getText().toString();
+        if (TextUtils.isEmpty(content)) {
+            ToastUtil.showToast("发点文字吧~");
+            return;
+        }
+        String t = tvTime.getText().toString();
+        long time = DateUtil.getTime(t, "yyyy.MM.dd");
+
+        List<PublishObj> datalist = new ArrayList<>();
+        List<MediaObj> mediaObjs = new ArrayList<>();
+        mediaObjs.add(mediaObj);
+
+        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone.getId(), time);
+        datalist.add(publishObj);
+
+        Gson gson = new Gson();
+        String s = gson.toJson(datalist);
+
+        apiService.publish(URLEncoder.encode(s), type)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    ToastUtil.showToast(response.getInfo());
+                    if (response.success()) {
+                        finish();
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "publish:");
+                });
+
+    }
+
+
+    //发布照片、视频
     private void postRecord() {
         String value = etContent.getText().toString();
 
@@ -287,22 +335,53 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             Toast.makeText(this, "发点文字或图片吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        this.finish();
-
 
         //发布
+        List<PublishObj> datalist = new ArrayList<>();
+        for (PhotoRecode photoRecode : photoRecodes) {
+            String t = photoRecode.getTitle();
+            long time = DateUtil.getTime(t, "yyyy.MM.dd");
+            String content = photoRecode.getContent();
+            Milestone mileStone = photoRecode.getMileStone();
+            int mileStoneId = mileStone.getId();
+            List<ImgObj> imgObjList = photoRecode.getImgObjList();
+            List<MediaObj> mediaObjs = new ArrayList<>();
+            for (ImgObj img : imgObjList) {
+                MediaObj mediaObj = new MediaObj(img.getUrl(), img.getLocalPath(), DateUtil.getTime(img.getDate(), "yyyy.MM.dd"));
+                mediaObjs.add(mediaObj);
+            }
+            PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, time);
+            datalist.add(publishObj);
+        }
+        Gson gson = new Gson();
+        String s = gson.toJson(datalist);
 
-//        Subscription s = apiService.postRecord(value, 0, 0, 0, habitObj.getId())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(response -> {
-//                    Log.d(TAG, "postRecord: post ok");
-//
-//                    doUploadService2Upload(response.getInfo());
-//                    Toast.makeText(getActivity(), "记录成功", Toast.LENGTH_SHORT).show();
-//                }, throwable -> {
-//                    Log.e(TAG, "postRecord: ", throwable);
-//                });
-//        addSubscription(s);
+        apiService.publish(URLEncoder.encode(s), type)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    ToastUtil.showToast(response.getInfo());
+                    if (response.success()) {
+                        finish();
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "publish:");
+                });
+
+
+    }
+
+    @Subscribe
+    public void onEvent(Object event) {
+        if (event instanceof MediaObjEvent) {
+            gvGridView.setVisibility(View.GONE);
+            mediaObj = ((MediaObjEvent) event).getMediaObj();
+            GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 }

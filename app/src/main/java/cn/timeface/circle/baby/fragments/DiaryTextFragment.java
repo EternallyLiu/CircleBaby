@@ -64,12 +64,12 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void reqData() {
-        apiService.getTextList()
+        apiService.getDiaryDefaultTextList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(diaryTextResponse -> {
                     setDataList(diaryTextResponse.getDataList());
                 }, throwable -> {
-                    Log.e(TAG, "getTextList:");
+                    Log.e(TAG, "getDiaryDefaultTextList:");
                 });
 
     }
@@ -93,10 +93,11 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
                     ToastUtil.showToast("记录宝宝今天的成长吧~");
                     return;
                 }
-                if(content.length()>60){
-                    ToastUtil.showToast("日记不能超过60字哦~");
+                if(content.length()>54){
+                    ToastUtil.showToast("日记不能超过54个字哦~");
                     return;
                 }
+                System.out.println(etContent.getText());
                 Intent intent = new Intent();
                 intent.putExtra("content",content);
                 getActivity().setResult(Activity.RESULT_OK,intent);

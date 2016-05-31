@@ -122,7 +122,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     return;
                 }
                 long time = DateUtil.getTime(birthday, "yyyy-MM-dd");
-                apiService.createBaby(time, gender, imagePath, URLEncoder.encode(name), relationship.getRelationId())
+                apiService.createBaby(time, gender, objectKey, URLEncoder.encode(name), relationship.getRelationId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(userLoginResponse -> {
                             FastData.setUserInfo(userLoginResponse.getUserInfo());

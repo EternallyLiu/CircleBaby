@@ -1,7 +1,7 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.media.ThumbnailUtils;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,16 +14,25 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.RecodeAdapter;
+import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
+import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
+import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -39,8 +48,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     CircleImageView ivAvatar;
     @Bind(R.id.tv_name)
     TextView tvName;
-    @Bind(R.id.tv_constellation)
-    TextView tvConstellation;
     @Bind(R.id.tv_age)
     TextView tvAge;
     @Bind(R.id.ll_mine_info)
@@ -55,11 +62,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     RecyclerView contentRecyclerView;
     @Bind(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.tv_toensurerelation)
+    TextView tvToensurerelation;
 
-
+    private int currentPage = 1;
     private String mParam1;
-    private RecodeAdapter adapter;
+    private TimeLineGroupAdapter adapter;
     public BabyInfoResponse babyInfoResponse;
+    private IPTRRecyclerListener ptrListener;
+    private TFPTRRecyclerViewHelper tfptrListViewHelper;
 
 
     public HomeFragment() {
@@ -88,13 +99,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        setupPTR();
+        initData();
 
-        adapter = new RecodeAdapter(getActivity(), new ArrayList<>());
-        adapter.setOnClickListener(this);
+        adapter = new TimeLineGroupAdapter(getActivity(), new ArrayList<>());
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         contentRecyclerView.setAdapter(adapter);
-
-        reqBabyInfo();
 
         tvAlbum.setOnClickListener(this);
         tvMilestone.setOnClickListener(this);
@@ -102,24 +112,81 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         tvChangebaby.setOnClickListener(this);
         tvMessage.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);
+        tvToensurerelation.setOnClickListener(this);
+
+        reqData(1);
 
         return view;
     }
 
-    private void reqBabyInfo() {
-        apiService.queryBabyInfoDetail(FastData.getBabyId())
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(babyInfoResponse -> {
-                    this.babyInfoResponse = babyInfoResponse;
-                    tvName.setText(babyInfoResponse.getBabyInfo().getName());
-                    tvConstellation.setText(babyInfoResponse.getBabyInfo().getConstellation());
-                    tvAge.setText(babyInfoResponse.getBabyInfo().getAge());
+    private void setupPTR() {
+        ptrListener = new IPTRRecyclerListener() {
+            @Override
+            public void onTFPullDownToRefresh(View refreshView) {
+                currentPage = 1;
+                reqData(currentPage);
+            }
 
-                },throwable -> {
-                    Log.e(TAG,"queryBabyInfo:");
+            @Override
+            public void onTFPullUpToRefresh(View refreshView) {
+                reqData(++currentPage);
+            }
+
+            @Override
+            public void onScrollUp(int firstVisibleItem) {
+            }
+
+            @Override
+            public void onScrollDown(int firstVisibleItem) {
+            }
+        };
+
+        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
+                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
+                .tfPtrListener(ptrListener);
+        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).sizeResId(R.dimen.view_space_normal).build());
+    }
+
+    private void reqData(int currentPage) {
+        apiService.timeline(currentPage, 10)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(timelineResponse -> {
+                    tfptrListViewHelper.finishTFPTRRefresh();
+                    ToastUtil.showToast(timelineResponse.getInfo());
+                    if(timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()){
+                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
+                    }
+                    setDataList(timelineResponse.getDataList());
+                }, throwable -> {
+                    Log.e(TAG, "timeline:");
+                    tfptrListViewHelper.finishTFPTRRefresh();
                 });
 
+
     }
+
+    private void setDataList(List<TimeLineGroupObj> dataList) {
+        if(currentPage == 1){
+            adapter.setListData(dataList);
+        }else{
+            adapter.getListData().addAll(dataList);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        currentPage = 1;
+        reqData(currentPage);
+    }
+
+    private void initData() {
+        tvName.setText(FastData.getBabyName());
+        tvAge.setText(FastData.getBabyAge());
+        GlideUtil.displayImage(FastData.getBabyAvatar(), ivAvatar);
+    }
+
 
     @Override
     public void onDestroyView() {
@@ -129,18 +196,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_changebaby:
-                FragmentBridgeActivity.open(getActivity(),"ChangeBabyFragment");
+                FragmentBridgeActivity.open(getActivity(), "ChangeBabyFragment");
                 break;
             case R.id.tv_message:
-                FragmentBridgeActivity.open(getActivity(),"MessageFragment");
+                FragmentBridgeActivity.open(getActivity(), "MessageFragment");
                 break;
             case R.id.tv_relative:
-                FragmentBridgeActivity.open(getActivity(),"FamilyMemberFragment");
+                FragmentBridgeActivity.open(getActivity(), "FamilyMemberFragment");
                 break;
             case R.id.iv_avatar:
-                FragmentBridgeActivity.openBabyInfoFragment(getActivity(),babyInfoResponse.getBabyInfo());
+                FragmentBridgeActivity.openBabyInfoFragment(getActivity(), FastData.getString("userObj", ""));
+                break;
+            case R.id.tv_toensurerelation:
+
                 break;
         }
     }

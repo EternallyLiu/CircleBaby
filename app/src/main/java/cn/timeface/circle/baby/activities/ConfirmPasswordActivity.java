@@ -68,11 +68,13 @@ public class ConfirmPasswordActivity extends BaseAppCompatActivity {
                     String name = etNickname.getText().toString().trim();
                     s = apiService.register(account, URLEncoder.encode(name), new AES().encrypt(pwd.getBytes()))
                             .compose(SchedulersCompat.applyIoSchedulers())
-                            .subscribe(response -> {
-                                Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
-                                FastData.setUserInfo(response.getUserInfo());
-                                CreateBabyActivity.open(ConfirmPasswordActivity.this);
-                                finish();
+                            .subscribe(registerResponse -> {
+                                Toast.makeText(this, registerResponse.getInfo(), Toast.LENGTH_SHORT).show();
+                                if(registerResponse.success()){
+                                    FastData.setUserInfo(registerResponse.getUserInfo());
+                                    CreateBabyActivity.open(ConfirmPasswordActivity.this);
+                                    finish();
+                                }
                                 return;
                             }, throwable -> {
                                 Log.e(TAG,"register:",throwable);

@@ -14,19 +14,20 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.BabyListInfo;
+import cn.timeface.circle.baby.api.models.objs.BabyObj;
+import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by lidonglin on 2016/5/4.
  */
-public class ChangebabyAdapter extends BaseRecyclerAdapter<BabyListInfo> {
+public class ChangebabyAdapter extends BaseRecyclerAdapter<UserObj> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
 
-    public ChangebabyAdapter(Context mContext, List<BabyListInfo> listData) {
+    public ChangebabyAdapter(Context mContext, List<UserObj> listData) {
         super(mContext, listData);
 
     }
@@ -45,12 +46,12 @@ public class ChangebabyAdapter extends BaseRecyclerAdapter<BabyListInfo> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = (ViewHolder) viewHolder;
-        BabyListInfo info = getItem(position);
+        UserObj info = getItem(position);
         holder.onClickListener = onClickListener;
         holder.info = info;
-        GlideUtil.displayImage(info.getBabyInfo().getAvatar(), holder.ivAvatar);
-        holder.tvName.setText(info.getBabyInfo().getName());
-        holder.tvAge.setText(info.getBabyInfo().getAge());
+        GlideUtil.displayImage(info.getBabyObj().getAvatar(), holder.ivAvatar);
+        holder.tvName.setText(info.getBabyObj().getName());
+        holder.tvAge.setText(info.getBabyObj().getAge());
 
     }
 
@@ -76,7 +77,7 @@ public class ChangebabyAdapter extends BaseRecyclerAdapter<BabyListInfo> {
         RelativeLayout rlBaby;
 
         View.OnClickListener onClickListener = null;
-        BabyListInfo info;
+        UserObj info;
 
         ViewHolder(View view) {
             super(view);

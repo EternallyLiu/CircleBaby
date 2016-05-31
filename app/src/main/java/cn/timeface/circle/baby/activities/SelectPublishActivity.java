@@ -78,11 +78,13 @@ public class SelectPublishActivity extends BaseAppCompatActivity implements View
                 break;
             case R.id.tv_diary:
                 PublishActivity.open(this , PublishActivity.DIALY);
+//                DiaryPublishActivity.open(this);
                 break;
             case R.id.tv_card:
                 PublishActivity.open(this , PublishActivity.CARD);
+//                CardPublishActivity.open(this);
                 break;
         }
-
+        finish();
     }
 }

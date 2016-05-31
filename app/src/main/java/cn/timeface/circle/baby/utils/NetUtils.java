@@ -22,7 +22,7 @@ public class NetUtils {
         headers.put("LOC", "CN");
         headers.put("OUTFLAG", "JSON");
         headers.put("CHANNEL", ChannelUtil.getChannel(App.getInstance()));
-        headers.put("USERID", FastData.getUserId() + "");
+        headers.put("USERID", FastData.getUserId());
         headers.put("BABYID", FastData.getBabyId() + "");
         headers.put("DEVICEID", new DeviceUuidFactory(App.getInstance()).getDeviceId());
         headers.put("TOKEN", FastData.getUserToken());

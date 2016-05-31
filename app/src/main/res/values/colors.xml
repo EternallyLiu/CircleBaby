@@ -7,6 +7,7 @@
     <color name="black_overlay">#66000000</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
+    <color name="trans">#00000000</color>
 
     <color name="tran_50_white">#7fffffff</color>
     <color name="tran_30_black">#4C000000</color>
@@ -60,8 +61,10 @@
     <color name="text_color1">#ffffff</color>
     <color name="text_color2">#9D9D9D</color>
     <color name="text_color3">#3A3A3A</color>
+    <color name="text_color4">#010110</color>
     <color name="text_color24">#757575</color>
 
     <color name="main_blue">#039ae3</color>
     <color name="gray_normal">#666667</color>
+    <color name="gray_pressed">#b5b5b6</color>
 </resources>

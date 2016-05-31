@@ -9,25 +9,19 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
  */
 public class TimeLineObj extends BaseObj {
 
-    String age;                 //年龄描述  2岁2个月9天
-    UserObj author;             //作者
-    int commentCount;           //评论个数
-    long date;                  //时间戳
-    String dateEx;              //谷雨，周日上午之类
-    int like;                   //是否已赞  0 否 1 是
-    int likeCount;              //赞的个数
-    List<MediaObj> mediaList;   //图片列表
-    String milestone;           //里程碑
+    UserObj author;                 //作者
+    int commentCount;               //评论个数
+    List<CommentObj> commentList;   //评论列表
+    long date;                      //时间戳
+    int like;                       //是否已赞  0 否 1 是
+    int likeCount;                  //赞的个数
+    List<MediaObj> mediaList;       //图片列表
+    List<UserObj> likeList;         //赞用户列表
+    String milestone;               //里程碑
     int timeId;
-    int type;                   //0 照片 1 视频 2 日记 3 识图
+    int type;                       //0 照片 1 视频 2 日记 3 识图
+    String content;                 //时光内容
 
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
 
     public UserObj getAuthor() {
         return author;
@@ -51,14 +45,6 @@ public class TimeLineObj extends BaseObj {
 
     public void setDate(long date) {
         this.date = date;
-    }
-
-    public String getDateEx() {
-        return dateEx;
-    }
-
-    public void setDateEx(String dateEx) {
-        this.dateEx = dateEx;
     }
 
     public int getLike() {
@@ -107,5 +93,29 @@ public class TimeLineObj extends BaseObj {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public List<CommentObj> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<CommentObj> commentList) {
+        this.commentList = commentList;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public List<UserObj> getLikeList() {
+        return likeList;
+    }
+
+    public void setLikeList(List<UserObj> likeList) {
+        this.likeList = likeList;
     }
 }

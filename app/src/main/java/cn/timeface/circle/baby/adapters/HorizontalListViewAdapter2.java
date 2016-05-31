@@ -3,8 +3,6 @@ package cn.timeface.circle.baby.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.media.ThumbnailUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +13,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.Paper;
-import cn.timeface.circle.baby.utils.BitmapUtil;
+import cn.timeface.circle.baby.api.models.objs.TemplateObj;
 import cn.timeface.circle.baby.utils.GlideUtil;
 
 public class HorizontalListViewAdapter2 extends BaseAdapter {
@@ -24,19 +21,19 @@ public class HorizontalListViewAdapter2 extends BaseAdapter {
     private LayoutInflater mInflater;
     Bitmap iconBitmap;
     private int selectIndex = -1;
-    private List<Paper> list;
+    private List<TemplateObj> list;
 
-    public HorizontalListViewAdapter2(Context context, List<Paper> list) {
+    public HorizontalListViewAdapter2(Context context, List<TemplateObj> list) {
         this.mContext = context;
         this.list = list;
         mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);//LayoutInflater.from(mContext);
     }
 
-    public void setList(List<Paper> list) {
+    public void setList(List<TemplateObj> list) {
         this.list = list;
     }
 
-    public List<Paper> getList() {
+    public List<TemplateObj> getList() {
         return list;
     }
 

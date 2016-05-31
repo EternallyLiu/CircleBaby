@@ -26,9 +26,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.MilestoneAdapter;
-import cn.timeface.circle.baby.adapters.RelationshipAdapter;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
-import cn.timeface.circle.baby.api.models.objs.Relationship;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class MileStoneActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -76,12 +74,12 @@ public class MileStoneActivity extends BaseAppCompatActivity implements View.OnC
     }
 
     private void reqData() {
-        apiService.queryMilestoneList("")
+        apiService.queryMilestoneList()
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(milestoneResponse -> {
-                        setDataList(milestoneResponse.getDataList());
-                },throwable -> {
-                    Log.e(TAG,"getRelationshipList:",throwable);
+                .subscribe(milestoneListResponse -> {
+                    setDataList(milestoneListResponse.getDataList());
+                }, throwable -> {
+                    Log.e(TAG, "getRelationshipList:", throwable);
                 });
     }
 
@@ -97,15 +95,15 @@ public class MileStoneActivity extends BaseAppCompatActivity implements View.OnC
                 }
                 apiService.addMilestone(URLEncoder.encode(milestoneName))
                         .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(milestoneIdResponse -> {
-                            if (milestoneIdResponse.success()) {
-                                Milestone milestone = new Milestone(milestoneName, milestoneIdResponse.getMilestoneId());
+                        .subscribe(milestoneResponse -> {
+                            if (milestoneResponse.success()) {
+                                Milestone milestone = new Milestone(milestoneName, milestoneResponse.getMilestoneId());
                                 Intent intent = new Intent();
                                 intent.putExtra("milestone", milestone);
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {
-                                Toast.makeText(this, milestoneIdResponse.getInfo(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, milestoneResponse.getInfo(), Toast.LENGTH_SHORT).show();
                             }
                         }, throwable -> {
                             Log.e(TAG, "addMilestone:", throwable);

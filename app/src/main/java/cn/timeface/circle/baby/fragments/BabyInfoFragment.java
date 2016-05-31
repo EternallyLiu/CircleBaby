@@ -19,9 +19,13 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.ServiceException;
+import com.google.gson.Gson;
 import com.wechat.photopicker.PickerPhotoActivity;
 
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -30,12 +34,20 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.MessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.api.models.objs.Msg;
+import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.oss.OSSManager;
+import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -74,8 +86,12 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
     @Bind(R.id.rl_blood)
     RelativeLayout rlBlood;
     private MessageAdapter adapter;
-    private BabyObj babyObj;
+    private UserObj user;
     public int gender;
+    private BabyObj babyObj;
+    public static final String KEY_SELECTED_PHOTO_SIZE = "SELECTED_PHOTO_SIZE";
+    private final int PicutreSelcted = 10;
+    private String objectKey;
 
     public BabyInfoFragment() {
     }
@@ -83,8 +99,11 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        babyObj = (BabyObj) getArguments().getSerializable("babyObj");
-
+        String userObj = getArguments().getString("userObj");
+        Gson gson = new Gson();
+        user = gson.fromJson(userObj, UserObj.class);
+        babyObj = user.getBabyObj();
+        objectKey = babyObj.getAvatar();
     }
 
     @Override
@@ -95,14 +114,16 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+        GlideUtil.displayImage(babyObj.getAvatar(), ivAvatar);
         tvName.setText(babyObj.getName());
         tvAge.setText(babyObj.getAge());
-        tvBrithday.setText(babyObj.getBithday());
+        tvBrithday.setText(DateUtil.getYear(babyObj.getBithday()));
         tvBlood.setText(TextUtils.isEmpty(babyObj.getBlood()) ? "未填写" : babyObj.getBlood());
         rbGirl.setChecked(babyObj.getGender() == 0);
         rbBoy.setChecked(babyObj.getGender() == 1);
 
-        initView(FastData.getUserInfo().getIsCreator() == 1);
+        initView(user.getIsCreator() == 1);
         tvDelete.setOnClickListener(this);
 
         return view;
@@ -121,6 +142,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
             rlBlood.setOnClickListener(this);
             rbGirl.setOnClickListener(this);
             rbBoy.setOnClickListener(this);
+            ivAvatar.setOnClickListener(this);
 
         } else {
             //关注者
@@ -163,19 +185,43 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                 gender = 0;
                 rbBoy.setChecked(false);
                 break;
+            case R.id.iv_avatar:
+                startPhotoPick();
+                break;
             case R.id.tv_delete:
-                if(FastData.getUserInfo().getIsCreator() == 1){
+                if (user.getIsCreator() == 1) {
                     //删除宝宝
-
-                }else{
+                    apiService.delBabyInfo(babyObj.getBabyId())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(response -> {
+                                if (response.success()) {
+                                    getActivity().finish();
+                                }
+                            }, throwable -> {
+                                Log.e(TAG, "delBabyInfo:", throwable);
+                            });
+                } else {
                     //取消关注宝宝
-
+                    apiService.attentionCancel(babyObj.getBabyId())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(response -> {
+                                if (response.success()) {
+                                    getActivity().finish();
+                                }
+                            }, throwable -> {
+                                Log.e(TAG, "attentionCancel:", throwable);
+                            });
                 }
 
                 break;
         }
     }
 
+    private void startPhotoPick() {
+        Intent intent = new Intent(getActivity(), PickerPhotoActivity.class);
+        intent.putExtra(KEY_SELECTED_PHOTO_SIZE, 8);
+        startActivityForResult(intent, PicutreSelcted);
+    }
 
 
     @Override
@@ -193,22 +239,79 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                 case TypeConstants.EDIT_BLOOD:
                     tvBlood.setText(input);
                     break;
+                case PicutreSelcted:
+                    for (String path : data.getStringArrayListExtra(PickerPhotoActivity.KEY_SELECTED_PHOTOS)) {
+                        GlideUtil.displayImage(path, ivAvatar);
+                        uploadImage(path);
+                    }
+                    break;
             }
+        }
+    }
+
+    private void uploadImage(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return;
+        }
+        OSSManager ossManager = OSSManager.getOSSManager(getContext());
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //获取上传文件
+                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
+                    //上传操作
+                    try {
+                        //判断服务器是否已存在该文件
+                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
+                            //如果不存在则上传
+                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
+                        }
+                        objectKey = uploadFileObj.getObjectKey();
+//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
+                    } catch (ServiceException | ClientException e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }.start();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (user.getIsCreator() == 1) {
+            String name = tvName.getText().toString();
+            String brithday = tvBrithday.getText().toString();
+            long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
+            String blood = tvBlood.getText().toString();
+            //修改宝宝信息
+            apiService.editBabyInfo(time, URLEncoder.encode(blood), gender, URLEncoder.encode(name), objectKey)
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        if(response.success()){
+                            FastData.setBabyName(name);
+                            FastData.setBabyBithday(time);
+                            FastData.setBabyBlood(blood);
+                            FastData.setBabyAvatar(objectKey);
+                            FastData.setBabyGender(gender);
+
+                            Gson gson = new Gson();
+                            FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
+                        }
+                    }, throwable -> {
+                        Log.e(TAG, "editBabyInfo:", throwable);
+                    });
+
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(FastData.getUserInfo().getIsCreator() == 1){
-            String name = tvName.getText().toString();
-            String brithday = tvBrithday.getText().toString();
-            String blood = tvBlood.getText().toString();
-            //修改宝宝信息
-
-        }
-
-
         ButterKnife.unbind(this);
     }
 }

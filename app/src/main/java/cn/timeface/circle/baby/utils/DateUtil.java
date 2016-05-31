@@ -40,6 +40,25 @@ public class DateUtil {
         return formatDate(format, timeInMillis);
     }
 
+    public static String getMonth(long timeInMillis) {
+        String format = "MM:dd";
+        String s = formatDate(format, timeInMillis);
+        String[] split = s.split(":");
+        String month = split[0];
+        if(month.startsWith("0")){
+            month = month.substring(1);
+        }
+        return month;
+    }
+    public static String getDay(long timeInMillis) {
+        String format = "MM:dd";
+        String s = formatDate(format, timeInMillis);
+        String[] split = s.split(":");
+        String day = split[1];
+        return day;
+    }
+
+
     /**
      * @return kk点mm分
      */
@@ -64,6 +83,7 @@ public class DateUtil {
         String format = "mm:ss";
         return formatDate(format, timeInMillis);
     }
+
 
     /**
      * 返回默认格式24小时制日期（"MM-dd kk:mm"） 例子：03-24 18：18

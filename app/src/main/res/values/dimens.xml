@@ -7,6 +7,7 @@
     <dimen name="view_space_large">32dp</dimen>
     <dimen name="view_space_xlarge">64dp</dimen>
 
+    <dimen name="size_260">260dp</dimen>
     <dimen name="size_220">220dp</dimen>
     <dimen name="size_160">160dp</dimen>
     <dimen name="size_80">80dp</dimen>
@@ -17,6 +18,7 @@
     <dimen name="size_24">24dp</dimen>
     <dimen name="size_12">12dp</dimen>
     <dimen name="size_6">6dp</dimen>
+    <dimen name="size_2">2dp</dimen>
 
     <dimen name="text_large">22sp</dimen>
     <dimen name="text_medium">18sp</dimen>

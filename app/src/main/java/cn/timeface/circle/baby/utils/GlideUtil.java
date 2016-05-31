@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.common.utils.StringUtil;
 
 
 /**
