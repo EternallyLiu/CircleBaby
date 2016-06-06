@@ -209,6 +209,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             case R.id.iv_avatar:
                 FragmentBridgeActivity.openBabyInfoFragment(getActivity(), FastData.getString("userObj", ""));
                 break;
+            case R.id.tv_milestone:
+                FragmentBridgeActivity.open(getActivity(), "MilestoneFragment");
+                break;
             case R.id.tv_toensurerelation:
 
                 break;

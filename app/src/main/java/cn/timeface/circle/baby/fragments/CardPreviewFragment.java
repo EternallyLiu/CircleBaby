@@ -35,6 +35,7 @@ import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.Pinyin4jUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ScaleImageView;
@@ -123,8 +124,6 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
                 TemplateImage templateImage = new TemplateImage(0, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
                 Gson gson = new Gson();
                 String imageInfo = gson.toJson(templateImage);
-
-                System.out.println(imageInfo);
 
                 apiService.cardComposed(URLEncoder.encode(content), imageInfo, "pinyin")
                         .compose(SchedulersCompat.applyIoSchedulers())

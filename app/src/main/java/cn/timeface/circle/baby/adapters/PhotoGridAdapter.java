@@ -31,6 +31,10 @@ public class PhotoGridAdapter extends BaseAdapter {
         return data;
     }
 
+    public void setData(List<String> data){
+        this.data = data;
+    }
+
     @Override
     public int getCount() {
         return data.size() + 1;

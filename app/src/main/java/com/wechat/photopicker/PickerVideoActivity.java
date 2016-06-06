@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,19 +28,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.ServiceException;
+
 import java.io.File;
 import java.util.ArrayList;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.VideoEditActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.VideoInfo;
+import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.events.ClipVideoSuccessEvent;
+import cn.timeface.circle.baby.events.PickVideoEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.oss.OSSManager;
+import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.common.utils.StorageUtil;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 
 /**
  * 选择图界面
  */
-public class PickerVideoActivity extends BaseAppCompatActivity {
+public class PickerVideoActivity extends BaseAppCompatActivity implements IEventBus{
 
     public final static String EXTRA_SHOW_CAMERA = "SHOW_CAMERA";
     public final static String EXTRA_SHOW_GIF = "SHOW_GIF";
@@ -52,6 +66,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity {
     private GridView gv;
     private ArrayList<VideoInfo> videos = new ArrayList<>();
     private File mPhotoFile;
+    private VideoInfo videoInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,8 +108,12 @@ public class PickerVideoActivity extends BaseAppCompatActivity {
                     }
                 } else {
                     //跳转到裁剪视频界面
-
-
+                    videoInfo = videos.get(position);
+                    String s = ImageFactory.saveImage(videoInfo.getThumbnail());
+                    videoInfo.setImgLocalUrl(s);
+                    Intent intent = new Intent(PickerVideoActivity.this , VideoEditActivity.class);
+                    intent.putExtra("path", videoInfo.getPath());
+                    startActivity(intent);
                 }
             }
         });
@@ -110,6 +129,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity {
                 MediaStore.Video.Media.SIZE,//大小
                 MediaStore.Video.Media.DURATION,//长度
                 MediaStore.Video.Media.DATA,//播放地址
+                MediaStore.Video.Media.DATE_ADDED//时间
         };
 
 //获取数据提供者,this是上下文
@@ -124,6 +144,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity {
                 long size = cursor.getLong(1);//得到视频的大小
                 long durantion = cursor.getLong(2);//得到视频的时间长度
                 String data = cursor.getString(3);//得到视频的路径，可以转化为uri进行视频播放
+                long date = cursor.getLong(4);
 //使用静态方法获取视频的缩略图
                 Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
                 VideoInfo videoInfo = new VideoInfo();
@@ -145,6 +166,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity {
             long size = cursor.getLong(1);//得到视频的大小
             long durantion = cursor.getLong(2);//得到视频的时间长度
             String data = cursor.getString(3);//得到视频的路径，可以转化为uri进行视频播放
+            long date = cursor.getLong(4);
 //使用静态方法获取视频的缩略图
             Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
             VideoInfo videoInfo = new VideoInfo();
@@ -185,7 +207,6 @@ public class PickerVideoActivity extends BaseAppCompatActivity {
             }
         }
     }
-
 
     class VideoAdapter extends BaseAdapter {
 
@@ -228,6 +249,83 @@ public class PickerVideoActivity extends BaseAppCompatActivity {
 
             return view;
         }
+    }
+
+
+    @Subscribe
+    public void onEvent(Object event) {
+        if(event instanceof ClipVideoSuccessEvent){
+            String clipVideoPath = ((ClipVideoSuccessEvent) event).getClipVideoPath();
+            videoInfo.setPath(clipVideoPath);
+            uploadImage(videoInfo.getImgLocalUrl());
+        }
+    }
+
+    private void uploadImage(String imgLocalUrl) {
+        if (TextUtils.isEmpty(imgLocalUrl)) {
+            return;
+        }
+        OSSManager ossManager = OSSManager.getOSSManager(this);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //获取上传文件
+                    UploadFileObj uploadFileObj = new MyUploadFileObj(imgLocalUrl);
+                    //上传操作
+                    try {
+                        //判断服务器是否已存在该文件
+                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
+                            //如果不存在则上传
+                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
+                        }
+                        String imgObjectKey = uploadFileObj.getObjectKey();
+                        videoInfo.setImgObjectKey(imgObjectKey);
+                        new File(imgLocalUrl).delete();
+
+//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
+                    } catch (ServiceException | ClientException e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }.start();
+    }
+
+    private void uploadVideo(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return;
+        }
+        OSSManager ossManager = OSSManager.getOSSManager(this);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //获取上传文件
+                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
+                    //上传操作
+                    try {
+                        //判断服务器是否已存在该文件
+                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
+                            //如果不存在则上传
+                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
+                        }
+                        String videoObjectKey = uploadFileObj.getObjectKey();
+                        videoInfo.setVideoObjectKey(videoObjectKey);
+                        new File(path).delete();
+                        EventBus.getDefault().post(new PickVideoEvent(videoInfo));
+                        finish();
+//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
+                    } catch (ServiceException | ClientException e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }.start();
     }
 
 }

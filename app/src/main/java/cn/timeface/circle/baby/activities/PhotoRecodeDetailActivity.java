@@ -5,20 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.wechat.photopicker.PickerVideoActivity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,7 +23,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.adapters.PublishPhotoAdapter;
 import cn.timeface.circle.baby.api.models.PhotoRecode;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
@@ -166,7 +160,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
                 postRecord();
                 break;
             case R.id.rl_mile_stone:
-                Intent intent = new Intent(this, MileStoneActivity.class);
+                Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
                 break;
             case R.id.rl_time:

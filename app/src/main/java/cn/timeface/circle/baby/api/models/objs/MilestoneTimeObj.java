@@ -11,6 +11,13 @@ public class MilestoneTimeObj extends BaseObj {
     String milestone;
     int timeId;
 
+    public MilestoneTimeObj(long date, String imgUrl, String milestone, int timeId) {
+        this.date = date;
+        this.imgUrl = imgUrl;
+        this.milestone = milestone;
+        this.timeId = timeId;
+    }
+
     public long getDate() {
         return date;
     }

@@ -3,6 +3,8 @@ package cn.timeface.circle.baby.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,9 +20,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.sdk.android.oss.ClientException;
+import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
+import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,17 +38,25 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.PhotoGridAdapter;
 import cn.timeface.circle.baby.adapters.PublishPhotoAdapter;
 import cn.timeface.circle.baby.api.models.PhotoRecode;
+import cn.timeface.circle.baby.api.models.VideoInfo;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
+import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.PublishObj;
+import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
+import cn.timeface.circle.baby.events.PickVideoEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.oss.OSSManager;
+import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
+import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
@@ -77,6 +91,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     RecyclerView contentRecyclerView;
     @Bind(R.id.iv_card)
     ImageView ivCard;
+    @Bind(R.id.iv_video)
+    ImageView ivVideo;
+    @Bind(R.id.iv_cover)
+    ImageView ivCover;
+    @Bind(R.id.rl_video)
+    RelativeLayout rlVideo;
     private PhotoGridAdapter adapter;
     private HashSet<String> imageUrls = new HashSet<>();
     public final int PICTURE = 0;
@@ -96,6 +116,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private PublishPhotoAdapter publishPhotoAdapter;
     private int type;
     private MediaObj mediaObj;
+    private List<MediaObj> mediaObjs;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -272,17 +293,19 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             case R.id.tv_next:
                 switch (type) {
                     case 0:
-                    case 1:
                         postRecord();
                         break;
+                    case 1:
                     case 2:
-                    case 3:
                         publishDiary();
+                        break;
+                    case 3:
+                        publishCard();
                         break;
                 }
                 break;
             case R.id.rl_mile_stone:
-                Intent intent = new Intent(this, MileStoneActivity.class);
+                Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
                 break;
             case R.id.rl_time:
@@ -290,6 +313,37 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 startActivityForResult(intent1, TIME);
                 break;
         }
+
+    }
+
+    //发布识图卡片
+    private void publishCard() {
+        String content = etContent.getText().toString();
+        if (TextUtils.isEmpty(content)) {
+            ToastUtil.showToast("发点文字吧~");
+            return;
+        }
+        String t = tvTime.getText().toString();
+        long time = DateUtil.getTime(t, "yyyy.MM.dd");
+
+        List<PublishObj> datalist = new ArrayList<>();
+
+        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
+        datalist.add(publishObj);
+
+        Gson gson = new Gson();
+        String s = gson.toJson(datalist);
+
+        apiService.publish(URLEncoder.encode(s), type)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    ToastUtil.showToast(response.getInfo());
+                    if (response.success()) {
+                        finish();
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "publish:");
+                });
 
     }
 
@@ -307,7 +361,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         List<MediaObj> mediaObjs = new ArrayList<>();
         mediaObjs.add(mediaObj);
 
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone.getId(), time);
+        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
         datalist.add(publishObj);
 
         Gson gson = new Gson();
@@ -327,7 +381,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
 
-    //发布照片、视频
+    //发布照片
     private void postRecord() {
         String value = etContent.getText().toString();
 
@@ -343,11 +397,14 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             long time = DateUtil.getTime(t, "yyyy.MM.dd");
             String content = photoRecode.getContent();
             Milestone mileStone = photoRecode.getMileStone();
-            int mileStoneId = mileStone.getId();
+            int mileStoneId = mileStone == null ? 0 : mileStone.getId();
             List<ImgObj> imgObjList = photoRecode.getImgObjList();
             List<MediaObj> mediaObjs = new ArrayList<>();
             for (ImgObj img : imgObjList) {
-                MediaObj mediaObj = new MediaObj(img.getUrl(), img.getLocalPath(), DateUtil.getTime(img.getDate(), "yyyy.MM.dd"));
+                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
+                int height = bitmap.getHeight();
+                int width = bitmap.getWidth();
+                MediaObj mediaObj = new MediaObj(img.getContent(),img.getUrl(), width,height, DateUtil.getTime(img.getDate(), "yyyy.MM.dd"));
                 mediaObjs.add(mediaObj);
             }
             PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, time);
@@ -356,11 +413,16 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
+        System.out.println(s);
+
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
+                        for (ImgObj img : selImages) {
+                            uploadImage(img.getLocalPath());
+                        }
                         finish();
                     }
                 }, throwable -> {
@@ -376,6 +438,27 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             gvGridView.setVisibility(View.GONE);
             mediaObj = ((MediaObjEvent) event).getMediaObj();
             GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
+        } else if (event instanceof PickVideoEvent) {
+            rlVideo.setVisibility(View.VISIBLE);
+            gvGridView.setVisibility(View.GONE);
+            int width = Remember.getInt("width", 0);
+            ViewGroup.LayoutParams layoutParams = ivVideo.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = width;
+            ivVideo.setLayoutParams(layoutParams);
+            ivCover.setLayoutParams(layoutParams);
+            VideoInfo videoInfo = ((PickVideoEvent) event).getVideoInfo();
+            GlideUtil.displayImage(videoInfo.getImgObjectKey(), ivVideo);
+            mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoInfo.getVideoObjectKey(), videoInfo.getDate());
+        }else if(event instanceof CardEvent){
+            mediaObjs = ((CardEvent) event).getMediaObjs();
+            List<String> list = new ArrayList<>();
+            for (MediaObj media : mediaObjs){
+                list.add(media.getLocalPath());
+            }
+            adapter.setData(list);
+            adapter.notifyDataSetChanged();
+
         }
     }
 
@@ -383,5 +466,36 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+
+    private void uploadImage(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return;
+        }
+        OSSManager ossManager = OSSManager.getOSSManager(this);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //获取上传文件
+                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
+                    //上传操作
+                    try {
+                        //判断服务器是否已存在该文件
+                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
+                            //如果不存在则上传
+                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
+                        }
+                        String videoObjectKey = uploadFileObj.getObjectKey();
+//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
+                    } catch (ServiceException | ClientException e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }.start();
     }
 }

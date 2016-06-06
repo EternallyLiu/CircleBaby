@@ -394,10 +394,10 @@ public class ImageFactory {
         return bitmap;
     }
 
-    public static void saveImage(Bitmap bitmap) {
+    public static String saveImage(Bitmap bitmap) {
 
         String fileName = System.currentTimeMillis() + ".jpg";
-        File file = new File("/mnt/sdcard/habit");
+        File file = new File("/mnt/sdcard/baby");
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -413,6 +413,8 @@ public class ImageFactory {
         } catch (IOException e)  {
             e.printStackTrace();
         }
+
+        return outDir.toString();
 
     }
 

@@ -11,27 +11,30 @@ public class MediaObj extends BaseObj {
     int w;                  //宽度
     int id;
     String imgUrl;          //如果是视频则是视频某一帧图片
-    int length;             //视频长度
+    long length;             //视频长度
     String localPath;       //图片本地路径
     long photographTime;     //照片or视频的拍摄时间
     String videoUrl;        //视频url
 
     //图片
-    public MediaObj(String imgUrl, String localPath, long photographTime) {
+    public MediaObj(String content,String imgUrl, int w , int h ,long photographTime) {
+        this.content = content;
         this.imgUrl = imgUrl;
-        this.localPath = localPath;
+        this.w = w;
+        this.h = h;
         this.photographTime = photographTime;
     }
 
     //视频
-    public MediaObj(String imgUrl, int length, String videoUrl, long photographTime) {
+    public MediaObj(String imgUrl, long length, String videoUrl, long photographTime) {
         this.imgUrl = imgUrl;
         this.length = length;
         this.videoUrl = videoUrl;
         this.photographTime = photographTime;
     }
 
-    public MediaObj(String content, int h, int w, int id, String imgUrl, int length, String localPath, long photographTime, String videoUrl) {
+
+    public MediaObj(String content, int h, int w, int id, String imgUrl, long length, String localPath, long photographTime, String videoUrl) {
         this.content = content;
         this.h = h;
         this.w = w;
@@ -83,11 +86,11 @@ public class MediaObj extends BaseObj {
         this.imgUrl = imgUrl;
     }
 
-    public int getLength() {
+    public long getLength() {
         return length;
     }
 
-    public void setLength(int length) {
+    public void setLength(long length) {
         this.length = length;
     }
 

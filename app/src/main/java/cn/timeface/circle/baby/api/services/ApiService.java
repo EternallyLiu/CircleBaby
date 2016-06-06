@@ -12,6 +12,7 @@ import cn.timeface.circle.baby.api.models.responses.FamilyListResponse;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
+import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.api.models.responses.MsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.RegisterResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationIdResponse;
@@ -122,6 +123,10 @@ public interface ApiService {
     @GET("baby/delRelationship")
     Observable<BaseResponse> delRelationship(@Query("userId") String userId);
 
+    //首页-宝宝里程碑
+    @GET("babyTime/milestone")
+    Observable<MilestoneTimeResponse> milestone();
+
     //亲友团-修改亲友信息
     @GET("baby/updateFamilyRelationshipInfo")
     Observable<BaseResponse> updateFamilyRelationshipInfo(@Query("nickName") String nickName,
@@ -182,8 +187,12 @@ public interface ApiService {
     Observable<DiaryComposedResponse> diaryComposed(@Query("templateObj") String templateObj);
 
     //识图卡片-列表
-    @GET("babyTime/cardList")
-    Observable<CardListResponse> cardList();
+    @GET("babyTime/getComposedCardList")
+    Observable<CardListResponse> getComposedCardList();
+
+    //识图卡片-删除
+    @GET("babyTime/delCard")
+    Observable<BaseResponse> delCard(@Query("id") int id);
 
     //识图卡片-合成
     @GET("babyTime/cardComposed")

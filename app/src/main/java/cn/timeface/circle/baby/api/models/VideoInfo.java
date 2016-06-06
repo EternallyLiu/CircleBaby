@@ -13,6 +13,42 @@ public class VideoInfo extends BaseObj{
     long duration;
     long size;
     Bitmap thumbnail;
+    String imgLocalUrl;
+    String imgObjectKey;
+    String videoObjectKey;
+    long Date;
+
+    public String getImgLocalUrl() {
+        return imgLocalUrl;
+    }
+
+    public void setImgLocalUrl(String imgLocalUrl) {
+        this.imgLocalUrl = imgLocalUrl;
+    }
+
+    public String getImgObjectKey() {
+        return imgObjectKey;
+    }
+
+    public void setImgObjectKey(String imgObjectKey) {
+        this.imgObjectKey = imgObjectKey;
+    }
+
+    public String getVideoObjectKey() {
+        return videoObjectKey;
+    }
+
+    public void setVideoObjectKey(String videoObjectKey) {
+        this.videoObjectKey = videoObjectKey;
+    }
+
+    public long getDate() {
+        return Date;
+    }
+
+    public void setDate(long date) {
+        Date = date;
+    }
 
     public String getVedioName() {
         return vedioName;

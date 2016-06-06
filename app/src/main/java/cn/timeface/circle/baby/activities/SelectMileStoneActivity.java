@@ -25,11 +25,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.adapters.MilestoneAdapter;
+import cn.timeface.circle.baby.adapters.SelectMilestoneAdapter;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
-public class MileStoneActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class SelectMileStoneActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
 
     @Bind(R.id.tv_title)
@@ -42,11 +42,11 @@ public class MileStoneActivity extends BaseAppCompatActivity implements View.OnC
     TextView tvCreate;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
-    private MilestoneAdapter adapter;
+    private SelectMilestoneAdapter adapter;
     private List<Milestone> dataList;
 
     public static void open(Context context) {
-        Intent intent = new Intent(context, MileStoneActivity.class);
+        Intent intent = new Intent(context, SelectMileStoneActivity.class);
         context.startActivity(intent);
     }
 
@@ -63,7 +63,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements View.OnC
         tvTitle.setText("里程碑");
         etRelationship.setHint("输入并创建里程碑");
         tvCreate.setOnClickListener(this);
-        adapter = new MilestoneAdapter(this, new ArrayList<>());
+        adapter = new SelectMilestoneAdapter(this, new ArrayList<>());
         adapter.setOnClickListener(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         contentRecyclerView.setAdapter(adapter);
