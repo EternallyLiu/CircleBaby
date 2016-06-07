@@ -154,11 +154,11 @@ public interface ApiService {
     Observable<BaseResponse> attentionCancel(@Query("babyId") int babyId);
 
     //获取消息列表
-    @GET("baby/queryMsgList")
+    @GET("babyMsgInfo/queryMsgList")
     Observable<MsgListResponse> queryMsgList();
 
     //获取系统消息列表
-    @GET("baby/querySystemMsgList")
+    @GET("babyMsgInfo/querySystemMsgList")
     Observable<SystemMsgListResponse> querySystemMsgList();
 
     //发布
@@ -208,6 +208,18 @@ public interface ApiService {
     //首页-时光详情
     @GET("babyTime/queryBabyTimeDetail")
     Observable<TimeDetailResponse> queryBabyTimeDetail(@Query("timeId") int timeId);
+
+    //评论
+    @GET("babyTime/comment")
+    Observable<BaseResponse> comment(@Query("content") String content,
+                                           @Query("date") long date,
+                                           @Query("timeId") int timeId,
+                                           @Query("toUserId") String toUserId);
+
+    //点赞/取消点赞
+    @GET("babyTime/like")
+    Observable<BaseResponse> like(@Query("timeId") int timeId,
+                                     @Query("type") int type);
 
 
 }

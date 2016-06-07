@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -55,6 +56,8 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
 
     @Bind(R.id.tv_delete)
     TextView tvDelete;
+    @Bind(R.id.btn_save)
+    Button btnSave;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.iv_avatar)
@@ -136,6 +139,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
             ivName.setVisibility(View.VISIBLE);
             ivBrithday.setVisibility(View.VISIBLE);
             ivBlood.setVisibility(View.VISIBLE);
+            btnSave.setVisibility(View.VISIBLE);
 
             rlName.setOnClickListener(this);
             rlBrithday.setOnClickListener(this);
@@ -143,6 +147,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
             rbGirl.setOnClickListener(this);
             rbBoy.setOnClickListener(this);
             ivAvatar.setOnClickListener(this);
+            btnSave.setOnClickListener(this);
 
         } else {
             //关注者
@@ -214,6 +219,28 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                 }
 
                 break;
+            case R.id.btn_save:
+                String n = tvName.getText().toString();
+                String brithday = tvBrithday.getText().toString();
+                long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
+                String b = tvBlood.getText().toString();
+                apiService.editBabyInfo(time, URLEncoder.encode(b), gender, URLEncoder.encode(n), objectKey)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                FastData.setBabyName(n);
+                                FastData.setBabyBithday(time);
+                                FastData.setBabyBlood(b);
+                                FastData.setBabyAvatar("http://img1.timeface.cn/" + objectKey);
+                                FastData.setBabyGender(gender);
+
+                                Gson gson = new Gson();
+                                FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
+                            }
+                        }, throwable -> {
+                            Log.e(TAG, "editBabyInfo:", throwable);
+                        });
+                break;
         }
     }
 
@@ -278,35 +305,6 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
             }
         }.start();
 
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (user.getIsCreator() == 1) {
-            String name = tvName.getText().toString();
-            String brithday = tvBrithday.getText().toString();
-            long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
-            String blood = tvBlood.getText().toString();
-            //修改宝宝信息
-            apiService.editBabyInfo(time, URLEncoder.encode(blood), gender, URLEncoder.encode(name), objectKey)
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-                        if(response.success()){
-                            FastData.setBabyName(name);
-                            FastData.setBabyBithday(time);
-                            FastData.setBabyBlood(blood);
-                            FastData.setBabyAvatar(objectKey);
-                            FastData.setBabyGender(gender);
-
-                            Gson gson = new Gson();
-                            FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
-                        }
-                    }, throwable -> {
-                        Log.e(TAG, "editBabyInfo:", throwable);
-                    });
-
-        }
     }
 
     @Override

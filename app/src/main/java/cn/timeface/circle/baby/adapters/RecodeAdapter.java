@@ -21,6 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
@@ -103,7 +104,6 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         }
 
         holder.onClickListener = onClickListener;
-        holder.itemView.setTag(R.string.tag_ex, item);
         holder.setRecordObj(item);
 
 
@@ -141,6 +141,29 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.llGoodListUsersBar.addView(imageView);
             GlideUtil.displayImage(u.getAvatar(), imageView);
         }
+        if(item.getType()==1){
+            holder.ivVideo.setVisibility(View.VISIBLE);
+            int width = Remember.getInt("width", 0);
+            ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = width;
+            holder.ivCover.setLayoutParams(layoutParams);
+            holder.ivVideo.setLayoutParams(layoutParams);
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (item.getType()){
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        TimeLineDetailActivity.open(context,item);
+                        break;
+                }
+            }
+        });
     }
 
 
@@ -197,6 +220,8 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         LinearLayout llHabitDetail;
         @Bind(R.id.iv_cover)
         ImageView ivCover;
+        @Bind(R.id.iv_video)
+        ImageView ivVideo;
 
         View.OnClickListener onClickListener = null;
 

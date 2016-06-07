@@ -79,7 +79,6 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void setDataList(List<Msg> dataList) {
-        adapter.getListData().clear();
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
     }

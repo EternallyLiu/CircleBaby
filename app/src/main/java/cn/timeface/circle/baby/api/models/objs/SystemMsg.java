@@ -8,6 +8,24 @@ public class SystemMsg {
     String content;
     String name;
     long time;
+    int dataId;
+    int msgType;
+
+    public int getDataId() {
+        return dataId;
+    }
+
+    public void setDataId(int dataId) {
+        this.dataId = dataId;
+    }
+
+    public int getMsgType() {
+        return msgType;
+    }
+
+    public void setMsgType(int msgType) {
+        this.msgType = msgType;
+    }
 
     public String getAvatar() {
         return avatar;

@@ -81,7 +81,6 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
     }
 
     private void setDataList(List<SystemMsg> dataList) {
-        adapter.getListData().clear();
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
     }

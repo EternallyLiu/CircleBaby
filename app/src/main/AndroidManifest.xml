@@ -119,9 +119,11 @@
         <activity android:name=".activities.PhotoSelectionActivity"/>
         <activity android:name=".activities.PhotoViewerNewActivity"/>
         <activity android:name=".activities.VideoEditActivity"/>
+        <activity android:name=".activities.VideoPlayActivity"/>
         <activity android:name=".activities.PhotoRecodeDetailActivity"/>
-        <activity android:name=".activities.PhotoEditActivity"/>
         <activity android:name=".activities.FragmentBridgeActivity"/>
+        <activity android:name=".activities.TimeLineDetailActivity"/>
+
 
 
     </application>

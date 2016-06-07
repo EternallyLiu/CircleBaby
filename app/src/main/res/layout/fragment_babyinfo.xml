@@ -214,6 +214,19 @@
             android:src="@drawable/mine_data_go"/>
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_36"
+        android:background="@drawable/selector_btn_login"
+        android:text="保存"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_medium"
+        android:visibility="gone"/>
+
 
 
 </LinearLayout>
