@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
@@ -22,6 +23,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
+import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
@@ -68,7 +70,7 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder = ((ViewHolder) viewHolder);
         TimeLineObj item = getItem(position);
         holder.tvContent.setText(item.getContent());
-        holder.tvAuthor.setText(item.getAuthor().getNickName());
+        holder.tvAuthor.setText(item.getAuthor().getRelationName());
         holder.tvDate.setText(DateUtil.getTime2(item.getDate()));
 
         if (item.getMediaList().size() == 1) {
@@ -155,8 +157,12 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             @Override
             public void onClick(View v) {
                 switch (item.getType()){
-                    case 0:
                     case 1:
+                        Intent intent = new Intent(context, VideoPlayActivity.class);
+                        intent.putExtra("media",item.getMediaList().get(0));
+                        context.startActivity(intent);
+                        break;
+                    case 0:
                     case 2:
                     case 3:
                         TimeLineDetailActivity.open(context,item);

@@ -3,7 +3,7 @@ package cn.timeface.circle.baby.events;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 
 /**
- * Created by yusen on 2015/1/3.
+ * Created by lidonglin on 2016/6/1.
  */
 public class MediaObjEvent {
     public MediaObj mediaObj;

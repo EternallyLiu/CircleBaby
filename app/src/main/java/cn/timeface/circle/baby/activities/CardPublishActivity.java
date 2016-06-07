@@ -33,7 +33,7 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
-public class CardPublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
+public class CardPublishActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
 
     protected final int PHOTO_COUNT_MAX = 1;
@@ -69,7 +69,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
         tvPublish.setOnClickListener(this);
         tvAdd.setOnClickListener(this);
-        mViews = new ArrayList<>();
+
         reqData();
 //        selectImages();
     }
@@ -79,6 +79,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(cardListResponse -> {
                     dataList = cardListResponse.getDataList();
+                    mViews = new ArrayList<>();
                     if (dataList.size() > 0) {
                         for (MediaObj media : dataList) {
                             View card = getCard(media);
@@ -90,13 +91,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                             mViews.add(addCard);
                         }
                     }
-
-                    adapter = new MyAdapter(mViews);
-                    vp.setAdapter(adapter);
-
-
-                }, throwable -> {
-                    Log.e(TAG, "getComposedCardList:");
+                    vp.setAdapter(new MyAdapter(mViews));
                 });
 
     }
@@ -141,8 +136,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 int currentItem = vp.getCurrentItem();
                 dataList.remove(currentItem);
                 mViews.remove(currentItem);
-                adapter.setDataList(mViews);
-                adapter.notifyDataSetChanged();
+                vp.setAdapter(new MyAdapter(mViews));
                 apiService.delCard(dataList.get(currentItem).getId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
@@ -155,11 +149,11 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 selectImages();
                 break;
             case R.id.tv_add:
-                if(!isAddCard()){
+                if (!isAddCard()) {
                     View addCard = getAddCard();
                     mViews.add(addCard);
-                    adapter.setDataList(mViews);
-                    adapter.notifyDataSetChanged();
+                    vp.setAdapter(new MyAdapter(mViews));
+                    vp.setCurrentItem(mViews.size() - 1);
                 }
                 break;
 
@@ -167,18 +161,11 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
     }
 
-    @Subscribe
-    public void onEvent(Object event) {
-        if (event instanceof MediaObjEvent) {
-            finish();
-        }
-    }
-
     public View getCard(MediaObj media) {
         View view = getLayoutInflater().inflate(R.layout.view_card, null);
-        ImageView ivCard = (ImageView) view.findViewById(R.id.iv_card);
+        ImageView ivCard = (ImageView) view.findViewById(R.id.iv_cover);
         ImageView ivDeletecard = (ImageView) view.findViewById(R.id.iv_deletecard);
-        GlideUtil.displayImage(media.getLocalPath(), ivCard);
+        GlideUtil.displayImage(media.getImgUrl(), ivCard);
         ivDeletecard.setOnClickListener(this);
         return view;
     }
@@ -195,7 +182,8 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     }
 
     public class MyAdapter extends PagerAdapter {
-        List<View> list ;
+        List<View> list;
+
         public MyAdapter(List<View> list) {
             this.list = list;
         }
@@ -212,13 +200,13 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-//            ((ViewPager)container).removeView(mViews.get(position));
 //            super.destroyItem(container, position, object);
+            container.removeView(list.get(position));
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            ((ViewPager)container).addView(list.get(position), 0);
+            container.addView(list.get(position), 0);
             return list.get(position);
         }
 

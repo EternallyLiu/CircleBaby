@@ -10,6 +10,15 @@ public class SystemMsg {
     long time;
     int dataId;
     int msgType;
+    int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public int getDataId() {
         return dataId;

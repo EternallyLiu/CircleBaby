@@ -69,11 +69,11 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         apiService.queryMsgList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(msgListResponse -> {
-
-                    setDataList(msgListResponse.getDataList());
-
+                    if(msgListResponse.success()){
+                        setDataList(msgListResponse.getDataList());
+                    }
                 }, throwable -> {
-                    Log.e(TAG, "queryBabyFamilyList:");
+                    Log.e(TAG, "queryMsgList:");
                 });
 
     }

@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -117,6 +118,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private int type;
     private MediaObj mediaObj;
     private List<MediaObj> mediaObjs;
+    private VideoInfo videoInfo;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -274,7 +276,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     publishPhotoAdapter.notifyDataSetChanged();
                     break;
                 case VIDEO_SELECT:
-
                     break;
             }
 
@@ -296,6 +297,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         postRecord();
                         break;
                     case 1:
+                        uploadVideo(videoInfo.getPath());
+                        break;
                     case 2:
                         publishDiary();
                         break;
@@ -328,7 +331,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
         List<PublishObj> datalist = new ArrayList<>();
 
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
+        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), System.currentTimeMillis());
         datalist.add(publishObj);
 
         Gson gson = new Gson();
@@ -361,7 +364,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         List<MediaObj> mediaObjs = new ArrayList<>();
         mediaObjs.add(mediaObj);
 
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
+        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), System.currentTimeMillis());
         datalist.add(publishObj);
 
         Gson gson = new Gson();
@@ -404,10 +407,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
                 int height = bitmap.getHeight();
                 int width = bitmap.getWidth();
-                MediaObj mediaObj = new MediaObj(img.getContent(),img.getUrl(), width,height, DateUtil.getTime(img.getDate(), "yyyy.MM.dd"));
+                MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, DateUtil.getTime(img.getDate(), "yyyy.MM.dd"));
                 mediaObjs.add(mediaObj);
             }
-            PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, time);
+            PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, System.currentTimeMillis());
             datalist.add(publishObj);
         }
         Gson gson = new Gson();
@@ -438,7 +441,18 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             gvGridView.setVisibility(View.GONE);
             mediaObj = ((MediaObjEvent) event).getMediaObj();
             GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
-        } else if (event instanceof PickVideoEvent) {
+        } else if (event instanceof CardEvent) {
+            mediaObjs = ((CardEvent) event).getMediaObjs();
+            List<String> list = new ArrayList<>();
+            for (MediaObj media : mediaObjs) {
+                list.add(media.getImgUrl());
+            }
+            adapter.setData(list);
+            adapter.notifyDataSetChanged();
+
+        }else if(event instanceof PickVideoEvent){
+            videoInfo = ((PickVideoEvent) event).getVideoInfo();
+
             rlVideo.setVisibility(View.VISIBLE);
             gvGridView.setVisibility(View.GONE);
             int width = Remember.getInt("width", 0);
@@ -447,18 +461,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             layoutParams.height = width;
             ivVideo.setLayoutParams(layoutParams);
             ivCover.setLayoutParams(layoutParams);
-            VideoInfo videoInfo = ((PickVideoEvent) event).getVideoInfo();
-            GlideUtil.displayImage(videoInfo.getImgObjectKey(), ivVideo);
-            mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoInfo.getVideoObjectKey(), videoInfo.getDate());
-        }else if(event instanceof CardEvent){
-            mediaObjs = ((CardEvent) event).getMediaObjs();
-            List<String> list = new ArrayList<>();
-            for (MediaObj media : mediaObjs){
-                list.add(media.getLocalPath());
-            }
-            adapter.setData(list);
-            adapter.notifyDataSetChanged();
 
+            GlideUtil.displayImage(videoInfo.getImgObjectKey(), ivVideo);
+//            mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoInfo.getVideoObjectKey(), videoInfo.getDate());
         }
     }
 
@@ -488,6 +493,42 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         String videoObjectKey = uploadFileObj.getObjectKey();
+//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
+                    } catch (ServiceException | ClientException e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }.start();
+    }
+
+
+    private void uploadVideo(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return;
+        }
+        OSSManager ossManager = OSSManager.getOSSManager(this);
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    //获取上传文件
+                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
+                    //上传操作
+                    try {
+                        //判断服务器是否已存在该文件
+                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
+                            //如果不存在则上传
+                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
+                        }
+                        String videoObjectKey = uploadFileObj.getObjectKey();
+                        videoInfo.setVideoObjectKey(videoObjectKey);
+                        new File(path).delete();
+                        System.out.println("videoObjectKey==========================" + videoObjectKey);
+                        mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoInfo.getVideoObjectKey(), videoInfo.getDate());
+                        publishDiary();
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();

@@ -152,7 +152,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
-                    ToastUtil.showToast(timelineResponse.getInfo());
                     if(timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()){
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
                     }
@@ -176,9 +175,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onResume() {
+        initData();
         super.onResume();
-        currentPage = 1;
-        reqData(currentPage);
     }
 
     private void initData() {

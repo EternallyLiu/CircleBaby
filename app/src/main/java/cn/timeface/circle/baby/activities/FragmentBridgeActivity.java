@@ -31,6 +31,7 @@ import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
 import cn.timeface.circle.baby.fragments.InviteFragment;
 import cn.timeface.circle.baby.fragments.MessageFragment;
 import cn.timeface.circle.baby.fragments.MilestoneFragment;
+import cn.timeface.circle.baby.fragments.MineInfoFragment;
 import cn.timeface.circle.baby.fragments.SystemMessageFragment;
 
 /**
@@ -256,6 +257,11 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "CardPreviewFragment":
                 return new CardPreviewFragment();
+
+            case "MineInfoFragment":
+                return new MineInfoFragment();
+
+
 
 //            case "SubtractGroupUsersFragment":
 //                return new SubtractGroupUsersFragment();

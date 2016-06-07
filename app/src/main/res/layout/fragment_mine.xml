@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color2"
+    android:background="@color/bg_color8"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -27,7 +27,7 @@
         android:id="@+id/ll_mine_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_24"
+        android:layout_marginTop="@dimen/size_12"
         android:background="@color/text_color1">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -38,18 +38,34 @@
             android:layout_margin="@dimen/size_12"
             android:src="@color/bg_color5" />
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_toRightOf="@+id/iv_avatar"
-            android:background="@color/text_color1"
-            android:text="小宝的麻麻"
-            android:textSize="@dimen/text_medium"
+            android:layout_toRightOf="@+id/iv_avatar">
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/text_color1"
+                android:text="小宝的麻麻"
+                android:textSize="@dimen/text_medium"
+                android:textColor="@color/text_color4"
+                />
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/text_color1"
+                android:text="共**条记录"
+                android:textSize="@dimen/text_small"
+                android:layout_marginTop="@dimen/size_6"
+                />
 
-            />
+        </LinearLayout>
+
 
         <ImageView
             android:layout_width="wrap_content"
@@ -68,7 +84,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/size_24"
+        android:layout_marginTop="@dimen/size_12"
         android:background="@color/bg_color6" />
 
     <RelativeLayout
@@ -76,7 +92,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/text_color1"
-
         android:padding="@dimen/size_12">
 
         <TextView

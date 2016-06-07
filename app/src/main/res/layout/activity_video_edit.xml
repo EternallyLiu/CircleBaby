@@ -36,14 +36,19 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <VideoView
-        android:id="@+id/videoview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/ll_clip"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/toolbar">
 
-        />
+        <VideoView
+            android:id="@+id/videoview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/ll_clip"

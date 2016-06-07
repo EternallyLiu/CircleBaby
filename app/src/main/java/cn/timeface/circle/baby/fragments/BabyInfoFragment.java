@@ -236,6 +236,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
 
                                 Gson gson = new Gson();
                                 FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
+                                getActivity().finish();
                             }
                         }, throwable -> {
                             Log.e(TAG, "editBabyInfo:", throwable);
