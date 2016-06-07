@@ -162,6 +162,10 @@ public interface ApiService {
     @GET("babyMsgInfo/querySystemMsgList")
     Observable<SystemMsgListResponse> querySystemMsgList();
 
+    //标记消息为已读
+    @GET("babyMsgInfo/read")
+    Observable<BaseResponse> read(@Query("id") int id);
+
     //发布
     @GET("babyTime/publish")
     Observable<BaseResponse> publish(@Query("dataList") String dataList,
@@ -210,17 +214,23 @@ public interface ApiService {
     @GET("babyTime/queryBabyTimeDetail")
     Observable<TimeDetailResponse> queryBabyTimeDetail(@Query("timeId") int timeId);
 
-    //评论
+    //回复评论
+    @GET("babyTime/comment")
+    Observable<BaseResponse> comment(@Query("content") String content,
+                                           @Query("date") long date,
+                                           @Query("timeId") int timeId,
+                                           @Query("commentId") int commentId);
+
+    //评论时光
     @GET("babyTime/comment")
     Observable<BaseResponse> comment(@Query("content") String content,
                                      @Query("date") long date,
-                                     @Query("timeId") int timeId,
-                                     @Query("toUserId") String toUserId);
+                                     @Query("timeId") int timeId);
 
     //点赞/取消点赞
     @GET("babyTime/like")
     Observable<BaseResponse> like(@Query("timeId") int timeId,
-                                  @Query("type") int type);
+                                     @Query("type") int type);
 
     //云相册列表
     @GET("babyCloudAlbums/queryCloudAlbumList")

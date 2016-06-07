@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import android.widget.TextView;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.net.URLEncoder;
 
@@ -50,6 +54,8 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
     Toolbar toolbar;
     @Bind(R.id.et_title)
     EditText etTitle;
+    @Bind(R.id.et_pinyin)
+    EditText etPinyin;
     @Bind(R.id.rl_diary)
     RelativeLayout rlDiary;
     private HorizontalListViewAdapter2 adapter;
@@ -93,7 +99,29 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
 
 //        GlideUtil.displayImage(url, scaleImageView);
 
+        etTitle.requestFocus();
         tvSave.setOnClickListener(this);
+        etTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if(!TextUtils.isEmpty(s.toString())){
+                    String pinyin = Pinyin4jUtil.getPinyin(s.toString());
+                    etPinyin.setText(pinyin);
+                }else{
+                    etPinyin.setText("");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         return view;
     }
@@ -125,13 +153,18 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
                 Gson gson = new Gson();
                 String imageInfo = gson.toJson(templateImage);
 
-                apiService.cardComposed(URLEncoder.encode(content), imageInfo, "pinyin")
+                apiService.cardComposed(URLEncoder.encode(content), imageInfo, URLEncoder.encode(etPinyin.getText().toString()))
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(diaryComposeResponse -> {
-                            MediaObj mediaObj = diaryComposeResponse.getMediaObj();
-                            System.out.println("合成的识图卡片===============" + mediaObj.getImgUrl());
-                            getActivity().finish();
-                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
+                            if(diaryComposeResponse.success()){
+                                MediaObj mediaObj = diaryComposeResponse.getMediaObj();
+                                System.out.println("合成的识图卡片===============" + mediaObj.getImgUrl());
+                                getActivity().finish();
+                            }else{
+                                ToastUtil.showToast(diaryComposeResponse.getInfo());
+                            }
+
+//                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
                         }, throwable -> {
                             Log.e(TAG, "diaryPublish:");
                         });

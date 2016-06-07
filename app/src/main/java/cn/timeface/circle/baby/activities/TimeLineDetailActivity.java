@@ -17,10 +17,12 @@ import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +77,9 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     EditText etCommment;
     @Bind(R.id.btn_send)
     Button btnSend;
+    @Bind(R.id.rl_single)
+    RelativeLayout rlSingle;
+
     private TimeLineObj timelineobj;
 
     public static void open(Context context, TimeLineObj item) {
@@ -88,10 +93,9 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timelinedetail);
         ButterKnife.bind(this);
-        timelineobj = getIntent().getParcelableExtra("timelineobj");
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(timelineobj.getAuthor().getBabyObj().getName());
+        setSupportActionBar(toolbar);
 
+        timelineobj = (TimeLineObj) getIntent().getSerializableExtra("timelineobj");
         tvContent.setText(timelineobj.getContent());
         tvAuthor.setText(timelineobj.getAuthor().getNickName());
         tvDate.setText(DateUtil.getTime2(timelineobj.getDate()));
@@ -102,7 +106,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             String url = timelineobj.getMediaList().get(0).getImgUrl();
             GlideUtil.displayImage(url, ivCover);
         } else {
-            ivCover.setVisibility(View.GONE);
+            rlSingle.setVisibility(View.GONE);
         }
 
         if (timelineobj.getMediaList().size() > 1) {
@@ -155,6 +159,10 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             llCommentWrapper.setVisibility(View.GONE);
         }
 
+        if(timelineobj.getType()==1){
+            ivVideo.setVisibility(View.VISIBLE);
+        }
+
         btnSend.setOnClickListener(this);
 
     }
@@ -195,10 +203,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         switch (v.getId()){
             case R.id.btn_send:
                 String s = etCommment.getText().toString();
-                apiService.comment(s,System.currentTimeMillis(),timelineobj.getTimeId(),timelineobj.getAuthor().getUserId())
+                apiService.comment(URLEncoder.encode(s),System.currentTimeMillis(),timelineobj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
                         ToastUtil.showToast(response.getInfo());
+                        if (response.success()){
+                            etCommment.setText("");
+                        }
                     }, throwable -> {
                         Log.e(TAG, "comment:");
                     });

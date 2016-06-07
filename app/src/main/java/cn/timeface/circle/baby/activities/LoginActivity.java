@@ -163,13 +163,11 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.putString("userObj", gson.toJson(userLoginResponse.getUserInfo()));
 //                        String userObj = FastData.getString("userObj", "");
 //                        UserObj o = gson.fromJson(userObj, UserObj.class);
-
-                        FastData.setUserInfo(userLoginResponse.getUserInfo());
                         ToastUtil.showToast(userLoginResponse.getInfo());
-
                         if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
                             CreateBabyActivity.open(this);
                         } else {
+                            FastData.setUserInfo(userLoginResponse.getUserInfo());
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
 //                     else if (userLoginResponse.getUserInfo().getNickName() == null || TextUtils.isEmpty(userLoginResponse.getUserInfo().getNickName())) {

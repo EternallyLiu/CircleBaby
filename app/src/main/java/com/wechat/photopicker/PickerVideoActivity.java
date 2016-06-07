@@ -53,7 +53,7 @@ import de.greenrobot.event.Subscribe;
 /**
  * 选择图界面
  */
-public class PickerVideoActivity extends BaseAppCompatActivity implements IEventBus{
+public class PickerVideoActivity extends BaseAppCompatActivity implements IEventBus {
 
     public final static String EXTRA_SHOW_CAMERA = "SHOW_CAMERA";
     public final static String EXTRA_SHOW_GIF = "SHOW_GIF";
@@ -80,9 +80,9 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
         assert actionBar != null;
         actionBar.setTitle(R.string.picker_video);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        if (savedInstanceState != null) {
-            optionalPhotoSize = (int) savedInstanceState.get(KEY_OPTIONAL_PICTURE_SIZE);
-        }
+//        if (savedInstanceState != null) {
+//            optionalPhotoSize = (int) savedInstanceState.get(KEY_OPTIONAL_PICTURE_SIZE);
+//        }
 
 
         initData();
@@ -111,7 +111,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                     videoInfo = videos.get(position);
                     String s = ImageFactory.saveImage(videoInfo.getThumbnail());
                     videoInfo.setImgLocalUrl(s);
-                    Intent intent = new Intent(PickerVideoActivity.this , VideoEditActivity.class);
+                    Intent intent = new Intent(PickerVideoActivity.this, VideoEditActivity.class);
                     intent.putExtra("path", videoInfo.getPath());
                     startActivity(intent);
                 }
@@ -254,7 +254,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
     @Subscribe
     public void onEvent(Object event) {
-        if(event instanceof ClipVideoSuccessEvent){
+        if (event instanceof ClipVideoSuccessEvent) {
             String clipVideoPath = ((ClipVideoSuccessEvent) event).getClipVideoPath();
             videoInfo.setPath(clipVideoPath);
             uploadImage(videoInfo.getImgLocalUrl());
@@ -279,42 +279,9 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                             //如果不存在则上传
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
-                        String imgObjectKey = uploadFileObj.getObjectKey();
+                        String imgObjectKey = "http://img1.timeface.cn/" + uploadFileObj.getObjectKey();
                         videoInfo.setImgObjectKey(imgObjectKey);
                         new File(imgLocalUrl).delete();
-
-//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
-                    } catch (ServiceException | ClientException e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-
-                }
-            }
-        }.start();
-    }
-
-    private void uploadVideo(String path) {
-        if (TextUtils.isEmpty(path)) {
-            return;
-        }
-        OSSManager ossManager = OSSManager.getOSSManager(this);
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    //获取上传文件
-                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
-                    //上传操作
-                    try {
-                        //判断服务器是否已存在该文件
-                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
-                            //如果不存在则上传
-                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
-                        }
-                        String videoObjectKey = uploadFileObj.getObjectKey();
-                        videoInfo.setVideoObjectKey(videoObjectKey);
-                        new File(path).delete();
                         EventBus.getDefault().post(new PickVideoEvent(videoInfo));
                         finish();
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
@@ -327,5 +294,6 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
             }
         }.start();
     }
+
 
 }

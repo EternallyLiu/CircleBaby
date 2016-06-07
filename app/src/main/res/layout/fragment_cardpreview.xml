@@ -43,10 +43,21 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/et_title"
+            android:id="@+id/et_pinyin"
             android:layout_width="@dimen/size_260"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
+            android:gravity="center"
+            android:background="@null"
+            android:padding="@dimen/size_6"
+            android:layout_gravity="center_horizontal"
+            />
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="@dimen/size_260"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_2"
             android:gravity="center"
             android:background="@drawable/shape_dash_bg"
             android:padding="@dimen/size_6"
