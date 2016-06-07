@@ -89,7 +89,7 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
     public static void openFamilyMemberInfoFragment(Context context, UserObj userObj) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userObj", userObj);
+        bundle.putParcelable("userObj", userObj);
         open(context, "FamilyMemberInfoFragment", bundle);
     }
 
@@ -97,13 +97,13 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("time", time);
         bundle.putString("content", content);
-        bundle.putSerializable("imgObj", imgObj);
+        bundle.putParcelable("imgObj", imgObj);
         open(context, "DiaryPreviewFragment", bundle);
     }
 
     public static void openCardPreviewFragment(Context context, ImgObj imgObj) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("imgObj", imgObj);
+        bundle.putParcelable("imgObj", imgObj);
         open(context, "CardPreviewFragment", bundle);
     }
 

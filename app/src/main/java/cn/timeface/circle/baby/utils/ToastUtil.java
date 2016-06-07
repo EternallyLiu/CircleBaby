@@ -11,7 +11,11 @@ import cn.timeface.circle.baby.App;
  */
 public class ToastUtil {
 
-    public static void showToast(String info){
+    public static void showToast(String info) {
         Toast.makeText(App.getInstance(), info, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showToast(int strId) {
+        Toast.makeText(App.getInstance(), App.getInstance().getText(strId), Toast.LENGTH_SHORT).show();
     }
 }

@@ -22,8 +22,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CloudAlbumActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.adapters.RecodeAdapter;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
@@ -153,7 +153,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
                     ToastUtil.showToast(timelineResponse.getInfo());
-                    if(timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()){
+                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
                     }
                     setDataList(timelineResponse.getDataList());
@@ -166,9 +166,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
-        if(currentPage == 1){
+        if (currentPage == 1) {
             adapter.setListData(dataList);
-        }else{
+        } else {
             adapter.getListData().addAll(dataList);
         }
         adapter.notifyDataSetChanged();
@@ -214,6 +214,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.tv_toensurerelation:
 
+                break;
+            case R.id.tv_album:
+                CloudAlbumActivity.open(getActivity());
                 break;
         }
     }

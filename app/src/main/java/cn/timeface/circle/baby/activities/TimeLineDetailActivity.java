@@ -88,7 +88,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timelinedetail);
         ButterKnife.bind(this);
-        timelineobj = (TimeLineObj) getIntent().getSerializableExtra("timelineobj");
+        timelineobj = getIntent().getParcelableExtra("timelineobj");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(timelineobj.getAuthor().getBabyObj().getName());
 

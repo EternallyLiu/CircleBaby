@@ -90,25 +90,25 @@ public class TimePiece implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.content);
-        dest.writeSerializable(mileStone);
-        dest.writeTypedList(imgObjList);
+        dest.writeParcelable(this.mileStone, flags);
+        dest.writeTypedList(this.imgObjList);
         dest.writeString(this.time);
-
     }
 
     protected TimePiece(Parcel in) {
         this.content = in.readString();
-        this.mileStone = (Milestone) in.readSerializable();
+        this.mileStone = in.readParcelable(Milestone.class.getClassLoader());
         this.imgObjList = in.createTypedArrayList(ImgObj.CREATOR);
         this.time = in.readString();
-
     }
 
     public static final Creator<TimePiece> CREATOR = new Creator<TimePiece>() {
+        @Override
         public TimePiece createFromParcel(Parcel source) {
             return new TimePiece(source);
         }
 
+        @Override
         public TimePiece[] newArray(int size) {
             return new TimePiece[size];
         }

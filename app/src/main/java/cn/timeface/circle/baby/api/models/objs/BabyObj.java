@@ -1,11 +1,14 @@
 package cn.timeface.circle.baby.api.models.objs;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import cn.timeface.circle.baby.api.models.base.BaseObj;
 
 /**
  * Created by lidonglin on 2016/4/28.
  */
-public class BabyObj extends BaseObj {
+public class BabyObj extends BaseObj implements Parcelable {
     String age;
     String avatar;
     int babyId;
@@ -106,4 +109,44 @@ public class BabyObj extends BaseObj {
                 ", name='" + name + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.age);
+        dest.writeString(this.avatar);
+        dest.writeInt(this.babyId);
+        dest.writeLong(this.bithday);
+        dest.writeString(this.blood);
+        dest.writeString(this.constellation);
+        dest.writeInt(this.gender);
+        dest.writeString(this.name);
+    }
+
+    protected BabyObj(Parcel in) {
+        this.age = in.readString();
+        this.avatar = in.readString();
+        this.babyId = in.readInt();
+        this.bithday = in.readLong();
+        this.blood = in.readString();
+        this.constellation = in.readString();
+        this.gender = in.readInt();
+        this.name = in.readString();
+    }
+
+    public static final Parcelable.Creator<BabyObj> CREATOR = new Parcelable.Creator<BabyObj>() {
+        @Override
+        public BabyObj createFromParcel(Parcel source) {
+            return new BabyObj(source);
+        }
+
+        @Override
+        public BabyObj[] newArray(int size) {
+            return new BabyObj[size];
+        }
+    };
 }

@@ -30,26 +30,6 @@ public class UserObj extends BaseObj implements Parcelable {
     }
 
 
-    protected UserObj(Parcel in) {
-        avatar = in.readString();
-        nickName = in.readString();
-        userId = in.readString();
-        relationName = in.readString();
-        isCreator = in.readInt();
-    }
-
-    public static final Creator<UserObj> CREATOR = new Creator<UserObj>() {
-        @Override
-        public UserObj createFromParcel(Parcel in) {
-            return new UserObj(in);
-        }
-
-        @Override
-        public UserObj[] newArray(int size) {
-            return new UserObj[size];
-        }
-    };
-
     public String getRelationName() {
         return relationName;
     }
@@ -98,20 +78,6 @@ public class UserObj extends BaseObj implements Parcelable {
         this.userId = userId;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.userId);
-        dest.writeString(this.nickName);
-        dest.writeString(this.avatar);
-        dest.writeSerializable(this.babyObj);
-        dest.writeString(this.relationName);
-        dest.writeInt(this.isCreator);
-    }
 
     @Override
     public String toString() {
@@ -124,4 +90,41 @@ public class UserObj extends BaseObj implements Parcelable {
                 ", isCreator=" + isCreator +
                 '}';
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.avatar);
+        dest.writeParcelable(this.babyObj, flags);
+        dest.writeString(this.nickName);
+        dest.writeString(this.userId);
+        dest.writeString(this.relationName);
+        dest.writeInt(this.isCreator);
+    }
+
+    protected UserObj(Parcel in) {
+        this.avatar = in.readString();
+        this.babyObj = in.readParcelable(BabyObj.class.getClassLoader());
+        this.nickName = in.readString();
+        this.userId = in.readString();
+        this.relationName = in.readString();
+        this.isCreator = in.readInt();
+    }
+
+    public static final Parcelable.Creator<UserObj> CREATOR = new Parcelable.Creator<UserObj>() {
+        @Override
+        public UserObj createFromParcel(Parcel source) {
+            return new UserObj(source);
+        }
+
+        @Override
+        public UserObj[] newArray(int size) {
+            return new UserObj[size];
+        }
+    };
 }

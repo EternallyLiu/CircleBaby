@@ -96,7 +96,7 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
         super.onCreate(savedInstanceState);
         time = getArguments().getString("time");
         content = getArguments().getString("content");
-        imgObj = (ImgObj) getArguments().getSerializable("imgObj");
+        imgObj = getArguments().getParcelable("imgObj");
         url = imgObj.getLocalPath();
         date = imgObj.getDate();
         uploadImage();

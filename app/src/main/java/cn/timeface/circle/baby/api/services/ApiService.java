@@ -5,6 +5,7 @@ import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.api.models.responses.CardListResponse;
+import cn.timeface.circle.baby.api.models.responses.CloudAlbumListResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryComposedResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryTextResponse;
@@ -212,14 +213,17 @@ public interface ApiService {
     //评论
     @GET("babyTime/comment")
     Observable<BaseResponse> comment(@Query("content") String content,
-                                           @Query("date") long date,
-                                           @Query("timeId") int timeId,
-                                           @Query("toUserId") String toUserId);
+                                     @Query("date") long date,
+                                     @Query("timeId") int timeId,
+                                     @Query("toUserId") String toUserId);
 
     //点赞/取消点赞
     @GET("babyTime/like")
     Observable<BaseResponse> like(@Query("timeId") int timeId,
-                                     @Query("type") int type);
+                                  @Query("type") int type);
 
+    //云相册列表
+    @GET("babyCloudAlbums/queryCloudAlbumList")
+    Observable<CloudAlbumListResponse> queryCloudAlbumList();
 
 }

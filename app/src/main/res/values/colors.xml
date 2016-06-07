@@ -67,4 +67,6 @@
     <color name="main_blue">#039ae3</color>
     <color name="gray_normal">#666667</color>
     <color name="gray_pressed">#b5b5b6</color>
+    <color name="bg_main">#f2f2f2</color>
+    <color name="divider_color">#e0e0e0</color>
 </resources>

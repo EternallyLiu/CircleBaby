@@ -59,7 +59,7 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userObj = (UserObj) getArguments().getSerializable("userObj");
+        userObj = getArguments().getParcelable("userObj");
 
     }
 
