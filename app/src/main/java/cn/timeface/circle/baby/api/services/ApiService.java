@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.api.models.responses.TimeDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.TimelineResponse;
 import cn.timeface.circle.baby.api.models.responses.UserLoginResponse;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -74,6 +75,7 @@ public interface ApiService {
                                         @Query("code") String code);
 
     //注册
+    @FormUrlEncoded
     @POST("auth/register")
     Observable<RegisterResponse> register(@Field("account") String account,
                                           @Field("nickname") String nickname,
@@ -235,5 +237,10 @@ public interface ApiService {
     //云相册列表
     @GET("babyCloudAlbums/queryCloudAlbumList")
     Observable<CloudAlbumListResponse> queryCloudAlbumList();
+
+    //我的-修改用户资料
+    @GET("member/profile")
+    Observable<UserLoginResponse> profile(@Query("nickName") String nickName,
+                                          @Query("pic") String pic);
 
 }
