@@ -58,9 +58,9 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     @Bind(R.id.rb_boy)
     RadioButton rbBoy;
     @Bind(R.id.et_birthday)
-    EditText etBirthday;
+    TextView etBirthday;
     @Bind(R.id.et_relationship)
-    EditText etRelationship;
+    TextView etRelationship;
     @Bind(R.id.tv_focus)
     TextView tvFocus;
 

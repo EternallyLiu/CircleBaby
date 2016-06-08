@@ -52,7 +52,7 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         holder.onClickListener = onClickListener;
         holder.info = info;
         GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar);
-        holder.tvRelation.setText(info.getRelation());
+        holder.tvRelation.setText(info.getUserInfo().getRelationName());
         holder.tvContent.setText(info.getContent());
         holder.tvTime.setText(DateUtil.getDisTime(info.getTime()));
         if(info.getTimeInfo().getMediaList() == null || info.getTimeInfo().getMediaList().size()<1){

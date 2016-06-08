@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +91,8 @@ public class PhotoViewerNewActivity extends BaseAppCompatActivity implements IEv
 
     public void close() {
         Intent data = new Intent();
-        data.putParcelableArrayListExtra("result_select_image_list", (ArrayList<? extends Parcelable>) mAdapter.getSelImgs());
+//        data.putParcelableArrayListExtra("result_select_image_list", (ArrayList<? extends Parcelable>) mAdapter.getSelImgs());
+        data.putExtra("result_select_image_list", (Serializable) mAdapter.getSelImgs());
         setResult(RESULT_OK, data);
         finish();
     }

@@ -97,7 +97,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
         timelineobj = (TimeLineObj) getIntent().getSerializableExtra("timelineobj");
         tvContent.setText(timelineobj.getContent());
-        tvAuthor.setText(timelineobj.getAuthor().getNickName());
+        tvAuthor.setText(timelineobj.getAuthor().getRelationName());
         tvDate.setText(DateUtil.getTime2(timelineobj.getDate()));
 
         if (timelineobj.getMediaList().size() == 1) {
@@ -135,6 +135,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
         if (timelineobj.getLikeCount() > 0) {
             hsv.setVisibility(View.VISIBLE);
+            llGoodListUsersBar.removeAllViews();
             for (UserObj u : timelineobj.getLikeList()) {
                 ImageView imageView = initPraiseItem();
                 imageView.setOnClickListener(new View.OnClickListener() {
@@ -150,6 +151,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             hsv.setVisibility(View.GONE);
         }
         if(timelineobj.getCommentCount() >0){
+            llCommentWrapper.setVisibility(View.VISIBLE);
+            llCommentWrapper.removeAllViews();
             int comments = timelineobj.getCommentCount();
             for (int i = 0; i < comments; i++) {
                 CommentObj commentObj = timelineobj.getCommentList().get(i);
@@ -161,6 +164,12 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
         if(timelineobj.getType()==1){
             ivVideo.setVisibility(View.VISIBLE);
+            int width = Remember.getInt("width", 0);
+            ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = width;
+            ivCover.setLayoutParams(layoutParams);
+            ivVideo.setLayoutParams(layoutParams);
         }
 
         btnSend.setOnClickListener(this);
@@ -185,7 +194,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         TextView textView = new TextView(this);
         int size = getResources().getDimensionPixelSize(R.dimen.size_2);
         textView.setPadding(size, size, size, size);
-        textView.setText(Html.fromHtml("<font color='#00b6f8'>name</font>".replace("name", comment.getUserInfo().getNickName()) + ":" + comment.getContent()));
+        textView.setText(Html.fromHtml("<font color='#00b6f8'>name</font>".replace("name", comment.getUserInfo().getRelationName()) + ":" + comment.getContent()));
         textView.setTextColor(getResources().getColorStateList(R.color.text_color3));
 //        textView.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_small_4));
         textView.setLineSpacing(0, 1.2f);

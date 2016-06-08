@@ -18,6 +18,16 @@ public class VideoInfo extends BaseObj{
     String videoObjectKey;
     long Date;
 
+    public VideoInfo() {
+    }
+
+    public VideoInfo(long duration, String imgObjectKey, String path, long date) {
+        this.duration = duration;
+        this.imgObjectKey = imgObjectKey;
+        this.path = path;
+        Date = date;
+    }
+
     public String getImgLocalUrl() {
         return imgLocalUrl;
     }

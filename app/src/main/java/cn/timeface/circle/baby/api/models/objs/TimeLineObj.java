@@ -12,7 +12,9 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
 /**
  * Created by lidonglin on 2016/5/9.
  */
-public class TimeLineObj extends BaseObj implements Parcelable {
+public class TimeLineObj extends BaseObj
+//        implements Parcelable
+{
 
     UserObj author;                 //作者
     int commentCount;               //评论个数
@@ -124,55 +126,55 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.likeList = likeList;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.author, flags);
-        dest.writeInt(this.commentCount);
-        dest.writeTypedList(this.commentList);
-        dest.writeLong(this.date);
-        dest.writeInt(this.like);
-        dest.writeInt(this.likeCount);
-        dest.writeTypedList(this.mediaList);
-        dest.writeTypedList(this.likeList);
-        dest.writeString(this.milestone);
-        dest.writeInt(this.timeId);
-        dest.writeInt(this.type);
-        dest.writeString(this.content);
-    }
-
-    public TimeLineObj() {
-    }
-
-    protected TimeLineObj(Parcel in) {
-        this.author = in.readParcelable(UserObj.class.getClassLoader());
-        this.commentCount = in.readInt();
-        this.commentList = in.createTypedArrayList(CommentObj.CREATOR);
-        this.date = in.readLong();
-        this.like = in.readInt();
-        this.likeCount = in.readInt();
-        this.mediaList = in.createTypedArrayList(MediaObj.CREATOR);
-        this.likeList = in.createTypedArrayList(UserObj.CREATOR);
-        this.milestone = in.readString();
-        this.timeId = in.readInt();
-        this.type = in.readInt();
-        this.content = in.readString();
-    }
-
-    public static final Parcelable.Creator<TimeLineObj> CREATOR = new Parcelable.Creator<TimeLineObj>() {
-        @Override
-        public TimeLineObj createFromParcel(Parcel source) {
-            return new TimeLineObj(source);
-        }
-
-        @Override
-        public TimeLineObj[] newArray(int size) {
-            return new TimeLineObj[size];
-        }
-    };
+//
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeParcelable(this.author, flags);
+//        dest.writeInt(this.commentCount);
+//        dest.writeTypedList(this.commentList);
+//        dest.writeLong(this.date);
+//        dest.writeInt(this.like);
+//        dest.writeInt(this.likeCount);
+//        dest.writeTypedList(this.mediaList);
+//        dest.writeTypedList(this.likeList);
+//        dest.writeString(this.milestone);
+//        dest.writeInt(this.timeId);
+//        dest.writeInt(this.type);
+//        dest.writeString(this.content);
+//    }
+//
+//    public TimeLineObj() {
+//    }
+//
+//    protected TimeLineObj(Parcel in) {
+//        this.author = in.readParcelable(UserObj.class.getClassLoader());
+//        this.commentCount = in.readInt();
+//        this.commentList = in.createTypedArrayList(CommentObj.CREATOR);
+//        this.date = in.readLong();
+//        this.like = in.readInt();
+//        this.likeCount = in.readInt();
+//        this.mediaList = in.createTypedArrayList(MediaObj.CREATOR);
+//        this.likeList = in.createTypedArrayList(UserObj.CREATOR);
+//        this.milestone = in.readString();
+//        this.timeId = in.readInt();
+//        this.type = in.readInt();
+//        this.content = in.readString();
+//    }
+//
+//    public static final Parcelable.Creator<TimeLineObj> CREATOR = new Parcelable.Creator<TimeLineObj>() {
+//        @Override
+//        public TimeLineObj createFromParcel(Parcel source) {
+//            return new TimeLineObj(source);
+//        }
+//
+//        @Override
+//        public TimeLineObj[] newArray(int size) {
+//            return new TimeLineObj[size];
+//        }
+//    };
 }

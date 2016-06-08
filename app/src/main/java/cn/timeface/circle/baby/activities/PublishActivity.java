@@ -26,7 +26,6 @@ import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
 import java.io.File;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,7 +46,6 @@ import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.PublishObj;
 import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
-import cn.timeface.circle.baby.events.PickVideoEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -57,7 +55,6 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
-import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
@@ -251,6 +248,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             adapter.getData().clear();
                             adapter.getData().addAll(imageUrls);
                             adapter.notifyDataSetChanged();
+
+                            tvTime.setText(titles.get(0));
                         }
                     }
 
@@ -268,7 +267,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     tvTime.setText(time);
                     break;
                 case PHOTO_RECORD_DETAIL:
-                    photoRecodes = data.getParcelableArrayListExtra("result_photo_record_detail");
+//                    photoRecodes = data.getParcelableArrayListExtra("result_photo_record_detail");
+                    PhotoRecode photoRecode = (PhotoRecode) data.getSerializableExtra("photoRecode");
+                    int position = data.getIntExtra("position", 0);
+//                    Bundle bundle = data.getExtras();
+//                    PhotoRecode photoRecode = (PhotoRecode) bundle.getSerializable("photoRecode");
+//                    int position = bundle.getInt("position");
+                    photoRecodes.set(position, photoRecode);
                     if (publishPhotoAdapter == null) {
                         publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
                     }
@@ -276,6 +281,22 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     publishPhotoAdapter.notifyDataSetChanged();
                     break;
                 case VIDEO_SELECT:
+                    String imgObjectKey = data.getStringExtra("imgObjectKey");
+                    String path = data.getStringExtra("path");
+                    long duration = data.getLongExtra("duration", 0);
+                    long date = data.getLongExtra("date", System.currentTimeMillis());
+                    videoInfo = new VideoInfo(duration, imgObjectKey, path, date);
+                    GlideUtil.displayImage("http://img1.timeface.cn/" + this.videoInfo.getImgObjectKey(), ivVideo);
+                    rlVideo.setVisibility(View.VISIBLE);
+                    gvGridView.setVisibility(View.GONE);
+                    ViewGroup.LayoutParams layoutParams = ivVideo.getLayoutParams();
+                    int width = Remember.getInt("width", 0);
+                    layoutParams.width = width;
+                    layoutParams.height = width;
+                    ivVideo.setLayoutParams(layoutParams);
+                    ivCover.setLayoutParams(layoutParams);
+                    tvTime.setText(DateUtil.getYear2(date));
+
                     break;
             }
 
@@ -313,6 +334,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
+                intent1.putExtra("time", tvTime.getText().toString());
                 startActivityForResult(intent1, TIME);
                 break;
         }
@@ -353,8 +375,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布日记
     private void publishDiary() {
         String content = etContent.getText().toString();
-        if (TextUtils.isEmpty(content)) {
-            ToastUtil.showToast("发点文字吧~");
+        if (TextUtils.isEmpty(content)&&mediaObj==null) {
+            Toast.makeText(this,"发点文字吧~",Toast.LENGTH_SHORT).show();
             return;
         }
         String t = tvTime.getText().toString();
@@ -375,6 +397,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
+                        new File(videoInfo.getPath()).delete();
                         finish();
                     }
                 }, throwable -> {
@@ -450,20 +473,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             adapter.setData(list);
             adapter.notifyDataSetChanged();
 
-        }else if(event instanceof PickVideoEvent){
-            videoInfo = ((PickVideoEvent) event).getVideoInfo();
-
-            rlVideo.setVisibility(View.VISIBLE);
-            gvGridView.setVisibility(View.GONE);
-            int width = Remember.getInt("width", 0);
-            ViewGroup.LayoutParams layoutParams = ivVideo.getLayoutParams();
-            layoutParams.width = width;
-            layoutParams.height = width;
-            ivVideo.setLayoutParams(layoutParams);
-            ivCover.setLayoutParams(layoutParams);
-
-            GlideUtil.displayImage(videoInfo.getImgObjectKey(), ivVideo);
-//            mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoInfo.getVideoObjectKey(), videoInfo.getDate());
         }
     }
 
@@ -525,9 +534,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         }
                         String videoObjectKey = uploadFileObj.getObjectKey();
                         videoInfo.setVideoObjectKey(videoObjectKey);
-                        new File(path).delete();
-                        System.out.println("videoObjectKey==========================" + videoObjectKey);
-                        mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoInfo.getVideoObjectKey(), videoInfo.getDate());
+//                        new File(path).delete();
+                        mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
                         publishDiary();
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {

@@ -7,4 +7,5 @@ import java.io.Serializable;
  * email : sy0725work@gmail.com
  */
 public class BaseObj implements Serializable {
+    private static final long serialVersionUID = 1L;
 }

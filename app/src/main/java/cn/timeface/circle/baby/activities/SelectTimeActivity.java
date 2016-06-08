@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -29,11 +30,11 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
     @Bind({R.id.cb_time_now, R.id.cb_time_shot, R.id.cb_time_set})
     CheckBox[] checkBoxs;
     @Bind(R.id.ll_time_now)
-    LinearLayout llTimeNow;
+    RelativeLayout llTimeNow;
     @Bind(R.id.ll_time_shot)
-    LinearLayout llTimeShot;
+    RelativeLayout llTimeShot;
     @Bind(R.id.ll_time_set)
-    LinearLayout llTimeSet;
+    RelativeLayout llTimeSet;
     @Bind(R.id.tv_time_shot)
     TextView tvTimeShot;
     @Bind(R.id.tv_time_set)
@@ -54,11 +55,15 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        String time = getIntent().getStringExtra("time");
+        tvTimeShot.setText(time);
+
         llTimeNow.setOnClickListener(this);
         llTimeShot.setOnClickListener(this);
         llTimeSet.setOnClickListener(this);
 
-        tvTimeNow.setText(DateUtil.getYear(System.currentTimeMillis()));
+        tvTimeNow.setText(DateUtil.getYear2(System.currentTimeMillis()));
         setChecked(Remember.getInt("setChecked", 0));
     }
 
@@ -83,7 +88,7 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         monthOfYear = monthOfYear + 1;
-                        tvTimeShot.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
+                        tvTimeShot.setText(year + "." + monthOfYear + "." + dayOfMonth);
                         time = tvTimeShot.getText().toString();
 
                         Intent intent = new Intent();
@@ -101,7 +106,7 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         monthOfYear = monthOfYear + 1;
-                        tvTimeSet.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
+                        tvTimeSet.setText(year + "." + monthOfYear + "." + dayOfMonth);
                         time = tvTimeSet.getText().toString();
 
                         Intent intent = new Intent();

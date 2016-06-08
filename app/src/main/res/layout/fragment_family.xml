@@ -4,39 +4,45 @@
     android:background="@color/bg_color8"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_color1"
-        android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/toolbar_padding_top">
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <FrameLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/bg_color1"
+            android:minHeight="?attr/actionBarSize"
+            android:paddingTop="@dimen/toolbar_padding_top">
 
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="小CC一家"
-                android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_large" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_invite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="@dimen/size_12"
-                android:text="邀请"
-                android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_medium" />
-        </FrameLayout>
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="小CC一家"
+                    android:textColor="@color/text_color1"
+                    android:textSize="@dimen/text_large" />
 
-    </android.support.v7.widget.Toolbar>
+                <TextView
+                    android:id="@+id/tv_invite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginRight="@dimen/size_12"
+                    android:text="邀请"
+                    android:textColor="@color/text_color1"
+                    android:textSize="@dimen/text_medium" />
+            </FrameLayout>
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <View
         android:layout_width="match_parent"
@@ -53,6 +59,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@color/bg_color1" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,6 +78,7 @@
                     android:layout_height="@dimen/size_56"
                     android:layout_margin="@dimen/size_6"
                     android:src="@drawable/ic_login_qq" />
+
                 <ImageView
                     android:id="@+id/iv_creator"
                     android:layout_width="wrap_content"
@@ -112,7 +120,7 @@
                 android:layout_marginTop="@dimen/size_6"
                 android:text="最近：05-18 10：00"
                 android:textColor="@color/text_color1"
-            android:textSize="@dimen/text_normal" />
+                android:textSize="@dimen/text_normal" />
 
         </LinearLayout>
 
@@ -129,6 +137,7 @@
         android:layout_height="wrap_content"
         android:background="@color/bg_color2"
         android:scrollbars="none" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/content_recycler_view2"
         android:layout_width="match_parent"
