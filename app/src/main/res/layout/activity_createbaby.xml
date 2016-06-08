@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color4"
+    android:background="@color/bg_color8"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -123,7 +123,7 @@
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
 
-    <EditText
+    <TextView
         android:id="@+id/et_birthday"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -131,14 +131,16 @@
         android:drawableLeft="@drawable/ic_login_qq"
         android:drawablePadding="@dimen/size_12"
         android:hint="请输入宝宝的生日"
-        android:padding="@dimen/size_12" />
+        android:padding="@dimen/size_12"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_medium"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
 
-    <EditText
+    <TextView
         android:id="@+id/et_relationship"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -146,16 +148,18 @@
         android:drawableLeft="@drawable/ic_login_qq"
         android:drawablePadding="@dimen/size_12"
         android:hint="与宝宝的关系"
-        android:padding="@dimen/size_12" />
+        android:padding="@dimen/size_12"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_medium"/>
 
     <TextView
         android:id="@+id/tv_focus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_24"
-        android:layout_marginLeft="@dimen/size_36"
         android:background="@color/text_color1"
         android:gravity="center"
         android:text="亲友已经创建过宝宝，去关注他"
+        android:padding="@dimen/size_12"
         android:textSize="@dimen/text_normal" />
 </LinearLayout>

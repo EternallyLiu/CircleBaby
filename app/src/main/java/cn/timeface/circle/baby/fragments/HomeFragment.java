@@ -156,7 +156,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
                     }
                     setDataList(timelineResponse.getDataList());
-                }, throwable -> {
+                }, error -> {
                     Log.e(TAG, "timeline:");
                     tfptrListViewHelper.finishTFPTRRefresh();
                 });

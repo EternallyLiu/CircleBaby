@@ -143,7 +143,7 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
                                     timeRun();
                                 }
                             }, error -> {
-                                Toast.makeText(this, "获取验证码失败", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "getVeriCode:");
                             });
                 }
                 break;
@@ -161,13 +161,14 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
                 s = apiService.verifyCode(mobile, code)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
                             if (response.success()) {
                                 ConfirmPasswordActivity.open(RegisterActivity.this, mobile);
-                                finish();
+//                                finish();
+                            }else{
+                                Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
                             }
                             return;
-                        }, throwable -> {
+                        }, error -> {
                             Log.e(TAG,"verifyCode:");
                         });
                 break;

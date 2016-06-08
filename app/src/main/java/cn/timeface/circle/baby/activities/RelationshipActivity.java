@@ -103,7 +103,8 @@ public class RelationshipActivity extends BaseAppCompatActivity implements View.
                             if (relationIdResponse.success()) {
                                 Relationship relation = new Relationship(relationship, relationIdResponse.getRelationId());
                                 Intent intent = new Intent();
-                                intent.putExtra("relationship", relation);
+                                intent.putExtra("relationName",relation.getRelationName());
+                                intent.putExtra("relationId",relation.getRelationId());
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {
@@ -116,7 +117,8 @@ public class RelationshipActivity extends BaseAppCompatActivity implements View.
             case R.id.tv_relationship:
                 Relationship relation = (Relationship) v.getTag(R.string.tag_ex);
                 Intent intent = new Intent();
-                intent.putExtra("relationship",relation);
+                intent.putExtra("relationName",relation.getRelationName());
+                intent.putExtra("relationId",relation.getRelationId());
                 setResult(RESULT_OK, intent);
                 finish();
                 break;

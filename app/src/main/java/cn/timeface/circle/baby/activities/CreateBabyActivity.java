@@ -19,6 +19,7 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.wechat.photopicker.PickerPhotoActivity;
 
+import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.Calendar;
 
@@ -33,6 +34,7 @@ import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -69,7 +71,8 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
 
     private String imagePath = "";
     private String objectKey = "";
-    private Relationship relationship;
+    private int relationId;
+    private String relationName;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, CreateBabyActivity.class);
@@ -121,8 +124,12 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     Toast.makeText(this, "请设置与宝宝关系", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(TextUtils.isEmpty(objectKey)){
+                    ToastUtil.showToast("给宝宝设置一个好看的头像吧~");
+                    return;
+                }
                 long time = DateUtil.getTime(birthday, "yyyy-MM-dd");
-                apiService.createBaby(time, gender, objectKey, URLEncoder.encode(name), relationship.getRelationId())
+                apiService.createBaby(time, gender, objectKey, URLEncoder.encode(name), relationId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(userLoginResponse -> {
                             FastData.setUserInfo(userLoginResponse.getUserInfo());
@@ -188,8 +195,9 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     }
                     break;
                 case RELATIONSHIP:
-                    relationship = (Relationship) data.getSerializableExtra("relationship");
-                    etRelationship.setText(relationship.getRelationName());
+                    relationId = data.getIntExtra("relationId", 0);
+                    relationName = data.getStringExtra("relationName");
+                    etRelationship.setText(relationName);
                     break;
             }
         }
