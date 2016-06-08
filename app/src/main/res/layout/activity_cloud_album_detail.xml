@@ -14,7 +14,8 @@
         android:background="@color/colorAccent"
         android:minHeight="?attr/actionBarSize"
         android:paddingTop="@dimen/toolbar_padding_top"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:theme="@style/ToolbarColor" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

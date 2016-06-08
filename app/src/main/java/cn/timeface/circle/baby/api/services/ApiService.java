@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.api.services;
 
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.api.models.responses.AlbumDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.api.models.responses.CardListResponse;
@@ -219,9 +220,9 @@ public interface ApiService {
     //回复评论
     @GET("babyTime/comment")
     Observable<BaseResponse> comment(@Query("content") String content,
-                                           @Query("date") long date,
-                                           @Query("timeId") int timeId,
-                                           @Query("commentId") int commentId);
+                                     @Query("date") long date,
+                                     @Query("timeId") int timeId,
+                                     @Query("commentId") int commentId);
 
     //评论时光
     @GET("babyTime/comment")
@@ -232,7 +233,7 @@ public interface ApiService {
     //点赞/取消点赞
     @GET("babyTime/like")
     Observable<BaseResponse> like(@Query("timeId") int timeId,
-                                     @Query("type") int type);
+                                  @Query("type") int type);
 
     //云相册列表
     @GET("babyCloudAlbums/queryCloudAlbumList")
@@ -243,4 +244,7 @@ public interface ApiService {
     Observable<UserLoginResponse> profile(@Query("nickName") String nickName,
                                           @Query("pic") String pic);
 
+    //云相册详情
+    @GET("babyCloudAlbums/queryCloudAlbumDetail")
+    Observable<AlbumDetailResponse> queryCloudAlbumDetail(@Query("cloudAlbumId") String cloudAlbumId);
 }

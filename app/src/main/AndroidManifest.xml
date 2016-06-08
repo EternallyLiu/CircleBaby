@@ -130,7 +130,9 @@
         <activity
             android:name=".activities.CloudAlbumActivity"
             android:label="@string/cloudAlbum" />
-        <activity android:name=".activities.CloudAlbumDetailActivity"></activity>
+        <activity
+            android:name=".activities.CloudAlbumDetailActivity"
+            android:label="@string/cloudAlbum" />
     </application>
 
 </manifest>
