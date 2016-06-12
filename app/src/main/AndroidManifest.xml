@@ -126,7 +126,8 @@
         <activity android:name=".activities.VideoPlayActivity" />
         <activity android:name=".activities.PhotoRecodeDetailActivity" />
         <activity android:name=".activities.FragmentBridgeActivity" />
-        <activity android:name=".activities.TimeLineDetailActivity" />
+        <activity android:name=".activities.TimeLineDetailActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".activities.CloudAlbumActivity"
             android:label="@string/cloudAlbum" />

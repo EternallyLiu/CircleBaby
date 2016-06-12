@@ -18,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.MessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.Msg;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -103,6 +104,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                     case 1://赞
                     case 2://发布动态
                     case 3://评论，跳转动态详情
+                        TimeLineDetailActivity.open(getActivity(), msg.getTimeInfo());
                         break;
                     case 4://新成员加入，跳转亲友圈
                         FragmentBridgeActivity.open(getActivity(), "FamilyMemberFragment");

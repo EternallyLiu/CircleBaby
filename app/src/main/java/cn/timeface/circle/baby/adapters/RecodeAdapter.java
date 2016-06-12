@@ -2,13 +2,14 @@ package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -23,29 +24,32 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
-import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.CommentObj;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.RecordObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.IconTextView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by JieGuo on 1/28/16.
  */
-public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
+public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> implements View.OnClickListener {
 
     private View.OnClickListener onClickListener;
     int normalColor;
     public static Context context;
     private ViewHolder holder;
     public List<TimeLineObj> listData;
+    private TimeLineObj item;
 
     public RecodeAdapter(Context mContext, List<TimeLineObj> listData) {
         super(mContext, listData);
@@ -68,10 +72,15 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = ((ViewHolder) viewHolder);
-        TimeLineObj item = getItem(position);
+        item = getItem(position);
         holder.tvContent.setText(item.getContent());
         holder.tvAuthor.setText(item.getAuthor().getRelationName());
         holder.tvDate.setText(DateUtil.getTime2(item.getDate()));
+        holder.iconLike.setTextColor(item.getLike() == 1 ? Color.RED : normalColor);
+        if (!TextUtils.isEmpty(item.getMilestone())) {
+            holder.tvMilestone.setVisibility(View.VISIBLE);
+            holder.tvMilestone.setText(item.getMilestone());
+        }
 
         if (item.getMediaList().size() == 1) {
             holder.gv.setVisibility(View.GONE);
@@ -105,11 +114,11 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.gv.setVisibility(View.GONE);
         }
 
-        holder.onClickListener = onClickListener;
-        holder.setRecordObj(item);
+//        holder.onClickListener = onClickListener;
+//        holder.setRecordObj(item);
 
 
-        if(item.getCommentCount() >0){
+        if (item.getCommentCount() > 0) {
             holder.llCommentWrapper.setVisibility(View.VISIBLE);
             holder.llCommentWrapper.removeAllViews();
             int comments = item.getCommentCount() > 3 ? 3 : item.getCommentCount();
@@ -117,16 +126,17 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                 CommentObj commentObj = item.getCommentList().get(i);
                 holder.llCommentWrapper.addView(initCommentItemView(commentObj));
             }
-        }else{
+        } else {
             holder.llCommentWrapper.setVisibility(View.GONE);
         }
         if (item.getCommentCount() > 3) {
             holder.tvMoreComment.setVisibility(View.VISIBLE);
         } else {
             holder.tvMoreComment.setVisibility(View.GONE);
+            holder.llCommentWrapper.removeAllViews();
         }
 
-        if(item.getLikeCount()>0){
+        if (item.getLikeCount() > 0) {
             holder.hsv.setVisibility(View.VISIBLE);
             holder.llGoodListUsersBar.removeAllViews();
             for (UserObj u : item.getLikeList()) {
@@ -140,11 +150,12 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                 holder.llGoodListUsersBar.addView(imageView);
                 GlideUtil.displayImage(u.getAvatar(), imageView);
             }
-        }else{
+        } else {
             holder.hsv.setVisibility(View.GONE);
+            holder.llGoodListUsersBar.removeAllViews();
         }
 
-        if(item.getType()==1){
+        if (item.getType() == 1) {
             holder.ivVideo.setVisibility(View.VISIBLE);
             int width = Remember.getInt("width", 0);
             ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
@@ -157,20 +168,17 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (item.getType()){
+                switch (item.getType()) {
                     case 1:
-                        Intent intent = new Intent(context, VideoPlayActivity.class);
-                        intent.putExtra("media",item.getMediaList().get(0));
-                        context.startActivity(intent);
-                        break;
                     case 0:
                     case 2:
                     case 3:
-                        TimeLineDetailActivity.open(context,item);
+                        TimeLineDetailActivity.open(context, item);
                         break;
                 }
             }
         });
+        holder.iconLike.setOnClickListener(this);
     }
 
 
@@ -206,6 +214,55 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         return new Animator[0];
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.icon_like:
+                int p = holder.iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;
+                ApiFactory.getApi().getApiService().like(item.getTimeId(), p)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            ToastUtil.showToast(response.getInfo());
+                            if (response.success()) {
+                                if (p == 1) {
+                                    holder.iconLike.setTextColor(Color.RED);
+                                    holder.hsv.setVisibility(View.VISIBLE);
+
+                                    ImageView imageView = initPraiseItem();
+                                    holder.llGoodListUsersBar.addView(imageView);
+                                    GlideUtil.displayImage(FastData.getAvatar(), imageView);
+                                } else {
+                                    holder.iconLike.setTextColor(normalColor);
+                                    holder.llGoodListUsersBar.removeAllViews();
+                                    if (item.getLikeCount() == 0) {
+                                        holder.hsv.setVisibility(View.GONE);
+                                    } else if (item.getLikeCount() == 1 && item.getLikeList().get(0).getUserId().equals(FastData.getUserId())) {
+                                        holder.hsv.setVisibility(View.GONE);
+                                    } else {
+                                        holder.hsv.setVisibility(View.VISIBLE);
+                                        for (UserObj u : item.getLikeList()) {
+                                            ImageView imageView = initPraiseItem();
+                                            imageView.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+//                                                    FragmentBridgeActivity.openUserInfoFragment(v.getContext(), u);
+                                                }
+                                            });
+                                            if (!u.getUserId().equals(FastData.getUserId())) {
+                                                holder.llGoodListUsersBar.addView(imageView);
+                                            }
+                                            GlideUtil.displayImage(u.getAvatar(), imageView);
+                                        }
+                                    }
+                                }
+                            }
+                        }, error -> {
+                            Log.e("RecoderAdapter", "like:");
+                        });
+                break;
+        }
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.tv_content)
         TextView tvContent;
@@ -229,6 +286,12 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         ImageView ivCover;
         @Bind(R.id.iv_video)
         ImageView ivVideo;
+        @Bind(R.id.tv_milestone)
+        TextView tvMilestone;
+        @Bind(R.id.icon_like)
+        IconTextView iconLike;
+        @Bind(R.id.icon_comment)
+        IconTextView iconComment;
 
         View.OnClickListener onClickListener = null;
 
