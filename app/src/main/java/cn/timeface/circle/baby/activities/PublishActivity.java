@@ -186,15 +186,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
     private void selectImages() {
-//        Intent intent = new Intent(this, PickerPhotoActivity.class);
-//        startActivityForResult(intent, PICTURE);
-        PhotoSelectionActivity.openForResult(
-                this,
-                "选择照片",
-                selImages,
-                PHOTO_COUNT_MAX,
-                false,
-                PICTURE, false);
+        SelectPhotoActivity.openForResult(this,selImages,PHOTO_COUNT_MAX,PICTURE);
+
     }
 
     private void selectVideos() {

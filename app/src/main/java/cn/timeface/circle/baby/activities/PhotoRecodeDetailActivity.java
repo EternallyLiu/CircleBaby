@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +71,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
 //        Bundle bundle = getIntent().getExtras();
 //         photoRecode = (PhotoRecode) bundle.getSerializable("photoRecode");
 //        position = bundle.getInt("position");
-        photoRecode = (PhotoRecode) getIntent().getSerializableExtra("photoRecode");
+        photoRecode =  getIntent().getParcelableExtra("photoRecode");
         position = getIntent().getIntExtra("position", 0);
         selImages = this.photoRecode.getImgObjList();
         for (ImgObj item : selImages) {
@@ -105,16 +104,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     }
 
     private void selectImages() {
-//        Intent intent = new Intent(this, PickerPhotoActivity.class);
-//        startActivityForResult(intent, PICTURE);
-
-        PhotoSelectionActivity.openForResult(
-                this,
-                "选择照片",
-                selImages,
-                PHOTO_COUNT_MAX,
-                false,
-                PICTURE, false);
+        SelectPhotoActivity.openForResult(this, selImages, PHOTO_COUNT_MAX, PICTURE);
     }
 
     @Override
@@ -170,7 +160,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
-                intent1.putExtra("time",tvTime.getText().toString());
+                intent1.putExtra("time", tvTime.getText().toString());
                 startActivityForResult(intent1, TIME);
                 break;
         }
@@ -194,7 +184,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
 //        intent.putExtras(bundle);
 //        intent.putParcelableArrayListExtra("result_photo_record_detail", (ArrayList<? extends Parcelable>) photoRecodes);
         intent.putExtra("photoRecode", (Serializable) photoRecode);
-        intent.putExtra("position",position);
+        intent.putExtra("position", position);
         setResult(RESULT_OK, intent);
         finish();
     }

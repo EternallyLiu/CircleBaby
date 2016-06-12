@@ -2,6 +2,7 @@ package cn.timeface.circle.baby;
 
 import android.app.Application;
 
+import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.umeng.analytics.AnalyticsConfig;
 
@@ -28,9 +29,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         app = this;
-
         //数据库ORM
-        FlowManager.init(this);
+        FlowManager.init(new FlowConfig.Builder(this).build());
 
         //shared preferences,
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");

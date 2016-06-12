@@ -1,8 +1,6 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -21,20 +19,17 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 
-import org.w3c.dom.Text;
-
 import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.TemplateImage;
 import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
-import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -43,7 +38,6 @@ import cn.timeface.circle.baby.utils.Pinyin4jUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ScaleImageView;
-import de.greenrobot.event.EventBus;
 
 public class CardPreviewFragment extends BaseFragment implements View.OnClickListener {
 
@@ -67,7 +61,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
     private int width;
     private int hight;
     private String objectKey;
-    private ImgObj imgObj;
+    private PhotoModel imgObj;
     private String date;
 
     public CardPreviewFragment() {
@@ -76,9 +70,9 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imgObj = (ImgObj) getArguments().getSerializable("imgObj");
+        imgObj = getArguments().getParcelable("imgObj");
         url = imgObj.getLocalPath();
-        date = imgObj.getDate();
+        date = imgObj.getStringDate();
         uploadImage();
     }
 
@@ -110,10 +104,10 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if(!TextUtils.isEmpty(s.toString())){
+                if (!TextUtils.isEmpty(s.toString())) {
                     String pinyin = Pinyin4jUtil.getPinyin(s.toString());
                     etPinyin.setText(pinyin);
-                }else{
+                } else {
                     etPinyin.setText("");
                 }
             }
@@ -137,7 +131,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
         switch (v.getId()) {
             case R.id.tv_save:
                 String content = etTitle.getText().toString();
-                if(content.length()>6){
+                if (content.length() > 6) {
                     ToastUtil.showToast("标题字数不能大于6个");
                     return;
                 }
@@ -148,7 +142,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
                 float cropHeight = touchImageView.getCropHeight();
                 int bitmapWidth = touchImageView.getBitmapWidth();
                 int bitmapHeight = touchImageView.getBitmapHeight();
-                long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
+                long createTime = DateUtil.getTime(date, "yyyyMMdd");
                 TemplateImage templateImage = new TemplateImage(0, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
                 Gson gson = new Gson();
                 String imageInfo = gson.toJson(templateImage);
@@ -156,11 +150,11 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
                 apiService.cardComposed(URLEncoder.encode(content), imageInfo, URLEncoder.encode(etPinyin.getText().toString()))
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(diaryComposeResponse -> {
-                            if(diaryComposeResponse.success()){
+                            if (diaryComposeResponse.success()) {
                                 MediaObj mediaObj = diaryComposeResponse.getMediaObj();
                                 System.out.println("合成的识图卡片===============" + mediaObj.getImgUrl());
                                 getActivity().finish();
-                            }else{
+                            } else {
                                 ToastUtil.showToast(diaryComposeResponse.getInfo());
                             }
 

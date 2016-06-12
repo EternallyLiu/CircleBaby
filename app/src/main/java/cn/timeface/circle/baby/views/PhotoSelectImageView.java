@@ -15,7 +15,7 @@ import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.api.models.db.PhotoModel;
 
 /**
  * author : YW.SUN Created on 2016/4/11
@@ -54,7 +54,7 @@ public class PhotoSelectImageView extends RatioFrameLayout implements Checkable 
         ButterKnife.bind(view);
     }
 
-    public void setContent(ImgObj img) {
+    public void setContent(PhotoModel img) {
         Glide.with(getContext())
                 .load(img.getUri())
                 .thumbnail(0.1f)

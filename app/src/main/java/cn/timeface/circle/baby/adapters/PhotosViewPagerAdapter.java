@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.events.PhotoSelectEvent;
 import cn.timeface.circle.baby.utils.ToastUtil;
@@ -26,16 +27,13 @@ import de.greenrobot.event.EventBus;
  */
 public class PhotosViewPagerAdapter extends PagerAdapter {
 
-    private final Context mContext;
-    private List<ImgObj> mItems;
-    private List<ImgObj> selItems;
-    private int maxCount;
 
-    public PhotosViewPagerAdapter(Context context, List<ImgObj> mItems, List<ImgObj> selItems, int maxCount) {
+    private final Context mContext;
+    private List<PhotoModel> mItems;
+
+    public PhotosViewPagerAdapter(Context context, List<PhotoModel> mItems) {
         mContext = context;
         this.mItems = mItems;
-        this.selItems = selItems;
-        this.maxCount = maxCount;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class PhotosViewPagerAdapter extends PagerAdapter {
         return POSITION_NONE;
     }
 
-    public ImgObj getItem(int position) {
+    public PhotoModel getItem(int position) {
         if (position >= 0 && position < getCount()) {
             return mItems.get(position);
         }
@@ -62,43 +60,17 @@ public class PhotosViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(View container, int position) {
-        ImgObj upload = mItems.get(position);
+        PhotoModel upload = mItems.get(position);
         PhotoSelectView view = new PhotoSelectView(getContext());
         view.getCbSel().setTag(R.string.tag_obj, upload);
-        view.setOnCheckedListener(onCheckedListener);
-        if (selItems.contains(upload)) {
-            view.setChecked(true);
-        }
+        view.getCbSel().setVisibility(View.GONE);
         Glide.with(getContext())
                 .load(upload.getUri())
-                .thumbnail(0.1f)
+                .thumbnail(.2f)
                 .fitCenter()
                 .into(view.getIvPhoto());
         ((ViewPager) container).addView(view);
         return view;
-    }
-
-    private View.OnClickListener onCheckedListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            CheckBox checkBox = (CheckBox) v;
-            ImgObj img = (ImgObj) v.getTag(R.string.tag_obj);
-            if (checkBox.isChecked()) {
-                if (selItems.size() + 1 > maxCount) {
-                    ToastUtil.showToast("最多只能选" + maxCount + "张照片");
-                    ((CheckBox) v).setChecked(false);
-                    return;
-                }
-                selItems.add(img);
-            } else {
-                selItems.remove(img);
-            }
-            EventBus.getDefault().post(new PhotoSelectEvent(selItems.size()));
-        }
-    };
-
-    public List<ImgObj> getSelImgs() {
-        return selItems;
     }
 
     @Override

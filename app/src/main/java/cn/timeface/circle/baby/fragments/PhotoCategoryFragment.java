@@ -33,11 +33,13 @@ public class PhotoCategoryFragment extends BaseFragment {
 
     List<MediaStoreBucket> buckets;
     PhotoCategoryAdapter adapter;
+    private String curBucketId;
 
-    public static PhotoCategoryFragment newInstance(List<MediaStoreBucket> buckets) {
+    public static PhotoCategoryFragment newInstance(List<MediaStoreBucket> buckets, String curBucketId) {
         PhotoCategoryFragment fragment = new PhotoCategoryFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList("buckets", (ArrayList<? extends Parcelable>) buckets);
+        args.putString("cur_bucket_id", curBucketId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,12 +50,13 @@ public class PhotoCategoryFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_photo_category, container, false);
         ButterKnife.bind(this, view);
         this.buckets = getArguments().getParcelableArrayList("buckets");
+        curBucketId = getArguments().getString("cur_bucket_id");
         setupView();
         return view;
     }
 
     private void setupView(){
-        adapter = new PhotoCategoryAdapter(getActivity(), buckets);
+        adapter = new PhotoCategoryAdapter(getActivity(), buckets,curBucketId);
         rvBuckets.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvBuckets.setAdapter(adapter);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL);

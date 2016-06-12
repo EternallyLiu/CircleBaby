@@ -85,13 +85,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     }
 
     private void selectImages() {
-        PhotoSelectionActivity.openForResult(
-                this,
-                "选择照片",
-                selImages,
-                PHOTO_COUNT_MAX,
-                false,
-                PICTURE, false);
+        SelectPhotoActivity.openForResult(this,selImages,PHOTO_COUNT_MAX,PICTURE);
     }
 
     @Override

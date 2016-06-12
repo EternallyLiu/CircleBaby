@@ -114,7 +114,7 @@ public class PublishPhotoAdapter extends BaseRecyclerAdapter<PhotoRecode> {
                 Intent intent = new Intent(context, PhotoRecodeDetailActivity.class);
                 PhotoRecode photoRecode = listData.get(position);
 //                intent.putParcelableArrayListExtra("list_photorecord", (ArrayList<? extends Parcelable>) listData);
-                intent.putExtra("photoRecode", (Serializable) photoRecode);
+                intent.putExtra("photoRecode", photoRecode);
                 intent.putExtra("position", position);
                 activity.startActivityForResult(intent, activity.PHOTO_RECORD_DETAIL);
             }

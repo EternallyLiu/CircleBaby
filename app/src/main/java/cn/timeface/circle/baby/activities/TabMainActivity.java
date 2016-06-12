@@ -21,6 +21,7 @@ import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.utils.Remember;
 import de.greenrobot.event.EventBus;
 
@@ -54,10 +55,10 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         setSupportActionBar(toolbar);
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        int width = wm.getDefaultDisplay().getWidth()/3;
+        int width = wm.getDefaultDisplay().getWidth() / 3;
         Remember.putInt("width", width);
 
-
+        SavePicInfoService.open(getApplicationContext());
         clickTab(menuHomeTv);
         ivPublish.setOnClickListener(this);
 

@@ -24,6 +24,7 @@ import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import rx.Subscription;
+
 /**
  * Created by zhsheng on 2016/6/7.
  */
@@ -89,6 +90,7 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_upload) {
             //进入图片选择页面
+            SelectPhotoActivity.open4result(this, 100);
         }
         return super.onOptionsItemSelected(item);
     }

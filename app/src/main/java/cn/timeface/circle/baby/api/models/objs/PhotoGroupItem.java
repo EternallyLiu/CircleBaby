@@ -6,8 +6,9 @@ import android.os.Parcelable;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import cn.timeface.circle.baby.api.models.db.PhotoModel;
 
 /**
  * author: rayboot  Created on 16/3/16.
@@ -18,11 +19,15 @@ public class PhotoGroupItem implements Parcelable {
     @JsonField(name = {"time", "title"})
     String title;
     @JsonField(name = {"imgs"})
-    List<ImgObj> imgObjList;
+    List<PhotoModel> imgList;
 
-    public PhotoGroupItem(String title, List<ImgObj> imgObjList) {
+    PhotoGroupItem() {
+
+    }
+
+    public PhotoGroupItem(String title, List<PhotoModel> imgList) {
         this.title = title;
-        this.imgObjList = imgObjList;
+        this.imgList = imgList;
     }
 
     public String getTitle() {
@@ -34,22 +39,12 @@ public class PhotoGroupItem implements Parcelable {
     }
 
 
-    public List<ImgObj> getImgObjList() {
-        return imgObjList;
+    public List<PhotoModel> getImgList() {
+        return imgList;
     }
 
-    public void setImgObjList(List<ImgObj> imgObjList) {
-        this.imgObjList = imgObjList;
-    }
-
-    public List<ImgObj> getSelectedImages() {
-        List<ImgObj> images = new ArrayList<>();
-        for (ImgObj item : imgObjList) {
-            if (item.isSelected()) {
-                images.add(item);
-            }
-        }
-        return images;
+    public void setImgList(List<PhotoModel> imgList) {
+        this.imgList = imgList;
     }
 
     @Override
@@ -60,15 +55,12 @@ public class PhotoGroupItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
-        dest.writeTypedList(imgObjList);
-    }
-
-    public PhotoGroupItem() {
+        dest.writeTypedList(imgList);
     }
 
     protected PhotoGroupItem(Parcel in) {
         this.title = in.readString();
-        this.imgObjList = in.createTypedArrayList(ImgObj.CREATOR);
+        this.imgList = in.createTypedArrayList(PhotoModel.CREATOR);
     }
 
     public static final Creator<PhotoGroupItem> CREATOR = new Creator<PhotoGroupItem>() {

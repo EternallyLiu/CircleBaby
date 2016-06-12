@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -24,14 +23,9 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.events.CardEvent;
-import cn.timeface.circle.baby.events.MediaObjEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 
 public class CardPublishActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
@@ -98,21 +92,15 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                         }
                     }
                     vp.setAdapter(new MyAdapter(mViews));
-                    if(mViews.size()>1){
-                        vp.setCurrentItem(mViews.size()-1);
+                    if (mViews.size() > 1) {
+                        vp.setCurrentItem(mViews.size() - 1);
                     }
                 });
 
     }
 
     private void selectImages() {
-        PhotoSelectionActivity.openForResult(
-                this,
-                "选择照片",
-                selImages,
-                PHOTO_COUNT_MAX,
-                false,
-                PICTURE, false);
+        SelectPhotoActivity.openForResult(this, selImages, PHOTO_COUNT_MAX, PICTURE);
     }
 
     @Override

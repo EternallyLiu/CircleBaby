@@ -7,12 +7,12 @@
     android:padding="@dimen/view_space_small">
 
     <cn.timeface.circle.baby.views.PhotoSelectImageView
-        android:clickable="true"
-        android:onClick="clickPhotoView"
         android:id="@+id/iv_img0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:clickable="true"
+        android:onClick="clickPhotoView"
         android:paddingLeft="@dimen/view_space_small"
         android:paddingRight="@dimen/view_space_small"
         ratio:fixRatio="fixWidth"
@@ -20,12 +20,12 @@
         ratio:widthRatio="1" />
 
     <cn.timeface.circle.baby.views.PhotoSelectImageView
-        android:clickable="true"
-        android:onClick="clickPhotoView"
         android:id="@+id/iv_img1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:clickable="true"
+        android:onClick="clickPhotoView"
         android:paddingLeft="@dimen/view_space_small"
         android:paddingRight="@dimen/view_space_small"
         ratio:fixRatio="fixWidth"
@@ -33,16 +33,28 @@
         ratio:widthRatio="1" />
 
     <cn.timeface.circle.baby.views.PhotoSelectImageView
-        android:clickable="true"
-        android:onClick="clickPhotoView"
         android:id="@+id/iv_img2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:clickable="true"
+        android:onClick="clickPhotoView"
         android:paddingLeft="@dimen/view_space_small"
         android:paddingRight="@dimen/view_space_small"
         ratio:fixRatio="fixWidth"
         ratio:heightRatio="1"
         ratio:widthRatio="1" />
 
+    <cn.timeface.circle.baby.views.PhotoSelectImageView
+        android:id="@+id/iv_img3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:onClick="clickPhotoView"
+        android:paddingLeft="@dimen/view_space_small"
+        android:paddingRight="@dimen/view_space_small"
+        ratio:fixRatio="fixWidth"
+        ratio:heightRatio="1"
+        ratio:widthRatio="1" />
 </LinearLayout>

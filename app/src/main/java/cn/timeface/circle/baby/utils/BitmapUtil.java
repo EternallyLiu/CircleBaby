@@ -37,4 +37,6 @@ public class BitmapUtil {
         Drawable drawable = new BitmapDrawable(mcontext.getResources(), bitmap);
         return drawable;
     }
+
 }
+
