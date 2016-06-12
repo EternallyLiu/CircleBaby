@@ -27,7 +27,7 @@
         android:background="@color/bg_color6"
         android:layout_marginTop="@dimen/size_24"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_time_now"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,6 +41,7 @@
             android:visibility="invisible"
             />
         <TextView
+            android:layout_toRightOf="@+id/cb_time_now"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -51,21 +52,20 @@
             />
         <TextView
             android:id="@+id/tv_time_now"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2016.3.2"
             android:background="@color/text_color1"
             android:textSize="@dimen/text_medium"
-            android:layout_gravity="center_vertical"
-            android:gravity="right"
-            android:layout_marginRight="@dimen/size_36"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="28dp"
             />
-    </LinearLayout>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_time_shot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -79,6 +79,7 @@
             android:visibility="invisible"
             />
         <TextView
+            android:layout_toRightOf="@+id/cb_time_shot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -89,23 +90,22 @@
             />
         <TextView
             android:id="@+id/tv_time_shot"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2016.3.2"
             android:background="@color/text_color1"
             android:textSize="@dimen/text_medium"
             android:drawableRight="@drawable/mine_data_go"
             android:drawablePadding="@dimen/size_12"
-            android:layout_gravity="center_vertical"
-            android:gravity="right"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/size_12"
             />
-    </LinearLayout>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_time_set"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -119,6 +119,7 @@
             android:visibility="invisible"
             />
         <TextView
+            android:layout_toRightOf="@+id/cb_time_set"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -129,18 +130,17 @@
             />
         <TextView
             android:id="@+id/tv_time_set"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2016.3.2"
             android:background="@color/text_color1"
             android:textSize="@dimen/text_medium"
             android:drawableRight="@drawable/mine_data_go"
             android:drawablePadding="@dimen/size_12"
-            android:layout_gravity="center_vertical"
-            android:gravity="right"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/size_12"
             />
-    </LinearLayout>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

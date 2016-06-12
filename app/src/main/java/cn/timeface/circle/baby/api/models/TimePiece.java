@@ -20,7 +20,9 @@ import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
  * @TODO 时光碎片
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class TimePiece implements Parcelable {
+public class TimePiece
+//        implements Parcelable
+{
 
     private String content; //发布文本内容
     private Milestone mileStone; //里程碑
@@ -82,35 +84,35 @@ public class TimePiece implements Parcelable {
         return uploadFileObjs;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.content);
-        dest.writeParcelable(this.mileStone, flags);
-        dest.writeTypedList(this.imgObjList);
-        dest.writeString(this.time);
-    }
-
-    protected TimePiece(Parcel in) {
-        this.content = in.readString();
-        this.mileStone = in.readParcelable(Milestone.class.getClassLoader());
-        this.imgObjList = in.createTypedArrayList(ImgObj.CREATOR);
-        this.time = in.readString();
-    }
-
-    public static final Creator<TimePiece> CREATOR = new Creator<TimePiece>() {
-        @Override
-        public TimePiece createFromParcel(Parcel source) {
-            return new TimePiece(source);
-        }
-
-        @Override
-        public TimePiece[] newArray(int size) {
-            return new TimePiece[size];
-        }
-    };
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeString(this.content);
+//        dest.writeParcelable(this.mileStone, flags);
+//        dest.writeTypedList(this.imgObjList);
+//        dest.writeString(this.time);
+//    }
+//
+//    protected TimePiece(Parcel in) {
+//        this.content = in.readString();
+//        this.mileStone = in.readParcelable(Milestone.class.getClassLoader());
+//        this.imgObjList = in.createTypedArrayList(ImgObj.CREATOR);
+//        this.time = in.readString();
+//    }
+//
+//    public static final Creator<TimePiece> CREATOR = new Creator<TimePiece>() {
+//        @Override
+//        public TimePiece createFromParcel(Parcel source) {
+//            return new TimePiece(source);
+//        }
+//
+//        @Override
+//        public TimePiece[] newArray(int size) {
+//            return new TimePiece[size];
+//        }
+//    };
 }

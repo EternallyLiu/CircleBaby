@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +100,7 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
                             if (milestoneResponse.success()) {
                                 Milestone milestone = new Milestone(milestoneName, milestoneResponse.getMilestoneId());
                                 Intent intent = new Intent();
-                                intent.putExtra("milestone", milestone);
+                                intent.putExtra("milestone", (Serializable) milestone);
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {
@@ -112,7 +113,7 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
             case R.id.tv_relationship:
                 Milestone milestone = (Milestone) v.getTag(R.string.tag_ex);
                 Intent intent = new Intent();
-                intent.putExtra("milestone",milestone);
+                intent.putExtra("milestone", (Serializable) milestone);
                 setResult(RESULT_OK, intent);
                 finish();
                 break;

@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +112,9 @@ public class PublishPhotoAdapter extends BaseRecyclerAdapter<PhotoRecode> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PhotoRecodeDetailActivity.class);
-                intent.putParcelableArrayListExtra("list_photorecord", (ArrayList<? extends Parcelable>) listData);
+                PhotoRecode photoRecode = listData.get(position);
+//                intent.putParcelableArrayListExtra("list_photorecord", (ArrayList<? extends Parcelable>) listData);
+                intent.putExtra("photoRecode", (Serializable) photoRecode);
                 intent.putExtra("position", position);
                 activity.startActivityForResult(intent, activity.PHOTO_RECORD_DETAIL);
             }
@@ -119,7 +123,9 @@ public class PublishPhotoAdapter extends BaseRecyclerAdapter<PhotoRecode> {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int posi, long id) {
                 Intent intent = new Intent(context, PhotoRecodeDetailActivity.class);
-                intent.putParcelableArrayListExtra("list_photorecord", (ArrayList<? extends Parcelable>) listData);
+                PhotoRecode photoRecode = listData.get(position);
+//                intent.putParcelableArrayListExtra("list_photorecord", (ArrayList<? extends Parcelable>) listData);
+                intent.putExtra("photoRecode", (Serializable) photoRecode);
                 intent.putExtra("position", position);
                 activity.startActivityForResult(intent, activity.PHOTO_RECORD_DETAIL);
             }

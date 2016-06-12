@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 
@@ -40,14 +39,12 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.VideoInfo;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.events.ClipVideoSuccessEvent;
-import cn.timeface.circle.baby.events.PickVideoEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.common.utils.StorageUtil;
-import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
 /**
@@ -83,15 +80,11 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 //        if (savedInstanceState != null) {
 //            optionalPhotoSize = (int) savedInstanceState.get(KEY_OPTIONAL_PICTURE_SIZE);
 //        }
-
-
         initData();
-
 //        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
 //        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
 //        mRecyclerView.setLayoutManager(layoutManager);
 //        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
         VideoAdapter adapter = new VideoAdapter(videos);
         gv.setAdapter(adapter);
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -154,9 +147,11 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                 videoInfo.setDuration(durantion);
                 videoInfo.setSize(size);
                 videoInfo.setThumbnail(thumbnail);
+                videoInfo.setDate(date);
 
                 videos.add(videoInfo);
             }
+            cursor.close();
         }
 //不论是否有sd卡都要查询手机内存
         Cursor cursor = cr.query(MediaStore.Video.Media.INTERNAL_CONTENT_URI, progress, null, null, null);
@@ -176,10 +171,11 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
             videoInfo.setDuration(durantion);
             videoInfo.setSize(size);
             videoInfo.setThumbnail(thumbnail);
+            videoInfo.setDate(date);
 
             videos.add(videoInfo);
         }
-
+        cursor.close();
     }
 
     private void checkPermission() {
@@ -279,10 +275,17 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                             //如果不存在则上传
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
-                        String imgObjectKey = "http://img1.timeface.cn/" + uploadFileObj.getObjectKey();
+                        String imgObjectKey = uploadFileObj.getObjectKey();
+//                        "http://img1.timeface.cn/"
                         videoInfo.setImgObjectKey(imgObjectKey);
                         new File(imgLocalUrl).delete();
-                        EventBus.getDefault().post(new PickVideoEvent(videoInfo));
+
+                        Intent intent = new Intent();
+                        intent.putExtra("imgObjectKey", imgObjectKey);
+                        intent.putExtra("path",videoInfo.getPath());
+                        intent.putExtra("duration",videoInfo.getDuration());
+                        intent.putExtra("date", videoInfo.getDate());
+                        setResult(RESULT_OK, intent);
                         finish();
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {

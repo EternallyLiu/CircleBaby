@@ -8,7 +8,9 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
 /**
  * Created by lidonglin on 2016/5/9.
  */
-public class MediaObj extends BaseObj implements Parcelable {
+public class MediaObj extends BaseObj
+//        implements Parcelable
+{
     String content;         //图片描述
     int h;                  //长度
     int w;                  //宽度
@@ -121,45 +123,45 @@ public class MediaObj extends BaseObj implements Parcelable {
         this.videoUrl = videoUrl;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.content);
-        dest.writeInt(this.h);
-        dest.writeInt(this.w);
-        dest.writeInt(this.id);
-        dest.writeString(this.imgUrl);
-        dest.writeLong(this.length);
-        dest.writeString(this.localPath);
-        dest.writeLong(this.photographTime);
-        dest.writeString(this.videoUrl);
-    }
-
-    protected MediaObj(Parcel in) {
-        this.content = in.readString();
-        this.h = in.readInt();
-        this.w = in.readInt();
-        this.id = in.readInt();
-        this.imgUrl = in.readString();
-        this.length = in.readLong();
-        this.localPath = in.readString();
-        this.photographTime = in.readLong();
-        this.videoUrl = in.readString();
-    }
-
-    public static final Parcelable.Creator<MediaObj> CREATOR = new Parcelable.Creator<MediaObj>() {
-        @Override
-        public MediaObj createFromParcel(Parcel source) {
-            return new MediaObj(source);
-        }
-
-        @Override
-        public MediaObj[] newArray(int size) {
-            return new MediaObj[size];
-        }
-    };
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeString(this.content);
+//        dest.writeInt(this.h);
+//        dest.writeInt(this.w);
+//        dest.writeInt(this.id);
+//        dest.writeString(this.imgUrl);
+//        dest.writeLong(this.length);
+//        dest.writeString(this.localPath);
+//        dest.writeLong(this.photographTime);
+//        dest.writeString(this.videoUrl);
+//    }
+//
+//    protected MediaObj(Parcel in) {
+//        this.content = in.readString();
+//        this.h = in.readInt();
+//        this.w = in.readInt();
+//        this.id = in.readInt();
+//        this.imgUrl = in.readString();
+//        this.length = in.readLong();
+//        this.localPath = in.readString();
+//        this.photographTime = in.readLong();
+//        this.videoUrl = in.readString();
+//    }
+//
+//    public static final Parcelable.Creator<MediaObj> CREATOR = new Parcelable.Creator<MediaObj>() {
+//        @Override
+//        public MediaObj createFromParcel(Parcel source) {
+//            return new MediaObj(source);
+//        }
+//
+//        @Override
+//        public MediaObj[] newArray(int size) {
+//            return new MediaObj[size];
+//        }
+//    };
 }

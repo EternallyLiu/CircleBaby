@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -56,8 +57,8 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     private final int TIME = 2;
     private Milestone milestone;
     private List<ImgObj> selImages = new ArrayList<>();
-    private List<PhotoRecode> photoRecodes = new ArrayList<>();
     private int position;
+    private PhotoRecode photoRecode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +68,13 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        photoRecodes = getIntent().getParcelableArrayListExtra("list_photorecord");
+//        photoRecodes = getIntent().getParcelableArrayListExtra("list_photorecord");
+//        Bundle bundle = getIntent().getExtras();
+//         photoRecode = (PhotoRecode) bundle.getSerializable("photoRecode");
+//        position = bundle.getInt("position");
+        photoRecode = (PhotoRecode) getIntent().getSerializableExtra("photoRecode");
         position = getIntent().getIntExtra("position", 0);
-        selImages = photoRecodes.get(position).getImgObjList();
+        selImages = this.photoRecode.getImgObjList();
         for (ImgObj item : selImages) {
             imageUrls.add(item.getLocalPath());
         }
@@ -92,10 +97,10 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
 
-        etContent.setText(photoRecodes.get(position).getContent());
-        if (photoRecodes.get(position).getMileStone() != null)
-            tvMileStone.setText(photoRecodes.get(position).getMileStone().getMilestone());
-        tvTime.setText(photoRecodes.get(position).getTime());
+        etContent.setText(this.photoRecode.getContent());
+        if (this.photoRecode.getMileStone() != null)
+            tvMileStone.setText(this.photoRecode.getMileStone().getMilestone());
+        tvTime.setText(this.photoRecode.getTitle());
 
     }
 
@@ -129,18 +134,18 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
                         adapter.getData().addAll(imageUrls);
                         adapter.notifyDataSetChanged();
                     }
-                    photoRecodes.get(position).setImgObjList(selImages);
+                    photoRecode.setImgObjList(selImages);
                     break;
                 case MILESTONE:
                     milestone = (Milestone) data.getSerializableExtra("milestone");
                     tvMileStone.setText(milestone.getMilestone());
-                    photoRecodes.get(position).setMileStone(milestone);
+                    photoRecode.setMileStone(milestone);
                     break;
                 case TIME:
                     String time = data.getStringExtra("time");
                     tvTime.setText(time);
-                    photoRecodes.get(position).setTime(time);
-                    photoRecodes.get(position).setTitle(time);
+                    photoRecode.setTime(time);
+                    photoRecode.setTitle(time);
                     break;
             }
 
@@ -165,6 +170,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
+                intent1.putExtra("time",tvTime.getText().toString());
                 startActivityForResult(intent1, TIME);
                 break;
         }
@@ -174,7 +180,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     private void postRecord() {
         String value = etContent.getText().toString();
 
-        photoRecodes.get(position).setContent(value);
+        photoRecode.setContent(value);
 
         if (value.length() < 1 && imageUrls.size() < 1) {
             Toast.makeText(this, "发点文字或图片吧", Toast.LENGTH_SHORT).show();
@@ -182,7 +188,13 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         }
 
         Intent intent = new Intent();
-        intent.putParcelableArrayListExtra("result_photo_record_detail", (ArrayList<? extends Parcelable>) photoRecodes);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("photoRecode",photoRecode);
+//        bundle.putInt("position", position);
+//        intent.putExtras(bundle);
+//        intent.putParcelableArrayListExtra("result_photo_record_detail", (ArrayList<? extends Parcelable>) photoRecodes);
+        intent.putExtra("photoRecode", (Serializable) photoRecode);
+        intent.putExtra("position",position);
         setResult(RESULT_OK, intent);
         finish();
     }

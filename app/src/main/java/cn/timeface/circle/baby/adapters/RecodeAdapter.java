@@ -109,12 +109,9 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder.setRecordObj(item);
 
 
-        if (item.getLikeCount() > 0) {
-            holder.hsv.setVisibility(View.VISIBLE);
-        } else {
-            holder.hsv.setVisibility(View.GONE);
-        }
         if(item.getCommentCount() >0){
+            holder.llCommentWrapper.setVisibility(View.VISIBLE);
+            holder.llCommentWrapper.removeAllViews();
             int comments = item.getCommentCount() > 3 ? 3 : item.getCommentCount();
             for (int i = 0; i < comments; i++) {
                 CommentObj commentObj = item.getCommentList().get(i);
@@ -123,26 +120,30 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         }else{
             holder.llCommentWrapper.setVisibility(View.GONE);
         }
-
-
-
         if (item.getCommentCount() > 3) {
             holder.tvMoreComment.setVisibility(View.VISIBLE);
         } else {
             holder.tvMoreComment.setVisibility(View.GONE);
         }
 
-        for (UserObj u : item.getLikeList()) {
-            ImageView imageView = initPraiseItem();
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        if(item.getLikeCount()>0){
+            holder.hsv.setVisibility(View.VISIBLE);
+            holder.llGoodListUsersBar.removeAllViews();
+            for (UserObj u : item.getLikeList()) {
+                ImageView imageView = initPraiseItem();
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 //                    FragmentBridgeActivity.openUserInfoFragment(v.getContext(), u);
-                }
-            });
-            holder.llGoodListUsersBar.addView(imageView);
-            GlideUtil.displayImage(u.getAvatar(), imageView);
+                    }
+                });
+                holder.llGoodListUsersBar.addView(imageView);
+                GlideUtil.displayImage(u.getAvatar(), imageView);
+            }
+        }else{
+            holder.hsv.setVisibility(View.GONE);
         }
+
         if(item.getType()==1){
             holder.ivVideo.setVisibility(View.VISIBLE);
             int width = Remember.getInt("width", 0);
@@ -188,7 +189,7 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         TextView textView = new TextView(context);
         int size = context.getResources().getDimensionPixelSize(R.dimen.size_2);
         textView.setPadding(size, size, size, size);
-        textView.setText(Html.fromHtml("<font color='#00b6f8'>name</font>".replace("name", comment.getUserInfo().getNickName()) + ":" + comment.getContent()));
+        textView.setText(Html.fromHtml("<font color='#00b6f8'>name</font>".replace("name", comment.getUserInfo().getRelationName()) + ":" + comment.getContent()));
         textView.setTextColor(context.getResources().getColorStateList(R.color.text_color3));
 //        textView.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_small_4));
         textView.setLineSpacing(0, 1.2f);

@@ -70,8 +70,14 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         tvPublish.setOnClickListener(this);
         tvAdd.setOnClickListener(this);
 
-        reqData();
+//        reqData();
 //        selectImages();
+    }
+
+    @Override
+    protected void onResume() {
+        reqData();
+        super.onResume();
     }
 
     private void reqData() {
@@ -92,6 +98,9 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                         }
                     }
                     vp.setAdapter(new MyAdapter(mViews));
+                    if(mViews.size()>1){
+                        vp.setCurrentItem(mViews.size()-1);
+                    }
                 });
 
     }

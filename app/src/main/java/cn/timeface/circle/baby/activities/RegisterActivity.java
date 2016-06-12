@@ -163,7 +163,7 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
                         .subscribe(response -> {
                             if (response.success()) {
                                 ConfirmPasswordActivity.open(RegisterActivity.this, mobile);
-//                                finish();
+                                finish();
                             }else{
                                 Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
                             }
@@ -182,7 +182,7 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
+//        ButterKnife.unbind(this);
         if (smsReceiver != null)
             unregisterReceiver(smsReceiver);
     }

@@ -71,9 +71,11 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                 .subscribe(msgListResponse -> {
                     if(msgListResponse.success()){
                         setDataList(msgListResponse.getDataList());
+
                     }
-                }, throwable -> {
+                }, error -> {
                     Log.e(TAG, "queryMsgList:");
+                    error.printStackTrace();
                 });
 
     }

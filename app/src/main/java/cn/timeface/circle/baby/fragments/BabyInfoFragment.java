@@ -106,7 +106,9 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         Gson gson = new Gson();
         user = gson.fromJson(userObj, UserObj.class);
         babyObj = user.getBabyObj();
-        objectKey = babyObj.getAvatar();
+        String s = babyObj.getAvatar();
+        int i = s.lastIndexOf("/");
+        objectKey = s.substring(i - 4);
     }
 
     @Override

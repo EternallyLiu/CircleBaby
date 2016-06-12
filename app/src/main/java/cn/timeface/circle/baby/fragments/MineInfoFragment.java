@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
+import cn.timeface.circle.baby.activities.SetPasswordActivity;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.constants.TypeConstants;
@@ -90,12 +91,6 @@ public class MineInfoFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onResume() {
-        initData();
-        super.onResume();
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
@@ -111,6 +106,7 @@ public class MineInfoFragment extends BaseFragment implements View.OnClickListen
                 FragmentBridgeActivity.openChangeInfoFragment(this,TypeConstants.EDIT_NICKNAME,tvNickname.getText().toString());
                 break;
             case R.id.rl_changepsw:
+                SetPasswordActivity.open(getActivity(), FastData.getAccount());
                 break;
 
         }
