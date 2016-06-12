@@ -230,6 +230,10 @@ public interface ApiService {
                                      @Query("date") long date,
                                      @Query("timeId") int timeId);
 
+    //删除时光
+    @GET("babyTime/delTime")
+    Observable<BaseResponse> delTime(@Query("timeId") int timeId);
+
     //点赞/取消点赞
     @GET("babyTime/like")
     Observable<BaseResponse> like(@Query("timeId") int timeId,
