@@ -41,6 +41,16 @@ public class BaseImgObj extends BaseObj implements Parcelable {
     protected String content;
     protected String date;
 
+    public long getDateMills() {
+        return dateMills;
+    }
+
+    public void setDateMills(long dateMills) {
+        this.dateMills = dateMills;
+    }
+
+    protected long dateMills;
+
     public String getId() {
         return id;
     }

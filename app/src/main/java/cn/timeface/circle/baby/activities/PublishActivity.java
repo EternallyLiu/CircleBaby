@@ -423,7 +423,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
                 int height = bitmap.getHeight();
                 int width = bitmap.getWidth();
-                MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, DateUtil.getTime(img.getDate(), "yyyy.MM.dd"));
+                MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
                 mediaObjs.add(mediaObj);
             }
             PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, System.currentTimeMillis());

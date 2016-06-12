@@ -68,6 +68,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     private boolean forResult;
     private LoadingDialog loadingDialog;
     private ArrayList<ImgObj> selImgs;
+    private View header;
 
     public static void open4result(Activity activity, int requestCode) {
         open4result(activity, NO_MAX, 0, requestCode);
@@ -125,6 +126,10 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             reqData();
             reqBucket();
         }
+        setupGalleryView();
+    }
+
+    private void setupGalleryView() {
         rvContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -134,6 +139,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+        header = getLayoutInflater().inflate(R.layout.header_photo_selection, null);
     }
 
     private void reqBucket() {
@@ -261,6 +267,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         if (adapter == null) {
             adapter = new SelectPhotosAdapter(this, data, maxCount);
             rvContent.setAdapter(adapter);
+            adapter.addHeader(header);
             return;
         }
         adapter.setListData(data);
