@@ -41,7 +41,7 @@
             android:text="3分钟前"
             android:textSize="@dimen/text_small" />
     </LinearLayout>
-    
+
     <ImageView
         android:id="@+id/iv_content"
         android:layout_width="@dimen/size_56"

@@ -53,15 +53,30 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         holder.info = info;
         GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar);
         holder.tvRelation.setText(info.getUserInfo().getRelationName());
-        holder.tvContent.setText(info.getContent());
         holder.tvTime.setText(DateUtil.getDisTime(info.getTime()));
-        if(info.getTimeInfo().getMediaList() == null || info.getTimeInfo().getMediaList().size()<1){
+        if (info.getTimeInfo().getMediaList() == null || info.getTimeInfo().getMediaList().size() < 1) {
             holder.ivContent.setVisibility(View.GONE);
-        }else{
+        } else {
             holder.ivContent.setVisibility(View.VISIBLE);
-            GlideUtil.displayImage(info.getTimeInfo().getMediaList().get(0).getImgUrl(), holder.ivAvatar);
+            GlideUtil.displayImage(info.getTimeInfo().getMediaList().get(0).getImgUrl(), holder.ivContent);
         }
+        switch (info.getType()) {
+            case 0:
+                break;
+            case 1:
+                holder.tvContent.setText("添加了" + info.getUserInfo().getBabyObj().getName() + "的新动态");
+                break;
+            case 2:
+                holder.tvContent.setText("赞了一下");
+                break;
+            case 3:
+                holder.tvContent.setText("评论：" + info.getContent());
+                break;
+            case 4:
+                holder.tvContent.setText("新加入宝宝时光，关注" + info.getUserInfo().getBabyObj().getName() + "的成长");
+                break;
 
+        }
 
     }
 
