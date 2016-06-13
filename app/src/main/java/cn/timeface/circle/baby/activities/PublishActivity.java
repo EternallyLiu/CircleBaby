@@ -203,7 +203,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         if (data != null && resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case PICTURE:
-//                    List<String> images = data.getStringArrayListExtra(PickerPhotoActivity.KEY_SELECTED_PHOTOS);
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
                     photoRecodes.clear();
                     for (ImgObj item : selImages) {
@@ -245,11 +244,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             tvTime.setText(titles.get(0));
                         }
                     }
-
-
                     break;
                 case MILESTONE:
-                    milestone = (Milestone) data.getSerializableExtra("milestone");
+                    milestone = (Milestone) data.getParcelableExtra("milestone");
                     tvMileStone.setText(milestone.getMilestone());
                     if (photoRecodes.size() > 0) {
                         photoRecodes.get(0).setMileStone(milestone);
@@ -260,12 +257,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     tvTime.setText(time);
                     break;
                 case PHOTO_RECORD_DETAIL:
-//                    photoRecodes = data.getParcelableArrayListExtra("result_photo_record_detail");
-                    PhotoRecode photoRecode = (PhotoRecode) data.getSerializableExtra("photoRecode");
+                    PhotoRecode photoRecode = (PhotoRecode) data.getParcelableExtra("photoRecode");
                     int position = data.getIntExtra("position", 0);
-//                    Bundle bundle = data.getExtras();
-//                    PhotoRecode photoRecode = (PhotoRecode) bundle.getSerializable("photoRecode");
-//                    int position = bundle.getInt("position");
                     photoRecodes.set(position, photoRecode);
                     if (publishPhotoAdapter == null) {
                         publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);

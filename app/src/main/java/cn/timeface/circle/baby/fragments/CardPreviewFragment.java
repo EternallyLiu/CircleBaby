@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
 import cn.timeface.circle.baby.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.TemplateImage;
@@ -61,7 +62,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
     private int width;
     private int hight;
     private String objectKey;
-    private PhotoModel imgObj;
+    private ImgObj imgObj;
     private String date;
 
     public CardPreviewFragment() {
@@ -72,7 +73,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
         super.onCreate(savedInstanceState);
         imgObj = getArguments().getParcelable("imgObj");
         url = imgObj.getLocalPath();
-        date = imgObj.getStringDate();
+        date = imgObj.getDate();
         uploadImage();
     }
 
@@ -158,7 +159,6 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
                                 ToastUtil.showToast(diaryComposeResponse.getInfo());
                             }
 
-//                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
                         }, throwable -> {
                             Log.e(TAG, "diaryPublish:");
                         });

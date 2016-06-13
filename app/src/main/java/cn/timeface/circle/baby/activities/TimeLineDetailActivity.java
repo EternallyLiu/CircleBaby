@@ -98,6 +98,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     private TimeLineObj timelineobj;
     private AlertDialog dialog;
     private static int normalColor;
+    private int commmentId = 0;
 
     public static void open(Context context, TimeLineObj item) {
         Intent intent = new Intent(context, TimeLineDetailActivity.class);
@@ -119,7 +120,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     }
 
     private void initView() {
-        timelineobj = (TimeLineObj) getIntent().getSerializableExtra("timelineobj");
+        timelineobj = (TimeLineObj) getIntent().getParcelableExtra("timelineobj");
         tvContent.setText(timelineobj.getContent());
         tvAuthor.setText(timelineobj.getAuthor().getRelationName());
         tvDate.setText(DateUtil.getTime2(timelineobj.getDate()));
@@ -168,12 +169,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             llGoodListUsersBar.removeAllViews();
             for (UserObj u : timelineobj.getLikeList()) {
                 ImageView imageView = initPraiseItem();
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                    FragmentBridgeActivity.openUserInfoFragment(v.getContext(), u);
-                    }
-                });
                 llGoodListUsersBar.addView(imageView);
                 GlideUtil.displayImage(u.getAvatar(), imageView);
             }
@@ -181,17 +176,17 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             llGoodListUsersBar.removeAllViews();
             hsv.setVisibility(View.GONE);
         }
-        if (timelineobj.getCommentCount() > 0) {
+        if (timelineobj.getCommentList().size() > 0) {
             llCommentWrapper.setVisibility(View.VISIBLE);
             llCommentWrapper.removeAllViews();
-            int comments = timelineobj.getCommentCount();
+            int comments = timelineobj.getCommentList().size();
             for (int i = 0; i < comments; i++) {
                 CommentObj commentObj = timelineobj.getCommentList().get(i);
                 llCommentWrapper.addView(initCommentItemView(commentObj));
             }
         } else {
-            llCommentWrapper.setVisibility(View.GONE);
             llCommentWrapper.removeAllViews();
+            llCommentWrapper.setVisibility(View.GONE);
         }
 
         if (timelineobj.getType() == 1) {
@@ -202,9 +197,9 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             layoutParams.height = width;
             ivCover.setLayoutParams(layoutParams);
             ivVideo.setLayoutParams(layoutParams);
+            ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             rlSingle.setOnClickListener(this);
         }
-
         btnSend.setOnClickListener(this);
         llMenu.setOnClickListener(this);
         iconLike.setOnClickListener(this);
@@ -222,15 +217,23 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         return imageView;
     }
 
-    private TextView initCommentItemView(CommentObj comment) {
-        TextView textView = new TextView(this);
-        int size = getResources().getDimensionPixelSize(R.dimen.size_2);
-        textView.setPadding(size, size, size, size);
-        textView.setText(Html.fromHtml("<font color='#00b6f8'>name</font>".replace("name", comment.getUserInfo().getRelationName()) + ":" + comment.getContent()));
-        textView.setTextColor(getResources().getColorStateList(R.color.text_color3));
-//        textView.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.text_small_4));
-        textView.setLineSpacing(0, 1.2f);
-        return textView;
+    private View initCommentItemView(CommentObj comment) {
+        View view = getLayoutInflater().inflate(R.layout.view_comment, null);
+        TextView tvRelation = (TextView) view.findViewById(R.id.tv_relation);
+        TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
+        TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
+        tvRelation.setText(comment.getUserInfo().getRelationName());
+        tvComment.setText(comment.getContent());
+        tvTime.setText(DateUtil.formatDate("MM-dd HH:mm", comment.getCommentDate()));
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog = new AlertDialog.Builder(TimeLineDetailActivity.this).setView(initCommentMenu(comment)).show();
+                Window window = dialog.getWindow();
+                window.setGravity(Gravity.BOTTOM);
+            }
+        });
+        return view;
     }
 
     @Override
@@ -248,7 +251,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                     ToastUtil.showToast("请填写评论内容");
                     return;
                 }
-                apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timelineobj.getTimeId())
+                apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timelineobj.getTimeId(),commmentId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             hideKeyboard();
@@ -267,8 +270,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 break;
             case R.id.ll_menu:
                 dialog = new AlertDialog.Builder(this).setView(initMenu()).show();
-                Window window = dialog.getWindow();
-                window.setGravity(Gravity.BOTTOM);
+                dialog.getWindow().setGravity(Gravity.BOTTOM);
                 break;
             case R.id.icon_like:
                 int p = iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;
@@ -295,12 +297,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                         hsv.setVisibility(View.VISIBLE);
                                         for (UserObj u : timelineobj.getLikeList()) {
                                             ImageView imageView = initPraiseItem();
-                                            imageView.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-//                                                    FragmentBridgeActivity.openUserInfoFragment(v.getContext(), u);
-                                                }
-                                            });
                                             if (!u.getUserId().equals(FastData.getUserId())) {
                                                 llGoodListUsersBar.addView(imageView);
                                             }
@@ -350,6 +346,41 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             case R.id.tv_cancel:
                 dialog.dismiss();
                 break;
+            case R.id.tv_action:
+                CommentObj commment = (CommentObj) v.getTag(R.string.tag_obj);
+                dialog.dismiss();
+                if(commment.getUserInfo().getUserId().equals(FastData.getUserId())){
+                    //删除评论操作
+                    new AlertDialog.Builder(this)
+                            .setTitle("确定删除这条评论吗?")
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            apiService.delComment(commment.getCommentId())
+                                    .compose(SchedulersCompat.applyIoSchedulers())
+                                    .subscribe(response -> {
+                                        ToastUtil.showToast(response.getInfo());
+                                        if (response.success()) {
+                                            //重新加载评论列表
+
+                                        }
+                                    }, error -> {
+                                        Log.e(TAG, "delComment:");
+                                    });
+                        }
+                    }).show();
+                }else{
+                    //回复操作
+                    etCommment.requestFocus();
+                    etCommment.setHint("回复 " + commment.getUserInfo().getRelationName() + " ：");
+                    commmentId = commment.getCommentId();
+                }
+                break;
         }
     }
 
@@ -397,13 +428,29 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         View view = getLayoutInflater().inflate(R.layout.view_timedetail_menu, null);
         TextView tvEdit = (TextView) view.findViewById(R.id.tv_edit);
         TextView tvDelete = (TextView) view.findViewById(R.id.tv_delete);
-        TextView tvDownload = (TextView) view.findViewById(R.id.tv_download);
         TextView tvShare = (TextView) view.findViewById(R.id.tv_share);
         TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
+        if(timelineobj.getType()==1){
+            TextView tvDownload = (TextView) view.findViewById(R.id.tv_download);
+            tvDownload.setVisibility(View.VISIBLE);
+            tvDownload.setOnClickListener(this);
+        }
         tvEdit.setOnClickListener(this);
         tvDelete.setOnClickListener(this);
-        tvDownload.setOnClickListener(this);
         tvShare.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
+        return view;
+    }
+
+    public View initCommentMenu(CommentObj comment){
+        View view = getLayoutInflater().inflate(R.layout.view_comment_menu, null);
+        TextView tvAction = (TextView) view.findViewById(R.id.tv_action);
+        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
+        if(comment.getUserInfo().getUserId().equals(FastData.getUserId())){
+            tvAction.setText("删除");
+        }
+        tvAction.setTag(R.string.tag_obj,comment);
+        tvAction.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         return view;
     }
