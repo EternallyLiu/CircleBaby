@@ -20,7 +20,6 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumListAdapter;
 import cn.timeface.circle.baby.api.models.objs.CloudAlbumObj;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
@@ -91,8 +90,8 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_upload) {
             //进入图片选择页面
-            PublishActivity.open(this , PublishActivity.PHOTO);
-           // SelectPhotoActivity.openToPublish(this, TypeConstants.PHOTO_COUNT_MAX);
+            PublishActivity.open(this, PublishActivity.PHOTO);
+            // SelectPhotoActivity.openToPublish(this, TypeConstants.PHOTO_COUNT_MAX);
         }
         return super.onOptionsItemSelected(item);
     }

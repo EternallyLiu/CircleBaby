@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,5 +77,17 @@ public class CloudAlbumDetailActivity extends BaseAppCompatActivity {
         addSubscription(subscribe);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_cloud_album_edit, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_edit) {
+            //编辑模式
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

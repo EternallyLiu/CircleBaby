@@ -123,8 +123,11 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> implements V
             holder.llCommentWrapper.removeAllViews();
             int comments = item.getCommentCount() > 3 ? 3 : item.getCommentCount();
             for (int i = 0; i < comments; i++) {
-                CommentObj commentObj = item.getCommentList().get(i);
-                holder.llCommentWrapper.addView(initCommentItemView(commentObj));
+                List<CommentObj> commentList = item.getCommentList();
+                if (commentList != null && commentList.size() > 0) {
+                    CommentObj commentObj = commentList.get(i);
+                    holder.llCommentWrapper.addView(initCommentItemView(commentObj));
+                }
             }
         } else {
             holder.llCommentWrapper.setVisibility(View.GONE);
@@ -216,7 +219,7 @@ public class RecodeAdapter extends BaseRecyclerAdapter<TimeLineObj> implements V
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.icon_like:
                 int p = holder.iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;
                 ApiFactory.getApi().getApiService().like(item.getTimeId(), p)

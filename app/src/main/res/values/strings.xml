@@ -88,4 +88,5 @@
     <string name="state_error_parse_error">数据解析异常</string>
     <string name="state_error_server_error">服务器有问题</string>
     <string name="state_error_timeout">网络连接超时或失败</string>
+    <string name="action_edit">编辑</string>
 </resources>
