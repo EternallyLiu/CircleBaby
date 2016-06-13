@@ -9,17 +9,18 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.api.models.objs.PhotoGroupItem;
 import cn.timeface.circle.baby.events.PhotoSelectEvent;
+import cn.timeface.circle.baby.managers.services.UploadAllPicService;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
 import de.greenrobot.event.EventBus;
@@ -37,7 +38,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
     final int maxCount;
 
     //用于存储所有选中的图片
-    List<PhotoModel> selImgs = new ArrayList<>(10);
+    ArrayList<PhotoModel> selImgs = new ArrayList<>(10);
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
 
     public SelectPhotosAdapter(Context mContext, List<PhotoGroupItem> listData, int maxCount) {
@@ -247,10 +248,12 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
     private void doSelImg(int dataIndex, PhotoModel img) {
         if (!selImgs.contains(img)) {
             //选中上传
+            UploadAllPicService.addUrgent(App.getInstance(), img);
             selImgs.add(img);
             everyGroupUnSelImgSize[dataIndex] -= 1;
             if (everyGroupUnSelImgSize[dataIndex] == 0) {
                 //全选
+
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
             }
         }
@@ -259,6 +262,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
     private void doUnSelImg(int dataIndex, PhotoModel img) {
         if (selImgs.contains(img)) {
             //取消上传
+            UploadAllPicService.addUrgent(App.getInstance(), img);
             selImgs.remove(img);
             everyGroupUnSelImgSize[dataIndex] += 1;
             if (everyGroupUnSelImgSize[dataIndex] == 1) {
@@ -272,7 +276,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
         return selImgs;
     }
 
-    public void setSelImgs(List<PhotoModel> imgs) {
+    public void setSelImgs(ArrayList<PhotoModel> imgs) {
         this.selImgs = imgs;
         setupData();
     }

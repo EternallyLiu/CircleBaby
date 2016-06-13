@@ -3,7 +3,10 @@ package cn.timeface.circle.baby.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,9 +15,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +38,11 @@ import cn.timeface.circle.baby.fragments.PhotoCategoryFragment;
 import cn.timeface.circle.baby.managers.PhotoDataSave;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.managers.services.SavePicInfoService;
+import cn.timeface.circle.baby.utils.ImageUtil;
 import cn.timeface.circle.baby.utils.mediastore.MediaStoreBucket;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import cn.timeface.common.utils.DateUtil;
+import cn.timeface.common.utils.StorageUtil;
 import de.greenrobot.event.Subscribe;
 import rx.Observable;
 import rx.Subscription;
@@ -44,9 +52,10 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class SelectPhotoActivity extends BaseAppCompatActivity implements IEventBus {
+public class SelectPhotoActivity extends BaseAppCompatActivity implements IEventBus, MediaScannerConnection.OnScanCompletedListener {
 
     public static final int NO_MAX = Integer.MAX_VALUE;
+    public static final int PHOTO_SELECT_CAMERA_REQUEST_CODE = 1002;
     final int PHOTO_SELECT_PHOTO_VIEWER_REQUEST_CODE = 102;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -69,6 +78,15 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     private LoadingDialog loadingDialog;
     private ArrayList<ImgObj> selImgs;
     private View header;
+    private File mPhotoFile;
+
+    public static void openToPublish(Activity activity, int maxCount) {
+        Intent intent = new Intent(activity, SelectPhotoActivity.class);
+        intent.putExtra("max_count", maxCount);
+        intent.putExtra("forResult", false);
+        intent.putExtra("forPublish", true);
+        activity.startActivity(intent);
+    }
 
     public static void open4result(Activity activity, int requestCode) {
         open4result(activity, NO_MAX, 0, requestCode);
@@ -221,7 +239,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
                             @Override
                             public void call(List<PhotoModel> photoModels) {
                                 if (photoModels != null && photoModels.size() > 0) {
-                                    setSelectedImg(photoModels);
+                                    setSelectedImg((ArrayList<PhotoModel>) photoModels);
                                 }
                             }
                         }
@@ -336,8 +354,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     public void clickDone(View view) {
         if (forResult) {
             Intent resultIntent = new Intent();
-            List<PhotoModel> photoModels = adapter.getSelImgs();
-            resultIntent.putParcelableArrayListExtra("result_select_image_list", transToImgObj(photoModels));
+            resultIntent.putParcelableArrayListExtra("result_select_image_list", transToImgObj(adapter.getSelImgs()));
             setResult(RESULT_OK, resultIntent);
             finish();
         }
@@ -364,18 +381,25 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             case PHOTO_SELECT_PHOTO_VIEWER_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     if (data != null) {
-                        List<PhotoModel> selImgs = data.getParcelableArrayListExtra("result_select_image_list");
+                        ArrayList<PhotoModel> selImgs = data.getParcelableArrayListExtra("result_select_image_list");
                         adapter.setSelImgs(selImgs);
                         adapter.notifyDataSetChanged();
                         changeSelCount(selImgs.size());
                     }
                 }
                 break;
+            case PHOTO_SELECT_CAMERA_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    ImageUtil.scanMediaJpegFile(this, mPhotoFile, this);
+                } else {
+                    if (mPhotoFile != null) mPhotoFile.delete();
+                }
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    protected void setSelectedImg(List<PhotoModel> photoModels) {
+    protected void setSelectedImg(ArrayList<PhotoModel> photoModels) {
         adapter.setSelImgs(photoModels);
         adapter.notifyDataSetChanged();
         changeSelCount(photoModels.size());
@@ -384,5 +408,23 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     @Override
     public void onEvent(Object event) {
 
+    }
+
+    public void clickCamera(View view) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mPhotoFile = StorageUtil.genSystemPhotoFile();
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
+        startActivityForResult(takePictureIntent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
+    }
+
+
+    @Override
+    public void onScanCompleted(String path, Uri uri) {
+        Log.d(TAG, "onScanCompleted: " + path + "===" + uri.toString());
+        if (!TextUtils.isEmpty(path)) {
+            SavePicInfoService.open(this);
+            reqData();
+            reqBucket();
+        }
     }
 }

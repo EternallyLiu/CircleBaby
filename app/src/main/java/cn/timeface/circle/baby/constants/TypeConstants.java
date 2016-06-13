@@ -42,4 +42,5 @@ public class TypeConstants {
     public static final int PUSH_NULL = 0;
     //图片上传文件夹
     public static final String UPLOAD_FOLDER = "times";
+    public static final int PHOTO_COUNT_MAX = 100;
 }

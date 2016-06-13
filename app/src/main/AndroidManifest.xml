@@ -84,6 +84,7 @@
             android:value="timeface-image01" />
         <!-- ************************ALI END*************** -->
         <service android:name=".managers.services.SavePicInfoService" />
+        <service android:name=".managers.services.UploadAllPicService" />
 
         <activity
             android:name=".activities.MainActivity"
@@ -125,8 +126,9 @@
         <activity android:name=".activities.VideoPlayActivity" />
         <activity android:name=".activities.PhotoRecodeDetailActivity" />
         <activity android:name=".activities.FragmentBridgeActivity" />
-        <activity android:name=".activities.TimeLineDetailActivity"
-            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".activities.TimeLineDetailActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.CloudAlbumActivity"
             android:label="@string/cloudAlbum"
@@ -137,6 +139,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SelectPhotoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.PhotoViewerActivity"

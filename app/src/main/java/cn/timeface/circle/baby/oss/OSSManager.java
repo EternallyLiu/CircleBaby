@@ -27,7 +27,12 @@ import java.io.IOException;
 import java.util.Locale;
 
 import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.api.models.TFUploadFile;
 import cn.timeface.circle.baby.oss.token.FederationTokenGetter;
+import okhttp3.OkHttpClient;
+import rx.Observable;
+import rx.schedulers.Schedulers;
+import rx.subjects.PublishSubject;
 
 
 /**
@@ -39,6 +44,7 @@ public class OSSManager {
     private final OSS oss;
     private final String bucket;
     private final String endPoint;
+    private final OkHttpClient httpClient;
 
 
     OSSManager(Context context) {
@@ -83,6 +89,7 @@ public class OSSManager {
             OSSLog.enableLog();
         }
         oss = new OSSClient(context, endPoint, credentialProvider, conf);
+        httpClient = new OkHttpClient();
     }
 
     public static OSSManager getOSSManager(Context context) {
@@ -108,7 +115,6 @@ public class OSSManager {
      * @return true 已存在
      */
     public boolean checkFileExist(String objectKey) {
-        okhttp3.OkHttpClient httpClient = new okhttp3.OkHttpClient();
         String url = String.format("http://%s.%s/%s", this.bucket, this.endPoint.replace("http://", ""), objectKey);
         okhttp3.Request request = new okhttp3.Request.Builder().head()
                 .url(url)
@@ -234,5 +240,97 @@ public class OSSManager {
         metaData.setContentType(getContentType(uploadFilePath));
         put.setMetadata(metaData);
         return put;
+    }
+
+    /**
+     * 同步上传文件到阿里云某个文件夹下
+     *
+     * @param folder "times","avatar",....
+     * @param path   文件的绝对路径
+     * @return 上传成功返回ObjectKey, 上传失败返回的ObjectKey为空字符串；
+     */
+    public Observable<String> asyncUploadFile(String folder, String path) {
+        return Observable.just(path)
+                .observeOn(Schedulers.io())
+                .map(filePath -> new TFUploadFile(path, folder))
+                .compose(uploadPicTransformer);
+    }
+
+    private final Observable.Transformer<TFUploadFile, String> uploadPicTransformer = new Observable.Transformer<TFUploadFile, String>() {
+        @Override
+        public Observable<String> call(Observable<TFUploadFile> pathObservable) {
+            return pathObservable
+                    .map(tfUploadFile -> {
+                        String objectKey = tfUploadFile.getObjectKey();
+                        //云端不存在，才会上传
+                        if (!checkFileExist(objectKey)) {
+                            try {
+                                upload(objectKey, tfUploadFile.getFilePath());
+                            } catch (ClientException | ServiceException e) {
+                                e.printStackTrace();
+                                tfUploadFile.setObjectKey("");
+                            }
+                        }
+                        return tfUploadFile.getObjectKey();
+                    });
+        }
+    };
+
+    /**
+     * 上传一个文件到阿里云，监听它的上传进度
+     *
+     * @param folder "times","avatar",....
+     * @param path   文件的绝对路径
+     * @return 可观察的上传进度
+     */
+    public PublishSubject<Integer> uploadPicObserveProgress(String folder, String path) {
+        PublishSubject<Integer> publishSubject = PublishSubject.create();
+        TFUploadFile uploadFile = new TFUploadFile(path, folder);//这个可以不用封装了
+        PutObjectRequest put = getPutRequest(bucket, uploadFile.getObjectKey(), uploadFile.getFilePath());
+        put.setProgressCallback((request, currentSize, totalSize)
+                -> publishSubject.onNext((int) (currentSize * 100 / totalSize)));
+        OSSAsyncTask task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+            @Override
+            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+                Log.d("PutObject", "UploadSuccess");
+                Log.d("ETag", result.getETag());
+                Log.d("RequestId", result.getRequestId());
+                publishSubject.onCompleted();
+            }
+
+            @Override
+            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                // 请求异常
+                if (clientExcepion != null) {
+                    // 本地异常如网络异常等
+                    clientExcepion.printStackTrace();
+                    publishSubject.onError(clientExcepion);
+                }
+                if (serviceException != null) {
+                    // 服务异常
+                    publishSubject.onError(serviceException);
+                    Log.e("ErrorCode", serviceException.getErrorCode());
+                    Log.e("RequestId", serviceException.getRequestId());
+                    Log.e("HostId", serviceException.getHostId());
+                    Log.e("RawMessage", serviceException.getRawMessage());
+                }
+            }
+        });
+        if (publishSubject.hasThrowable()) {
+            if (task != null) task.cancel();
+        }
+        return publishSubject;
+    }
+
+    public Observable<String> uploadPicToTimes(String filePath) {
+        return asyncUploadFile("times", filePath);
+    }
+
+    public Observable<String> uploadPicToBabys(String filePath) {
+        return asyncUploadFile("baby", filePath);
+    }
+
+    public Observable<String> uploadPicToAvatar(String filePath) {
+        return asyncUploadFile("avatar", filePath);
     }
 }
