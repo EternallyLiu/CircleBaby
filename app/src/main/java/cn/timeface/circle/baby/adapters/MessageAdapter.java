@@ -64,10 +64,10 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
             case 0:
                 break;
             case 1:
-                holder.tvContent.setText("添加了" + info.getUserInfo().getBabyObj().getName() + "的新动态");
+                holder.tvContent.setText("赞了一下");
                 break;
             case 2:
-                holder.tvContent.setText("赞了一下");
+                holder.tvContent.setText("添加了" + info.getUserInfo().getBabyObj().getName() + "的新动态");
                 break;
             case 3:
                 holder.tvContent.setText("评论：" + info.getContent());

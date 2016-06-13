@@ -6,26 +6,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.RecordObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -64,7 +55,7 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
         holder.tvDateex.setText(item.getDateEx());
         holder.tvAge.setText(item.getAge());
         List<TimeLineObj> timeLineList = item.getTimeLineList();
-        RecodeAdapter adapter = new RecodeAdapter(context, timeLineList);
+        TimeLineAdapter adapter = new TimeLineAdapter(context, timeLineList);
         holder.contentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         holder.contentRecyclerView.setAdapter(adapter);
 

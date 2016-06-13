@@ -88,7 +88,7 @@ public class TypeConstant {
     public static final int FROM_EVENT = 2;
 
     //图片上传文件夹
-    public static final String UPLOAD_FOLDER = "baby";
+    public static final String UPLOAD_FOLDER = "times";
     public static final String PRINT_UPLOAD_FOLDER = "prints";
     public static final int HOMETYPE_BANNER = 1;
     public static final int HOMETYPE_NAV = 2;

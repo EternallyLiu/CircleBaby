@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -15,7 +16,7 @@ import cn.timeface.circle.baby.utils.Remember;
  * author: rayboot  Created on 15/12/3.
  * email : sy0725work@gmail.com
  */
-public class App extends Application {
+public class App extends MultiDexApplication {
     private static App app = new App();
 
     public static App getInstance() {

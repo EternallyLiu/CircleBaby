@@ -519,7 +519,7 @@ public class PhotoModel extends BaseModel implements Parcelable {
         imgObj.setLng(this.longitude);
         imgObj.setSize(this.size);
         imgObj.setId(this.photoId);
-        imgObj.setUrl(getUrl());
+        imgObj.setUrl(getObjectKey());
         imgObj.setDate(stringDate);//yyyyMMdd
         imgObj.setDateMills(dateTaken);
         return imgObj;

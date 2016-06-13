@@ -14,7 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,10 +66,6 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//        photoRecodes = getIntent().getParcelableArrayListExtra("list_photorecord");
-//        Bundle bundle = getIntent().getExtras();
-//         photoRecode = (PhotoRecode) bundle.getSerializable("photoRecode");
-//        position = bundle.getInt("position");
         photoRecode =  getIntent().getParcelableExtra("photoRecode");
         position = getIntent().getIntExtra("position", 0);
         selImages = this.photoRecode.getImgObjList();
@@ -113,7 +108,6 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         if (data != null && resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case PICTURE:
-//                    List<String> images = data.getStringArrayListExtra(PickerPhotoActivity.KEY_SELECTED_PHOTOS);
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
                     imageUrls.clear();
                     for (ImgObj item : selImages) {
@@ -127,7 +121,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
                     photoRecode.setImgObjList(selImages);
                     break;
                 case MILESTONE:
-                    milestone = (Milestone) data.getSerializableExtra("milestone");
+                    milestone = (Milestone) data.getParcelableExtra("milestone");
                     tvMileStone.setText(milestone.getMilestone());
                     photoRecode.setMileStone(milestone);
                     break;
@@ -178,12 +172,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         }
 
         Intent intent = new Intent();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("photoRecode",photoRecode);
-//        bundle.putInt("position", position);
-//        intent.putExtras(bundle);
-//        intent.putParcelableArrayListExtra("result_photo_record_detail", (ArrayList<? extends Parcelable>) photoRecodes);
-        intent.putExtra("photoRecode", (Serializable) photoRecode);
+        intent.putExtra("photoRecode", photoRecode);
         intent.putExtra("position", position);
         setResult(RESULT_OK, intent);
         finish();
