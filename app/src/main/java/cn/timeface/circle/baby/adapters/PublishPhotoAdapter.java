@@ -113,7 +113,6 @@ public class PublishPhotoAdapter extends BaseRecyclerAdapter<PhotoRecode> {
             public void onClick(View v) {
                 Intent intent = new Intent(context, PhotoRecodeDetailActivity.class);
                 PhotoRecode photoRecode = listData.get(position);
-//                intent.putParcelableArrayListExtra("list_photorecord", (ArrayList<? extends Parcelable>) listData);
                 intent.putExtra("photoRecode", photoRecode);
                 intent.putExtra("position", position);
                 activity.startActivityForResult(intent, activity.PHOTO_RECORD_DETAIL);
@@ -124,8 +123,7 @@ public class PublishPhotoAdapter extends BaseRecyclerAdapter<PhotoRecode> {
             public void onItemClick(AdapterView<?> parent, View view, int posi, long id) {
                 Intent intent = new Intent(context, PhotoRecodeDetailActivity.class);
                 PhotoRecode photoRecode = listData.get(position);
-//                intent.putParcelableArrayListExtra("list_photorecord", (ArrayList<? extends Parcelable>) listData);
-                intent.putExtra("photoRecode", (Serializable) photoRecode);
+                intent.putExtra("photoRecode",photoRecode);
                 intent.putExtra("position", position);
                 activity.startActivityForResult(intent, activity.PHOTO_RECORD_DETAIL);
             }

@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_publish_menu"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_color9"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/tv_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="回复"
+        android:textSize="@dimen/text_medium"
+        android:background="@color/white"
+        android:padding="@dimen/size_6"/>
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="取消"
+        android:textSize="@dimen/text_medium"
+        android:background="@color/white"
+        android:padding="@dimen/size_6"
+        android:layout_marginTop="@dimen/size_6"/>
+
+
+</LinearLayout>

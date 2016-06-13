@@ -45,7 +45,7 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("视频播放");
 
-        MediaObj media = (MediaObj) getIntent().getSerializableExtra("media");
+        MediaObj media = (MediaObj) getIntent().getParcelableExtra("media");
         MediaController mc = new MediaController(this);
         videoview.setMediaController(mc);
         videoview.setVideoPath(media.getVideoUrl());

@@ -90,9 +90,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void openForResult(Context context,
-                                     List<ImgObj> selImages, int maxCount,
-                                     int requestCode) {
+    public static void openForResult(Context context, List<ImgObj> selImages, int maxCount, int requestCode) {
         Intent intent = new Intent(context, SelectPhotoActivity.class);
         intent.putParcelableArrayListExtra("sel_image_list", (ArrayList<ImgObj>) selImages);
         intent.putExtra("max_count", maxCount);
