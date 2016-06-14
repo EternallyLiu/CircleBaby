@@ -42,6 +42,7 @@ import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -196,7 +197,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             layoutParams.width = width;
             layoutParams.height = width;
             ivCover.setLayoutParams(layoutParams);
-            ivVideo.setLayoutParams(layoutParams);
+//            ivVideo.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             rlSingle.setOnClickListener(this);
         }
@@ -277,7 +278,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 apiService.like(timelineobj.getTimeId(), p)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            ToastUtil.showToast(response.getInfo());
                             if (response.success()) {
                                 if (p == 1) {
                                     iconLike.setTextColor(Color.RED);
@@ -304,6 +304,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                         }
                                     }
                                 }
+                            }else{
+                                ToastUtil.showToast(response.getInfo());
                             }
                         }, error -> {
                             Log.e(TAG, "like:");
@@ -311,7 +313,9 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
                 break;
             case R.id.tv_edit:
-
+                Intent intent1 = new Intent(this,TimeLineEditActivity.class);
+                intent1.putExtra("timelimeobj",timelineobj);
+                startActivity(intent1);
                 break;
             case R.id.tv_delete:
                 new AlertDialog.Builder(this)
@@ -338,7 +342,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 }).show();
                 break;
             case R.id.tv_download:
-
+                ImageFactory.saveVideo(timelineobj.getMediaList().get(0).getVideoUrl());
                 break;
             case R.id.tv_share:
 
@@ -367,6 +371,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                         ToastUtil.showToast(response.getInfo());
                                         if (response.success()) {
                                             //重新加载评论列表
+
+
 
                                         }
                                     }, error -> {

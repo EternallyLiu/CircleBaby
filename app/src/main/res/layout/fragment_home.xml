@@ -143,15 +143,13 @@
                 android:textColor="@color/text_color1"
                 android:textSize="@dimen/text_medium" />
 
-            <TextView
-                android:id="@+id/tv_message"
+            <ImageView
+                android:id="@+id/iv_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="@dimen/size_12"
-                android:text="消息"
-                android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_medium" />
+                android:src="@drawable/msg" />
         </FrameLayout>
     </android.support.v7.widget.Toolbar>
 

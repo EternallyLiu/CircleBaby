@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.api.models.objs;
 
+import android.media.ExifInterface;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -19,6 +20,7 @@ public class MediaObj extends BaseObj
     String localPath;       //图片本地路径
     long photographTime;     //照片or视频的拍摄时间
     String videoUrl;        //视频url
+    int selected;           //成书的时候图片选中状态 1-选中 默认是0-不选中
 
     //图片
     public MediaObj(String content, String imgUrl, int w, int h, long photographTime) {
@@ -138,6 +140,7 @@ public class MediaObj extends BaseObj
         dest.writeString(this.localPath);
         dest.writeLong(this.photographTime);
         dest.writeString(this.videoUrl);
+        dest.writeInt(this.selected);
     }
 
     protected MediaObj(Parcel in) {
@@ -150,6 +153,7 @@ public class MediaObj extends BaseObj
         this.localPath = in.readString();
         this.photographTime = in.readLong();
         this.videoUrl = in.readString();
+        this.selected = in.readInt();
     }
 
     public static final Parcelable.Creator<MediaObj> CREATOR = new Parcelable.Creator<MediaObj>() {
@@ -163,4 +167,10 @@ public class MediaObj extends BaseObj
             return new MediaObj[size];
         }
     };
+
+    public ImgObj getImgObj() {
+        ImgObj imgObj = new ImgObj(getImgUrl(), getLocalPath());
+        imgObj.setDateMills(getPhotographTime());
+        return imgObj;
+    }
 }

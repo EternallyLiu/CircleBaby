@@ -1,6 +1,8 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,14 +24,15 @@ import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.MessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.Msg;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class MessageFragment extends BaseFragment implements View.OnClickListener {
 
     @Bind(R.id.tv_title)
     TextView tvTitle;
-    @Bind(R.id.tv_read)
-    TextView tvRead;
+    @Bind(R.id.tv_delete)
+    TextView tvDelete;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
@@ -61,7 +64,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
 
         reqData();
 
-        tvRead.setOnClickListener(this);
+        tvDelete.setOnClickListener(this);
 
         return view;
     }
@@ -111,6 +114,31 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         break;
 
                 }
+                break;
+            case R.id.tv_delete:
+                new AlertDialog.Builder(getContext())
+                        .setTitle("确定删除全部消息?")
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        apiService.delMsg(0, 0)
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .subscribe(response -> {
+                                    ToastUtil.showToast(response.getInfo());
+                                    if (response.success()) {
+                                        adapter.getListData().clear();
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }, error -> {
+                                    Log.e(TAG, "delMsg:");
+                                });
+                    }
+                }).show();
                 break;
         }
     }

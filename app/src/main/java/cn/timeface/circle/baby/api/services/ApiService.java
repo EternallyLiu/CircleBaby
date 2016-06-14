@@ -165,9 +165,10 @@ public interface ApiService {
     @GET("babyMsgInfo/querySystemMsgList")
     Observable<SystemMsgListResponse> querySystemMsgList();
 
-    //标记消息为已读
-    @GET("babyMsgInfo/read")
-    Observable<BaseResponse> read(@Query("id") int id);
+    //消息删除
+    @GET("babyMsgInfo/delMsg")
+    Observable<BaseResponse> delMsg(@Query("id") int id,
+                                    @Query("type") int type);
 
     //发布
     @GET("babyTime/publish")
@@ -216,6 +217,14 @@ public interface ApiService {
     //首页-时光详情
     @GET("babyTime/queryBabyTimeDetail")
     Observable<TimeDetailResponse> queryBabyTimeDetail(@Query("timeId") int timeId);
+
+    //编辑时光
+    @GET("babyTime/editTime")
+    Observable<BaseResponse> editTime(@Query("content") String content,
+                                      @Query("mediaList") String mediaList,
+                                      @Query("milestone") int milestone,
+                                      @Query("time") long time,
+                                      @Query("timeId") int timeId);
 
     //回复评论
     @GET("babyTime/comment")

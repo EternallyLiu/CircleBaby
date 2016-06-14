@@ -23,6 +23,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import cn.timeface.circle.baby.BuildConfig;
 
@@ -408,9 +412,10 @@ public class ImageFactory {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
-        } catch (FileNotFoundException e)  {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e)  {
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -443,6 +448,34 @@ public class ImageFactory {
         }
 
         return returnValue;
+    }
+
+    public static void saveVideo(String path) {
+
+        String fileName = System.currentTimeMillis() + ".mp4";
+        File file = new File("/mnt/sdcard/baby");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File file1 = new File(file, fileName);
+        try {
+            URL url = new URL(path);
+            URLConnection conn = url.openConnection();
+            InputStream is = conn.getInputStream();
+            int contentLength = conn.getContentLength();
+            byte[] bytes = new byte[1024];
+            int len;
+            FileOutputStream fos = new FileOutputStream(file1);
+            while ((len = is.read(bytes)) != -1) {
+                fos.write(bytes, 0, len);
+            }
+            ToastUtil.showToast("下载完成");
+            fos.close();
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

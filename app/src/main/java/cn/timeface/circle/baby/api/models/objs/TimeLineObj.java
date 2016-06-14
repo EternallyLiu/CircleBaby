@@ -21,6 +21,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     List<MediaObj> mediaList;       //图片列表
     List<UserObj> likeList;         //赞用户列表
     String milestone;               //里程碑
+    int milestoneId;                //里程碑id
     int timeId;
     int type;                       //0 照片 1 视频 2 日记 3 识图
     String content;                 //时光内容
@@ -122,6 +123,13 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.likeList = likeList;
     }
 
+    public int getMilestoneId() {
+        return milestoneId;
+    }
+
+    public void setMilestoneId(int milestoneId) {
+        this.milestoneId = milestoneId;
+    }
 
     @Override
     public int describeContents() {
@@ -139,6 +147,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         dest.writeTypedList(this.mediaList);
         dest.writeTypedList(this.likeList);
         dest.writeString(this.milestone);
+        dest.writeInt(this.milestoneId);
         dest.writeInt(this.timeId);
         dest.writeInt(this.type);
         dest.writeString(this.content);
@@ -157,6 +166,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.mediaList = in.createTypedArrayList(MediaObj.CREATOR);
         this.likeList = in.createTypedArrayList(UserObj.CREATOR);
         this.milestone = in.readString();
+        this.milestoneId = in.readInt();
         this.timeId = in.readInt();
         this.type = in.readInt();
         this.content = in.readString();

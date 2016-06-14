@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,7 +31,6 @@ import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -40,8 +40,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.tv_message)
-    TextView tvMessage;
+    @Bind(R.id.iv_message)
+    ImageView ivMessage;
     @Bind(R.id.tv_changebaby)
     TextView tvChangebaby;
     @Bind(R.id.iv_avatar)
@@ -110,7 +110,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         tvMilestone.setOnClickListener(this);
         tvRelative.setOnClickListener(this);
         tvChangebaby.setOnClickListener(this);
-        tvMessage.setOnClickListener(this);
+        ivMessage.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);
         tvToensurerelation.setOnClickListener(this);
 
@@ -198,7 +198,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             case R.id.tv_changebaby:
                 FragmentBridgeActivity.open(getActivity(), "ChangeBabyFragment");
                 break;
-            case R.id.tv_message:
+            case R.id.iv_message:
                 FragmentBridgeActivity.open(getActivity(), "MessageFragment");
                 break;
             case R.id.tv_relative:

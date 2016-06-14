@@ -153,7 +153,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             layoutParams.width = width;
             layoutParams.height = width;
             holder.ivCover.setLayoutParams(layoutParams);
-            holder.ivVideo.setLayoutParams(layoutParams);
+//            holder.ivVideo.setLayoutParams(layoutParams);
             holder.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 

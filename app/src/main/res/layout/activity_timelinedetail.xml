@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color8"
-    android:orientation="vertical">
+    >
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -117,8 +117,8 @@
                         android:id="@+id/iv_video"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/tran_30_black"
-                        android:src="@drawable/ic_photo_select_camera"
+                        android:src="@drawable/video"
+                        android:layout_centerInParent="true"
                         android:visibility="gone" />
                 </RelativeLayout>
 
@@ -275,7 +275,8 @@
         android:layout_alignParentBottom="true"
         android:padding="@dimen/size_6"
         android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        >
 
         <EditText
             android:id="@+id/et_commment"

@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color8"
+    android:background="@drawable/milestone_bg"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
@@ -23,6 +23,5 @@
         android:id="@+id/content_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_color8"
         android:scrollbars="none" />
 </LinearLayout>
