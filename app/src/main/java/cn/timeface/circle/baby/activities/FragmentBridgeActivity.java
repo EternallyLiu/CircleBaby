@@ -32,6 +32,8 @@ import cn.timeface.circle.baby.fragments.InviteFragment;
 import cn.timeface.circle.baby.fragments.MessageFragment;
 import cn.timeface.circle.baby.fragments.MilestoneFragment;
 import cn.timeface.circle.baby.fragments.MineInfoFragment;
+import cn.timeface.circle.baby.fragments.SettingFragment;
+import cn.timeface.circle.baby.fragments.SettingMsgFragment;
 import cn.timeface.circle.baby.fragments.SystemMessageFragment;
 
 /**
@@ -261,10 +263,12 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
             case "MineInfoFragment":
                 return new MineInfoFragment();
 
+            case "SettingFragment":
+                return new SettingFragment();
 
+            case "SettingMsgFragment":
+                return new SettingMsgFragment();
 
-//            case "SubtractGroupUsersFragment":
-//                return new SubtractGroupUsersFragment();
 
             default:
                 return null;

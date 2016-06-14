@@ -123,6 +123,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         context.startActivity(intent);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -487,7 +488,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             //如果不存在则上传
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
-                        String videoObjectKey = uploadFileObj.getObjectKey();
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();

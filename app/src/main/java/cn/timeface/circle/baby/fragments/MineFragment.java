@@ -105,16 +105,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_set:
-                apiService.logout()
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(response -> {
-                            FastData.setAccount("");
-                            LoginActivity.open(getActivity());
-                            getActivity().finish();
-                        }, throwable -> {
-                            Log.e(TAG, "logout:");
-                        });
-
+                FragmentBridgeActivity.open(getContext(),"SettingFragment");
                 break;
             case R.id.ll_mine_info:
                 FragmentBridgeActivity.open(getContext(),"MineInfoFragment");

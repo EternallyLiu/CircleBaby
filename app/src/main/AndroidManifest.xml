@@ -128,7 +128,7 @@
         <activity android:name=".activities.FragmentBridgeActivity" />
         <activity
             android:name=".activities.TimeLineDetailActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.CloudAlbumActivity"
             android:label="@string/cloudAlbum"

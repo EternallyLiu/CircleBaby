@@ -31,12 +31,12 @@
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
-                    android:id="@+id/tv_read"
+                    android:id="@+id/tv_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
                     android:layout_marginRight="@dimen/size_12"
-                    android:text="全部已读"
+                    android:text="全部删除"
                     android:textColor="@color/text_color1"
                     android:textSize="@dimen/text_medium" />
             </FrameLayout>

@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.api.models.objs;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.view.Display;
@@ -307,4 +308,12 @@ public class ImgObj extends BaseImgObj {
             return new ImgObj[size];
         }
     };
+
+    public MediaObj getMediaObj() {
+        Bitmap bitmap = BitmapFactory.decodeFile(getLocalPath());
+        int height = bitmap.getHeight();
+        int width = bitmap.getWidth();
+        MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
+        return mediaObj;
+    }
 }

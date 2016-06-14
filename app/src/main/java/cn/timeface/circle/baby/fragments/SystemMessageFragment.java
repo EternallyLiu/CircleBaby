@@ -26,8 +26,8 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
 
     @Bind(R.id.tv_title)
     TextView tvTitle;
-    @Bind(R.id.tv_read)
-    TextView tvRead;
+    @Bind(R.id.tv_delete)
+    TextView tvDelete;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
@@ -52,7 +52,6 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvTitle.setText("系统消息");
-        tvRead.setText("全部删除");
 
 
         adapter = new SystemMessageAdapter(getActivity(), new ArrayList<>());
@@ -62,7 +61,7 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
 
         reqData();
 
-        tvRead.setOnClickListener(this);
+        tvDelete.setOnClickListener(this);
 
         return view;
     }

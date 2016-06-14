@@ -25,11 +25,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.0"
-            android:drawableTop="@drawable/selector_footer_nav_home"
+            android:drawableTop="@drawable/babytime"
             android:onClick="clickTab"
             android:padding="@dimen/view_space_normal"
             android:tag="0"
-            android:text="时光宝贝"/>
+            android:text="宝宝时光"
+            android:drawablePadding="@dimen/size_2"/>
 
 
         <ImageView
@@ -40,18 +41,20 @@
             android:clickable="true"
             android:gravity="center"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_foot_nav_publish"/>
+            android:src="@drawable/ic_foot_nav_publish"
+            />
         <TextView
             android:id="@+id/menu_mime_tv"
             style="@style/FooterNavText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.0"
-            android:drawableTop="@drawable/selector_footer_nav_mine"
+            android:drawableTop="@drawable/mine"
             android:onClick="clickTab"
             android:padding="@dimen/view_space_normal"
             android:tag="1"
-            android:text="我的"/>
+            android:text="我的"
+            android:drawablePadding="@dimen/size_2"/>
 
     </LinearLayout>
 </LinearLayout>

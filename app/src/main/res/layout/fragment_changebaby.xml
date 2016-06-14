@@ -46,11 +46,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_login_qq"
+            android:drawableTop="@drawable/creatbaby"
             android:gravity="center"
             android:padding="@dimen/size_12"
             android:text="创建宝宝"
-            android:textSize="@dimen/text_small" />
+            android:textSize="@dimen/text_small"
+            android:drawablePadding="@dimen/size_6"/>
 
         <TextView
             android:id="@+id/tv_focusbaby"
@@ -58,11 +59,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/size_6"
             android:layout_weight="1"
-            android:drawableTop="@drawable/ic_login_qq"
+            android:drawableTop="@drawable/focusbaby"
             android:gravity="center"
             android:padding="@dimen/size_12"
             android:text="关注宝宝"
-            android:textSize="@dimen/text_small" />
+            android:textSize="@dimen/text_small"
+            android:drawablePadding="@dimen/size_6"/>
     </LinearLayout>
 
     <View
