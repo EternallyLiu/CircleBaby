@@ -108,6 +108,21 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     }
 
+    public static void open(Context context, int timeId) {
+        apiService.queryBabyTimeDetail(timeId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(timeDetailResponse -> {
+                    if (timeDetailResponse.success()) {
+                        Intent intent = new Intent(context, TimeLineDetailActivity.class);
+                        intent.putExtra("timelineobj", timeDetailResponse.getTimeInfo());
+                        context.startActivity(intent);
+                    }
+                }, error -> {
+                    Log.e("TimeLineDetailActivity", "queryBabyTimeDetail:");
+                });
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

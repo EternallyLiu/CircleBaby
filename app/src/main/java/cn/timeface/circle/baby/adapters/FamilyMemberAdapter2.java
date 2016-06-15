@@ -50,7 +50,7 @@ public class FamilyMemberAdapter2 extends BaseRecyclerAdapter<String> {
         String item = getItem(position);
         holder.onClickListener = onClickListener;
         holder.info = item;
-        holder.ivAvatar.setImageResource(R.drawable.ic_login_qq);
+        holder.ivAvatar.setImageResource(R.drawable.familyavatar);
         holder.tvName.setText(item);
         holder.tvCount.setVisibility(View.GONE);
         holder.tvTime.setText("未加入");

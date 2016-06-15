@@ -21,6 +21,7 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.FamilyMemberAdapter;
 import cn.timeface.circle.baby.adapters.FamilyMemberAdapter2;
 import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
+import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
@@ -51,7 +52,7 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
     RecyclerView contentRecyclerView2;
     private FamilyMemberAdapter adapter;
     public FamilyMemberInfo creator;
-    public List<String> relationNames = new ArrayList<String>();
+    public List<String> relationNames = new ArrayList<>();
     private FamilyMemberAdapter2 adapter2;
 
     public FamilyMemberFragment() {
@@ -87,7 +88,7 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
 
         tvTitle.setText(FastData.getBabyName() + "一家");
         adapter = new FamilyMemberAdapter(getActivity(), new ArrayList<>());
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         contentRecyclerView.setAdapter(adapter);
 
         reqData();

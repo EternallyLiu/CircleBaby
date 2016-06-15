@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -14,23 +13,22 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.Milestone;
-import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
+import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.api.models.objs.Msg;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
 
 /**
- * Created by lidonglin on 2016/5/4.
+ * Created by lidonglin on 2016/6/15.
  */
-public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
+public class AddBookListAdapter extends BaseRecyclerAdapter<BookTypeListObj> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
 
-    public MilestoneAdapter(Context mContext, List<MilestoneTimeObj> listData) {
+    public AddBookListAdapter(Context mContext, List<BookTypeListObj> listData) {
         super(mContext, listData);
 
     }
@@ -41,7 +39,7 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
 
     @Override
     public ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_milestone, viewGroup, false);
+        View view = mLayoutInflater.inflate(R.layout.item_addbooklisttype, viewGroup, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -49,18 +47,12 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = (ViewHolder) viewHolder;
-        MilestoneTimeObj item = getItem(position);
-        holder.milestoneobj = item;
+        BookTypeListObj obj = getItem(position);
+        holder.onClickListener = onClickListener;
+        holder.obj = obj;
         holder.context = mContext;
-        int width = Remember.getInt("width", 0) * 3;
-        ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = (int) (width * 0.6);
-        holder.ivCover.setLayoutParams(layoutParams);
-        holder.rlMilestone.setLayoutParams(layoutParams);
-        holder.tvName.setText(item.getMilestone());
-        holder.tvTime.setText(DateUtil.getYear2(item.getDate()));
-        GlideUtil.displayImage(item.getImgUrl(),holder.ivCover);
+        GlideUtil.displayImage(obj.getImgList().get(0).getImgUrl(), holder.iv);
+        holder.tvTitle.setText(obj.getCoverTitle());
 
     }
 
@@ -75,16 +67,14 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.iv_cover)
-        ImageView ivCover;
-        @Bind(R.id.tv_time)
-        TextView tvTime;
-        @Bind(R.id.tv_name)
-        TextView tvName;
-        @Bind(R.id.rl_milestone)
-        RelativeLayout rlMilestone;
-        MilestoneTimeObj milestoneobj;
+        @Bind(R.id.iv)
+        ImageView iv;
+        @Bind(R.id.tv_title)
+        TextView tvTitle;
         Context context;
+
+        View.OnClickListener onClickListener = null;
+        BookTypeListObj obj;
 
         ViewHolder(View view) {
             super(view);
@@ -94,7 +84,7 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
 
         @Override
         public void onClick(View v) {
-            TimeLineDetailActivity.open(context,milestoneobj.getTimeId());
+            FragmentBridgeActivity.openAddBookFragment(context, obj);
         }
     }
 }

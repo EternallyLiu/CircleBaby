@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/size_6">
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="宝宝时光书"
+        android:textSize="@dimen/text_normal"
+        android:layout_centerInParent="true"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_minebookadapter_bg"
+        android:paddingTop="@dimen/size_6"
+        android:paddingBottom="@dimen/size_6"
+        android:paddingLeft="@dimen/size_12"
+        android:paddingRight="@dimen/size_12"
+        />
+
+</RelativeLayout>

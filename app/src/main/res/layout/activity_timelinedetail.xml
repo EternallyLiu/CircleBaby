@@ -41,7 +41,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:orientation="horizontal"
-                    android:padding="@dimen/size_6">
+                    android:padding="@dimen/size_12">
 
                     <ImageView
                         android:layout_width="wrap_content"

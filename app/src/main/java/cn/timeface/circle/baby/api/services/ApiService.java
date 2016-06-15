@@ -5,6 +5,7 @@ import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.responses.AlbumDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
+import cn.timeface.circle.baby.api.models.responses.BookTypeListResponse;
 import cn.timeface.circle.baby.api.models.responses.CardListResponse;
 import cn.timeface.circle.baby.api.models.responses.CloudAlbumListResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryComposedResponse;
@@ -264,4 +265,10 @@ public interface ApiService {
     //云相册详情
     @GET("babyCloudAlbums/queryCloudAlbumDetail")
     Observable<AlbumDetailResponse> queryCloudAlbumDetail(@Query("cloudAlbumId") String cloudAlbumId);
+
+    //我的作品-作品类型列表
+    @GET("babyBook/getBabyBookWorksTypeList")
+    Observable<BookTypeListResponse> getBabyBookWorksTypeList();
+
+
 }

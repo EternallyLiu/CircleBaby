@@ -17,9 +17,12 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.fragments.AddBookFragment;
+import cn.timeface.circle.baby.fragments.AddBookListFragment;
 import cn.timeface.circle.baby.fragments.BabyInfoFragment;
 import cn.timeface.circle.baby.fragments.CardPreviewFragment;
 import cn.timeface.circle.baby.fragments.ChangeBabyFragment;
@@ -31,6 +34,7 @@ import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
 import cn.timeface.circle.baby.fragments.InviteFragment;
 import cn.timeface.circle.baby.fragments.MessageFragment;
 import cn.timeface.circle.baby.fragments.MilestoneFragment;
+import cn.timeface.circle.baby.fragments.MineBookFragment;
 import cn.timeface.circle.baby.fragments.MineInfoFragment;
 import cn.timeface.circle.baby.fragments.SettingFragment;
 import cn.timeface.circle.baby.fragments.SettingMsgFragment;
@@ -108,6 +112,12 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putParcelable("imgObj", imgObj);
         open(context, "CardPreviewFragment", bundle);
+    }
+
+    public static void openAddBookFragment(Context context,BookTypeListObj obj) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("BookTypeListObj", obj);
+        open(context, "AddBookFragment", bundle);
     }
 
 
@@ -269,6 +279,14 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
             case "SettingMsgFragment":
                 return new SettingMsgFragment();
 
+            case "MineBookFragment":
+                return new MineBookFragment();
+
+            case "AddBookListFragment":
+                return new AddBookListFragment();
+
+            case "AddBookFragment":
+                return new AddBookFragment();
 
             default:
                 return null;

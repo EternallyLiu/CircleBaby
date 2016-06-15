@@ -110,6 +110,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             case R.id.ll_mine_info:
                 FragmentBridgeActivity.open(getContext(),"MineInfoFragment");
                 break;
+            case R.id.ll_mine_product:
+                FragmentBridgeActivity.open(getContext(),"MineBookFragment");
+                break;
         }
     }
 }

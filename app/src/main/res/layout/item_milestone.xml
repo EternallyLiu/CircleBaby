@@ -13,7 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:src="@drawable/bg_qq_phono_guide"
         android:scaleType="centerCrop"/>
 
     <RelativeLayout
