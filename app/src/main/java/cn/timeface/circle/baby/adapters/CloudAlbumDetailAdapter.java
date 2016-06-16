@@ -2,11 +2,12 @@ package cn.timeface.circle.baby.adapters;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
@@ -25,10 +26,20 @@ public class CloudAlbumDetailAdapter extends RecyclerView.Adapter<CloudAlbumDeta
 
     private Activity context;
     private List<CloudAlbumDetailObj> albumDetailObjs;
+    private boolean editState;
+    private int currentVisibleItemPosition;
 
     public CloudAlbumDetailAdapter(Activity activity, List<CloudAlbumDetailObj> albumDetailObjs) {
         this.context = activity;
         this.albumDetailObjs = albumDetailObjs;
+    }
+
+    public void setAlbumEditState(boolean isEdit) {
+        this.editState = isEdit;
+    }
+
+    public void setCurrentVisibleItemState(int position) {
+        this.currentVisibleItemPosition = position;
     }
 
     @Override
@@ -43,7 +54,15 @@ public class CloudAlbumDetailAdapter extends RecyclerView.Adapter<CloudAlbumDeta
         Glide.with(context)
                 .load(detailObj.getImgUrl())
                 .into(holder.ivAlbumImage);
-        holder.tvDate.setText(DateUtil.formatDate("yyyy.MM.dd", detailObj.getPhotographTime()));
+        holder.editInput.setEnabled(editState);
+        String content = detailObj.getContent();
+        holder.editInput.setText(TextUtils.isEmpty(content) ? DateUtil.formatDate("yyyy.MM.dd", detailObj.getPhotographTime()) : content);
+        if (editState) {
+            if (position == currentVisibleItemPosition) {
+                holder.editInput.setSelection(holder.editInput.getText().length());
+                holder.editInput.requestFocus();
+            }
+        }
     }
 
     @Override
@@ -54,8 +73,8 @@ public class CloudAlbumDetailAdapter extends RecyclerView.Adapter<CloudAlbumDeta
     class AlbumDetailHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_album_image)
         ImageView ivAlbumImage;
-        @Bind(R.id.tv_date)
-        TextView tvDate;
+        @Bind(R.id.et_inputText)
+        EditText editInput;
 
         public AlbumDetailHolder(View itemView) {
             super(itemView);

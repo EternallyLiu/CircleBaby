@@ -164,6 +164,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
                         .doOnSubscribe(new Action0() {
                             @Override
                             public void call() {
+                                buckets.clear();
                                 buckets.add(0, new MediaStoreBucket("", "全部相册", null));
                             }
                         })

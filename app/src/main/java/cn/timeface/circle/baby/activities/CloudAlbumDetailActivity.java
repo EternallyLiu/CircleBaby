@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,10 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumDetailAdapter;
 import cn.timeface.circle.baby.api.models.objs.CloudAlbumDetailObj;
+import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import rx.Subscription;
 
 /**
@@ -33,6 +36,8 @@ public class CloudAlbumDetailActivity extends BaseAppCompatActivity {
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     private CloudAlbumDetailAdapter albumDetailAdapter;
+    private LoadingDialog loadingDialog;
+    private LinearLayoutManager layoutManager;
 
     public static void open(Activity activity, String albumId) {
         Intent intent = new Intent(activity, CloudAlbumDetailActivity.class);
@@ -49,11 +54,14 @@ public class CloudAlbumDetailActivity extends BaseAppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         String albumId = getIntent().getStringExtra("albumId");
         setupRecyclerView();
+        loadingDialog = LoadingDialog.getInstance();
+        loadingDialog.show(getSupportFragmentManager(), "");
         reqCloudAlbumDetail(albumId);
     }
 
     private void setupRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
         albumDetailAdapter = new CloudAlbumDetailAdapter(this, albumDetailObjs);
         recyclerView.setAdapter(albumDetailAdapter);
     }
@@ -61,6 +69,7 @@ public class CloudAlbumDetailActivity extends BaseAppCompatActivity {
     private void reqCloudAlbumDetail(String albumId) {
         Subscription subscribe = apiService.queryCloudAlbumDetail(albumId)
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnTerminate(() -> loadingDialog.dismiss())
                 .subscribe(albumDetailResponse -> {
                     if (albumDetailResponse.success()) {
                         List<CloudAlbumDetailObj> detailObjs = albumDetailResponse.getDataList();
@@ -87,7 +96,17 @@ public class CloudAlbumDetailActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit) {
             //编辑模式
+            albumDetailAdapter.setAlbumEditState(true);
+            int itemPosition = layoutManager.findFirstVisibleItemPosition();
+            albumDetailAdapter.setCurrentVisibleItemState(itemPosition);
+            albumDetailAdapter.notifyDataSetChanged();
+            DeviceUtil.showSoftInput(this);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void clickFinishEdit(View view) {
+        albumDetailAdapter.setAlbumEditState(false);
+        albumDetailAdapter.notifyDataSetChanged();
     }
 }

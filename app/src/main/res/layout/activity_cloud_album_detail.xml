@@ -37,5 +37,6 @@
         android:layout_alignParentRight="true"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_done"
+        android:onClick="clickFinishEdit"
         android:tint="@android:color/white" />
 </RelativeLayout>
