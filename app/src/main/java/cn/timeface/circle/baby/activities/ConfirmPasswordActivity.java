@@ -20,6 +20,7 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.encode.AES;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import rx.Subscription;
@@ -96,6 +97,9 @@ public class ConfirmPasswordActivity extends BaseAppCompatActivity {
             return false;
         } else if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, "请填写昵称", Toast.LENGTH_SHORT).show();
+            return false;
+        }else if(pwd.length()<6){
+            ToastUtil.showToast("密码不能少于6位数");
             return false;
         }
         return true;

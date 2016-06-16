@@ -158,6 +158,10 @@ public interface ApiService {
     @GET("baby/attentionCancel")
     Observable<BaseResponse> attentionCancel(@Query("babyId") int babyId);
 
+    //更新访问记录
+    @GET("baby/updateLoginInfo")
+    Observable<BaseResponse> updateLoginInfo();
+
     //获取消息列表
     @GET("babyMsgInfo/queryMsgList")
     Observable<MsgListResponse> queryMsgList();

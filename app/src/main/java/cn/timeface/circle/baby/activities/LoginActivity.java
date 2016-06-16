@@ -154,6 +154,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(userLoginResponse -> {
+                    ToastUtil.showToast(userLoginResponse.getInfo());
                     if (userLoginResponse.success()) {
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
                         FastData.setAccount(account);
@@ -163,7 +164,6 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.putString("userObj", gson.toJson(userLoginResponse.getUserInfo()));
 //                        String userObj = FastData.getString("userObj", "");
 //                        UserObj o = gson.fromJson(userObj, UserObj.class);
-                        ToastUtil.showToast(userLoginResponse.getInfo());
                         if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
                             CreateBabyActivity.open(this);
                         } else {

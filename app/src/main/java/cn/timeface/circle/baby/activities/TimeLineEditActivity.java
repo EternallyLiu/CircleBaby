@@ -21,6 +21,8 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -74,6 +76,8 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     private List<MediaObj> mediaList;
     private int milestoneId;
     private String time;
+    private List<String> urls;
+    private ArrayList<ImgObj> imgObjs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +102,6 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         gvGridView.setOnItemClickListener((parent, v, position, id) -> {
             if (position == 0) {
                 selectImages();
-
             } else {
 //                int relPosition = position - 1;
 //                imageUrls.remove(adapter.getData().get(relPosition));
@@ -127,14 +130,13 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         if (data != null && resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case PICTURE:
-                    selImages = data.getParcelableArrayListExtra("result_select_image_list");
-                    imageUrls.clear();
-                    for (ImgObj item : selImages) {
-                        imageUrls.add(item.getLocalPath());
+                    imgObjs = data.getParcelableArrayListExtra("result_select_image_list");
+                    urls = new ArrayList<>();
+                    for (ImgObj item : imgObjs) {
+                        urls.add(item.getLocalPath());
                     }
-                    if (imageUrls.size() > 0) {
-                        adapter.getData().clear();
-                        adapter.getData().addAll(imageUrls);
+                    if (urls.size() > 0) {
+                        adapter.getData().addAll(urls);
                         adapter.notifyDataSetChanged();
                     }
                     break;
@@ -179,24 +181,26 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     private void editTime() {
         String value = etContent.getText().toString();
-
         if (value.length() < 1 && imageUrls.size() < 1) {
             Toast.makeText(this, "发点文字或图片吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        mediaList.clear();
-        for (ImgObj img : selImages){
-            MediaObj mediaObj = img.getMediaObj();
-            mediaList.add(mediaObj);
+        if (imgObjs.size() > 0) {
+            for (ImgObj img : imgObjs) {
+                MediaObj mediaObj = img.getMediaObj();
+                mediaList.add(mediaObj);
+            }
         }
         String s = new Gson().toJson(mediaList);
-        apiService.editTime(value,s,milestoneId,DateUtil.getTime(time,"yyyy.MM.dd"),timelimeobj.getTimeId())
+//        long t = DateUtil.getTime(time, "yyyy.MM.dd");
+        long t = System.currentTimeMillis();
+        apiService.editTime(URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, t, timelimeobj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
-                        for (ImgObj img : selImages) {
-                            uploadImage(img.getLocalPath());
+                        for (String url : urls) {
+                            uploadImage(url);
                         }
                         finish();
                     }

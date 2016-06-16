@@ -11,6 +11,7 @@ import cn.timeface.circle.baby.managers.recorders.SimpleUploadRecorder;
 import cn.timeface.circle.baby.oss.uploadservice.UploadService;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.common.utils.TimeFaceUtilInit;
 
 /**
  * author: rayboot  Created on 15/12/3.
@@ -37,7 +38,10 @@ public class App extends MultiDexApplication {
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
 
         //友盟key
-        AnalyticsConfig.setAppkey(this, "");
+//        AnalyticsConfig.setAppkey(this, "");
+
+        //初始化util
+        TimeFaceUtilInit.init(this);
 
         UploadService.setRecorder(new SimpleUploadRecorder());
 

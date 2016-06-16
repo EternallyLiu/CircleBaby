@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.encode.AES;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import rx.Subscription;
@@ -33,9 +34,8 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
     EditText etRePassword;
     @Bind(R.id.btn_finish)
     Button btnFinish;
+
     String account;
-    @Bind(R.id.tv_cancle)
-    TextView tvCancle;
 
     public static void open(Context context, String account) {
         Intent intent = new Intent(context, SetPasswordActivity.class);
@@ -50,7 +50,7 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         account = getIntent().getStringExtra("account");
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
@@ -87,11 +87,16 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
         } else if (TextUtils.isEmpty(rePwd)) {
             Toast.makeText(this, "请确认密码", Toast.LENGTH_SHORT).show();
             return false;
+        }else if(pwd.length()<6){
+            ToastUtil.showToast("密码不能少于六位数");
+            return false;
         }
+
         if (!pwd.equals(rePwd)) {
             Toast.makeText(this, "两次输入密码不一致", Toast.LENGTH_SHORT).show();
             return false;
         }
+
         return true;
     }
 
