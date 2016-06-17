@@ -99,6 +99,6 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
     public void clickCloudAlbum(View view) {
         CloudAlbumObj cloudAlbumObj = (CloudAlbumObj) view.getTag(R.string.tag_obj);
         String cloudAlbumObjId = cloudAlbumObj.getId();
-        CloudAlbumDetailActivity.open(this, cloudAlbumObjId);
+        CloudAlbumEditActivity.open(this, cloudAlbumObjId);
     }
 }

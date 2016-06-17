@@ -274,5 +274,10 @@ public interface ApiService {
     @GET("babyBook/getBabyBookWorksTypeList")
     Observable<BookTypeListResponse> getBabyBookWorksTypeList();
 
+    //云相册编辑
+    @GET("babyCloudAlbums/editCloudAlbum")
+    Observable<BaseResponse> editCloudAlbum(@Query("cloudAlbumId") String cloudAlbumId,
+                                            @Query("mediaList") String mediaList);
+
 
 }

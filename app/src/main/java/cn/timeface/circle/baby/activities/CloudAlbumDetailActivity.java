@@ -97,8 +97,6 @@ public class CloudAlbumDetailActivity extends BaseAppCompatActivity {
         if (item.getItemId() == R.id.action_edit) {
             //编辑模式
             albumDetailAdapter.setAlbumEditState(true);
-            int itemPosition = layoutManager.findFirstVisibleItemPosition();
-            albumDetailAdapter.setCurrentVisibleItemState(itemPosition);
             albumDetailAdapter.notifyDataSetChanged();
             DeviceUtil.showSoftInput(this);
         }
