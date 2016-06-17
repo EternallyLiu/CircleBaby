@@ -109,8 +109,15 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
             case R.id.rl_baby:
                 UserObj info = (UserObj) v.getTag(R.string.tag_ex);
                 FastData.setUserInfo(info);
-
-                getActivity().finish();
+                apiService.updateLoginInfo()
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                getActivity().finish();
+                            }
+                        }, throwable -> {
+                            Log.e(TAG, "updateLoginInfo:");
+                        });
                 break;
         }
     }

@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -9,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.adapters.MineBookAdapter;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 
@@ -26,7 +29,7 @@ public class MineBookFragment extends BaseFragment implements View.OnClickListen
     RecyclerView contentRecyclerView;
     @Bind(R.id.iv_add)
     ImageView ivAdd;
-    List<MineBookObj> bookList;
+    List<MineBookObj> bookList = new ArrayList<>();
 
     public MineBookFragment() {
     }
@@ -50,12 +53,14 @@ public class MineBookFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void reqData() {
-
         setDataList(bookList);
     }
 
     private void setDataList(List<MineBookObj> bookList) {
-        bookList = mokeData(bookList);
+        List<MineBookObj> mineBookObjs = mokeData(bookList);
+        MineBookAdapter mineBookAdapter = new MineBookAdapter(getContext(), mineBookObjs);
+        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        contentRecyclerView.setAdapter(mineBookAdapter);
         
 
     }
@@ -74,8 +79,6 @@ public class MineBookFragment extends BaseFragment implements View.OnClickListen
             case R.id.iv_add:
                 FragmentBridgeActivity.open(getContext(), "AddBookListFragment");
                 break;
-
-
         }
     }
 

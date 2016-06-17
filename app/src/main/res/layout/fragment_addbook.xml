@@ -33,35 +33,50 @@
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_recycler_view"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bg_color2"
-        android:scrollbars="none" />
-    <TextView
-        android:id="@+id/tv_bookname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="书本名称"
-        android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/text_medium"
-        android:layout_marginTop="@dimen/size_12"
-        />
-    <TextView
-        android:id="@+id/tv_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="简介"
-        android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/text_small"
-        android:layout_marginTop="@dimen/size_12"
-        />
-    <ImageView
-        android:id="@+id/iv_creatbook"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/selector_creatbook"
-        android:layout_marginTop="@dimen/size_12"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/content_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_color2"
+                android:scrollbars="none" />
+
+            <TextView
+                android:id="@+id/tv_bookname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/size_12"
+                android:text="书本名称"
+                android:textSize="@dimen/text_medium" />
+
+            <TextView
+                android:id="@+id/tv_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/size_12"
+                android:text="简介"
+                android:textSize="@dimen/text_small" />
+
+            <ImageView
+                android:id="@+id/iv_creatbook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/size_12"
+                android:src="@drawable/selector_creatbook"
+                android:layout_marginBottom="@dimen/size_24"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

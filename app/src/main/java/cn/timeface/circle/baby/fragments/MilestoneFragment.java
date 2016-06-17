@@ -126,14 +126,9 @@ public class MilestoneFragment extends BaseFragment implements View.OnClickListe
     }
 
     private List<MilestoneTimeObj> mokeData(List<MilestoneTimeObj> dataList) {
-        MilestoneTimeObj item1 = new MilestoneTimeObj(1465193897000L, "http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", "第一只兔子", 1);
-        MilestoneTimeObj item2 = new MilestoneTimeObj(1465193897000L, "http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", "第一只兔子", 1);
-        MilestoneTimeObj item3 = new MilestoneTimeObj(1465193897000L, "http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", "第一只兔子", 1);
-        MilestoneTimeObj item4 = new MilestoneTimeObj(1465193897000L, "http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", "第一只兔子", 1);
-        dataList.add(item1);
-        dataList.add(item2);
-        dataList.add(item3);
-        dataList.add(item4);
+        MilestoneTimeObj item = new MilestoneTimeObj(1465193897000L, "http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", "第一只兔子", 1);
+        dataList.add(item);
+        dataList.add(item);
         return dataList;
     }
 }

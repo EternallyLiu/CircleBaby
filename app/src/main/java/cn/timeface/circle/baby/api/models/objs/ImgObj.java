@@ -310,10 +310,7 @@ public class ImgObj extends BaseImgObj {
     };
 
     public MediaObj getMediaObj() {
-        Bitmap bitmap = BitmapFactory.decodeFile(getLocalPath());
-        int height = bitmap.getHeight();
-        int width = bitmap.getWidth();
-        MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
+        MediaObj mediaObj = new MediaObj(getContent(), getUrl(), 0, 0, getDateMills());
         return mediaObj;
     }
 }

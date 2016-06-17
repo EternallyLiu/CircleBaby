@@ -65,8 +65,6 @@ public class AddBookAdapter extends BaseRecyclerAdapter<MediaObj> {
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv)
         ImageView iv;
-        @Bind(R.id.tv_title)
-        TextView tvTitle;
 
         ViewHolder(View view) {
             super(view);

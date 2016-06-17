@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +25,7 @@ import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -100,6 +102,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     private AlertDialog dialog;
     private static int normalColor;
     private int commmentId = 0;
+    private PopupWindow popupWindow;
 
     public static void open(Context context, TimeLineObj item) {
         Intent intent = new Intent(context, TimeLineDetailActivity.class);
@@ -285,8 +288,14 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 startActivity(intent);
                 break;
             case R.id.ll_menu:
-                dialog = new AlertDialog.Builder(this).setView(initMenu()).show();
-                dialog.getWindow().setGravity(Gravity.BOTTOM);
+//                dialog = new AlertDialog.Builder(this).setView(initMenu()).show();
+//                dialog.getWindow().setGravity(Gravity.BOTTOM);
+                View view = initMenu();
+                popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                popupWindow.setBackgroundDrawable(new BitmapDrawable());
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+
                 break;
             case R.id.icon_like:
                 int p = iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;
@@ -328,11 +337,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
                 break;
             case R.id.tv_edit:
+                popupWindow.dismiss();
                 Intent intent1 = new Intent(this,TimeLineEditActivity.class);
                 intent1.putExtra("timelimeobj",timelineobj);
                 startActivity(intent1);
                 break;
             case R.id.tv_delete:
+                popupWindow.dismiss();
                 new AlertDialog.Builder(this)
                         .setTitle("确定删除这条记录吗?")
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -358,12 +369,14 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 break;
             case R.id.tv_download:
                 ImageFactory.saveVideo(timelineobj.getMediaList().get(0).getVideoUrl());
+                popupWindow.dismiss();
                 break;
             case R.id.tv_share:
-
+                popupWindow.dismiss();
                 break;
             case R.id.tv_cancel:
-                dialog.dismiss();
+//                dialog.dismiss();
+                popupWindow.dismiss();
                 break;
             case R.id.tv_action:
                 CommentObj commment = (CommentObj) v.getTag(R.string.tag_obj);

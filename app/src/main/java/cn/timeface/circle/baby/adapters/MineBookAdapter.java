@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
@@ -16,9 +17,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -27,7 +26,6 @@ import cn.timeface.circle.baby.utils.GlideUtil;
  * Created by lidonglin on 2016/6/15.
  */
 public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
-
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
@@ -57,7 +55,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         holder.context = mContext;
         GlideUtil.displayImage(obj.getCoverImage(), holder.ivBook);
         holder.tvTitle.setText(obj.getTitle());
-        holder.tvPagecount.setText(obj.getPageCount());
+//        holder.tvPagecount.setText(obj.getPageCount());
         holder.tvCreattime.setText(DateUtil.getYear2(obj.getCreateTime()));
 
     }
@@ -87,8 +85,8 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         TextView tvPrint;
         @Bind(R.id.ll_menu)
         LinearLayout llMenu;
-        Context context;
 
+        Context context;
         View.OnClickListener onClickListener = null;
         MineBookObj obj;
 
@@ -103,7 +101,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.ll_menu:
                     llMenu.getChildAt(0).setPressed(true);
                     llMenu.getChildAt(1).setPressed(true);
@@ -114,8 +112,12 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     TextView tvDelete = (TextView) view.findViewById(R.id.tv_delete);
                     tvShare.setOnClickListener(this);
                     tvDelete.setOnClickListener(this);
-                    PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
-                    popupWindow.showAtLocation(itemView, Gravity.RIGHT|Gravity.CENTER_VERTICAL,0,0);
+                    PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                    popupWindow.showAtLocation(itemView, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0);
+                    popupWindow.setBackgroundDrawable(new BitmapDrawable());
+                    popupWindow.setOutsideTouchable(true);
+                    popupWindow.showAsDropDown(llMenu);
+
                     break;
                 case R.id.tv_edit:
 

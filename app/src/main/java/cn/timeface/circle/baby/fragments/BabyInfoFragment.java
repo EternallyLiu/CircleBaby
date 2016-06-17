@@ -2,7 +2,9 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -108,7 +110,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         babyObj = user.getBabyObj();
         String s = babyObj.getAvatar();
         int i = s.lastIndexOf("/");
-        objectKey = s.substring(i - 4);
+        objectKey = s.substring(i - 5);
     }
 
     @Override
@@ -198,15 +200,27 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
             case R.id.tv_delete:
                 if (user.getIsCreator() == 1) {
                     //删除宝宝
-                    apiService.delBabyInfo(babyObj.getBabyId())
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .subscribe(response -> {
-                                if (response.success()) {
-                                    getActivity().finish();
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("确定删除本宝宝吗?")
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
                                 }
-                            }, throwable -> {
-                                Log.e(TAG, "delBabyInfo:", throwable);
-                            });
+                            }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            apiService.delBabyInfo(babyObj.getBabyId())
+                                    .compose(SchedulersCompat.applyIoSchedulers())
+                                    .subscribe(response -> {
+                                        if (response.success()) {
+                                            getActivity().finish();
+                                        }
+                                    }, throwable -> {
+                                        Log.e(TAG, "delBabyInfo:", throwable);
+                                    });
+                        }
+                    }).show();
                 } else {
                     //取消关注宝宝
                     apiService.attentionCancel(babyObj.getBabyId())
