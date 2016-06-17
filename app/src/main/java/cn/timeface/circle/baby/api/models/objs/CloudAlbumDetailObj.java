@@ -9,6 +9,7 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
  * Created by zhsheng on 2016/6/8.
  */
 public class CloudAlbumDetailObj extends BaseObj implements Parcelable {
+    private String id;
     private String content;
     private int h;
     private int w;
@@ -82,6 +83,17 @@ public class CloudAlbumDetailObj extends BaseObj implements Parcelable {
         this.videoUrl = videoUrl;
     }
 
+    public CloudAlbumDetailObj() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -89,6 +101,7 @@ public class CloudAlbumDetailObj extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
         dest.writeString(this.content);
         dest.writeInt(this.h);
         dest.writeInt(this.w);
@@ -99,10 +112,8 @@ public class CloudAlbumDetailObj extends BaseObj implements Parcelable {
         dest.writeString(this.videoUrl);
     }
 
-    public CloudAlbumDetailObj() {
-    }
-
     protected CloudAlbumDetailObj(Parcel in) {
+        this.id = in.readString();
         this.content = in.readString();
         this.h = in.readInt();
         this.w = in.readInt();
@@ -113,7 +124,7 @@ public class CloudAlbumDetailObj extends BaseObj implements Parcelable {
         this.videoUrl = in.readString();
     }
 
-    public static final Parcelable.Creator<CloudAlbumDetailObj> CREATOR = new Parcelable.Creator<CloudAlbumDetailObj>() {
+    public static final Creator<CloudAlbumDetailObj> CREATOR = new Creator<CloudAlbumDetailObj>() {
         @Override
         public CloudAlbumDetailObj createFromParcel(Parcel source) {
             return new CloudAlbumDetailObj(source);

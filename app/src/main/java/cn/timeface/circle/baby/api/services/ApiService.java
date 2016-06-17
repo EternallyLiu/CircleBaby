@@ -279,5 +279,13 @@ public interface ApiService {
     Observable<BaseResponse> editCloudAlbum(@Query("cloudAlbumId") String cloudAlbumId,
                                             @Query("mediaList") String mediaList);
 
+    //删除云相册
+    @GET("babyCloudAlbums/deleteCloudAlbum")
+    Observable<BaseResponse> deleteCloudAlbum(@Query("cloudAlbumId") String cloudAlbumId);
+
+    //删除相册照片
+    @GET("babyCloudAlbums/deleteSingleImage")
+    Observable<BaseResponse> deleteSingleImage(@Query("mediaId") String cloudAlbumId);
+
 
 }

@@ -32,6 +32,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumDetailAdapter;
+import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.objs.CloudAlbumDetailObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.DeviceUtil;
@@ -40,6 +41,7 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import rx.Subscription;
+import rx.functions.Action1;
 
 public class CloudAlbumEditActivity extends BaseAppCompatActivity implements BottomMenuDialog.OnMenuClickListener {
 
@@ -231,9 +233,24 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     public void clickDeleteImg(View view) {
         //删除照片,待接口
         CloudAlbumDetailObj detailObj = (CloudAlbumDetailObj) view.getTag(R.string.tag_obj);
-        int position = albumDetailObjs.indexOf(detailObj);
-        albumDetailObjs.remove(detailObj);
-        albumDetailAdapter.notifyItemRemoved(position);
+        Subscription subscribe = apiService.deleteSingleImage(detailObj.getId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse>() {
+                    @Override
+                    public void call(BaseResponse baseResponse) {
+                        if (baseResponse.success()) {
+                            int position = albumDetailObjs.indexOf(detailObj);
+                            albumDetailObjs.remove(detailObj);
+                            albumDetailAdapter.notifyItemRemoved(position);
+                            ToastUtil.showToast("删除成功");
+                        } else {
+                            ToastUtil.showToast(baseResponse.getInfo());
+                        }
+                    }
+                }, throwable -> {
+                    ToastUtil.showToast(R.string.state_error_timeout);
+                });
+        addSubscription(subscribe);
     }
 
     public void clickBtnChangeCover(View view) {
@@ -255,10 +272,25 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 break;
             case R.id.rl_delete_album:
                 //删除相册
-
+                deleteAlbum();
                 break;
             case R.id.cancel:
                 break;
         }
+    }
+
+    private void deleteAlbum() {
+        Subscription subscribe = apiService.deleteCloudAlbum(albumId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(baseResponse -> {
+                    if (baseResponse.success()) {
+                        ToastUtil.showToast("删除成功");
+                    } else {
+                        ToastUtil.showToast(baseResponse.getInfo());
+                    }
+                }, throwable -> {
+                    ToastUtil.showToast(R.string.state_error_timeout);
+                });
+        addSubscription(subscribe);
     }
 }
