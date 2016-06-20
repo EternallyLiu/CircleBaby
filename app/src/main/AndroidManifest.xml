@@ -126,7 +126,7 @@
         <activity android:name=".activities.VideoPlayActivity" />
         <activity android:name=".activities.PhotoRecodeDetailActivity" />
         <activity android:name=".activities.FragmentBridgeActivity" />
-        <activity android:name=".activities.TimeLineEditActivity"/>
+        <activity android:name=".activities.TimeLineEditActivity" />
         <activity
             android:name=".activities.TimeLineDetailActivity"
             android:windowSoftInputMode="adjustResize" />
@@ -148,6 +148,10 @@
         <activity
             android:name=".activities.CloudAlbumEditActivity"
             android:label="@string/cloudAlbum"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MyOrderListActivity"
+            android:label="我的订单"
             android:screenOrientation="portrait" />
     </application>
 

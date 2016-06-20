@@ -3,7 +3,6 @@ package cn.timeface.circle.baby.fragments;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.activities.LoginActivity;
+import cn.timeface.circle.baby.activities.MyOrderListActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener {
@@ -105,13 +103,16 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_set:
-                FragmentBridgeActivity.open(getContext(),"SettingFragment");
+                FragmentBridgeActivity.open(getContext(), "SettingFragment");
                 break;
             case R.id.ll_mine_info:
-                FragmentBridgeActivity.open(getContext(),"MineInfoFragment");
+                FragmentBridgeActivity.open(getContext(), "MineInfoFragment");
                 break;
             case R.id.ll_mine_product:
-                FragmentBridgeActivity.open(getContext(),"MineBookFragment");
+                FragmentBridgeActivity.open(getContext(), "MineBookFragment");
+                break;
+            case R.id.ll_mine_order:
+                MyOrderListActivity.open(getContext());
                 break;
         }
     }
