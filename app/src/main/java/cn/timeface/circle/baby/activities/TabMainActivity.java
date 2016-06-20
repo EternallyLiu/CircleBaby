@@ -1,15 +1,22 @@
 package cn.timeface.circle.baby.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +49,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Bind(R.id.container)
     FrameLayout container;
     private BaseFragment currentFragment = null;
+    private PopupWindow popupWindow;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, TabMainActivity.class));
@@ -147,7 +155,51 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        Intent intent = new Intent(this, SelectPublishActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, SelectPublishActivity.class);
+//        startActivity(intent);
+
+
+        switch (v.getId()){
+            case R.id.iv_publish:
+                popupWindow = new PopupWindow(initView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                popupWindow.setBackgroundDrawable(new BitmapDrawable());
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                break;
+            case R.id.iv_publish_select:
+                popupWindow.dismiss();
+                break;
+            case R.id.tv_photo:
+                popupWindow.dismiss();
+                PublishActivity.open(this , PublishActivity.PHOTO);
+                break;
+            case R.id.tv_video:
+                popupWindow.dismiss();
+                PublishActivity.open(this , PublishActivity.VIDEO);
+                break;
+            case R.id.tv_diary:
+                popupWindow.dismiss();
+                PublishActivity.open(this , PublishActivity.DIALY);
+                break;
+            case R.id.tv_card:
+                popupWindow.dismiss();
+                PublishActivity.open(this , PublishActivity.CARD);
+                break;
+
+        }
+    }
+    public View initView(){
+        View view = View.inflate(this, R.layout.view_publish, null);
+        ImageView ivPublishSelect = (ImageView) view.findViewById(R.id.iv_publish_select);
+        TextView tvPhoto = (TextView) view.findViewById(R.id.tv_photo);
+        TextView tvVideo = (TextView) view.findViewById(R.id.tv_video);
+        TextView tvDiary = (TextView) view.findViewById(R.id.tv_diary);
+        TextView tvCard = (TextView) view.findViewById(R.id.tv_card);
+        ivPublishSelect.setOnClickListener(this);
+        tvPhoto.setOnClickListener(this);
+        tvVideo.setOnClickListener(this);
+        tvDiary.setOnClickListener(this);
+        tvCard.setOnClickListener(this);
+        return view;
     }
 }

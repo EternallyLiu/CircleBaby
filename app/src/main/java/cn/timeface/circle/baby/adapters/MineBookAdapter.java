@@ -13,6 +13,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -132,6 +133,11 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
                     break;
             }
+        }
+
+        public View initView(){
+            View view = View.inflate(context, R.layout.view_apply_print, null);
+            return view;
         }
     }
 }

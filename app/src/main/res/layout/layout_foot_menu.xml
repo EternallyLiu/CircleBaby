@@ -32,17 +32,30 @@
             android:text="宝宝时光"
             android:drawablePadding="@dimen/size_2"/>
 
-
-        <ImageView
-            android:id="@+id/iv_publish"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.0"
-            android:clickable="true"
-            android:gravity="center"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_foot_nav_publish"
-            />
+            android:gravity="center">
+            <ImageView
+                android:id="@+id/iv_publish"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:clickable="true"
+                android:gravity="center"
+                android:scaleType="centerInside"
+                android:src="@drawable/publish"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/add"
+                android:layout_gravity="center"
+                />
+        </FrameLayout>
+
+
         <TextView
             android:id="@+id/menu_mime_tv"
             style="@style/FooterNavText"
