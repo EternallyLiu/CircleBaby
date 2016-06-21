@@ -13,7 +13,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.activities.MyOrderListActivity;
+import cn.timeface.circle.baby.activities.OrderListActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -112,7 +112,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 FragmentBridgeActivity.open(getContext(), "MineBookFragment");
                 break;
             case R.id.ll_mine_order:
-                MyOrderListActivity.open(getContext());
+                OrderListActivity.open(getContext());
                 break;
         }
     }

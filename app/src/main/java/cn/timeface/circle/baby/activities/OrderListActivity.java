@@ -25,7 +25,7 @@ import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 
-public class MyOrderListActivity extends BaseAppCompatActivity {
+public class OrderListActivity extends BaseAppCompatActivity {
     public static final int START_PAGE = 1;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -40,7 +40,7 @@ public class MyOrderListActivity extends BaseAppCompatActivity {
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
 
     public static void open(Context context) {
-        context.startActivity(new Intent(context, MyOrderListActivity.class));
+        context.startActivity(new Intent(context, OrderListActivity.class));
     }
 
     @Override
@@ -95,7 +95,7 @@ public class MyOrderListActivity extends BaseAppCompatActivity {
                 });
         orderListAdapter.setOnItemClickListener(orderObj -> {
             Log.d(TAG, "setupView: " + orderObj.getOrderId());
-            OrderDetailActivity.open(MyOrderListActivity.this, orderObj.getOrderId());
+            OrderDetailActivity.open(OrderListActivity.this, orderObj.getOrderId());
         });
 
     }
