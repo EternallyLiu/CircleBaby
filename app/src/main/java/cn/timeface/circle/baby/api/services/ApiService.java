@@ -2,6 +2,8 @@ package cn.timeface.circle.baby.api.services;
 
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.api.models.responses.AddAddressResponse;
+import cn.timeface.circle.baby.api.models.responses.AddressListResponse;
 import cn.timeface.circle.baby.api.models.responses.AlbumDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
@@ -287,5 +289,18 @@ public interface ApiService {
     @GET("babyCloudAlbums/deleteSingleImage")
     Observable<BaseResponse> deleteSingleImage(@Query("mediaId") String cloudAlbumId);
 
+    //获取收货地址列表
+    @GET("babyOrder/getAddressList")
+    Observable<AddressListResponse> getAddressList();
+
+    //添加收货地址
+    @GET("babyOrder/addAddress")
+    Observable<AddAddressResponse> addAddress(@Query("address") String address,
+                                              @Query("area") String area,
+                                              @Query("city") String city,
+                                              @Query("contacts") String contacts,
+                                              @Query("contactsPhone") String contactsPhone,
+                                              @Query("id") String id,
+                                              @Query("prov") String prov);
 
 }

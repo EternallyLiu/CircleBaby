@@ -17,10 +17,13 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.fragments.AddAddressFragment;
 import cn.timeface.circle.baby.fragments.AddBookFragment;
 import cn.timeface.circle.baby.fragments.AddBookListFragment;
 import cn.timeface.circle.baby.fragments.BabyInfoFragment;
@@ -29,6 +32,7 @@ import cn.timeface.circle.baby.fragments.ChangeBabyFragment;
 import cn.timeface.circle.baby.fragments.ChangeInfoFragment;
 import cn.timeface.circle.baby.fragments.DiaryPreviewFragment;
 import cn.timeface.circle.baby.fragments.DiaryTextFragment;
+import cn.timeface.circle.baby.fragments.EnsureOrderFragment;
 import cn.timeface.circle.baby.fragments.FamilyMemberFragment;
 import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
 import cn.timeface.circle.baby.fragments.InviteFragment;
@@ -36,6 +40,7 @@ import cn.timeface.circle.baby.fragments.MessageFragment;
 import cn.timeface.circle.baby.fragments.MilestoneFragment;
 import cn.timeface.circle.baby.fragments.MineBookFragment;
 import cn.timeface.circle.baby.fragments.MineInfoFragment;
+import cn.timeface.circle.baby.fragments.SelectAddressFragment;
 import cn.timeface.circle.baby.fragments.SettingFragment;
 import cn.timeface.circle.baby.fragments.SettingMsgFragment;
 import cn.timeface.circle.baby.fragments.SystemMessageFragment;
@@ -119,6 +124,14 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         bundle.putParcelable("BookTypeListObj", obj);
         open(context, "AddBookFragment", bundle);
     }
+
+    public static void openEnsureOrderFragment(Context context,BookObj bookObj,MineBookObj mineBookObj) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("BookObj", bookObj);
+        bundle.putParcelable("MineBookObj", mineBookObj);
+        open(context, "EnsureOrderFragment", bundle);
+    }
+
 
 
     public static void open(Context context, String fragmentName) {
@@ -287,6 +300,16 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "AddBookFragment":
                 return new AddBookFragment();
+
+            case "EnsureOrderFragment":
+                return new EnsureOrderFragment();
+
+            case "SelectAddressFragment":
+                return new SelectAddressFragment();
+
+            case "AddAddressFragment":
+                return new AddAddressFragment();
+
 
             default:
                 return null;

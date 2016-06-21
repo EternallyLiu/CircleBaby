@@ -7,8 +7,7 @@ import android.os.Parcelable;
 import cn.timeface.circle.baby.api.models.base.BaseObj;
 
 /**
- * author: rayboot  Created on 16/1/20.
- * email : sy0725work@gmail.com
+ * Created by lidonglin on 2016/6/12.
  */
 public class CommentObj extends BaseObj implements Parcelable {
     long commentDate;       //评论的时间

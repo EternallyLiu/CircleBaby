@@ -2,11 +2,17 @@ package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.List;
@@ -14,23 +20,23 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.Milestone;
-import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
-import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.api.models.objs.AddressObj;
+import cn.timeface.circle.baby.api.models.objs.BookObj;
+import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 
 /**
- * Created by lidonglin on 2016/5/4.
+ * Created by lidonglin on 2016/6/15.
  */
-public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
+public class AddressListAdapter extends BaseRecyclerAdapter<AddressObj> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
 
-    public MilestoneAdapter(Context mContext, List<MilestoneTimeObj> listData) {
+    public AddressListAdapter(Context mContext, List<AddressObj> listData) {
         super(mContext, listData);
 
     }
@@ -41,7 +47,7 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
 
     @Override
     public ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_milestone, viewGroup, false);
+        View view = mLayoutInflater.inflate(R.layout.item_address, viewGroup, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -49,19 +55,13 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = (ViewHolder) viewHolder;
-        MilestoneTimeObj item = getItem(position);
-        holder.milestoneobj = item;
+        AddressObj obj = getItem(position);
+        holder.onClickListener = onClickListener;
+        holder.obj = obj;
         holder.context = mContext;
-        int width = Remember.getInt("width", 0) * 3;
-        ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = (int) (width * 0.6);
-        holder.ivCover.setLayoutParams(layoutParams);
-        holder.rlMilestone.setLayoutParams(layoutParams);
-        holder.tvName.setText(item.getMilestone());
-        holder.tvTime.setText(DateUtil.getYear2(item.getDate()));
-        GlideUtil.displayImage(item.getImgUrl(),holder.ivCover);
-
+        holder.tvName.setText(obj.getContacts());
+        holder.tvPhone.setText(obj.getContactsPhone());
+        holder.tvAddress.setText(obj.getAddress());
     }
 
     @Override
@@ -75,16 +75,18 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.iv_cover)
-        ImageView ivCover;
-        @Bind(R.id.tv_time)
-        TextView tvTime;
         @Bind(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.rl_milestone)
-        RelativeLayout rlMilestone;
-        MilestoneTimeObj milestoneobj;
+        @Bind(R.id.tv_address)
+        TextView tvAddress;
+        @Bind(R.id.tv_phone)
+        TextView tvPhone;
+        @Bind(R.id.iv_select)
+        ImageView ivSelect;
+
         Context context;
+        View.OnClickListener onClickListener = null;
+        AddressObj obj;
 
         ViewHolder(View view) {
             super(view);
@@ -94,7 +96,8 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
 
         @Override
         public void onClick(View v) {
-            TimeLineDetailActivity.open(context,milestoneobj.getTimeInfo().getTimeId());
+
         }
+
     }
 }

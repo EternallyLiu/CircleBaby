@@ -26,6 +26,7 @@ import cn.timeface.circle.baby.adapters.FamilyMemberAdapter2;
 import cn.timeface.circle.baby.adapters.MilestoneAdapter;
 import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
+import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
@@ -126,7 +127,7 @@ public class MilestoneFragment extends BaseFragment implements View.OnClickListe
     }
 
     private List<MilestoneTimeObj> mokeData(List<MilestoneTimeObj> dataList) {
-        MilestoneTimeObj item = new MilestoneTimeObj(1465193897000L, "http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", "第一只兔子", 1);
+        MilestoneTimeObj item = new MilestoneTimeObj(1465193897000L, "http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", "第一只兔子", new TimeLineObj());
         dataList.add(item);
         dataList.add(item);
         return dataList;
