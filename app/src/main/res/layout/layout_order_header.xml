@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/order_detail_header_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="16dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/OrderTextLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/order_status" />
+
+                <TextView
+                    android:id="@+id/order_status_tv"
+                    style="@style/OrderTextContent"
+                    android:layout_marginLeft="6dp"
+                    android:textColor="@color/text_color17" />
+
+                <cn.timeface.circle.baby.views.CountdownChronometer
+                    android:id="@+id/count_down_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:textColor="@color/text_color2"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/OrderTextLabel"
+                    android:text="@string/order_no" />
+
+                <TextView
+                    android:id="@+id/order_no_tv"
+                    style="@style/OrderTextContent"
+                    android:layout_marginLeft="6dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/OrderTextLabel"
+                    android:text="@string/apply_time" />
+
+                <TextView
+                    android:id="@+id/order_apply_date_tv"
+                    style="@style/OrderTextContent"
+                    android:layout_marginLeft="6dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/order_sumary_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/OrderTextLabel"
+                    android:text="@string/order_sumary" />
+
+                <TextView
+                    android:id="@+id/order_sumary_tv"
+                    style="@style/OrderTextContent"
+                    android:layout_marginLeft="6dp"
+                    android:lineSpacingMultiplier="1.2" />
+
+                <TextView
+                    android:id="@+id/order_sumary_tv1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingMultiplier="1.2"
+                    android:text="7天内完成审核"
+                    android:textColor="@color/text_color14"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/express_order_no_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/OrderTextLabel"
+                    android:text="@string/express_order_no" />
+
+                <TextView
+                    android:id="@+id/express_order_no_tv"
+                    style="@style/OrderTextContent"
+                    android:layout_marginLeft="6dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/logistics_info_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/selector_click_able"
+                android:clickable="true"
+                android:onClick="clickBtn"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/OrderTextLabel"
+                    android:text="@string/logistics_info" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/logistics_info_tv"
+                        style="@style/OrderTextLabel"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:textColor="@color/text_color16" />
+
+                    <TextView
+                        android:id="@+id/logistics_info_date_tv"
+                        style="@style/OrderTextLabel"
+                        android:layout_below="@+id/logistics_info_tv"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginRight="6dp"
+                        android:textColor="@color/text_color16" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/arrow_right_grey" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg7"
+        android:padding="12dp"
+        android:text="@string/receiver_info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/text_color9" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/OrderTextLabel"
+                android:text="@string/name" />
+
+            <TextView
+                android:id="@+id/order_reciver_name_tv"
+                style="@style/OrderTextContent"
+                android:layout_marginLeft="6dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="12dp"
+            android:background="@color/bg7" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/OrderTextLabel"
+                android:text="@string/phone_colon" />
+
+            <TextView
+                android:id="@+id/receicer_phone_tv"
+                style="@style/OrderTextContent"
+                android:layout_marginLeft="6dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="12dp"
+            android:background="@color/bg7" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/OrderTextLabel"
+                android:text="@string/address" />
+
+            <TextView
+                android:id="@+id/receiver_address_tv"
+                style="@style/OrderTextContent"
+                android:layout_marginLeft="6dp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

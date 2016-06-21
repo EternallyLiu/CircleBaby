@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/view_space_normal"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/fl_cover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/timelist_book_bg">
+
+        <com.github.rayboot.widget.ratioview.RatioImageView
+            android:id="@+id/iv_book_cover"
+            android:layout_width="@dimen/size_80"
+            android:layout_height="wrap_content"
+            android:src="@drawable/book_back_default"
+            app:fixRatio="fixWidth"
+            app:heightRatio="20"
+            app:widthRatio="15" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/view_space_medium"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_size"
+            style="@style/PrintPropertyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:singleLine="true"
+            tools:text="尺寸:16开" />
+
+        <TextView
+            android:id="@+id/tv_color"
+            style="@style/PrintPropertyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/view_space_small"
+            android:layout_marginTop="@dimen/view_space_small"
+            android:clickable="true"
+            android:drawablePadding="@dimen/view_space_small"
+            android:onClick="clickChangeProperty"
+            android:singleLine="true"
+            tools:text="印刷颜色:彩色书" />
+
+        <TextView
+            android:id="@+id/tv_paper"
+            style="@style/PrintPropertyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:singleLine="true"
+            tools:text="纸张:铜版纸" />
+
+        <TextView
+            android:id="@+id/tv_pack"
+            style="@style/PrintPropertyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/view_space_small"
+            android:layout_marginTop="@dimen/view_space_small"
+            android:singleLine="true"
+            tools:text="装订:豪华精装" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_price_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_price"
+            style="@style/PrintPropertyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:textColor="@color/red"
+            android:textSize="@dimen/text_normal"
+            tools:text="¥268.00" />
+
+        <TextView
+            android:id="@+id/tv_number"
+            style="@style/PrintPropertyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="@dimen/view_space_small"
+            android:layout_marginTop="@dimen/view_space_small"
+            android:textSize="@dimen/text_normal"
+            tools:text="X1" />
+    </LinearLayout>
+</LinearLayout>

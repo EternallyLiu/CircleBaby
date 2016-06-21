@@ -82,4 +82,21 @@
         <item name="android:windowExitAnimation">@anim/slide_out_to_bottom
         </item>
     </style>
+    <style name="PrintPropertyText">
+        <item name="android:textColor">@color/text_color9</item>
+        <item name="android:textSize">@dimen/text_small_12</item>
+    </style>
+    <style name="OrderTextLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:textColor">@color/text_color9</item>
+    </style>
+
+    <style name="OrderTextContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:textColor">@color/text_color2</item>
+    </style>
 </resources>

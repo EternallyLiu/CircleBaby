@@ -73,4 +73,11 @@
     <color name="bg_main">#f2f2f2</color>
     <color name="divider_color">#e0e0e0</color>
     <color name="divider">#d7d7d7</color>
+    <color name="text_color9">#333333</color>
+    <color name="text_color17">#ff382d</color>
+    <color name="red">#ff0000</color>
+    <color name="bg_alpha">#00000000</color>
+    <color name="bg16_alpha">#4de6e6e6</color>
+    <color name="text_color16">#f7993d</color>
+    <color name="text_color14">#ea0000</color>
 </resources>
