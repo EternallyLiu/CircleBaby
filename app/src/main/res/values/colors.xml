@@ -9,7 +9,7 @@
     <color name="white">#ffffff</color>
     <color name="trans">#00000000</color>
 
-    <color name="tran_50_white">#7fffffff</color>
+    <color name="tran_50_white">#DDffffff</color>
     <color name="tran_30_black">#4C000000</color>
 
     <color name="bg_color1">#F79646</color>
@@ -21,6 +21,8 @@
     <color name="bg_color7">#b3b3b3</color>
     <color name="bg_color8">#F4F3F1</color>
     <color name="bg_color9">#A8A8A8</color>
+    <color name="bg_color10">#FE7871</color>
+    <color name="bg_color11">#43C668</color>
 
     <color name="bg0">#41b7f0</color>
     <color name="bg1">#a282f3</color>

@@ -1,54 +1,61 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_publish_menu"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/bg_color1"
-    android:orientation="horizontal"
-    android:padding="@dimen/size_6">
+    android:layout_height="match_parent"
+    android:background="@color/tran_50_white">
 
-    <TextView
-        android:id="@+id/tv_photo"
+    <ImageView
+        android:id="@+id/iv_publish_select"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:drawableTop="@drawable/selector_ic_menu_batch_import"
-        android:gravity="center"
-        android:text="照片"
-        android:textColor="@color/selector_main_menu_text"
-        android:textSize="12sp" />
+        android:layout_height="@dimen/size_56"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/publish_select"
+        android:layout_margin="@dimen/size_12"
+        />
 
     <TextView
         android:id="@+id/tv_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:drawableTop="@drawable/selector_ic_menu_scanner"
+        android:layout_above="@+id/iv_publish_select"
+        android:layout_toLeftOf="@+id/iv_publish_select"
+        android:drawableTop="@drawable/vide"
         android:gravity="center"
         android:text="视频"
-        android:textColor="@color/selector_main_menu_text"
-        android:textSize="12sp" />
+        android:translationX="@dimen/size_6"/>
+
+    <TextView
+        android:id="@+id/tv_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/tv_video"
+        android:drawableTop="@drawable/photo"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/size_12"
+        android:text="照片" />
 
     <TextView
         android:id="@+id/tv_diary"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:drawableTop="@drawable/selector_ic_menu_album"
+        android:layout_above="@+id/iv_publish_select"
+        android:layout_toRightOf="@+id/iv_publish_select"
+        android:drawableTop="@drawable/diary"
         android:gravity="center"
-        android:text="日记"
-        android:textColor="@color/selector_main_menu_text"
-        android:textSize="12sp" />
+        android:translationX="-6dp"
+        android:text="日记" />
 
     <TextView
         android:id="@+id/tv_card"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:drawableTop="@drawable/selector_ic_menu_input_text"
+        android:layout_toRightOf="@+id/tv_diary"
+        android:drawableTop="@drawable/photo"
         android:gravity="center"
-        android:text="识图卡片"
-        android:textColor="@color/selector_main_menu_text"
-        android:textSize="12sp" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/size_12"
+        android:text="识图卡片" />
 
-
-</LinearLayout>
+</RelativeLayout>
