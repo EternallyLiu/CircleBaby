@@ -3,7 +3,10 @@
     android:layout_height="match_parent"
     android:background="@color/bg_color8"
     android:orientation="vertical">
-
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -39,7 +42,7 @@
 
         
     </android.support.v7.widget.Toolbar>
-
+    </android.support.design.widget.AppBarLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,7 +67,8 @@
             android:layout_marginRight="@dimen/size_12"
             android:hint="输入姓名"
             android:textSize="@dimen/text_medium"
-            android:background="@null"/>
+            android:background="@null"
+            android:gravity="end"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -91,7 +95,8 @@
             android:hint="填写正确手机号码"
             android:textSize="@dimen/text_medium"
             android:inputType="number"
-            android:background="@null"/>
+            android:background="@null"
+            android:gravity="end"/>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/rl_address"

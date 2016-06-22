@@ -66,9 +66,24 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'aars' //this way we can find the .aar file in libs folder
+    }
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://jitpack.io" }
+    maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
+}
+
 def dbflow_version = "3.0.0-beta6"
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile(name: 'scantool-release', ext: 'aar')
+    compile(name: 'library-0.9.9', ext: 'aar')
+    compile(name: 'logSDK-release', ext: 'aar')
+    compile(name: 'PhotoProcessing-release', ext: 'aar')
+    compile(name: 'rxpermissions-0.5.2', ext: 'aar')
     testCompile 'junit:junit:4.12'
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
@@ -105,4 +120,7 @@ dependencies {
     compile 'com.googlecode.mp4parser:isoparser:1.1.20'
     compile 'com.belerweb:pinyin4j:2.5.1'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
 }
+
+
