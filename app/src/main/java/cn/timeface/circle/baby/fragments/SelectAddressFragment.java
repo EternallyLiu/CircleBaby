@@ -57,8 +57,14 @@ public class SelectAddressFragment extends BaseFragment implements View.OnClickL
         getActionBar().setDisplayHomeAsUpEnabled(true);
         tvTitle.setText("确认收货地址");
         ivAdd.setOnClickListener(this);
-        reqData();
+//        reqData();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        reqData();
+        super.onResume();
     }
 
     private void reqData() {
@@ -72,8 +78,8 @@ public class SelectAddressFragment extends BaseFragment implements View.OnClickL
     }
 
     private void setDataList(List<AddressObj> bookList) {
-        List<AddressObj> addressObjs = mokeData(bookList);
-        AddressListAdapter adapter = new AddressListAdapter(getContext(), addressObjs);
+//        List<AddressObj> addressObjs = mokeData(bookList);
+        AddressListAdapter adapter = new AddressListAdapter(getActivity(), bookList);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         contentRecyclerView.setAdapter(adapter);
         

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -20,17 +21,28 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.api.models.DistrictModel;
+import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
 import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.managers.services.SavePicInfoService;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.common.utils.CommonUtil;
 import de.greenrobot.event.EventBus;
+import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener {
     @Bind(R.id.menu_home_tv)
@@ -62,6 +74,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
+        updateRegionDB();
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         int width = wm.getDefaultDisplay().getWidth() / 3;
         Remember.putInt("width", width);
@@ -201,5 +214,61 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         tvDiary.setOnClickListener(this);
         tvCard.setOnClickListener(this);
         return view;
+    }
+
+    /**
+     * 更新选择地区数据库
+     */
+    private void updateRegionDB() {
+        long preDate = FastData.getRegionDBUpdateTime(0) == 0
+                ? System.currentTimeMillis()
+                : FastData.getRegionDBUpdateTime(0);
+        if (FastData.getRegionDBUpdateTime(0) == 0 || CommonUtil.concurrent(preDate, System.currentTimeMillis()) > 6) {
+            reqData();
+        }
+    }
+
+    private void reqData() {
+        Subscription s = apiService.getLocationList()
+                .doOnNext(new Action1<DistrictListResponse>() {
+                    @Override
+                    public void call(DistrictListResponse response) {
+                        if (response != null && response.success()) {
+                            DistrictModel.deleteAll();
+                        }
+                    }
+                })
+                .flatMap(new Func1<DistrictListResponse, Observable<DistrictModel>>() {
+                    @Override
+                    public Observable<DistrictModel> call(DistrictListResponse response) {
+                        List<DistrictModel> list = response.getDataList();
+                        return Observable.from(list);
+                    }
+                })
+                .map(new Func1<DistrictModel, Byte>() {
+                    @Override
+                    public Byte call(DistrictModel districtModel) {
+                        byte error;
+                        try {
+                            districtModel.save();
+                        } finally {
+                            error = 1;
+                        }
+                        return error;
+                    }
+                })
+                .last()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(new Action1<Byte>() {
+                    @Override
+                    public void call(Byte error) {
+                        if (error == 1) {
+                            FastData.setRegionDBUpdateTime(System.currentTimeMillis());
+                        }
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "error", throwable);
+                });
+        addSubscription(s);
     }
 }
