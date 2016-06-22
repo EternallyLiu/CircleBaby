@@ -43,6 +43,41 @@
                     android:background="@color/text_color1"
                     android:text="添加收货地址"
                     android:textSize="@dimen/text_medium" />
+                <RelativeLayout
+                    android:id="@+id/rl_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/tvname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/text_color1"
+                        android:text=""
+                        android:textSize="@dimen/text_medium" />
+                    <TextView
+                        android:id="@+id/tv_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/text_color1"
+                        android:text=""
+                        android:textSize="@dimen/text_medium"
+                        android:layout_toRightOf="@id/tvname"
+                        android:layout_marginLeft="@dimen/size_12"/>
+
+                    <TextView
+                        android:id="@+id/tv_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/text_color1"
+                        android:text=""
+                        android:textSize="@dimen/text_medium"
+                        android:layout_below="@+id/tvname"
+                        android:layout_marginTop="@dimen/size_6"/>
+
+                </RelativeLayout>
+
 
                 <ImageView
                     android:layout_width="wrap_content"

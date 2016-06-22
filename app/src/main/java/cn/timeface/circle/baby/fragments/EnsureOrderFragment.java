@@ -1,11 +1,10 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,20 +13,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.adapters.AddBookListAdapter;
+import cn.timeface.circle.baby.api.models.objs.AddressObj;
 import cn.timeface.circle.baby.api.models.objs.BookObj;
-import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.events.AddressEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.utils.GlideUtil;
+import de.greenrobot.event.Subscribe;
 
-public class EnsureOrderFragment extends BaseFragment implements View.OnClickListener {
+public class EnsureOrderFragment extends BaseFragment implements View.OnClickListener ,IEventBus{
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -77,9 +76,18 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
     TextView tvSubmitOrder;
     @Bind(R.id.tv_name)
     TextView tvName;
+    @Bind(R.id.tvname)
+    TextView tvname;
+    @Bind(R.id.tv_phone)
+    TextView tvPhone;
+    @Bind(R.id.tv_address)
+    TextView tvAddress;
+    @Bind(R.id.rl_address)
+    RelativeLayout rlAddress;
 
     private BookObj bookObj;
     private MineBookObj mineBookObj;
+    private int expressId;
 
     public EnsureOrderFragment() {
     }
@@ -104,13 +112,14 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void initData() {
+        GlideUtil.displayImage(mineBookObj.getCoverImage(), ivBook);
         tvExpress1.setSelected(true);
         tvName.setText(mineBookObj.getTitle());
         tvSize.setText(bookObj.getSize());
         tvColor.setText(bookObj.getColor());
         tvPaper.setText(bookObj.getPaper());
         tvBind.setText(bookObj.getBind());
-        tvCount.setText(bookObj.getCount()+"");
+        tvCount.setText(bookObj.getCount() + "");
 
 
         rlAddaddress.setOnClickListener(this);
@@ -128,16 +137,36 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_addaddress:
                 FragmentBridgeActivity.open(getContext(), "SelectAddressFragment");
                 break;
             case R.id.tv_express1:
+                tvExpress1.setSelected(true);
+                tvExpress2.setSelected(false);
+                expressId = 0;
                 break;
             case R.id.tv_express2:
+                tvExpress1.setSelected(false);
+                tvExpress2.setSelected(true);
+                expressId = 1;
                 break;
             case R.id.tv_submit_order:
+
+
                 break;
+        }
+    }
+
+    @Subscribe
+    public void onEvent(Object event) {
+        if(event instanceof AddressEvent){
+            AddressObj addressobj = ((AddressEvent) event).getObj();
+            System.out.println(addressobj.toString());
+            rlAddress.setVisibility(View.VISIBLE);
+            tvname.setText(addressobj.getContacts());
+            tvPhone.setText(addressobj.getContactsPhone());
+            tvAddress.setText(addressobj.getAddress());
         }
     }
 }

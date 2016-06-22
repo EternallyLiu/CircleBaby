@@ -116,4 +116,17 @@ public class AddressObj extends BaseObj implements Parcelable {
             return new AddressObj[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "AddressObj{" +
+                "address='" + address + '\'' +
+                ", area='" + area + '\'' +
+                ", city='" + city + '\'' +
+                ", contacts='" + contacts + '\'' +
+                ", contactsPhone='" + contactsPhone + '\'' +
+                ", id='" + id + '\'' +
+                ", prov='" + prov + '\'' +
+                '}';
+    }
 }

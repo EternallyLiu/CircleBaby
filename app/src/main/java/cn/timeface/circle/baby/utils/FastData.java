@@ -116,6 +116,10 @@ public class FastData extends Remember {
      * BABY_Name
      */
     public static final String BABY_Name = "BabyName";
+    /**
+     * 地区数据库更新时间
+     */
+    public static final String REGION_DB_UPDATE_TIME = "up_date";
 
 
     /**
@@ -315,7 +319,7 @@ public class FastData extends Remember {
     }
 
     public static long getBabyBithday() {
-        return getLong(BABY_Bithday,0);
+        return getLong(BABY_Bithday, 0);
     }
 
     public static void setBabyId(int babyId) {
@@ -382,6 +386,20 @@ public class FastData extends Remember {
      */
     public static void setUserType(int userType) {
         putInt(USER_TYPE, userType);
+    }
+
+    /**
+     * 存储地区数据更新时间
+     */
+    public static void setRegionDBUpdateTime(long date) {
+        putLong(REGION_DB_UPDATE_TIME, date);
+    }
+
+    /**
+     * 获取地区数据更新时间
+     */
+    public static long getRegionDBUpdateTime(long defaultValue) {
+        return getLong(REGION_DB_UPDATE_TIME, defaultValue);
     }
 
 }

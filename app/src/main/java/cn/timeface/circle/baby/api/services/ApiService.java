@@ -13,6 +13,7 @@ import cn.timeface.circle.baby.api.models.responses.CloudAlbumListResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryComposedResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryTextResponse;
+import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
 import cn.timeface.circle.baby.api.models.responses.FamilyListResponse;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
@@ -302,5 +303,9 @@ public interface ApiService {
                                               @Query("contactsPhone") String contactsPhone,
                                               @Query("id") String id,
                                               @Query("prov") String prov);
+
+    //获取区划基础数据
+    @GET("babyOrder/locationList?isGzip=0")
+    Observable<DistrictListResponse> getLocationList();
 
 }

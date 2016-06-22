@@ -1,7 +1,9 @@
 package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -25,8 +27,10 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.AddressObj;
 import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.events.AddressEvent;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by lidonglin on 2016/6/15.
@@ -35,10 +39,11 @@ public class AddressListAdapter extends BaseRecyclerAdapter<AddressObj> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
+    private Activity activity;
 
     public AddressListAdapter(Context mContext, List<AddressObj> listData) {
         super(mContext, listData);
-
+        this.activity = (Activity) mContext;
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
@@ -59,6 +64,7 @@ public class AddressListAdapter extends BaseRecyclerAdapter<AddressObj> {
         holder.onClickListener = onClickListener;
         holder.obj = obj;
         holder.context = mContext;
+        holder.activity = activity;
         holder.tvName.setText(obj.getContacts());
         holder.tvPhone.setText(obj.getContactsPhone());
         holder.tvAddress.setText(obj.getAddress());
@@ -85,6 +91,7 @@ public class AddressListAdapter extends BaseRecyclerAdapter<AddressObj> {
         ImageView ivSelect;
 
         Context context;
+        Activity activity;
         View.OnClickListener onClickListener = null;
         AddressObj obj;
 
@@ -96,7 +103,9 @@ public class AddressListAdapter extends BaseRecyclerAdapter<AddressObj> {
 
         @Override
         public void onClick(View v) {
-
+            ivSelect.setVisibility(View.VISIBLE);
+            EventBus.getDefault().post(new AddressEvent(obj));
+            activity.finish();
         }
 
     }

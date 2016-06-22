@@ -89,6 +89,7 @@
     <string name="state_error_server_error">服务器有问题</string>
     <string name="state_error_timeout">网络连接超时或失败</string>
     <string name="action_edit">编辑</string>
+    <string name="select_region">选择地区</string>
 
     <string name="price">价格:</string>
     <string name="price_promotion">活动价:</string>
