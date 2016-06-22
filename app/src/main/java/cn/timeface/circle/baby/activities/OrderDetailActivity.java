@@ -15,9 +15,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.adapters.MyOrderConfirmAdapter;
+import cn.timeface.circle.baby.adapters.MyOrderBookAdapter;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.OrderDetailFootView;
 import cn.timeface.circle.baby.views.OrderDetailHeaderView;
+import rx.Subscription;
 
 public class OrderDetailActivity extends BaseAppCompatActivity {
     @Bind(R.id.toolbar)
@@ -28,6 +31,9 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
     RecyclerView recyclerView;
     List<MyOrderBookItem> listData = new ArrayList<>();
     private OrderDetailHeaderView detailHeaderView;
+    private String orderId;
+    private MyOrderBookAdapter orderBookAdapter;
+    private OrderDetailFootView detailFootView;
 
     public static void open(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
@@ -42,6 +48,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        orderId = getIntent().getStringExtra("orderId");
         setupView();
         reqOrderListData();
 
@@ -52,13 +59,23 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         detailHeaderView = new OrderDetailHeaderView(this);
-        MyOrderConfirmAdapter orderConfirmAdapter = new MyOrderConfirmAdapter(this, listData);
-        orderConfirmAdapter.addHeader(detailHeaderView);
-        recyclerView.setAdapter(orderConfirmAdapter);
+        orderBookAdapter = new MyOrderBookAdapter(this, listData);
+        orderBookAdapter.addHeader(detailHeaderView);
+        detailFootView = new OrderDetailFootView(this);
+        orderBookAdapter.addFooter(detailFootView);
+        recyclerView.setAdapter(orderBookAdapter);
     }
 
     private void reqOrderListData() {
-
-
+        Subscription subscribe = apiService.findOrderDetail(orderId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(listResponse -> {
+                    List<MyOrderBookItem> bookList = listResponse.getBookList();
+                    listData.addAll(bookList);
+                    detailHeaderView.setupViewData(listResponse);
+                    detailFootView.setupViewData(listResponse);
+                    orderBookAdapter.notifyDataSetChanged();
+                });
+        addSubscription(subscribe);
     }
 }

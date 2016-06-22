@@ -16,14 +16,11 @@
         android:textSize="@dimen/text_normal"
         tools:text="吓破苹果的时光书" />
 
-    <View
+    <LinearLayout
+        android:id="@+id/fl_print_container"
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginLeft="@dimen/view_space_normal"
-        android:layout_marginStart="@dimen/view_space_normal"
-        android:background="@color/divider" />
-
-    <include layout="@layout/item_my_order_print_item" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
     <View
         android:layout_width="match_parent"

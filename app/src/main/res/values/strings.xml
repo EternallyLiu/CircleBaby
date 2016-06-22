@@ -163,4 +163,26 @@
     <string name="no_receive_address">暂无收货地址</string>
     <string name="image_select_ok_text">完成(%1$d/%2$d)</string>
     <string name="phone_colon">手机:</string>
+    <string name="html_content5"><![CDATA[ <font color=\'#333333\'>%1$s</font><font color=\'#ff382d\'>%2$s</font><font color=\'#333333\'>%3$s</font> ]]></string>
+    <string name="html_content6"><![CDATA[ <font color=\'#666666\'>%1$s</font><font color=\'#069bf2\'>%2$s</font><font color=\'#666666\'>%3$s</font> ]]></string>
+    <string name="html_content7"><![CDATA[ <font color=\'#ccffffff\'>%1$s</font><font color=\'#ffff00\'>%2$s</font><font color=\'#ccffffff\'>%3$s</font><font color=\'#ffff00\'>%4$s</font> ]]></string>
+    <string name="html_content8"><![CDATA[ <font color=\'#333333\'>%1$s</font><font color=\'#ff382d\'>%2$s</font> ]]></string>
+    <string name="cart_print_again">再印一本</string>
+    <string name="cart_print_property_size">尺寸: %s</string>
+    <string name="cart_print_property_color">印刷颜色: %s</string>
+    <string name="cart_print_property_paper">纸张: %s</string>
+    <string name="cart_print_property_color_text">印刷颜色</string>
+    <string name="cart_print_property_num">×%s</string>
+    <string name="cart_print_property_pack">装订方式: %s</string>
+    <string name="cart_print_property_pack_text">装订</string>
+    <string name="cart_little_settlement">小计: ¥%.2f</string>
+    <string name="cart_total_settlement"><![CDATA[合计: <font color = "#ff0000">¥%.2f</font>]]></string>
+    <string name="cart_total_settlement_label">合计:</string>
+    <string name="cart_coupon_label">印书券:</string>
+    <string name="express_fee_label">运费:</string>
+    <string name="cart_actual_payment_label">实付款:</string>
+    <string name="integral">积分</string>
+    <string name="integral_label">积分:</string>
+    <string name="order_action_cancel">取消订单</string>
+    <string name="order_action_cancel_begin">取消订单中...</string>
 </resources>

@@ -26,9 +26,7 @@ public class MyOrderConfirmAdapter extends BaseRecyclerAdapter<MyOrderBookItem> 
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.item_my_order_book_item, null);
-        ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.setIsRecyclable(true);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override

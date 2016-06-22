@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,8 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.objs.OrderObj;
+import cn.timeface.circle.baby.constants.OrderState;
+import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
 
 /**
@@ -96,8 +99,29 @@ public class OrderListAdapter extends BaseRecyclerAdapter<OrderObj> {
 
         public void setupData(OrderObj orderObj) {
             this.orderObj = orderObj;
+            if (TypeConstant.STATUS_DELIVERY_SUCCESS == orderObj.getOrderStatus()) {
+                tvOrderStatus.setTextColor(mContext.getResources().getColor(R.color.text_color2));
+            } else if (TypeConstant.STATUS_DELIVERING == orderObj.getOrderStatus()) {
+                tvOrderStatus.setTextColor(mContext.getResources().getColor(R.color.text_color18));
+            } else {
+                tvOrderStatus.setTextColor(mContext.getResources().getColor(R.color.text_color17));
+            }
 
+            String status = OrderState.processStatus(orderObj.getOrderStatus());
+            tvOrderStatus.setText(status);
+            tvOrderNumber.setText("订单编号：" + orderObj.getOrderId());
 
+            String expressFee = String.format(mContext.getResources().getString(R.string.total_price),
+                    orderObj.getExpressFee());
+            tvExpressFee.setText(
+                    Html.fromHtml(String.format(mContext.getResources().getString(R.string.html_content5),
+                            "(含运费", expressFee, ")")));
+
+            String totalPrice = String.format(mContext.getResources().getString(R.string.total_price),
+                    orderObj.getTotalPrice());
+            tvTotalPrice.setText(
+                    Html.fromHtml(String.format(mContext.getResources().getString(R.string.html_content8),
+                            "合计 (" + orderObj.getBookCount() + "本) ：", totalPrice)));
         }
     }
 }

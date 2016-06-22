@@ -19,6 +19,8 @@ import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.api.models.responses.MsgListResponse;
+import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
+import cn.timeface.circle.baby.api.models.responses.MyOrderListResponse;
 import cn.timeface.circle.baby.api.models.responses.RegisterResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationIdResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationshipResponse;
@@ -302,5 +304,20 @@ public interface ApiService {
                                               @Query("contactsPhone") String contactsPhone,
                                               @Query("id") String id,
                                               @Query("prov") String prov);
+
+    //我的订单列表
+    @GET("babyOrder/queryOrderList")
+    Observable<MyOrderListResponse> queryOrderList(@Query("pageSize") String pageSize,
+                                                   @Query("currentPage") String currentPage);
+
+    //获取订单配置参数
+    @GET("babyOrder/queryParamList")
+    Observable<BaseResponse> queryParamList(@Query("bookId") String bookId,
+                                            @Query("bookType") String bookType);
+    /**
+     * 确认订单（订单详情）信息查询
+     */
+    @POST("cartM/findOrderMDetail")
+    Observable<MyOrderConfirmListResponse> findOrderDetail(@Query("orderId") String orderId);
 
 }

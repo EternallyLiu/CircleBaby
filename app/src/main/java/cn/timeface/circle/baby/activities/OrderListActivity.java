@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +20,12 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.OrderListAdapter;
-import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.objs.OrderObj;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
+import rx.Subscription;
 
 public class OrderListActivity extends BaseAppCompatActivity {
     public static final int START_PAGE = 1;
@@ -35,6 +37,8 @@ public class OrderListActivity extends BaseAppCompatActivity {
     RecyclerView recyclerView;
     @Bind(R.id.swLayout)
     SwipeRefreshLayout swLayout;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
     private OrderListAdapter orderListAdapter;
     private List<OrderObj> orderList;
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
@@ -103,25 +107,30 @@ public class OrderListActivity extends BaseAppCompatActivity {
     /**
      * 请求网络获取订单列表
      *
-     * @param page
+     * @param currentPage
      */
-    private void reqOrderListData(int page) {
-        for (int i = 0; i < 20; i++) {
-            OrderObj object = new OrderObj();
-            object.setOrderId("id" + i);
-            List<MyOrderBookItem> bookList = new ArrayList<>();
-            for (int j = 0; j < 10; j++) {
-                bookList.add(new MyOrderBookItem());
-            }
-            object.setBookList(bookList);
-            orderList.add(object);
-        }
-        orderListAdapter.notifyDataSetChanged();
-//        showNoDataView();
+    private void reqOrderListData(int currentPage) {
+        Subscription subscribe = apiService.queryOrderList(20 + "", currentPage + "")
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(myOrderListResponse -> {
+                    List<OrderObj> dataList = myOrderListResponse.getDataList();
+                    if (currentPage == START_PAGE) {
+                        orderList.clear();
+                    }
+                    orderList.addAll(dataList);
+                    orderListAdapter.notifyDataSetChanged();
+                    showNoDataView(orderList.size() == 0);
+                    tfptrListViewHelper.setTFPTRMode(myOrderListResponse.isLastPage() ?
+                            TFPTRRecyclerViewHelper.Mode.PULL_FORM_START : TFPTRRecyclerViewHelper.Mode.BOTH);
+                }, throwable -> {
+
+                });
+        addSubscription(subscribe);
     }
 
-    private void showNoDataView() {
-
+    private void showNoDataView(boolean showNoData) {
+        llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
+        swLayout.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
 
 

@@ -91,6 +91,7 @@ public class OrderDetailHeaderView extends LinearLayout {
 
     public void setupViewData(MyOrderConfirmListResponse listResponse) {
 
+
     }
 
 }

@@ -1,76 +1,74 @@
 package cn.timeface.circle.baby.adapters;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.views.PrintItemView;
 
 /**
  * Created by zhsheng on 2016/6/21.
  */
-public class MyOrderBookAdapter extends RecyclerView.Adapter {
-    private final List<MyOrderBookItem> orderBookItems;
-    private final Context context;
+public class MyOrderBookAdapter extends BaseRecyclerAdapter<MyOrderBookItem> {
 
 
     public MyOrderBookAdapter(Context context, List<MyOrderBookItem> orderBookItems) {
-        this.context = context;
-        this.orderBookItems = orderBookItems;
+        super(context, orderBookItems);
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(context).inflate(R.layout.item_order_book_list, parent, false);
+    public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_order_book_list, viewGroup, false);
         return new OrderBookItemHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        OrderBookItemHolder itemHolder = (OrderBookItemHolder) holder;
-        MyOrderBookItem myOrderBookItem = orderBookItems.get(position);
+    public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
+        OrderBookItemHolder itemHolder = (OrderBookItemHolder) viewHolder;
+        MyOrderBookItem myOrderBookItem = listData.get(position);
+        itemHolder.tvBookTitle.setText(myOrderBookItem.getBookName());
+        List<PrintPropertyPriceObj> printList = myOrderBookItem.getPrintList();
+        for (PrintPropertyPriceObj priceObj : printList) {
+            View printItemView = getPrintItemView(myOrderBookItem, priceObj);
+            itemHolder.flPrintContainer.addView(printItemView);
+        }
     }
 
     @Override
-    public int getItemCount() {
-        return orderBookItems.size();
+    public int getItemType(int position) {
+        return 0;
     }
+
+    @Override
+    protected Animator[] getAnimators(View var1) {
+        return new Animator[0];
+    }
+
+    private View getPrintItemView(MyOrderBookItem orderBookItem, PrintPropertyPriceObj propertyPriceObj) {
+        PrintItemView printItemView = new PrintItemView(mContext);
+        printItemView.setupViewData(orderBookItem, propertyPriceObj);
+        return printItemView;
+    }
+
 
     class OrderBookItemHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_book_title)
         TextView tvBookTitle;
-        @Bind(R.id.iv_book_cover)
-        RatioImageView ivBookCover;
-        @Bind(R.id.fl_cover)
-        FrameLayout flCover;
-        @Bind(R.id.tv_size)
-        TextView tvSize;
-        @Bind(R.id.tv_color)
-        TextView tvColor;
-        @Bind(R.id.tv_paper)
-        TextView tvPaper;
-        @Bind(R.id.tv_pack)
-        TextView tvPack;
-        @Bind(R.id.tv_price)
-        TextView tvPrice;
-        @Bind(R.id.tv_number)
-        TextView tvNumber;
-        @Bind(R.id.ll_price_number)
-        LinearLayout llPriceNumber;
-        @Bind(R.id.ll_root)
-        LinearLayout llRoot;
+        @Bind(R.id.fl_print_container)
+        LinearLayout flPrintContainer;
 
         public OrderBookItemHolder(View itemView) {
             super(itemView);
