@@ -118,8 +118,8 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
         tvSize.setText(bookObj.getSize());
         tvColor.setText(bookObj.getColor());
         tvPaper.setText(bookObj.getPaper());
-        tvBind.setText(bookObj.getBind());
-        tvCount.setText(bookObj.getCount() + "");
+        tvBind.setText(bookObj.getPack());
+        tvCount.setText(bookObj.getNum() + "");
 
 
         rlAddaddress.setOnClickListener(this);
@@ -152,7 +152,7 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
                 expressId = 1;
                 break;
             case R.id.tv_submit_order:
-
+                bookObj.setBookType(mineBookObj.getType());
 
                 break;
         }

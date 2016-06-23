@@ -12,6 +12,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CartActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.OrderListActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -113,6 +114,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.ll_mine_order:
                 OrderListActivity.open(getContext());
+                break;
+            case R.id.ll_mine_car:
+                CartActivity.open(getActivity());
                 break;
         }
     }

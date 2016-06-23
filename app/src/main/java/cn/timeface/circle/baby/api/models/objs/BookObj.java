@@ -11,19 +11,45 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
  * email : sy0725work@gmail.com
  */
 public class BookObj extends BaseObj implements Parcelable {
-    int count;          //打印数量
+    int num;          //打印数量
     String size;
     String color;
     String paper;
-    String bind;
+    String pack;
+    int bookId;
+    int bookType;
+    int printId;
 
-
-    public int getCount() {
-        return count;
+    public int getBookId() {
+        return bookId;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public int getBookType() {
+        return bookType;
+    }
+
+    public void setBookType(int bookType) {
+        this.bookType = bookType;
+    }
+
+    public int getPrintId() {
+        return printId;
+    }
+
+    public void setPrintId(int printId) {
+        this.printId = printId;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
     }
 
     public String getSize() {
@@ -50,12 +76,12 @@ public class BookObj extends BaseObj implements Parcelable {
         this.paper = paper;
     }
 
-    public String getBind() {
-        return bind;
+    public String getPack() {
+        return pack;
     }
 
-    public void setBind(String bind) {
-        this.bind = bind;
+    public void setPack(String pack) {
+        this.pack = pack;
     }
 
     @Override
@@ -65,22 +91,28 @@ public class BookObj extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.count);
+        dest.writeInt(this.num);
         dest.writeString(this.size);
         dest.writeString(this.color);
         dest.writeString(this.paper);
-        dest.writeString(this.bind);
+        dest.writeString(this.pack);
+        dest.writeInt(this.bookId);
+        dest.writeInt(this.bookType);
+        dest.writeInt(this.printId);
     }
 
     public BookObj() {
     }
 
     protected BookObj(Parcel in) {
-        this.count = in.readInt();
+        this.num = in.readInt();
         this.size = in.readString();
         this.color = in.readString();
         this.paper = in.readString();
-        this.bind = in.readString();
+        this.pack = in.readString();
+        this.bookId = in.readInt();
+        this.bookType = in.readInt();
+        this.printId = in.readInt();
     }
 
     public static final Creator<BookObj> CREATOR = new Creator<BookObj>() {

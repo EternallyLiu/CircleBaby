@@ -164,18 +164,83 @@
     <string name="no_receive_address">暂无收货地址</string>
     <string name="image_select_ok_text">完成(%1$d/%2$d)</string>
     <string name="phone_colon">手机:</string>
+
+
+    <string name="unknow">未知</string>
+    <string name="no_more_info">你已看完所有的内容\n多欣赏些有趣的人和话题吧</string>
+    <string name="no_more_data">没有数据\n赶快添加一个吧</string>
+    <string name="get_all_message">亲爱的，你已经没有内容喽</string>
+    <string name="no_message">没有消息呢</string>
+    <string name="loading">正在加载...</string>
+    <string name="no_connect">当前无网络连接，请重新连接</string>
+    <string name="finish">完成</string>
+    <string name="edit">编辑</string>
+
+    <string name="CODE_400">请求失败</string>
+    <string name="CODE_401">未授权</string>
+    <string name="CODE_402">需要付款</string>
+    <string name="CODE_403">拒绝访问</string>
+    <string name="CODE_404">找不到</string>
+    <string name="CODE_405">不允许此方法</string>
+    <string name="CODE_406">不可接收</string>
+    <string name="CODE_407">需要代理身份验证</string>
+    <string name="CODE_408">请求超时</string>
+    <string name="CODE_409">请求冲突</string>
+    <string name="CODE_410">永远不可用 </string>
+    <string name="CODE_411">失败</string>
+    <string name="CODE_412">先决条件失败</string>
+    <string name="CODE_413">请求实体太大</string>
+    <string name="CODE_414">Request-URI 太长</string>
+    <string name="CODE_415">不支持的媒体类型</string>
+    <string name="CODE_416">所请求的范围无法满足</string>
+    <string name="CODE_417">执行失败</string>
+
+    <string name="CODE_500">服务器的内部错误</string>
+    <string name="CODE_501">方法未实现</string>
+    <string name="CODE_502">网关出错</string>
+    <string name="CODE_503">服务器连接失败</string>
+    <string name="CODE_504">被墙了</string>
+    <string name="CODE_505">http版本不支持</string>
+
+    <string name="SERVICE_ERROR">服务器连接失败</string>
+
+    <string name="cart_print_property_num">×%s</string>
+    <string name="cart_print_property_size">尺寸: %s</string>
+    <string name="cart_print_property_color">印刷颜色: %s</string>
+    <string name="cart_print_property_paper">纸张: %s</string>
+    <string name="cart_print_property_color_text">印刷颜色</string>
+    <string name="cart_print_property_pack">装订方式: %s</string>
+    <string name="cart_print_property_pack_text">装订</string>
+    <string name="cart_settlement">去结算</string>
+    <string name="cart_update_date">更新于: %s</string>
+    <string name="cart_print_code_limit_soft_pack">少于90页，只能平装</string>
+    <string name="cart_print_code_limit_soft_pack_2">（页数不足90页，不支持豪华精装）</string>
+    <string name="cart_print_code_limit_less">您的%1$s页数为%2$s页，低于12页的最低印刷限制，请添加内容后再提交印刷。</string>
+    <string name="cart_print_code_limit_less_circle">本书共%2$s页，未达到最低12页的印刷限制，请修改后重新加入印刷车。</string>
+    <string name="cart_print_code_limit_less_can_not_print">您的%1$s页数为%2$s页，低于12页的最低印刷限制，无法印刷。</string>
+    <string name="cart_print_code_limit_less_2">少于12页，不可印刷</string>
+    <string name="cart_print_code_limit_more">您的时光书页数为%s页，已超过300页的印刷限制，请修改后再提交印刷。</string>
+    <string name="cart_print_code_limit_more_circle">本书共%s页，已超过60页的印刷限制，请修改后重新加入印刷车。</string>
+    <string name="cart_print_code_limit_more_2">超出300页，不可印刷</string>
+    <string name="cart_print_code_limit_had_delete">该时光书已被删除，不可以印刷</string>
+    <string name="cart_print_code_limit_had_delete_calendar">该时光台历已被删除，不可以印刷</string>
+    <string name="add_to_cart">加入印刷车</string>
+    <string name="buy_now">立刻购买</string>
+    <string name="more">更多</string>
+    <string name="text_expand">展开</string>
+    <string name="pod_show_detail">查看详情</string>
+    <string name="pod_add_content">添加内容</string>
+    <string name="pod_time_order">时光排序</string>
+    <string name="pod_modify_page">修改版式</string>
+    <string name="pod_apply_print">申请印刷</string>
+    <string name="pod_do_one">新做一本</string>
+    <string name="pod_selected_book">选择时光书</string>
+    <string name="pod_change_page">更换插页</string>
     <string name="html_content5"><![CDATA[ <font color=\'#333333\'>%1$s</font><font color=\'#ff382d\'>%2$s</font><font color=\'#333333\'>%3$s</font> ]]></string>
     <string name="html_content6"><![CDATA[ <font color=\'#666666\'>%1$s</font><font color=\'#069bf2\'>%2$s</font><font color=\'#666666\'>%3$s</font> ]]></string>
     <string name="html_content7"><![CDATA[ <font color=\'#ccffffff\'>%1$s</font><font color=\'#ffff00\'>%2$s</font><font color=\'#ccffffff\'>%3$s</font><font color=\'#ffff00\'>%4$s</font> ]]></string>
     <string name="html_content8"><![CDATA[ <font color=\'#333333\'>%1$s</font><font color=\'#ff382d\'>%2$s</font> ]]></string>
     <string name="cart_print_again">再印一本</string>
-    <string name="cart_print_property_size">尺寸: %s</string>
-    <string name="cart_print_property_color">印刷颜色: %s</string>
-    <string name="cart_print_property_paper">纸张: %s</string>
-    <string name="cart_print_property_color_text">印刷颜色</string>
-    <string name="cart_print_property_num">×%s</string>
-    <string name="cart_print_property_pack">装订方式: %s</string>
-    <string name="cart_print_property_pack_text">装订</string>
     <string name="cart_little_settlement">小计: ¥%.2f</string>
     <string name="cart_total_settlement"><![CDATA[合计: <font color = "#ff0000">¥%.2f</font>]]></string>
     <string name="cart_total_settlement_label">合计:</string>

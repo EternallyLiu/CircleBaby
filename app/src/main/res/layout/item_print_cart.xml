@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@color/white"
+                  android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/view_space_medium">
+
+            <ImageView
+                android:id="@+id/iv_item_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:onClick="clickItem"
+                android:src="@drawable/selector_cart_item"/>
+
+
+            <TextView
+                android:id="@+id/tv_book_title"
+                android:textAppearance="?android:attr/textAppearance"
+                android:textColor="@color/text_color9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/view_space_medium"
+                android:layout_marginRight="@dimen/view_space_medium"
+                android:layout_weight="1.0"
+                android:drawablePadding="@dimen/view_space_small"
+                tools:drawableLeft="@drawable/ic_flag_qq_time_book"
+                tools:text="结婚田奈"/>
+
+            <TextView
+                android:id="@+id/tv_item_edit"
+                style="@style/PrintPropertyText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:onClick="clickEdit"
+                android:text="编辑"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/view_space_medium"
+            android:background="@color/divider"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lv_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

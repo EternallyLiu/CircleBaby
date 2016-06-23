@@ -1,8 +1,11 @@
 package cn.timeface.circle.baby.api.services;
 
+import java.util.Map;
+
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.responses.AddAddressResponse;
+import cn.timeface.circle.baby.api.models.responses.AddCartItemResponse;
 import cn.timeface.circle.baby.api.models.responses.AddressListResponse;
 import cn.timeface.circle.baby.api.models.responses.AlbumDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
@@ -16,12 +19,14 @@ import cn.timeface.circle.baby.api.models.responses.DiaryTextResponse;
 import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
 import cn.timeface.circle.baby.api.models.responses.FamilyListResponse;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
+import cn.timeface.circle.baby.api.models.responses.LessResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.api.models.responses.MsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderListResponse;
+import cn.timeface.circle.baby.api.models.responses.PrintCartListResponse;
 import cn.timeface.circle.baby.api.models.responses.RegisterResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationIdResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationshipResponse;
@@ -34,6 +39,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -325,5 +331,45 @@ public interface ApiService {
      */
     @POST("babyOrder/findOrderMDetail")
     Observable<MyOrderConfirmListResponse> findOrderDetail(@Query("orderId") String orderId);
+
+    //加入印刷车
+    @POST("cartM/addCartitem")
+    Observable<AddCartItemResponse> addCartItem(@QueryMap Map<String, String> params);
+
+    //印刷车列表
+    @GET("babyOrder/cartlist")
+    Observable<PrintCartListResponse> cartList();
+
+    /**
+     * 提交订单
+     */
+    @POST("cartM/addOrder")
+    Observable<LessResponse> addOrderNew(@Query("orderId") String orderId,
+                                         @Query("addressId") String addressId,
+                                         @Query("dispatch") String dispatch,
+                                         @Query("pointsExchange") String pointsExchange,
+                                         @Query("couponId") String couponId,
+                                         @Query("personType") String personType,
+                                         @Query("couponType") String couponType,
+                                         @Query("from") String from);
+
+    /**
+     * 提交订单
+     */
+    @POST("cartM/addOrder")
+    Observable<LessResponse> addOrderNew(@Query("dataList") String dataList);
+
+    /**
+     * 提交订单
+     */
+    @POST("cartM/addOrder")
+    Observable<LessResponse> addOrderNew(@Query("from") String from,
+                                         @Query("dataList") String dataList);
+
+    /**
+     * 印刷车列表
+     */
+    @POST("cartM/cartlist")
+    Observable<PrintCartListResponse> getCartList();
 
 }

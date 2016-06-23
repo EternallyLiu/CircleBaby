@@ -1,11 +1,12 @@
 package cn.timeface.circle.baby.api.models.objs;
 
+import cn.timeface.circle.baby.api.models.base.BaseModule;
 import cn.timeface.circle.baby.api.models.base.BaseObj;
 
 /**
  * Created by zhsheng on 2016/6/21.
  */
-public class BasePrintProperty extends BaseObj {
+public class BasePrintProperty extends BaseModule {
     private String printId; //印刷编号
     private String size; //尺寸
     private int color; //印刷颜色

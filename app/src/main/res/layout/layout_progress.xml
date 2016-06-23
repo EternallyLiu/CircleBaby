@@ -6,6 +6,13 @@
               android:gravity="center"
               android:orientation="vertical">
 
+    <ProgressBar
+        android:id="@+id/dialog_progress"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@anim/anim_loading_200"/>
+
     <TextView
         android:id="@+id/dialog_progress_message"
         android:layout_width="wrap_content"

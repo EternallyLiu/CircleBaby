@@ -99,4 +99,22 @@
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
         <item name="android:textColor">@color/text_color2</item>
     </style>
+
+    <style name="DialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="PrintPropertyGrid">
+        <item name="android:numColumns">2</item>
+        <item name="android:layout_columnSpan">24</item>
+        <item name="android:horizontalSpacing">24dp</item>
+        <item name="android:verticalSpacing">12dp</item>
+    </style>
 </resources>
