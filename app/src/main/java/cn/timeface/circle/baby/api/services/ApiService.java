@@ -319,10 +319,11 @@ public interface ApiService {
     @GET("babyOrder/queryParamList")
     Observable<BaseResponse> queryParamList(@Query("bookId") String bookId,
                                             @Query("bookType") String bookType);
+
     /**
      * 确认订单（订单详情）信息查询
      */
-    @POST("cartM/findOrderMDetail")
+    @POST("babyOrder/findOrderMDetail")
     Observable<MyOrderConfirmListResponse> findOrderDetail(@Query("orderId") String orderId);
 
 }

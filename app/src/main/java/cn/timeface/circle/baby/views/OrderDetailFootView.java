@@ -15,6 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
+import cn.timeface.circle.baby.constants.TypeConstant;
 
 /**
  * Created by zhsheng on 2016/6/22.
@@ -74,10 +75,41 @@ public class OrderDetailFootView extends LinearLayout {
     private void initView() {
         View footView = LayoutInflater.from(getContext()).inflate(R.layout.activity_cart_detail_foot, this, false);
         ButterKnife.bind(this, footView);
-
+        addView(footView);
     }
 
     public void setupViewData(MyOrderConfirmListResponse listResponse) {
 
+        // 配送中 || 已送达
+        if (listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
+            // 商家优惠码现场配送不显示运单号、物流信息
+            if (listResponse.getOrderStatus() == 5) {
+                orderActionBtn.setText(getResources().getString(R.string.show_order));
+                orderActionBtn.setVisibility(View.INVISIBLE);//不显示晒单
+            }
+        }
+        // 待确认(未支付)
+        if (listResponse.getOrderStatus() == TypeConstant.STATUS_NOT_PAY) {
+            orderActionBtn.setVisibility(View.VISIBLE);
+            orderActionCancelBtn.setVisibility(View.VISIBLE);
+            orderActionBtn.setText(getResources().getString(R.string.payoff_at_once));
+            orderActionBtn.setBackgroundResource(R.drawable.selector_red_btn_bg);
+        }
+        orderTotalPriceTv.setText(String.format(getResources().getString(R.string.total_price), listResponse.getOrderPrice()));
+        tvTotalCount.setText(String.format(getResources().getString(R.string.total_price), listResponse.getTotalPrice()));
+        // 是否使用了商家优惠
+        boolean pvCodeEnable = listResponse.getPersonType() == 5;
+        // 是否使用了全场优惠
+        boolean fullSiteCouponEnable = listResponse.getPersonType() == 2;
+
+        llExchangePoint.setVisibility(pvCodeEnable ? View.GONE : View.VISIBLE);
+        tvExchangePoint.setText(String.format("—%s", getResources().getString(R.string.total_price,
+                (float) listResponse.getPointsExchanged() / listResponse.getExchangeRate())));
+        llCoupon.setVisibility(pvCodeEnable ? View.GONE : View.VISIBLE);
+        tvCouponLabel.setText(fullSiteCouponEnable ? listResponse.getCouponDesc() + ":" : getResources().getString(R.string.cart_coupon_label));
+        tvCoupon.setText(String.format("—%s", getResources().getString(R.string.total_price, listResponse.getCoupon())));
+        llPvCode.setVisibility(pvCodeEnable ? View.VISIBLE : View.GONE);
+        tvPvCode.setText(String.format("—%s", getResources().getString(R.string.total_price, listResponse.getCoupon())));
+        tvExpressFee.setText(getResources().getString(R.string.total_price, listResponse.getExpressPrice()));
     }
 }

@@ -90,4 +90,10 @@
             android:layout_height="1px"
             android:background="@color/divider" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/iv_clickView"
+        android:layout_width="match_parent"
+        android:background="@drawable/selector_click_able_alpha"
+        android:layout_height="match_parent" />
 </FrameLayout>

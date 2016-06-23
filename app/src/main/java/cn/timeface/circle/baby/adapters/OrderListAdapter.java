@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
@@ -71,7 +72,7 @@ public class OrderListAdapter extends BaseRecyclerAdapter<OrderObj> {
         return new Animator[0];
     }
 
-    class OrderListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class OrderListViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_order_number)
         TextView tvOrderNumber;
         @Bind(R.id.tv_order_status)
@@ -89,10 +90,9 @@ public class OrderListAdapter extends BaseRecyclerAdapter<OrderObj> {
         public OrderListViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
         }
 
-        @Override
+        @OnClick(R.id.iv_clickView)
         public void onClick(View v) {
             if (itemClickListener != null) itemClickListener.clickItem(orderObj);
         }

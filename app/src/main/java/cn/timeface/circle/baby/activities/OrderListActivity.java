@@ -20,12 +20,15 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.OrderListAdapter;
+import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.objs.OrderObj;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import rx.Subscription;
+import rx.functions.Action0;
 
 public class OrderListActivity extends BaseAppCompatActivity {
     public static final int START_PAGE = 1;
@@ -110,8 +113,11 @@ public class OrderListActivity extends BaseAppCompatActivity {
      * @param currentPage
      */
     private void reqOrderListData(int currentPage) {
+   /*     FastData.setUserId("550010434672");
+        Api.changeApiBaseUrl("http://stg2.v5time.net/tfmobile/");*/
         Subscription subscribe = apiService.queryOrderList(20 + "", currentPage + "")
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnTerminate(() -> tfptrListViewHelper.finishTFPTRRefresh())
                 .subscribe(myOrderListResponse -> {
                     List<OrderObj> dataList = myOrderListResponse.getDataList();
                     if (currentPage == START_PAGE) {
@@ -123,7 +129,7 @@ public class OrderListActivity extends BaseAppCompatActivity {
                     tfptrListViewHelper.setTFPTRMode(myOrderListResponse.isLastPage() ?
                             TFPTRRecyclerViewHelper.Mode.PULL_FORM_START : TFPTRRecyclerViewHelper.Mode.BOTH);
                 }, throwable -> {
-
+                    Log.d(TAG, "reqOrderListData: " + throwable.getMessage());
                 });
         addSubscription(subscribe);
     }

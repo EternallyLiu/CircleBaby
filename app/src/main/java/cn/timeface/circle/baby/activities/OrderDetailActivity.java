@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,9 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.MyOrderBookAdapter;
+import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.OrderDetailFootView;
 import cn.timeface.circle.baby.views.OrderDetailHeaderView;
@@ -60,13 +63,15 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         detailHeaderView = new OrderDetailHeaderView(this);
         orderBookAdapter = new MyOrderBookAdapter(this, listData);
-        orderBookAdapter.addHeader(detailHeaderView);
         detailFootView = new OrderDetailFootView(this);
+        orderBookAdapter.addHeader(detailHeaderView);
         orderBookAdapter.addFooter(detailFootView);
         recyclerView.setAdapter(orderBookAdapter);
     }
 
     private void reqOrderListData() {
+/*        FastData.setUserId("550010434672");
+        Api.changeApiBaseUrl("http://stg2.v5time.net/tfmobile/");*/
         Subscription subscribe = apiService.findOrderDetail(orderId)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(listResponse -> {
@@ -75,7 +80,22 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
                     detailHeaderView.setupViewData(listResponse);
                     detailFootView.setupViewData(listResponse);
                     orderBookAdapter.notifyDataSetChanged();
+                }, throwable -> {
+
                 });
         addSubscription(subscribe);
+    }
+
+    public void clickBtn(View view) {
+        switch (view.getId()) {
+            case R.id.order_action_btn:
+                //去支付
+
+                break;
+            case R.id.order_action_cancel_btn:
+                //取消订单
+
+                break;
+        }
     }
 }

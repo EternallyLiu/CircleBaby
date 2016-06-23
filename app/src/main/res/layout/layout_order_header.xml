@@ -8,6 +8,7 @@
         android:id="@+id/order_detail_header_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -169,10 +170,16 @@
         </LinearLayout>
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/divider" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg7"
+        android:drawableLeft="@drawable/shape_rec_orange"
+        android:drawablePadding="@dimen/view_space_small"
         android:padding="12dp"
         android:text="@string/receiver_info"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -181,12 +188,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_margin="@dimen/size_12"
             android:orientation="horizontal">
 
             <TextView
@@ -208,7 +216,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_margin="@dimen/size_12"
             android:orientation="horizontal">
 
             <TextView
@@ -230,7 +238,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
+            android:layout_margin="@dimen/size_12"
             android:orientation="horizontal">
 
             <TextView
@@ -243,4 +251,14 @@
                 android:layout_marginLeft="6dp" />
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/shape_rec_orange"
+        android:drawablePadding="@dimen/view_space_small"
+        android:padding="12dp"
+        android:text="订单信息"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/text_color9" />
 </LinearLayout>

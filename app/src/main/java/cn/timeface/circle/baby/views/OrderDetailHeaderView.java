@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.views;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
-import cn.timeface.common.utils.DeviceUtil;
+import cn.timeface.circle.baby.constants.OrderState;
+import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.common.utils.DateUtil;
 
 /**
  * Created by zhsheng on 2016/6/21.
@@ -80,17 +83,39 @@ public class OrderDetailHeaderView extends LinearLayout {
         View headerView = LayoutInflater.from(getContext()).inflate(R.layout.layout_order_header, this, false);
         ButterKnife.bind(this, headerView);
         addView(headerView);
-        TextView textView = new TextView(getContext());
+/*        TextView textView = new TextView(getContext());
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         textView.setLayoutParams(layoutParams);
         textView.setBackgroundColor(getResources().getColor(R.color.bg7));
         int pad = DeviceUtil.dpToPx(getResources(), 12f);
         textView.setPadding(pad, pad, pad, pad);
-        addView(textView, layoutParams);
+        addView(textView, layoutParams);*/
     }
 
-    public void setupViewData(MyOrderConfirmListResponse listResponse) {
+    public void setupViewData(MyOrderConfirmListResponse response) {
+        // 配送中 || 已送达|| // 商家优惠码现场配送不显示运单号、物流信息
+        boolean express = TextUtils.isEmpty(response.getExpressOrder()) || response.getOrderStatus() == 3 || response.getOrderStatus() == 5;
+        expressOrderNoLl.setVisibility(express ? View.GONE : View.VISIBLE);
+        logisticsInfoLl.setVisibility(express ? View.GONE : View.VISIBLE);
 
+        orderStatusTv.setText(OrderState.processStatus(response.getOrderStatus()));
+        orderNoTv.setText(response.getOrderId());
+        orderApplyDateTv.setText(DateUtil.formatDate("yyyy-MM-dd", response.getOrderTime() * 1000));
+        logisticsInfoTv.setText(response.getLastExpress());
+        expressOrderNoTv.setText(response.getExpressOrder());
+        orderSumaryTv.setText(response.getSummary());
+        orderReciverNameTv.setText(response.getContacts());
+        receicerPhoneTv.setText(response.getContactsPhone());
+        receiverAddressTv.setText(response.getAddress());
+
+        // 待确认(未支付)
+        if (response.getOrderStatus() == TypeConstant.STATUS_NOT_PAY) {
+            countDownTv.setVisibility(VISIBLE);
+            countDownTv.setBase(1000 * 60 * 60 * 24 * 7 + response.getOrderTime() * 1000);
+            countDownTv.setCustomChronoFormat("%1$d天%2$02d时%3$02d分%4$02d秒");
+            countDownTv.setFormat("将于%s后关闭");
+            countDownTv.start();
+        }
 
     }
 
