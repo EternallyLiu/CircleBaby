@@ -167,7 +167,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     if (count > 1) {
                         count--;
                         tvCount.setText(count+"");
-                        bookObj.setCount(count);
+                        bookObj.setNum(count);
                     }
                     break;
                 case R.id.iv_add:
@@ -175,7 +175,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     if (c < 99) {
                         c++;
                         tvCount.setText(c+"");
-                        bookObj.setCount(c);
+                        bookObj.setNum(c);
                     }
                     break;
                 case R.id.tv_size16:
@@ -212,19 +212,19 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     tvBind1.setSelected(true);
                     tvBind2.setSelected(false);
                     tvBind3.setSelected(false);
-                    bookObj.setBind("平装");
+                    bookObj.setPack("平装");
                     break;
                 case R.id.tv_bind2:
                     tvBind1.setSelected(false);
                     tvBind2.setSelected(true);
                     tvBind3.setSelected(false);
-                    bookObj.setBind("法式精装");
+                    bookObj.setPack("法式精装");
                     break;
                 case R.id.tv_bind3:
                     tvBind1.setSelected(false);
                     tvBind2.setSelected(false);
                     tvBind3.setSelected(true);
-                    bookObj.setBind("豪华精装");
+                    bookObj.setPack("豪华精装");
                     break;
                 case R.id.tv_incar:
                     break;
@@ -268,11 +268,11 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                 tvBind3.setClickable(false);
             }
             bookObj = new BookObj();
-            bookObj.setCount(1);
+            bookObj.setNum(1);
             bookObj.setSize("16开");
             bookObj.setColor("彩色");
             bookObj.setPaper("特种纸");
-            bookObj.setBind("平装");
+            bookObj.setPack("平装");
 
 
             ivClose.setOnClickListener(this);

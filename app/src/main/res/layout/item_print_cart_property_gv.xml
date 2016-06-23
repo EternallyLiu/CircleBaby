@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ll_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selector_dash_border_bg"
+        android:clickable="true"
+        android:onClick="doDialogItemClick"
+        android:orientation="vertical"
+        android:padding="1dp">
+
+        <com.github.rayboot.widget.ratioview.RatioImageView xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/iv_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/cell_default_image"
+            app:fixRatio="fixWidth"
+            scaleimg:heightRatio="11"
+            scaleimg:widthRatio="18" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp">
+
+            <TextView
+                android:id="@+id/tv_book_size"
+                style="@style/OrderTextContent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="6dp"
+                android:text="正16开"
+                android:textColor="@drawable/selector_radio_text_color" />
+
+            <TextView
+                android:id="@+id/tv_book_size_detail"
+                style="@style/OrderTextContent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="6dp"
+                android:text="260mm*185mm"
+                android:textColor="@drawable/selector_radio_text_color" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

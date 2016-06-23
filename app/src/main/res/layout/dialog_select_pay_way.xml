@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/shape_dialog_corner_bg"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:paddingBottom="24dp"
+              android:paddingLeft="12dp"
+              android:paddingRight="12dp"
+              android:paddingTop="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="12dp"
+        android:text="@string/select_payoff_way"
+        android:textColor="@color/bg_color1"
+        android:textSize="16sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#e0e0e0"/>
+
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rb_zhifb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="12dp"
+            android:button="@null"
+            android:checked="true"
+            android:drawableLeft="@drawable/selector_cart_item"
+            android:drawablePadding="10dp"
+            android:text="@string/zhifub"
+            android:textColor="@color/text_color9"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"/>
+
+        <RadioButton
+            android:id="@+id/rb_wexin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="12dp"
+            android:button="@null"
+            android:drawableLeft="@drawable/selector_cart_item"
+            android:drawablePadding="10dp"
+            android:text="@string/wexin_payoff"
+            android:textColor="@color/text_color9"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"/>
+
+        <RadioButton
+            android:id="@+id/rb_e"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="12dp"
+            android:button="@null"
+            android:drawableLeft="@drawable/selector_cart_item"
+            android:drawablePadding="10dp"
+            android:text="@string/e_payoff"
+            android:textColor="@color/text_color9"
+            android:textSize="16sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="12dp"
+            android:layout_weight="1.0"
+            android:background="@drawable/shape_button_corner_bg_gray"
+            android:text="取消"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:background="@drawable/selector_btn_login"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</LinearLayout>

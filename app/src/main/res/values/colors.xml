@@ -76,11 +76,27 @@
     <color name="bg_main">#f2f2f2</color>
     <color name="divider_color">#e0e0e0</color>
     <color name="divider">#d7d7d7</color>
-    <color name="text_color9">#333333</color>
     <color name="text_color17">#ff382d</color>
     <color name="red">#ff0000</color>
     <color name="bg_alpha">#00000000</color>
     <color name="bg16_alpha">#4de6e6e6</color>
     <color name="text_color16">#f7993d</color>
     <color name="text_color14">#ea0000</color>
+
+    <color name="error_view_text">#999999</color>
+    <color name="error_view_text_dark">#CC000000</color>
+    <color name="error_view_text_light">#ffffff</color>
+
+    <color name="error_view_retry_button_background">#069bf2</color>
+    <color name="error_view_retry_button_background_hover">#058ccd</color>
+
+
+    <color name="selector_bg1">#069bf2</color>
+    <color name="selector_bg2">#058ccd</color>
+    <color name="selector_bg3">#ff678b</color>
+    <color name="selector_bg4">#eb5e7f</color>
+    <color name="selector_bg5">#ff8c4d</color>
+    <color name="selector_bg6">#e77e45</color>
+    <color name="selector_bg7">#f76d02</color>
+    <color name="selector_bg8">#e96600</color>
 </resources>
