@@ -10,10 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.util.List;
 import java.util.zip.Inflater;
@@ -96,7 +101,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         Context context;
         View.OnClickListener onClickListener = null;
         MineBookObj obj;
-        private TextView tvCount;
+        private EditText tvCount;
         private TextView tvSize16;
         private TextView tvSize32;
         private TextView tvColor;
@@ -162,7 +167,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
                 case R.id.iv_close:
                     break;
-                case R.id.iv_del:
+                case R.id.book_print_number_minus_ib:
                     Integer count = Integer.valueOf(tvCount.getText().toString());
                     if (count > 1) {
                         count--;
@@ -170,7 +175,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                         bookObj.setNum(count);
                     }
                     break;
-                case R.id.iv_add:
+                case R.id.book_print_number_plus_ib:
                     Integer c = Integer.valueOf(tvCount.getText().toString());
                     if (c < 99) {
                         c++;
@@ -226,9 +231,10 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     tvBind3.setSelected(true);
                     bookObj.setPack("豪华精装");
                     break;
-                case R.id.tv_incar:
+                case R.id.btn_add_to_cart:
+
                     break;
-                case R.id.tv_buy:
+                case R.id.btn_buy_now:
                     FragmentBridgeActivity.openEnsureOrderFragment(context,bookObj,obj);
                     break;
 
@@ -238,11 +244,11 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
         public View initView(MineBookObj obj) {
             View view = View.inflate(context, R.layout.view_apply_print, null);
-            ImageView ivBook = (ImageView) view.findViewById(R.id.iv_book);
+            RatioImageView ivBook = (RatioImageView) view.findViewById(R.id.iv_book_cover);
             TextView tvPrice = (TextView) view.findViewById(R.id.tv_price);
-            ImageView ivDel = (ImageView) view.findViewById(R.id.iv_del);
-            tvCount = (TextView) view.findViewById(R.id.tv_count);
-            ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
+            ImageButton ivDel = (ImageButton) view.findViewById(R.id.book_print_number_minus_ib);
+            tvCount = (EditText) view.findViewById(R.id.et_count);
+            ImageButton ivAdd = (ImageButton) view.findViewById(R.id.book_print_number_plus_ib);
             ImageView ivClose = (ImageView) view.findViewById(R.id.iv_close);
             tvSize16 = (TextView) view.findViewById(R.id.tv_size16);
             tvSize32 = (TextView) view.findViewById(R.id.tv_size32);
@@ -253,10 +259,11 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
             tvBind1 = (TextView) view.findViewById(R.id.tv_bind1);
             tvBind2 = (TextView) view.findViewById(R.id.tv_bind2);
             tvBind3 = (TextView) view.findViewById(R.id.tv_bind3);
-            TextView tvIncar = (TextView) view.findViewById(R.id.tv_incar);
-            TextView tvBuy = (TextView) view.findViewById(R.id.tv_buy);
-            TextView tvNotify = (TextView) view.findViewById(R.id.tv_bind_notify);
+            Button tvIncar = (Button) view.findViewById(R.id.btn_add_to_cart);
+            Button tvBuy = (Button) view.findViewById(R.id.btn_buy_now);
+            TextView tvNotify = (TextView) view.findViewById(R.id.tv_pack_label);
 
+            tvCount.clearFocus();
             GlideUtil.displayImage(obj.getCoverImage(), ivBook);
             tvSize16.setSelected(true);
             tvColor.setSelected(true);

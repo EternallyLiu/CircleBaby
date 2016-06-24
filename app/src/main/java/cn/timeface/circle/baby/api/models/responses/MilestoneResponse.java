@@ -1,18 +1,19 @@
 package cn.timeface.circle.baby.api.models.responses;
 
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.api.models.objs.Milestone;
 
 /**
  * Created by lidonglin on 2016/5/3.
  */
 public class MilestoneResponse extends BaseResponse {
-    int milestoneId;
+    Milestone milestone;
 
-    public int getMilestoneId() {
-        return milestoneId;
+    public Milestone getMilestone() {
+        return milestone;
     }
 
-    public void setMilestoneId(int milestoneId) {
-        this.milestoneId = milestoneId;
+    public void setMilestone(Milestone milestone) {
+        this.milestone = milestone;
     }
 }

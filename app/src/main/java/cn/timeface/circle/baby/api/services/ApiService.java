@@ -143,6 +143,10 @@ public interface ApiService {
     @GET("babyTime/milestone")
     Observable<MilestoneTimeResponse> milestone();
 
+    //里程碑删除
+    @GET("babyTime/delMilestone")
+    Observable<BaseResponse> delMilestone(@Query("id") int id);
+
     //亲友团-修改亲友信息
     @GET("baby/updateFamilyRelationshipInfo")
     Observable<BaseResponse> updateFamilyRelationshipInfo(@Query("nickName") String nickName,

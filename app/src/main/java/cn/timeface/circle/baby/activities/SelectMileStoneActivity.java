@@ -97,9 +97,8 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(milestoneResponse -> {
                             if (milestoneResponse.success()) {
-                                Milestone milestone = new Milestone(milestoneName, milestoneResponse.getMilestoneId());
                                 Intent intent = new Intent();
-                                intent.putExtra("milestone",milestone);
+                                intent.putExtra("milestone",milestoneResponse.getMilestone());
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {

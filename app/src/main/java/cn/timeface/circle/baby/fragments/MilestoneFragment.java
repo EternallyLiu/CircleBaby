@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -86,7 +87,12 @@ public class MilestoneFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void setDataList(List<MilestoneTimeObj> dataList) {
-        List<MilestoneTimeObj> milestoneTimeObjs = mokeData(dataList);
+        ArrayList<MilestoneTimeObj> milestoneTimeObjs = new ArrayList<>();
+        for (MilestoneTimeObj obj : dataList){
+            if(!TextUtils.isEmpty(obj.getImgUrl())){
+                milestoneTimeObjs.add(obj);
+            }
+        }
         adapter.setListData(milestoneTimeObjs);
         adapter.notifyDataSetChanged();
     }

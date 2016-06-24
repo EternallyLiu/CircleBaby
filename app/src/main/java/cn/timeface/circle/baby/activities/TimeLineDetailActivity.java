@@ -413,6 +413,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                     etCommment.requestFocus();
                     etCommment.setHint("回复 " + commment.getUserInfo().getRelationName() + " ：");
                     commmentId = commment.getCommentId();
+
                 }
                 break;
         }
@@ -483,7 +484,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         if(comment.getUserInfo().getUserId().equals(FastData.getUserId())){
             tvAction.setText("删除");
         }
-        tvAction.setTag(R.string.tag_obj,comment);
+        tvAction.setTag(R.string.tag_obj, comment);
         tvAction.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
         return view;

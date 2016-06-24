@@ -2,15 +2,18 @@ package cn.timeface.circle.baby.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -187,7 +190,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
     private void selectImages() {
-        SelectPhotoActivity.openForResult(this,selImages,PHOTO_COUNT_MAX,PICTURE);
+        SelectPhotoActivity.openForResult(this, selImages, PHOTO_COUNT_MAX, PICTURE);
 
     }
 
@@ -362,8 +365,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布日记
     private void publishDiary() {
         String content = etContent.getText().toString();
-        if (TextUtils.isEmpty(content)&&mediaObj==null) {
-            Toast.makeText(this,"发点文字吧~",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(content) && mediaObj == null) {
+            Toast.makeText(this, "发点文字吧~", Toast.LENGTH_SHORT).show();
             return;
         }
         String t = tvTime.getText().toString();
@@ -533,4 +536,45 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             }
         }.start();
     }
+
+    @Override
+    public void onBackPressed() {
+        delMileStone();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+
+        }
+        return true;
+    }
+    public void delMileStone(){
+        new AlertDialog.Builder(this).setTitle("确认退出发布流程？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+//                        if(milestone!=null){
+//                            apiService.delMilestone(milestone.getId())
+//                                    .compose(SchedulersCompat.applyIoSchedulers())
+//                                    .subscribe(response -> {
+//                                        if (!response.success()) {
+//                                            ToastUtil.showToast(response.getInfo());
+//                                        }
+//                                    }, throwable -> {
+//                                        Log.e(TAG, "delMilestone:");
+//                                    });
+//                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+    };
 }

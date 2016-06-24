@@ -19,6 +19,7 @@ import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -51,14 +52,14 @@ public class FamilyMemberAdapter extends BaseRecyclerAdapter<FamilyMemberInfo> {
         FamilyMemberInfo info = getItem(position);
         holder.onClickListener = onClickListener;
         holder.info = info;
-        GlideUtil.displayImage(info.getUserInfo().getAvatar(),holder.ivAvatar);
+        GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar);
         holder.tvName.setText(info.getUserInfo().getNickName());
         holder.tvCount.setText("来过" + info.getCount() + "次");
-        holder.tvTime.setText("最近："+ DateUtil.formatDate(info.getTime()));
+        holder.tvTime.setText("最近：" + DateUtil.formatDate(info.getTime()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentBridgeActivity.openFamilyMemberInfoFragment(mContext,info.getUserInfo());
+                FragmentBridgeActivity.openFamilyMemberInfoFragment(mContext, info.getUserInfo());
             }
         });
     }

@@ -104,7 +104,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
 
         mPullRefreshList.setAdapter(mAdapter);
         mStateView.setOnRetryListener(() -> requestData());
-
     }
 
     @Override
@@ -247,44 +246,61 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         dialog.show(getSupportFragmentManager(), "dialog");
     }
 
+    public void requestData(){
+        mokoData();
+        mAdapter.setListData(dataList);
+//        for (PrintCartItem item : dataList) {
+//            item.checkAllSelect();
+//        }
+//        calcTotalPrice();
+//        mIvSelectAll.setSelected(checkSelectAll());
+        if (dataList.size() <= 0) {
+            mLlEmpty.setVisibility(View.VISIBLE);
+            mPtrLayout.setVisibility(View.GONE);
+            mFoot.setVisibility(View.GONE);
+        } else {
+            mLlEmpty.setVisibility(View.GONE);
+            mPtrLayout.setVisibility(View.VISIBLE);
+            mFoot.setVisibility(View.VISIBLE);
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
     /**
      * 请求印刷车数据
      */
-    public void requestData() {
+    public void requestDat() {
 
         mStateView.loading();
         Subscription s = apiService.getCartList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
-                            mStateView.finish();
-                            if (response.success()) {
-                                cartResponse = response;
-                                dataList = response.getDataList();
-                                mAdapter.setListData(dataList);
-                                for (PrintCartItem item : dataList) {
-                                    item.checkAllSelect();
-                                }
-
-                                calcTotalPrice();
-                                mIvSelectAll.setSelected(checkSelectAll());
-                                if (dataList.size() <= 0) {
-                                    mLlEmpty.setVisibility(View.VISIBLE);
-                                    mPtrLayout.setVisibility(View.GONE);
-                                    mFoot.setVisibility(View.GONE);
-                                } else {
-                                    mLlEmpty.setVisibility(View.GONE);
-                                    mPtrLayout.setVisibility(View.VISIBLE);
-                                    mFoot.setVisibility(View.VISIBLE);
-                                }
-                                mAdapter.notifyDataSetChanged();
-                            } else {
-                                Toast.makeText(CartActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
-                            }
-                        },
-                        throwable -> {
-                            mStateView.showException(throwable);
-                            Toast.makeText(CartActivity.this, "服务器返回失败", Toast.LENGTH_SHORT).show();
-                        });
+                    mStateView.finish();
+                    if (response.success()) {
+                        cartResponse = response;
+                        dataList = response.getDataList();
+                        mAdapter.setListData(dataList);
+                        for (PrintCartItem item : dataList) {
+                            item.checkAllSelect();
+                        }
+                        calcTotalPrice();
+                        mIvSelectAll.setSelected(checkSelectAll());
+                        if (dataList.size() <= 0) {
+                            mLlEmpty.setVisibility(View.VISIBLE);
+                            mPtrLayout.setVisibility(View.GONE);
+                            mFoot.setVisibility(View.GONE);
+                        } else {
+                            mLlEmpty.setVisibility(View.GONE);
+                            mPtrLayout.setVisibility(View.VISIBLE);
+                            mFoot.setVisibility(View.VISIBLE);
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(CartActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
+                    }
+                }, throwable -> {
+                    mStateView.showException(throwable);
+                });
         addSubscription(s);
     }
 
@@ -329,7 +345,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             int bookType = item.getBookType();
             for (PrintPropertyPriceObj obj : item.getPrintList()) {
                 if (obj.isSelect()) {
-                    if(bookType == TypeConstant.BOOK_TYPE_DESK_CALENDAR){
+                    if (bookType == TypeConstant.BOOK_TYPE_DESK_CALENDAR) {
                         calendarPrice += obj.getPrice() * obj.getNum();
                     }
                     totalPrice += obj.getPrice() * obj.getNum();
@@ -342,12 +358,12 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                         totalPrice - cartResponse.getPromotionFee() : totalPrice)));
 
         //是否显示优惠信息
-        if(cartResponse.hasPromotion()) {
+        if (cartResponse.hasPromotion()) {
             tvPromotionInfo.setVisibility(View.VISIBLE);
             String text = cartResponse.getPromotionInfo() +
                     (TextUtils.isEmpty(cartResponse.getPromotionUrl()) ? "" : "<font color = '#069bf2'>查看活动详情>></font>");
             tvPromotionInfo.setText(Html.fromHtml(text));
-            if(totalPrice - calendarPrice >= cartResponse.getPromotionTerm() && calendarPrice > 0){
+            if (totalPrice - calendarPrice >= cartResponse.getPromotionTerm() && calendarPrice > 0) {
                 tvPromotionInfo.setVisibility(View.VISIBLE);
                 tvPromotionInfo.setText(String.format(
                         getString(R.string.cart_promotion_fee),
@@ -514,8 +530,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else {
+        } else {
             changeEditState(propertyAdapter, view);
         }
     }
@@ -661,5 +676,19 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
     @Override
     public void onEvent(Object event) {
 
+    }
+
+    private void mokoData() {
+        PrintCartItem printCartItem = new PrintCartItem();
+        printCartItem.setBookId("1");
+        printCartItem.setBookType(1);
+        printCartItem.setTitle("时光书");
+        printCartItem.setTagName("识图卡片");
+        printCartItem.setCoverImage("http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg");
+        printCartItem.setTotalPage(50);
+        printCartItem.setAuthorName("啦啦啦");
+        dataList.add(printCartItem);
+        dataList.add(printCartItem);
+        dataList.add(printCartItem);
     }
 }

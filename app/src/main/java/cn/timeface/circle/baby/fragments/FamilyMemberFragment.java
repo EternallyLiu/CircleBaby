@@ -26,6 +26,7 @@ import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -130,7 +131,6 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
         tvCount.setText("来过" + creator.getCount() + "次");
         tvTime.setText("最近：" + DateUtil.formatDate(creator.getTime()));
         dataList.remove(creator);
-
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
         initFoot();

@@ -18,6 +18,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -60,7 +61,6 @@ public class FamilyMemberAdapter2 extends BaseRecyclerAdapter<String> {
                 FragmentBridgeActivity.openInviteFragment(mContext,item);
             }
         });
-
     }
 
     @Override

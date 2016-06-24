@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,9 +77,7 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
         apiService.queryBabyInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(babyInfoListResponse -> {
-
                     setDataList(babyInfoListResponse.getDataList());
-
                 }, throwable -> {
                     Log.e(TAG, "queryBabyInfoList:");
                 });
@@ -86,8 +85,13 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
     }
 
     private void setDataList(List<UserObj> dataList) {
-        adapter.getListData().clear();
-        adapter.setListData(dataList);
+        ArrayList<UserObj> userObjs = new ArrayList<>();
+        for (UserObj user : dataList){
+            if(!TextUtils.isEmpty(user.getUserId())){
+                userObjs.add(user);
+            }
+        }
+        adapter.setListData(userObjs);
         adapter.notifyDataSetChanged();
     }
 

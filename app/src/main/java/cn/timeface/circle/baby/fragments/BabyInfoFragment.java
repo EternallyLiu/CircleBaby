@@ -183,8 +183,23 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                 dialog.show();
                 break;
             case R.id.rl_blood:
-                String blood = tvBlood.getText().toString();
-                FragmentBridgeActivity.openChangeInfoFragment(this, TypeConstants.EDIT_BLOOD, blood);
+//                String blood = tvBlood.getText().toString();
+//                FragmentBridgeActivity.openChangeInfoFragment(this, TypeConstants.EDIT_BLOOD, blood);
+                CharSequence[] charSequences = new CharSequence[]{"O","A","B","AB","其他"};
+                CharSequence text = tvBlood.getText();
+                int index = 0;
+                for (int i=0;i<charSequences.length;i++){
+                    if(charSequences[i].equals(text)){
+                        index = i;
+                    }
+                }
+                new AlertDialog.Builder(getContext()).setSingleChoiceItems(charSequences, index , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        tvBlood.setText(charSequences[which]);
+                    }
+                }).show();
                 break;
             case R.id.rb_boy:
                 gender = 1;
