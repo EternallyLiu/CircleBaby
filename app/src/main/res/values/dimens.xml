@@ -33,4 +33,9 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <dimen name="share_title">20sp</dimen>
+    <dimen name="share_item">14sp</dimen>
+    <dimen name="share_item_padding">10dp</dimen>
+
 </resources>

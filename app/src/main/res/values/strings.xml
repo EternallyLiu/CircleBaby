@@ -251,4 +251,6 @@
     <string name="integral_label">积分:</string>
     <string name="order_action_cancel">取消订单</string>
     <string name="order_action_cancel_begin">取消订单中...</string>
+
+    <string name="book_null">还没有作品？快去制作吧</string>
 </resources>

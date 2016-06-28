@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="#ffffff"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
+        android:text="分享"
+        android:textColor="#666666"
+        android:textSize="@dimen/share_title"/>
+
+    <TableLayout
+        android:id="@+id/share_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center">
+
+        <TableRow>
+
+            <LinearLayout
+                android:id="@+id/share_to_sina"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_share_weibo"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/share_item_padding"
+                    android:text="@string/sinaweibo"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/share_item"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/share_to_wxcircle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_share_wechat_moments"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/share_item_padding"
+                    android:text="@string/wechatmoments"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/share_item"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/share_to_wx"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_share_wechat"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/share_item_padding"
+                    android:text="@string/wechat"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/share_item"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/share_to_qq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_share_qq"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/share_item_padding"
+                    android:text="@string/qq_friend"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/share_item"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/share_to_qzone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_share_qq_zone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/share_item_padding"
+                    android:text="@string/qzone"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/share_item"/>
+            </LinearLayout>
+        </TableRow>
+
+        <ImageView
+            android:id="@+id/share_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#dddddd"/>
+
+        <TableRow
+            android:id="@+id/share_cus_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+        </TableRow>
+    </TableLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="10dp"
+        android:background="#f0f0f0"/>
+
+    <TextView
+        android:id="@+id/share_delete"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="删除动态"
+        android:visibility="gone"
+        android:textColor="#039ae3"
+        android:textSize="@dimen/share_title"/>
+
+    <LinearLayout
+        android:id="@+id/divide"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:background="@color/gray_pressed"/>
+
+    <TextView
+        android:id="@+id/share_cancle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="取消"
+        android:textColor="#039ae3"
+        android:textSize="@dimen/share_title"/>
+</LinearLayout>

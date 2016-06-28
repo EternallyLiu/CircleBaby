@@ -62,13 +62,13 @@ public class ShareDialog extends BaseDialog {
     public ShareDialog(Context context) {
         super(context, R.style.TFDialogStyle);
         this.context = context;
-//        init();
+        init();
     }
 
     public ShareDialog(Context context, int theme) {
         super(context, theme);
         this.context = context;
-//        init();
+        init();
     }
 
     public void share(String title, String content, String imgUrl, String url, CustomerLogo... logos) {
@@ -211,32 +211,32 @@ public class ShareDialog extends BaseDialog {
         shareToWx(ShareSDK.getPlatform(Wechat.NAME));
     }
 
-//    private void init() {
-//        View mView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_share, null);
-//        this.setContentView(mView);
-//        shareTable = ButterKnife.findById(mView, R.id.share_table);
-//        shareTable.setStretchAllColumns(true);
-//        shareToSina = ButterKnife.findById(mView, R.id.share_to_sina);
-//        shareToWx = ButterKnife.findById(mView, R.id.share_to_wx);
-//        shareToWxCircle = ButterKnife.findById(mView, R.id.share_to_wxcircle);
-//        shareToQQ = ButterKnife.findById(mView, R.id.share_to_qq);
-//        shareToQzone = ButterKnife.findById(mView, R.id.share_to_qzone);
-//        divider = ButterKnife.findById(mView, R.id.share_divider);
-//        cusRow = ButterKnife.findById(mView, R.id.share_cus_row);
-//        cancleBtn = ButterKnife.findById(mView, R.id.share_cancle);
-//        deleteBtn = ButterKnife.findById(mView, R.id.share_delete);
-//        divide = ButterKnife.findById(mView, R.id.divide);
-//        initListener();
-//
-//        Window window = getWindow();
-//        WindowManager m = window.getWindowManager();
-//        Display d = m.getDefaultDisplay();
-//        WindowManager.LayoutParams p = window.getAttributes();
-//        p.width = d.getWidth();
-//        window.setAttributes(p);
-//        window.setGravity(Gravity.BOTTOM);
-//        window.setWindowAnimations(R.style.bottom_dialog_animation);
-//    }
+    private void init() {
+        View mView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_share, null);
+        this.setContentView(mView);
+        shareTable = ButterKnife.findById(mView, R.id.share_table);
+        shareTable.setStretchAllColumns(true);
+        shareToSina = ButterKnife.findById(mView, R.id.share_to_sina);
+        shareToWx = ButterKnife.findById(mView, R.id.share_to_wx);
+        shareToWxCircle = ButterKnife.findById(mView, R.id.share_to_wxcircle);
+        shareToQQ = ButterKnife.findById(mView, R.id.share_to_qq);
+        shareToQzone = ButterKnife.findById(mView, R.id.share_to_qzone);
+        divider = ButterKnife.findById(mView, R.id.share_divider);
+        cusRow = ButterKnife.findById(mView, R.id.share_cus_row);
+        cancleBtn = ButterKnife.findById(mView, R.id.share_cancle);
+        deleteBtn = ButterKnife.findById(mView, R.id.share_delete);
+        divide = ButterKnife.findById(mView, R.id.divide);
+        initListener();
+
+        Window window = getWindow();
+        WindowManager m = window.getWindowManager();
+        Display d = m.getDefaultDisplay();
+        WindowManager.LayoutParams p = window.getAttributes();
+        p.width = d.getWidth();
+        window.setAttributes(p);
+        window.setGravity(Gravity.BOTTOM);
+        window.setWindowAnimations(R.style.bottom_dialog_animation);
+    }
 
     private void initListener() {
         shareToSina.setOnClickListener(v -> {

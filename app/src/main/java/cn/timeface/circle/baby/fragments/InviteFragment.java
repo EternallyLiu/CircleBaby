@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.adapters.FamilyMemberAdapter;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.ShareSdkUtil;

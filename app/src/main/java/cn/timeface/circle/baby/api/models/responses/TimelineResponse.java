@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.api.models.objs.RecommendObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 
 /**
@@ -13,6 +14,15 @@ public class TimelineResponse extends BaseResponse {
     List<TimeLineGroupObj> dataList;
     int currentPage;
     int totalPage;
+    RecommendObj recommendObj;
+
+    public RecommendObj getRecommendObj() {
+        return recommendObj;
+    }
+
+    public void setRecommendObj(RecommendObj recommendObj) {
+        this.recommendObj = recommendObj;
+    }
 
     public List<TimeLineGroupObj> getDataList() {
         return dataList;

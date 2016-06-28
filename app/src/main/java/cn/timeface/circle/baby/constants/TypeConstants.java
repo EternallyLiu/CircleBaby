@@ -33,8 +33,8 @@ public class TypeConstants {
 
     public static final int PUSH_OPEN = 0;
     public static final int PUSH_CLOSE = 1;
-    public static final String MI_PUSH_APP_ID = "2882303761517465240";
-    public static final String MI_PUSH_APP_KEY = "5881746511240";
+    public static final String MI_PUSH_APP_ID = "2882303761517467205";
+    public static final String MI_PUSH_APP_KEY = "5501746742205";
     public static final int PUSH_VOICE_SHAKE = 3;
     public static final int PUSH_VOICE = 1;
     public static final int PUSH_SHAKE = 2;

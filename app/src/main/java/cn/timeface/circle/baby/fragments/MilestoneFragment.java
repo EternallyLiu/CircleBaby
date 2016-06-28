@@ -22,8 +22,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.adapters.FamilyMemberAdapter;
-import cn.timeface.circle.baby.adapters.FamilyMemberAdapter2;
 import cn.timeface.circle.baby.adapters.MilestoneAdapter;
 import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;

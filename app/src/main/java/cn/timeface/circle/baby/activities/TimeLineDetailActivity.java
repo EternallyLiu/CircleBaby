@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,9 @@ import cn.timeface.circle.baby.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
+import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -49,9 +53,10 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.IconTextView;
+import de.greenrobot.event.Subscribe;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class TimeLineDetailActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class TimeLineDetailActivity extends BaseAppCompatActivity implements View.OnClickListener,IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -249,7 +254,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             public void onClick(View v) {
                 dialog = new AlertDialog.Builder(TimeLineDetailActivity.this).setView(initCommentMenu(comment)).show();
                 Window window = dialog.getWindow();
+                WindowManager m = window.getWindowManager();
+                Display d = m.getDefaultDisplay();
+                WindowManager.LayoutParams p = window.getAttributes();
+                p.width = d.getWidth();
+                window.setAttributes(p);
                 window.setGravity(Gravity.BOTTOM);
+                window.setWindowAnimations(R.style.bottom_dialog_animation);
             }
         });
         return view;
@@ -290,11 +301,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             case R.id.ll_menu:
 //                dialog = new AlertDialog.Builder(this).setView(initMenu()).show();
 //                dialog.getWindow().setGravity(Gravity.BOTTOM);
-                View view = initMenu();
-                popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                popupWindow.setBackgroundDrawable(new BitmapDrawable());
-                popupWindow.setOutsideTouchable(true);
-                popupWindow.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+//                View view = initMenu();
+//                popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                popupWindow.setBackgroundDrawable(new BitmapDrawable());
+//                popupWindow.setOutsideTouchable(true);
+//                popupWindow.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+
+                new TimeLineActivityMenuDialog(this).share(timelineobj);
 
                 break;
             case R.id.icon_like:
@@ -335,44 +348,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                             Log.e(TAG, "like:");
                         });
 
-                break;
-            case R.id.tv_edit:
-                popupWindow.dismiss();
-                Intent intent1 = new Intent(this,TimeLineEditActivity.class);
-                intent1.putExtra("timelimeobj",timelineobj);
-                startActivity(intent1);
-                break;
-            case R.id.tv_delete:
-                popupWindow.dismiss();
-                new AlertDialog.Builder(this)
-                        .setTitle("确定删除这条记录吗?")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        apiService.delTime(timelineobj.getTimeId())
-                                .compose(SchedulersCompat.applyIoSchedulers())
-                                .subscribe(response -> {
-                                    ToastUtil.showToast(response.getInfo());
-                                    if (response.success()) {
-                                        finish();
-                                    }
-                                }, error -> {
-                                    Log.e(TAG, "delTime:");
-                                });
-                    }
-                }).show();
-                break;
-            case R.id.tv_download:
-                ImageFactory.saveVideo(timelineobj.getMediaList().get(0).getVideoUrl());
-                popupWindow.dismiss();
-                break;
-            case R.id.tv_share:
-                popupWindow.dismiss();
                 break;
             case R.id.tv_cancel:
 //                dialog.dismiss();
@@ -419,6 +394,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         }
     }
 
+    @Subscribe
+    public void onEvent(Object event) {
+        if(event instanceof DeleteTimeLineEvent){
+            finish();
+        }
+    }
+
     private class MyAdapter extends BaseAdapter {
         ArrayList<String> urls;
 
@@ -457,24 +439,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             });
             return view;
         }
-    }
-
-    public View initMenu() {
-        View view = getLayoutInflater().inflate(R.layout.view_timedetail_menu, null);
-        TextView tvEdit = (TextView) view.findViewById(R.id.tv_edit);
-        TextView tvDelete = (TextView) view.findViewById(R.id.tv_delete);
-        TextView tvShare = (TextView) view.findViewById(R.id.tv_share);
-        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
-        if(timelineobj.getType()==1){
-            TextView tvDownload = (TextView) view.findViewById(R.id.tv_download);
-            tvDownload.setVisibility(View.VISIBLE);
-            tvDownload.setOnClickListener(this);
-        }
-        tvEdit.setOnClickListener(this);
-        tvDelete.setOnClickListener(this);
-        tvShare.setOnClickListener(this);
-        tvCancel.setOnClickListener(this);
-        return view;
     }
 
     public View initCommentMenu(CommentObj comment){

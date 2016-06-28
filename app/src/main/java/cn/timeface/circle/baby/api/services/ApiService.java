@@ -26,7 +26,9 @@ import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.api.models.responses.MsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderListResponse;
+import cn.timeface.circle.baby.api.models.responses.ParamListResponse;
 import cn.timeface.circle.baby.api.models.responses.PrintCartListResponse;
+import cn.timeface.circle.baby.api.models.responses.PrintStatusResponse;
 import cn.timeface.circle.baby.api.models.responses.RegisterResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationIdResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationshipResponse;
@@ -337,7 +339,7 @@ public interface ApiService {
     Observable<MyOrderConfirmListResponse> findOrderDetail(@Query("orderId") String orderId);
 
     //加入印刷车
-    @POST("cartM/addCartitem")
+    @POST("babyOrder/addCartitem")
     Observable<AddCartItemResponse> addCartItem(@QueryMap Map<String, String> params);
 
     //印刷车列表
@@ -347,7 +349,7 @@ public interface ApiService {
     /**
      * 提交订单
      */
-    @POST("cartM/addOrder")
+    @POST("babyOrder/addOrder")
     Observable<LessResponse> addOrderNew(@Query("orderId") String orderId,
                                          @Query("addressId") String addressId,
                                          @Query("dispatch") String dispatch,
@@ -360,20 +362,62 @@ public interface ApiService {
     /**
      * 提交订单
      */
-    @POST("cartM/addOrder")
+    @POST("babyOrder/addOrder")
     Observable<LessResponse> addOrderNew(@Query("dataList") String dataList);
 
     /**
      * 提交订单
      */
-    @POST("cartM/addOrder")
+    @POST("babyOrder/addOrder")
     Observable<LessResponse> addOrderNew(@Query("from") String from,
                                          @Query("dataList") String dataList);
 
     /**
+     * 提交订单-新增订单
+     */
+    @POST("babyOrder/addOrder")
+    Observable<LessResponse> addOrder(@Query("addressId") int addressId,
+                                      @Query("dataList") String dataList,
+                                      @Query("expressId") int expressId,
+                                      @Query("orderId") int orderId);
+
+
+    /**
      * 印刷车列表
      */
-    @POST("cartM/cartlist")
+    @POST("babyOrder/cartlist")
     Observable<PrintCartListResponse> getCartList();
+
+    /**
+     * 时光书单价查询
+     */
+    @POST("babyOrder/queryBookPrice")
+    Observable<LessResponse> queryBookPrice(@QueryMap Map<String, String> params);
+
+    /**
+     * 时光书单价查询
+     */
+    @POST("babyOrder/queryBookPrice")
+    Observable<LessResponse> queryBookPrice(@Query("bookType") int bookType,
+                                            @Query("color") int color,
+                                            @Query("pack") int pack,
+                                            @Query("pageNum") int pageNum,
+                                            @Query("paper") int paper,
+                                            @Query("size") int size);
+
+
+    /**
+     * 获取当前作品印刷状态
+     */
+    @POST("babyOrder/printStatus")
+    Observable<PrintStatusResponse> printStatus(@Query("bookType") int bookType,
+                                                @Query("pageNum") int pageNum);
+
+    /**
+     * 获取订单配置参数
+     */
+    @POST("babyOrder/queryParamList")
+    Observable<ParamListResponse> queryParamList(@Query("bookType") int bookType,
+                                                 @Query("pageNum") int pageNum);
 
 }

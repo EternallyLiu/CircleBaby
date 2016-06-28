@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|bottom"
-                    android:src="@drawable/ic_del_image" />
+                     />
 
             </FrameLayout>
 
@@ -130,20 +130,20 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_recycler_view"
+    <LinearLayout
+        android:id="@+id/ll_familymember"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_color2"
-        android:scrollbars="none" />
+        android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_recycler_view2"
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_familymember_none"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_color2"
-        android:scrollbars="none" />
+        android:orientation="vertical">
+
+    </LinearLayout>
 
 
 </LinearLayout>

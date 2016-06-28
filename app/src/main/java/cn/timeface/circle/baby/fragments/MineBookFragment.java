@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -58,18 +59,18 @@ public class MineBookFragment extends BaseFragment implements View.OnClickListen
 
     private void setDataList(List<MineBookObj> bookList) {
         List<MineBookObj> mineBookObjs = mokeData(bookList);
-        MineBookAdapter mineBookAdapter = new MineBookAdapter(getContext(), mineBookObjs);
+        MineBookAdapter mineBookAdapter = new MineBookAdapter(getActivity(), mineBookObjs);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         contentRecyclerView.setAdapter(mineBookAdapter);
-        
-
     }
 
     private List<MineBookObj> mokeData(List<MineBookObj> bookList) {
-        MineBookObj mineBookObj = new MineBookObj("http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", 1465193897000L, 50, "啦啦啦时光书", 1);
-        for (int i = 0; i < 5; i++) {
-            bookList.add(mineBookObj);
-        }
+        MineBookObj mineBookObj1 = new MineBookObj("http://static.timeface.cn/coverpage/c7f9d26b0960f6e678fe17f25421d2bc.png", 1465193897000L, 50, "测试一本书", 1, "240796762256", "Melvin");
+        MineBookObj mineBookObj2 = new MineBookObj("http://static.timeface.cn/coverpage/55b9e7b678ff7ae02b9a4ef2fcf9d7b4.png", 1465193897000L, 50, "Melvin的时光书", 1, "252251922680", "Melvin");
+        MineBookObj mineBookObj3 = new MineBookObj("http://static.timeface.cn/coverpage/c17a1b4718d3e413576d4e4e18ca815f.png", 1465193897000L, 50, "测试一本书2222312", 1, "261970035390", "Melvin");
+        bookList.add(mineBookObj1);
+        bookList.add(mineBookObj2);
+        bookList.add(mineBookObj3);
         return bookList;
     }
 

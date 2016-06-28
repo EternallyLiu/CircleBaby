@@ -47,13 +47,13 @@
             VKontakte     http://vk.com/dev
     -->
 
-    <ShareSDK AppKey="ebcde3180dd6" />
+    <ShareSDK AppKey="117df1572a06c" />
     <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
 
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
-    <SinaWeibo AppKey="1391878402" AppSecret="407cc0fbdf48373980820170c025feb5" Enable="true" Id="6"
-        RedirectUrl="http://www.xialingying.tv" ShareByAppClient="false" SortId="6" />
+    <SinaWeibo AppKey="619467113" AppSecret="1b3700e44ae583c6012312af1b8eac7d" Enable="true" Id="6"
+        RedirectUrl="http://www.timeface.cn" ShareByAppClient="false" SortId="6" />
 
     <QZone AppId="1105142528" AppKey="0w6vIvKIJWLdSXNP" Enable="true" Id="3" SortId="3" />
 
@@ -76,7 +76,7 @@
         AppSecret="8fe17164de808c298b7edd63eee102e8" BypassApproval="false"
         Enable="true"/>
     -->
-    <Wechat AppId="wxa8dcf6056e485fb7" AppSecret="c0bcf6150453850b44df5f300de86d70" BypassApproval="false"
+    <Wechat AppId="wx2dba2bf6ed35cc7b" AppSecret="3c93b362e53309f8ac2e4780f04b7004" BypassApproval="false"
         Enable="true" Id="4" SortId="4" />
 
     <WechatMoments AppId="wxa8dcf6056e485fb7" AppSecret="c0bcf6150453850b44df5f300de86d70" BypassApproval="false"
@@ -88,7 +88,7 @@
         AppId="wx4868b35061f87885"
         Enable="true" /> -->
 
-    <QQ AppId="1105289889" AppKey="j4pQKcb50m3XcXaa" Enable="true" Id="1" ShareByAppClient="false"
+    <QQ AppId="1105323622" AppKey="ExAt43F8f9CzE8Zo" Enable="true" Id="1" ShareByAppClient="false"
         SortId="1" />
 
     <!-- <Facebook

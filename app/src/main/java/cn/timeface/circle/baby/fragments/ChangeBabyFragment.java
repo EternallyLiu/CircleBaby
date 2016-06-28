@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,6 +115,8 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
             case R.id.rl_baby:
                 UserObj info = (UserObj) v.getTag(R.string.tag_ex);
                 FastData.setUserInfo(info);
+                Gson gson = new Gson();
+                FastData.putString("userObj", gson.toJson(info));
                 apiService.updateLoginInfo()
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {

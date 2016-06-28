@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
@@ -20,13 +29,21 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.api.models.objs.AddressObj;
 import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.api.models.responses.LessResponse;
 import cn.timeface.circle.baby.events.AddressEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.payment.OrderInfoObj;
+import cn.timeface.circle.baby.payment.PaymentFactory;
+import cn.timeface.circle.baby.payment.PrepareOrderException;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.greenrobot.event.Subscribe;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class EnsureOrderFragment extends BaseFragment implements View.OnClickListener ,IEventBus{
+public class EnsureOrderFragment extends BaseFragment implements View.OnClickListener, IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -88,6 +105,8 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
     private BookObj bookObj;
     private MineBookObj mineBookObj;
     private int expressId;
+    private AddressObj addressobj;
+    private LessResponse lessResponse;
 
     public EnsureOrderFragment() {
     }
@@ -152,21 +171,53 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
                 expressId = 1;
                 break;
             case R.id.tv_submit_order:
+                if (TextUtils.isEmpty(tvAddress.getText().toString())) {
+                    ToastUtil.showToast("请完善收货地址");
+                    return;
+                }
                 bookObj.setBookType(mineBookObj.getType());
+                ArrayList<BookObj> dataList = new ArrayList<>();
+                dataList.add(bookObj);
+                Gson gson = new Gson();
+                String s = gson.toJson(dataList);
 
+                apiService.addOrder(Integer.valueOf(addressobj.getId()), URLEncoder.encode(s), expressId,0)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(lessResponse -> {
+                            if (lessResponse.success()) {
+                                this.lessResponse = lessResponse;
+                                startPayment();
+                            } else {
+                                ToastUtil.showToast(lessResponse.getInfo());
+                            }
+                        }, error -> {
+                            Log.e(TAG, "addOrderNew:");
+                        });
                 break;
         }
     }
 
-    @Subscribe
-    public void onEvent(Object event) {
-        if(event instanceof AddressEvent){
-            AddressObj addressobj = ((AddressEvent) event).getObj();
-            System.out.println(addressobj.toString());
-            rlAddress.setVisibility(View.VISIBLE);
-            tvname.setText(addressobj.getContacts());
-            tvPhone.setText(addressobj.getContactsPhone());
-            tvAddress.setText(addressobj.getAddress());
+    private void startPayment() {
+        OrderInfoObj orderInfoObj = new OrderInfoObj();
+        orderInfoObj.setTradeNo(lessResponse.getOrderId());
+        orderInfoObj.setPrice(lessResponse.getPrice()*bookObj.getNum());
+        orderInfoObj.setSubject(mineBookObj.getTitle());
+        orderInfoObj.setBody(mineBookObj.getTitle());
+        try {
+            PaymentFactory.newInstance(0).requestPayment(getActivity(), orderInfoObj);
+        } catch (PrepareOrderException e) {
+            Log.e(TAG, "startPayment: ", e);
         }
     }
-}
+
+        @Subscribe
+        public void onEvent (Object event){
+            if (event instanceof AddressEvent) {
+                addressobj = ((AddressEvent) event).getObj();
+                rlAddress.setVisibility(View.VISIBLE);
+                tvname.setText(addressobj.getContacts());
+                tvPhone.setText(addressobj.getContactsPhone());
+                tvAddress.setText(addressobj.getAddress());
+            }
+        }
+    }

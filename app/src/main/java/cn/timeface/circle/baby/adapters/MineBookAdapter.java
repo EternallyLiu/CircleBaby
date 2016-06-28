@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +30,18 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.circle.baby.api.ApiFactory;
+import cn.timeface.circle.baby.api.models.PrintCartItem;
 import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 /**
  * Created by lidonglin on 2016/6/15.
@@ -149,13 +158,38 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     pw.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                     break;
                 case R.id.tv_print:
-                    AlertDialog dialog = new AlertDialog.Builder(context).setView(initView(obj)).create();
-                    Window window = dialog.getWindow();
-                    window.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL);
-                    WindowManager.LayoutParams lp = window.getAttributes();
-                    lp.width = Remember.getInt("width", 0) * 3;
-                    window.setAttributes(lp);
-                    dialog.show();
+//                    AlertDialog dialog = new AlertDialog.Builder(context).setView(initView(obj)).create();
+//                    Window window = dialog.getWindow();
+//                    WindowManager m = window.getWindowManager();
+//                    Display d = m.getDefaultDisplay();
+//                    WindowManager.LayoutParams p = window.getAttributes();
+//                    p.width = d.getWidth();
+//                    window.setAttributes(p);
+//                    window.setGravity(Gravity.BOTTOM);
+//                    window.setWindowAnimations(R.style.bottom_dialog_animation);
+//                    dialog.show();
+                    PrintCartItem printCartItem = new PrintCartItem();
+                    printCartItem.setAuthorName(obj.getAuthor());
+                    printCartItem.setCoverImage(obj.getCoverImage());
+                    printCartItem.setTitle(obj.getTitle());
+                    printCartItem.setBookId(obj.getBookId());
+                    printCartItem.setBookType(obj.getType());
+                    printCartItem.setTotalPage(obj.getPageCount());
+                    printCartItem.setDate(DateUtil.formatDate("yyyy-MM-dd", obj.getCreateTime()));
+
+
+                    CartPrintPropertyDialog dialog = CartPrintPropertyDialog.getInstance(printCartItem,
+                            null,
+                            null,
+                            printCartItem.getBookId(),
+                            String.valueOf(printCartItem.getBookType()),
+                            CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
+                            printCartItem.getPrintCode(),
+                            printCartItem.getCoverImage(),
+                            TypeConstant.FROM_PHONE);
+//                    dialog.show(getSupportFragmentManager(), "dialog");
+
+
                     break;
                 case R.id.tv_share:
 
@@ -171,7 +205,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     Integer count = Integer.valueOf(tvCount.getText().toString());
                     if (count > 1) {
                         count--;
-                        tvCount.setText(count+"");
+                        tvCount.setText(count + "");
                         bookObj.setNum(count);
                     }
                     break;
@@ -179,7 +213,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     Integer c = Integer.valueOf(tvCount.getText().toString());
                     if (c < 99) {
                         c++;
-                        tvCount.setText(c+"");
+                        tvCount.setText(c + "");
                         bookObj.setNum(c);
                     }
                     break;
@@ -235,7 +269,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
                     break;
                 case R.id.btn_buy_now:
-                    FragmentBridgeActivity.openEnsureOrderFragment(context,bookObj,obj);
+                    FragmentBridgeActivity.openEnsureOrderFragment(context, bookObj, obj);
                     break;
 
 
@@ -269,10 +303,10 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
             tvColor.setSelected(true);
             tvPaper1.setSelected(true);
             tvBind1.setSelected(true);
-            if(obj.getPageCount()<90){
+            if (obj.getPageCount() < 90) {
                 tvNotify.setVisibility(View.VISIBLE);
-                tvBind2.setClickable(false);
-                tvBind3.setClickable(false);
+                tvBind2.setEnabled(false);
+                tvBind3.setEnabled(false);
             }
             bookObj = new BookObj();
             bookObj.setNum(1);

@@ -152,7 +152,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
-                    if(timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()){
+                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
                     }
                     setDataList(timelineResponse.getDataList());
@@ -165,10 +165,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
+        ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
+        for(TimeLineGroupObj obj : dataList){
+            if(obj.getTimeLineList().size()>0){
+                lists.add(obj);
+            }
+        }
         if(currentPage == 1){
-            adapter.setListData(dataList);
+            adapter.setListData(lists);
         }else{
-            adapter.getListData().addAll(dataList);
+            adapter.getListData().addAll(lists);
         }
         adapter.notifyDataSetChanged();
     }

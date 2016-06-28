@@ -117,4 +117,9 @@
         <item name="android:horizontalSpacing">24dp</item>
         <item name="android:verticalSpacing">12dp</item>
     </style>
+    <style name="bottom_dialog_animation" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/dialog_bottom_enter
+        </item>
+        <item name="android:windowExitAnimation">@anim/dialog_bottom_out</item>
+    </style>
 </resources>

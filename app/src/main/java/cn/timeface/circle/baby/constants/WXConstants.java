@@ -9,10 +9,14 @@ package cn.timeface.circle.baby.constants;
  */
 public class WXConstants {
     // APP_ID 替换为你的应用从官方网站申请到的合法appId
-    public static final String APP_ID = "wxa8dcf6056e485fb7";
+    public static final String APP_ID = "wx4987e271f6e8b3b3";
 
+    /**
+     * 商家向财付通申请的商家id
+     */
+    public static final String PARTNER_ID = "1220490301";
 
-    public static final String APP_SECRET_KEY = "c0bcf6150453850b44df5f300de86d70";
+    public static final String APP_SECRET_KEY = "8fe17164de808c298b7edd63eee102e8";
     // wx登陆获取access token
     public static final String Get_ACCESS_TOKEN = "https://api.weixin.qq.com/sns/oauth2/access_token";
     // wx获取用户信息

@@ -74,7 +74,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:clickable="true"
-                            android:src="@drawable/selector_btn_delete"/>
+                            android:src="@drawable/selector_btn_delete" />
                     </RelativeLayout>
 
                     <LinearLayout
@@ -83,7 +83,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="138dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="@dimen/size_6"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -94,7 +94,7 @@
                             android:background="@drawable/shape_grey_border_bg"
                             android:clickable="true"
                             android:onClick="onBtnClick"
-                            android:src="@drawable/ic_minus_default"/>
+                            android:src="@drawable/ic_minus_default" />
 
                         <EditText
                             android:id="@+id/et_count"
@@ -107,7 +107,7 @@
                             android:inputType="numberSigned"
                             android:padding="5dp"
                             android:text="1"
-                            android:textColor="@color/text_color9"/>
+                            android:textColor="@color/text_color9" />
 
 
                         <ImageButton
@@ -117,25 +117,25 @@
                             android:background="@drawable/shape_red_border_bg"
                             android:clickable="true"
                             android:onClick="onBtnClick"
-                            android:src="@drawable/ic_plus_press"/>
+                            android:src="@drawable/ic_plus_press" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="138dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/size_6"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <TextView
                             style="@style/OrderTextLabel"
-                            android:text="@string/select_print_number"/>
+                            android:text="@string/select_print_number" />
 
                         <TextView
                             style="@style/OrderTextContent"
                             android:layout_gravity="center_vertical"
-                            android:text="@string/print_top_limit"/>
+                            android:text="@string/print_top_limit" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -152,25 +152,25 @@
                         android:background="@drawable/timelist_book_bg">
 
                         <com.github.rayboot.widget.ratioview.RatioImageView
-                            android:id="@+id/iv_book_cover"
                             xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/iv_book_cover"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:src="@drawable/book_back_default"
                             app:fixRatio="fixWidth"
                             scaleimg:heightRatio="25"
-                            scaleimg:widthRatio="18"/>
+                            scaleimg:widthRatio="18" />
                     </FrameLayout>
 
                     <ImageView
-                        android:visibility="invisible"
                         android:id="@+id/iv_book_tag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@+id/fl_cover"
                         android:layout_marginBottom="20dp"
                         android:layout_marginLeft="16dp"
-                        android:src="@drawable/ic_time_book_tag_wechat"/>
+                        android:src="@drawable/ic_time_book_tag_wechat"
+                        android:visibility="invisible" />
                 </RelativeLayout>
             </RelativeLayout>
 
@@ -188,7 +188,7 @@
                     android:layout_height="1px"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@color/divider"/>
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -200,7 +200,7 @@
 
                     <TextView
                         style="@style/OrderTextLabel"
-                        android:text="选择开本（书本尺寸）"/>
+                        android:text="选择开本（书本尺寸）" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -239,7 +239,7 @@
                     android:layout_height="1px"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@color/divider"/>
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -251,7 +251,7 @@
 
                     <TextView
                         style="@style/OrderTextLabel"
-                        android:text="@string/cart_print_property_color_text"/>
+                        android:text="@string/cart_print_property_color_text" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -291,7 +291,7 @@
                     android:layout_height="1px"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@color/divider"/>
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -303,7 +303,7 @@
 
                     <TextView
                         style="@style/OrderTextLabel"
-                        android:text="纸张"/>
+                        android:text="纸张" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -343,7 +343,7 @@
                     android:layout_height="1px"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@color/divider"/>
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -360,14 +360,14 @@
 
                         <TextView
                             style="@style/OrderTextLabel"
-                            android:text="@string/cart_print_property_pack_text"/>
+                            android:text="@string/cart_print_property_pack_text" />
 
                         <TextView
                             android:id="@+id/tv_pack_label"
                             style="@style/OrderTextLabel"
-                            android:textColor="@color/red"
                             android:text="(页数不足90页，不支持法式精装和豪华精装)"
-                            android:visibility="gone"/>
+                            android:textColor="@color/red"
+                            android:visibility="gone" />
                     </LinearLayout>
 
 
@@ -439,7 +439,7 @@
             android:text="@string/add_to_cart"
             android:textAppearance="?android:attr/textAppearance"
             android:textColor="@color/white"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/btn_buy_now"
@@ -451,7 +451,7 @@
             android:text="@string/buy_now"
             android:textAppearance="?android:attr/textAppearance"
             android:textColor="@color/white"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/btn_ok"
@@ -463,6 +463,6 @@
             android:text="确定"
             android:textAppearance="?android:attr/textAppearance"
             android:textColor="@color/white"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 </RelativeLayout>

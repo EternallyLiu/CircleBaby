@@ -464,34 +464,34 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         btnBuyNow.setClickable(false);
         btnOk.setClickable(false);
 
-//        Subscription s = BaseAppCompatActivity.apiService.queryBookPrice(getParams(1))
-//                .compose(SchedulersCompat.applyIoSchedulers())
-//                .subscribe(
-//                        response -> {
-//                            isQuery = false;
-//                            mProgressBar.setVisibility(View.GONE);
-//                            btnAddCart.setBackgroundResource(R.drawable.selector_common_blue);
-//                            btnBuyNow.setBackgroundResource(R.drawable.selector_common_yellow);
-//                            btnOk.setBackgroundResource(R.drawable.selector_blue_btn_bg);
-//                            btnAddCart.setClickable(true);
-//                            btnBuyNow.setClickable(true);
-//                            btnOk.setClickable(true);
-//                            if (response.success() && isAdded()) {
-//                                bookPrice = response.getPrice();
-//                                mTvPrice.setText(getString(R.string.total_price,
-//                                        response.getPrice() * Integer.parseInt(mBookPrintNumberEt.getText().toString())));
-//                            }
-//                        },
-//                        throwable -> {
-//                            btnAddCart.setBackgroundResource(R.drawable.selector_common_blue);
-//                            btnBuyNow.setBackgroundResource(R.drawable.selector_common_yellow);
-//                            btnOk.setBackgroundResource(R.drawable.selector_blue_btn_bg);
-//                            btnAddCart.setClickable(true);
-//                            btnBuyNow.setClickable(true);
-//                            btnOk.setClickable(true);
-//                        }
-//                );
-//        ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        Subscription s = BaseAppCompatActivity.apiService.queryBookPrice(getParams(1))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            isQuery = false;
+                            mProgressBar.setVisibility(View.GONE);
+                            btnAddCart.setBackgroundResource(R.drawable.selector_common_blue);
+                            btnBuyNow.setBackgroundResource(R.drawable.selector_common_yellow);
+                            btnOk.setBackgroundResource(R.drawable.selector_blue_btn_bg);
+                            btnAddCart.setClickable(true);
+                            btnBuyNow.setClickable(true);
+                            btnOk.setClickable(true);
+                            if (response.success() && isAdded()) {
+                                bookPrice = response.getPrice();
+                                mTvPrice.setText(getString(R.string.total_price,
+                                        response.getPrice() * Integer.parseInt(mBookPrintNumberEt.getText().toString())));
+                            }
+                        },
+                        throwable -> {
+                            btnAddCart.setBackgroundResource(R.drawable.selector_common_blue);
+                            btnBuyNow.setBackgroundResource(R.drawable.selector_common_yellow);
+                            btnOk.setBackgroundResource(R.drawable.selector_blue_btn_bg);
+                            btnAddCart.setClickable(true);
+                            btnBuyNow.setClickable(true);
+                            btnOk.setClickable(true);
+                        }
+                );
+        ((BaseAppCompatActivity) getActivity()).addSubscription(s);
     }
 
     private void addToCart() {

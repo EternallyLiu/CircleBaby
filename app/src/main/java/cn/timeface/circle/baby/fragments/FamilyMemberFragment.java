@@ -2,13 +2,13 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,15 +18,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.adapters.FamilyMemberAdapter;
-import cn.timeface.circle.baby.adapters.FamilyMemberAdapter2;
 import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
-import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -47,14 +43,16 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
     TextView tvCount;
     @Bind(R.id.tv_time)
     TextView tvTime;
-    @Bind(R.id.content_recycler_view)
-    RecyclerView contentRecyclerView;
-    @Bind(R.id.content_recycler_view2)
-    RecyclerView contentRecyclerView2;
-    private FamilyMemberAdapter adapter;
+    @Bind(R.id.iv_cover_bg)
+    ImageView ivCoverBg;
+    @Bind(R.id.iv_creator)
+    ImageView ivCreator;
+    @Bind(R.id.ll_familymember)
+    LinearLayout llFamilymember;
+    @Bind(R.id.ll_familymember_none)
+    LinearLayout llFamilymemberNone;
     public FamilyMemberInfo creator;
     public List<String> relationNames = new ArrayList<>();
-    private FamilyMemberAdapter2 adapter2;
 
     public FamilyMemberFragment() {
     }
@@ -88,9 +86,6 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvTitle.setText(FastData.getBabyName() + "一家");
-        adapter = new FamilyMemberAdapter(getActivity(), new ArrayList<>());
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        contentRecyclerView.setAdapter(adapter);
 
         reqData();
 
@@ -100,9 +95,10 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
     }
 
     private void initFoot() {
-        adapter2 = new FamilyMemberAdapter2(getActivity(), relationNames);
-        contentRecyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
-        contentRecyclerView2.setAdapter(adapter2);
+        for(String s : relationNames){
+            View view = initView2(s);
+            llFamilymemberNone.addView(view);
+        }
     }
 
     private void reqData() {
@@ -124,15 +120,15 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
             }
             if (info.getUserInfo().getIsCreator() == 1) {
                 creator = info;
+            }else {
+                View view = initView(info);
+                llFamilymember.addView(view);
             }
         }
         GlideUtil.displayImage(creator.getUserInfo().getAvatar(), ivAvatar);
         tvRelation.setText(creator.getUserInfo().getRelationName());
         tvCount.setText("来过" + creator.getCount() + "次");
         tvTime.setText("最近：" + DateUtil.formatDate(creator.getTime()));
-        dataList.remove(creator);
-        adapter.setListData(dataList);
-        adapter.notifyDataSetChanged();
         initFoot();
     }
 
@@ -140,6 +136,44 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    private View initView(FamilyMemberInfo info) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.item_family_member, null);
+        ImageView ivAvatar = (ImageView) view.findViewById(R.id.iv_avatar);
+        TextView tvName = (TextView) view.findViewById(R.id.tv_name);
+        TextView tvCount = (TextView) view.findViewById(R.id.tv_count);
+        TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
+        GlideUtil.displayImage(info.getUserInfo().getAvatar(), ivAvatar);
+        tvName.setText(info.getUserInfo().getRelationName());
+        tvCount.setText("来过" + info.getCount() + "次");
+        tvTime.setText("最近" + DateUtil.formatDate("MM-dd HH:mm", info.getTime()));
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentBridgeActivity.openFamilyMemberInfoFragment(getActivity(), info.getUserInfo());
+            }
+        });
+        return view;
+    }
+
+    private View initView2(String s) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.item_family_member, null);
+        ImageView ivAvatar = (ImageView) view.findViewById(R.id.iv_avatar);
+        TextView tvName = (TextView) view.findViewById(R.id.tv_name);
+        TextView tvCount = (TextView) view.findViewById(R.id.tv_count);
+        TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
+        ivAvatar.setImageResource(R.drawable.familyavatar);
+        tvName.setText(s);
+        tvCount.setVisibility(View.GONE);
+        tvTime.setText("未加入");
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentBridgeActivity.openInviteFragment(getActivity(), s);
+            }
+        });
+        return view;
     }
 
     @Override
