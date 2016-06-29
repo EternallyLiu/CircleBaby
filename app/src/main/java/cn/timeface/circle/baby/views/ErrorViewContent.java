@@ -40,7 +40,7 @@ public class ErrorViewContent {
             case HttpStatusCodes.NO_MESSAGE:
                 return new ErrorViewContent(state, R.drawable.nodata, title, null, 0, 0);
             case HttpStatusCodes.LOADING:
-                return new ErrorViewContent(state, R.anim.anim_loading_200, title, null, 0, 0);
+                return new ErrorViewContent(state, R.drawable.anim_loading_200, title, null, 0, 0);
             case HttpStatusCodes.PARSE_ERROR:
                 return new ErrorViewContent(state, R.drawable.nodata, title, null, 0, 0);
             default:

@@ -42,6 +42,7 @@ public class LoadingDialog extends DialogFragment {
         View loadingView = inflater.inflate(R.layout.view_loading, container, false);
         imageView = (ImageView) loadingView.findViewById(R.id.pb_loading);
         tv_loading_msg = (TextView) loadingView.findViewById(R.id.tv_loading_msg);
+        ((Animatable)imageView.getDrawable()).start();
         if (!TextUtils.isEmpty(tvLoadingMsg)) tv_loading_msg.setText(tvLoadingMsg);
         return loadingView;
     }
@@ -49,7 +50,7 @@ public class LoadingDialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-      //  ((Animatable) imageView.getDrawable()).start();
+        ((Animatable) imageView.getDrawable()).start();
     }
 
     public void setLoadingMsg(CharSequence loading_msg) {

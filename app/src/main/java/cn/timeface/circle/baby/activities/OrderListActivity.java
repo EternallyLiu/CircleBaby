@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
+import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import rx.Subscription;
 import rx.functions.Action0;
 
@@ -50,6 +51,8 @@ public class OrderListActivity extends BaseAppCompatActivity {
         context.startActivity(new Intent(context, OrderListActivity.class));
     }
 
+    private LoadingDialog loadingDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +61,8 @@ public class OrderListActivity extends BaseAppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupView();
+        loadingDialog = new LoadingDialog();
+        loadingDialog.show(getSupportFragmentManager(), "dialog");
         reqOrderListData(START_PAGE);
 
     }
@@ -128,6 +133,7 @@ public class OrderListActivity extends BaseAppCompatActivity {
                     showNoDataView(orderList.size() == 0);
                     tfptrListViewHelper.setTFPTRMode(myOrderListResponse.isLastPage() ?
                             TFPTRRecyclerViewHelper.Mode.PULL_FORM_START : TFPTRRecyclerViewHelper.Mode.BOTH);
+                    loadingDialog.dismiss();
                 }, throwable -> {
                     Log.d(TAG, "reqOrderListData: " + throwable.getMessage());
                 });

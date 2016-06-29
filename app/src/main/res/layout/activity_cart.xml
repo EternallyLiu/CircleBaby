@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color8"
-    tools:context="cn.timeface.activities.CartActivity">
+    tools:context="cn.timeface.circle.baby.activities.CartActivity">
 
     <LinearLayout
         android:id="@+id/ll_cart_empty"

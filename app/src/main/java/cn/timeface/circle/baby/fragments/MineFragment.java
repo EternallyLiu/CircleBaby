@@ -18,6 +18,7 @@ import cn.timeface.circle.baby.activities.OrderListActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener {
@@ -45,7 +46,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Bind(R.id.ll_set)
     RelativeLayout llSet;
 
-
     public MineFragment() {
     }
 
@@ -71,7 +71,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_mine, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-
         initData();
 
         llSet.setOnClickListener(this);

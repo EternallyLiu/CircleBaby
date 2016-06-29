@@ -83,7 +83,7 @@ public class StateView extends LinearLayout {
         int retryButtonTextColor;
 
         try {
-            imageRes = a.getResourceId(R.styleable.StateView_ev_errorImage, R.anim.anim_loading_200);
+            imageRes = a.getResourceId(R.styleable.StateView_ev_errorImage, R.drawable.anim_loading_200);
             title = a.getString(R.styleable.StateView_ev_title);
             titleColor = a.getColor(R.styleable.StateView_ev_titleColor,
                     getResources().getColor(R.color.error_view_text));

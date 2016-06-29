@@ -21,6 +21,7 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.MineBookAdapter;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.views.TFStateView;
 
 public class MineBookFragment extends BaseFragment implements View.OnClickListener {
 
@@ -30,6 +31,8 @@ public class MineBookFragment extends BaseFragment implements View.OnClickListen
     RecyclerView contentRecyclerView;
     @Bind(R.id.iv_add)
     ImageView ivAdd;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     List<MineBookObj> bookList = new ArrayList<>();
 
     public MineBookFragment() {
@@ -49,7 +52,8 @@ public class MineBookFragment extends BaseFragment implements View.OnClickListen
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         ivAdd.setOnClickListener(this);
-        reqData();
+//        reqData();
+        tfStateView.loading();
         return view;
     }
 
