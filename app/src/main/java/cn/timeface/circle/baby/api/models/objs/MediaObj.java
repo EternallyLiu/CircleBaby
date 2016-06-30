@@ -1,6 +1,5 @@
 package cn.timeface.circle.baby.api.models.objs;
 
-import android.media.ExifInterface;
 import android.os.Parcel;
 import android.os.Parcelable;
 

@@ -420,4 +420,11 @@ public interface ApiService {
     Observable<ParamListResponse> queryParamList(@Query("bookType") int bookType,
                                                  @Query("pageNum") int pageNum);
 
+    /**
+     * 向相册中添加照片
+     */
+    @POST("babyCloudAlbums/addPicToCloudAlbum")
+    Observable<BaseResponse> addPicToCloudAlbum(@Query("cloudAlbumId") String cloudAlbumId,
+                                                     @Query("mediaList") String mediaList);
+
 }

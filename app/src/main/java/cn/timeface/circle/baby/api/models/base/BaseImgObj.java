@@ -41,6 +41,16 @@ public class BaseImgObj extends BaseObj implements Parcelable {
     protected String content;
     protected String date;
 
+    public String getObjectKey() {
+        return objectKey;
+    }
+
+    public void setObjectKey(String objectKey) {
+        this.objectKey = objectKey;
+    }
+
+    protected String objectKey;
+
     public long getDateMills() {
         return dateMills;
     }
@@ -199,6 +209,9 @@ public class BaseImgObj extends BaseObj implements Parcelable {
     }
 
 
+    public BaseImgObj() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -216,9 +229,8 @@ public class BaseImgObj extends BaseObj implements Parcelable {
         dest.writeString(this.md5);
         dest.writeString(this.content);
         dest.writeString(this.date);
-    }
-
-    public BaseImgObj() {
+        dest.writeString(this.objectKey);
+        dest.writeLong(this.dateMills);
     }
 
     protected BaseImgObj(Parcel in) {
@@ -232,9 +244,11 @@ public class BaseImgObj extends BaseObj implements Parcelable {
         this.md5 = in.readString();
         this.content = in.readString();
         this.date = in.readString();
+        this.objectKey = in.readString();
+        this.dateMills = in.readLong();
     }
 
-    public static final Parcelable.Creator<BaseImgObj> CREATOR = new Parcelable.Creator<BaseImgObj>() {
+    public static final Creator<BaseImgObj> CREATOR = new Creator<BaseImgObj>() {
         @Override
         public BaseImgObj createFromParcel(Parcel source) {
             return new BaseImgObj(source);

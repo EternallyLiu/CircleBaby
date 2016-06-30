@@ -34,18 +34,25 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumDetailAdapter;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.objs.CloudAlbumDetailObj;
+import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
+import rx.functions.Func2;
 
 public class CloudAlbumEditActivity extends BaseAppCompatActivity implements BottomMenuDialog.OnMenuClickListener {
 
 
+    private static final int REQ_SELECT_PHOTO = 202;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.recyclerView)
@@ -262,6 +269,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         switch (resId) {
             case R.id.rl_add_content:
                 //添加内容
+                SelectPhotoActivity.open4result(this, TypeConstants.PHOTO_COUNT_MAX, REQ_SELECT_PHOTO);
                 break;
             case R.id.rl_edit_state:
                 //编辑模式
@@ -292,5 +300,53 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                     ToastUtil.showToast(R.string.state_error_timeout);
                 });
         addSubscription(subscribe);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQ_SELECT_PHOTO) {
+                ArrayList<ImgObj> imgObjs = data.getParcelableArrayListExtra("result_select_image_list");
+                //1、上传选择的图片
+                //2、转化为MediaObj
+                //3、转化为JSON
+                //4、提交请求
+                uploadImgToCloudAlbum(imgObjs);
+            }
+        }
+    }
+
+    private void uploadImgToCloudAlbum(ArrayList<ImgObj> imgObjs) {
+        LoadingDialog loadingDialog = LoadingDialog.getInstance();
+        loadingDialog.setLoadingMsg("正在提交");
+        loadingDialog.show(getSupportFragmentManager(), "");
+        Subscription subscribe = Observable.from(imgObjs)
+                .flatMap(
+                        imgObj -> {
+                            return OSSManager.getOSSManager(this).uploadPicToBabys(imgObj.getLocalPath());
+                        }, new Func2<ImgObj, String, MediaObj>() {
+                            @Override
+                            public MediaObj call(ImgObj imgObj, String objectKey) {
+                                return new MediaObj(imgObj.getContent(), objectKey, imgObj.getWidth(), imgObj.getHeight(), imgObj.getDateMills());
+                            }
+                        })
+                .filter(mediaObj -> !TextUtils.isEmpty(mediaObj.getImgUrl()))
+                .toList()
+                .map(mediaObjs -> new Gson().toJson(mediaObjs))
+                .flatMap(s -> apiService.addPicToCloudAlbum(albumId, s))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnTerminate(loadingDialog::dismiss)
+                .subscribe(baseResponse -> {
+                    if (baseResponse.success()) {
+                        ToastUtil.showToast("添加成功");
+                    }
+
+                }, throwable -> {
+                    Log.d(TAG, "uploadImgToCloudAlbum: " + throwable.getMessage());
+                });
+        addSubscription(subscribe);
+
+
     }
 }
