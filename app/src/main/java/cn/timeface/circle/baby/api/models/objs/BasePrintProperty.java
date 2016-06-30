@@ -1,11 +1,14 @@
 package cn.timeface.circle.baby.api.models.objs;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import cn.timeface.circle.baby.api.models.base.BaseModule;
 import cn.timeface.circle.baby.api.models.base.BaseObj;
 
 /**
  * Created by zhsheng on 2016/6/21.
  */
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class BasePrintProperty extends BaseModule {
     private String printId; //印刷编号
     private String size; //尺寸

@@ -111,35 +111,36 @@
 
         <!--小米推送start-->
         <service
+            android:name="com.xiaomi.push.service.XMPushService"
             android:enabled="true"
-            android:process=":pushservice"
-            android:name="com.xiaomi.push.service.XMPushService"/>
+            android:process=":pushservice" />
         <service
+            android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
             android:enabled="true"
-            android:exported="true"
-            android:name="com.xiaomi.mipush.sdk.PushMessageHandler" />
-        <service android:enabled="true"
-            android:name="com.xiaomi.mipush.sdk.MessageHandleService" />
+            android:exported="true" />
+        <service
+            android:name="com.xiaomi.mipush.sdk.MessageHandleService"
+            android:enabled="true" />
         <!--注：此service必须在2.2.5版本以后（包括2.2.5版本）加入-->
         <receiver
-            android:exported="true"
-            android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver" >
+            android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
         <receiver
+            android:name="com.xiaomi.push.service.receivers.PingReceiver"
             android:exported="false"
-            android:process=":pushservice"
-            android:name="com.xiaomi.push.service.receivers.PingReceiver" >
+            android:process=":pushservice">
             <intent-filter>
                 <action android:name="com.xiaomi.push.PING_TIMER" />
             </intent-filter>
         </receiver>
         <receiver
-            android:exported="true"
-            android:name=".push.MiPushMessageReceive">
+            android:name=".push.MiPushMessageReceive"
+            android:exported="true">
             <!--这里com.xiaomi.mipushdemo.DemoMessageRreceiver改成app中定义的完整类名-->
             <intent-filter>
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
@@ -182,7 +183,6 @@
         <activity android:name=".activities.RelationshipActivity" />
         <activity android:name="com.wechat.photopicker.PickerPhotoActivity" />
         <activity android:name="com.wechat.photopicker.PickerVideoActivity" />
-        <activity android:name=".activities.SelectPublishActivity" />
         <activity android:name=".activities.PublishActivity" />
         <activity android:name=".activities.DiaryPublishActivity" />
         <activity android:name=".activities.CardPublishActivity" />
@@ -232,10 +232,35 @@
         <activity
             android:name=".activities.CartActivity"
             android:label="印刷车"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.base.BaseAppCompatActivity" />
+        </activity>
         <activity
             android:name=".activities.MineBookActivity"
             android:label="我的作品"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.base.BaseAppCompatActivity" />
+        </activity>
+        <activity
+            android:name=".activities.AddressAddActivity"
+            android:label="添加收货地址"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MyOrderConfirmActivity"
+            android:label="确认订单"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.SelectReceiverAddActivity"
+            android:label="选择收货地址"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.PaySuccessActivity"
+            android:label="支付成功"
             android:screenOrientation="portrait" />
     </application>
 

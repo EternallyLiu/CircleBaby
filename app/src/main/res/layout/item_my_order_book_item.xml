@@ -15,26 +15,30 @@
         android:textColor="@color/text_color9"
         android:textSize="@dimen/text_normal"
         tools:drawableLeft="@drawable/ic_flag_time_book"
-        tools:text="" />
+        tools:text=""/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginLeft="12dp"
-        android:background="@color/divider" />
+        android:background="@color/divider"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerViewBook"
+    <cn.timeface.circle.baby.views.NoScrollListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp" />
+        android:layout_marginRight="12dp"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@color/divider"
+        android:dividerHeight="1px"
+        android:listSelector="@android:color/transparent"/>
 
     <View
         android:id="@+id/divider_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/view_space_normal"
         android:background="@color/bg7"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
 </LinearLayout>

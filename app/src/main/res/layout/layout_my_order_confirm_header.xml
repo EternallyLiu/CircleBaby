@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg7"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/book_delivery_address_add_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/view_space_normal"
+        android:layout_marginTop="@dimen/view_space_normal"
+        android:background="@drawable/selector_click_able"
+        android:clickable="true"
+        android:onClick="clickBtn"
+        android:padding="12dp"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/text_add_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_delivery_address"
+            android:textColor="@color/text_color9"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_right_grey"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/book_delivery_address_info_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/view_space_normal"
+        android:layout_marginTop="@dimen/view_space_normal"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:onClick="clickBtn"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/book_recevier_label_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/receiver"
+            android:textColor="@color/text_color9"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/book_recevier_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_toRightOf="@+id/book_recevier_label_tv"
+            android:textColor="@color/text_color9"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/book_receiver_phone_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="24dp"
+            android:textColor="@color/text_color9"
+            android:textSize="14sp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/mine_data_go"/>
+
+        <TextView
+            android:id="@+id/book_receiver_address_label_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/book_recevier_label_tv"
+            android:layout_below="@+id/book_recevier_label_tv"
+            android:layout_marginTop="6dp"
+            android:text="@string/receiver_address"
+            android:textColor="@color/text_color2"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/book_receiver_address_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/book_receiver_phone_tv"
+            android:layout_alignTop="@+id/book_receiver_address_label_tv"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/book_receiver_address_label_tv"
+            android:textColor="@color/text_color2"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+</LinearLayout>

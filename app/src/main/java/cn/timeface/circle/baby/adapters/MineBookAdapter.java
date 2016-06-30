@@ -3,44 +3,31 @@ package cn.timeface.circle.baby.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.github.rayboot.widget.ratioview.RatioImageView;
-
+import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.ApiFactory;
-import cn.timeface.circle.baby.api.models.PrintCartItem;
 import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 /**
@@ -50,10 +37,16 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
+    private FragmentManager supportFragmentManager;
 
     public MineBookAdapter(Context mContext, List<MineBookObj> listData) {
         super(mContext, listData);
 
+    }
+
+    public MineBookAdapter(Context mContext, ArrayList<MineBookObj> listData, FragmentManager supportFragmentManager) {
+        super(mContext, listData);
+        this.supportFragmentManager = supportFragmentManager;
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
@@ -73,6 +66,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         MineBookObj obj = getItem(position);
         holder.onClickListener = onClickListener;
         holder.obj = obj;
+        holder.supportFragmentManager = supportFragmentManager;
         holder.context = mContext;
         GlideUtil.displayImage(obj.getCoverImage(), holder.ivBook);
         holder.tvTitle.setText(obj.getTitle());
@@ -108,6 +102,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         LinearLayout llMenu;
 
         Context context;
+        FragmentManager supportFragmentManager;
         View.OnClickListener onClickListener = null;
         MineBookObj obj;
         private EditText tvCount;
@@ -152,44 +147,17 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
                     break;
                 case R.id.tv_edit:
-                    PopupWindow pw = new PopupWindow(initView(obj), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    pw.setBackgroundDrawable(new BitmapDrawable());
-                    pw.setOutsideTouchable(true);
-                    pw.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+
                     break;
                 case R.id.tv_print:
-//                    AlertDialog dialog = new AlertDialog.Builder(context).setView(initView(obj)).create();
-//                    Window window = dialog.getWindow();
-//                    WindowManager m = window.getWindowManager();
-//                    Display d = m.getDefaultDisplay();
-//                    WindowManager.LayoutParams p = window.getAttributes();
-//                    p.width = d.getWidth();
-//                    window.setAttributes(p);
-//                    window.setGravity(Gravity.BOTTOM);
-//                    window.setWindowAnimations(R.style.bottom_dialog_animation);
-//                    dialog.show();
-                    PrintCartItem printCartItem = new PrintCartItem();
-                    printCartItem.setAuthorName(obj.getAuthor());
-                    printCartItem.setCoverImage(obj.getCoverImage());
-                    printCartItem.setTitle(obj.getTitle());
-                    printCartItem.setBookId(obj.getBookId());
-                    printCartItem.setBookType(obj.getType());
-                    printCartItem.setTotalPage(obj.getPageCount());
-                    printCartItem.setDate(DateUtil.formatDate("yyyy-MM-dd", obj.getCreateTime()));
-
-
-                    CartPrintPropertyDialog dialog = CartPrintPropertyDialog.getInstance(printCartItem,
-                            null,
-                            null,
-                            printCartItem.getBookId(),
-                            String.valueOf(printCartItem.getBookType()),
-                            CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
-                            printCartItem.getPrintCode(),
-                            printCartItem.getCoverImage(),
-                            TypeConstant.FROM_PHONE);
-//                    dialog.show(getSupportFragmentManager(), "dialog");
-
-
+                    BaseAppCompatActivity.apiService.printStatus(obj.getType(), obj.getPageCount())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(printStatusResponse -> {
+                                obj.setPrintCode(printStatusResponse.getPrintCode());
+                                queryParamList();
+                            }, error -> {
+                                Log.e("MineBookAdapter", "printStatus:");
+                            });
                     break;
                 case R.id.tv_share:
 
@@ -197,141 +165,31 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                 case R.id.tv_delete:
 
                     break;
-
-
-                case R.id.iv_close:
-                    break;
-                case R.id.book_print_number_minus_ib:
-                    Integer count = Integer.valueOf(tvCount.getText().toString());
-                    if (count > 1) {
-                        count--;
-                        tvCount.setText(count + "");
-                        bookObj.setNum(count);
-                    }
-                    break;
-                case R.id.book_print_number_plus_ib:
-                    Integer c = Integer.valueOf(tvCount.getText().toString());
-                    if (c < 99) {
-                        c++;
-                        tvCount.setText(c + "");
-                        bookObj.setNum(c);
-                    }
-                    break;
-                case R.id.tv_size16:
-                    tvSize16.setSelected(true);
-                    tvSize32.setSelected(false);
-                    bookObj.setSize("16开");
-                    break;
-                case R.id.tv_size32:
-                    tvSize16.setSelected(false);
-                    tvSize32.setSelected(true);
-                    bookObj.setSize("32开");
-                    break;
-                case R.id.tv_color:
-                    tvColor.setSelected(true);
-                    tvBw.setSelected(false);
-                    bookObj.setColor("彩色");
-                    break;
-                case R.id.tv_bw:
-                    tvColor.setSelected(false);
-                    tvBw.setSelected(true);
-                    bookObj.setColor("黑白");
-                    break;
-                case R.id.tv_paper1:
-                    tvPaper1.setSelected(true);
-                    tvPaper2.setSelected(false);
-                    bookObj.setPaper("特种纸");
-                    break;
-                case R.id.tv_paper2:
-                    tvPaper1.setSelected(false);
-                    tvPaper2.setSelected(true);
-                    bookObj.setPaper("铜版纸");
-                    break;
-                case R.id.tv_bind1:
-                    tvBind1.setSelected(true);
-                    tvBind2.setSelected(false);
-                    tvBind3.setSelected(false);
-                    bookObj.setPack("平装");
-                    break;
-                case R.id.tv_bind2:
-                    tvBind1.setSelected(false);
-                    tvBind2.setSelected(true);
-                    tvBind3.setSelected(false);
-                    bookObj.setPack("法式精装");
-                    break;
-                case R.id.tv_bind3:
-                    tvBind1.setSelected(false);
-                    tvBind2.setSelected(false);
-                    tvBind3.setSelected(true);
-                    bookObj.setPack("豪华精装");
-                    break;
-                case R.id.btn_add_to_cart:
-
-                    break;
-                case R.id.btn_buy_now:
-                    FragmentBridgeActivity.openEnsureOrderFragment(context, bookObj, obj);
-                    break;
-
-
             }
         }
 
-        public View initView(MineBookObj obj) {
-            View view = View.inflate(context, R.layout.view_apply_print, null);
-            RatioImageView ivBook = (RatioImageView) view.findViewById(R.id.iv_book_cover);
-            TextView tvPrice = (TextView) view.findViewById(R.id.tv_price);
-            ImageButton ivDel = (ImageButton) view.findViewById(R.id.book_print_number_minus_ib);
-            tvCount = (EditText) view.findViewById(R.id.et_count);
-            ImageButton ivAdd = (ImageButton) view.findViewById(R.id.book_print_number_plus_ib);
-            ImageView ivClose = (ImageView) view.findViewById(R.id.iv_close);
-            tvSize16 = (TextView) view.findViewById(R.id.tv_size16);
-            tvSize32 = (TextView) view.findViewById(R.id.tv_size32);
-            tvColor = (TextView) view.findViewById(R.id.tv_color);
-            tvBw = (TextView) view.findViewById(R.id.tv_bw);
-            tvPaper1 = (TextView) view.findViewById(R.id.tv_paper1);
-            tvPaper2 = (TextView) view.findViewById(R.id.tv_paper2);
-            tvBind1 = (TextView) view.findViewById(R.id.tv_bind1);
-            tvBind2 = (TextView) view.findViewById(R.id.tv_bind2);
-            tvBind3 = (TextView) view.findViewById(R.id.tv_bind3);
-            Button tvIncar = (Button) view.findViewById(R.id.btn_add_to_cart);
-            Button tvBuy = (Button) view.findViewById(R.id.btn_buy_now);
-            TextView tvNotify = (TextView) view.findViewById(R.id.tv_pack_label);
+        private void queryParamList() {
+            BaseAppCompatActivity.apiService.queryParamList(obj.getType(), obj.getPageCount())
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(paramListResponse -> {
+                        CartPrintPropertyDialog dialog = CartPrintPropertyDialog.getInstance(null,
+                                null,
+                                paramListResponse.getDataList(),
+                                obj.getBookId(),
+                                String.valueOf(obj.getType()),
+                                CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
+                                obj.getPrintCode(),
+                                obj.getCoverImage(),
+                                TypeConstant.FROM_PHONE,
+                                obj.getPageCount(),
+                                obj.getTitle(),
+                                String.valueOf(obj.getCreateTime()));
+                        dialog.show(supportFragmentManager, "dialog");
 
-            tvCount.clearFocus();
-            GlideUtil.displayImage(obj.getCoverImage(), ivBook);
-            tvSize16.setSelected(true);
-            tvColor.setSelected(true);
-            tvPaper1.setSelected(true);
-            tvBind1.setSelected(true);
-            if (obj.getPageCount() < 90) {
-                tvNotify.setVisibility(View.VISIBLE);
-                tvBind2.setEnabled(false);
-                tvBind3.setEnabled(false);
-            }
-            bookObj = new BookObj();
-            bookObj.setNum(1);
-            bookObj.setSize("16开");
-            bookObj.setColor("彩色");
-            bookObj.setPaper("特种纸");
-            bookObj.setPack("平装");
-
-
-            ivClose.setOnClickListener(this);
-            ivDel.setOnClickListener(this);
-            ivAdd.setOnClickListener(this);
-            tvSize16.setOnClickListener(this);
-            tvSize32.setOnClickListener(this);
-            tvColor.setOnClickListener(this);
-            tvBw.setOnClickListener(this);
-            tvPaper1.setOnClickListener(this);
-            tvPaper2.setOnClickListener(this);
-            tvBind1.setOnClickListener(this);
-            tvBind2.setOnClickListener(this);
-            tvBind3.setOnClickListener(this);
-            tvIncar.setOnClickListener(this);
-            tvBuy.setOnClickListener(this);
-
-            return view;
+                    }, error -> {
+                        Log.e("MineBookAdapter", "queryParamList:");
+                    });
         }
+
     }
 }

@@ -17,6 +17,7 @@ public class MineBookObj extends BaseObj implements Parcelable {
     int type;               //当前作品的类型
     String bookId;          //作品Id
     String author;          //作者
+    int printCode;          //状态code码
 
     public MineBookObj(String coverImage, long createTime, int pageCount, String title, int type , String bookId , String author) {
         this.coverImage = coverImage;
@@ -26,6 +27,14 @@ public class MineBookObj extends BaseObj implements Parcelable {
         this.type = type;
         this.bookId = bookId;
         this.author = author;
+    }
+
+    public int getPrintCode() {
+        return printCode;
+    }
+
+    public void setPrintCode(int printCode) {
+        this.printCode = printCode;
     }
 
     public String getAuthor() {

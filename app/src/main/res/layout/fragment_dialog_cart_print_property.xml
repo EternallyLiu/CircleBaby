@@ -285,13 +285,13 @@
                     </LinearLayout>
 
 
-                    <cn.timeface.views.NoScrollGridView
+                    <cn.timeface.circle.baby.views.NoScrollGridView
                         android:id="@+id/gv_pack"
                         style="@style/PrintPropertyGrid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp">
-                    </cn.timeface.views.NoScrollGridView>
+                    </cn.timeface.circle.baby.views.NoScrollGridView>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -338,7 +338,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@drawable/selector_blue_btn_bg"
+            android:background="@drawable/selector_btn_login"
             android:text="确定"
             android:textAppearance="?android:attr/textAppearance"
             android:textColor="@color/white"

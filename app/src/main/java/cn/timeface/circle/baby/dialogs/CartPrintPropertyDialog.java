@@ -32,6 +32,7 @@ import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,6 +133,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     private String bookCover;
     private boolean isQuery = false;
     private int original = 0;
+    private int pageNum;
+    private String bookName;
+    private String createTime;
 
     public static CartPrintPropertyDialog getInstance(PrintCartItem printCartItem,
                                                       PrintPropertyPriceObj obj,
@@ -141,7 +145,10 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                                       int requestCode,
                                                       int printCode,
                                                       String bookCover,
-                                                      int original) {
+                                                      int original,
+                                                      int pageNum,
+                                                      String bookName,
+                                                      String createTime) {
         CartPrintPropertyDialog dialog = new CartPrintPropertyDialog();
         Bundle bundle = new Bundle();
         bundle.putSerializable("cart_item", printCartItem);
@@ -153,6 +160,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         bundle.putInt("print_code", printCode);
         bundle.putString("book_cover", bookCover);
         bundle.putInt("original", original);
+        bundle.putInt("pageNum", pageNum);
+        bundle.putString("bookName", bookName);
+        bundle.putString("createTime", createTime);
         dialog.setArguments(bundle);
         return dialog;
     }
@@ -185,7 +195,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         printCode = getArguments().getInt("print_code", TypeConstant.PRINT_CODE_NORMAL);
         bookCover = getArguments().getString("book_cover");
         original = getArguments().getInt("original", 0);
-
+        pageNum = getArguments().getInt("pageNum", 0);
+        bookName = getArguments().getString("bookName");
+        createTime = getArguments().getString("createTime");
         if (cartItem == null) {
             paramList = (List<PrintParamResponse>) getArguments().getSerializable("param_response");
         } else {
@@ -565,6 +577,12 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         baseObj.setBookType(Integer.parseInt(bookType));
         baseObj.setPrintId(printId);
         baseObj.setNum(Integer.parseInt(mBookPrintNumberEt.getText().toString()));
+        baseObj.setPageNum(pageNum);
+        baseObj.setAddressId(0);
+        baseObj.setBookCover(bookCover);
+        baseObj.setBookName(URLEncoder.encode(bookName));
+        baseObj.setCreateTime(Long.valueOf(createTime));
+        baseObj.setExpressId(1);
         baseObjs.add(baseObj);
 
         tfProgressDialog.show();
@@ -603,9 +621,19 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         if (cartItem == null) {
             params.put("bookId", bookId);
             params.put("bookType", bookType);
+            params.put("pageNum",String.valueOf(pageNum));
+            params.put("bookCover",bookCover);
+            params.put("bookName",bookName);
+            params.put("createTime",createTime);
+
+
         } else {
             params.put("bookId", cartItem.getBookId());
             params.put("bookType", String.valueOf(cartItem.getBookType()));
+            params.put("pageNum",String.valueOf(cartItem.getTotalPage()));
+            params.put("bookCover",cartItem.getCoverImage());
+            params.put("bookName",cartItem.getTitle());
+            params.put("createTime",cartItem.getDate());
         }
         printProperty.setNum(Integer.parseInt(mBookPrintNumberEt.getText().toString()));
         if (propertyObj != null) {

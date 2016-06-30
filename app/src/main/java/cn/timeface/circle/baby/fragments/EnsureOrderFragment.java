@@ -1,8 +1,6 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -16,8 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -26,7 +22,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.api.models.objs.AddressObj;
+import cn.timeface.circle.baby.api.models.AddressItem;
 import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.api.models.responses.LessResponse;
@@ -40,8 +36,6 @@ import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.greenrobot.event.Subscribe;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class EnsureOrderFragment extends BaseFragment implements View.OnClickListener, IEventBus {
 
@@ -105,7 +99,7 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
     private BookObj bookObj;
     private MineBookObj mineBookObj;
     private int expressId;
-    private AddressObj addressobj;
+    private AddressItem addressobj;
     private LessResponse lessResponse;
 
     public EnsureOrderFragment() {

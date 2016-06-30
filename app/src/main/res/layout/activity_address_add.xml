@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg18">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingTop="@dimen/toolbar_padding_top"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:theme="@style/ToolbarColor" />
+
+    <LinearLayout
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/receiver_name_et"
+            style="@style/AddressEdit"
+            android:hint="@string/receiver_name"
+            android:singleLine="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#f0f0f0"/>
+
+        <EditText
+            android:id="@+id/receiver_phone_et"
+            style="@style/AddressEdit"
+            android:hint="@string/phone_no"
+            android:inputType="numberSigned"
+            android:singleLine="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#f0f0f0"/>
+
+        <RelativeLayout
+            android:id="@+id/add_region_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="clickBtn">
+
+            <TextView
+                android:id="@+id/add_region_tv"
+                style="@style/AddressEdit"
+                android:layout_width="match_parent"
+                android:background="@drawable/selector_click_able"
+                android:hint="地区"
+                android:singleLine="true"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/arrow_right_grey"/>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#f0f0f0"/>
+
+        <EditText
+            android:id="@+id/address_detail_et"
+            style="@style/AddressEdit"
+            android:hint="@string/address_detail"
+            android:minLines="2"
+            android:singleLine="true"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#f0f0f0"/>
+    </LinearLayout>
+
+    <cn.timeface.circle.baby.views.TFStateView
+        android:id="@+id/stateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+</RelativeLayout>
