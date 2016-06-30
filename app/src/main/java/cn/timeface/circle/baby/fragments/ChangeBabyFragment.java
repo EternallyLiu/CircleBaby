@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class ChangeBabyFragment extends BaseFragment implements View.OnClickListener {
@@ -121,6 +122,7 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {
+                                Remember.putBoolean("showtimelinehead", true);
                                 getActivity().finish();
                             }
                         }, throwable -> {

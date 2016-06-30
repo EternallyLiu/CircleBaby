@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.DistrictModel;
 import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
+import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
@@ -168,52 +169,12 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-//        Intent intent = new Intent(this, SelectPublishActivity.class);
-//        startActivity(intent);
-
-
         switch (v.getId()){
             case R.id.iv_publish:
-                popupWindow = new PopupWindow(initView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                popupWindow.setBackgroundDrawable(new BitmapDrawable());
-                popupWindow.setOutsideTouchable(true);
-                popupWindow.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-                break;
-            case R.id.iv_publish_select:
-                popupWindow.dismiss();
-                break;
-            case R.id.tv_photo:
-                popupWindow.dismiss();
-                PublishActivity.open(this , PublishActivity.PHOTO);
-                break;
-            case R.id.tv_video:
-                popupWindow.dismiss();
-                PublishActivity.open(this , PublishActivity.VIDEO);
-                break;
-            case R.id.tv_diary:
-                popupWindow.dismiss();
-                PublishActivity.open(this , PublishActivity.DIALY);
-                break;
-            case R.id.tv_card:
-                popupWindow.dismiss();
-                PublishActivity.open(this , PublishActivity.CARD);
+                new PublishDialog(this).show();
                 break;
 
         }
-    }
-    public View initView(){
-        View view = View.inflate(this, R.layout.view_publish, null);
-        ImageView ivPublishSelect = (ImageView) view.findViewById(R.id.iv_publish_select);
-        TextView tvPhoto = (TextView) view.findViewById(R.id.tv_photo);
-        TextView tvVideo = (TextView) view.findViewById(R.id.tv_video);
-        TextView tvDiary = (TextView) view.findViewById(R.id.tv_diary);
-        TextView tvCard = (TextView) view.findViewById(R.id.tv_card);
-        ivPublishSelect.setOnClickListener(this);
-        tvPhoto.setOnClickListener(this);
-        tvVideo.setOnClickListener(this);
-        tvDiary.setOnClickListener(this);
-        tvCard.setOnClickListener(this);
-        return view;
     }
 
     /**

@@ -21,6 +21,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.AddressListAdapter;
 import cn.timeface.circle.baby.adapters.MineBookAdapter;
+import cn.timeface.circle.baby.api.models.AddressItem;
 import cn.timeface.circle.baby.api.models.objs.AddressObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -77,7 +78,7 @@ public class SelectAddressFragment extends BaseFragment implements View.OnClickL
                 });
     }
 
-    private void setDataList(List<AddressObj> bookList) {
+    private void setDataList(List<AddressItem> bookList) {
 //        List<AddressObj> addressObjs = mokeData(bookList);
         AddressListAdapter adapter = new AddressListAdapter(getActivity(), bookList);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

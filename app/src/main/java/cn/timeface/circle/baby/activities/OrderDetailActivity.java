@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -19,6 +20,11 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.MyOrderBookAdapter;
 import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
+import cn.timeface.circle.baby.payment.OrderInfoObj;
+import cn.timeface.circle.baby.payment.PrepareOrderException;
+import cn.timeface.circle.baby.payment.alipay.AlipayPayment;
+import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.OrderDetailFootView;
@@ -37,6 +43,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
     private String orderId;
     private MyOrderBookAdapter orderBookAdapter;
     private OrderDetailFootView detailFootView;
+    private MyOrderConfirmListResponse listResponse;
 
     public static void open(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
@@ -75,6 +82,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
         Subscription subscribe = apiService.findOrderDetail(orderId)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(listResponse -> {
+                    this.listResponse = listResponse;
                     List<MyOrderBookItem> bookList = listResponse.getBookList();
                     listData.addAll(bookList);
                     detailHeaderView.setupViewData(listResponse);
@@ -90,12 +98,31 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
         switch (view.getId()) {
             case R.id.order_action_btn:
                 //去支付
-
+                doPay();
                 break;
             case R.id.order_action_cancel_btn:
                 //取消订单
 
                 break;
         }
+    }
+
+    private void doPay() {
+        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), listResponse.getOrderPrice(), "2").pay();
+    }
+
+    /**
+     * 获取支付时显示的商品名称
+     */
+    private String getPayTitle() {
+        List<MyOrderBookItem> dataList = listResponse.getBookList();
+        if (dataList != null && dataList.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (MyOrderBookItem item : dataList) {
+                sb.append(item.getBookName() + ",");
+            }
+            return sb.length() > 1 ? sb.substring(0, sb.lastIndexOf(",")) : "";//去掉最后一个逗号
+        }
+        return "";
     }
 }

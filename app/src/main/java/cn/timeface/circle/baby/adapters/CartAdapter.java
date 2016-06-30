@@ -79,26 +79,26 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
         }
 
         Drawable drawable = null;
-        switch (item.getBookType()) {
-            case TypeConstant.BOOK_TYPE_TIME:
+//        switch (item.getBookType()) {
+//            case TypeConstant.BOOK_TYPE_TIME:
+//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_time_book);
+//                break;
+//            case TypeConstant.BOOK_TYPE_WECHAT:
+//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_wechat_time_book);
+//                break;
+//            case TypeConstant.BOOK_TYPE_QQ:
+//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_qq_time_book);
+//                break;
+//            case TypeConstant.BOOK_TYPE_BLOG:
+//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_blog_time_book);
+//                break;
+//            case TypeConstant.BOOK_TYPE_DESK_CALENDAR:
+//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_calendar_time_book);
+//                break;
+//            default:
                 drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_time_book);
-                break;
-            case TypeConstant.BOOK_TYPE_WECHAT:
-                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_wechat_time_book);
-                break;
-            case TypeConstant.BOOK_TYPE_QQ:
-                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_qq_time_book);
-                break;
-            case TypeConstant.BOOK_TYPE_BLOG:
-                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_blog_time_book);
-                break;
-            case TypeConstant.BOOK_TYPE_DESK_CALENDAR:
-                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_calendar_time_book);
-                break;
-            default:
-                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_time_book);
-                break;
-        }
+//                break;
+//        }
 
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         holder.mTvBookTitle.setCompoundDrawables(drawable, null, null, null);

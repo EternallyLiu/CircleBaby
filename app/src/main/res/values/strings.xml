@@ -18,6 +18,9 @@
     <string name="tag_ex">传递扩展信息</string>
     <string name="tip_exit">再次点击退出应用！</string>
     <string name="sdk_login_error">登录发生了错误</string>
+    <string name="read_service"><![CDATA[<font color="#7f7f7d">已阅读并同意</font><font color="#0090e8">服务条款</font>]]></string>
+    <string name="please_read_service">请阅读并同意服务条款</string>
+    <string name="terms_of_service">服务条款</string>
 
     <!-- icon fonts -->
     <string name="icon_expand">&#xe62d;</string>
@@ -253,4 +256,403 @@
     <string name="order_action_cancel_begin">取消订单中...</string>
 
     <string name="book_null">还没有作品？快去制作吧</string>
+
+    <string name="agree">同意</string>
+    <string name="service_agreement">服务协议</string>
+    <string name="read_and_accept_terms">请阅读并同意服务条款</string>
+    <string name="phone_no">手机号码</string>
+    <string name="err_user_phoneNo_format">请输入正确的手机号</string>
+    <string name="select_book_size">选择开本(书本尺寸)</string>
+    <string name="book_size_16k">正16开</string>
+    <string name="book_size_detail_16k">260mm*185mm</string>
+    <string name="select_dispatch_way">选择配送方式</string>
+    <string name="dispatch_common_way">普通快递:</string>
+    <string name="dispatch_sf_way">顺丰快递:</string>
+    <string name="use_pv_code">使用优惠码</string>
+    <string name="use_point">使用积分</string>
+    <string name="use_coupons">使用印书券</string>
+    <string name="use_coupon_codes">使用印书码</string>
+    <string name="use_point_col">使用积分:</string>
+    <string name="submit_order">提交订单</string>
+    <string name="my_points_use_policy">(我的积分: %1$.0f, 本次最多可用%2$.0f积分)</string>
+    <string name="points_exchanged">抵用¥%.2f</string>
+    <string name="full_site_coupon">-¥%.2f</string>
+    <string name="pv_code_rule">使用规则：\n\n1. 在申请印刷时，输入商家提供的优惠码，即可获得相应的现金抵扣。\n2. 单笔订单只能使用一个商家优惠码。\n3. 参与商家现场印刷活动的用户，打印出来的实体书中会有商家广告。\n4. 商家优惠码和相关广告事宜，如有疑问，请与商家联系。</string>
+    <string name="select_your_interest_field">选择您感兴趣的领域</string>
+    <string name="begin_time_travel">开启时光之旅</string>
+    <string name="recommend_attention_note">我们会根据所选的兴趣为你推荐精选的用户和内容</string>
+    <string name="apply_sale_status_up_begin">申请上架中...</string>
+    <string name="apply_sale_status_down">申请下架</string>
+    <string name="apply_sale_status_down_begin">申请下架中...</string>
+    <string name="review_begin">审核中</string>
+    <string name="please_after_complete_summary_apply">请完善简介后再申请</string>
+    <string name="please_after_select_category_apply">请选择分类后再申请</string>
+    <string name="pay_off_way_potins">积分支付</string>
+    <string name="pay_off_way_wexin">微信支付</string>
+    <string name="pay_off_way_zhifub">支付宝</string>
+    <string name="pay_result_confirm_begin">支付结果确认中</string>
+    <string name="publish_time_success">时光%s发布成功</string>
+    <string name="publish_time_failed">时光%s发布失败</string>
+
+    <string name="topic_detail">故事详情</string>
+    <string name="account_manage">账号管理</string>
+    <string name="itv_account_manage">ITV账号管理</string>
+    <string name="apply_grounding">申请上架</string>
+    <string name="todetail">查看详情</string>
+    <string name="apply_print">申请印刷</string>
+    <string name="modify_cover">修改封面</string>
+    <string name="modify_summary">修改简介</string>
+    <string name="modify_desc">修改内容</string>
+    <string name="modify_right">修改其他</string>
+    <string name="modify_other">修改其他</string>
+    <string name="item_delete">删除</string>
+    <string name="book_my_nodata_1">您还没有自己的时光书哦</string>
+    <string name="book_my_nodata_2">快来创建一本吧</string>
+    <string name="book_other_nodata">他(她)还没有时光书，看看别的吧!</string>
+    <string name="cache_and_store">下载并收藏</string>
+    <string name="cache_persent">缓存%s</string>
+
+    <string name="head_icon_begin_save">头像上传中&#8230;</string>
+    <string name="head_icon_success_save">头像上传成功</string>
+    <string name="begin_save">保存中&#8230;</string>
+    <string name="time_list">时光列表</string>
+
+    <string name="send_word">寄语</string>
+    <string name="record_music">录音</string>
+    <string name="record">录制</string>
+    <string name="record_voice">音频</string>
+    <string name="record_video">视频</string>
+    <string name="selected_record_type">选择录制类别</string>
+    <string name="record_choice">您录制的视频or音频将显示在目录前一页</string>
+
+    <!-- Filter names -->
+    <string name="filter_original">Original</string>
+    <string name="filter_instafix">Instafix</string>
+    <string name="filter_ansel">Ansel</string>
+    <string name="filter_testino">Testino</string>
+    <string name="filter_xpro">XPro</string>
+    <string name="filter_bw">Black &amp; White</string>
+    <string name="filter_sepia">Sepia</string>
+    <string name="filter_cyano">Cyano</string>
+    <string name="filter_retro">Retro</string>
+    <string name="filter_georgia">Georgia</string>
+    <string name="filter_sahara">Sahara</string>
+    <string name="filter_hdr">HDR</string>
+
+    <!-- Edit actions -->
+    <string name="edit_action_flip">Flip</string>
+    <string name="edit_action_rotate_90_right">Rotate 90° Right</string>
+    <string name="edit_action_rotate_90_left">Rotate 90° Left</string>
+    <string name="edit_action_rotate_180">Rotate 180°</string>
+
+    <string name="report">举报</string>
+    <string name="report_send">发送</string>
+    <string name="report_hint">请输入举报内容</string>
+    <string name="upload_publishing">正在提交&#8230;</string>
+
+    <string name="cache_no">未缓存</string>
+    <string name="cache_already">已下载</string>
+    <string name="no_collect">暂无收藏</string>
+    <string name="add_account">添加账号</string>
+    <string name="please_input_old_password">请填写原密码</string>
+    <string name="please_input_new_password">新密码</string>
+    <string name="please_confirm_new_password">确认新密码</string>
+    <string name="confirm_modify">确认修改</string>
+
+    <string name="confirm_title">提示</string>
+    <string name="processing">加载中</string>
+
+    <string name="elv_undo">撤销删除</string>
+    <string name="elv_undo_all">撤销所有</string>
+    <string name="elv_item_deleted">删除</string>
+    <string name="elv_n_items_deleted">删除 %1$s 项</string>
+
+    <string name="event_join">我要参加</string>
+    <string name="event_finished">已结束</string>
+
+
+    <string name="ORIGINAL">ORIGINAL</string>
+    <string name="CONTRAST">CONTRAST</string>
+    <string name="GRAYSCALE">GRAYSCALE</string>
+    <string name="SHARPEN">SHARPEN</string>
+    <string name="SEPIA">SEPIA</string>
+    <string name="SOBEL_EDGE_DETECTION">SOBEL_EDGE_DETECTION</string>
+    <string name="THREE_X_THREE_CONVOLUTION">THREE_X_THREE_CONVOLUTION</string>
+    <string name="FILTER_GROUP">FILTER_GROUP</string>
+    <string name="EMBOSS">EMBOSS</string>
+    <string name="POSTERIZE">POSTERIZE</string>
+    <string name="GAMMA">GAMMA</string>
+    <string name="BRIGHTNESS">BRIGHTNESS</string>
+    <string name="INVERT">INVERT</string>
+    <string name="HUE">HUE</string>
+    <string name="PIXELATION">PIXELATION</string>
+    <string name="SATURATION">SATURATION</string>
+    <string name="EXPOSURE">EXPOSURE</string>
+    <string name="HIGHLIGHT_SHADOW">HIGHLIGHT_SHADOW</string>
+    <string name="MONOCHROME">MONOCHROME</string>
+    <string name="OPACITY">OPACITY</string>
+    <string name="RGB">RGB</string>
+    <string name="WHITE_BALANCE">WHITE_BALANCE</string>
+    <string name="VIGNETTE">VIGNETTE</string>
+    <string name="BLEND_COLOR_BURN">BLEND_COLOR_BURN</string>
+    <string name="BLEND_COLOR_DODGE">BLEND_COLOR_DODGE</string>
+    <string name="BLEND_DARKEN">BLEND_DARKEN</string>
+    <string name="BLEND_DIFFERENCE">BLEND_DIFFERENCE</string>
+    <string name="BLEND_DISSOLVE">BLEND_DISSOLVE</string>
+    <string name="BLEND_EXCLUSION">BLEND_EXCLUSION</string>
+    <string name="BLEND_SOURCE_OVER">BLEND_SOURCE_OVER</string>
+    <string name="BLEND_HARD_LIGHT">BLEND_HARD_LIGHT</string>
+    <string name="BLEND_LIGHTEN">BLEND_LIGHTEN</string>
+    <string name="BLEND_ADD">BLEND_ADD</string>
+    <string name="BLEND_DIVIDE">BLEND_DIVIDE</string>
+    <string name="BLEND_MULTIPLY">BLEND_MULTIPLY</string>
+    <string name="BLEND_OVERLAY">BLEND_OVERLAY</string>
+    <string name="BLEND_SCREEN">BLEND_SCREEN</string>
+    <string name="BLEND_ALPHA">BLEND_ALPHA</string>
+    <string name="BLEND_COLOR">BLEND_COLOR</string>
+    <string name="BLEND_HUE">BLEND_HUE</string>
+    <string name="BLEND_SATURATION">BLEND_SATURATION</string>
+    <string name="BLEND_LUMINOSITY">BLEND_LUMINOSITY</string>
+    <string name="BLEND_LINEAR_BURN">BLEND_LINEAR_BURN</string>
+    <string name="BLEND_SOFT_LIGHT">BLEND_SOFT_LIGHT</string>
+    <string name="BLEND_SUBTRACT">BLEND_SUBTRACT</string>
+    <string name="BLEND_CHROMA_KEY">BLEND_CHROMA_KEY</string>
+    <string name="BLEND_NORMAL">BLEND_NORMAL</string>
+    <string name="LOOKUP_AMATORKA">LOOKUP_AMATORKA</string>
+    <string name="GAUSSIAN_BLUR">GAUSSIAN_BLUR</string>
+    <string name="CROSSHATCH">CROSSHATCH</string>
+    <string name="BOX_BLUR">BOX_BLUR</string>
+    <string name="CGA_COLORSPACE">CGA_COLORSPACE</string>
+    <string name="DILATION">DILATION</string>
+    <string name="KUWAHARA">KUWAHARA</string>
+    <string name="RGB_DILATION">RGB_DILATION</string>
+    <string name="SKETCH">SKETCH</string>
+    <string name="TOON">TOON</string>
+    <string name="SMOOTH_TOON">SMOOTH_TOON</string>
+    <string name="BULGE_DISTORTION">BULGE_DISTORTION</string>
+    <string name="GLASS_SPHERE">GLASS_SPHERE</string>
+    <string name="HAZE">HAZE</string>
+    <string name="LAPLACIAN">LAPLACIAN</string>
+    <string name="NON_MAXIMUM_SUPPRESSION">NON_MAXIMUM_SUPPRESSION</string>
+    <string name="SPHERE_REFRACTION">SPHERE_REFRACTION</string>
+    <string name="SWIRL">SWIRL</string>
+    <string name="WEAK_PIXEL_INCLUSION">WEAK_PIXEL_INCLUSION</string>
+    <string name="FALSE_COLOR">FALSE_COLOR</string>
+    <string name="COLOR_BALANCE">COLOR_BALANCE</string>
+    <string name="LEVELS_FILTER_MIN">LEVELS_FILTER_MIN</string>
+    <string name="detecting_faces">人脸识别...</string>
+
+    <!-- transition names -->
+    <string name="avater_item">avater_item</string>
+    <string name="content_img_item">content_img_item</string>
+
+    <string name="menu_item_send">发送</string>
+    <string name="type">类型</string>
+    <string name="location">位置</string>
+
+    <string name="select_all">全选</string>
+    <string name="skip">跳过</string>
+    <string name="photo_caption">图注</string>
+    <string name="album_all">所有照片</string>
+    <string name="tf_loading_desc">不是我太慢,是时间太快了...</string>
+    <string name="title_activity_scan">ScanActivity</string>
+
+    <string name="title_activity_cart">印刷车</string>
+    <string name="cart_empty">印刷车空空的，快去挑选印刷品吧</string>
+    <string name="cart_print_at_once">赶紧去印刷吧</string>
+    <string name="cart_print_go">去挑选</string>
+    <string name="title_activity_text_detail">TextDetailActivity</string>
+
+    <string name="title_activity_scan_camera">ScanCameraActivity</string>
+
+    <string name="book_cover_title_hint">添加书名</string>
+    <string name="book_cover_change_color">更换底色</string>
+    <string name="book_cover_title_author">填写书名作者</string>
+
+
+    <string name="no_this_book">此书信息不存在</string>
+    <string name="not_enough_page">时光书页数未满48页，无法申请上架哦</string>
+    <string name="not_enough_page_choice">时光书页数未满48页，无法申请上架哦，快去添加内容吧</string>
+    <string name="add_content">添加内容</string>
+    <string name="edit_content">编辑内容</string>
+    <string name="update_data">更新数据</string>
+
+    <string name="wechat_book_add_friend_tip_1"><![CDATA[微信添加<font color = "#069bf2">“%s”</font>为好友即可绑定成功]]></string>
+    <string name="wechat_book_add_friend_step_1">1、打开微信添加朋友页面</string>
+    <string name="wechat_book_add_friend_step_2">2、长按粘贴小编微信号（默认已复制）</string>
+    <string name="wechat_book_add_friend_had_attention">已添加好友，点击“我已关注”即可绑定成功</string>
+    <string name="wechat_book_update_data_tip_1"><![CDATA[<font color="#666666">更新的内容将直接加入书中，可至</font><font color="#069bf2">编辑内容</font><font color="#666666">页面修改</font>]]></string>
+    <string name="itv_tip">提示：为您身边关心您的人，想念您的人开放快速浏览您做的时光书入口</string>
+    <string name="itv">ITV</string>
+    <string name="itv_load_fail">ITV绑定信息失败</string>
+    <string name="itv_pop_title">情感加入</string>
+    <string name="itv_pop_hintadd"> 备注名称</string>
+    <string name="itv_pop_hintnum"> 他（她）的ITV账号/电话/手机号</string>
+    <string name="itv_pop_add">加入</string>
+    <string name="itv_number">电话：%s</string>
+    <string name="itv_pop_cancel">取消</string>
+    <string name="volume_pop_tip">亲爱的石榴，印书券已发放至你的账户，可直接抵扣书款哦</string>
+    <string name="volume_go">去看看</string>
+    <string name="volume_cancel">取消</string>
+    <string name="record_message">录制寄语</string>
+    <string name="see_other_book">看看别人的书</string>
+    <string name="record_cancel">取消</string>
+    <string name="record_complete">完成</string>
+    <string name="message">寄语</string>
+    <string name="message_tip">仅限在本移动设备上播放</string>
+    <string name="scan">扫一扫</string>
+    <string name="scan_how">能扫什么?</string>
+    <string name="scan_title">能扫什么?</string>
+    <string name="scan_title_one">扫码打印照片</string>
+    <string name="scan_content_one">扫描“时光流影照片打印机”上的二维码，即可连接打印机，将手机上的电子照打印成实体照片。</string>
+    <string name="scan_title_two">扫码看寄语</string>
+    <string name="scan_content_two">扫描时光书寄语页面的二维码，在线播放寄语。</string>
+    <string name="scan_title_three">扫码下载APP</string>
+    <string name="scan_content_three">扫描宣传册或网页上的APP下载二维码，下载APP。</string>
+    <string name="scan_title_four">扫码登录</string>
+    <string name="scan_content_four">扫描时光流影ITV版登录界面的二维码，快速登录时光流影ITV，查看“我的时光书”。</string>
+    <string name="scan_title_five">扫码下单</string>
+    <string name="scan_content_five">扫描时光流影ITV版我的时光书预览界面的二维码，快速在APP端下单印刷。</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="add_category">添加类别</string>
+    <string name="special_admire">特别欣赏</string>
+    <string name="book_author">作者：%s</string>
+    <string name="book_summary">简介：%s</string>
+    <string name="menu_batch_import">批量导入</string>
+    <string name="menu_menu_scanner">扫描仪</string>
+    <string name="menu_menu_album">相册</string>
+    <string name="menu_input_text">文本</string>
+    <string name="title_activity_input_text">输入文本</string>
+    <string name="please_input">请输入......</string>
+    <string name="cart_print_property_paper_text">纸张</string>
+    <string name="weather_air_q">空气质量：%s</string>
+
+    <!-- album book -->
+    <string name="select_album_book_type">选择书的类型</string>
+    <string name="select_baby_birthday">设置宝宝生日</string>
+    <string name="baby_album">宝宝相册</string>
+    <string name="journey_album">旅行相册</string>
+    <string name="text">文本</string>
+    <string name="album_book_select_album">选择相册</string>
+    <string name="album_book_edit_album">编辑相册</string>
+    <string name="album_book_select_template">模板文本</string>
+    <string name="title_activity_photo_selection_v2">PhotoSelectionV2Activity</string>
+    <string name="select_tag_tips">如未选择标签，您的时光书将默认归入“其他”类别</string>
+    <string name="select_tag_right">选择标签和权限</string>
+    <string name="add_special_admire">添加特别欣赏</string>
+    <string name="remove_special_admire">移除特别欣赏</string>
+    <string name="title_activity_publish_edit">发布时光</string>
+    <string name="title_activity_publisha_finish">发布时光</string>
+    <string name="title_activity_publish_result">正在发布</string>
+    <string name="publish_continue_add_content">继续添加</string>
+    <string name="congratulation_publish_success">恭喜您，内容发布成功！</string>
+
+    <string name="guide_title1">编辑排版</string>
+    <string name="guide_content1">随时随地都可以做一本好书</string>
+    <string name="guide_title2">全新首页</string>
+    <string name="guide_content2">推荐内容合你心意</string>
+    <string name="guide_title3">极速成书</string>
+    <string name="guide_content3">照片快速导入，分秒成书</string>
+    <string name="guide_title4">录制寄语</string>
+    <string name="hold_record">按住录</string>
+    <string name="guide_content4">将视频、音频珍藏书中</string>
+    <string name="guide_title5">发布升级</string>
+    <string name="guide_content5">图文混排超便捷</string>
+    <string name="make_calendar_now">立刻定制</string>
+    <string name="calendar_my_nodata">还没有台历，点击右上角创建一本吧!</string>
+    <string name="alert_must_have_content_limit">请输入内容(30字以内)</string>
+
+    <string name="please_select_book">请选择时光归属</string>
+    <string name="select_com_category">选择时光圈分类</string>
+    <string name="create_time_com">创建时光圈</string>
+    <string name="action_skip">跳过</string>
+    <string name="community_number">圈号：%s</string>
+    <string name="community_select_address">所在位置</string>
+    <string name="publish_add_time_piece">追加时光</string>
+
+    <string name="reject_by_circle_owner">被圈主拒绝了</string>
+    <string name="apply_again">再次申请</string>
+    <string name="wait_for_verify">请耐心等待验证</string>
+    <string name="cancel_apply">取消申请</string>
+    <string name="my_time_circle">我的时光圈</string>
+    <string name="join_time_circle">加入时光圈</string>
+    <string name="create_time_circle">创建时光圈</string>
+    <string name="circle_number">圈号</string>
+    <string name="member">成员</string>
+    <string name="picture">图片</string>
+    <string name="not_show_any_more">不再显示</string>
+    <string name="owner_time_circle">我创建的时光圈</string>
+    <string name="notification_message">消息</string>
+    <string name="your_circle_is_empty_please_create">还没有自己的时光圈，你可以去</string>
+    <string name="hot_recommend">热门推荐</string>
+    <string name="contacts">通讯录</string>
+    <string name="conversation">聊天</string>
+    <string name="circle_created_no_contact_match">刚建好的圈子，冷冷清清</string>
+    <string name="please_invite_your_friend">赶紧邀请小伙伴一起玩耍吧~</string>
+    <string name="match_your_contacts">匹配手机通讯录</string>
+    <string name="please_fill_your_profile">你的资料不全，赶紧完善</string>
+    <string name="let_your_friend_know_you">让你的朋友们更好的认识你！</string>
+    <string name="fill_profile_now">立即完善</string>
+    <string name="circle_has_some_image_about_u">石榴君终于等你了\n圈子里有27张关于你的照片,赶紧来看看!</string>
+    <string name="visit_now">立即查看</string>
+    <string name="title_activity_circle_book_creat_step_one">填写书名</string>
+    <string name="please_input_book_name">请填写书名(16字以内)</string>
+    <string name="only_circle_member_see">圈成员可见</string>
+    <string name="title_activity_select_photos">SelectPhotosActivity</string>
+    <string name="manual_add">手动添加</string>
+    <string name="read_contacts_upload">读取手机通讯录</string>
+    <string name="member_info_card">资料卡</string>
+    <string name="info_card_tips">请上传下面清晰头像,方便系统识别照片</string>
+    <string name="name_without_split">姓名</string>
+    <string name="please_input_real_name">请填写真实姓名</string>
+    <string name="please_input_real_phone_number">请填写真实手机号</string>
+    <string name="school">学校</string>
+    <string name="speciality">专业</string>
+    <string name="student_number">学号</string>
+    <string name="title_activity_circle_publish_edit">发布时光</string>
+    <string name="phone_contacts">手机通讯录</string>
+    <string name="add">添加</string>
+    <string name="circle_setting">圈设置</string>
+    <string name="edit_circle_info">编辑圈资料</string>
+    <string name="circle_introduction">圈简介</string>
+    <string name="circle_member_list">成员列表</string>
+    <string name="search_circle_member">搜索圈成员</string>
+    <string name="apply_join">申请加入</string>
+    <string name="commit">提交</string>
+    <string name="title_activity_photo_viewer_new">PhotoViewerNewActivity</string>
+    <string name="title_activity_circle_book_permisson">CircleBookPermissonActivity</string>
+    <string name="pod_change_theme">更改主题</string>
+    <string name="circle_change_theme">更换主题</string>
+
+    <string name="JANUARY">一月</string>
+    <string name="FEBRUARY">二月</string>
+    <string name="MARCH">三月</string>
+    <string name="APRIL">四月</string>
+    <string name="MAY">五月</string>
+    <string name="JUNE">六月</string>
+    <string name="JULY">七月</string>
+    <string name="AUGUST">八月</string>
+    <string name="SEPTEMBER">九月</string>
+    <string name="OCTOBER">十月</string>
+    <string name="NOVEMBER">十一月</string>
+    <string name="DECEMBER">十二月</string>
+    <string name="unkonw">未知</string>
+    <string name="select_book">选择时光书</string>
+    <string name="history_time">追溯时光</string>
+    <string name="album_text">相册</string>
+    <string name="label">标签: </string>
+    <string name="author">作者: </string>
+    <string name="page_size">页数: </string>
+    <string name="create_date">创建时间: </string>
+    <string name="preview">预览</string>
+    <string name="photo_edit">编辑</string>
+    <string name="single_click_to_create_book">一键成书</string>
+    <string name="summary">简介</string>
+    <string name="no_summary">暂无简介</string>
+    <string name="no_list_data">暂无数据</string>
+    <string name="no_belong">暂无归属</string>
+    <string name="set_pass">设置密码后，您可以使用手机号+密码登陆，请牢记！</string>
+
 </resources>

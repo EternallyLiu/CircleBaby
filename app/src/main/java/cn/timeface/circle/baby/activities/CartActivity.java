@@ -215,7 +215,10 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
                 item.getPrintCode(),
                 item.getCoverImage(),
-                TypeConstant.FROM_PHONE);
+                TypeConstant.FROM_PHONE,
+                item.getTotalPage(),
+                item.getTitle(),
+                item.getDate());
         dialog.show(getSupportFragmentManager(), "dialog");
     }
 
@@ -243,7 +246,10 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
                 cartItem.getPrintCode(),
                 cartItem.getCoverImage(),
-                TypeConstant.FROM_PHONE);
+                TypeConstant.FROM_PHONE,
+                cartItem.getTotalPage(),
+                cartItem.getTitle(),
+                cartItem.getDate());
         dialog.show(getSupportFragmentManager(), "dialog");
     }
 
@@ -375,7 +381,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             }
 
         } else {
-            tvPromotionInfo.setVisibility(View.GONE);
             tvPromotionInfo.setVisibility(View.GONE);
         }
     }

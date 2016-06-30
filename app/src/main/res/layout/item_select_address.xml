@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/ll_root"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@drawable/selector_click_able"
+              android:baselineAligned="false"
+              android:orientation="horizontal"
+              android:padding="12dp">
+
+    <LinearLayout
+        android:id="@+id/adress_left_ll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/receiver_name_tv"
+                style="@style/OrderTextLabel"/>
+
+            <TextView
+                android:id="@+id/receiver_phone_tv"
+                style="@style/OrderTextLabel"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/receiver_address_tv"
+            style="@style/OrderTextContent"
+            android:layout_marginTop="6dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="6dp">
+
+        <ImageView
+            android:id="@+id/ic_selected_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/select"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+</LinearLayout>

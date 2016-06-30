@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg18"
+              android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/abc_action_bar_default_height_material"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/payresult_title"
+                style="@style/OrderTextLabel"
+                android:textSize="16sp"/>
+
+            <TextView
+                style="@style/OrderTextLabel"
+                android:drawableLeft="@drawable/ic_pay_success"
+                android:drawablePadding="6dp"
+                android:text="支付成功"
+                android:textSize="16sp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="28dp"
+                android:paddingRight="28dp">
+
+                <LinearLayout
+                    android:id="@+id/express_order_no_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/OrderTextLabel"
+                        android:text="@string/order_num"/>
+
+                    <TextView
+                        android:id="@+id/payresult_orderId"
+                        style="@style/OrderTextContent"
+                        android:layout_marginLeft="6dp"
+                        android:textColor="@color/red"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/OrderTextLabel"
+                        android:text="@string/have_already_payoff"/>
+
+                    <TextView
+                        android:id="@+id/payresult_price"
+                        style="@style/OrderTextContent"
+                        android:layout_marginLeft="6dp"
+                        android:textColor="@color/red"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/order_summary_tv"
+                    style="@style/OrderTextContent"
+                    android:layout_width="match_parent"
+                    android:layout_below="@+id/express_order_no_ll"
+                    android:layout_marginTop="16dp"/>
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/payresult_toorder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="36dp"
+                android:background="@drawable/selector_btn_login"
+                android:text="@string/see_order_detail"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/payresult_tobookshelf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/selector_btn_login"
+                android:text="@string/back_book_shelf"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
