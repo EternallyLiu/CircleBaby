@@ -6,7 +6,9 @@
     android:background="@color/bg_main"
     tools:context="cn.timeface.circle.baby.activities.OrderDetailActivity">
 
-    <include layout="@layout/layout_toolbar" />
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

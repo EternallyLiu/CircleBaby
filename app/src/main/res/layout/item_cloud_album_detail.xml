@@ -37,15 +37,6 @@
                 android:visibility="visible" />
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/view_space_small"
-            android:gravity="center"
-            android:textColor="@color/text_color3"
-            android:visibility="gone" />
-
         <EditText
             android:id="@+id/et_inputText"
             android:layout_width="match_parent"
@@ -56,6 +47,22 @@
             android:gravity="start"
             android:inputType="textCapSentences|textMultiLine"
             android:lineSpacingMultiplier="1.1"
+            android:maxLength="200"
+            android:textColor="@color/text_color3"
+            android:visibility="gone" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/view_space_small"
+            android:background="@color/divider_color"
+            android:layout_height="1px" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/view_space_small"
+            android:gravity="center"
             android:textColor="@color/text_color3"
             android:visibility="gone" />
     </LinearLayout>

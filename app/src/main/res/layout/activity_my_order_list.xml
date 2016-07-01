@@ -6,7 +6,9 @@
     android:background="@color/bg_main"
     tools:context=".activities.OrderListActivity">
 
-    <include layout="@layout/layout_toolbar" />
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swLayout"

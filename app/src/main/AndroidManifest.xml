@@ -207,10 +207,6 @@
             android:label="@string/cloudAlbum"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.CloudAlbumDetailActivity"
-            android:label="@string/cloudAlbum"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activities.SelectPhotoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
@@ -219,7 +215,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.CloudAlbumEditActivity"
-            android:label="@string/cloudAlbum"
+            android:label=""
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.OrderListActivity"

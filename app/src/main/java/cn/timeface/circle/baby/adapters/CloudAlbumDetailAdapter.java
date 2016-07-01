@@ -21,17 +21,17 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.CloudAlbumDetailObj;
+import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 
 /**
  * Created by zhsheng on 2016/6/8.
  */
-public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<CloudAlbumDetailObj> {
+public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<MediaObj> {
 
     private boolean editState;
 
-    public CloudAlbumDetailAdapter(Context mContext, List<CloudAlbumDetailObj> listData) {
+    public CloudAlbumDetailAdapter(Context mContext, List<MediaObj> listData) {
         super(mContext, listData);
     }
 
@@ -48,7 +48,7 @@ public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<CloudAlbumDetai
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         AlbumDetailHolder holder = (AlbumDetailHolder) viewHolder;
-        CloudAlbumDetailObj detailObj = listData.get(position);
+        MediaObj detailObj = listData.get(position);
         Glide.with(mContext)
                 .load(detailObj.getImgUrl())
                 .into(holder.ivAlbumImage);
@@ -58,7 +58,6 @@ public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<CloudAlbumDetai
         String content = detailObj.getContent();
         if (editState) {//编辑状态
             holder.editInput.setText(content);
-            holder.tvDate.setVisibility(View.GONE);
             holder.editInput.setVisibility(View.VISIBLE);
             holder.ivDeleteImg.setVisibility(View.VISIBLE);
             holder.ivDeleteImg.setTag(R.string.tag_obj, detailObj);
@@ -66,22 +65,21 @@ public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<CloudAlbumDetai
             holder.ivDeleteImg.setVisibility(View.GONE);
             if (!TextUtils.isEmpty(content)) {
                 holder.editInput.setText(content);
-                holder.tvDate.setVisibility(View.GONE);
                 holder.editInput.setVisibility(View.VISIBLE);
             } else {
                 holder.editInput.setVisibility(View.GONE);
-                long photographTime = detailObj.getPhotographTime();
-                String formatDate = "";
-                if (photographTime != 0) {
-                    formatDate = DateUtil.formatDate("yyyy.MM.dd", photographTime);
-                }
-                if (!TextUtils.isEmpty(formatDate)) {
-                    holder.tvDate.setVisibility(View.VISIBLE);
-                    holder.tvDate.setText(formatDate);
-                } else {
-                    holder.tvDate.setVisibility(View.GONE);
-                }
             }
+        }
+        long photographTime = detailObj.getPhotographTime();
+        String formatDate = "";
+        if (photographTime != 0) {
+            formatDate = DateUtil.formatDate("yyyy.MM.dd", photographTime);
+        }
+        if (!TextUtils.isEmpty(formatDate)) {
+            holder.tvDate.setVisibility(View.VISIBLE);
+            holder.tvDate.setText(formatDate);
+        } else {
+            holder.tvDate.setVisibility(View.GONE);
         }
 
     }
@@ -125,8 +123,7 @@ public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<CloudAlbumDetai
         @Override
         public void afterTextChanged(Editable s) {
             int adapterPosition = getAdapterPosition();
-            if (adapterPosition < 1) return;
-            CloudAlbumDetailObj detailObj = listData.get(adapterPosition - 1);
+            MediaObj detailObj = listData.get(adapterPosition);
             detailObj.setContent(editInput.getText().toString());
         }
     }

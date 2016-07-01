@@ -20,6 +20,7 @@ public class MediaObj extends BaseObj
     long photographTime;     //照片or视频的拍摄时间
     String videoUrl;        //视频url
     int selected;           //成书的时候图片选中状态 1-选中 默认是0-不选中
+    private int isCover;
 
     //图片
     public MediaObj(String content, String imgUrl, int w, int h, long photographTime) {
@@ -123,6 +124,21 @@ public class MediaObj extends BaseObj
         this.videoUrl = videoUrl;
     }
 
+    public ImgObj getImgObj() {
+        ImgObj imgObj = new ImgObj(getImgUrl(), getLocalPath());
+        imgObj.setDateMills(getPhotographTime());
+        return imgObj;
+    }
+
+
+    public int getIsCover() {
+        return isCover;
+    }
+
+    public void setIsCover(int isCover) {
+        this.isCover = isCover;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -140,6 +156,7 @@ public class MediaObj extends BaseObj
         dest.writeLong(this.photographTime);
         dest.writeString(this.videoUrl);
         dest.writeInt(this.selected);
+        dest.writeInt(this.isCover);
     }
 
     protected MediaObj(Parcel in) {
@@ -153,9 +170,10 @@ public class MediaObj extends BaseObj
         this.photographTime = in.readLong();
         this.videoUrl = in.readString();
         this.selected = in.readInt();
+        this.isCover = in.readInt();
     }
 
-    public static final Parcelable.Creator<MediaObj> CREATOR = new Parcelable.Creator<MediaObj>() {
+    public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {
         @Override
         public MediaObj createFromParcel(Parcel source) {
             return new MediaObj(source);
@@ -166,10 +184,4 @@ public class MediaObj extends BaseObj
             return new MediaObj[size];
         }
     };
-
-    public ImgObj getImgObj() {
-        ImgObj imgObj = new ImgObj(getImgUrl(), getLocalPath());
-        imgObj.setDateMills(getPhotographTime());
-        return imgObj;
-    }
 }
