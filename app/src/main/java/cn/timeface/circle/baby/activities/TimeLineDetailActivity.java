@@ -1,11 +1,14 @@
 package cn.timeface.circle.baby.activities;
 
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
@@ -16,18 +19,22 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.net.URLEncoder;
@@ -38,10 +45,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.api.models.responses.TimeDetailResponse;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
@@ -53,10 +62,16 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.IconTextView;
+import cn.timeface.circle.baby.views.InputMethodRelative;
 import de.greenrobot.event.Subscribe;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
-public class TimeLineDetailActivity extends BaseAppCompatActivity implements View.OnClickListener,IEventBus {
+public class TimeLineDetailActivity extends BaseAppCompatActivity implements View.OnClickListener,IEventBus,InputMethodRelative.OnSizeChangedListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -101,7 +116,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     @Bind(R.id.view_line)
     View viewLine;
     @Bind(R.id.rl_comment)
-    RelativeLayout rlComment;
+    InputMethodRelative rlComment;
+    @Bind(R.id.scroll_view)
+    ScrollView scrollView;
+    @Bind(R.id.ll_layout)
+    LinearLayout layout;
+    @Bind(R.id.rl_layout)
+    RelativeLayout relativeLayout;
 
     private TimeLineObj timelineobj;
     private AlertDialog dialog;
@@ -113,7 +134,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         Intent intent = new Intent(context, TimeLineDetailActivity.class);
         intent.putExtra("timelineobj", item);
         context.startActivity(intent);
-
     }
 
     public static void open(Context context, int timeId) {
@@ -141,10 +161,11 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         normalColor = getResources().getColor(R.color.gray_normal);
         etCommment.clearFocus();
         initView();
+        changeInputMethodSize();
     }
 
     private void initView() {
-        timelineobj = (TimeLineObj) getIntent().getParcelableExtra("timelineobj");
+        timelineobj = getIntent().getParcelableExtra("timelineobj");
         tvContent.setText(timelineobj.getContent());
         tvAuthor.setText(timelineobj.getAuthor().getRelationName());
         tvDate.setText(DateUtil.getTime2(timelineobj.getDate()));
@@ -227,9 +248,24 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         btnSend.setOnClickListener(this);
         llMenu.setOnClickListener(this);
         iconLike.setOnClickListener(this);
+//        rlComment.setOnSizeChangedListenner(this);
     }
 
-
+    private void changeInputMethodSize(){
+        View decorView = getWindow().getDecorView();
+        decorView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect rect = new Rect();
+                decorView.getWindowVisibleDisplayFrame(rect);
+                int screenHeight = decorView.getRootView().getHeight();
+                int heightDifference = screenHeight - rect.bottom;
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) relativeLayout.getLayoutParams();
+                params.setMargins(0,0,0,heightDifference);
+                relativeLayout.requestLayout();
+            }
+        });
+    }
     private ImageView initPraiseItem() {
         CircleImageView imageView = new CircleImageView(this);
         imageView.setImageResource(R.color.gray_pressed);
@@ -257,6 +293,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 WindowManager m = window.getWindowManager();
                 Display d = m.getDefaultDisplay();
                 WindowManager.LayoutParams p = window.getAttributes();
+
                 p.width = d.getWidth();
                 window.setAttributes(p);
                 window.setGravity(Gravity.BOTTOM);
@@ -271,26 +308,61 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         super.onDestroy();
         ButterKnife.unbind(this);
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_send:
+
                 String s = etCommment.getText().toString();
                 if (TextUtils.isEmpty(s)) {
                     ToastUtil.showToast("请填写评论内容");
                     return;
                 }
+
+//                apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timelineobj.getTimeId(),commmentId)
+//                        .flatMap(new Func1<BaseResponse, Observable<TimeDetailResponse>>() {
+//                            @Override
+//                            public Observable<TimeDetailResponse> call(BaseResponse response) {
+//                                return apiService.queryBabyTimeDetail(time_Id);
+//                            }
+//                        })
+//                        .compose(SchedulersCompat.applyIoSchedulers())
+//                        .subscribe(new Action1<TimeDetailResponse>() {
+//                            @Override
+//                            public void call(TimeDetailResponse timeDetailResponse) {
+//                                    Log.e("TimeLineDetailActivity", "===");
+//                                if (timeDetailResponse == null){
+//                                    Log.e("TimeLineDetailActivity", "null");
+//                                    return;
+//                                }
+//                                Log.e("TimeLineDetailActivity", timeDetailResponse.getTimeInfo().getCommentList().size()+"");
+//
+//                            }
+//                        },error -> {
+//                            Log.e(TAG, "error");
+//                        });
                 apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timelineobj.getTimeId(),commmentId)
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(response -> {
-                            hideKeyboard();
-                            ToastUtil.showToast(response.getInfo());
-                            if (response.success()) {
-                                etCommment.setText("");
+                        .filter(new Func1<BaseResponse, Boolean>() {
+                            @Override
+                            public Boolean call(BaseResponse response) {
+                                return response.success();
                             }
-                        }, error -> {
-                            Log.e(TAG, "comment:");
+                        })
+                        .flatMap(baseResponse -> apiService.queryBabyTimeDetail(timelineobj.getTimeId()))
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(timeDetailResponse ->{
+                            if (timeDetailResponse.success()){
+                                timelineobj = timeDetailResponse.getTimeInfo();
+                                reLoadCommend();
+                                hideKeyboard();
+                                ToastUtil.showToast(timeDetailResponse.getInfo());
+                                if (timeDetailResponse.success()) {
+                                    etCommment.setText("");
+                                }
+                            }
+
+                        }, error ->{
+                            Log.e(TAG,"shibai");
                         });
                 break;
             case R.id.rl_single:
@@ -349,11 +421,11 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                         });
 
                 break;
-            case R.id.tv_cancel:
-//                dialog.dismiss();
-                popupWindow.dismiss();
+            case R.id.rl_cancel:
+                dialog.dismiss();
+//                popupWindow.dismiss();
                 break;
-            case R.id.tv_action:
+            case R.id.rl_action:
                 CommentObj commment = (CommentObj) v.getTag(R.string.tag_obj);
                 dialog.dismiss();
                 if(commment.getUserInfo().getUserId().equals(FastData.getUserId())){
@@ -369,14 +441,20 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             apiService.delComment(commment.getCommentId())
+                                    .filter(new Func1<BaseResponse, Boolean>() {
+                                        @Override
+                                        public Boolean call(BaseResponse response) {
+                                            return response.success();
+                                        }
+                                    })
+                                    .flatMap(baseResponse -> apiService.queryBabyTimeDetail(timelineobj.getTimeId()))
                                     .compose(SchedulersCompat.applyIoSchedulers())
                                     .subscribe(response -> {
                                         ToastUtil.showToast(response.getInfo());
                                         if (response.success()) {
                                             //重新加载评论列表
-
-
-
+                                            timelineobj = response.getTimeInfo();
+                                            reLoadCommend();
                                         }
                                     }, error -> {
                                         Log.e(TAG, "delComment:");
@@ -398,6 +476,18 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     public void onEvent(Object event) {
         if(event instanceof DeleteTimeLineEvent){
             finish();
+        }
+    }
+
+    @Override
+    public void onSizeChange(boolean param, int w, int h) {
+        if(param){//键盘弹出时
+            rlComment.setPadding(0, -10, 0, 0);
+            layout.setVisibility(View.GONE);
+            layout.setVisibility(View.VISIBLE);
+        }else{ //键盘隐藏时
+            rlComment.setPadding(0, 0, 0, 0);
+
         }
     }
 
@@ -443,10 +533,12 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     public View initCommentMenu(CommentObj comment){
         View view = getLayoutInflater().inflate(R.layout.view_comment_menu, null);
-        TextView tvAction = (TextView) view.findViewById(R.id.tv_action);
-        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
+        view.setBackgroundColor(getResources().getColor(R.color.trans));
+        RelativeLayout tvAction = (RelativeLayout) view.findViewById(R.id.rl_action);
+        TextView tv = (TextView) view.findViewById(R.id.tv_action);
+        RelativeLayout tvCancel = (RelativeLayout) view.findViewById(R.id.rl_cancel);
         if(comment.getUserInfo().getUserId().equals(FastData.getUserId())){
-            tvAction.setText("删除");
+            tv.setText("删除");
         }
         tvAction.setTag(R.string.tag_obj, comment);
         tvAction.setOnClickListener(this);
@@ -462,6 +554,24 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
             if (getCurrentFocus() != null)
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    /**
+     * 重新加载评论
+     */
+    private void reLoadCommend(){
+        if (timelineobj.getCommentList().size() > 0) {
+            llCommentWrapper.setVisibility(View.VISIBLE);
+            llCommentWrapper.removeAllViews();
+            int comments = timelineobj.getCommentList().size();
+            for (int i = 0; i < comments; i++) {
+                CommentObj commentObj = timelineobj.getCommentList().get(i);
+                llCommentWrapper.addView(initCommentItemView(commentObj));
+            }
+        } else {
+            llCommentWrapper.removeAllViews();
+            llCommentWrapper.setVisibility(View.GONE);
         }
     }
 }

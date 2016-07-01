@@ -2,30 +2,59 @@
     android:id="@+id/ll_publish_menu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg_color9"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@android:color/transparent">
 
-
+    <RelativeLayout
+        android:id="@+id/rl_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_bottom_normal"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="42dp">
     <TextView
         android:id="@+id/tv_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="回复"
-        android:textSize="@dimen/text_medium"
-        android:background="@color/white"
-        android:padding="@dimen/size_6"/>
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:textColor="@color/text_color3"/>
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_cancel"
+    <!--<TextView-->
+        <!--android:id="@+id/tv_cancel"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:text="取消"-->
+        <!--android:textSize="@dimen/text_medium"-->
+        <!--android:background="@color/white"-->
+        <!--android:padding="@dimen/size_6"-->
+        <!--android:layout_marginTop="@dimen/size_6"/>-->
+
+    <RelativeLayout
+        android:id="@+id/rl_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="取消"
-        android:textSize="@dimen/text_medium"
-        android:background="@color/white"
-        android:padding="@dimen/size_6"
-        android:layout_marginTop="@dimen/size_6"/>
+        android:layout_marginTop="@dimen/size_6"
+        android:background="@drawable/dialog_bottom_normal"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="42dp">
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="取消"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:textColor="@color/text_color3"
+            />
+    </RelativeLayout>
 
 
 </LinearLayout>

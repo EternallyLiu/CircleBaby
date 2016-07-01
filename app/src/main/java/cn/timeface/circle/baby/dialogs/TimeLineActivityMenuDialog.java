@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -53,11 +54,11 @@ import de.greenrobot.event.EventBus;
 public class TimeLineActivityMenuDialog extends BaseDialog {
     private Context context;
     private TimeLineObj timelineobj;
-    private TextView tvEdit;
-    private TextView tvDlete;
+    private RelativeLayout tvEdit;
+    private RelativeLayout tvDlete;
     private TextView tvDownload;
-    private TextView tvShare;
-    private TextView tvCancel;
+    private RelativeLayout tvShare;
+    private RelativeLayout tvCancel;
 
     public TimeLineActivityMenuDialog(Context context) {
         super(context, R.style.TFDialogStyle);
@@ -82,11 +83,11 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
     private void init() {
         View mView = LayoutInflater.from(getContext()).inflate(R.layout.view_timedetail_menu, null);
         this.setContentView(mView);
-        tvEdit = ButterKnife.findById(mView, R.id.tv_edit);
-        tvDlete = ButterKnife.findById(mView, R.id.tv_delete);
+        tvEdit = ButterKnife.findById(mView, R.id.rl_add_content);
+        tvDlete = ButterKnife.findById(mView, R.id.rl_delete);
         tvDownload = ButterKnife.findById(mView, R.id.tv_download);
-        tvShare = ButterKnife.findById(mView, R.id.tv_share);
-        tvCancel = ButterKnife.findById(mView, R.id.tv_cancel);
+        tvShare = ButterKnife.findById(mView, R.id.rl_share);
+        tvCancel = ButterKnife.findById(mView, R.id.rl_cancel);
 
         initListener();
 

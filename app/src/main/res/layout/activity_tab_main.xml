@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:background="@color/colorAccent"
-        android:paddingTop="@dimen/toolbar_padding_top"/>
+       />
 
     <FrameLayout
         android:id="@+id/container"

@@ -201,7 +201,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activities.TimeLineDetailActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activities.CloudAlbumActivity"
             android:label="@string/cloudAlbum"
