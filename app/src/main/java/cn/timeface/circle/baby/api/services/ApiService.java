@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderListResponse;
 import cn.timeface.circle.baby.api.models.responses.ParamListResponse;
 import cn.timeface.circle.baby.api.models.responses.PrintCartListResponse;
+import cn.timeface.circle.baby.api.models.responses.PrintDispatchListResponse;
 import cn.timeface.circle.baby.api.models.responses.PrintStatusResponse;
 import cn.timeface.circle.baby.api.models.responses.RegisterResponse;
 import cn.timeface.circle.baby.api.models.responses.RelationIdResponse;
@@ -36,6 +37,7 @@ import cn.timeface.circle.baby.api.models.responses.SystemMsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.TimeDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.TimelineResponse;
 import cn.timeface.circle.baby.api.models.responses.UserLoginResponse;
+import cn.timeface.circle.baby.payment.timeface.WxPrepayResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -54,6 +56,11 @@ public interface ApiService {
      * 根地址
      */
     String BASE_URL = BuildConfig.API_URL;
+
+    /**
+     * 支付宝通知URL
+     */
+    String ZFB_NOTIFY = BASE_URL + "pod/zfbNotify";
 
     String IMAGE_BASE_URL = "http://img1.timeface.cn/";
 
@@ -318,6 +325,16 @@ public interface ApiService {
                                               @Query("id") String id,
                                               @Query("prov") String prov);
 
+    /**
+     * 添加/修改收货地址
+     */
+    @POST("babyOrder/addAddress")
+    Observable<AddAddressResponse> changeAdd(@QueryMap Map<String, String> params);
+
+    //获取收货地址列表
+    @GET("babyOrder/delAddress")
+    Observable<BaseResponse> delAddress(@Query("id") String id);
+
     //获取区划基础数据
     @GET("babyOrder/locationList?isGzip=0")
     Observable<DistrictListResponse> getLocationList();
@@ -419,6 +436,20 @@ public interface ApiService {
     @POST("babyOrder/queryParamList")
     Observable<ParamListResponse> queryParamList(@Query("bookType") int bookType,
                                                  @Query("pageNum") int pageNum);
+
+    /**
+     * 查询订单运费接口
+     */
+    @POST("babyOrder/queryDispatchList")
+    Observable<PrintDispatchListResponse> queryDispatchList(@Query("orderId") String orderId,
+                                                            @Query("addressId") String addressId);
+
+    /**
+     * 请求微信、支付宝支付
+     */
+    @POST("babyOrder/prepay")
+    Observable<WxPrepayResponse> wexinPay(@Query("orderId") String orderId,
+                                          @Query("payType") String payType);
 
     /**
      * 向相册中添加照片

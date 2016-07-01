@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/ll_dispatch"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_gravity="center_vertical"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_grey_dash_border_bg"
+    android:clickable="true"
+    android:gravity="center_horizontal"
+    android:onClick="clickBtn"
+    android:orientation="horizontal"
+    android:paddingBottom="12dp"
+    android:paddingTop="12dp">
+
+    <TextView
+        android:id="@+id/tv_dispatch"
+        style="@style/OrderTextContent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="6dp"
+        android:text="@string/dispatch_common_way"
+        android:textColor="@drawable/selector_radio_text_color"/>
+
+    <TextView
+        android:id="@+id/tv_dispatch_fee"
+        style="@style/OrderTextContent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="6dp"
+        android:textColor="@drawable/selector_radio_text_color"/>
+</LinearLayout>

@@ -1,22 +1,22 @@
 package cn.timeface.circle.baby.events;
 
-import cn.timeface.circle.baby.api.models.objs.AddressObj;
+import cn.timeface.circle.baby.api.models.AddressItem;
 
 /**
  * Created by lidonglin on 2016/6/22.
  */
 public class AddressEvent {
-    public AddressObj obj;
+    public AddressItem obj;
 
-    public AddressEvent(AddressObj obj) {
+    public AddressEvent(AddressItem obj) {
         this.obj = obj;
     }
 
-    public AddressObj getObj() {
+    public AddressItem getObj() {
         return obj;
     }
 
-    public void setObj(AddressObj obj) {
+    public void setObj(AddressItem obj) {
         this.obj = obj;
     }
 }

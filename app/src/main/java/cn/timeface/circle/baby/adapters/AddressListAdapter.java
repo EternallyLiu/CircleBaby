@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.circle.baby.api.models.AddressItem;
 import cn.timeface.circle.baby.api.models.objs.AddressObj;
 import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
@@ -35,13 +36,13 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by lidonglin on 2016/6/15.
  */
-public class AddressListAdapter extends BaseRecyclerAdapter<AddressObj> {
+public class AddressListAdapter extends BaseRecyclerAdapter<AddressItem> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
     private Activity activity;
 
-    public AddressListAdapter(Context mContext, List<AddressObj> listData) {
+    public AddressListAdapter(Context mContext, List<AddressItem> listData) {
         super(mContext, listData);
         this.activity = (Activity) mContext;
     }
@@ -60,7 +61,7 @@ public class AddressListAdapter extends BaseRecyclerAdapter<AddressObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = (ViewHolder) viewHolder;
-        AddressObj obj = getItem(position);
+        AddressItem obj = getItem(position);
         holder.onClickListener = onClickListener;
         holder.obj = obj;
         holder.context = mContext;
@@ -93,7 +94,7 @@ public class AddressListAdapter extends BaseRecyclerAdapter<AddressObj> {
         Context context;
         Activity activity;
         View.OnClickListener onClickListener = null;
-        AddressObj obj;
+        AddressItem obj;
 
         ViewHolder(View view) {
             super(view);

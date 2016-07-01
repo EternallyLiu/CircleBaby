@@ -25,12 +25,16 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CloudAlbumActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
+import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.api.models.objs.RecommendObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -152,6 +156,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
+//                    if(Remember.getBoolean("showtimelinehead",true)&&currentPage==1&&adapter.getHeaderCount()==0){
+//                        adapter.addHeader(initHeadView(timelineResponse.getRecommendObj()));
+//                    }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
                     }
@@ -223,5 +230,96 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 CloudAlbumActivity.open(getActivity());
                 break;
         }
+    }
+
+    public View initHeadView(RecommendObj obj){
+        View view = View.inflate(getContext(), R.layout.view_timeline_head, null);
+        ImageView ivImage = (ImageView) view.findViewById(R.id.iv_image);
+        ImageView ivClose = (ImageView) view.findViewById(R.id.iv_close);
+        TextView tvContent = (TextView) view.findViewById(R.id.tv_content);
+        TextView tvType = (TextView) view.findViewById(R.id.tv_type);
+
+        GlideUtil.displayImage(obj.getBgPicUrl(), ivImage);
+        tvContent.setText(obj.getRecommendContent());
+        switch (obj.getActionType()){
+            case 0:
+                //照片发布
+                tvType.setText("发布照片吧》");
+                break;
+            case 1:
+                //照片书
+                tvType.setText("照片书》");
+                break;
+            case 2:
+                //成长书
+                tvType.setText("成长书》");
+                break;
+            case 3:
+                //识图卡片书
+                tvType.setText("识图卡片书》");
+                break;
+            case 4:
+                //日记书
+                tvType.setText("日记书》");
+                break;
+
+        }
+
+        tvType.setOnClickListener(v -> {
+            if(obj.getActionType()==0){
+                //照片发布
+                PublishActivity.open(getContext(), PublishActivity.PHOTO);
+            }else{
+                apiService.getBabyBookWorksTypeList()
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(bookTypeListResponse -> {
+                            if (bookTypeListResponse.success()) {
+                                switch (obj.getActionType()){
+                                    case 1:
+                                        //照片书
+                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
+                                            if(item.getType()==5){
+                                                FragmentBridgeActivity.openAddBookFragment(getContext(), item);
+                                            }
+                                        }
+                                        break;
+                                    case 2:
+                                        //成长书
+                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
+                                            if(item.getType()==1){
+                                                FragmentBridgeActivity.openAddBookFragment(getContext(), item);
+                                            }
+                                        }
+                                        break;
+                                    case 3:
+                                        //识图卡片书
+                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
+                                            if(item.getType()==3){
+                                                FragmentBridgeActivity.openAddBookFragment(getContext(), item);
+                                            }
+                                        }
+                                        break;
+                                    case 4:
+                                        //日记书
+                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
+                                            if(item.getType()==2){
+                                                FragmentBridgeActivity.openAddBookFragment(getContext(), item);
+                                            }
+                                        }
+                                        break;
+                                }
+                            }
+                        }, error -> {
+                            Log.e(TAG, "getBabyBookWorksTypeList:");
+                        });
+            }
+
+        });
+        ivClose.setOnClickListener(v -> {
+            view.setVisibility(View.GONE);
+            Remember.putBoolean("showtimelinehead", false);
+            adapter.removeHeader(view);
+        });
+        return view;
     }
 }
