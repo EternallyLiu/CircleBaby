@@ -31,10 +31,11 @@ import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
+import cn.timeface.circle.baby.views.TFStateView;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 
-public class MineBookActivity extends BaseAppCompatActivity implements View.OnClickListener ,IEventBus{
+public class MineBookActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
     public static final int currentPage = 1;
     @Bind(R.id.tv_title)
     TextView tvTitle;
@@ -54,6 +55,8 @@ public class MineBookActivity extends BaseAppCompatActivity implements View.OnCl
     TextView errorRetry;
     @Bind(R.id.ll_no_data)
     LinearLayout llNoData;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     private MineBookAdapter adapter;
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
     List<MineBookObj> bookList = new ArrayList<>();
@@ -122,11 +125,13 @@ public class MineBookActivity extends BaseAppCompatActivity implements View.OnCl
      * 请求网络获取我的作品列表
      */
     private void reqData(int currentPage) {
+        tfStateView.loading();
         setDataList(new ArrayList<>());
     }
 
     private void setDataList(List<MineBookObj> dataList) {
         List<MineBookObj> mineBookObjs = mockData(dataList);
+        tfStateView.finish();
 
         adapter.setListData(mineBookObjs);
         adapter.notifyDataSetChanged();

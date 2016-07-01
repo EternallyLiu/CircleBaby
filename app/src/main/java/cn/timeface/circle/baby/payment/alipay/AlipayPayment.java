@@ -113,7 +113,7 @@ public class AlipayPayment implements Payment {
 
         // 服务器异步通知页面路径
         // TODO: 1/25/16 异步通知服务器地址需要找接口方要
-        builder.append("&notify_url=" + "\"" + "http://101.201.222.1:8180/habit/activity/zfbNotify" + "\"");
+        builder.append("&notify_url=" + "\"" + "http://dev1.v5time.net/baby/babyOrder/zfbNotify" + "\"");
 
         // 服务接口名称， 固定值
         builder.append("&service=\"mobile.securitypay.pay\"");

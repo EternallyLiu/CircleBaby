@@ -156,9 +156,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
-//                    if(Remember.getBoolean("showtimelinehead",true)&&currentPage==1&&adapter.getHeaderCount()==0){
-//                        adapter.addHeader(initHeadView(timelineResponse.getRecommendObj()));
-//                    }
+                    if(Remember.getBoolean("showtimelinehead",true)&&currentPage==1&&adapter.getHeaderCount()==0&&timelineResponse.getRecommendObj()!=null){
+                        adapter.addHeader(initHeadView(timelineResponse.getRecommendObj()));
+                    }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
                     }

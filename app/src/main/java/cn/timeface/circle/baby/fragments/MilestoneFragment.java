@@ -27,7 +27,10 @@ import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.common.utils.ShareSdkUtil;
 
 public class MilestoneFragment extends BaseFragment implements View.OnClickListener {
 
@@ -110,17 +113,11 @@ public class MilestoneFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        new ShareDialog(getActivity()).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
+                ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
+                ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.setting_sina_share_img),
+                "http://www.timeface.cn/tf_mobile/download.html");
 
-        switch (item.getItemId()) {
-            case R.id.action_download:
-                //下载
-
-                break;
-            case R.id.action_share:
-                //分享
-
-                break;
-        }
         return super.onOptionsItemSelected(item);
     }
 
