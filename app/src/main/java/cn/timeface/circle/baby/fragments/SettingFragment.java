@@ -25,17 +25,18 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.common.utils.DeviceUuidFactory;
+import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.StorageUtil;
+import cn.timeface.common.utils.TimeFaceUtilInit;
 
 public class SettingFragment extends BaseFragment implements View.OnClickListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.iv_swich)
-    ImageView ivSwich;
     @Bind(R.id.rl_setting_msg)
     RelativeLayout rlSettingMsg;
     @Bind(R.id.rl_setting_share)
@@ -50,6 +51,12 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     RelativeLayout rlSettingClear;
     @Bind(R.id.btn_sign_out)
     Button btnSignOut;
+    @Bind(R.id.iv_swich_wifi)
+    ImageView ivSwichWifi;
+    @Bind(R.id.rl_wifi)
+    RelativeLayout rlWifi;
+    @Bind(R.id.iv_swich_msg)
+    ImageView ivSwichMsg;
 
     public SettingFragment() {
     }
@@ -72,13 +79,16 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void initData() {
-        if(Remember.getInt("wifidownload",1)==0){
-            ivSwich.setImageResource(R.drawable.swichoff);
+        if (Remember.getInt("wifidownload", 1) == 0) {
+            ivSwichWifi.setImageResource(R.drawable.swichoff);
+        }
+        if (Remember.getInt("msg", 1) == 0) {
+            ivSwichMsg.setImageResource(R.drawable.swichoff);
         }
         new CacheSizeTask().execute();
 
 
-        ivSwich.setOnClickListener(this);
+        rlWifi.setOnClickListener(this);
         rlSettingMsg.setOnClickListener(this);
         rlSettingShare.setOnClickListener(this);
         rlSettingAbout.setOnClickListener(this);
@@ -96,21 +106,35 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_swich:
-                if(Remember.getInt("wifidownload",1)==0){
-                    ivSwich.setImageResource(R.drawable.swichon);
-                    Remember.putInt("wifidownload",1);
-                }else{
-                    ivSwich.setImageResource(R.drawable.swichoff);
-                    Remember.putInt("wifidownload",0);
+            case R.id.rl_wifi:
+                if (Remember.getInt("wifidownload", 1) == 0) {
+                    ivSwichWifi.setImageResource(R.drawable.swichon);
+                    Remember.putInt("wifidownload", 1);
+                } else {
+                    ivSwichWifi.setImageResource(R.drawable.swichoff);
+                    Remember.putInt("wifidownload", 0);
                 }
                 break;
 
             case R.id.rl_setting_msg:
-                FragmentBridgeActivity.open(getContext(), "SettingMsgFragment");
+//                FragmentBridgeActivity.open(getContext(), "SettingMsgFragment");
+                if (Remember.getInt("msg", 1) == 0) {
+                    ivSwichMsg.setImageResource(R.drawable.swichon);
+                    Remember.putInt("msg", 1);
+                } else {
+                    ivSwichMsg.setImageResource(R.drawable.swichoff);
+                    Remember.putInt("msg", 0);
+                }
                 break;
 
             case R.id.rl_setting_share:
+                String baseUrl = "http://h5.stg1.v5time.net/hobbyDetail?";
+                String url = baseUrl + "userId=" + FastData.getUserId() + "&deviceId=" + new DeviceUuidFactory(
+                        TimeFaceUtilInit.getContext()).getDeviceId();
+                new ShareDialog(getActivity()).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
+                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
+                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.setting_sina_share_img),
+                        url);
 
                 break;
 

@@ -28,6 +28,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_wifi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/text_color1"
@@ -42,18 +43,8 @@
             android:text="仅在WIFI环境下上传文件"
             android:textSize="@dimen/text_medium" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_toLeftOf="@+id/iv_nickname"
-            android:background="@color/text_color1"
-            android:textSize="@dimen/text_medium"
-            android:layout_marginRight="@dimen/size_12"/>
-
         <ImageView
-            android:id="@+id/iv_swich"
+            android:id="@+id/iv_swich_wifi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -82,23 +73,14 @@
             android:text="推送消息通知"
             android:textSize="@dimen/text_medium" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_toLeftOf="@+id/iv_nickname"
-            android:background="@color/text_color1"
-            android:textSize="@dimen/text_medium"
-            android:layout_marginRight="@dimen/size_12"/>
 
         <ImageView
+            android:id="@+id/iv_swich_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/size_12"
-            android:src="@drawable/mine_data_go" />
+            android:src="@drawable/swichon" />
     </RelativeLayout>
 
     <View

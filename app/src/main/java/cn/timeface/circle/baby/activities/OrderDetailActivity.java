@@ -22,6 +22,7 @@ import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.payment.OrderInfoObj;
+import cn.timeface.circle.baby.payment.PaymentFactory;
 import cn.timeface.circle.baby.payment.PrepareOrderException;
 import cn.timeface.circle.baby.payment.alipay.AlipayPayment;
 import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
@@ -108,7 +109,18 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
     }
 
     private void doPay() {
-        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), listResponse.getOrderPrice(), "2").pay();
+//        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), listResponse.getOrderPrice(), "2").pay();
+        OrderInfoObj orderInfoObj = new OrderInfoObj();
+        orderInfoObj.setTradeNo(orderId);
+//        orderInfoObj.setPrice(listResponse.getOrderPrice());
+        orderInfoObj.setPrice(0.01);
+        orderInfoObj.setSubject(getPayTitle());
+        orderInfoObj.setBody(getPayTitle());
+        try {
+            new AlipayPayment().requestPayment(this, orderInfoObj);
+        } catch (PrepareOrderException e) {
+            Log.e(TAG, "startPayment: ", e);
+        }
     }
 
     /**

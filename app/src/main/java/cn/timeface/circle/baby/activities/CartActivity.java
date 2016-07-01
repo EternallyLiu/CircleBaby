@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -145,36 +144,36 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         final int pIndex = (int) view.getTag(R.string.tag_ex);
         final PrintPropertyPriceObj obj = dataList.get(pIndex).getPrintList().get(index);
 
-//        Subscription s = apiService.deleteProperty(obj.getPrintId())
-//                .compose(SchedulersCompat.applyIoSchedulers())
-//                .subscribe(
-//                        response -> {
-//                            progressDialog.dismiss();
-//                            if (response.success()) {
-//
-//                                dataList.get(pIndex).getPrintList().remove(obj);
-//                                PrintPropertyModel.deleteById(obj.getPrintId());
-//
-//                                //数据全部删除后处理
-//                                if (dataList.get(pIndex).getPrintList().size() <= 0) {
-//                                    dataList.remove(dataList.get(pIndex));
-//                                    mAdapter.notifyDataDelete();
-//                                }
-//
-//                                if (dataList.size() <= 0) {
-//                                    mLlEmpty.setVisibility(View.VISIBLE);
-//                                    mPtrLayout.setVisibility(View.GONE);
-//                                    mFoot.setVisibility(View.GONE);
-//                                }
-//                                mAdapter.notifyDataSetChanged();
-//                                calcTotalPrice();//删除一本后更新总价格
-//                            }
-//                        }
-//                        , throwable -> {
-//                            progressDialog.dismiss();
-//                        });
-//
-//        addSubscription(s);
+        Subscription s = apiService.delCartitem(obj.getPrintId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            progressDialog.dismiss();
+                            if (response.success()) {
+
+                                dataList.get(pIndex).getPrintList().remove(obj);
+                                PrintPropertyModel.deleteById(obj.getPrintId());
+
+                                //数据全部删除后处理
+                                if (dataList.get(pIndex).getPrintList().size() <= 0) {
+                                    dataList.remove(dataList.get(pIndex));
+                                    mAdapter.notifyDataDelete();
+                                }
+
+                                if (dataList.size() <= 0) {
+                                    mLlEmpty.setVisibility(View.VISIBLE);
+                                    mPtrLayout.setVisibility(View.GONE);
+                                    mFoot.setVisibility(View.GONE);
+                                }
+                                mAdapter.notifyDataSetChanged();
+                                calcTotalPrice();//删除一本后更新总价格
+                            }
+                        }
+                        , throwable -> {
+                            progressDialog.dismiss();
+                        });
+
+        addSubscription(s);
 
     }
 
@@ -253,7 +252,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         dialog.show(getSupportFragmentManager(), "dialog");
     }
 
-    public void requestData(){
+    public void requestDat(){
         mokoData();
         mAdapter.setListData(dataList);
 //        for (PrintCartItem item : dataList) {
@@ -276,7 +275,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
     /**
      * 请求印刷车数据
      */
-    public void requestDat() {
+    public void requestData() {
 
         mStateView.loading();
         Subscription s = apiService.getCartList()
@@ -387,8 +386,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
 
     /**
      * 添加到订单
-     *
-     * @param view
      */
     public void clickAddOrder(View view) {
         String params = "";
@@ -447,8 +444,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
 
     /**
      * 点击属性
-     *
-     * @param view
      */
     public void clickProperty(View view) {
         PrintPropertyPriceObj obj = (PrintPropertyPriceObj) view.getTag(R.string.tag_obj);
@@ -472,8 +467,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
 
     /**
      * Item选中
-     *
-     * @param view
      */
     public void clickItem(View view) {
         PrintCartItem item = (PrintCartItem) view.getTag(R.string.tag_obj);
@@ -497,8 +490,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
 
     /**
      * click 编辑
-     *
-     * @param view
      */
     public void clickEdit(View view) {
         PrintCartItem cartItem = (PrintCartItem) view.getTag(R.string.tag_obj);

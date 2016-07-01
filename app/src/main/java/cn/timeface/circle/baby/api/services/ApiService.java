@@ -457,5 +457,10 @@ public interface ApiService {
     @POST("babyCloudAlbums/addPicToCloudAlbum")
     Observable<BaseResponse> addPicToCloudAlbum(@Query("cloudAlbumId") String cloudAlbumId,
                                                      @Query("mediaList") String mediaList);
+    /**
+     * 印刷车条目删除
+     */
+    @POST("babyOrder/delCartitem")
+    Observable<BaseResponse> delCartitem(@Query("printId") String printId);
 
 }

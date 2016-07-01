@@ -922,7 +922,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                 .subscribe(response -> {
                     progressDialog.dismiss();
                     if (response.success()) {
-                        doPay();
+                        startPayment();
                     } else {
                         Toast.makeText(MyOrderConfirmActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
                     }
@@ -931,6 +931,20 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                     progressDialog.dismiss();
                 });
         addSubscription(s);
+    }
+
+    private void startPayment() {
+        OrderInfoObj orderInfoObj = new OrderInfoObj();
+        orderInfoObj.setTradeNo(orderId);
+//        orderInfoObj.setPrice(orderPrice);
+        orderInfoObj.setPrice(0.01);
+        orderInfoObj.setSubject(getPayTitle());
+        orderInfoObj.setBody(getPayTitle());
+        try {
+            new AlipayPayment().requestPayment(this, orderInfoObj);
+        } catch (PrepareOrderException e) {
+            Log.e(TAG, "startPayment: ", e);
+        }
     }
 
     /**
@@ -951,7 +965,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //                    progressDialog.show();
 //                    switch (payType) {
                         // 支付宝
-        new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
 //                        case 1:
 //                            orderPrice = 0.01f;//一分钱测试支付
                             /*if (isUsePoint || !TextUtils.isEmpty(getUseCouponId())) {
