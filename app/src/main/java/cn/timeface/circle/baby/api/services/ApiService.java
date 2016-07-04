@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.api.models.responses.LessResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
+import cn.timeface.circle.baby.api.models.responses.MineBookListResponse;
 import cn.timeface.circle.baby.api.models.responses.MsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderListResponse;
@@ -456,11 +457,18 @@ public interface ApiService {
      */
     @POST("babyCloudAlbums/addPicToCloudAlbum")
     Observable<BaseResponse> addPicToCloudAlbum(@Query("cloudAlbumId") String cloudAlbumId,
-                                                     @Query("mediaList") String mediaList);
+                                                @Query("mediaList") String mediaList);
+
     /**
      * 印刷车条目删除
      */
     @POST("babyOrder/delCartitem")
     Observable<BaseResponse> delCartitem(@Query("printId") String printId);
 
+    /**
+     * 作品列表
+     */
+    @POST("babyBook/getBabyBookList")
+    Observable<MineBookListResponse> getBabyBookList(@Query("pageSize") int pageSize,
+                                                     @Query("currentPage") int currentPage);
 }

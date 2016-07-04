@@ -15,46 +15,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/bg_color1"
-            android:minHeight="?attr/actionBarSize"
-            android:paddingTop="@dimen/toolbar_padding_top">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="我的作品"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/text_large" />
-
-                <ImageView
-                    android:id="@+id/iv_add"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="@dimen/size_12"
-                    android:src="@drawable/add" />
-            </FrameLayout>
-        </android.support.v7.widget.Toolbar>
+            android:minHeight="?attr/actionBarSize" />
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swLayout"
+    <com.timeface.refreshload.PullRefreshLoadRecyclerView
+        android:id="@+id/rlRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/appbar_layout">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/content_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/bg_color2"
-            android:scrollbars="none" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_below="@id/appbar_layout"
+        android:background="@color/bg_color2"
+        android:scrollbars="none" />
 
     <LinearLayout
         android:id="@+id/ll_no_data"
@@ -94,8 +64,9 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
     </LinearLayout>
+
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 </RelativeLayout>

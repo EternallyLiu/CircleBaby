@@ -2,16 +2,13 @@ package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,13 +19,13 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.dialog.LittleWindow;
 
 /**
  * Created by lidonglin on 2016/6/15.
@@ -56,8 +53,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
     @Override
     public ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
         View view = mLayoutInflater.inflate(R.layout.item_minebook, viewGroup, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -105,17 +101,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         FragmentManager supportFragmentManager;
         View.OnClickListener onClickListener = null;
         MineBookObj obj;
-        private EditText tvCount;
-        private TextView tvSize16;
-        private TextView tvSize32;
-        private TextView tvColor;
-        private TextView tvBw;
-        private TextView tvPaper1;
-        private TextView tvPaper2;
-        private TextView tvBind1;
-        private TextView tvBind2;
-        private TextView tvBind3;
-        private BookObj bookObj;
+        private LittleWindow littleWindow;
 
         ViewHolder(View view) {
             super(view);
@@ -133,18 +119,21 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     llMenu.getChildAt(0).setPressed(true);
                     llMenu.getChildAt(1).setPressed(true);
                     llMenu.getChildAt(2).setPressed(true);
-
-                    View view = View.inflate(context, R.layout.view_popwindow, null);
-                    TextView tvShare = (TextView) view.findViewById(R.id.tv_share);
-                    TextView tvDelete = (TextView) view.findViewById(R.id.tv_delete);
-                    tvShare.setOnClickListener(this);
-                    tvDelete.setOnClickListener(this);
-                    PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//                    popupWindow.showAtLocation(itemView, Gravity.RIGHT | Gravity.CENTER_VERTICAL, 0, 0);
-                    popupWindow.setBackgroundDrawable(new BitmapDrawable());
-                    popupWindow.setOutsideTouchable(true);
-                    popupWindow.showAsDropDown(llMenu);
-
+                    if (littleWindow == null) {
+                        littleWindow = new LittleWindow(context);
+                    }
+                    littleWindow.setContentData(obj);
+                    littleWindow.setOnClickItemListener((id, bookObj) -> {
+                        switch (id) {
+                            case R.id.share:
+                                //分享
+                                break;
+                            case R.id.del:
+                                //删除
+                                break;
+                        }
+                    });
+                    littleWindow.show(v);
                     break;
                 case R.id.tv_edit:
 
@@ -158,12 +147,6 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                             }, error -> {
                                 Log.e("MineBookAdapter", "printStatus:");
                             });
-                    break;
-                case R.id.tv_share:
-
-                    break;
-                case R.id.tv_delete:
-
                     break;
             }
         }
