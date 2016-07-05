@@ -30,7 +30,9 @@ import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.RecommendObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
+import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
+import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -38,9 +40,11 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener {
+public class HomeFragment extends BaseFragment implements View.OnClickListener{
     private static final String ARG_PARAM1 = "param1";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -76,6 +80,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private IPTRRecyclerListener ptrListener;
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
 
+    private List<TimeLineGroupObj> tempList;
 
     public HomeFragment() {
     }
@@ -94,7 +99,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -105,7 +110,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         setActionBar(toolbar);
         setupPTR();
         initData();
-
+//        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
         adapter = new TimeLineGroupAdapter(getActivity(), new ArrayList<>());
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         contentRecyclerView.setAdapter(adapter);
@@ -162,6 +167,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
                     }
+
+                    tempList = timelineResponse.getDataList();
                     setDataList(timelineResponse.getDataList());
                 }, error -> {
                     Log.e(TAG, "timeline:");
@@ -203,6 +210,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -321,5 +329,22 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             adapter.removeHeader(view);
         });
         return view;
+    }
+
+    @Subscribe
+    public void onEvent(CommentSubmit commentSubmit) {
+
+        replaceList(commentSubmit.getReplacePosition(), commentSubmit.getListPos(), commentSubmit.getTimeLineObj());
+    }
+
+    public void replaceList(int replacePosition, int listPos, TimeLineObj timeLineObj) {
+        if (tempList.size() > replacePosition){
+            if (tempList.get(replacePosition).getTimeLineList().size() > listPos){
+                tempList.get(replacePosition).getTimeLineList().remove(listPos);
+                tempList.get(replacePosition).getTimeLineList().add(listPos, timeLineObj);
+            }
+        }
+        adapter.setListData(tempList);
+        adapter.notifyDataSetChanged();
     }
 }
