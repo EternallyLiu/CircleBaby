@@ -18,6 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/bg_color1"
             android:minHeight="?attr/actionBarSize"
+            android:paddingTop="@dimen/toolbar_padding_top"
             android:theme="@style/AppTheme.PopupOverlay"
             app:theme="@style/ToolbarColor">
 

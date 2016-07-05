@@ -235,9 +235,6 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         LinearLayout llRecode;
         @Bind(R.id.ll_comment_like)
         LinearLayout llCommentLike;
-
-        @Bind(R.id.commentAnd)
-        LinearLayout commentSum;
         List<TimeLineObj> listData;
         TimeLineObj timeLineObj;
         int position;
