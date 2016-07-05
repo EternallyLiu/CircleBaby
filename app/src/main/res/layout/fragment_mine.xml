@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@color/bg_color1"
         android:fitsSystemWindows="true"
-        android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/toolbar_padding_top">
+        android:minHeight="?attr/actionBarSize">
 
         <TextView
             android:id="@+id/tv_mine"

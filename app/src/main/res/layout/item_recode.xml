@@ -128,6 +128,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/commentAnd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/size_48"
@@ -140,7 +141,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:padding="@dimen/size_6">
+            >
 
             <LinearLayout
                 android:id="@+id/ll_good_list_users_bar"

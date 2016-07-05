@@ -55,10 +55,9 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
         holder.tvDateex.setText(item.getDateEx());
         holder.tvAge.setText(item.getAge());
         List<TimeLineObj> timeLineList = item.getTimeLineList();
-        TimeLineAdapter adapter = new TimeLineAdapter(context, timeLineList);
+        TimeLineAdapter adapter = new TimeLineAdapter(context, timeLineList, position);
         holder.contentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         holder.contentRecyclerView.setAdapter(adapter);
-
     }
 
     @Override

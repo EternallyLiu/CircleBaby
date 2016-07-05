@@ -16,6 +16,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.utils.DateUtil;
@@ -50,9 +52,13 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
     private ViewHolder holder;
     public List<TimeLineObj> listData;
     private TimeLineObj item;
+    private List<TimeLineGroupObj> allDetailsList;
+    public int allDetailsListPosition;
 
-    public TimeLineAdapter(Context mContext, List<TimeLineObj> listData) {
+    public TimeLineAdapter(Context mContext, List<TimeLineObj> listData, int position) {
         super(mContext, listData);
+
+        allDetailsListPosition = position;
         this.listData = listData;
         this.context = mContext;
         normalColor = mContext.getResources().getColor(R.color.gray_normal);
@@ -127,7 +133,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.llCommentWrapper.setVisibility(View.GONE);
             holder.llCommentWrapper.removeAllViews();
         }
-        if (item.getCommentCount() > 3) {
+        if (item.getCommentList().size() > 3) {
             holder.tvMoreComment.setVisibility(View.VISIBLE);
         } else {
             holder.tvMoreComment.setVisibility(View.GONE);
@@ -145,7 +151,11 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.hsv.setVisibility(View.GONE);
             holder.llGoodListUsersBar.removeAllViews();
         }
-
+//        if (holder.hsv.getVisibility() == View.GONE && holder.llCommentWrapper.getVisibility() == View.GONE){
+//            holder.commentSum.setVisibility(View.GONE);
+//        }else {
+//            holder.commentSum.setVisibility(View.VISIBLE);
+//        }
         if (item.getType() == 1) {
             holder.ivVideo.setVisibility(View.VISIBLE);
             int width = Remember.getInt("width", 0);
@@ -156,6 +166,9 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 //            holder.ivVideo.setLayoutParams(layoutParams);
             holder.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
+        holder.position = position;
+        holder.allDetailsPosition = allDetailsListPosition;
+        holder.listData = listData;
 
     }
 
@@ -222,8 +235,12 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         TextView tvMoreComment;
         @Bind(R.id.ll_recode)
         LinearLayout llRecode;
-
+        @Bind(R.id.commentAnd)
+        LinearLayout commentSum;
+        List<TimeLineObj> listData;
         TimeLineObj timeLineObj;
+        int position;
+        int allDetailsPosition;
 
 
         ViewHolder(View view) {
@@ -234,7 +251,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    TimeLineDetailActivity.open(context, timeLineObj);
+//                    TimeLineDetailActivity.open(context, timeLineObj);
+                    TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
                 }
             });
         }
@@ -247,7 +265,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.ll_recode:
-                    TimeLineDetailActivity.open(context, timeLineObj);
+//                    TimeLineDetailActivity.open(context, timeLineObj);
+                    TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
                     break;
                 case R.id.icon_like:
                     int p = iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;
@@ -255,15 +274,41 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 ToastUtil.showToast(response.getInfo());
+
                                 if (response.success()) {
-                                    if (p == 1) {
+                                    boolean isContains = false;
+                                    if (p == 1) {//之前没有点赞
+
+                                        listData.get(position).setLike(1);
+                                        int likeCount = listData.get(position).getLikeCount();
+                                        listData.get(position).setLikeCount(likeCount+1);
+                                        for (UserObj u : listData.get(position).getLikeList()){
+                                            if (u.getUserId().equals(FastData.getUserInfo().getUserId())){
+                                                isContains = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!isContains){
+                                            listData.get(position).getLikeList().add(FastData.getUserInfo());
+                                            isContains = false;
+                                        }
+
                                         iconLike.setTextColor(Color.RED);
                                         hsv.setVisibility(View.VISIBLE);
-
                                         ImageView imageView = initPraiseItem();
                                         llGoodListUsersBar.addView(imageView);
                                         GlideUtil.displayImage(FastData.getAvatar(), imageView);
                                     } else {
+
+                                        listData.get(position).setLike(0);
+                                        int likeCount = listData.get(position).getLikeCount();
+                                        listData.get(position).setLikeCount(likeCount-1);
+                                        for (UserObj u : listData.get(position).getLikeList()){
+                                            if (u.getUserId().equals(FastData.getUserId())){
+                                                listData.get(position).getLikeList().remove(u);
+                                            }
+                                        }
+
                                         iconLike.setTextColor(context.getResources().getColor(R.color.gray_normal));
                                         llGoodListUsersBar.removeAllViews();
                                         if (timeLineObj.getLikeCount() == 0) {
