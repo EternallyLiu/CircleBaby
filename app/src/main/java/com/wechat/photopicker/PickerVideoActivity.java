@@ -48,7 +48,7 @@ import cn.timeface.common.utils.StorageUtil;
 import de.greenrobot.event.Subscribe;
 
 /**
- * 选择图界面
+ * 选择视频界面
  */
 public class PickerVideoActivity extends BaseAppCompatActivity implements IEventBus {
 

@@ -2,11 +2,14 @@ package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.List;
 
@@ -47,6 +50,7 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = ((ViewHolder) viewHolder);
+        holder.contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(context).color(Color.TRANSPARENT).sizeResId(R.dimen.view_space_normal).build());
         TimeLineGroupObj item = getItem(position);
         String month = DateUtil.getMonth(item.getDate());
         String day = DateUtil.getDay(item.getDate());
@@ -58,6 +62,7 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
         TimeLineAdapter adapter = new TimeLineAdapter(context, timeLineList, position);
         holder.contentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         holder.contentRecyclerView.setAdapter(adapter);
+
     }
 
     @Override

@@ -1,18 +1,22 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wechat.photopicker.PickerPhotoActivity2;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -20,9 +24,11 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.AddBookAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class AddBookFragment extends BaseFragment implements View.OnClickListener {
 
@@ -85,8 +91,40 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_creatbook:
-
+                apiService.queryImageInfoList("", bookTypeListObj.getType())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                List<MediaObj> mediaObjs = new ArrayList<>();
+                                List<ImageInfoListObj> dataList = response.getDataList();
+                                if(dataList.size()>0){
+                                    for (ImageInfoListObj obj : dataList) {
+                                        List<MediaObj> mediaList = obj.getMediaList();
+                                        int timeId = obj.getTimeId();
+//                                        mediaObjs.addAll(mediaList);
+                                        for(MediaObj mediaObj : mediaList){
+                                            mediaObj.setTimeId(timeId);
+                                        }
+                                    }
+                                    Log.d(TAG , "timeId============" + dataList.get(0).getMediaList().get(0).getTimeId());
+                                }else{
+                                    ToastUtil.showToast("没有此类图片");
+                                }
+                                startPhotoPick(dataList);
+                            }else{
+                                ToastUtil.showToast(response.getInfo());
+                            }
+                        }, error -> {
+                            Log.e(TAG, "queryImageInfoList:");
+                        });
                 break;
         }
+    }
+
+    private void startPhotoPick(List<ImageInfoListObj> mediaObjs) {
+        Intent intent = new Intent(getActivity(), PickerPhotoActivity2.class);
+        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) mediaObjs);
+//        startActivityForResult(intent, 10);
+        startActivity(intent);
     }
 }

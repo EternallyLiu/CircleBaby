@@ -21,6 +21,7 @@ public class MediaObj extends BaseObj
     String videoUrl;        //视频url
     int selected;           //成书的时候图片选中状态 1-选中 默认是0-不选中
     private int isCover;
+    int timeId;
 
     //图片
     public MediaObj(String content, String imgUrl, int w, int h, long photographTime) {
@@ -50,6 +51,22 @@ public class MediaObj extends BaseObj
         this.localPath = localPath;
         this.photographTime = photographTime;
         this.videoUrl = videoUrl;
+    }
+
+    public int getTimeId() {
+        return timeId;
+    }
+
+    public void setTimeId(int timeId) {
+        this.timeId = timeId;
+    }
+
+    public int getSelected() {
+        return selected;
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
     }
 
     public String getContent() {

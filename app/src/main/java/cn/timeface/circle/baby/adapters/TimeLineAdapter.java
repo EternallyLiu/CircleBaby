@@ -122,6 +122,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         }
 
         if (item.getCommentList().size() > 0) {
+            holder.llCommentLike.setVisibility(View.VISIBLE);
             holder.llCommentWrapper.setVisibility(View.VISIBLE);
             holder.llCommentWrapper.removeAllViews();
             int comments = item.getCommentList().size() > 3 ? 3 : item.getCommentList().size();
@@ -140,6 +141,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         }
 
         if (item.getLikeCount() > 0) {
+            holder.llCommentLike.setVisibility(View.VISIBLE);
             holder.hsv.setVisibility(View.VISIBLE);
             holder.llGoodListUsersBar.removeAllViews();
             for (UserObj u : item.getLikeList()) {
@@ -151,11 +153,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.hsv.setVisibility(View.GONE);
             holder.llGoodListUsersBar.removeAllViews();
         }
-//        if (holder.hsv.getVisibility() == View.GONE && holder.llCommentWrapper.getVisibility() == View.GONE){
-//            holder.commentSum.setVisibility(View.GONE);
-//        }else {
-//            holder.commentSum.setVisibility(View.VISIBLE);
-//        }
+
         if (item.getType() == 1) {
             holder.ivVideo.setVisibility(View.VISIBLE);
             int width = Remember.getInt("width", 0);
@@ -235,6 +233,9 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         TextView tvMoreComment;
         @Bind(R.id.ll_recode)
         LinearLayout llRecode;
+        @Bind(R.id.ll_comment_like)
+        LinearLayout llCommentLike;
+
         @Bind(R.id.commentAnd)
         LinearLayout commentSum;
         List<TimeLineObj> listData;
@@ -274,7 +275,6 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 ToastUtil.showToast(response.getInfo());
-
                                 if (response.success()) {
                                     boolean isContains = false;
                                     if (p == 1) {//之前没有点赞
@@ -294,7 +294,9 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         }
 
                                         iconLike.setTextColor(Color.RED);
+                                        llCommentLike.setVisibility(View.VISIBLE);
                                         hsv.setVisibility(View.VISIBLE);
+
                                         ImageView imageView = initPraiseItem();
                                         llGoodListUsersBar.addView(imageView);
                                         GlideUtil.displayImage(FastData.getAvatar(), imageView);
@@ -313,9 +315,16 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         llGoodListUsersBar.removeAllViews();
                                         if (timeLineObj.getLikeCount() == 0) {
                                             hsv.setVisibility(View.GONE);
+                                            if(timeLineObj.getCommentCount()==0){
+                                                llCommentLike.setVisibility(View.GONE);
+                                            }
                                         } else if (timeLineObj.getLikeCount() == 1 && timeLineObj.getLikeList().get(0).getUserId().equals(FastData.getUserId())) {
                                             hsv.setVisibility(View.GONE);
+                                            if(timeLineObj.getCommentCount()==0){
+                                                llCommentLike.setVisibility(View.GONE);
+                                            }
                                         } else {
+                                            llCommentLike.setVisibility(View.VISIBLE);
                                             hsv.setVisibility(View.VISIBLE);
                                             for (UserObj u : timeLineObj.getLikeList()) {
                                                 ImageView imageView = initPraiseItem();

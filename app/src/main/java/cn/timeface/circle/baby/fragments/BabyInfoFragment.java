@@ -279,6 +279,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
     private void startPhotoPick() {
         Intent intent = new Intent(getActivity(), PickerPhotoActivity.class);
         intent.putExtra(KEY_SELECTED_PHOTO_SIZE, 8);
+        intent.putExtra("local",true);
         startActivityForResult(intent, PicutreSelcted);
     }
 
