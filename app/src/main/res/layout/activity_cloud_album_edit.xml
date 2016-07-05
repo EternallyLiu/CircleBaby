@@ -114,7 +114,7 @@
         android:onClick="clickFinishEdit"
         android:src="@drawable/ic_done"
         android:tint="@android:color/white"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_anchor="@id/recyclerView"
         app:layout_anchorGravity="bottom|right|end" />
 </android.support.design.widget.CoordinatorLayout>
