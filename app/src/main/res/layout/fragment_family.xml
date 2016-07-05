@@ -49,18 +49,20 @@
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/iv_cover_bg"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            android:src="@color/bg_color1" />
+            android:src="@drawable/headbg"
+            android:layout_alignBottom="@+id/ll_layout"/>
 
         <LinearLayout
+            android:id="@+id/ll_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/tran_30_black"
@@ -83,8 +85,7 @@
                     android:id="@+id/iv_creator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                     />
+                    android:layout_gravity="right|bottom" />
 
             </FrameLayout>
 
@@ -124,12 +125,13 @@
 
         </LinearLayout>
 
-    </FrameLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
+
     <LinearLayout
         android:id="@+id/ll_familymember"
         android:layout_width="match_parent"
@@ -137,6 +139,7 @@
         android:orientation="vertical">
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_familymember_none"
         android:layout_width="match_parent"

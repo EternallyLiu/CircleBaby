@@ -116,6 +116,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         }
 
         if (item.getCommentList().size() > 0) {
+            holder.llCommentLike.setVisibility(View.VISIBLE);
             holder.llCommentWrapper.setVisibility(View.VISIBLE);
             holder.llCommentWrapper.removeAllViews();
             int comments = item.getCommentList().size() > 3 ? 3 : item.getCommentList().size();
@@ -134,6 +135,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         }
 
         if (item.getLikeCount() > 0) {
+            holder.llCommentLike.setVisibility(View.VISIBLE);
             holder.hsv.setVisibility(View.VISIBLE);
             holder.llGoodListUsersBar.removeAllViews();
             for (UserObj u : item.getLikeList()) {
@@ -222,6 +224,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         TextView tvMoreComment;
         @Bind(R.id.ll_recode)
         LinearLayout llRecode;
+        @Bind(R.id.ll_comment_like)
+        LinearLayout llCommentLike;
 
         TimeLineObj timeLineObj;
 
@@ -258,6 +262,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                 if (response.success()) {
                                     if (p == 1) {
                                         iconLike.setTextColor(Color.RED);
+                                        llCommentLike.setVisibility(View.VISIBLE);
                                         hsv.setVisibility(View.VISIBLE);
 
                                         ImageView imageView = initPraiseItem();
@@ -268,9 +273,16 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         llGoodListUsersBar.removeAllViews();
                                         if (timeLineObj.getLikeCount() == 0) {
                                             hsv.setVisibility(View.GONE);
+                                            if(timeLineObj.getCommentCount()==0){
+                                                llCommentLike.setVisibility(View.GONE);
+                                            }
                                         } else if (timeLineObj.getLikeCount() == 1 && timeLineObj.getLikeList().get(0).getUserId().equals(FastData.getUserId())) {
                                             hsv.setVisibility(View.GONE);
+                                            if(timeLineObj.getCommentCount()==0){
+                                                llCommentLike.setVisibility(View.GONE);
+                                            }
                                         } else {
+                                            llCommentLike.setVisibility(View.VISIBLE);
                                             hsv.setVisibility(View.VISIBLE);
                                             for (UserObj u : timeLineObj.getLikeList()) {
                                                 ImageView imageView = initPraiseItem();

@@ -182,6 +182,7 @@
         <activity android:name=".activities.InviteCodeActivity" />
         <activity android:name=".activities.RelationshipActivity" />
         <activity android:name="com.wechat.photopicker.PickerPhotoActivity" />
+        <activity android:name="com.wechat.photopicker.PickerPhotoActivity2" />
         <activity android:name="com.wechat.photopicker.PickerVideoActivity" />
         <activity android:name=".activities.PublishActivity" />
         <activity android:name=".activities.DiaryPublishActivity" />

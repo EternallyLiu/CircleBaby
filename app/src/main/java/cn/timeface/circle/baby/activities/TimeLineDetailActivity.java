@@ -123,6 +123,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     LinearLayout layout;
     @Bind(R.id.rl_layout)
     RelativeLayout relativeLayout;
+    @Bind(R.id.ll_comment_like)
+    LinearLayout llCommentLike;
 
     private TimeLineObj timelineobj;
     private AlertDialog dialog;
@@ -210,6 +212,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
 
         if (timelineobj.getLikeCount() > 0) {
+            llCommentLike.setVisibility(View.VISIBLE);
             hsv.setVisibility(View.VISIBLE);
             llGoodListUsersBar.removeAllViews();
             for (UserObj u : timelineobj.getLikeList()) {
@@ -222,6 +225,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             hsv.setVisibility(View.GONE);
         }
         if (timelineobj.getCommentList().size() > 0) {
+            llCommentLike.setVisibility(View.VISIBLE);
             llCommentWrapper.setVisibility(View.VISIBLE);
             llCommentWrapper.removeAllViews();
             int comments = timelineobj.getCommentList().size();
@@ -261,7 +265,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 int screenHeight = decorView.getRootView().getHeight();
                 int heightDifference = screenHeight - rect.bottom;
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) relativeLayout.getLayoutParams();
-                params.setMargins(0,0,0,heightDifference);
+                params.setMargins(0, 0, 0, heightDifference);
                 relativeLayout.requestLayout();
             }
         });
@@ -319,28 +323,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                     return;
                 }
 
-//                apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timelineobj.getTimeId(),commmentId)
-//                        .flatMap(new Func1<BaseResponse, Observable<TimeDetailResponse>>() {
-//                            @Override
-//                            public Observable<TimeDetailResponse> call(BaseResponse response) {
-//                                return apiService.queryBabyTimeDetail(time_Id);
-//                            }
-//                        })
-//                        .compose(SchedulersCompat.applyIoSchedulers())
-//                        .subscribe(new Action1<TimeDetailResponse>() {
-//                            @Override
-//                            public void call(TimeDetailResponse timeDetailResponse) {
-//                                    Log.e("TimeLineDetailActivity", "===");
-//                                if (timeDetailResponse == null){
-//                                    Log.e("TimeLineDetailActivity", "null");
-//                                    return;
-//                                }
-//                                Log.e("TimeLineDetailActivity", timeDetailResponse.getTimeInfo().getCommentList().size()+"");
-//
-//                            }
-//                        },error -> {
-//                            Log.e(TAG, "error");
-//                        });
                 apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timelineobj.getTimeId(),commmentId)
                         .filter(new Func1<BaseResponse, Boolean>() {
                             @Override
@@ -360,9 +342,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                     etCommment.setText("");
                                 }
                             }
-
                         }, error ->{
-                            Log.e(TAG,"shibai");
+                            Log.e(TAG,"comment");
                         });
                 break;
             case R.id.rl_single:
@@ -371,16 +352,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 startActivity(intent);
                 break;
             case R.id.ll_menu:
-//                dialog = new AlertDialog.Builder(this).setView(initMenu()).show();
-//                dialog.getWindow().setGravity(Gravity.BOTTOM);
-//                View view = initMenu();
-//                popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//                popupWindow.setBackgroundDrawable(new BitmapDrawable());
-//                popupWindow.setOutsideTouchable(true);
-//                popupWindow.showAtLocation(v, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-
                 new TimeLineActivityMenuDialog(this).share(timelineobj);
-
                 break;
             case R.id.icon_like:
                 int p = iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;
@@ -390,6 +362,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                             if (response.success()) {
                                 if (p == 1) {
                                     iconLike.setTextColor(Color.RED);
+                                    llCommentLike.setVisibility(View.VISIBLE);
                                     hsv.setVisibility(View.VISIBLE);
 
                                     ImageView imageView = initPraiseItem();
@@ -400,9 +373,16 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                     llGoodListUsersBar.removeAllViews();
                                     if (timelineobj.getLikeCount() == 0) {
                                         hsv.setVisibility(View.GONE);
+                                        if(timelineobj.getCommentCount()==0){
+                                            llCommentLike.setVisibility(View.GONE);
+                                        }
                                     } else if (timelineobj.getLikeCount() == 1 && timelineobj.getLikeList().get(0).getUserId().equals(FastData.getUserId())) {
                                         hsv.setVisibility(View.GONE);
+                                        if(timelineobj.getCommentCount()==0){
+                                            llCommentLike.setVisibility(View.GONE);
+                                        }
                                     } else {
+                                        llCommentLike.setVisibility(View.VISIBLE);
                                         hsv.setVisibility(View.VISIBLE);
                                         for (UserObj u : timelineobj.getLikeList()) {
                                             ImageView imageView = initPraiseItem();
@@ -423,7 +403,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 break;
             case R.id.rl_cancel:
                 dialog.dismiss();
-//                popupWindow.dismiss();
                 break;
             case R.id.rl_action:
                 CommentObj commment = (CommentObj) v.getTag(R.string.tag_obj);
@@ -562,6 +541,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
      */
     private void reLoadCommend(){
         if (timelineobj.getCommentList().size() > 0) {
+            llCommentLike.setVisibility(View.VISIBLE);
             llCommentWrapper.setVisibility(View.VISIBLE);
             llCommentWrapper.removeAllViews();
             int comments = timelineobj.getCommentList().size();
@@ -572,6 +552,9 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         } else {
             llCommentWrapper.removeAllViews();
             llCommentWrapper.setVisibility(View.GONE);
+            if(timelineobj.getLikeCount()==0){
+                llCommentLike.setVisibility(View.GONE);
+            }
         }
     }
 }

@@ -148,7 +148,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
                 .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
                 .tfPtrListener(ptrListener);
-        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(Color.TRANSPARENT).sizeResId(R.dimen.view_space_normal).build());
+        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
     }
 
     private void reqData(int currentPage) {

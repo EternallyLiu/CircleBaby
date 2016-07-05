@@ -18,6 +18,7 @@ import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryTextResponse;
 import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
 import cn.timeface.circle.baby.api.models.responses.FamilyListResponse;
+import cn.timeface.circle.baby.api.models.responses.ImageInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
 import cn.timeface.circle.baby.api.models.responses.LessResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
@@ -462,5 +463,13 @@ public interface ApiService {
      */
     @POST("babyOrder/delCartitem")
     Observable<BaseResponse> delCartitem(@Query("printId") String printId);
+
+    /**
+     * 获取图片数据
+     */
+    @POST("babyTime/queryImageInfoList")
+    Observable<ImageInfoListResponse> queryImageInfoList(@Query("bookId") String bookId,
+                                                @Query("type") int type);
+
 
 }
