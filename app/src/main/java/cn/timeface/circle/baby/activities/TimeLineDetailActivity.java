@@ -119,8 +119,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     LinearLayout layout;
     @Bind(R.id.rl_layout)
     RelativeLayout relativeLayout;
-    @Bind(R.id.ll_comment_like)
-    LinearLayout llCommentLike;
 
     private TimeLineObj timelineobj;
     private AlertDialog dialog;
@@ -228,7 +226,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
 
         if (timelineobj.getLikeCount() > 0) {
-            llCommentLike.setVisibility(View.VISIBLE);
             hsv.setVisibility(View.VISIBLE);
             llGoodListUsersBar.removeAllViews();
             for (UserObj u : timelineobj.getLikeList()) {
@@ -241,7 +238,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             hsv.setVisibility(View.GONE);
         }
         if (timelineobj.getCommentList().size() > 0) {
-            llCommentLike.setVisibility(View.VISIBLE);
             llCommentWrapper.setVisibility(View.VISIBLE);
             llCommentWrapper.removeAllViews();
             int comments = timelineobj.getCommentList().size();
@@ -401,7 +397,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                     }
 
                                     iconLike.setTextColor(Color.RED);
-                                    llCommentLike.setVisibility(View.VISIBLE);
                                     hsv.setVisibility(View.VISIBLE);
                                     ImageView imageView = initPraiseItem();
                                     llGoodListUsersBar.addView(imageView);
@@ -429,15 +424,12 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                     if (timelineobj.getLikeCount() == 0) {
                                         hsv.setVisibility(View.GONE);
                                         if(timelineobj.getCommentCount()==0){
-                                            llCommentLike.setVisibility(View.GONE);
                                         }
                                     } else if (timelineobj.getLikeCount() == 1 && timelineobj.getLikeList().get(0).getUserId().equals(FastData.getUserId())) {
                                         hsv.setVisibility(View.GONE);
                                         if(timelineobj.getCommentCount()==0){
-                                            llCommentLike.setVisibility(View.GONE);
                                         }
                                     } else {
-                                        llCommentLike.setVisibility(View.VISIBLE);
                                         hsv.setVisibility(View.VISIBLE);
                                         for (UserObj u : timelineobj.getLikeList()) {
                                             ImageView imageView = initPraiseItem();
@@ -600,7 +592,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
      */
     private void reLoadCommend(){
         if (timelineobj.getCommentList().size() > 0) {
-            llCommentLike.setVisibility(View.VISIBLE);
             llCommentWrapper.setVisibility(View.VISIBLE);
             llCommentWrapper.removeAllViews();
             int comments = timelineobj.getCommentList().size();
@@ -612,7 +603,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             llCommentWrapper.removeAllViews();
             llCommentWrapper.setVisibility(View.GONE);
             if(timelineobj.getLikeCount()==0){
-                llCommentLike.setVisibility(View.GONE);
             }
         }
     }
