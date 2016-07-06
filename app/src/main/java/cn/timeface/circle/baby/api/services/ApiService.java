@@ -469,6 +469,20 @@ public interface ApiService {
     Observable<ImageInfoListResponse> queryImageInfoList(@Query("bookId") String bookId,
                                                 @Query("type") int type);
 
+    /**
+     * 我的作品列表
+     */
+    @POST("babyBook/getBookList")
+    Observable<MineBookListResponse> getBookList();
+
+    /**
+     * 创建作品
+     */
+    @POST("babyBook/createBook")
+    Observable<BaseResponse> createBook(@Query("author") String author,
+                                        @Query("bookType") int bookType,
+                                        @Query("bookCover") String bookCover,
+                                        @Query("dataList") String dataList);
 
     /**
      * 作品列表

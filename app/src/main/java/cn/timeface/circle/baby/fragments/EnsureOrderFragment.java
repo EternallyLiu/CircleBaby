@@ -125,9 +125,9 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void initData() {
-        GlideUtil.displayImage(mineBookObj.getCoverImage(), ivBook);
+        GlideUtil.displayImage(mineBookObj.getBookCover(), ivBook);
         tvExpress1.setSelected(true);
-        tvName.setText(mineBookObj.getTitle());
+        tvName.setText(mineBookObj.getBookName());
         tvSize.setText(bookObj.getSize());
         tvColor.setText(bookObj.getColor());
         tvPaper.setText(bookObj.getPaper());
@@ -169,7 +169,7 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
                     ToastUtil.showToast("请完善收货地址");
                     return;
                 }
-                bookObj.setBookType(mineBookObj.getType());
+                bookObj.setBookType(mineBookObj.getBookType());
                 ArrayList<BookObj> dataList = new ArrayList<>();
                 dataList.add(bookObj);
                 Gson gson = new Gson();
@@ -195,8 +195,8 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
         OrderInfoObj orderInfoObj = new OrderInfoObj();
         orderInfoObj.setTradeNo(lessResponse.getOrderId());
         orderInfoObj.setPrice(lessResponse.getPrice()*bookObj.getNum());
-        orderInfoObj.setSubject(mineBookObj.getTitle());
-        orderInfoObj.setBody(mineBookObj.getTitle());
+        orderInfoObj.setSubject(mineBookObj.getBookName());
+        orderInfoObj.setBody(mineBookObj.getBookName());
         try {
             PaymentFactory.newInstance(0).requestPayment(getActivity(), orderInfoObj);
         } catch (PrepareOrderException e) {

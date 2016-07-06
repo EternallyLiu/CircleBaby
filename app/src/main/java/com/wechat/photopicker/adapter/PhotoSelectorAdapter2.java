@@ -54,8 +54,11 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
         mContext = context;
         mOptionalPhotoSize = optionalPhotoSize;
         mPhotos = new ArrayList<>();
-        for(ImageInfoListObj obj : dataList){
+        for (ImageInfoListObj obj : dataList) {
             mPhotos.addAll(obj.getMediaList());
+            for (MediaObj media : obj.getMediaList()) {
+                Log.d(TAG, "media.getTimeId()=================" + media.getTimeId());
+            }
         }
     }
 
@@ -143,17 +146,14 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
                     if (mSelectorPhotos.contains(photo)) {
                         Log.d(TAG, "remove photo");
                         photo.setSelected(0);
-                        int timeId = photo.getTimeId();
-                        mPhotos.set(position,photo);
+                        timeIds.remove(Integer.valueOf(photo.getTimeId()));
+                        mPhotos.set(position, photo);
                         mSelectorPhotos.remove(photo);
                         notifyItemChanged(position);
                     } else if (selectedPhotosSize != mOptionalPhotoSize) {
                         Log.d(TAG, "add photo");
-                        Log.d(TAG, "photo.getTimeId()======"+photo.getTimeId());
                         photo.setSelected(1);
-//                        if(!timeIds.contains(photo.getTimeId())){
-                            timeIds.add(photo.getTimeId());
-//                        }
+                        timeIds.add(photo.getTimeId());
                         mPhotos.set(position, photo);
                         mSelectorPhotos.add(photo);
                         notifyItemChanged(position);
@@ -220,10 +220,15 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
         return mSelectorPhotos;
     }
 
+    public List<Integer> getTimeIds(){
+        return timeIds;
+    }
+
+    public List<ImageInfoListObj> getDataList() {
+        return dataList;
+    }
+
     public List<MediaObj> getPhotos() {
-        for (int i: timeIds){
-            Log.d("sb","timeId============"+i);
-        }
         return mPhotos;
     }
 

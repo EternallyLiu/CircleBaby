@@ -10,23 +10,72 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
  * Created by lidonglin on 2016/6/15.
  */
 public class MineBookObj extends BaseObj implements Parcelable {
-    String coverImage;      //封面图片的url
-    long createTime;        //创建当前作品的时间戳
-    int pageCount;          //当前作品的页数
-    String title;           //当前作品名称
-    int type;               //当前作品的类型
+    String bookCover;      //封面图片的url
+    long updateTime;        //创建当前作品的时间戳
+    int pageNum;          //当前作品的页数
+    String bookName;           //当前作品名称
+    int bookType;               //当前作品的类型
     String bookId;          //作品Id
     String author;          //作者
     int printCode;          //状态code码
+    String description;
 
-    public MineBookObj(String coverImage, long createTime, int pageCount, String title, int type , String bookId , String author) {
-        this.coverImage = coverImage;
-        this.createTime = createTime;
-        this.pageCount = pageCount;
-        this.title = title;
-        this.type = type;
+    public MineBookObj(String bookCover, long updateTime, int pageNum, String bookName, int bookType , String bookId , String author) {
+        this.bookCover = bookCover;
+        this.updateTime = updateTime;
+        this.pageNum = pageNum;
+        this.bookName = bookName;
+        this.bookType = bookType;
         this.bookId = bookId;
         this.author = author;
+    }
+
+    public String getBookCover() {
+        return bookCover;
+    }
+
+    public void setBookCover(String bookCover) {
+        this.bookCover = bookCover;
+    }
+
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public int getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public int getBookType() {
+        return bookType;
+    }
+
+    public void setBookType(int bookType) {
+        this.bookType = bookType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getPrintCode() {
@@ -53,46 +102,6 @@ public class MineBookObj extends BaseObj implements Parcelable {
         this.bookId = bookId;
     }
 
-    public String getCoverImage() {
-        return coverImage;
-    }
-
-    public void setCoverImage(String coverImage) {
-        this.coverImage = coverImage;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public int getPageCount() {
-        return pageCount;
-    }
-
-    public void setPageCount(int pageCount) {
-        this.pageCount = pageCount;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -100,26 +109,30 @@ public class MineBookObj extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.coverImage);
-        dest.writeLong(this.createTime);
-        dest.writeInt(this.pageCount);
-        dest.writeString(this.title);
-        dest.writeInt(this.type);
+        dest.writeString(this.bookCover);
+        dest.writeLong(this.updateTime);
+        dest.writeInt(this.pageNum);
+        dest.writeString(this.bookName);
+        dest.writeInt(this.bookType);
         dest.writeString(this.bookId);
         dest.writeString(this.author);
+        dest.writeInt(this.printCode);
+        dest.writeString(this.description);
     }
 
     public MineBookObj() {
     }
 
     protected MineBookObj(Parcel in) {
-        this.coverImage = in.readString();
-        this.createTime = in.readLong();
-        this.pageCount = in.readInt();
-        this.title = in.readString();
-        this.type = in.readInt();
+        this.bookCover = in.readString();
+        this.updateTime = in.readLong();
+        this.pageNum = in.readInt();
+        this.bookName = in.readString();
+        this.bookType = in.readInt();
         this.bookId = in.readString();
         this.author = in.readString();
+        this.printCode = in.readInt();
+        this.description = in.readString();
     }
 
     public static final Creator<MineBookObj> CREATOR = new Creator<MineBookObj>() {
