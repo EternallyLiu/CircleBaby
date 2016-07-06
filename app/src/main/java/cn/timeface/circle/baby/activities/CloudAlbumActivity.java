@@ -11,6 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.timeface.refreshload.PullRefreshLoadRecyclerView;
+import com.timeface.refreshload.headfoot.LoadMoreView;
+import com.timeface.refreshload.headfoot.RefreshView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +27,9 @@ import cn.timeface.circle.baby.api.models.objs.CloudAlbumObj;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
+import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import rx.Subscription;
+import rx.functions.Action0;
 
 /**
  * Created by zhsheng on 2016/6/7.
@@ -33,9 +39,10 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.recyclerView)
-    RecyclerView recyclerView;
+    PullRefreshLoadRecyclerView prlRecyclerView;
     private List<CloudAlbumObj> dataList = new ArrayList<>(8);
     private CloudAlbumListAdapter albumListAdapter;
+    private LoadingDialog dialog;
 
     public static void open(Activity activity) {
         activity.startActivity(new Intent(activity, CloudAlbumActivity.class));
@@ -48,23 +55,41 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        dialog = LoadingDialog.getInstance();
+        dialog.show(getSupportFragmentManager(), "");
         setupAlbumView();
         reqCloudAlbumImages();
     }
 
     private void setupAlbumView() {
+        RecyclerView recyclerView = prlRecyclerView.getRecyclerView();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation(), R.color.divider_color);
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(layoutManager);
         albumListAdapter = new CloudAlbumListAdapter(this, dataList);
-        recyclerView.setAdapter(albumListAdapter);
+        prlRecyclerView.setAdapter(albumListAdapter);
+        prlRecyclerView.setLoadRefreshListener(new PullRefreshLoadRecyclerView.LoadRefreshListener() {
+            @Override
+            public void onRefresh(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, RefreshView refreshView) {
+                reqCloudAlbumImages();
+            }
+
+            @Override
+            public void onLoadMore(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, LoadMoreView loadMoreView) {
+
+            }
+        });
     }
 
     private void reqCloudAlbumImages() {
         Subscription subscribe = apiService.queryCloudAlbumList()
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnTerminate(() -> {
+                    dialog.dismiss();
+                    prlRecyclerView.complete();
+                })
                 .subscribe(response -> {
                     if (response.success()) {
                         dataList.clear();

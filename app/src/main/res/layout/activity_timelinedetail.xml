@@ -18,7 +18,6 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/bg_color1"
             android:minHeight="?attr/actionBarSize"
-            android:paddingTop="@dimen/toolbar_padding_top"
             android:theme="@style/AppTheme.PopupOverlay"
             app:theme="@style/ToolbarColor">
 
@@ -79,202 +78,196 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
-        <LinearLayout
-            android:id="@+id/ll_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
             <LinearLayout
+                android:id="@+id/ll_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:padding="@dimen/size_6">
-
-                <TextView
-                    android:id="@+id/tv_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_medium"
-                    tools:text="今天去外婆家，宝宝不闹！" />
-
-
-                <GridView
-                    android:id="@+id/gv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:horizontalSpacing="@dimen/size_6"
-                    android:numColumns="3"
-                    android:visibility="gone"></GridView>
-
-                <RelativeLayout
-                    android:id="@+id/rl_single"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/iv_cover"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true" />
-
-                    <ImageView
-                        android:id="@+id/iv_video"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/video"
-                        android:layout_centerInParent="true"
-                        android:visibility="gone" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/size_6">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tv_milestone"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_marginBottom="@dimen/size_6"
-                            android:background="@drawable/shape_milestone_bg"
-                            android:padding="@dimen/size_2"
-                            android:text="第一次外出"
-                            android:textColor="@color/bg_color1"
-                            android:visibility="gone" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_author"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="爸爸" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="发布于 " />
-
-                            <TextView
-                                android:id="@+id/tv_date"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="04-16" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:orientation="horizontal">
-
-                        <cn.timeface.circle.baby.views.IconTextView
-                            android:id="@+id/icon_like"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:text="@string/icon_like"
-                            android:textSize="@dimen/text_large" />
-
-                        <cn.timeface.circle.baby.views.IconTextView
-                            android:id="@+id/icon_comment"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:text="@string/icon_comment"
-                            android:textSize="@dimen/text_large" />
-                    </LinearLayout>
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:visibility="gone"
-                android:id="@+id/ll_comment_like"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/size_48"
-                android:layout_marginTop="@dimen/size_12"
-                android:layout_marginRight="@dimen/size_6"
-                android:background="@drawable/commentbg"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
-                <LinearLayout
-                    android:id="@+id/layout_comment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                <HorizontalScrollView
-                    android:id="@+id/hsv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:padding="@dimen/size_6">
-
-                    <LinearLayout
-                        android:id="@+id/ll_good_list_users_bar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:layout_width="@dimen/size_36"
-                            android:layout_height="@dimen/size_36"
-                            android:src="@color/bg_color1" />
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:layout_width="@dimen/size_36"
-                            android:layout_height="@dimen/size_36"
-                            android:src="@color/bg_color1" />
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:layout_width="@dimen/size_36"
-                            android:layout_height="@dimen/size_36"
-                            android:src="@color/bg_color1" />
-                    </LinearLayout>
-                </HorizontalScrollView>
 
                 <LinearLayout
-                    android:id="@+id/ll_comment_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="@dimen/size_6">
 
                     <TextView
+                        android:id="@+id/tv_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_medium"
+                        tools:text="今天去外婆家，宝宝不闹！" />
+
+
+                    <GridView
+                        android:id="@+id/gv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="爸爸：天啊，太萌了" />
+                        android:horizontalSpacing="@dimen/size_6"
+                        android:numColumns="3"
+                        android:visibility="gone"></GridView>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_single"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/iv_cover"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true" />
+
+                        <ImageView
+                            android:id="@+id/iv_video"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/video"
+                            android:layout_centerInParent="true"
+                            android:visibility="gone" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/size_6">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_milestone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginBottom="@dimen/size_6"
+                                android:background="@drawable/shape_milestone_bg"
+                                android:padding="@dimen/size_2"
+                                android:text="第一次外出"
+                                android:textColor="@color/bg_color1"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_author"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="爸爸" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="发布于 " />
+
+                                <TextView
+                                    android:id="@+id/tv_date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="04-16" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:orientation="horizontal">
+
+                            <cn.timeface.circle.baby.views.IconTextView
+                                android:id="@+id/icon_like"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="@string/icon_like"
+                                android:textSize="@dimen/text_large" />
+
+                            <cn.timeface.circle.baby.views.IconTextView
+                                android:id="@+id/icon_comment"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="@string/icon_comment"
+                                android:textSize="@dimen/text_large" />
+                        </LinearLayout>
+                    </RelativeLayout>
+
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_more_comment"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="center"
-                    android:text="查看更多评论…"
-                    android:visibility="gone" />
+                    android:background="@drawable/ic_time_line"
+                    android:layout_marginLeft="@dimen/size_48"
+                    android:layout_marginTop="@dimen/size_12">
+                    <LinearLayout
+                        android:id="@+id/layout_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <HorizontalScrollView
+                            android:id="@+id/hsv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical">
+
+                            <LinearLayout
+                                android:id="@+id/ll_good_list_users_bar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="@dimen/size_36"
+                                    android:layout_height="@dimen/size_36"
+                                    android:src="@color/bg_color1" />
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="@dimen/size_36"
+                                    android:layout_height="@dimen/size_36"
+                                    android:src="@color/bg_color1" />
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="@dimen/size_36"
+                                    android:layout_height="@dimen/size_36"
+                                    android:src="@color/bg_color1" />
+                            </LinearLayout>
+                        </HorizontalScrollView>
+
+                        <LinearLayout
+                            android:id="@+id/ll_comment_wrapper"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="@dimen/size_6">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="爸爸：天啊，太萌了" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_more_comment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:gravity="center"
+                            android:text="查看更多评论…"
+                            android:visibility="gone" />
 
 
-
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-        </LinearLayout>
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
     <View
@@ -285,31 +278,31 @@
         android:background="@color/bg_color7"
         android:paddingBottom="6dp"/>
 
-        <cn.timeface.circle.baby.views.InputMethodRelative
-            android:id="@+id/rl_comment"
+    <cn.timeface.circle.baby.views.InputMethodRelative
+        android:id="@+id/rl_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/size_6">
+
+        <EditText
+            android:id="@+id/et_commment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:padding="@dimen/size_6">
-
-            <EditText
-                android:id="@+id/et_commment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/btn_send"
-                android:layout_alignTop="@+id/btn_send"
-                android:layout_marginRight="@dimen/size_6"
-                android:layout_toLeftOf="@+id/btn_send"
-                android:background="@drawable/shape_milestone_bg"
-                android:gravity="center_vertical"
-                android:hint="我也说一句"
-                android:padding="@dimen/size_6" />
-            <Button
-                android:id="@+id/btn_send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/shape_button_bg"
-                android:text="发表" />
-        </cn.timeface.circle.baby.views.InputMethodRelative>
+            android:layout_alignBottom="@+id/btn_send"
+            android:layout_alignTop="@+id/btn_send"
+            android:layout_marginRight="@dimen/size_6"
+            android:layout_toLeftOf="@+id/btn_send"
+            android:background="@drawable/shape_milestone_bg"
+            android:gravity="center_vertical"
+            android:hint="我也说一句"
+            android:padding="@dimen/size_6" />
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/shape_button_bg"
+            android:text="发表" />
+    </cn.timeface.circle.baby.views.InputMethodRelative>
 </RelativeLayout>

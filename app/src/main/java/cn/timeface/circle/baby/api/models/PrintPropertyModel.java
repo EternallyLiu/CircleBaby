@@ -1,14 +1,9 @@
 package cn.timeface.circle.baby.api.models;
 
-import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Select;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import java.util.List;
-
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.api.models.base.BaseObj;
 
 /**
  * @author YW.SUN
@@ -16,8 +11,7 @@ import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
  * @TODO
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-@Table(name = "print_property_table")
-public class PrintPropertyModel extends Model {
+public class PrintPropertyModel extends BaseObj {
     @Column(name = "print_id")
     public String printId; //印刷编号
 
@@ -53,31 +47,6 @@ public class PrintPropertyModel extends Model {
         this.pack = pack;
         this.num = num;
         this.price = price;
-
-    }
-
-    public static List<PrintPropertyModel> queryAll() {
-        return new Select().from(PrintPropertyModel.class).execute();
-    }
-
-    public static void deleteById(String printId) {
-        PrintPropertyModel model = new Select().from(PrintPropertyModel.class).where("print_id = ?", printId).executeSingle();
-        if (model != null) {
-            model.delete();
-        }
-    }
-
-    public static void saveUpdate(PrintPropertyPriceObj obj) {
-        PrintPropertyModel dbModel = new Select().from(PrintPropertyModel.class).where("print_id = ?", obj.getPrintId()).executeSingle();
-        if (dbModel != null) {
-            dbModel.setIsSelect(obj.isSelect() ? 1 : 0);
-            dbModel.setPrintId(obj.getPrintId());
-            dbModel.save();
-        } else {
-            PrintPropertyModel propertyModel = new PrintPropertyModel(obj.getPrintId(), obj.getSize(),
-                    obj.getColor(), obj.getPack(), obj.getNum(), obj.getPrice(), obj.isSelect() ? 1 : 0);
-            propertyModel.save();
-        }
 
     }
 
