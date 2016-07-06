@@ -44,7 +44,7 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
-import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import rx.Subscription;
@@ -71,7 +71,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
     TextView tvPromotionInfo;
     List<PrintCartItem> dataList;
     private CartAdapter mAdapter;
-    private TFProgressDialog progressDialog;
+    private LoadingDialog progressDialog;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, CartActivity.class));
@@ -85,7 +85,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         dataList = new ArrayList<>();
-        progressDialog = new TFProgressDialog(this);
+        progressDialog = LoadingDialog.getInstance();
         mAdapter = new CartAdapter(CartActivity.this, dataList);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mPullRefreshList.setLayoutManager(layoutManager);
@@ -117,7 +117,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
      * @param view
      */
     public void clickDeleteItem(View view) {
-        progressDialog.show();
+        progressDialog.show(getSupportFragmentManager(), "");
 
         final int index = (int) view.getTag(R.string.tag_index);
         final int pIndex = (int) view.getTag(R.string.tag_ex);
@@ -290,7 +290,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             Toast.makeText(this, "请选择您要打印的书！", Toast.LENGTH_SHORT).show();
             return;
         }
-        progressDialog.show();
+        progressDialog.show(getSupportFragmentManager(), "");
         try {
             params = LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class);
         } catch (IOException e) {
@@ -397,8 +397,8 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
     }
 
     private void addToCart(HashMap<String, String> params, CartPrintPropertyAdapter propertyAdapter) {
-        progressDialog.show();
-        Subscription s = BaseAppCompatActivity.apiService.addCartItem(params)
+        progressDialog.show(getSupportFragmentManager(), "");
+        Subscription s = apiService.addCartItem(params)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
