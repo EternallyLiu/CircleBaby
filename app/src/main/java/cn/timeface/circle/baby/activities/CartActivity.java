@@ -30,7 +30,6 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CartAdapter;
 import cn.timeface.circle.baby.adapters.CartPrintPropertyAdapter;
-import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.PrintCartItem;
 import cn.timeface.circle.baby.api.models.objs.BasePrintProperty;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
@@ -40,7 +39,6 @@ import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.CartPropertyChangeEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -213,8 +211,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
      */
     public void requestData() {
         mStateView.loading();
-        FastData.setUserId("550010434672");
-        Subscription s = Api.changeApiBaseUrl("http://stg2.v5time.net/tfmobile/").getCartList()
+        Subscription s = apiService.getCartList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     mStateView.finish();
