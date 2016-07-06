@@ -24,6 +24,7 @@ import cn.timeface.circle.baby.api.models.responses.LessResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
+import cn.timeface.circle.baby.api.models.responses.MineBookListResponse;
 import cn.timeface.circle.baby.api.models.responses.MsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.api.models.responses.MyOrderListResponse;
@@ -471,5 +472,19 @@ public interface ApiService {
     Observable<ImageInfoListResponse> queryImageInfoList(@Query("bookId") String bookId,
                                                 @Query("type") int type);
 
+    /**
+     * 我的作品列表
+     */
+    @POST("babyBook/getBookList")
+    Observable<MineBookListResponse> getBookList();
+
+    /**
+     * 创建作品
+     */
+    @POST("babyBook/createBook")
+    Observable<BaseResponse> createBook(@Query("author") String author,
+                                        @Query("bookType") int bookType,
+                                        @Query("bookCover") String bookCover,
+                                        @Query("dataList") String dataList);
 
 }

@@ -106,7 +106,6 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
                                             mediaObj.setTimeId(timeId);
                                         }
                                     }
-                                    Log.d(TAG , "timeId============" + dataList.get(0).getMediaList().get(0).getTimeId());
                                 }else{
                                     ToastUtil.showToast("没有此类图片");
                                 }
@@ -121,9 +120,10 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
-    private void startPhotoPick(List<ImageInfoListObj> mediaObjs) {
+    private void startPhotoPick(List<ImageInfoListObj> dataList) {
         Intent intent = new Intent(getActivity(), PickerPhotoActivity2.class);
-        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) mediaObjs);
+        intent.putExtra("bookType",bookTypeListObj.getType());
+        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
         startActivity(intent);
     }

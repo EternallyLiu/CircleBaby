@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.wechat.photopicker.adapter.PhotoSelectorAdapter;
 import com.wechat.photopicker.adapter.PhotoSelectorAdapter2;
 import com.wechat.photopicker.endity.Photo;
@@ -25,12 +27,18 @@ import com.wechat.photopicker.event.OnItemCheckListener2;
 import com.wechat.photopicker.fragment.PickerPhotoFragment;
 import com.wechat.photopicker.fragment.PickerPhotoFragment2;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 /**
  * 选择图界面
@@ -52,14 +60,19 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     //可选图片大小
     private int optionalPhotoSize;
     private Button btPreview;
-//    private ArrayList<MediaObj> mediaobjs;
+    private ArrayList<ImageInfoListObj> dataList;
+    private ArrayList<ImageInfoListObj> imageInfoList = new ArrayList<>();
+    private int bookType;
+    //    private ArrayList<MediaObj> mediaobjs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo2);
 //        checkPermission();
-//        Intent intent = getIntent();
+        Intent intent = getIntent();
+        bookType = intent.getIntExtra("bookType", 0);
+        dataList = intent.getParcelableArrayListExtra("dataList");
 //        mediaobjs = intent.getParcelableArrayListExtra("mediaobjs");
         optionalPhotoSize = MAX_SELECTOR_SIZE;
         Log.d(TAG, "optionalPhotoSize---" + optionalPhotoSize);
@@ -144,14 +157,27 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
 //            intent.putStringArrayListExtra(KEY_SELECTED_PHOTOS, mPhotoSelectorAdapter.getSelectedPhotoPaths());
 //            setResult(RESULT_OK, intent);
 //            finish();
-            List<MediaObj> photos = mPhotoSelectorAdapter.getPhotos();
-            Log.d(TAG, "============================================ ");
-            for (MediaObj obj : photos){
-                Log.d(TAG, "obj.getSelected ========= "+obj.getSelected());
+
+            List<Integer> timeIds = mPhotoSelectorAdapter.getTimeIds();
+            HashSet<Integer> integers = new HashSet<>(timeIds);
+            timeIds.clear();
+            timeIds.addAll(integers);
+            imageInfoList.clear();
+            for (ImageInfoListObj obj : dataList) {
+                if (timeIds.contains(obj.getTimeId())) {
+                    imageInfoList.add(obj);
+                }
             }
+
+            String s = new Gson().toJson(imageInfoList);
+            apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), bookType, imageInfoList.get(0).getMediaList().get(0).getImgUrl(), s)
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        ToastUtil.showToast(response.getInfo());
+                    }, error -> {
+                        Log.e(TAG, "createBook:");
+                    });
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }

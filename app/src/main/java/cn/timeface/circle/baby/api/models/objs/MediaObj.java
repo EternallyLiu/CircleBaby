@@ -174,6 +174,7 @@ public class MediaObj extends BaseObj
         dest.writeString(this.videoUrl);
         dest.writeInt(this.selected);
         dest.writeInt(this.isCover);
+        dest.writeInt(this.timeId);
     }
 
     protected MediaObj(Parcel in) {
@@ -188,6 +189,7 @@ public class MediaObj extends BaseObj
         this.videoUrl = in.readString();
         this.selected = in.readInt();
         this.isCover = in.readInt();
+        this.timeId = in.readInt();
     }
 
     public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {

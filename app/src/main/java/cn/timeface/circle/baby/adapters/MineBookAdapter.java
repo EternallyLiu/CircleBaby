@@ -68,10 +68,10 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         holder.obj = obj;
         holder.supportFragmentManager = supportFragmentManager;
         holder.context = mContext;
-        GlideUtil.displayImage(obj.getCoverImage(), holder.ivBook);
-        holder.tvTitle.setText(obj.getTitle());
+        GlideUtil.displayImage(obj.getBookCover(), holder.ivBook);
+        holder.tvTitle.setText(obj.getBookName());
 //        holder.tvPagecount.setText(obj.getPageCount());
-        holder.tvCreattime.setText(DateUtil.getYear2(obj.getCreateTime()));
+        holder.tvCreattime.setText(DateUtil.getYear2(obj.getUpdateTime()));
 
     }
 
@@ -150,7 +150,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
                     break;
                 case R.id.tv_print:
-                    BaseAppCompatActivity.apiService.printStatus(obj.getType(), obj.getPageCount())
+                    BaseAppCompatActivity.apiService.printStatus(obj.getBookType(), obj.getPageNum())
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(printStatusResponse -> {
                                 obj.setPrintCode(printStatusResponse.getPrintCode());
@@ -169,21 +169,21 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         }
 
         private void queryParamList() {
-            BaseAppCompatActivity.apiService.queryParamList(obj.getType(), obj.getPageCount())
+            BaseAppCompatActivity.apiService.queryParamList(obj.getBookType(), obj.getPageNum())
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(paramListResponse -> {
                         CartPrintPropertyDialog dialog = CartPrintPropertyDialog.getInstance(null,
                                 null,
                                 paramListResponse.getDataList(),
                                 obj.getBookId(),
-                                String.valueOf(obj.getType()),
+                                String.valueOf(obj.getBookType()),
                                 CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
                                 obj.getPrintCode(),
-                                obj.getCoverImage(),
+                                obj.getBookCover(),
                                 TypeConstant.FROM_PHONE,
-                                obj.getPageCount(),
-                                obj.getTitle(),
-                                String.valueOf(obj.getCreateTime()));
+                                obj.getPageNum(),
+                                obj.getBookName(),
+                                String.valueOf(obj.getUpdateTime()));
                         dialog.show(supportFragmentManager, "dialog");
 
                     }, error -> {

@@ -30,6 +30,7 @@ import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
 import de.greenrobot.event.EventBus;
@@ -126,7 +127,16 @@ public class MineBookActivity extends BaseAppCompatActivity implements View.OnCl
      */
     private void reqData(int currentPage) {
         tfStateView.loading();
-        setDataList(new ArrayList<>());
+        apiService.getBookList()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(mineBookListResponse -> {
+                    if (mineBookListResponse.success()) {
+                        setDataList(mineBookListResponse.getDataList());
+                    }
+                }, throwable -> {
+
+                });
+//        setDataList(new ArrayList<>());
     }
 
     private void setDataList(List<MineBookObj> dataList) {
