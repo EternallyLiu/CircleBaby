@@ -9,7 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,17 +30,17 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CartAdapter;
 import cn.timeface.circle.baby.adapters.CartPrintPropertyAdapter;
+import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.PrintCartItem;
-import cn.timeface.circle.baby.api.models.PrintPropertyModel;
 import cn.timeface.circle.baby.api.models.objs.BasePrintProperty;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyTypeObj;
-import cn.timeface.circle.baby.api.models.responses.PrintCartListResponse;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.CartPropertyChangeEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -71,11 +71,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
     TextView tvPromotionInfo;
     List<PrintCartItem> dataList;
     private CartAdapter mAdapter;
-    private CartPrintPropertyAdapter mPropertyAdapter;
     private TFProgressDialog progressDialog;
-    private String bookId;
-    private String bookType;
-    private PrintCartListResponse cartResponse;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, CartActivity.class));
@@ -88,7 +84,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         ButterKnife.bind(this);
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         dataList = new ArrayList<>();
         progressDialog = new TFProgressDialog(this);
         mAdapter = new CartAdapter(CartActivity.this, dataList);
@@ -103,20 +98,9 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         mPullRefreshList.addItemDecoration(itemDecoration);
 
         mPullRefreshList.setAdapter(mAdapter);
-        mStateView.setOnRetryListener(() -> requestData());
-    }
-
-    @Override
-    protected void onResume() {
+        mStateView.setOnRetryListener(this::requestData);
         requestData();
-        super.onResume();
     }
-
-//    public void clickDetail(View view){
-//        if(!TextUtils.isEmpty(cartResponse.getPromotionUrl())){
-//            WebViewActivity.open(this, cartResponse.getPromotionUrl(), "活动详情", true);
-//        }
-//    }
 
     /**
      * click 去印刷
@@ -124,12 +108,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
      * @param view
      */
     public void clickPrint(View view) {
-//        Intent intent = new Intent(CartActivity.this, MineTimeBookActivity.class);
-//        intent.putExtra("userId", FastData.getUserId());
-//        intent.putExtra("book_type", bookType);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        startActivity(intent);
-        FragmentBridgeActivity.open(this, "MineBookFragment");
+        MineBookActivity.open(this);
     }
 
     /**
@@ -152,7 +131,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                             if (response.success()) {
 
                                 dataList.get(pIndex).getPrintList().remove(obj);
-                                PrintPropertyModel.deleteById(obj.getPrintId());
 
                                 //数据全部删除后处理
                                 if (dataList.get(pIndex).getPrintList().size() <= 0) {
@@ -200,28 +178,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
     }
 
     /**
-     * click 再印一本
-     *
-     * @param view
-     */
-    public void onPrintMoreClick(View view) {
-        PrintCartItem item = (PrintCartItem) view.getTag(R.string.tag_obj);
-        CartPrintPropertyDialog dialog = CartPrintPropertyDialog.getInstance(item,
-                null,
-                null,
-                item.getBookId(),
-                String.valueOf(item.getBookType()),
-                CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
-                item.getPrintCode(),
-                item.getCoverImage(),
-                TypeConstant.FROM_PHONE,
-                item.getTotalPage(),
-                item.getTitle(),
-                item.getDate());
-        dialog.show(getSupportFragmentManager(), "dialog");
-    }
-
-    /**
      * click 更改属性
      *
      * @param view
@@ -252,38 +208,17 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         dialog.show(getSupportFragmentManager(), "dialog");
     }
 
-    public void requestDat(){
-        mokoData();
-        mAdapter.setListData(dataList);
-//        for (PrintCartItem item : dataList) {
-//            item.checkAllSelect();
-//        }
-//        calcTotalPrice();
-//        mIvSelectAll.setSelected(checkSelectAll());
-        if (dataList.size() <= 0) {
-            mLlEmpty.setVisibility(View.VISIBLE);
-            mPtrLayout.setVisibility(View.GONE);
-            mFoot.setVisibility(View.GONE);
-        } else {
-            mLlEmpty.setVisibility(View.GONE);
-            mPtrLayout.setVisibility(View.VISIBLE);
-            mFoot.setVisibility(View.VISIBLE);
-        }
-        mAdapter.notifyDataSetChanged();
-    }
-
     /**
      * 请求印刷车数据
      */
     public void requestData() {
-
         mStateView.loading();
-        Subscription s = apiService.getCartList()
+        FastData.setUserId("550010434672");
+        Subscription s = Api.changeApiBaseUrl("http://stg2.v5time.net/tfmobile/").getCartList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     mStateView.finish();
                     if (response.success()) {
-                        cartResponse = response;
                         dataList = response.getDataList();
                         mAdapter.setListData(dataList);
                         for (PrintCartItem item : dataList) {
@@ -310,78 +245,23 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         addSubscription(s);
     }
 
-    /**
-     * 处理上次编辑的选中状态
-     *
-     * @param dataList
-     * @return
-     */
-    private List<PrintCartItem> doSelectState(List<PrintCartItem> dataList) {
-        List<PrintPropertyModel> dbList = PrintPropertyModel.queryAll();
-        if (dbList == null || dbList.size() <= 0) {
-            return dataList;
-        } else {
-            //暂时没想到更好的办法 不得已这样循环
-            for (PrintCartItem cartItem : dataList) {
-                for (PrintPropertyPriceObj obj : cartItem.getPrintList()) {
-                    for (PrintPropertyModel propertyModel : dbList) {
-                        if (obj.getPrintId().equals(propertyModel.getPrintId())) {
-                            obj.setIsSelect(propertyModel.isSelect());
-                        }
-                    }
-                }
-            }
-
-            //处理是否全选
-            for (PrintCartItem cartItem : dataList) {
-                cartItem.checkAllSelect();
-            }
-        }
-
-        return dataList;
-    }
 
     /**
      * 计算总价
      */
     private void calcTotalPrice() {
         float totalPrice = 0;
-        float calendarPrice = 0;
         for (PrintCartItem item : dataList) {
-            int bookType = item.getBookType();
             for (PrintPropertyPriceObj obj : item.getPrintList()) {
                 if (obj.isSelect()) {
-                    if (bookType == TypeConstant.BOOK_TYPE_DESK_CALENDAR) {
-                        calendarPrice += obj.getPrice() * obj.getNum();
-                    }
                     totalPrice += obj.getPrice() * obj.getNum();
                 }
             }
         }
-        mTvTotalPrice.setText(Html.fromHtml(getString(R.string.cart_total_settlement,
-                cartResponse.hasPromotion() && calendarPrice > 0 &&
-                        totalPrice - calendarPrice >= cartResponse.getPromotionTerm() ?
-                        totalPrice - cartResponse.getPromotionFee() : totalPrice)));
+        mTvTotalPrice.setText(Html.fromHtml(getString(R.string.cart_total_settlement, totalPrice)));
 
         //是否显示优惠信息
-        if (cartResponse.hasPromotion()) {
-            tvPromotionInfo.setVisibility(View.VISIBLE);
-            String text = cartResponse.getPromotionInfo() +
-                    (TextUtils.isEmpty(cartResponse.getPromotionUrl()) ? "" : "<font color = '#069bf2'>查看活动详情>></font>");
-            tvPromotionInfo.setText(Html.fromHtml(text));
-            if (totalPrice - calendarPrice >= cartResponse.getPromotionTerm() && calendarPrice > 0) {
-                tvPromotionInfo.setVisibility(View.VISIBLE);
-                tvPromotionInfo.setText(String.format(
-                        getString(R.string.cart_promotion_fee),
-                        "台历",
-                        cartResponse.getPromotionFee()));
-            } else {
-                tvPromotionInfo.setVisibility(View.GONE);
-            }
-
-        } else {
-            tvPromotionInfo.setVisibility(View.GONE);
-        }
+        tvPromotionInfo.setVisibility(View.GONE);
     }
 
     /**
@@ -423,20 +303,13 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                         response -> {
                             progressDialog.dismiss();
                             if (response.success()) {
-                                //从数据库中删除
-                                for (PrintCartItem item : dataList) {
-                                    for (PrintPropertyPriceObj obj : item.getPrintList()) {
-                                        if (obj.isSelect()) {
-                                            PrintPropertyModel.deleteById(obj.getPrintId());
-                                        }
-                                    }
-                                }
-//                                MyOrderConfirmActivity.open(CartActivity.this, response.getOrderId());
+                                OrderDetailActivity.open(CartActivity.this, response.getOrderId());
                             } else {
                                 Toast.makeText(CartActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
                             }
                         }
                         , throwable -> {
+                            Log.d(TAG, "clickAddOrder: " + throwable.getMessage());
                             progressDialog.dismiss();
                         });
         addSubscription(s);
@@ -460,9 +333,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         mAdapter.notifyDataSetChanged();
         calcTotalPrice();
         mIvSelectAll.setSelected(checkSelectAll());
-
-        //选择状态保存到数据库
-        PrintPropertyModel.saveUpdate(obj);
     }
 
     /**
@@ -476,16 +346,10 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             Toast.makeText(this, getPrintInfo(item.getPrintCode()), Toast.LENGTH_SHORT).show();
             return;
         }
-        item.setIsSelect(item.isSelect() ? false : true);
         mIvSelectAll.setSelected(false);
         mAdapter.notifyDataSetChanged();
         calcTotalPrice();
         mIvSelectAll.setSelected(checkSelectAll());
-
-        //选择状态保存到数据库
-        for (PrintPropertyPriceObj obj : item.getPrintList()) {
-            PrintPropertyModel.saveUpdate(obj);
-        }
     }
 
     /**
@@ -600,36 +464,12 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                     || item.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_LESS) {
                 selectAll = false;
             }
-            item.setIsSelect(view.isSelected() ? false : true);
         }
         view.setSelected(selectAll ? (view.isSelected() ? false : true) : false);
 
         mAdapter.notifyDataSetChanged();
         calcTotalPrice();
     }
-
-//    public void clickToPod(View view) {
-//        PrintCartItem item = (PrintCartItem) view.getTag(R.string.tag_obj);
-//        if (item.getChildNum() > 0) {
-//            SplitPrintActivity.open(this,
-//                    Utils.changeBookType2PodType(item.getBookType()),
-//                    item.getBookId(),
-//                    String.valueOf(item.getBookType()),
-//                    item.getCoverImage() == null ? "" : item.getCoverImage(),
-//                    item.getTitle() == null ? "" : item.getTitle(),
-//                    "0",
-//                    FastData.getUserName(),
-//                    String.valueOf(item.getTotalPage()),
-//                    TypeConstant.FROM_PHONE, 1);
-//        } else {
-//            if(item.getBookType() == TypeConstant.BOOK_TYPE_DESK_CALENDAR){
-//                CalendarPodActivity.open(this, item.getBookId(), false);
-//            } else {
-//                PodActivity.open(this, item.getBookId(),
-//                        Utils.changeBookType2PodType(item.getBookType()), 1);
-//            }
-//        }
-//    }
 
     private String getPrintInfo(int printCode) {
         String printInfo = "";
@@ -675,17 +515,4 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
 
     }
 
-    private void mokoData() {
-        PrintCartItem printCartItem = new PrintCartItem();
-        printCartItem.setBookId("1");
-        printCartItem.setBookType(1);
-        printCartItem.setTitle("时光书");
-        printCartItem.setTagName("识图卡片");
-        printCartItem.setCoverImage("http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg");
-        printCartItem.setTotalPage(50);
-        printCartItem.setAuthorName("啦啦啦");
-        dataList.add(printCartItem);
-        dataList.add(printCartItem);
-        dataList.add(printCartItem);
-    }
 }

@@ -11,7 +11,6 @@ import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
 import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
-import cn.timeface.circle.baby.constants.TypeConstant;
 
 /**
  * @author YW.SUN
@@ -39,20 +38,6 @@ public class PrintCartItem extends BaseModule {
 
     public boolean isSelect() {
         return isSelect;
-    }
-
-    public void setIsSelect(boolean isSelect) {
-        for (PrintPropertyPriceObj obj : printList) {
-            if (printCode == TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE
-                    || printCode == TypeConstant.PRINT_CODE_LIMIT_MORE
-                    || printCode == TypeConstant.PRINT_CODE_LIMIT_LESS) {
-                obj.setIsSelect(false);
-            } else {
-                obj.setIsSelect(isSelect);
-            }
-            PrintPropertyModel.saveUpdate(obj);
-        }
-        checkAllSelect();
     }
 
     public boolean checkAllSelect() {

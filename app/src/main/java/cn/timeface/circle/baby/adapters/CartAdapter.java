@@ -29,7 +29,6 @@ import cn.timeface.circle.baby.constants.TypeConstant;
  */
 public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
     private List<CartPrintPropertyAdapter> adapterList;
-    private List<RecyclerView> recyclerViewList = new ArrayList<>();
     private Map<String, Integer> stateMap = new HashMap<>();
 
     public CartAdapter(Context context, List<PrintCartItem> listData) {
@@ -42,12 +41,10 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
         super.setListData(listData);
 
         Iterator iterator = adapterList.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             CartPrintPropertyAdapter propertyAdapter = (CartPrintPropertyAdapter) iterator.next();
             stateMap.put(propertyAdapter.getBookId(),
-                    propertyAdapter == null
-                            ? CartPrintPropertyAdapter.PROPERTY_STATE_NOMAL
-                            : propertyAdapter.getPropertyState());
+                    propertyAdapter.getPropertyState());
         }
         adapterList.clear();
         for (PrintCartItem item : listData) {
@@ -78,53 +75,12 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
             holder.mTvBookTitle.setText(item.getTitle());
         }
 
-        Drawable drawable = null;
-//        switch (item.getBookType()) {
-//            case TypeConstant.BOOK_TYPE_TIME:
-//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_time_book);
-//                break;
-//            case TypeConstant.BOOK_TYPE_WECHAT:
-//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_wechat_time_book);
-//                break;
-//            case TypeConstant.BOOK_TYPE_QQ:
-//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_qq_time_book);
-//                break;
-//            case TypeConstant.BOOK_TYPE_BLOG:
-//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_blog_time_book);
-//                break;
-//            case TypeConstant.BOOK_TYPE_DESK_CALENDAR:
-//                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_calendar_time_book);
-//                break;
-//            default:
-                drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_time_book);
-//                break;
-//        }
+        Drawable drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_flag_time_book);
 
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         holder.mTvBookTitle.setCompoundDrawables(drawable, null, null, null);
 
-//        holder.mTvUpdate.setTextAndEvent(mContext.getString(R.string.cart_update_date, DateUtil.formatDate("yyyy-MM-dd kk:mm", item.getDate() + "000")));
-//        Glide.with(mContext)
-//                .load(item.getCoverImage())
-//                .placeholder(R.drawable.book_back_default)
-//                .error(R.drawable.book_back_default)
-//                .centerCrop()
-//                .into(holder.mIvBookCover);
 
-//        holder.mIvBookCover.setTag(R.string.tag_obj, item);
-
-        //处理book tag
-        if (item.getBookType() == TypeConstant.BOOK_TYPE_QQ) {
-//            holder.mIvBookTag.setVisibility(View.VISIBLE);
-//            holder.mIvBookTag.setImageResource(R.drawable.ic_time_book_tag_qq);
-        } else if (item.getBookType() == TypeConstant.BOOK_TYPE_WECHAT) {
-//            holder.mIvBookTag.setVisibility(View.VISIBLE);
-//            holder.mIvBookTag.setImageResource(R.drawable.ic_time_book_tag_wechat);
-        } else {
-//            holder.mIvBookTag.setVisibility(View.GONE);
-        }
-
-//        holder.mTvLittle.setTextAndEvent(mContext.getString(R.string.cart_little_settlement, item.getLittlePrice()));
         if (item.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_MORE
                 || item.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_LESS
                 || item.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE) {
@@ -139,7 +95,6 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
                         : mContext.getString(R.string.edit));
         holder.tvEdit.setTag(R.string.tag_index, position);
         holder.tvEdit.setTag(R.string.tag_obj, item);
-//        holder.mBtnPrintAgain.setTag(R.string.tag_obj, item);
 
         if (adapterList.size() > 0) {
             //内层recylerview
@@ -149,7 +104,6 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
             holder.mLvRecycler.setHasFixedSize(true);
             holder.mLvRecycler.setLayoutManager(layoutManager);
             holder.mLvRecycler.setAdapter(adapterList.get(position));
-            recyclerViewList.add(holder.mLvRecycler);
         }
     }
 

@@ -1,11 +1,10 @@
 package cn.timeface.circle.baby.api;
 
-import cn.timeface.circle.baby.BuildConfig;
-import cn.timeface.circle.baby.api.services.ApiService;
-
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.api.services.WechatApiService;
 import cn.timeface.circle.baby.utils.NetUtils;
 import okhttp3.OkHttpClient;
@@ -21,10 +20,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class Api {
     final WechatApiService apiWechatService;
-    final ApiService apiService;
+    static ApiService apiService;
+    private static Retrofit.Builder retrofitBuilder;
+    private static OkHttpClient.Builder httpClientBuilder;
 
     Api() {
-        OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
+        httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
         httpClientBuilder.writeTimeout(30, TimeUnit.SECONDS);
         httpClientBuilder.readTimeout(60, TimeUnit.SECONDS);
@@ -42,7 +43,7 @@ public class Api {
             httpClientBuilder.interceptors().add(interceptor);
         }
 
-        Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
+        retrofitBuilder = new Retrofit.Builder();
 
         Retrofit retrofit = retrofitBuilder
                 .baseUrl(BuildConfig.API_URL)
@@ -71,4 +72,15 @@ public class Api {
         return apiWechatService;
     }
 
+    public static ApiService changeApiBaseUrl(String url) {
+        Retrofit retrofit = retrofitBuilder
+                .baseUrl(url)
+                .client(httpClientBuilder.build())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        apiService = retrofit.create(ApiService.class);
+        return apiService;
+    }
 }

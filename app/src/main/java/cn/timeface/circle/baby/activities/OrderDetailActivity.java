@@ -22,10 +22,8 @@ import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.payment.OrderInfoObj;
-import cn.timeface.circle.baby.payment.PaymentFactory;
 import cn.timeface.circle.baby.payment.PrepareOrderException;
 import cn.timeface.circle.baby.payment.alipay.AlipayPayment;
-import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.OrderDetailFootView;
@@ -78,8 +76,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
     }
 
     private void reqOrderListData() {
-/*        FastData.setUserId("550010434672");
-        Api.changeApiBaseUrl("http://stg2.v5time.net/tfmobile/");*/
+
         Subscription subscribe = apiService.findOrderDetail(orderId)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(listResponse -> {

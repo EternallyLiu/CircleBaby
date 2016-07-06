@@ -360,10 +360,6 @@ public interface ApiService {
     @POST("babyOrder/addCartitem")
     Observable<AddCartItemResponse> addCartItem(@QueryMap Map<String, String> params);
 
-    //印刷车列表
-    @GET("babyOrder/cartlist")
-    Observable<PrintCartListResponse> cartList();
-
     /**
      * 提交订单
      */
@@ -403,7 +399,8 @@ public interface ApiService {
     /**
      * 印刷车列表
      */
-    @POST("babyOrder/cartlist")
+//    @POST("babyOrder/cartlist")
+    @POST("cartM/cartlist")
     Observable<PrintCartListResponse> getCartList();
 
     /**
