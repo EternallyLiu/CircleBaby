@@ -12,10 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class InviteCodeActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -61,18 +64,22 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
                 String code = etCode.getText().toString().trim();
                 if (TextUtils.isEmpty(code)) {
                     Toast.makeText(this, "请填写邀请码", Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 apiService.verifiedInviteCode(code)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(userLoginResponse -> {
                             if (userLoginResponse.success()) {
-                                Toast.makeText(this, userLoginResponse.getInfo(), Toast.LENGTH_SHORT).show();
-                                //跳转到确认关系界面
-                                Intent intent = new Intent(this,ConfirmRelationActivity.class);
-                                intent.putExtra("code",code);
-                                startActivity(intent);
+                                Remember.putString("code",code);
+                                if(TextUtils.isEmpty(userLoginResponse.getUserInfo().getRelationName())){
+                                    //跳转到确认关系界面
+                                    Intent intent = new Intent(this,ConfirmRelationActivity.class);
+                                    intent.putExtra("code",code);
+                                    startActivity(intent);
+                                }
+                                finish();
                             }else{
-                                Toast.makeText(this, "邀请码校验失败", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, userLoginResponse.getInfo(), Toast.LENGTH_SHORT).show();
                             }
                         }, error -> {
                             Log.e(TAG, "verifiedInviteCode:");

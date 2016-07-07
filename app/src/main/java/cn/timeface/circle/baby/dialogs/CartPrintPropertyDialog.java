@@ -623,7 +623,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             params.put("bookType", bookType);
             params.put("pageNum",String.valueOf(pageNum));
             params.put("bookCover",bookCover);
-            params.put("bookName",bookName);
+            params.put("bookName",URLEncoder.encode(bookName));
             params.put("createTime",createTime);
 
 
@@ -632,7 +632,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             params.put("bookType", String.valueOf(cartItem.getBookType()));
             params.put("pageNum",String.valueOf(cartItem.getTotalPage()));
             params.put("bookCover",cartItem.getCoverImage());
-            params.put("bookName",cartItem.getTitle());
+            params.put("bookName",URLEncoder.encode(cartItem.getTitle()));
             params.put("createTime",cartItem.getDate());
         }
         printProperty.setNum(Integer.parseInt(mBookPrintNumberEt.getText().toString()));

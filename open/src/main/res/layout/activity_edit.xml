@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1e1e1e"
+    android:fitsSystemWindows="true"
+    tools:context="cn.timeface.open.activities.EditActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:visibility="gone">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/pod"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/size_56" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_edit_controller"
+                android:layout_width="@dimen/size_56"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <cn.timeface.widget.drawabletextview.DrawableTextView
+                    android:id="@+id/tv_edit_template"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="clickEditType"
+                    android:paddingBottom="@dimen/view_space_normal"
+                    android:paddingTop="@dimen/view_space_normal"
+                    app:drawablePadding="@dimen/view_space_small"
+                    app:drawablePosition="top"
+                    app:drawableSrc="@drawable/ic_edit_layout"
+                    app:scaleType="CENTER"
+                    app:text="模板"
+                    app:textColor="@android:color/white"
+                    app:textGravity="center"
+                    app:textSize="@dimen/text_small_12" />
+
+                <cn.timeface.widget.drawabletextview.DrawableTextView
+                    android:id="@+id/tv_background_color"
+                    android:layout_width="@dimen/size_48"                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="clickEditType"
+                    android:paddingBottom="@dimen/view_space_normal"
+                    android:paddingTop="@dimen/view_space_normal"
+                    app:drawablePadding="@dimen/view_space_small"
+                    app:drawablePosition="top"
+                    app:drawableSrc="@drawable/ic_edit_layout"
+                    app:scaleType="CENTER"
+                    app:text="背景色"
+                    app:textColor="@android:color/white"
+                    app:textGravity="center"
+                    app:textSize="@dimen/text_small_12" />
+
+                <cn.timeface.widget.drawabletextview.DrawableTextView
+                    android:id="@+id/tv_edit_layout"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="clickEditType"
+                    android:paddingBottom="@dimen/view_space_normal"
+                    android:paddingTop="@dimen/view_space_normal"
+                    app:drawablePadding="@dimen/view_space_small"
+                    app:drawablePosition="top"
+                    app:drawableSrc="@drawable/ic_edit_layout"
+                    app:scaleType="CENTER"
+                    app:text="布局"
+                    app:textColor="@android:color/white"
+                    app:textGravity="center"
+                    app:textSize="@dimen/text_small_12" />
+
+                <cn.timeface.widget.drawabletextview.DrawableTextView
+                    android:id="@+id/tv_edit_bg"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="clickEditType"
+                    android:paddingBottom="@dimen/view_space_normal"
+                    android:paddingTop="@dimen/view_space_normal"
+                    app:drawablePadding="@dimen/view_space_small"
+                    app:drawablePosition="top"
+                    app:drawableSrc="@drawable/ic_edit_bg"
+                    app:scaleType="CENTER"
+                    app:text="背景"
+                    app:textColor="@android:color/white"
+                    app:textGravity="center"
+                    app:textSize="@dimen/text_small_12" />
+
+                <cn.timeface.widget.drawabletextview.DrawableTextView
+                    android:id="@+id/tv_edit_pendant"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="clickEditType"
+                    android:paddingBottom="@dimen/view_space_normal"
+                    android:paddingTop="@dimen/view_space_normal"
+                    app:drawablePadding="@dimen/view_space_small"
+                    app:drawablePosition="top"
+                    app:drawableSrc="@drawable/ic_edit_pendant"
+                    app:scaleType="CENTER"
+                    app:text="挂件"
+                    app:textColor="@android:color/white"
+                    app:textGravity="center"
+                    app:textSize="@dimen/text_small_12" />
+
+                <cn.timeface.widget.drawabletextview.DrawableTextView
+                    android:id="@+id/tv_edit_beauty"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="clickEditType"
+                    android:paddingBottom="@dimen/view_space_normal"
+                    android:paddingTop="@dimen/view_space_normal"
+                    app:drawablePadding="@dimen/view_space_small"
+                    app:drawablePosition="top"
+                    app:drawableSrc="@drawable/ic_edit_beauty"
+                    app:scaleType="CENTER"
+                    app:text="美化"
+                    app:textColor="@android:color/white"
+                    app:textGravity="center"
+                    app:textSize="@dimen/text_small_12" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_selection"
+                android:layout_width="@dimen/size_96"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/view_space_normal"
+                android:layout_marginTop="@dimen/view_space_medium"
+                android:background="@android:color/black"
+                android:clickable="true"
+                android:onClick="clickFinish"
+                android:paddingBottom="@dimen/view_space_normal"
+                android:paddingLeft="@dimen/view_space_normal"
+                android:paddingRight="@dimen/view_space_medium"
+                android:paddingTop="@dimen/view_space_normal"
+                android:src="@drawable/ic_edit_exit" />
+
+            <ImageView
+                android:id="@+id/iv_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/black"
+                android:clickable="true"
+                android:onClick="clickFinish"
+                android:paddingBottom="@dimen/view_space_normal"
+                android:paddingLeft="@dimen/view_space_normal"
+                android:paddingRight="@dimen/view_space_medium"
+                android:paddingTop="@dimen/view_space_normal"
+                android:src="@drawable/ic_edit_exit" />
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>

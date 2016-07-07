@@ -305,7 +305,11 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         TextView tvRelation = (TextView) view.findViewById(R.id.tv_relation);
         TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
         TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
-        tvRelation.setText(comment.getUserInfo().getRelationName());
+        if (comment.getToUserInfo().getRelationName() != null) {
+            tvRelation.setText(comment.getUserInfo().getRelationName() + " 回复 "+comment.getToUserInfo().getRelationName());
+        }else{
+            tvRelation.setText(comment.getUserInfo().getRelationName());
+        }
         tvComment.setText(comment.getContent());
         tvTime.setText(DateUtil.formatDate("MM-dd HH:mm", comment.getCommentDate()));
         view.setOnClickListener(new View.OnClickListener() {

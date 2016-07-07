@@ -128,7 +128,7 @@
         android:layout_height="wrap_content"
         android:background="#00000000"
         android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/toolbar_padding_top"
+        android:paddingTop="@dimen/toolbar_padding_top2"
         >
 
         <FrameLayout
@@ -161,6 +161,6 @@
         android:layout_centerInParent="true"
         android:background="@color/bg_color7"
         android:padding="@dimen/size_12"
-        android:text="快去完善与宝宝的关系"
+        android:text="快去完善与宝宝的关系吧~"
         android:visibility="gone" />
 </RelativeLayout>

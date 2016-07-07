@@ -74,6 +74,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle("设置");
         initData();
         return view;
     }
