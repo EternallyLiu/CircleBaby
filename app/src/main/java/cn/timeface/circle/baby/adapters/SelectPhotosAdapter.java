@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +25,6 @@ import cn.timeface.circle.baby.events.PhotoSelectEvent;
 import cn.timeface.circle.baby.managers.services.UploadAllPicService;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
-import de.greenrobot.event.EventBus;
 
 
 /**

@@ -5,6 +5,13 @@ package cn.timeface.circle.baby.constants;
  * email : sy0725work@gmail.com
  */
 public class TypeConstant {
+
+    /**
+     * 开放平台
+     */
+    public static final String APP_ID = "123456789";
+    public static final String APP_SECRET = "987654321";
+
     /**
      * 图片质量
      */

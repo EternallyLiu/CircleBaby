@@ -31,6 +31,8 @@ import android.widget.Toast;
 
 import com.wbtech.ums.UmsAgent;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +74,6 @@ import cn.timeface.circle.baby.views.ErrorViewContent;
 import cn.timeface.circle.baby.views.HttpStatusCodes;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
-import de.greenrobot.event.Subscribe;
 import rx.Subscription;
 
 /**
@@ -1167,11 +1168,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
     protected void onDestroy() {
         isOpen = false;
         super.onDestroy();
-    }
-
-    @Override
-    public void onEvent(Object event) {
-
     }
 
     class EditTextWatcher implements TextWatcher {

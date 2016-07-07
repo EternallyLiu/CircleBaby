@@ -18,6 +18,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.ButterKnife;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
@@ -46,7 +48,6 @@ import cn.timeface.circle.baby.views.dialog.BaseDialog;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.TimeFaceUtilInit;
-import de.greenrobot.event.EventBus;
 
 /**
  * Created by lidonglin on 2016/6/25.

@@ -24,6 +24,8 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,6 @@ import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.circle.baby.views.ScaleImageView;
-import de.greenrobot.event.EventBus;
 
 public class DiaryPreviewFragment extends BaseFragment implements View.OnClickListener {
 

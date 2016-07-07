@@ -18,6 +18,8 @@ import com.wbtech.ums.UmsAgent;
 import com.wbtech.ums.common.UmsConstants;
 
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 
 import butterknife.Bind;
@@ -33,7 +35,6 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.CheckedUtil;
-import de.greenrobot.event.EventBus;
 import rx.Subscription;
 import rx.functions.Action1;
 

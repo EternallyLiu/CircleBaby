@@ -6,12 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 
 import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 

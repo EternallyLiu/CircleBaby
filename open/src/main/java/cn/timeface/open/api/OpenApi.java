@@ -23,12 +23,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * author: rayboot  Created on 15/11/26.
  * email : sy0725work@gmail.com
  */
-public class Api {
+public class OpenApi {
     public static final String BASE_URL = BuildConfig.API_URL;
     //    public static final String BASE_URL = "http://dev1.v5time.net/timefacepod/";
     final ApiService apiService;
 
-    Api() {
+    OpenApi() {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
         httpClientBuilder.writeTimeout(30, TimeUnit.SECONDS);

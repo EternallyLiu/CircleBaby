@@ -16,9 +16,8 @@ android {
         }
         release {
             buildConfigField "String", "API_URL", '"http://open.timeface.cn/"'
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            shrinkResources true
         }
     }
 }

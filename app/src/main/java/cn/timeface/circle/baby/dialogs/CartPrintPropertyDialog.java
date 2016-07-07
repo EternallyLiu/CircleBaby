@@ -30,6 +30,9 @@ import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URLEncoder;
@@ -59,8 +62,6 @@ import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 import rx.Subscription;
 
 /**
@@ -790,11 +791,6 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             }
             queryBookPrice();
         }
-    }
-
-    @Override
-    public void onEvent(Object event) {
-
     }
 
     public interface DismissListener {

@@ -1,19 +1,13 @@
 package cn.timeface.circle.baby.activities;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,14 +15,20 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.DistrictModel;
 import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
+import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.fragments.HomeFragment;
@@ -39,7 +39,8 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.CommonUtil;
-import de.greenrobot.event.EventBus;
+import cn.timeface.open.api.models.objs.UserObj;
+import cn.timeface.open.constants.Constant;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -86,6 +87,24 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         ivPublish.setOnClickListener(this);
 
         EventBus.getDefault().post(new EventTabMainWake());
+
+        ApiFactory.getOpenApi()
+                .getApiService()
+                .authorize(TypeConstant.APP_ID, TypeConstant.APP_SECRET, new Gson().toJson(UserObj.genUserObj()))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            if (response.success()) {
+                                Constant.ACCESS_TOKEN = response.getData().getAccessToken();
+                                Constant.EXPIRES_IN = response.getData().getExpiresIn();
+                                Constant.UNIONID = response.getData().getUnionId();
+                            }
+                        }
+                        , error -> {
+
+                        }
+                );
+
     }
 
     public void clickTab(View view) {
@@ -170,7 +189,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_publish:
                 new PublishDialog(this).show();
                 break;

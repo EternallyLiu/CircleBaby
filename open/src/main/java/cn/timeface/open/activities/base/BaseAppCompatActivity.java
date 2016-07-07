@@ -6,7 +6,7 @@ import android.view.MenuItem;
 
 import org.greenrobot.eventbus.EventBus;
 
-import cn.timeface.open.api.ApiFactory;
+import cn.timeface.open.api.OpenApiFactory;
 import cn.timeface.open.api.services.ApiService;
 import cn.timeface.open.managers.interfaces.IEventBus;
 import rx.Subscription;
@@ -19,7 +19,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class BaseAppCompatActivity extends AppCompatActivity {
 
-    public static final ApiService apiService = ApiFactory.getApi().getApiService();
+    public static final ApiService apiService = OpenApiFactory.getOpenApi().getApiService();
     protected final String TAG = this.getClass().getSimpleName();
 
     private CompositeSubscription mCompositeSubscription;
