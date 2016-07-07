@@ -18,6 +18,8 @@ import okhttp3.internal.http.HttpEngine;
 import okio.Buffer;
 import okio.BufferedSource;
 
+import static okhttp3.internal.Platform.INFO;
+
 /**
  * author: rayboot  Created on 16/1/12.
  * email : sy0725work@gmail.com
@@ -86,8 +88,9 @@ public class HttpLoggingInterceptor implements Interceptor {
 
         /** A {@link Logger} defaults output appropriate for the current platform. */
         Logger DEFAULT = new Logger() {
-            @Override public void log(String message) {
-                Platform.get().log(message);
+            @Override
+            public void log(String message) {
+                Platform.get().log(INFO, message, null);
             }
         };
     }
