@@ -291,4 +291,19 @@ public class Pinyin4jUtil {
         System.out.println("简拼输出：" + getPinyinJianPin(str));
 
     }
+
+    public static String toPinYin(String hanzi){
+        HanyuPinyinOutputFormat hanyuPinyin = new HanyuPinyinOutputFormat();
+        hanyuPinyin.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        hanyuPinyin.setToneType(HanyuPinyinToneType.WITH_TONE_MARK);
+        hanyuPinyin.setVCharType(HanyuPinyinVCharType.WITH_U_UNICODE);
+        String s = "";
+        try {
+            s = PinyinHelper.toHanYuPinyinString(hanzi, hanyuPinyin, "", false);
+        } catch (BadHanyuPinyinOutputFormatCombination badHanyuPinyinOutputFormatCombination) {
+            badHanyuPinyinOutputFormatCombination.printStackTrace();
+        }
+        //将获取到的拼音返回
+        return s;
+    }
 }
