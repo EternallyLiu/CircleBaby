@@ -82,8 +82,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
         EventBus.getDefault().post(new EventTabMainWake());
 
-        Intent intent = new Intent(this, PODActivity.class);
-        this.startActivity(intent);
+//        Intent intent = new Intent(this, PODActivity.class);
+//        this.startActivity(intent);
     }
 
     public void clickTab(View view) {
