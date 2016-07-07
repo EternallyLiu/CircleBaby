@@ -15,14 +15,20 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.DistrictModel;
 import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
+import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.fragments.HomeFragment;
@@ -33,8 +39,8 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.CommonUtil;
-import cn.timeface.open.activities.PODActivity;
-import de.greenrobot.event.EventBus;
+import cn.timeface.open.api.models.objs.UserObj;
+import cn.timeface.open.constants.Constant;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -82,8 +88,23 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
         EventBus.getDefault().post(new EventTabMainWake());
 
-//        Intent intent = new Intent(this, PODActivity.class);
-//        this.startActivity(intent);
+        ApiFactory.getOpenApi()
+                .getApiService()
+                .authorize(TypeConstant.APP_ID, TypeConstant.APP_SECRET, new Gson().toJson(UserObj.genUserObj()))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            if (response.success()) {
+                                Constant.ACCESS_TOKEN = response.getData().getAccessToken();
+                                Constant.EXPIRES_IN = response.getData().getExpiresIn();
+                                Constant.UNIONID = response.getData().getUnionId();
+                            }
+                        }
+                        , error -> {
+
+                        }
+                );
+
     }
 
     public void clickTab(View view) {

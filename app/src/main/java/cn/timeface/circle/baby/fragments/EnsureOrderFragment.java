@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
@@ -35,7 +37,6 @@ import cn.timeface.circle.baby.payment.PrepareOrderException;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import de.greenrobot.event.Subscribe;
 
 public class EnsureOrderFragment extends BaseFragment implements View.OnClickListener, IEventBus {
 
@@ -175,7 +176,7 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
                 Gson gson = new Gson();
                 String s = gson.toJson(dataList);
 
-                apiService.addOrder(Integer.valueOf(addressobj.getId()), URLEncoder.encode(s), expressId,0)
+                apiService.addOrder(Integer.valueOf(addressobj.getId()), URLEncoder.encode(s), expressId, 0)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(lessResponse -> {
                             if (lessResponse.success()) {
@@ -194,7 +195,7 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
     private void startPayment() {
         OrderInfoObj orderInfoObj = new OrderInfoObj();
         orderInfoObj.setTradeNo(lessResponse.getOrderId());
-        orderInfoObj.setPrice(lessResponse.getPrice()*bookObj.getNum());
+        orderInfoObj.setPrice(lessResponse.getPrice() * bookObj.getNum());
         orderInfoObj.setSubject(mineBookObj.getBookName());
         orderInfoObj.setBody(mineBookObj.getBookName());
         try {
@@ -204,14 +205,14 @@ public class EnsureOrderFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-        @Subscribe
-        public void onEvent (Object event){
-            if (event instanceof AddressEvent) {
-                addressobj = ((AddressEvent) event).getObj();
-                rlAddress.setVisibility(View.VISIBLE);
-                tvname.setText(addressobj.getContacts());
-                tvPhone.setText(addressobj.getContactsPhone());
-                tvAddress.setText(addressobj.getAddress());
-            }
+    @Subscribe
+    public void onEvent(Object event) {
+        if (event instanceof AddressEvent) {
+            addressobj = ((AddressEvent) event).getObj();
+            rlAddress.setVisibility(View.VISIBLE);
+            tvname.setText(addressobj.getContacts());
+            tvPhone.setText(addressobj.getContactsPhone());
+            tvAddress.setText(addressobj.getAddress());
         }
     }
+}

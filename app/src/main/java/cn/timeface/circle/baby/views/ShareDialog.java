@@ -13,6 +13,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.ButterKnife;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
@@ -28,7 +30,6 @@ import cn.timeface.circle.baby.events.DeleteDynamicEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
-import de.greenrobot.event.EventBus;
 
 /**
  * Created by yusen on 2015/2/4.

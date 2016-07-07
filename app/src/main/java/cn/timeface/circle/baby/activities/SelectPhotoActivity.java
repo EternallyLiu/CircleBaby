@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,6 @@ import cn.timeface.circle.baby.utils.mediastore.MediaStoreBucket;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import cn.timeface.common.utils.DateUtil;
 import cn.timeface.common.utils.StorageUtil;
-import de.greenrobot.event.Subscribe;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -402,11 +403,6 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         adapter.setSelImgs(photoModels);
         adapter.notifyDataSetChanged();
         changeSelCount(photoModels.size());
-    }
-
-    @Override
-    public void onEvent(Object event) {
-
     }
 
     public void clickCamera(View view) {

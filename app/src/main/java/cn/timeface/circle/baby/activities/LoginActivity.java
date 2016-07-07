@@ -19,11 +19,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
-import de.greenrobot.event.Subscribe;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -229,11 +230,6 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
     protected void onDestroy() {
         super.onDestroy();
         ShareSDK.stopSDK(this);
-    }
-
-    @Override
-    public void onEvent(Object event) {
-
     }
 
     @SuppressWarnings("unused")

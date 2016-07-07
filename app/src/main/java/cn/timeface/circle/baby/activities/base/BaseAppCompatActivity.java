@@ -11,7 +11,7 @@ import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import com.umeng.analytics.MobclickAgent;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;

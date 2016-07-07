@@ -16,6 +16,9 @@ import com.wbtech.ums.UmsAgent;
 import com.wbtech.ums.common.UmsConstants;
 
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +35,6 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ErrorViewContent;
 import cn.timeface.circle.baby.views.HttpStatusCodes;
 import cn.timeface.circle.baby.views.TFStateView;
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 import rx.Subscription;
 
 /**
@@ -215,8 +216,4 @@ public class SelectReceiverAddActivity extends BaseAppCompatActivity implements 
         UmsAgent.onPause(this);
     }
 
-    @Override
-    public void onEvent(Object event) {
-
-    }
 }

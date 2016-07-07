@@ -19,6 +19,9 @@ import android.widget.TextView;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +46,6 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener{

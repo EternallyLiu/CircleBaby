@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.greenrobot.event.Subscribe;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -164,9 +163,9 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
         finish();
     }
 
-    @Override
-    public void onEvent(Object event) {
-        etCode.setText(((SmsEvent) event).content);
+    @Subscribe
+    public void onEvent(SmsEvent event) {
+        etCode.setText(event.content);
     }
 
     @Override

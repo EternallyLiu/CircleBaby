@@ -15,6 +15,8 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +30,6 @@ import cn.timeface.circle.baby.events.PicSaveCompleteEvent;
 import cn.timeface.circle.baby.utils.rxutils.ExecutorManager;
 import cn.timeface.common.utils.DateUtil;
 import cn.timeface.common.utils.MD5;
-import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;

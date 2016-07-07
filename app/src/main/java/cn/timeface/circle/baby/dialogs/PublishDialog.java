@@ -33,7 +33,6 @@ import cn.timeface.circle.baby.views.dialog.BaseDialog;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.TimeFaceUtilInit;
-import de.greenrobot.event.EventBus;
 
 /**
  * Created by lidonglin on 2016/6/25.

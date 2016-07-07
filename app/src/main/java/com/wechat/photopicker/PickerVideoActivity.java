@@ -30,6 +30,8 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -45,7 +47,6 @@ import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.common.utils.StorageUtil;
-import de.greenrobot.event.Subscribe;
 
 /**
  * 选择视频界面
@@ -249,12 +250,10 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
 
     @Subscribe
-    public void onEvent(Object event) {
-        if (event instanceof ClipVideoSuccessEvent) {
-            String clipVideoPath = ((ClipVideoSuccessEvent) event).getClipVideoPath();
-            videoInfo.setPath(clipVideoPath);
-            uploadImage(videoInfo.getImgLocalUrl());
-        }
+    public void onEvent(ClipVideoSuccessEvent event) {
+        String clipVideoPath = event.getClipVideoPath();
+        videoInfo.setPath(clipVideoPath);
+        uploadImage(videoInfo.getImgLocalUrl());
     }
 
     private void uploadImage(String imgLocalUrl) {
@@ -282,8 +281,8 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
                         Intent intent = new Intent();
                         intent.putExtra("imgObjectKey", imgObjectKey);
-                        intent.putExtra("path",videoInfo.getPath());
-                        intent.putExtra("duration",videoInfo.getDuration());
+                        intent.putExtra("path", videoInfo.getPath());
+                        intent.putExtra("duration", videoInfo.getDuration());
                         intent.putExtra("date", videoInfo.getDate());
                         setResult(RESULT_OK, intent);
                         finish();

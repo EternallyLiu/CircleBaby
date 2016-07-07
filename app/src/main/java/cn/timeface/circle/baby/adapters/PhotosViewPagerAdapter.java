@@ -17,7 +17,6 @@ import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.events.PhotoSelectEvent;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.views.PhotoSelectView;
-import de.greenrobot.event.EventBus;
 
 
 /**

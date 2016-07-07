@@ -8,12 +8,12 @@ import android.telephony.SmsMessage;
 import android.text.TextUtils;
 
 
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.timeface.circle.baby.events.SmsEvent;
-import de.greenrobot.event.EventBus;
 
 
 /**

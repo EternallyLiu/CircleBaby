@@ -18,6 +18,9 @@ import com.timeface.refreshload.PullRefreshLoadRecyclerView;
 import com.timeface.refreshload.headfoot.LoadMoreView;
 import com.timeface.refreshload.headfoot.RefreshView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +36,6 @@ import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 
 public class MineBookActivity extends BaseAppCompatActivity implements IEventBus {
     public int currentPage = 1;
@@ -173,8 +174,4 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         }
     }
 
-    @Override
-    public void onEvent(Object event) {
-
-    }
 }

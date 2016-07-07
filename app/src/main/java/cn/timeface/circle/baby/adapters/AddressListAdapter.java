@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -31,7 +33,6 @@ import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.events.AddressEvent;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
-import de.greenrobot.event.EventBus;
 
 /**
  * Created by lidonglin on 2016/6/15.

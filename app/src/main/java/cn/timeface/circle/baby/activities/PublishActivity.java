@@ -28,6 +28,8 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -58,7 +60,6 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
-import de.greenrobot.event.Subscribe;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
@@ -462,7 +463,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
-
         }
     }
 

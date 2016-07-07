@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +46,6 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 import rx.Subscription;
 
 
@@ -505,11 +506,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 }
             }
         }
-    }
-
-    @Override
-    public void onEvent(Object event) {
-
     }
 
 }

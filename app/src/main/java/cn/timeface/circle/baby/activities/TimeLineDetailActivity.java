@@ -1,7 +1,6 @@
 package cn.timeface.circle.baby.activities;
 
 import android.app.Activity;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,6 +34,9 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +62,6 @@ import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.IconTextView;
 import cn.timeface.circle.baby.views.InputMethodRelative;
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.functions.Func1;
 
@@ -300,8 +300,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
         TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
         if (comment.getToUserInfo().getRelationName() != null) {
-            tvRelation.setText(comment.getUserInfo().getRelationName() + " 回复 "+comment.getToUserInfo().getRelationName());
-        }else{
+            tvRelation.setText(comment.getUserInfo().getRelationName() + " 回复 " + comment.getToUserInfo().getRelationName());
+        } else {
             tvRelation.setText(comment.getUserInfo().getRelationName());
         }
         tvComment.setText(comment.getContent());
@@ -508,10 +508,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     }
 
     @Subscribe
-    public void onEvent(Object event) {
-        if (event instanceof DeleteTimeLineEvent) {
-            finish();
-        }
+    public void onEvent(DeleteTimeLineEvent event) {
+        finish();
     }
 
     @Override

@@ -8,11 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,16 +24,14 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
-import de.greenrobot.event.Subscribe;
 
-public class DiaryPublishActivity extends BaseAppCompatActivity implements View.OnClickListener , IEventBus{
+public class DiaryPublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
 
     protected final int PHOTO_COUNT_MAX = 1;
@@ -68,10 +67,10 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
 
         tvTime.setText(DateUtil.getYear2(System.currentTimeMillis()));
 
-        int width = Remember.getInt("width",0)*3;
+        int width = Remember.getInt("width", 0) * 3;
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) ivDiary.getLayoutParams();
-        layoutParams.height = width/2;
-        layoutParams.width = width/2;
+        layoutParams.height = width / 2;
+        layoutParams.width = width / 2;
         ivDiary.setLayoutParams(layoutParams);
 
 
@@ -85,7 +84,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     }
 
     private void selectImages() {
-        SelectPhotoActivity.openForResult(this,selImages,PHOTO_COUNT_MAX,PICTURE);
+        SelectPhotoActivity.openForResult(this, selImages, PHOTO_COUNT_MAX, PICTURE);
     }
 
     @Override
@@ -148,9 +147,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     }
 
     @Subscribe
-    public void onEvent(Object event) {
-        if(event instanceof MediaObjEvent){
-            finish();
-        }
+    public void onEvent(MediaObjEvent event) {
+        finish();
     }
 }

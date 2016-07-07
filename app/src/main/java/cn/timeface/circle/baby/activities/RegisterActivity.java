@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import de.greenrobot.event.Subscribe;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -106,11 +106,6 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
     @Subscribe
     public void onEvent(EventTabMainWake event) {
         finish();
-    }
-
-    @Override
-    public void onEvent(Object event) {
-
     }
 
     private void registerSMSReceiver() {
