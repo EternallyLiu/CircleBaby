@@ -31,8 +31,6 @@ public class AddBookListFragment extends BaseFragment {
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
 
 
     public AddBookListFragment() {
@@ -51,7 +49,7 @@ public class AddBookListFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        tvTitle.setText("为" + FastData.getBabyName() + "定制");
+        getActionBar().setTitle("为" + FastData.getBabyName() + "定制");
         reqData();
         return view;
     }
@@ -70,7 +68,7 @@ public class AddBookListFragment extends BaseFragment {
     }
 
     private void setDataList(List<BookTypeListObj> dataList) {
-        AddBookListAdapter adapter = new AddBookListAdapter(getContext(),dataList);
+        AddBookListAdapter adapter = new AddBookListAdapter(getContext(), dataList);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         contentRecyclerView.setAdapter(adapter);
     }

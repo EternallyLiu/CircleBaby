@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@color/bg_color1"
         android:fitsSystemWindows="true"
+        android:paddingTop="@dimen/toolbar_padding_top2"
         android:minHeight="?attr/actionBarSize">
 
         <TextView

@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:background="@color/bg_color1"
             android:minHeight="?attr/actionBarSize"
-            android:paddingTop="@dimen/toolbar_padding_top">
+            >
 
             <FrameLayout
                 android:layout_width="match_parent"
