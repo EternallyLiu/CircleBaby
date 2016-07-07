@@ -107,7 +107,7 @@ public interface ApiService {
 
     //邀请码校验
     @GET("auth/verifiedInviteCode")
-    Observable<BaseResponse> verifiedInviteCode(@Query("inviteCode") String inviteCode);
+    Observable<UserLoginResponse> verifiedInviteCode(@Query("inviteCode") String inviteCode);
 
     //关注宝宝
     @GET("baby/babyAttention")

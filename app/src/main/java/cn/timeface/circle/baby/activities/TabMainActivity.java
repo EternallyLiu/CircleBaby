@@ -74,6 +74,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_tab_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         updateRegionDB();
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);

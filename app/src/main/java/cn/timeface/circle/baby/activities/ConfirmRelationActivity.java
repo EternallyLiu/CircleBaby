@@ -124,6 +124,7 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
                     if (userLoginResponse.success()) {
                         Toast.makeText(this, userLoginResponse.getInfo(), Toast.LENGTH_SHORT).show();
                         FastData.setUserInfo(userLoginResponse.getUserInfo());
+                        finish();
                     }
                 }, error -> {
                     Toast.makeText(this, "邀请码校验失败", Toast.LENGTH_SHORT).show();
