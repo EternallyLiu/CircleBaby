@@ -6,6 +6,7 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 
 import java.util.List;
 
@@ -15,9 +16,9 @@ import java.util.List;
  * @TODO 省市区字典
  */
 @Table(name = "district_table")
-@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class DistrictModel extends Model {
     @Column(name = "locationId")
+    @PrimaryKey
     public String locationId;
 
     @Column(name = "locationName")

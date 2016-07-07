@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color8"
-    >
+    android:background="@color/bg_color8">
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/bg_color1"
-            android:minHeight="?attr/actionBarSize"
             android:theme="@style/AppTheme.PopupOverlay"
             app:theme="@style/ToolbarColor">
 
@@ -71,13 +70,14 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/appbar"
-        android:layout_above="@+id/view_line">
+        android:layout_above="@+id/view_line"
+        android:layout_below="@+id/appbar">
+
         <RelativeLayout
             android:id="@+id/rl_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
+
             <LinearLayout
                 android:id="@+id/ll_layout"
                 android:layout_width="match_parent"
@@ -122,8 +122,8 @@
                             android:id="@+id/iv_video"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/video"
                             android:layout_centerInParent="true"
+                            android:src="@drawable/video"
                             android:visibility="gone" />
                     </RelativeLayout>
 
@@ -201,11 +201,13 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_commentLikeWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_time_line"
                     android:layout_marginLeft="@dimen/size_48"
-                    android:layout_marginTop="@dimen/size_12">
+                    android:layout_marginTop="@dimen/size_12"
+                    android:background="@drawable/ic_time_line">
+
                     <LinearLayout
                         android:id="@+id/layout_comment"
                         android:layout_width="match_parent"
@@ -222,23 +224,7 @@
                                 android:id="@+id/ll_good_list_users_bar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    android:layout_width="@dimen/size_36"
-                                    android:layout_height="@dimen/size_36"
-                                    android:src="@color/bg_color1" />
-
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    android:layout_width="@dimen/size_36"
-                                    android:layout_height="@dimen/size_36"
-                                    android:src="@color/bg_color1" />
-
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    android:layout_width="@dimen/size_36"
-                                    android:layout_height="@dimen/size_36"
-                                    android:src="@color/bg_color1" />
-                            </LinearLayout>
+                                android:orientation="horizontal" />
                         </HorizontalScrollView>
 
                         <LinearLayout
@@ -246,13 +232,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
-                            android:padding="@dimen/size_6">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="爸爸：天啊，太萌了" />
-                        </LinearLayout>
+                            android:padding="@dimen/size_6" />
 
                         <TextView
                             android:id="@+id/tv_more_comment"
@@ -270,13 +250,14 @@
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
+
     <View
         android:id="@+id/view_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/rl_comment"
         android:background="@color/bg_color7"
-        android:paddingBottom="6dp"/>
+        android:paddingBottom="6dp" />
 
     <cn.timeface.circle.baby.views.InputMethodRelative
         android:id="@+id/rl_comment"
@@ -297,6 +278,7 @@
             android:gravity="center_vertical"
             android:hint="我也说一句"
             android:padding="@dimen/size_6" />
+
         <Button
             android:id="@+id/btn_send"
             android:layout_width="wrap_content"

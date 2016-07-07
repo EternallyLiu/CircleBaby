@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +82,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder.tvAuthor.setText(item.getAuthor().getRelationName());
         holder.tvDate.setText(DateUtil.getTime2(item.getDate()));
         holder.iconLike.setTextColor(item.getLike() == 1 ? Color.RED : normalColor);
+
         if (!TextUtils.isEmpty(item.getMilestone())) {
             holder.tvMilestone.setVisibility(View.VISIBLE);
             holder.tvMilestone.setText(item.getMilestone());
@@ -119,6 +118,12 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         } else {
             holder.gv.setVisibility(View.GONE);
+        }
+
+        if (item.getCommentList().size() == 0 && item.getLikeList().size() == 0) {
+            holder.llCommentLikeWrapper.setVisibility(View.GONE);
+        } else {
+            holder.llCommentLikeWrapper.setVisibility(View.VISIBLE);
         }
 
         if (item.getCommentList().size() > 0) {
@@ -235,6 +240,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         TimeLineObj timeLineObj;
         int position;
         int allDetailsPosition;
+        @Bind(R.id.commentAnd)
+        LinearLayout llCommentLikeWrapper;
 
 
         ViewHolder(View view) {
@@ -274,14 +281,14 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
                                         listData.get(position).setLike(1);
                                         int likeCount = listData.get(position).getLikeCount();
-                                        listData.get(position).setLikeCount(likeCount+1);
-                                        for (UserObj u : listData.get(position).getLikeList()){
-                                            if (u.getUserId().equals(FastData.getUserInfo().getUserId())){
+                                        listData.get(position).setLikeCount(likeCount + 1);
+                                        for (UserObj u : listData.get(position).getLikeList()) {
+                                            if (u.getUserId().equals(FastData.getUserInfo().getUserId())) {
                                                 isContains = true;
                                                 break;
                                             }
                                         }
-                                        if (!isContains){
+                                        if (!isContains) {
                                             listData.get(position).getLikeList().add(FastData.getUserInfo());
                                             isContains = false;
                                         }
@@ -296,9 +303,9 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
                                         listData.get(position).setLike(0);
                                         int likeCount = listData.get(position).getLikeCount();
-                                        listData.get(position).setLikeCount(likeCount-1);
-                                        for (UserObj u : listData.get(position).getLikeList()){
-                                            if (u.getUserId().equals(FastData.getUserId())){
+                                        listData.get(position).setLikeCount(likeCount - 1);
+                                        for (UserObj u : listData.get(position).getLikeList()) {
+                                            if (u.getUserId().equals(FastData.getUserId())) {
                                                 listData.get(position).getLikeList().remove(u);
                                             }
                                         }
@@ -307,11 +314,11 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         llGoodListUsersBar.removeAllViews();
                                         if (timeLineObj.getLikeCount() == 0) {
                                             hsv.setVisibility(View.GONE);
-                                            if(timeLineObj.getCommentCount()==0){
+                                            if (timeLineObj.getCommentCount() == 0) {
                                             }
                                         } else if (timeLineObj.getLikeCount() == 1 && timeLineObj.getLikeList().get(0).getUserId().equals(FastData.getUserId())) {
                                             hsv.setVisibility(View.GONE);
-                                            if(timeLineObj.getCommentCount()==0){
+                                            if (timeLineObj.getCommentCount() == 0) {
                                             }
                                         } else {
                                             hsv.setVisibility(View.VISIBLE);

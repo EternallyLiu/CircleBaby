@@ -1,7 +1,6 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,8 +42,9 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Subscription;
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener{
+public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -157,11 +157,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     }
 
     private void reqData(int currentPage) {
-        apiService.timeline(currentPage, 10)
+        Subscription subscribe = apiService.timeline(currentPage, 10)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
-                    if(Remember.getBoolean("showtimelinehead",true)&&currentPage==1&&adapter.getHeaderCount()==0&&timelineResponse.getRecommendObj()!=null){
+                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendObj() != null) {
                         adapter.addHeader(initHeadView(timelineResponse.getRecommendObj()));
                     }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
@@ -174,20 +174,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                     Log.e(TAG, "timeline:");
                     tfptrListViewHelper.finishTFPTRRefresh();
                 });
+        addSubscription(subscribe);
 
 
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
         ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
-        for(TimeLineGroupObj obj : dataList){
-            if(obj.getTimeLineList().size()>0){
+        for (TimeLineGroupObj obj : dataList) {
+            if (obj.getTimeLineList().size() > 0) {
                 lists.add(obj);
             }
         }
-        if(currentPage == 1){
+        if (currentPage == 1) {
             adapter.setListData(lists);
-        }else{
+        } else {
             adapter.getListData().addAll(lists);
         }
         adapter.notifyDataSetChanged();
@@ -240,7 +241,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         }
     }
 
-    public View initHeadView(RecommendObj obj){
+    public View initHeadView(RecommendObj obj) {
         View view = View.inflate(getContext(), R.layout.view_timeline_head, null);
         ImageView ivImage = (ImageView) view.findViewById(R.id.iv_image);
         ImageView ivClose = (ImageView) view.findViewById(R.id.iv_close);
@@ -249,7 +250,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
         GlideUtil.displayImage(obj.getBgPicUrl(), ivImage);
         tvContent.setText(obj.getRecommendContent());
-        switch (obj.getActionType()){
+        switch (obj.getActionType()) {
             case 0:
                 //照片发布
                 tvType.setText("发布照片吧》");
@@ -274,43 +275,43 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         }
 
         tvType.setOnClickListener(v -> {
-            if(obj.getActionType()==0){
+            if (obj.getActionType() == 0) {
                 //照片发布
                 PublishActivity.open(getContext(), PublishActivity.PHOTO);
-            }else{
-                apiService.getBabyBookWorksTypeList()
+            } else {
+                Subscription subscribe = apiService.getBabyBookWorksTypeList()
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(bookTypeListResponse -> {
                             if (bookTypeListResponse.success()) {
-                                switch (obj.getActionType()){
+                                switch (obj.getActionType()) {
                                     case 1:
                                         //照片书
-                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
-                                            if(item.getType()==5){
+                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
+                                            if (item.getType() == 5) {
                                                 FragmentBridgeActivity.openAddBookFragment(getContext(), item);
                                             }
                                         }
                                         break;
                                     case 2:
                                         //成长书
-                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
-                                            if(item.getType()==1){
+                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
+                                            if (item.getType() == 1) {
                                                 FragmentBridgeActivity.openAddBookFragment(getContext(), item);
                                             }
                                         }
                                         break;
                                     case 3:
                                         //识图卡片书
-                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
-                                            if(item.getType()==3){
+                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
+                                            if (item.getType() == 3) {
                                                 FragmentBridgeActivity.openAddBookFragment(getContext(), item);
                                             }
                                         }
                                         break;
                                     case 4:
                                         //日记书
-                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
-                                            if(item.getType()==2){
+                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
+                                            if (item.getType() == 2) {
                                                 FragmentBridgeActivity.openAddBookFragment(getContext(), item);
                                             }
                                         }
@@ -320,6 +321,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                         }, error -> {
                             Log.e(TAG, "getBabyBookWorksTypeList:");
                         });
+                addSubscription(subscribe);
             }
 
         });
@@ -338,8 +340,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     }
 
     public void replaceList(int replacePosition, int listPos, TimeLineObj timeLineObj) {
-        if (tempList.size() > replacePosition){
-            if (tempList.get(replacePosition).getTimeLineList().size() > listPos){
+        if (tempList.size() > replacePosition) {
+            if (tempList.get(replacePosition).getTimeLineList().size() > listPos) {
                 tempList.get(replacePosition).getTimeLineList().remove(listPos);
                 tempList.get(replacePosition).getTimeLineList().add(listPos, timeLineObj);
             }
