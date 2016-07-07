@@ -1,19 +1,13 @@
 package cn.timeface.circle.baby.activities;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -39,6 +33,7 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.CommonUtil;
+import cn.timeface.open.activities.PODActivity;
 import de.greenrobot.event.EventBus;
 import rx.Observable;
 import rx.Subscription;
@@ -86,6 +81,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         ivPublish.setOnClickListener(this);
 
         EventBus.getDefault().post(new EventTabMainWake());
+
+        Intent intent = new Intent(this, PODActivity.class);
+        this.startActivity(intent);
     }
 
     public void clickTab(View view) {
@@ -170,7 +168,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_publish:
                 new PublishDialog(this).show();
                 break;

@@ -6,6 +6,37 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+
+        <meta-data
+            android:name="cn.timeface.open.utils.glide.TFGlideModule"
+            android:value="GlideModule" />
+
+        <activity
+            android:name=".activities.base.BaseRecyclerViewActivity"
+            android:label="@string/title_activity_base_recycler_view" />
+        <activity
+            android:name=".activities.SplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="cn.timeface.open.activities.PODActivity"
+            android:label="@string/title_activity_pod"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name="cn.timeface.open.activities.EditActivity"
+            android:label="@string/title_activity_edit"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="cn.timeface.open.activities.EditTextActivity"
+            android:label="@string/title_activity_edit_text"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
