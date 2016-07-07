@@ -14,7 +14,7 @@
         android:clipToPadding="true"
         android:fitsSystemWindows="true"
         android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/toolbar_padding_top">
+        >
 
         <FrameLayout
             android:layout_width="match_parent"

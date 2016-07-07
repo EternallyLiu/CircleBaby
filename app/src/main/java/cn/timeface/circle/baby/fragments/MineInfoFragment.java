@@ -41,8 +41,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MineInfoFragment extends BaseFragment implements View.OnClickListener {
 
 
-    @Bind(R.id.tv_mine)
-    TextView tvMine;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.iv_avatar)
@@ -78,6 +76,7 @@ public class MineInfoFragment extends BaseFragment implements View.OnClickListen
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle("我的资料");
         initData();
         rlAvtar.setOnClickListener(this);
         rlNickname.setOnClickListener(this);

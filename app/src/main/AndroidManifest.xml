@@ -259,6 +259,10 @@
             android:name=".activities.PaySuccessActivity"
             android:label="支付成功"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ConfirmRelationActivity"
+            android:label="与宝宝关系"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

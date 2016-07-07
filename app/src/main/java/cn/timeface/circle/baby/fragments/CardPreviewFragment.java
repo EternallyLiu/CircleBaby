@@ -19,6 +19,11 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+
 import java.net.URLEncoder;
 
 import butterknife.Bind;
@@ -106,7 +111,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if (!TextUtils.isEmpty(s.toString())) {
-                    String pinyin = Pinyin4jUtil.getPinyin(s.toString());
+                    String pinyin = Pinyin4jUtil.toPinYin(s.toString());
                     etPinyin.setText(pinyin);
                 } else {
                     etPinyin.setText("");

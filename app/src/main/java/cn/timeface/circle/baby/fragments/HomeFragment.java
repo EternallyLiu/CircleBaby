@@ -1,12 +1,14 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CloudAlbumActivity;
+import cn.timeface.circle.baby.activities.ConfirmRelationActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
@@ -203,6 +206,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         tvName.setText(FastData.getBabyName());
         tvAge.setText(FastData.getBabyAge());
         GlideUtil.displayImage(FastData.getBabyAvatar(), ivAvatar);
+        if(TextUtils.isEmpty(FastData.getRelationName())){
+            tvToensurerelation.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -232,7 +238,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                 FragmentBridgeActivity.open(getActivity(), "MilestoneFragment");
                 break;
             case R.id.tv_toensurerelation:
-
+                Intent intent = new Intent(getActivity(),ConfirmRelationActivity.class);
+                String code = Remember.getString("code","");
+                intent.putExtra("code", code);
+                startActivity(intent);
+                tvToensurerelation.setVisibility(View.GONE);
                 break;
             case R.id.tv_album:
                 CloudAlbumActivity.open(getActivity());

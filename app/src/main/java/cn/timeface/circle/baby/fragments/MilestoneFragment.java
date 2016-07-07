@@ -32,7 +32,7 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
 
-public class MilestoneFragment extends BaseFragment implements View.OnClickListener {
+public class MilestoneFragment extends BaseFragment{
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -96,13 +96,6 @@ public class MilestoneFragment extends BaseFragment implements View.OnClickListe
         }
         adapter.setListData(milestoneTimeObjs);
         adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-        }
     }
 
     @Override

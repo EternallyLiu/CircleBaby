@@ -173,7 +173,12 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
             apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), bookType, imageInfoList.get(0).getMediaList().get(0).getImgUrl(), s)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
-                        ToastUtil.showToast(response.getInfo());
+                        if(response.success()){
+                            
+                        }else{
+                            ToastUtil.showToast(response.getInfo());
+                        }
+
                     }, error -> {
                         Log.e(TAG, "createBook:");
                     });

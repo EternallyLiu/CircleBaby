@@ -50,7 +50,7 @@ public class FastData extends Remember {
     /**
      * is_creator
      */
-    public static final String IS_CREATOR = "relation_name";
+    public static final String IS_CREATOR = "is_creator";
 
     /**
      * Account
@@ -219,11 +219,11 @@ public class FastData extends Remember {
         putString(USER_NAME, userName);
     }
 
-    private static void setRelationName(String relationName) {
+    public static void setRelationName(String relationName) {
         putString(RELATION_NAME, relationName);
     }
 
-    private static String getRelationName() {
+    public static String getRelationName() {
         return getString(RELATION_NAME,"");
     }
 

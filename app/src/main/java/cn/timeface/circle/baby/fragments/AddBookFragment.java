@@ -34,8 +34,6 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
     @Bind(R.id.tv_bookname)
     TextView tvBookname;
     @Bind(R.id.tv_desc)
@@ -64,12 +62,12 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setTitle(bookTypeListObj.getCoverTitle());
         initData();
         return view;
     }
 
     private void initData() {
-        tvTitle.setText(bookTypeListObj.getCoverTitle());
         tvBookname.setText(bookTypeListObj.getTitle());
         tvDesc.setText(bookTypeListObj.getDescription());
 
