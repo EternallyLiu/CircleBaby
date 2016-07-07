@@ -13,16 +13,16 @@ import java.util.List;
 
 import cn.timeface.open.R;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.open.api.models.response.SimpleTemplate;
+import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
 
 /**
  * author: rayboot  Created on 16/7/4.
  * email : sy0725work@gmail.com
  */
-public class TemplateAdapter extends BaseRecyclerAdapter<SimpleTemplate> {
+public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
     int selTemplateId = 0;
 
-    public TemplateAdapter(Context mContext, List<SimpleTemplate> listData) {
+    public TemplateAdapter(Context mContext, List<TFOSimpleTemplate> listData) {
         super(mContext, listData);
     }
 
@@ -39,7 +39,7 @@ public class TemplateAdapter extends BaseRecyclerAdapter<SimpleTemplate> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        SimpleTemplate template = listData.get(position);
+        TFOSimpleTemplate template = listData.get(position);
         ImageView iv = (ImageView) holder.itemView;
         Glide.with(getContext())
                 .load(template.getThumbnail())
