@@ -139,7 +139,6 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     littleWindow.show(v);
                     break;
                 case R.id.tv_edit:
-                    context.startActivity(new Intent(context, SplashActivity.class));
                     break;
                 case R.id.tv_print:
                     BaseAppCompatActivity.apiService.printStatus(obj.getBookType(), obj.getPageNum(),obj.getBookSizeId())
