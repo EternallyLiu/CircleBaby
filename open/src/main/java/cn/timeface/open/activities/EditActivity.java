@@ -30,7 +30,7 @@ import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookElementModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.response.EditPod;
-import cn.timeface.open.api.models.response.SimpleTemplate;
+import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
 import cn.timeface.open.events.ChangeStickerStatusEvent;
 import cn.timeface.open.managers.interfaces.IEventBus;
 import cn.timeface.open.utils.BookModelCache;
@@ -148,10 +148,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     private void reqTemplateList() {
         apiService.getTemplateList(bookModel.getBookType())
-                .compose(SchedulersCompat.<BaseResponse<List<SimpleTemplate>>>applyIoSchedulers())
-                .subscribe(new Action1<BaseResponse<List<SimpleTemplate>>>() {
+                .compose(SchedulersCompat.<BaseResponse<List<TFOSimpleTemplate>>>applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse<List<TFOSimpleTemplate>>>() {
                                @Override
-                               public void call(BaseResponse<List<SimpleTemplate>> listBaseResponse) {
+                               public void call(BaseResponse<List<TFOSimpleTemplate>> listBaseResponse) {
                                    setTemplateListData(listBaseResponse.getData());
                                }
                            }
@@ -163,7 +163,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                         });
     }
 
-    private void setTemplateListData(List<SimpleTemplate> data) {
+    private void setTemplateListData(List<TFOSimpleTemplate> data) {
         selectionAdapter = new TemplateAdapter(this, data);
         rvSelection.setAdapter(selectionAdapter);
     }

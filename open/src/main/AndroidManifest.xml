@@ -7,9 +7,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-        <meta-data
-            android:name="cn.timeface.open.utils.glide.TFGlideModule"
-            android:value="GlideModule" />
+        <!--<meta-data-->
+            <!--android:name="cn.timeface.open.utils.glide.TFGlideModule"-->
+            <!--android:value="GlideModule" />-->
 
         <activity
             android:name=".activities.base.BaseRecyclerViewActivity"
