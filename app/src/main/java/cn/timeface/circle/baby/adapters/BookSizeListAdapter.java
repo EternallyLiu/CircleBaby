@@ -16,21 +16,21 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
-import cn.timeface.circle.baby.api.models.objs.Msg;
+import cn.timeface.circle.baby.api.models.objs.CardBookSizeObj;
 import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
-import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.views.dialog.LittleWindow;
 
 /**
- * Created by lidonglin on 2016/6/15.
+ * Created by lidonglin on 2016/7/7.
  */
-public class AddBookListAdapter extends BaseRecyclerAdapter<BookTypeListObj> {
+public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
     private OnItemClickListener onItemClickListener;
 
-    public AddBookListAdapter(Context mContext, List<BookTypeListObj> listData) {
+    public BookSizeListAdapter(Context mContext, List<CardBookSizeObj> listData) {
         super(mContext, listData);
 
     }
@@ -49,7 +49,7 @@ public class AddBookListAdapter extends BaseRecyclerAdapter<BookTypeListObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = (ViewHolder) viewHolder;
-        BookTypeListObj obj = getItem(position);
+        CardBookSizeObj obj = getItem(position);
         holder.onClickListener = onClickListener;
         holder.obj = obj;
         holder.context = mContext;
@@ -58,8 +58,8 @@ public class AddBookListAdapter extends BaseRecyclerAdapter<BookTypeListObj> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.clickItem(obj);
+                if(onItemClickListener!=null){
+                    onItemClickListener.clickItem(obj.getBookSizeId());
                 }
             }
         });
@@ -83,13 +83,16 @@ public class AddBookListAdapter extends BaseRecyclerAdapter<BookTypeListObj> {
         Context context;
 
         View.OnClickListener onClickListener = null;
-        BookTypeListObj obj;
+        CardBookSizeObj obj;
 
         ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+//            itemView.setOnClickListener(this);
         }
+
     }
+
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
         this.onItemClickListener = onItemClickListener;

@@ -139,7 +139,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
                     break;
                 case R.id.tv_print:
-                    BaseAppCompatActivity.apiService.printStatus(obj.getBookType(), obj.getPageNum())
+                    BaseAppCompatActivity.apiService.printStatus(obj.getBookType(), obj.getPageNum(),obj.getBookSizeId())
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(printStatusResponse -> {
                                 obj.setPrintCode(printStatusResponse.getPrintCode());

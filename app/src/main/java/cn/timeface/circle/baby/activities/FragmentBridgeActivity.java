@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,12 +14,14 @@ import com.wechat.photopicker.fragment.BigImageFragment;
 import com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
@@ -27,6 +30,7 @@ import cn.timeface.circle.baby.fragments.AddAddressFragment;
 import cn.timeface.circle.baby.fragments.AddBookFragment;
 import cn.timeface.circle.baby.fragments.AddBookListFragment;
 import cn.timeface.circle.baby.fragments.BabyInfoFragment;
+import cn.timeface.circle.baby.fragments.BookSizeListFragment;
 import cn.timeface.circle.baby.fragments.CardPreviewFragment;
 import cn.timeface.circle.baby.fragments.ChangeBabyFragment;
 import cn.timeface.circle.baby.fragments.ChangeInfoFragment;
@@ -131,6 +135,13 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         bundle.putParcelable("MineBookObj", mineBookObj);
         open(context, "EnsureOrderFragment", bundle);
     }
+
+    public static void openBookSizeListFragment(Context context,List<ImageInfoListObj> dataList) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("dataList", (ArrayList<? extends Parcelable>) dataList);
+        open(context, "BookSizeListFragment", bundle);
+    }
+
 
 
 
@@ -309,6 +320,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "AddAddressFragment":
                 return new AddAddressFragment();
+
+            case "BookSizeListFragment":
+                return new BookSizeListFragment();
 
 
             default:
