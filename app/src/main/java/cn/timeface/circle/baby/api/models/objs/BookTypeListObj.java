@@ -12,12 +12,20 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
  * Created by lidonglin on 2016/6/15.
  */
 public class BookTypeListObj extends BaseObj implements Parcelable {
+    int id;
     String coverTitle;      //封面作品名称
     String description;     //作品详情
     List<MediaObj> imgList; //介绍当前作品类型的图片数组
     String title;           //当前作品名称
     int type;               //当前作品的类型
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getCoverTitle() {
         return coverTitle;
@@ -66,6 +74,7 @@ public class BookTypeListObj extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
         dest.writeString(this.coverTitle);
         dest.writeString(this.description);
         dest.writeTypedList(this.imgList);
@@ -77,6 +86,7 @@ public class BookTypeListObj extends BaseObj implements Parcelable {
     }
 
     protected BookTypeListObj(Parcel in) {
+        this.id = in.readInt();
         this.coverTitle = in.readString();
         this.description = in.readString();
         this.imgList = in.createTypedArrayList(MediaObj.CREATOR);

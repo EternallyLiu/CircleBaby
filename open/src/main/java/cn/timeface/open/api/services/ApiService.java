@@ -26,6 +26,7 @@ public interface ApiService {
 
     /**
      * 请求开放平台授权token,token是使用开放平台功能的唯一凭证，token存在有效期，过期后需要重新请求接口获取。 token期限需要第三方自行维护。
+     *
      * @param app_id
      * @param app_secret
      * @param user_object
@@ -37,8 +38,8 @@ public interface ApiService {
                                                   @Query("user_object") String user_object);
 
     /**
+     * 开放平台一键成书功能,第三方传入指定类型数据，通过pod接口生成可用在线阅读或者二次编辑的排版数据
      *
-     开放平台一键成书功能,第三方传入指定类型数据，通过pod接口生成可用在线阅读或者二次编辑的排版数据
      * @param book_id
      * @param book_type
      * @param rebuild
@@ -54,6 +55,7 @@ public interface ApiService {
 
     /**
      * 修改文字接口
+     *
      * @param book_id
      * @param content_id
      * @param element_model
@@ -69,6 +71,7 @@ public interface ApiService {
 
     /**
      * 通过修改POD接口返回Content单页内容。修改是一个全量修改的过程，为了保持书内容的完整性，每一次修改都需要提交完成的修改数据。
+     *
      * @param book_id
      * @param content_list
      * @return
@@ -80,6 +83,7 @@ public interface ApiService {
 
     /**
      * 开放平台提供自定义封面功能，请求接口获取时光书封面模板列表。
+     *
      * @param bookType
      * @return
      */
@@ -88,6 +92,7 @@ public interface ApiService {
 
     /**
      * 开放平台提供自定义封面功能，请求接口获取时光书封面模板详情
+     *
      * @param template_id
      * @param book_id
      * @return
@@ -98,6 +103,7 @@ public interface ApiService {
 
     /**
      * 时光书创建成功后，获取完整封面数据用于编辑封面
+     *
      * @param template_id
      * @param book_id
      * @param book_title
@@ -114,8 +120,8 @@ public interface ApiService {
                                                                 @Field("content_list") String content_list);
 
     /**
+     * 开放平台提供多种版式模板以供选择，用户可以自主进行选择。列表接口返回当前接入方可以选择的版式列表
      *
-     开放平台提供多种版式模板以供选择，用户可以自主进行选择。列表接口返回当前接入方可以选择的版式列表
      * @return
      */
     @GET("api/booktypelist")
@@ -124,6 +130,7 @@ public interface ApiService {
 
     /**
      * 获取用户已创建的时光书列表
+     *
      * @param page_size
      * @param current_page
      * @return
@@ -135,10 +142,46 @@ public interface ApiService {
 
     /**
      * 获取用户已创建的时光书列表
+     *
      * @return
      */
     @GET("api/booklist")
     Observable<BaseResponse<BookList>> bookList();
 
+    /**
+     * 创建一本时光书
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/createbook")
+    Observable<BaseResponse<BookList>> createBook(@Field("book_type") int book_type,
+                                                  @Field("book_title") String book_title,
+                                                  @Field("template_id") int template_id,
+                                                  @Field("book_summary") String book_summary,
+                                                  @Field("book_summary_image_url") String book_summary_image_url,
+                                                  @Field("book_auth") String book_auth);
 
+    @FormUrlEncoded
+    @POST("api/createbook")
+    Observable<BaseResponse<BookList>> createBook(@Field("book_type") int book_type,
+                                                  @Field("book_title") String book_title);
+
+    /**
+     * 删除一本时光书
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/removebook")
+    Observable<BaseResponse> removeBook(@Field("book_id") int book_id);
+
+    /**
+     * Page 重新排版
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/reformat")
+    Observable<BaseResponse> reformat(@Field("content_ids") String content_ids);
 }
