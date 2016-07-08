@@ -23,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.SelectThemeActivity;
 import cn.timeface.circle.baby.adapters.AddBookAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
@@ -110,7 +111,9 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
                                         FragmentBridgeActivity.openBookSizeListFragment(getContext(),dataList);
                                     }else if(bookTypeListObj.getType()==5){
                                         //照片书，进入选择主题界面
-                                        ToastUtil.showToast("进入选择主题界面");
+                                        Intent intent = new Intent(getActivity(), SelectThemeActivity.class);
+                                        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
+                                        startActivity(intent);
                                     }else{
                                         startPhotoPick(dataList);
                                     }
