@@ -48,11 +48,11 @@ public class OpenApi {
         });
 
 
-        if (BuildConfig.DEBUG) {
+//        if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             httpClientBuilder.interceptors().add(interceptor);
-        }
+//        }
 
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
 
@@ -60,6 +60,7 @@ public class OpenApi {
                 .baseUrl(BASE_URL)
                 .client(httpClientBuilder.build())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(ToStringConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

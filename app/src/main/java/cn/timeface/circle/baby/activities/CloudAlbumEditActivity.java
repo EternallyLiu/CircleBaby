@@ -291,6 +291,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 break;
             case R.id.rl_book_pre:
                 //进入POD预览
+                startActivity(new Intent(this, cn.timeface.open.activities.PODActivity.class));
                 break;
             case R.id.rl_delete_album:
                 //删除相册

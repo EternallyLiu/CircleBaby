@@ -60,7 +60,7 @@
                     android:paddingTop="@dimen/view_space_normal"
                     app:drawablePadding="@dimen/view_space_small"
                     app:drawablePosition="top"
-                    app:drawableSrc="@drawable/ic_edit_layout"
+                    app:drawableSrc="@drawable/selector_edit_layout"
                     app:scaleType="CENTER"
                     app:text="模板"
                     app:textColor="@android:color/white"
@@ -69,7 +69,8 @@
 
                 <cn.timeface.widget.drawabletextview.DrawableTextView
                     android:id="@+id/tv_background_color"
-                    android:layout_width="@dimen/size_48"                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:clickable="true"
                     android:gravity="center"
@@ -78,7 +79,7 @@
                     android:paddingTop="@dimen/view_space_normal"
                     app:drawablePadding="@dimen/view_space_small"
                     app:drawablePosition="top"
-                    app:drawableSrc="@drawable/ic_edit_layout"
+                    app:drawableSrc="@drawable/selector_edit_bg"
                     app:scaleType="CENTER"
                     app:text="背景色"
                     app:textColor="@android:color/white"
@@ -97,7 +98,7 @@
                     android:paddingTop="@dimen/view_space_normal"
                     app:drawablePadding="@dimen/view_space_small"
                     app:drawablePosition="top"
-                    app:drawableSrc="@drawable/ic_edit_layout"
+                    app:drawableSrc="@drawable/selector_edit_layout"
                     app:scaleType="CENTER"
                     app:text="布局"
                     app:textColor="@android:color/white"
@@ -116,7 +117,7 @@
                     android:paddingTop="@dimen/view_space_normal"
                     app:drawablePadding="@dimen/view_space_small"
                     app:drawablePosition="top"
-                    app:drawableSrc="@drawable/ic_edit_bg"
+                    app:drawableSrc="@drawable/selector_edit_bg"
                     app:scaleType="CENTER"
                     app:text="背景"
                     app:textColor="@android:color/white"
@@ -135,7 +136,7 @@
                     android:paddingTop="@dimen/view_space_normal"
                     app:drawablePadding="@dimen/view_space_small"
                     app:drawablePosition="top"
-                    app:drawableSrc="@drawable/ic_edit_pendant"
+                    app:drawableSrc="@drawable/selector_edit_pendant"
                     app:scaleType="CENTER"
                     app:text="挂件"
                     app:textColor="@android:color/white"
@@ -154,7 +155,7 @@
                     android:paddingTop="@dimen/view_space_normal"
                     app:drawablePadding="@dimen/view_space_small"
                     app:drawablePosition="top"
-                    app:drawableSrc="@drawable/ic_edit_beauty"
+                    app:drawableSrc="@drawable/selector_edit_beauty"
                     app:scaleType="CENTER"
                     app:text="美化"
                     app:textColor="@android:color/white"
@@ -165,7 +166,9 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_selection"
                 android:layout_width="@dimen/size_96"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/view_space_small" />
 
         </LinearLayout>
 
@@ -188,7 +191,7 @@
                 android:paddingLeft="@dimen/view_space_normal"
                 android:paddingRight="@dimen/view_space_medium"
                 android:paddingTop="@dimen/view_space_normal"
-                android:src="@drawable/ic_edit_exit" />
+                android:src="@drawable/selector_edit_exit" />
 
             <ImageView
                 android:id="@+id/iv_ok"
@@ -201,7 +204,7 @@
                 android:paddingLeft="@dimen/view_space_normal"
                 android:paddingRight="@dimen/view_space_medium"
                 android:paddingTop="@dimen/view_space_normal"
-                android:src="@drawable/ic_edit_exit" />
+                android:src="@drawable/selector_edit_save" />
         </LinearLayout>
 
 

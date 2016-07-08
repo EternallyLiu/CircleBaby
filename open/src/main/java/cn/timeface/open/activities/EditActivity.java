@@ -13,24 +13,30 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cn.timeface.open.R;
 import cn.timeface.open.activities.base.BaseAppCompatActivity;
+import cn.timeface.open.adapters.BgImageAdapter;
+import cn.timeface.open.adapters.PendantAdapter;
 import cn.timeface.open.adapters.TemplateAdapter;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.open.api.models.base.BaseResponse;
+import cn.timeface.open.api.models.objs.TFBookBgModel;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookElementModel;
+import cn.timeface.open.api.models.objs.TFOBookImageModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
-import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
+import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.events.ChangeStickerStatusEvent;
 import cn.timeface.open.managers.interfaces.IEventBus;
 import cn.timeface.open.utils.BookModelCache;
@@ -39,10 +45,15 @@ import cn.timeface.open.views.EditDoubleContentView;
 import cn.timeface.open.views.PageView;
 import cn.timeface.open.views.StickerView;
 import cn.timeface.widget.drawabletextview.DrawableTextView;
+import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
 
 public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
+    public static final int REQ_TYPE_BG = 1;//背景
+    public static final int REQ_TYPE_WIDGET = 2;//挂件
+    public static final int REQ_TYPE_COLOR = 3;//色值组
     public static float SCALE = 1.0f;
     TFOBookModel bookModel;
     TFOBookContentModel rightModel;
@@ -61,6 +72,11 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     DrawableTextView tvEditBeauty;
     RecyclerView rvSelection;
     BaseRecyclerAdapter selectionAdapter;
+    private BgImageAdapter bgImageAdapter;
+    private PendantAdapter pendantAdapter;
+    Integer[] arr = {R.id.tv_edit_beauty, R.id.tv_edit_bg, R.id.tv_edit_pendant, R.id.tv_edit_template, R.id.tv_edit_layout};
+    private List<Integer> selectBtnArr;
+    private View selectBg;
 
     public static void open4result(Activity activity, int requestCode, float pageScale, TFOBookContentModel contentModel) {
         open4result(activity, requestCode, pageScale, null, contentModel, false);
@@ -95,7 +111,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         this.tvEditPendant = (DrawableTextView) findViewById(R.id.tv_edit_pendant);
         this.tvEditBeauty = (DrawableTextView) findViewById(R.id.tv_edit_beauty);
         this.rvSelection = (RecyclerView) findViewById(R.id.rv_selection);
-
+        selectBtnArr = Arrays.asList(arr);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvSelection.setLayoutManager(layoutManager);
@@ -131,19 +147,98 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     }
 
     public void clickEditType(View view) {
-        if (view.getId() == R.id.tv_edit_layout) {
+        int viewId = view.getId();
+        changeSelectTypeBg(view);
+        if (viewId == R.id.tv_edit_layout) {
 
-        } else if (view.getId() == R.id.tv_edit_bg) {
+        } else if (viewId == R.id.tv_edit_bg) {
+            //颜色
+            reqBookBgColorList();
+        } else if (viewId == R.id.tv_edit_pendant) {
+            //挂件
+            reqBookPendantList();
+        } else if (viewId == R.id.tv_edit_beauty) {
 
-        } else if (view.getId() == R.id.tv_edit_pendant) {
-
-        } else if (view.getId() == R.id.tv_edit_beauty) {
-
-        } else if (view.getId() == R.id.tv_edit_template) {
+        } else if (viewId == R.id.tv_edit_template) {
             reqTemplateList();
-        } else if (view.getId() == R.id.tv_background_color) {
+        } else if (viewId == R.id.tv_background_color) {
 
         }
+
+    }
+
+    private void changeSelectTypeBg(View view) {
+        tvEditLayout.setSelected(false);
+        tvEditPendant.setSelected(false);
+        tvEditTemplate.setSelected(false);
+        tvEditBeauty.setSelected(false);
+        tvEditBg.setSelected(false);
+        view.setSelected(true);
+    }
+
+    private void showSelectRL(boolean show) {
+        rvSelection.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void reqBookPendantList() {
+        if (pendantAdapter != null) {
+            rvSelection.setAdapter(pendantAdapter);
+            showSelectRL(true);
+            return;
+        }
+        Subscription subscribe = apiService.getAttachPendantList(bookModel.getBookId(), REQ_TYPE_WIDGET, String.valueOf(bookModel.getBookType()))
+                .compose(SchedulersCompat.<BaseResponse<List<TFOBookImageModel>>>applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse<List<TFOBookImageModel>>>() {
+                    @Override
+                    public void call(BaseResponse<List<TFOBookImageModel>> listBaseResponse) {
+                        pendantAdapter = new PendantAdapter(EditActivity.this, listBaseResponse.getData());
+                        rvSelection.setAdapter(pendantAdapter);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.d(TAG, "reqBookPendantList: " + throwable);
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        showSelectRL(true);
+                    }
+                });
+        addSubscription(subscribe);
+    }
+
+    private void reqBookBgColorList() {
+        if (bgImageAdapter != null) {
+            rvSelection.setAdapter(bgImageAdapter);
+            showSelectRL(true);
+            return;
+        }
+        Subscription subscribe = apiService.getAttachBgList(bookModel.getBookId(), REQ_TYPE_BG, String.valueOf(bookModel.getBookType()))
+                .compose(SchedulersCompat.<BaseResponse<List<TFBookBgModel>>>applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse<List<TFBookBgModel>>>() {
+                    @Override
+                    public void call(BaseResponse<List<TFBookBgModel>> listBaseResponse) {
+                        setupBgListData(listBaseResponse.getData());
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.d(TAG, "reqBookBgColorList: " + throwable);
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        showSelectRL(true);
+                    }
+                });
+        addSubscription(subscribe);
+
+    }
+
+    private void setupBgListData(List<TFBookBgModel> data) {
+        bgImageAdapter = new BgImageAdapter(this, data);
+        rvSelection.setAdapter(bgImageAdapter);
     }
 
     private void reqTemplateList() {
@@ -159,6 +254,11 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                             @Override
                             public void call(Throwable throwable) {
 
+                            }
+                        }, new Action0() {
+                            @Override
+                            public void call() {
+                                showSelectRL(true);
                             }
                         });
     }
@@ -250,4 +350,29 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             }
         }
     }
+
+    /**
+     * 选中的背景图片
+     *
+     * @param view
+     */
+    public void clickChangeBg(View view) {
+        showSelectRL(false);
+        TFBookBgModel bookBgModel = (TFBookBgModel) view.getTag(R.string.tag_obj);
+        bgImageAdapter.setSelBgColor(bookBgModel);
+        Toast.makeText(EditActivity.this, bookBgModel.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 选中的挂件
+     *
+     * @param view
+     */
+    public void clickPendant(View view) {
+        showSelectRL(false);
+        TFOBookImageModel imageModel = (TFOBookImageModel) view.getTag(R.string.tag_obj);
+        pendantAdapter.setSelImgModel(imageModel);
+        Toast.makeText(EditActivity.this, imageModel.toString(), Toast.LENGTH_SHORT).show();
+    }
+
 }

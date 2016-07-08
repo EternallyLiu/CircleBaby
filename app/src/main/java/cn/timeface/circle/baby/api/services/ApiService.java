@@ -469,7 +469,7 @@ public interface ApiService {
      */
     @POST("babyTime/queryImageInfoList")
     Observable<ImageInfoListResponse> queryImageInfoList(@Query("bookId") String bookId,
-                                                @Query("type") int type);
+                                                         @Query("type") int type);
 
     /**
      * 我的作品列表
@@ -497,7 +497,7 @@ public interface ApiService {
     /**
      * 作品列表
      */
-    @POST("babyBook/getBabyBookList")
+    @POST("babyBook/getBookList")
     Observable<MineBookListResponse> getBabyBookList(@Query("pageSize") int pageSize,
                                                      @Query("currentPage") int currentPage);
 

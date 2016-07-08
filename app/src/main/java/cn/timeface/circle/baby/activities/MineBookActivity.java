@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +23,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,8 +34,11 @@ import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
+import rx.Subscription;
 
 public class MineBookActivity extends BaseAppCompatActivity implements IEventBus {
     public int currentPage = 1;
@@ -103,15 +106,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
      * 请求网络获取我的作品列表
      */
     private void reqData(int page, boolean refresh) {
-
-        if (refresh) {
-            bookList.clear();
-        }
-        mockData();
-        adapter.notifyDataSetChanged();
-        tfStateView.finish();
-        rlRecyclerView.complete();
-      /*  Subscription subscribe = apiService.getBabyBookList(PullRefreshLoadRecyclerView.REQ_PAGE, page)
+        Subscription subscribe = apiService.getBabyBookList(PullRefreshLoadRecyclerView.REQ_PAGE, page)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .doOnTerminate(() -> rlRecyclerView.complete())
                 .subscribe(mineBookListResponse -> {
@@ -121,7 +116,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                         if (refresh) {
                             bookList.clear();
                         }
-                         bookList.addAll(mineBookListResponse.getDataList());
+                        bookList.addAll(mineBookListResponse.getDataList());
                         adapter.notifyDataSetChanged();
                     } else {
                         ToastUtil.showToast(mineBookListResponse.getInfo());
@@ -130,17 +125,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                     tfStateView.showException(throwable);
                     Log.d(TAG, "reqData: " + throwable.getMessage());
                 });
-        addSubscription(subscribe);*/
-    }
-
-
-    private List<MineBookObj> mockData() {
-        MineBookObj mineBookObj1;
-        for (int i = 0; i < 5; i++) {
-            mineBookObj1 = new MineBookObj("http://static.timeface.cn/coverpage/c7f9d26b0960f6e678fe17f25421d2bc.png", 1465193897000L, 50, "测试一本书", 1, "240796762256", "Melvin");
-            bookList.add(mineBookObj1);
-        }
-        return bookList;
+        addSubscription(subscribe);
     }
 
 
