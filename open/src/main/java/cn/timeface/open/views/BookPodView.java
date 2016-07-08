@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -97,19 +96,22 @@ public class BookPodView extends FrameLayout {
         viewPager.setPageTransformer(true, new StackTransformer());
         adapter = new PODViewPagerAdapter(supportFragmentManager, tfoBookModel, new Point(getWidth(), getHeight()));
         viewPager.setAdapter(adapter);
+
     }
 
     private void initView() {
         viewPager = new ViewPager(getContext());
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         layoutParams.gravity = Gravity.CENTER;
         viewPager.setLayoutParams(layoutParams);
+        addView(viewPager);
     }
 
     /**
      * 翻到上一页
      */
     public void clickPre() {
+
         if (viewPager.getCurrentItem() > 0) {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
@@ -117,10 +119,8 @@ public class BookPodView extends FrameLayout {
 
     /**
      * 翻到下一页
-     *
-     * @param view
      */
-    public void clickNext(View view) {
+    public void clickNext() {
         if (viewPager.getCurrentItem() < viewPager.getAdapter().getCount()) {
             viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
         }

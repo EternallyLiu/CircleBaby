@@ -24,81 +24,75 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_container"
+    <cn.timeface.open.views.BookPodView
+        android:id="@+id/bookPodView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/vpBook"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
 
-        <LinearLayout
-            android:id="@+id/ll_bottom_controller"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_48"
-            android:layout_gravity="center_horizontal|bottom"
-            android:gravity="center_vertical">
+    <LinearLayout
+        android:id="@+id/ll_bottom_controller"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_48"
+        android:layout_gravity="center_horizontal|bottom"
+        android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:drawableLeft="@drawable/ic_back"
-                android:drawablePadding="@dimen/view_space_small"
-                android:gravity="center"
-                android:onClick="clickBack"
-                android:paddingLeft="@dimen/view_space_normal"
-                android:paddingRight="@dimen/view_space_normal"
-                android:text="返回"
-                android:textColor="@android:color/white" />
-
-            <SeekBar
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:id="@+id/iv_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:onClick="clickEdit"
-                android:paddingLeft="@dimen/view_space_normal"
-                android:paddingRight="@dimen/view_space_normal"
-                android:src="@drawable/ic_edit" />
-
-            <ImageView
-                android:id="@+id/iv_share"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:onClick="clickShare"
-                android:paddingLeft="@dimen/view_space_normal"
-                android:paddingRight="@dimen/view_space_normal"
-                android:src="@drawable/ic_share" />
-        </LinearLayout>
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button"
-            android:onClick="clickPre"
-            android:layout_gravity="left|top" />
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:drawableLeft="@drawable/ic_back"
+            android:drawablePadding="@dimen/view_space_small"
+            android:gravity="center"
+            android:onClick="clickBack"
+            android:paddingLeft="@dimen/view_space_normal"
+            android:paddingRight="@dimen/view_space_normal"
+            android:text="返回"
+            android:textColor="@android:color/white" />
 
-        <Button
+        <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_edit"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Button"
-            android:onClick="clickNext"
-            android:id="@+id/button2"
-            android:layout_gravity="right|top" />
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:onClick="clickEdit"
+            android:paddingLeft="@dimen/view_space_normal"
+            android:paddingRight="@dimen/view_space_normal"
+            android:src="@drawable/ic_edit" />
 
-    </FrameLayout>
+        <ImageView
+            android:id="@+id/iv_share"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:onClick="clickShare"
+            android:paddingLeft="@dimen/view_space_normal"
+            android:paddingRight="@dimen/view_space_normal"
+            android:src="@drawable/ic_share" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|top"
+        android:onClick="clickPre"
+        android:text="New Button" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:onClick="clickNext"
+        android:text="New Button" />
+
 
 </android.support.design.widget.CoordinatorLayout>
