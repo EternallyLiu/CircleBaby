@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:gravity="center"
+    android:padding="@dimen/size_6">
+
+    <ImageView
+        android:id="@+id/img_list_item"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/selector_item_background"
+        android:padding="1dp" />
+
+    <ImageView
+        android:id="@+id/iv_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/img_list_item"
+        android:layout_alignRight="@+id/img_list_item"
+        android:src="@drawable/selecttheme"
+        />
+
+</RelativeLayout>

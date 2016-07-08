@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color8"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_color13">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/tv_text"
+            android:gravity="center">
+            <com.github.rayboot.widget.ratioview.RatioImageView
+                android:id="@+id/iv_theme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/view_space_medium"
+                android:layout_marginRight="@dimen/view_space_medium"
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择你喜欢的模板主题"
+            android:layout_above="@+id/lv_horizontal"/>
+
+        <cn.timeface.circle.baby.views.HorizontalListView
+            android:id="@+id/lv_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bg_color13">
+        </cn.timeface.circle.baby.views.HorizontalListView>
+
+    </RelativeLayout>
+</LinearLayout>
