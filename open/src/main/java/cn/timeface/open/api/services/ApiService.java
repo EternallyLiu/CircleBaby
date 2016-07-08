@@ -55,7 +55,7 @@ public interface ApiService {
     @POST("pod/pod")
     Observable<BaseResponse<TFOBookModel>> getPOD(@Field("book_id") String book_id,
                                                   @Field("book_type") int book_type,
-                                                  @Field("rebuild") String rebuild,
+                                                  @Field("rebuild") int rebuild,
                                                   @Field("content_list") String content_list,
                                                   @Field("book_info") int book_info,
                                                   @Field("page_size") int page_size,
@@ -66,7 +66,7 @@ public interface ApiService {
     @POST("pod/pod")
     Observable<BaseResponse<TFOBookModel>> getPOD(@Field("book_id") String book_id,
                                                   @Field("book_type") int book_type,
-                                                  @Field("rebuild") String rebuild,
+                                                  @Field("rebuild") int rebuild,
                                                   @Field("content_list") String content_list);
 
     @FormUrlEncoded
