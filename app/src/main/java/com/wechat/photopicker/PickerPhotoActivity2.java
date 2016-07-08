@@ -63,6 +63,8 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     private ArrayList<ImageInfoListObj> dataList;
     private ArrayList<ImageInfoListObj> imageInfoList = new ArrayList<>();
     private int bookType;
+    private String bookSizeId;
+    private int pageNum;
     //    private ArrayList<MediaObj> mediaobjs;
 
     @Override
@@ -72,8 +74,8 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
 //        checkPermission();
         Intent intent = getIntent();
         bookType = intent.getIntExtra("bookType", 0);
+        bookSizeId = intent.getStringExtra("bookSizeId");
         dataList = intent.getParcelableArrayListExtra("dataList");
-//        mediaobjs = intent.getParcelableArrayListExtra("mediaobjs");
         optionalPhotoSize = MAX_SELECTOR_SIZE;
         Log.d(TAG, "optionalPhotoSize---" + optionalPhotoSize);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -159,9 +161,10 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
 //            finish();
 
             List<Integer> timeIds = mPhotoSelectorAdapter.getTimeIds();
-            HashSet<Integer> integers = new HashSet<>(timeIds);
+            /*HashSet<Integer> integers = new HashSet<>(timeIds);
             timeIds.clear();
-            timeIds.addAll(integers);
+            timeIds.addAll(integers);*/
+            pageNum = mPhotoSelectorAdapter.getSelectedPhotos().size();
             imageInfoList.clear();
             for (ImageInfoListObj obj : dataList) {
                 if (timeIds.contains(obj.getTimeId())) {
@@ -170,12 +173,19 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
             }
 
             String s = new Gson().toJson(imageInfoList);
-            apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), bookType, imageInfoList.get(0).getMediaList().get(0).getImgUrl(), s)
+            String bookName = "";
+            if (bookType == 2) {
+                bookName = FastData.getBabyName() + "日记卡片书";
+            } else if (bookType == 3) {
+                bookName = FastData.getBabyName() + "识图卡片书";
+            }
+            apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), imageInfoList.get(0).getMediaList().get(0).getImgUrl(), "", URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
-                        if(response.success()){
-                            
-                        }else{
+                        if (response.success()) {
+                            ToastUtil.showToast("创建成功");
+                            finish();
+                        } else {
                             ToastUtil.showToast(response.getInfo());
                         }
 

@@ -50,15 +50,12 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
     private ArrayList<String> paths = new ArrayList<>(PickerPhotoActivity.MAX_SELECTOR_SIZE);
 
     public PhotoSelectorAdapter2(List<ImageInfoListObj> dataList, Context context, int optionalPhotoSize) {
-        dataList = dataList;
+        this.dataList = dataList;
         mContext = context;
         mOptionalPhotoSize = optionalPhotoSize;
         mPhotos = new ArrayList<>();
         for (ImageInfoListObj obj : dataList) {
             mPhotos.addAll(obj.getMediaList());
-            for (MediaObj media : obj.getMediaList()) {
-                Log.d(TAG, "media.getTimeId()=================" + media.getTimeId());
-            }
         }
     }
 

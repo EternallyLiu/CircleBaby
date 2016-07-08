@@ -11,6 +11,7 @@ import cn.timeface.circle.baby.api.models.responses.AlbumDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.api.models.responses.BookTypeListResponse;
+import cn.timeface.circle.baby.api.models.responses.CardBookSizeResponse;
 import cn.timeface.circle.baby.api.models.responses.CardListResponse;
 import cn.timeface.circle.baby.api.models.responses.CloudAlbumListResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryComposedResponse;
@@ -426,7 +427,8 @@ public interface ApiService {
      */
     @POST("babyOrder/printStatus")
     Observable<PrintStatusResponse> printStatus(@Query("bookType") int bookType,
-                                                @Query("pageNum") int pageNum);
+                                                @Query("pageNum") int pageNum,
+                                                @Query("bookSizeId") int bookSizeId);
 
     /**
      * 获取订单配置参数
@@ -473,16 +475,24 @@ public interface ApiService {
      * 我的作品列表
      */
     @POST("babyBook/getBookList")
-    Observable<MineBookListResponse> getBookList();
+    Observable<MineBookListResponse> getBookList(@Query("currentPage") int currentPage,
+                                                 @Query("pageSize") int pageSize);
 
     /**
      * 创建作品
      */
     @POST("babyBook/createBook")
     Observable<BaseResponse> createBook(@Query("author") String author,
-                                        @Query("bookType") int bookType,
+                                        @Query("babyId") int babyId,
                                         @Query("bookCover") String bookCover,
-                                        @Query("dataList") String dataList);
+                                        @Query("bookId") String bookId,
+                                        @Query("bookName") String bookName,
+                                        @Query("bookSizeId") String bookSizeId,
+                                        @Query("bookType") int bookType,
+                                        @Query("dataList") String dataList,
+                                        @Query("description") String description,
+                                        @Query("openBookId") long openBookId,
+                                        @Query("pageNum") int pageNum);
 
     /**
      * 作品列表
@@ -490,4 +500,10 @@ public interface ApiService {
     @POST("babyBook/getBabyBookList")
     Observable<MineBookListResponse> getBabyBookList(@Query("pageSize") int pageSize,
                                                      @Query("currentPage") int currentPage);
+
+    /**
+     * 新建识图卡片书-获取尺寸
+     */
+    @POST("babyBook/getSubBabyBookWorksTypeList")
+    Observable<CardBookSizeResponse> getSubBabyBookWorksTypeList(@Query("id") int id);
 }

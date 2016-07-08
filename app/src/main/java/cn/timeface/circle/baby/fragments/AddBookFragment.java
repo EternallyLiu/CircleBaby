@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.AddBookAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
@@ -104,10 +105,19 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
                                             mediaObj.setTimeId(timeId);
                                         }
                                     }
+                                    if(bookTypeListObj.getType()==2){
+                                        //日记卡片书，进入选择size界面
+                                        FragmentBridgeActivity.openBookSizeListFragment(getContext(),dataList);
+                                    }else if(bookTypeListObj.getType()==5){
+                                        //照片书，进入选择主题界面
+                                        ToastUtil.showToast("进入选择主题界面");
+                                    }else{
+                                        startPhotoPick(dataList);
+                                    }
                                 }else{
                                     ToastUtil.showToast("没有此类图片");
                                 }
-                                startPhotoPick(dataList);
+                                getActivity().finish();
                             }else{
                                 ToastUtil.showToast(response.getInfo());
                             }
