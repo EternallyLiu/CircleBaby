@@ -104,20 +104,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
                         }
                 );
-
-        ApiFactory.getOpenApi()
-                .getApiService()
-                .bookTypeList()
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(
-                        response -> {
-
-                        }
-                        , throwable -> {
-
-                        }
-                );
-
     }
 
     public void clickTab(View view) {
