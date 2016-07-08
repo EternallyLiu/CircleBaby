@@ -5,6 +5,7 @@ import java.util.List;
 import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFBookBgModel;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
+import cn.timeface.open.api.models.objs.TFOBookImageModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOBookType;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
@@ -181,6 +182,11 @@ public interface ApiService {
     Observable<BaseResponse<List<TFBookBgModel>>> getAttachBgList(@Query("book_id") String book_id,
                                                                   @Query("request_type") int request_type,
                                                                   @Query("book_type") String book_type);
+
+    @POST("api/attachlist")
+    Observable<BaseResponse<List<TFOBookImageModel>>> getAttachPendantList(@Query("book_id") String book_id,
+                                                                           @Query("request_type") int request_type,
+                                                                           @Query("book_type") String book_type);
 
     /**
      * 创建一本时光书

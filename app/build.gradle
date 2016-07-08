@@ -79,7 +79,6 @@ repositories {
 def dbflow_version = "3.1.1"
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile(name: 'scantool-release', ext: 'aar')
     compile(name: 'library-0.9.9', ext: 'aar')
     compile(name: 'logSDK-release', ext: 'aar')
     compile(name: 'PhotoProcessing-release', ext: 'aar')
