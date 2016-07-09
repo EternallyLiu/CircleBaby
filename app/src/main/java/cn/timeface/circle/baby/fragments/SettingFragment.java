@@ -21,6 +21,7 @@ import java.io.IOException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.AboutActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -140,7 +141,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
 
             case R.id.rl_setting_about:
-
+                AboutActivity.open(getContext());
                 break;
 
             case R.id.rl_setting_score:

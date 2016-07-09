@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -13,12 +14,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <com.github.rayboot.widget.ratioview.RatioImageView
+                xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/iv_cover_bg"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/headbg" />
+                android:layout_height="wrap_content"
+                scaleimg:heightRatio="8"
+                scaleimg:widthRatio="15"
+                android:src="@drawable/headbg"
+                />
 
             <FrameLayout
                 android:layout_width="match_parent"

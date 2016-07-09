@@ -48,6 +48,7 @@ import cn.timeface.circle.baby.fragments.SelectAddressFragment;
 import cn.timeface.circle.baby.fragments.SettingFragment;
 import cn.timeface.circle.baby.fragments.SettingMsgFragment;
 import cn.timeface.circle.baby.fragments.SystemMessageFragment;
+import cn.timeface.circle.baby.fragments.WebViewFragment;
 
 /**
  * Created by JieGuo on 1/22/16.
@@ -142,6 +143,12 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         open(context, "BookSizeListFragment", bundle);
     }
 
+    public static void openWebViewFragment(Context context, String url,String title) {
+        Bundle bundle = new Bundle();
+        bundle.putString("url",url);
+        bundle.putString("title",title);
+        open(context, "WebViewFragment", title, bundle);
+    }
 
 
 
@@ -323,6 +330,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "BookSizeListFragment":
                 return new BookSizeListFragment();
+
+            case "WebViewFragment":
+                return WebViewFragment.newInstance();
 
 
             default:

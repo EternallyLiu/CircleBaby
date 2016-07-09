@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_main"
+                android:orientation="vertical">
+
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar"/>
+
+    <LinearLayout
+        android:id="@+id/imgview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appbar_layout"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingTop="28dp">
+
+        <com.github.rayboot.widget.ratioview.RatioImageView
+            xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="120dp"
+            android:layout_marginRight="120dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_log"
+            scaleimg:heightRatio="1"
+            scaleimg:widthRatio="1"/>
+
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_marginTop="10dp"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/main_blue"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgview"
+        android:background="#ffffff"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rlAboutHelp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_click_able"
+            android:gravity="center_vertical"
+            android:onClick="clickHelp"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/help_txt"
+                style="@style/AboutText"
+                android:text="@string/help"
+                android:textColor="@color/text_color9"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/mine_data_go"/>
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_view"/>
+
+        <RelativeLayout
+            android:id="@+id/rlAboutFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_click_able"
+            android:gravity="center_vertical"
+            android:onClick="clickFeedback"
+            android:padding="12dp">
+
+            <TextView
+                style="@style/AboutText"
+                android:text="@string/feed_back"
+                android:textColor="@color/text_color9"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/mine_data_go"/>
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_view"/>
+
+        <RelativeLayout
+            android:id="@+id/rlAboutServices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_click_able"
+            android:gravity="center_vertical"
+            android:onClick="clickClause"
+            android:padding="12dp">
+
+            <TextView
+                style="@style/AboutText"
+                android:text="@string/terms_of_service"
+                android:textColor="@color/text_color9"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/mine_data_go"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:shadowColor="#ffffff"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:text="@string/timeface_copyright"
+        android:textColor="#999999"/>
+
+</RelativeLayout>

@@ -20,7 +20,6 @@
     <string name="sdk_login_error">登录发生了错误</string>
     <string name="read_service"><![CDATA[<font color="#7f7f7d">已阅读并同意</font><font color="#0090e8">服务条款</font>]]></string>
     <string name="please_read_service">请阅读并同意服务条款</string>
-    <string name="terms_of_service">服务条款</string>
 
     <!-- icon fonts -->
     <string name="icon_expand">&#xe62d;</string>
@@ -654,5 +653,9 @@
     <string name="no_list_data">暂无数据</string>
     <string name="no_belong">暂无归属</string>
     <string name="set_pass">设置密码后，您可以使用手机号+密码登陆，请牢记！</string>
+    <string name="help">帮助</string>
+    <string name="feed_back">反馈</string>
+    <string name="terms_of_service">服务条款</string>
+    <string name="timeface_copyright">时光流影   版权所有\nCopyright© 2014 TimeFace. All Rights Reserved.</string>
 
 </resources>

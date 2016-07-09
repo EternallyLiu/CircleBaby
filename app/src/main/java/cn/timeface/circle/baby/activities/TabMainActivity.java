@@ -234,4 +234,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 });
         addSubscription(s);
     }
+
+    public View getFootMenuView() {
+        return footMenu;
+    }
 }

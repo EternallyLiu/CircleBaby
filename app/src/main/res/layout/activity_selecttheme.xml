@@ -19,11 +19,14 @@
             android:layout_above="@+id/tv_text"
             android:gravity="center">
             <com.github.rayboot.widget.ratioview.RatioImageView
+                xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/iv_theme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/view_space_medium"
                 android:layout_marginRight="@dimen/view_space_medium"
+                scaleimg:heightRatio="1"
+                scaleimg:widthRatio="1"
                 />
         </RelativeLayout>
 

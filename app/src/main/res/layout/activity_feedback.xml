@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg_main"
+              android:orientation="vertical">
+
+    <include layout="@layout/layout_toolbar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <EditText
+                android:id="@+id/etFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="top"
+                android:layout_margin="10dp"
+                android:background="@drawable/shape_feedback_edit_bg"
+                android:gravity="top"
+                android:hint="请输入您的建议……"
+                android:lineSpacingMultiplier="1.3"
+                android:padding="20dp"
+                android:textColor="@color/text_color9"
+                android:textColorHint="@color/edit_hint_textcolor"/>
+
+            <Button
+                android:id="@+id/btnAccept"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/selector_btn_login"
+                android:onClick="clickSubmit"
+                android:text="提交"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

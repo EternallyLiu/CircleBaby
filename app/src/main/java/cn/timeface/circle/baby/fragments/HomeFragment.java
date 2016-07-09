@@ -1,8 +1,10 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,10 +15,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rayboot.widget.ratioview.RatioImageView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,6 +38,7 @@ import cn.timeface.circle.baby.activities.CloudAlbumActivity;
 import cn.timeface.circle.baby.activities.ConfirmRelationActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.RecommendObj;
@@ -48,7 +55,7 @@ import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener{
+public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -76,6 +83,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.tv_toensurerelation)
     TextView tvToensurerelation;
+    @Bind(R.id.iv_cover_bg)
+    RatioImageView ivCoverBg;
+    @Bind(R.id.ll_layout)
+    LinearLayout flLayout;
 
     private int currentPage = 1;
     private String mParam1;
@@ -83,8 +94,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     public BabyInfoResponse babyInfoResponse;
     private IPTRRecyclerListener ptrListener;
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
+    private boolean enableAnimation = true;
+    private boolean bottomMenuShow;
 
     private List<TimeLineGroupObj> tempList;
+    AnimatorSet animatorSet = new AnimatorSet();
+    private int y;
 
     public HomeFragment() {
     }
@@ -112,6 +127,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        y = flLayout.getMeasuredHeight() - toolbar.getMeasuredHeight();
         setupPTR();
         initData();
 //        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
@@ -133,6 +149,40 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     }
 
     private void setupPTR() {
+        animatorSet.setInterpolator(new DecelerateInterpolator());
+        animatorSet.setDuration(400);
+        contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    if (enableAnimation && bottomMenuShow) {
+                        bottomMenuShow = false;
+                        ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
+                                "translationY",
+                                0,
+                                ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
+                        ObjectAnimator anim2 = ObjectAnimator.ofFloat(flLayout, "translationY", 0, -y);
+                        animatorSet.playTogether(anim,anim2);
+                        animatorSet.start();
+                    }
+                } else {
+                    if (enableAnimation && !bottomMenuShow) {
+                        bottomMenuShow = true;
+                        Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
+                                "translationY",
+                                ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
+                                0);
+                        ObjectAnimator anim4 = ObjectAnimator.ofFloat(flLayout, "translationY", -y, 0);
+                        animatorSet.playTogether(anim3,anim4);
+                        animatorSet.start();
+                    }
+                }
+
+            }
+        });
+
+
         ptrListener = new IPTRRecyclerListener() {
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
@@ -165,7 +215,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
-                    if(Remember.getBoolean("showtimelinehead",true)&&currentPage==1&&adapter.getHeaderCount()==0&&timelineResponse.getRecommendObj()!=null){
+                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendObj() != null) {
                         adapter.addHeader(initHeadView(timelineResponse.getRecommendObj()));
                     }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
@@ -184,14 +234,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
         ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
-        for(TimeLineGroupObj obj : dataList){
-            if(obj.getTimeLineList().size()>0){
+        for (TimeLineGroupObj obj : dataList) {
+            if (obj.getTimeLineList().size() > 0) {
                 lists.add(obj);
             }
         }
-        if(currentPage == 1){
+        if (currentPage == 1) {
             adapter.setListData(lists);
-        }else{
+        } else {
             adapter.getListData().addAll(lists);
         }
         adapter.notifyDataSetChanged();
@@ -207,7 +257,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         tvName.setText(FastData.getBabyName());
         tvAge.setText(FastData.getBabyAge());
         GlideUtil.displayImage(FastData.getBabyAvatar(), ivAvatar);
-        if(TextUtils.isEmpty(FastData.getRelationName())){
+        if (TextUtils.isEmpty(FastData.getRelationName())) {
             tvToensurerelation.setVisibility(View.VISIBLE);
         }
     }
@@ -239,8 +289,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
                 FragmentBridgeActivity.open(getActivity(), "MilestoneFragment");
                 break;
             case R.id.tv_toensurerelation:
-                Intent intent = new Intent(getActivity(),ConfirmRelationActivity.class);
-                String code = Remember.getString("code","");
+                Intent intent = new Intent(getActivity(), ConfirmRelationActivity.class);
+                String code = Remember.getString("code", "");
                 intent.putExtra("code", code);
                 startActivity(intent);
                 tvToensurerelation.setVisibility(View.GONE);
@@ -251,7 +301,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         }
     }
 
-    public View initHeadView(RecommendObj obj){
+    public View initHeadView(RecommendObj obj) {
         View view = View.inflate(getContext(), R.layout.view_timeline_head, null);
         ImageView ivImage = (ImageView) view.findViewById(R.id.iv_image);
         ImageView ivClose = (ImageView) view.findViewById(R.id.iv_close);
@@ -260,7 +310,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
 
         GlideUtil.displayImage(obj.getBgPicUrl(), ivImage);
         tvContent.setText(obj.getRecommendContent());
-        switch (obj.getActionType()){
+        switch (obj.getActionType()) {
             case 0:
                 //照片发布
                 tvType.setText("发布照片吧》");
@@ -285,43 +335,43 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
         }
 
         tvType.setOnClickListener(v -> {
-            if(obj.getActionType()==0){
+            if (obj.getActionType() == 0) {
                 //照片发布
                 PublishActivity.open(getContext(), PublishActivity.PHOTO);
-            }else{
+            } else {
                 apiService.getBabyBookWorksTypeList()
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(bookTypeListResponse -> {
                             if (bookTypeListResponse.success()) {
-                                switch (obj.getActionType()){
+                                switch (obj.getActionType()) {
                                     case 1:
                                         //照片书
-                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
-                                            if(item.getType()==5){
+                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
+                                            if (item.getType() == 5) {
                                                 FragmentBridgeActivity.openAddBookFragment(getContext(), item);
                                             }
                                         }
                                         break;
                                     case 2:
                                         //成长书
-                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
-                                            if(item.getType()==1){
+                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
+                                            if (item.getType() == 1) {
                                                 FragmentBridgeActivity.openAddBookFragment(getContext(), item);
                                             }
                                         }
                                         break;
                                     case 3:
                                         //识图卡片书
-                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
-                                            if(item.getType()==3){
+                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
+                                            if (item.getType() == 3) {
                                                 FragmentBridgeActivity.openAddBookFragment(getContext(), item);
                                             }
                                         }
                                         break;
                                     case 4:
                                         //日记书
-                                        for(BookTypeListObj item : bookTypeListResponse.getDataList()){
-                                            if(item.getType()==2){
+                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
+                                            if (item.getType() == 2) {
                                                 FragmentBridgeActivity.openAddBookFragment(getContext(), item);
                                             }
                                         }
@@ -349,8 +399,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener{
     }
 
     public void replaceList(int replacePosition, int listPos, TimeLineObj timeLineObj) {
-        if (tempList.size() > replacePosition){
-            if (tempList.get(replacePosition).getTimeLineList().size() > listPos){
+        if (tempList.size() > replacePosition) {
+            if (tempList.get(replacePosition).getTimeLineList().size() > listPos) {
                 tempList.get(replacePosition).getTimeLineList().remove(listPos);
                 tempList.get(replacePosition).getTimeLineList().add(listPos, timeLineObj);
             }
