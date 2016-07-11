@@ -42,6 +42,7 @@ import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.RecommendObj;
+import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
@@ -50,6 +51,7 @@ import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -86,7 +88,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Bind(R.id.iv_cover_bg)
     RatioImageView ivCoverBg;
     @Bind(R.id.ll_layout)
-    LinearLayout flLayout;
+    LinearLayout llLayout;
+    @Bind(R.id.fl_layout)
+    FrameLayout flLayout;
 
     private int currentPage = 1;
     private String mParam1;
@@ -127,7 +131,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        y = flLayout.getMeasuredHeight() - toolbar.getMeasuredHeight();
         setupPTR();
         initData();
 //        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
@@ -162,8 +165,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                                 "translationY",
                                 0,
                                 ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
-                        ObjectAnimator anim2 = ObjectAnimator.ofFloat(flLayout, "translationY", 0, -y);
-                        animatorSet.playTogether(anim,anim2);
+//                        ObjectAnimator anim2 = ObjectAnimator.ofFloat(llLayout, "translationY", 0, -toolbar.getMeasuredHeight());
+                        animatorSet.playTogether(anim);
                         animatorSet.start();
                     }
                 } else {
@@ -173,12 +176,27 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                                 "translationY",
                                 ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
                                 0);
-                        ObjectAnimator anim4 = ObjectAnimator.ofFloat(flLayout, "translationY", -y, 0);
-                        animatorSet.playTogether(anim3,anim4);
+//                        ObjectAnimator anim4 = ObjectAnimator.ofFloat(llLayout, "translationY", -toolbar.getMeasuredHeight(), 0);
+                        animatorSet.playTogether(anim3);
                         animatorSet.start();
                     }
                 }
+            }
 
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                switch (newState) {
+                    case RecyclerView.SCROLL_STATE_DRAGGING:
+                        //拖动
+                        break;
+                    case RecyclerView.SCROLL_STATE_IDLE:
+                        //静止
+                        break;
+                    case RecyclerView.SCROLL_STATE_SETTLING:
+                        //滑动
+                        break;
+                }
             }
         });
 
