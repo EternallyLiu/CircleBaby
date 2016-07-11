@@ -95,7 +95,7 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
                     Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                s = apiService.verifyCode(mobile, code)
+                s = apiService.verifyCode(mobile, code, 0)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {

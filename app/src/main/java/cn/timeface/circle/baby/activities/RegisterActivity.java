@@ -153,18 +153,18 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
                     Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                s = apiService.verifyCode(mobile, code)
+                s = apiService.verifyCode(mobile, code, 1)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {
                                 ConfirmPasswordActivity.open(RegisterActivity.this, mobile);
                                 finish();
-                            }else{
+                            } else {
                                 Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
                             }
                             return;
                         }, error -> {
-                            Log.e(TAG,"verifyCode:");
+                            Log.e(TAG, "verifyCode:");
                         });
                 break;
             case R.id.tv_cancle:

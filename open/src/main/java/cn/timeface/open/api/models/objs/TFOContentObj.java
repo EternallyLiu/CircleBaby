@@ -14,6 +14,11 @@ public class TFOContentObj implements Parcelable {
     String subtitle;
     List<TFOResourceObj> resource_list;
 
+    public TFOContentObj(String subtitle, List<TFOResourceObj> resource_list) {
+        this.subtitle = subtitle;
+        this.resource_list = resource_list;
+    }
+
     public String getSubtitle() {
         return subtitle;
     }

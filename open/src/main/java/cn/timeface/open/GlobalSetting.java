@@ -1,5 +1,7 @@
 package cn.timeface.open;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 
 import cn.timeface.open.api.OpenApiFactory;
@@ -29,6 +31,9 @@ public class GlobalSetting {
                                     Constant.ACCESS_TOKEN = response.getData().getAccessToken();
                                     Constant.EXPIRES_IN = response.getData().getExpiresIn();
                                     Constant.UNIONID = response.getData().getUnionId();
+
+                                    Log.d("Constant.UNIONID=======",Constant.UNIONID);
+                                    Log.d("Constant.ACCESS_TOKEN",Constant.ACCESS_TOKEN);
                                 }
                             }
                         }

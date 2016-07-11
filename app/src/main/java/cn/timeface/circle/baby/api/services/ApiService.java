@@ -97,7 +97,8 @@ public interface ApiService {
     //验证码校验
     @GET("auth/verifyCode")
     Observable<BaseResponse> verifyCode(@Query("account") String account,
-                                        @Query("code") String code);
+                                        @Query("code") String code,
+                                        @Query("type") int type);
 
     //注册
     @FormUrlEncoded
