@@ -507,4 +507,10 @@ public interface ApiService {
      */
     @POST("babyBook/getSubBabyBookWorksTypeList")
     Observable<CardBookSizeResponse> getSubBabyBookWorksTypeList(@Query("id") int id);
+
+    /**
+     * 我的作品-删除作品
+     */
+    @POST("babyBook/deleteBook")
+    Observable<BaseResponse> deleteBook(@Query("bookId") String bookId);
 }
