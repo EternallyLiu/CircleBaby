@@ -117,7 +117,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvSelection.setLayoutManager(layoutManager);
 
-        if (!isCover) {
+        if (false) {
             tvEditTemplate.setVisibility(View.GONE);
             tvBackgroundColor.setVisibility(View.GONE);
         } else {
@@ -162,6 +162,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         } else if (viewId == R.id.tv_edit_beauty) {
 
         } else if (viewId == R.id.tv_edit_template) {
+            //模板
             reqTemplateList();
         } else if (viewId == R.id.tv_background_color) {
 
@@ -175,6 +176,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         tvEditTemplate.setSelected(false);
         tvEditBeauty.setSelected(false);
         tvEditBg.setSelected(false);
+        tvBackgroundColor.setSelected(false);
         view.setSelected(true);
     }
 

@@ -32,8 +32,10 @@ public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ImageView view = new ImageView(this.getContext());
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
+        lp.height = getContext().getResources().getDimensionPixelOffset(R.dimen.size_96);
         view.setLayoutParams(lp);
+        view.setScaleType(ImageView.ScaleType.FIT_CENTER);
         int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.view_space_small);
         view.setPadding(padding, padding, padding, padding);
         return new ViewHolder(view);
@@ -52,7 +54,7 @@ public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
         } else {
             iv.setBackgroundColor(Color.TRANSPARENT);
         }
-        holder.itemView.setTag(R.string.tag_ex, template.getTemplateId());
+        holder.itemView.setTag(R.string.tag_ex, template.getTemplateId() + "");
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
