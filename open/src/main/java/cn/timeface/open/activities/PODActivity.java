@@ -1,6 +1,5 @@
 package cn.timeface.open.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -35,14 +34,6 @@ public abstract class PODActivity extends BaseAppCompatActivity implements IPODR
     private BookPodView bookPodView;
     TFOPublishObj publishObj;
     String bookId;
-
-    public static void open(Context context, String bookId, int bookType, TFOPublishObj publishObj) {
-        Intent intent = new Intent(context, PODActivity.class);
-        intent.putExtra("book_type", bookType);
-        intent.putExtra("book_id", bookId);
-        intent.putExtra("publish_obj", publishObj);
-        context.startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

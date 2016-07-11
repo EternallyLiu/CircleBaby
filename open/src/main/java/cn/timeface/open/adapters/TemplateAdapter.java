@@ -9,11 +9,14 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import cn.timeface.open.R;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
+import cn.timeface.open.events.SelectTemplateEvent;
 
 /**
  * author: rayboot  Created on 16/7/4.
@@ -33,8 +36,7 @@ public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
         view.setLayoutParams(lp);
         int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.view_space_small);
         view.setPadding(padding, padding, padding, padding);
-        ViewHolder vh = new ViewHolder(view);
-        return vh;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -50,11 +52,19 @@ public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
         } else {
             iv.setBackgroundColor(Color.TRANSPARENT);
         }
+        holder.itemView.setTag(R.string.tag_ex, template.getTemplateId());
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ViewHolder(View view) {
             super(view);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            String templateId = (String) v.getTag(R.string.tag_ex);
+            EventBus.getDefault().post(new SelectTemplateEvent(templateId));
         }
     }
 

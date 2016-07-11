@@ -277,7 +277,7 @@
             android:name=".activities.FeedbackActivity"
             android:label="反馈"
             android:screenOrientation="portrait" />
-        <activity android:name=".activities.MyPODActivity"></activity>
+        <activity android:name=".activities.MyPODActivity"/>
     </application>
 
 </manifest>

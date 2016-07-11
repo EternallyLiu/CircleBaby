@@ -38,6 +38,7 @@ import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
 import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.events.ChangeStickerStatusEvent;
+import cn.timeface.open.events.SelectTemplateEvent;
 import cn.timeface.open.managers.interfaces.IEventBus;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
@@ -71,7 +72,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     DrawableTextView tvEditPendant;
     DrawableTextView tvEditBeauty;
     RecyclerView rvSelection;
-    BaseRecyclerAdapter selectionAdapter;
+    BaseRecyclerAdapter templateAdapter;
     private BgImageAdapter bgImageAdapter;
     private PendantAdapter pendantAdapter;
     Integer[] arr = {R.id.tv_edit_beauty, R.id.tv_edit_bg, R.id.tv_edit_pendant, R.id.tv_edit_template, R.id.tv_edit_layout};
@@ -140,6 +141,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     }
 
     private void setupViews() {
+        pod.removeAllViews();
         pageView = new PageView(this, true, leftModel, rightModel, isCover);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
         lp.gravity = Gravity.CENTER;
@@ -242,6 +244,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     }
 
     private void reqTemplateList() {
+        if (templateAdapter != null) {
+            rvSelection.setAdapter(templateAdapter);
+            return;
+        }
         apiService.getTemplateList(bookModel.getBookType())
                 .compose(SchedulersCompat.<BaseResponse<List<TFOSimpleTemplate>>>applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<List<TFOSimpleTemplate>>>() {
@@ -264,8 +270,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     }
 
     private void setTemplateListData(List<TFOSimpleTemplate> data) {
-        selectionAdapter = new TemplateAdapter(this, data);
-        rvSelection.setAdapter(selectionAdapter);
+        templateAdapter = new TemplateAdapter(this, data);
+        rvSelection.setAdapter(templateAdapter);
     }
 
     public void clickFinish(View view) {
@@ -373,6 +379,37 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         TFOBookImageModel imageModel = (TFOBookImageModel) view.getTag(R.string.tag_obj);
         pendantAdapter.setSelImgModel(imageModel);
         Toast.makeText(EditActivity.this, imageModel.toString(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Subscribe
+    public void selectTemplateEvent(SelectTemplateEvent templateEvent) {
+        final String templateId = templateEvent.getTemplateId();
+        Subscription subscribe = apiService.templateInfo(bookModel.getBookId(), templateId)
+                .compose(SchedulersCompat.<BaseResponse<List<TFOBookContentModel>>>applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse<List<TFOBookContentModel>>>() {
+                    @Override
+                    public void call(BaseResponse<List<TFOBookContentModel>> listBaseResponse) {
+                        List<TFOBookContentModel> contentModels = listBaseResponse.getData();
+                        if (contentModels == null || contentModels.size() == 0) return;
+                        rightModel = contentModels.get(0);
+                        if (contentModels.size() > 1) {
+                            leftModel = contentModels.get(1);
+                        }
+                        setupViews();
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.d(TAG, "templateInfo: " + throwable);
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        showSelectRL(false);
+                    }
+                });
+        addSubscription(subscribe);
+
     }
 
 }

@@ -124,8 +124,8 @@ public interface ApiService {
      * @return
      */
     @GET("api/templateinfo")
-    Observable<BaseResponse<TFOBookContentModel>> templateInfo(@Query("template_id") String template_id,
-                                                               @Query("book_id") String book_id);
+    Observable<BaseResponse<List<TFOBookContentModel>>> templateInfo(@Query("template_id") String template_id,
+                                                                     @Query("book_id") String book_id);
 
     /**
      * 时光书创建成功后，获取完整封面数据用于编辑封面

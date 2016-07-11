@@ -29,6 +29,13 @@ public class MyPODActivity extends PODActivity {
         context.startActivity(intent);
     }
 
+    public static void open(Context context, String bookId, int bookType, TFOPublishObj publishObj) {
+        Intent intent = new Intent(context, MyPODActivity.class);
+        intent.putExtra("book_type", bookType);
+        intent.putExtra("book_id", bookId);
+        intent.putExtra("publish_obj", publishObj);
+        context.startActivity(intent);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
