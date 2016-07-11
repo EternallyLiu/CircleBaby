@@ -76,6 +76,10 @@ public class TypeConstant {
     public static final int PRINT_CODE_LIMIT_MORE = 8803;//超出300页，不可印刷
     public static final int PRINT_CODE_LIMIT_HAD_DELETE = 8804;//该时光书已被删除，不可印刷
     public static final int PRINT_CODE_LIMIT_MORE_SPLIT = 8805;//超出300页，可拆分印刷
+    public static final int PRINT_CODE_LIMIT_8806 = 8806;//3寸日记卡片需18张
+    public static final int PRINT_CODE_LIMIT_8807 = 8807;//4寸日记卡片需15张
+    public static final int PRINT_CODE_LIMIT_8808 = 8808;//5寸日记卡片需9张
+    public static final int PRINT_CODE_LIMIT_8809 = 8809;//识图卡片需8张
 
     //recyclerview type
     public static final int VIEW_ITEM_TYPE_NORMAL = 0;
