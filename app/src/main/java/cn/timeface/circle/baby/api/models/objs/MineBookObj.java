@@ -20,7 +20,7 @@ public class MineBookObj extends BaseObj implements Parcelable {
     int printCode;          //状态code码
     String description;
     int bookSizeId;
-    int openBookId;
+    String openBookId;
 
     public MineBookObj(String bookCover, long updateTime, int pageNum, String bookName, int bookType , String bookId , String author) {
         this.bookCover = bookCover;
@@ -40,11 +40,11 @@ public class MineBookObj extends BaseObj implements Parcelable {
         this.bookSizeId = bookSizeId;
     }
 
-    public int getOpenBookId() {
+    public String getOpenBookId() {
         return openBookId;
     }
 
-    public void setOpenBookId(int openBookId) {
+    public void setOpenBookId(String openBookId) {
         this.openBookId = openBookId;
     }
 
@@ -137,7 +137,7 @@ public class MineBookObj extends BaseObj implements Parcelable {
         dest.writeInt(this.printCode);
         dest.writeString(this.description);
         dest.writeInt(this.bookSizeId);
-        dest.writeInt(this.openBookId);
+        dest.writeString(this.openBookId);
     }
 
     public MineBookObj() {
@@ -154,7 +154,7 @@ public class MineBookObj extends BaseObj implements Parcelable {
         this.printCode = in.readInt();
         this.description = in.readString();
         this.bookSizeId = in.readInt();
-        this.openBookId = in.readInt();
+        this.openBookId = in.readString();
     }
 
     public static final Creator<MineBookObj> CREATOR = new Creator<MineBookObj>() {

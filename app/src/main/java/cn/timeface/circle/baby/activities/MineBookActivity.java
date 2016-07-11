@@ -90,7 +90,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         rlRecyclerView.setLoadRefreshListener(new PullRefreshLoadRecyclerView.LoadRefreshListener() {
             @Override
             public void onRefresh(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, RefreshView refreshView) {
-                reqData(currentPage, true);
+                reqData(1, true);
             }
 
             @Override

@@ -7,6 +7,7 @@ import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.UserObj;
 import cn.timeface.open.api.models.response.Authorize;
 import cn.timeface.open.constants.Constant;
+import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import rx.functions.Action1;
 
 /**
@@ -19,6 +20,7 @@ public class GlobalSetting {
         OpenApiFactory.getOpenApi()
                 .getApiService()
                 .authorize(app_id, secret, new Gson().toJson(user))
+                .compose(SchedulersCompat.<BaseResponse<Authorize>>applyIoSchedulers())
                 .subscribe(
                         new Action1<BaseResponse<Authorize>>() {
                             @Override
@@ -33,7 +35,6 @@ public class GlobalSetting {
                         , new Action1<Throwable>() {
                             @Override
                             public void call(Throwable throwable) {
-
                             }
                         }
                 );
