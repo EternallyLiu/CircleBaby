@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import cn.timeface.circle.baby.api.models.base.BaseObj;
+import cn.timeface.open.api.models.objs.TFOResourceObj;
 
 /**
  * Created by lidonglin on 2016/5/9.
@@ -203,4 +204,8 @@ public class MediaObj extends BaseObj
             return new MediaObj[size];
         }
     };
+
+    public TFOResourceObj toTFOResourceObj() {
+        return new TFOResourceObj(imgUrl, h, w, "");
+    }
 }
