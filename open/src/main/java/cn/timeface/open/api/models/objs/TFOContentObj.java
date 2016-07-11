@@ -46,9 +46,6 @@ public class TFOContentObj implements Parcelable {
         dest.writeList(this.resource_list);
     }
 
-    public TFOContentObj() {
-    }
-
     protected TFOContentObj(Parcel in) {
         this.subtitle = in.readString();
         this.resource_list = new ArrayList<TFOResourceObj>();
