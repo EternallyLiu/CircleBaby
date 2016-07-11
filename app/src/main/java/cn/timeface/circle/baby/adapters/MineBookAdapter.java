@@ -22,6 +22,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
+import cn.timeface.circle.baby.managers.listeners.OnClickListener;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -35,6 +36,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
     private FragmentManager supportFragmentManager;
+    private static OnClickListener clickListener;
 
     public MineBookAdapter(Context mContext, List<MineBookObj> listData) {
         super(mContext, listData);
@@ -130,6 +132,9 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                                 break;
                             case R.id.del:
                                 //删除
+                                if(clickListener!=null){
+                                    clickListener.click(obj.getBookId());
+                                }
                                 break;
                         }
                     });
@@ -173,5 +178,9 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     });
         }
 
+    }
+
+    public void delBook(OnClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 }

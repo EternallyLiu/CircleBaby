@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.managers.listeners.OnClickListener;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
@@ -100,6 +101,26 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         });
         tfStateView.setOnRetryListener(() -> reqData(1, true));
         tfStateView.loading();
+        iniListener();
+    }
+
+    private void iniListener() {
+        adapter.delBook(new OnClickListener() {
+            @Override
+            public void click(Object o) {
+                String bookId = (String) o;
+                apiService.deleteBook(bookId)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            ToastUtil.showToast(response.getInfo());
+                            if(response.success()){
+                                adapter.notifyDataSetChanged();
+                            }
+                        }, error -> {
+                            Log.e("MineBookAdapter", "printStatus:");
+                        });
+            }
+        });
     }
 
     /**
