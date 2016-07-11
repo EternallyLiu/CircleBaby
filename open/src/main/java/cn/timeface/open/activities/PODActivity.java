@@ -7,8 +7,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.google.gson.Gson;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import cn.timeface.open.BuildConfig;
@@ -56,8 +56,25 @@ public class PODActivity extends BaseAppCompatActivity {
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
 
         setSupportActionBar(toolbar);
+        String publishObj = loadJSONFromAsset();
 
-        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObj));
+        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, publishObj);
+    }
+
+    public String loadJSONFromAsset() {
+        String json;
+        try {
+            InputStream is = getAssets().open("content_list_data.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     private void reqPod(String bookId, int bookType, int rebuild, String contentList) {

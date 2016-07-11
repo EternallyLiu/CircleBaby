@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.timeface.open.R;
 import cn.timeface.open.adapters.PODViewPagerAdapter;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookElementModel;
@@ -101,6 +102,7 @@ public class BookPodView extends FrameLayout {
 
     private void initView() {
         viewPager = new ViewPager(getContext());
+        viewPager.setId(R.id.book_pod_viewPage);//FragmentStatePagerAdapter竟然这里这个是必须要有的！
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         layoutParams.gravity = Gravity.CENTER;
         viewPager.setLayoutParams(layoutParams);

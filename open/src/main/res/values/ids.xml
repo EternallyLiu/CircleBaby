@@ -16,8 +16,9 @@
 
 <resources>
     <!-- glide 默认tagid -->
-    <item name="glide_tag_id" type="id"/>
-    <item name="left_page_id" type="id"/>
-    <item name="right_page_id" type="id"/>
+    <item name="glide_tag_id" type="id" />
+    <item name="left_page_id" type="id" />
+    <item name="right_page_id" type="id" />
+    <item name="book_pod_viewPage" type="id" />
 
 </resources>
