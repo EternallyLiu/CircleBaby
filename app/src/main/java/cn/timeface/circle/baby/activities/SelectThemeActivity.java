@@ -43,7 +43,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
     @Bind(R.id.lv_horizontal)
     HorizontalListView lvHorizontal;
     private HorizontalListViewAdapter3 adapter;
-    private int bookType;
+    private int bookTheme;
     private String templateName;
     private ArrayList<ImageInfoListObj> dataList;
     private BaseResponse<List<TFOBookType>> listBaseResponse;
@@ -73,7 +73,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
                 GlideUtil.displayImage(listBaseResponse.getData().get(position).getTemplatePic(), ivTheme);
                 adapter.setSelectIndex(position);
                 adapter.notifyDataSetChanged();
-                bookType = listBaseResponse.getData().get(position).getBookType();
+                bookTheme = listBaseResponse.getData().get(position).getBookType();
             }
         });
     }
@@ -95,7 +95,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
             adapter = new HorizontalListViewAdapter3(this, dataList);
             GlideUtil.displayImage(dataList.get(0).getTemplatePic(), ivTheme);
             adapter.setSelectIndex(0);
-            bookType = dataList.get(0).getBookType();
+            bookTheme = dataList.get(0).getBookType();
             templateName = dataList.get(0).getTemplateName();
         } else {
             adapter.setList(dataList);
@@ -112,13 +112,15 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        startPhotoPick();
         return super.onOptionsItemSelected(item);
     }
 
 
-    private void startPhotoPick(List<ImageInfoListObj> dataList) {
+    private void startPhotoPick() {
         Intent intent = new Intent(this, PickerPhotoActivity2.class);
         intent.putExtra("bookType",5);
+        intent.putExtra("bookTheme",bookTheme);
         intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
         startActivity(intent);

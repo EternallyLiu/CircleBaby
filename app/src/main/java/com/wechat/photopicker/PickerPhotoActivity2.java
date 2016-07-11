@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
@@ -40,6 +41,9 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.activities.PODActivity;
+import cn.timeface.open.api.models.objs.TFOContentObj;
+import cn.timeface.open.api.models.objs.TFOPublishObj;
+import cn.timeface.open.api.models.objs.TFOResourceObj;
 
 /**
  * 选择图界面
@@ -67,6 +71,8 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     private String bookSizeId;
     private int pageNum;
     private String bookName = "";
+    private ArrayList<TFOResourceObj> tfoResourceObjs;
+    private int bookTheme;
     //    private ArrayList<MediaObj> mediaobjs;
 
     @Override
@@ -76,6 +82,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
 //        checkPermission();
         Intent intent = getIntent();
         bookType = intent.getIntExtra("bookType", 0);
+        bookTheme = intent.getIntExtra("bookTheme", 0);
         bookSizeId = intent.getStringExtra("bookSizeId");
         dataList = intent.getParcelableArrayListExtra("dataList");
         optionalPhotoSize = MAX_SELECTOR_SIZE;
@@ -173,30 +180,47 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                     imageInfoList.add(obj);
                 }
             }
-
             String s = new Gson().toJson(imageInfoList);
             if (bookType == 2) {
                 bookName = FastData.getBabyName() + "日记卡片书";
+                createBook(s);
             } else if (bookType == 3) {
                 bookName = FastData.getBabyName() + "识图卡片书";
-            }else if(bookType == 5){
+                createBook(s);
+            } else if (bookType == 5) {
                 //跳转开放平台POD接口；
                 bookName = FastData.getBabyName() + "照片书";
-
+                tfoResourceObjs = new ArrayList<TFOResourceObj>();
+                for (ImageInfoListObj obj : imageInfoList) {
+                    for (MediaObj media : obj.getMediaList()) {
+                        TFOResourceObj tfoResourceObj = media.toTFOResourceObj();
+                        tfoResourceObjs.add(tfoResourceObj);
+                    }
+                }
+                TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+                ArrayList<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+                tfoContentObjs1.add(tfoContentObj);
+                MyPODActivity.open(this, "", bookTheme, new TFOPublishObj("", tfoContentObjs1) , s);
+                finish();
             }
-            apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), imageInfoList.get(0).getMediaList().get(0).getImgUrl(), "", URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum)
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-                        if (response.success()) {
-                            ToastUtil.showToast("创建成功");
-                            finish();
-                        } else {
-                            ToastUtil.showToast(response.getInfo());
-                        }
-                    }, error -> {
-                        Log.e(TAG, "createBook:");
-                    });
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void createBook(String s) {
+        apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), imageInfoList.get(0).getMediaList().get(0).getImgUrl(), "", URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        ToastUtil.showToast("创建成功");
+                        finish();
+                    } else {
+                        ToastUtil.showToast(response.getInfo());
+                    }
+                }, error -> {
+                    Log.e(TAG, "createBook:");
+                });
+    }
+
+
 }
