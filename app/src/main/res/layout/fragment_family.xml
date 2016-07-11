@@ -78,8 +78,7 @@
                     android:id="@+id/iv_avatar"
                     android:layout_width="@dimen/size_56"
                     android:layout_height="@dimen/size_56"
-                    android:layout_margin="@dimen/size_6"
-                    android:src="@drawable/ic_login_qq" />
+                    android:layout_margin="@dimen/size_6"/>
 
                 <ImageView
                     android:id="@+id/iv_creator"
@@ -98,7 +97,6 @@
                     android:id="@+id/tv_relation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="妈妈"
                     android:textColor="@color/text_color1"
                     android:textSize="@dimen/text_medium" />
 
@@ -107,7 +105,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/size_12"
-                    android:text="来过2次"
                     android:textColor="@color/text_color1"
                     android:textSize="@dimen/text_normal" />
 
@@ -119,7 +116,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/size_6"
-                android:text="最近：05-18 10：00"
                 android:textColor="@color/text_color1"
                 android:textSize="@dimen/text_normal" />
 
