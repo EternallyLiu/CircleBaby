@@ -14,6 +14,11 @@ public class TFOPublishObj implements Parcelable {
     String title;
     List<TFOContentObj> content_list;
 
+    public TFOPublishObj(String title, List<TFOContentObj> content_list) {
+        this.title = title;
+        this.content_list = content_list;
+    }
+
     public String getTitle() {
         return title;
     }

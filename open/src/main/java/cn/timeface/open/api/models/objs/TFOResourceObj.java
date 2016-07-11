@@ -13,6 +13,13 @@ public class TFOResourceObj implements Parcelable {
     int image_height;
     String image_remark;
 
+    public TFOResourceObj(String image_url, int image_width, int image_height, String image_remark) {
+        this.image_url = image_url;
+        this.image_width = image_width;
+        this.image_height = image_height;
+        this.image_remark = image_remark;
+    }
+
     public String getImageUrl() {
         return image_url;
     }

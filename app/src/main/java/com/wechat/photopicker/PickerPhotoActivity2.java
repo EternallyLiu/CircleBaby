@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.open.activities.PODActivity;
 
 /**
  * 选择图界面
@@ -65,6 +66,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     private int bookType;
     private String bookSizeId;
     private int pageNum;
+    private String bookName = "";
     //    private ArrayList<MediaObj> mediaobjs;
 
     @Override
@@ -173,11 +175,14 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
             }
 
             String s = new Gson().toJson(imageInfoList);
-            String bookName = "";
             if (bookType == 2) {
                 bookName = FastData.getBabyName() + "日记卡片书";
             } else if (bookType == 3) {
                 bookName = FastData.getBabyName() + "识图卡片书";
+            }else if(bookType == 5){
+                //跳转开放平台POD接口；
+                bookName = FastData.getBabyName() + "照片书";
+
             }
             apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), imageInfoList.get(0).getMediaList().get(0).getImgUrl(), "", URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum)
                     .compose(SchedulersCompat.applyIoSchedulers())
@@ -188,7 +193,6 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                         } else {
                             ToastUtil.showToast(response.getInfo());
                         }
-
                     }, error -> {
                         Log.e(TAG, "createBook:");
                     });
