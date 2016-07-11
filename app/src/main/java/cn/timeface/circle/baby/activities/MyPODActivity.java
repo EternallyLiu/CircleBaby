@@ -53,7 +53,6 @@ public class MyPODActivity extends PODActivity {
                 .subscribe(response -> {
                     if (response.success()) {
                         ToastUtil.showToast("创建成功");
-                        finish();
                     } else {
                         ToastUtil.showToast(response.getInfo());
                     }
