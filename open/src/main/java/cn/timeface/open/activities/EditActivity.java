@@ -78,8 +78,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     private List<Integer> selectBtnArr;
     private View selectBg;
 
-    public static void open4result(Activity activity, int requestCode, float pageScale, TFOBookContentModel contentModel) {
-        open4result(activity, requestCode, pageScale, null, contentModel, false);
+    public static void open4result(Activity activity, int requestCode, float pageScale, TFOBookContentModel contentModel, boolean isCover) {
+        open4result(activity, requestCode, pageScale, null, contentModel, isCover);
     }
 
     public static void open4result(Activity activity, int requestCode, float pageScale, TFOBookContentModel leftModel, TFOBookContentModel rightModel, boolean isCover) {

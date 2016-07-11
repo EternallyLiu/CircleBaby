@@ -64,7 +64,7 @@ public class SplashActivity extends BaseAppCompatActivity {
                     public void call(BaseResponse<TFOBookModel> tfoBookModelBaseResponse) {
                         TFOBookModel tfoBookModel1 = tfoBookModelBaseResponse.getData();
                         List<TFOBookContentModel> contentList = tfoBookModel1.getContentList();
-                        EditActivity.open4result(SplashActivity.this, 100, 1, contentList.get(0));
+                      //  EditActivity.open4result(SplashActivity.this, 100, 1, contentList.get(0));
                     }
                 }, new Action1<Throwable>() {
                     @Override

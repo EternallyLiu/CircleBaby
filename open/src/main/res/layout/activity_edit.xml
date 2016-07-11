@@ -168,6 +168,7 @@
                 android:layout_width="@dimen/size_96"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:visibility="gone"
                 android:layout_margin="@dimen/view_space_small" />
 
         </LinearLayout>

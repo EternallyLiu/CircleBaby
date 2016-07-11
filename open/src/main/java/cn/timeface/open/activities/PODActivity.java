@@ -120,10 +120,11 @@ public abstract class PODActivity extends BaseAppCompatActivity implements IPODR
 
     public void clickEdit(View view) {
         List<TFOBookContentModel> currentPage = bookPodView.getCurrentPage();
+        TFOBookContentModel bookContentModel = currentPage.get(0);
         if (currentPage.size() == 1) {
-            EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, currentPage.get(0));
+            EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, bookContentModel, bookContentModel.getContentType() == 0);
         } else {
-            EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, currentPage.get(0), currentPage.get(1), bookPodView.currentPageIsCover());
+            EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, bookContentModel, currentPage.get(1), bookPodView.currentPageIsCover());
         }
     }
 

@@ -2,7 +2,6 @@ package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,8 +26,6 @@ import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.LittleWindow;
-import cn.timeface.open.activities.EditActivity;
-import cn.timeface.open.activities.SplashActivity;
 
 /**
  * Created by lidonglin on 2016/6/15.
@@ -141,7 +138,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                 case R.id.tv_edit:
                     break;
                 case R.id.tv_print:
-                    BaseAppCompatActivity.apiService.printStatus(obj.getBookType(), obj.getPageNum(),obj.getBookSizeId())
+                    BaseAppCompatActivity.apiService.printStatus(obj.getBookType(), obj.getPageNum(), obj.getBookSizeId())
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(printStatusResponse -> {
                                 obj.setPrintCode(printStatusResponse.getPrintCode());

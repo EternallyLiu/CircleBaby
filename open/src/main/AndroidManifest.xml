@@ -8,21 +8,8 @@
         android:supportsRtl="true">
 
         <!--<meta-data-->
-            <!--android:name="cn.timeface.open.utils.glide.TFGlideModule"-->
-            <!--android:value="GlideModule" />-->
-
-        <activity
-            android:name=".activities.base.BaseRecyclerViewActivity"
-            android:label="@string/title_activity_base_recycler_view" />
-        <activity
-            android:name=".activities.SplashActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullscreenTheme" />
-
-        <activity
-            android:name="cn.timeface.open.activities.PODActivity"
-            android:label="@string/title_activity_pod"
-            android:theme="@style/FullscreenTheme" />
+        <!--android:name="cn.timeface.open.utils.glide.TFGlideModule"-->
+        <!--android:value="GlideModule" />-->
         <activity
             android:name="cn.timeface.open.activities.EditActivity"
             android:label="@string/title_activity_edit"
