@@ -18,13 +18,14 @@ import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
+import cn.timeface.open.managers.interfaces.IPODResult;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.views.BookPodView;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class PODActivity extends BaseAppCompatActivity {
+public abstract class PODActivity extends BaseAppCompatActivity implements IPODResult {
 
     Toolbar toolbar;
     float pageScale = 1.f;
@@ -60,7 +61,7 @@ public class PODActivity extends BaseAppCompatActivity {
         reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObj));
     }
 
-    private void reqPod(String bookId, int bookType, int rebuild, String contentList) {
+    private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {
         apiService
                 .getPOD(bookId, bookType, rebuild, contentList)
                 .map(new Func1<BaseResponse<TFOBookModel>, TFOBookModel>() {
@@ -75,6 +76,9 @@ public class PODActivity extends BaseAppCompatActivity {
                                public void call(TFOBookModel podResponse) {
                                    BookModelCache.getInstance().setBookModel(podResponse);
                                    setData(podResponse);
+                                   if (TextUtils.isEmpty(bookId)) {
+                                       createBookInfo(podResponse);
+                                   }
                                }
                            }
                         , new Action1<Throwable>() {
@@ -134,4 +138,6 @@ public class PODActivity extends BaseAppCompatActivity {
     public void clickNext(View view) {
         bookPodView.clickNext();
     }
+
+    public abstract void createBookInfo(TFOBookModel bookModel);
 }

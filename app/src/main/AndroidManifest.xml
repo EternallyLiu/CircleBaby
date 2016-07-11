@@ -92,9 +92,9 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:windowSoftInputMode="stateHidden|adjustResize">
-
             <intent-filter>
                 <data android:scheme="tencent1105142528" />
+
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -104,12 +104,12 @@
             <!-- 调用新浪原生SDK，需要注册的回调activity -->
             <intent-filter>
                 <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-
-        <!--小米推送start-->
+        <!-- 小米推送start -->
         <service
             android:name="com.xiaomi.push.service.XMPushService"
             android:enabled="true"
@@ -121,12 +121,13 @@
         <service
             android:name="com.xiaomi.mipush.sdk.MessageHandleService"
             android:enabled="true" />
-        <!--注：此service必须在2.2.5版本以后（包括2.2.5版本）加入-->
+        <!-- 注：此service必须在2.2.5版本以后（包括2.2.5版本）加入 -->
         <receiver
             android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -141,7 +142,8 @@
         <receiver
             android:name=".push.MiPushMessageReceive"
             android:exported="true">
-            <!--这里com.xiaomi.mipushdemo.DemoMessageRreceiver改成app中定义的完整类名-->
+
+            <!-- 这里com.xiaomi.mipushdemo.DemoMessageRreceiver改成app中定义的完整类名 -->
             <intent-filter>
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />
             </intent-filter>
@@ -152,7 +154,7 @@
                 <action android:name="com.xiaomi.mipush.ERROR" />
             </intent-filter>
         </receiver>
-        <!--小米推送end-->
+        <!-- 小米推送end -->
 
         <activity
             android:name=".activities.MainActivity"
@@ -230,7 +232,6 @@
             android:name=".activities.CartActivity"
             android:label="印刷车"
             android:screenOrientation="portrait">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.base.BaseAppCompatActivity" />
@@ -275,6 +276,7 @@
             android:name=".activities.FeedbackActivity"
             android:label="反馈"
             android:screenOrientation="portrait" />
+        <activity android:name=".activities.MyPODActivity"></activity>
     </application>
 
 </manifest>
