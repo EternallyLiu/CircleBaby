@@ -8,6 +8,7 @@ import cn.timeface.open.api.models.objs.UserObj;
 import cn.timeface.open.api.models.response.Authorize;
 import cn.timeface.open.constants.Constant;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * author: rayboot  Created on 16/7/8.
@@ -19,6 +20,7 @@ public class GlobalSetting {
         OpenApiFactory.getOpenApi()
                 .getApiService()
                 .authorize(app_id, secret, new Gson().toJson(user))
+                .subscribeOn(Schedulers.io())
                 .subscribe(
                         new Action1<BaseResponse<Authorize>>() {
                             @Override
