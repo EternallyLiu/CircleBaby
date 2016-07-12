@@ -30,6 +30,7 @@ public class BookPodView extends FrameLayout {
     private TFOBookModel tfoBookModel;
     List<TFOBookContentModel> imageModels = new ArrayList<>(2);
     private boolean isCover;
+    private float scale = 0;
 
     public BookPodView(Context context) {
         super(context);
@@ -52,7 +53,14 @@ public class BookPodView extends FrameLayout {
         initView();
     }
 
-    public void setupPodDate(FragmentManager supportFragmentManager, TFOBookModel tfoBookModel) {
+    public void setupPageScale(float scale) {
+        this.scale = scale;
+    }
+
+    public float getPageScale() {
+        if (scale != 0) {
+            return scale;
+        }
         Point screenInfo = new Point(getWidth(), getHeight());
         float pageScale;
         if (screenInfo.y > screenInfo.x) {
@@ -69,7 +77,11 @@ public class BookPodView extends FrameLayout {
                 pageScale = screenInfo.x / pageW;
             }
         }
-        tfoBookModel.setPageScale(pageScale);
+        return pageScale;
+    }
+
+    public void setupPodDate(FragmentManager supportFragmentManager, TFOBookModel tfoBookModel) {
+        tfoBookModel.setPageScale(getPageScale());
         for (TFOBookContentModel cm : tfoBookModel.getContentList()) {
             if (cm.getPageType() == TFOBookContentModel.PAGE_RIGHT) {
                 for (TFOBookElementModel em : cm.getElementList()) {
