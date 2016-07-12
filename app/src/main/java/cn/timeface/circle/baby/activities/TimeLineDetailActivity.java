@@ -15,6 +15,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -99,10 +101,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     Button btnSend;
     @Bind(R.id.rl_single)
     RelativeLayout rlSingle;
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
-    @Bind(R.id.ll_menu)
-    LinearLayout llMenu;
     @Bind(R.id.tv_milestone)
     TextView tvMilestone;
     @Bind(R.id.icon_like)
@@ -186,7 +184,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         tvContent.setText(timelineobj.getContent());
         tvAuthor.setText(timelineobj.getAuthor().getRelationName());
         tvDate.setText(DateUtil.getTime2(timelineobj.getDate()));
-        tvTitle.setText(timelineobj.getAuthor().getBabyObj().getName());
+        getSupportActionBar().setTitle(timelineobj.getAuthor().getBabyObj().getName());
         iconLike.setTextColor(timelineobj.getLike() == 1 ? Color.RED : normalColor);
 
         if (!TextUtils.isEmpty(timelineobj.getMilestone())) {
@@ -269,7 +267,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             rlSingle.setOnClickListener(this);
         }
         btnSend.setOnClickListener(this);
-        llMenu.setOnClickListener(this);
         iconLike.setOnClickListener(this);
 //        rlComment.setOnSizeChangedListenner(this);
     }
@@ -307,7 +304,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
         TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
         if (comment.getToUserInfo().getRelationName() != null) {
-            tvRelation.setText(comment.getUserInfo().getRelationName() + " 回复 " + comment.getToUserInfo().getRelationName());
+            String relation = comment.getUserInfo().getRelationName() + "回复" + comment.getToUserInfo().getRelationName();
+            tvRelation.setText(relation);
         } else {
             tvRelation.setText(comment.getUserInfo().getRelationName());
         }
@@ -330,6 +328,20 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             }
         });
         return view;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_timeline_detail, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_more) {
+            new TimeLineActivityMenuDialog(this).share(timelineobj);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -381,9 +393,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 Intent intent = new Intent(this, VideoPlayActivity.class);
                 intent.putExtra("media", timelineobj.getMediaList().get(0));
                 startActivity(intent);
-                break;
-            case R.id.ll_menu:
-                new TimeLineActivityMenuDialog(this).share(timelineobj);
                 break;
             case R.id.icon_like:
                 int p = iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;

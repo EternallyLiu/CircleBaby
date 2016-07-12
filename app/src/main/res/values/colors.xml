@@ -27,7 +27,6 @@
     <color name="bg_color13">#F2F3F5</color>
 
 
-
     <color name="bg0">#41b7f0</color>
     <color name="bg1">#a282f3</color>
     <color name="bg2">#41ceb2</color>
@@ -114,6 +113,9 @@
 
     <color name="error_view_retry_button_background">#069bf2</color>
     <color name="error_view_retry_button_background_hover">#058ccd</color>
+    <color name="comment_time">#ffb2b2b2</color>
+    <color name="comment_relation">#ff727272</color>
+    <color name="comment_content">#ff333333</color>
 
 
 </resources>

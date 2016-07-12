@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="cn.timeface.circle.baby.activities.CloudAlbumEditActivity">
+    <item
+        android:id="@+id/action_more"
+        android:icon="@drawable/ic_operate_normal"
+        android:orderInCategory="100"
+        android:title=""
+        app:showAsAction="ifRoom" />
+</menu>
