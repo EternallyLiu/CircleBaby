@@ -1,6 +1,8 @@
 package cn.timeface.circle.baby.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -252,26 +254,39 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     }
 
     public void clickDeleteImg(View view) {
-        //删除照片,待接口
-        MediaObj detailObj = (MediaObj) view.getTag(R.string.tag_obj);
-        Subscription subscribe = apiService.deleteSingleImage(String.valueOf(detailObj.getId()))
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(new Action1<BaseResponse>() {
+        //删除照片
+        new AlertDialog.Builder(this)
+                .setTitle("确定删除这个照片?")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
-                    public void call(BaseResponse baseResponse) {
-                        if (baseResponse.success()) {
-                            int position = mediaObjs.indexOf(detailObj);
-                            mediaObjs.remove(detailObj);
-                            albumDetailAdapter.notifyItemRemoved(position);
-                            ToastUtil.showToast("删除成功");
-                        } else {
-                            ToastUtil.showToast(baseResponse.getInfo());
-                        }
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
-                }, throwable -> {
-                    ToastUtil.showToast(R.string.state_error_timeout);
-                });
-        addSubscription(subscribe);
+                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MediaObj detailObj = (MediaObj) view.getTag(R.string.tag_obj);
+                Subscription subscribe = apiService.deleteSingleImage(String.valueOf(detailObj.getId()))
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(new Action1<BaseResponse>() {
+                            @Override
+                            public void call(BaseResponse baseResponse) {
+                                if (baseResponse.success()) {
+                                    int position = mediaObjs.indexOf(detailObj);
+                                    mediaObjs.remove(detailObj);
+                                    albumDetailAdapter.notifyItemRemoved(position);
+                                    ToastUtil.showToast("删除成功");
+                                } else {
+                                    ToastUtil.showToast(baseResponse.getInfo());
+                                }
+                            }
+                        }, throwable -> {
+                            ToastUtil.showToast(R.string.state_error_timeout);
+                        });
+                addSubscription(subscribe);
+            }
+        }).show();
+
     }
 
     public void clickBtnChangeCover(View view) {
@@ -303,18 +318,30 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     }
 
     private void deleteAlbum() {
-        Subscription subscribe = apiService.deleteCloudAlbum(albumId)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(baseResponse -> {
-                    if (baseResponse.success()) {
-                        ToastUtil.showToast("删除成功");
-                    } else {
-                        ToastUtil.showToast(baseResponse.getInfo());
+        new AlertDialog.Builder(this)
+                .setTitle("确定删除相册?")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
-                }, throwable -> {
-                    ToastUtil.showToast(R.string.state_error_timeout);
-                });
-        addSubscription(subscribe);
+                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Subscription subscribe = apiService.deleteCloudAlbum(albumId)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(baseResponse -> {
+                            if (baseResponse.success()) {
+                                ToastUtil.showToast("删除成功");
+                            } else {
+                                ToastUtil.showToast(baseResponse.getInfo());
+                            }
+                        }, throwable -> {
+                            ToastUtil.showToast(R.string.state_error_timeout);
+                        });
+                addSubscription(subscribe);
+            }
+        }).show();
     }
 
     @Override

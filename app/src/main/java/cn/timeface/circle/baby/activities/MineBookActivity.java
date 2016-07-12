@@ -113,7 +113,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             ToastUtil.showToast(response.getInfo());
-                            if(response.success()){
+                            if (response.success()) {
                                 adapter.notifyDataSetChanged();
                             }
                         }, error -> {
@@ -139,6 +139,11 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                         }
                         bookList.addAll(mineBookListResponse.getDataList());
                         adapter.notifyDataSetChanged();
+                        if (bookList.size() == 0) {
+                            tfStateView.setImageResource(R.drawable.nodata);
+                            tfStateView.setVisibility(View.VISIBLE);
+                            tfStateView.setTitle("您还没有创建作品");
+                        }
                     } else {
                         ToastUtil.showToast(mineBookListResponse.getInfo());
                     }

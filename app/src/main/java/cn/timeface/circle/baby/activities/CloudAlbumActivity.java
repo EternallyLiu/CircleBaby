@@ -27,9 +27,8 @@ import cn.timeface.circle.baby.api.models.objs.CloudAlbumObj;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
-import cn.timeface.circle.baby.views.dialog.LoadingDialog;
+import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
-import rx.functions.Action0;
 
 /**
  * Created by zhsheng on 2016/6/7.
@@ -40,9 +39,10 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
     Toolbar toolbar;
     @Bind(R.id.recyclerView)
     PullRefreshLoadRecyclerView prlRecyclerView;
+    @Bind(R.id.stateView)
+    TFStateView tfStateView;
     private List<CloudAlbumObj> dataList = new ArrayList<>(8);
     private CloudAlbumListAdapter albumListAdapter;
-    private LoadingDialog dialog;
 
     public static void open(Activity activity) {
         activity.startActivity(new Intent(activity, CloudAlbumActivity.class));
@@ -55,9 +55,9 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        dialog = LoadingDialog.getInstance();
-        dialog.show(getSupportFragmentManager(), "");
         setupAlbumView();
+        tfStateView.setOnRetryListener(this::reqCloudAlbumImages);
+        tfStateView.loading();
         reqCloudAlbumImages();
     }
 
@@ -87,19 +87,25 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
         Subscription subscribe = apiService.queryCloudAlbumList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .doOnTerminate(() -> {
-                    dialog.dismiss();
                     prlRecyclerView.complete();
                 })
                 .subscribe(response -> {
+                    tfStateView.finish();
                     if (response.success()) {
                         dataList.clear();
                         dataList.addAll(response.getDataList());
                         albumListAdapter.notifyDataSetChanged();
+                        if (dataList.size() == 0) {
+                            tfStateView.setImageResource(R.drawable.nodata);
+                            tfStateView.setTitle("没有内容");
+                            tfStateView.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         ToastUtil.showToast(response.getInfo());
                     }
                 }, throwable -> {
                     ToastUtil.showToast(R.string.state_error_timeout);
+                    tfStateView.showException(throwable);
                     Log.d(TAG, "reqCloudAlbumImages: " + throwable.getMessage());
                 });
         addSubscription(subscribe);
