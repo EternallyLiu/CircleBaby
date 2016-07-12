@@ -28,9 +28,9 @@
             android:id="@+id/gv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:horizontalSpacing="@dimen/size_6"
+            android:horizontalSpacing="@dimen/size_2"
             android:numColumns="3"
-            android:verticalSpacing="@dimen/size_6"
+            android:verticalSpacing="@dimen/size_2"
             android:scrollbars="none"
             android:visibility="gone" />
 

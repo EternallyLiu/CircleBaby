@@ -13,13 +13,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.CardBookSizeObj;
 import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.views.dialog.LittleWindow;
 
 /**
  * Created by lidonglin on 2016/7/7.
@@ -28,7 +25,7 @@ public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
-    private OnItemClickListener onItemClickListener;
+    private OnItemClickListener<Integer> onItemClickListener;
 
     public BookSizeListAdapter(Context mContext, List<CardBookSizeObj> listData) {
         super(mContext, listData);
@@ -94,7 +91,7 @@ public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
     }
 
 
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+    public void setOnItemClickListener(OnItemClickListener<Integer> onItemClickListener){
         this.onItemClickListener = onItemClickListener;
     }
 }

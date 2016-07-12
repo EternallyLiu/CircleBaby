@@ -35,13 +35,14 @@ import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.managers.listeners.OnClickListener;
+import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
 
-public class MineBookActivity extends BaseAppCompatActivity implements IEventBus {
+public class MineBookActivity extends BaseAppCompatActivity implements IEventBus, View.OnClickListener {
     public int currentPage = 1;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -82,8 +83,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
      */
     private void setupView() {
         RecyclerView recyclerView = rlRecyclerView.getRecyclerView();
-        DividerItemDecoration itemDecoration =
-                new DividerItemDecoration(this, LinearLayoutManager.VERTICAL, R.color.bg7);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL, R.color.bg7);
         itemDecoration.setItemSize(getResources().getDimensionPixelOffset(R.dimen.view_space_normal));
         recyclerView.addItemDecoration(itemDecoration);
         adapter = new MineBookAdapter(this, bookList, getSupportFragmentManager());
@@ -114,13 +114,25 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                         .subscribe(response -> {
                             ToastUtil.showToast(response.getInfo());
                             if(response.success()){
-                                adapter.notifyDataSetChanged();
+                                adapter.notify();
                             }
                         }, error -> {
-                            Log.e("MineBookAdapter", "printStatus:");
+                            Log.e(TAG, "deleteBook:");
                         });
             }
         });
+        adapter.setOnItemClickListener(mineBookObj -> {
+            if(mineBookObj.getBookType()==5){
+                //照片书-跳转POD预览
+                ToastUtil.showToast("照片书-跳转POD预览");
+                MyPODActivity.open(MineBookActivity.this,mineBookObj.getOpenBookId(),23,null);
+            }else{
+                //日记书、识图卡片书，跳转本地预览
+                ToastUtil.showToast("日记书、识图卡片书，跳转本地预览");
+
+            }
+        });
+        errorRetry.setOnClickListener(this);
     }
 
     /**
@@ -139,6 +151,9 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                         }
                         bookList.addAll(mineBookListResponse.getDataList());
                         adapter.notifyDataSetChanged();
+                        if (bookList.size() == 0) {
+                            showNoDataView(true);
+                        }
                     } else {
                         ToastUtil.showToast(mineBookListResponse.getInfo());
                     }
@@ -180,4 +195,17 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         }
     }
 
+    private void showNoDataView(boolean showNoData) {
+        llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
+        rlRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.error_retry:
+                FragmentBridgeActivity.open(this, "AddBookListFragment");
+                break;
+        }
+    }
 }

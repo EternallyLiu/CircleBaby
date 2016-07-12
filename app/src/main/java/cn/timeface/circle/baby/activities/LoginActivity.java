@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.w3c.dom.Text;
 
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.utils.FastData;
@@ -142,6 +143,10 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
             case R.id.btn_sign_in:
                 String account = etPhone.getText().toString().trim();
                 String psw = new AES().encrypt(etPassword.getText().toString().trim().getBytes());
+                if(TextUtils.isEmpty(account)||TextUtils.isEmpty(psw)){
+                    ToastUtil.showToast("请输入用户名和密码");
+                    return;
+                }
                 s = login(account, psw, 0);
                 break;
         }
