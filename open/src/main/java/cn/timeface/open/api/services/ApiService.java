@@ -188,6 +188,11 @@ public interface ApiService {
                                                                            @Query("request_type") int request_type,
                                                                            @Query("book_type") String book_type);
 
+    @POST("api/attachlist")
+    Observable<BaseResponse<List<String>>> getAttachColorList(@Query("book_id") String book_id,
+                                                              @Query("request_type") int request_type,
+                                                              @Query("book_type") String book_type);
+
     /**
      * 创建一本时光书
      *

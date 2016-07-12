@@ -32,7 +32,7 @@ public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ImageView view = new ImageView(this.getContext());
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
+        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
         lp.height = getContext().getResources().getDimensionPixelOffset(R.dimen.size_96);
         view.setLayoutParams(lp);
         view.setScaleType(ImageView.ScaleType.FIT_CENTER);
