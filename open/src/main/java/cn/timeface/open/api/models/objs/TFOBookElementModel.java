@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 
 import cn.timeface.open.managers.interfaces.IMoveParams;
 import cn.timeface.open.managers.interfaces.IPageScale;
+import cn.timeface.open.utils.glide.TFOUrlLoader;
 
 /**
  * @author liuxz:
@@ -23,6 +24,8 @@ import cn.timeface.open.managers.interfaces.IPageScale;
  */
 public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams {
 
+    float my_view_scale = 1.f;
+    boolean right = false;//是否为右页的元素
     //    1 图片 2 文字  3 音频 4 视频 5 挂件 6 webview
     public static final int TYPE_IMAGE = 1;
     public static final int TYPE_TEXT = 2;
@@ -54,7 +57,15 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     TFOBookImageModel image_content_expand;// 元素图片扩展属性
     TFOBookTextContentExpandModel text_content_expand;// 元素文字扩展属性
 
-    boolean right = false;//是否为右页的元素
+
+
+    public float getMyViewScale() {
+        return my_view_scale;
+    }
+
+    public void setMyViewScale(float my_view_scale) {
+        this.my_view_scale = my_view_scale;
+    }
 
     public boolean isRight() {
         return right;
@@ -280,10 +291,11 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         imageView.setLayoutParams(lp);
         imageView.setPadding((int) this.element_content_left, (int) this.element_content_top, (int) this.element_content_right, (int) this.element_content_bottom);
-        if (!TextUtils.isEmpty(this.element_content)) {
+        if (!TextUtils.isEmpty(this.image_content_expand.getImageUrl())) {
             Glide.with(context)
-                    .load(this.element_content)
-                    .centerCrop()
+                    .using(new TFOUrlLoader(context))
+                    .load(this)
+                    .fitCenter()
                     .into(imageView);
         }
         return imageView;
@@ -297,8 +309,9 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             imageView.setLayoutParams(lp);
             imageView.setPadding((int) (this.element_content_left + this.image_content_expand.getImagePaddingLeft()), (int) (this.element_content_top + this.image_content_expand.getImagePaddingTop()), (int) this.element_content_right, (int) this.element_content_bottom);
             Glide.with(context)
-                    .load(this.image_content_expand.getImageUrl())
-                    .centerCrop()
+                    .using(new TFOUrlLoader(context))
+                    .load(this)
+                    .fitCenter()
                     .into(imageView);
             return imageView;
         }
@@ -331,8 +344,13 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     public TFOBookElementModel() {
     }
 
+
+
     @Override
     public void setPageScale(float scale) {
+        this.my_view_scale = scale;
+
+
         this.element_top *= scale;
         this.element_left *= scale;
         this.element_width *= scale;
@@ -415,6 +433,8 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(this.my_view_scale);
+        dest.writeByte(this.right ? (byte) 1 : (byte) 0);
         dest.writeInt(this.element_id);
         dest.writeString(this.element_index);
         dest.writeFloat(this.element_top);
@@ -435,10 +455,11 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         dest.writeFloat(this.element_exceed_alpha);
         dest.writeParcelable(this.image_content_expand, flags);
         dest.writeParcelable(this.text_content_expand, flags);
-        dest.writeByte(this.right ? (byte) 1 : (byte) 0);
     }
 
     protected TFOBookElementModel(Parcel in) {
+        this.my_view_scale = in.readFloat();
+        this.right = in.readByte() != 0;
         this.element_id = in.readInt();
         this.element_index = in.readString();
         this.element_top = in.readFloat();
@@ -459,7 +480,6 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         this.element_exceed_alpha = in.readFloat();
         this.image_content_expand = in.readParcelable(TFOBookImageModel.class.getClassLoader());
         this.text_content_expand = in.readParcelable(TFOBookTextContentExpandModel.class.getClassLoader());
-        this.right = in.readByte() != 0;
     }
 
     public static final Creator<TFOBookElementModel> CREATOR = new Creator<TFOBookElementModel>() {
@@ -473,4 +493,12 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             return new TFOBookElementModel[size];
         }
     };
+
+    public float getContentWidth() {
+        return element_width - element_content_left - element_content_right;
+    }
+
+    public float getContentHeight() {
+        return element_height - element_content_top - element_content_bottom;
+    }
 }

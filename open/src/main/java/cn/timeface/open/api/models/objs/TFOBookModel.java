@@ -15,6 +15,8 @@ import cn.timeface.open.managers.interfaces.IPageScale;
  * @date 2016-4-18 上午10:21:02
  */
 public class TFOBookModel implements Parcelable, IPageScale {
+    float my_view_scale = 1.f;//页面级的缩放比例
+
 
     List<TFOBookContentModel> content_list = new ArrayList<>();// 时光书内容列表，包含封面，正文，封底
 
@@ -36,6 +38,14 @@ public class TFOBookModel implements Parcelable, IPageScale {
     int book_total_page;// 书籍总页数
     int book_orientation;// 书的方向
     int template_id;//模板ID
+
+    public float getMyViewScale() {
+        return my_view_scale;
+    }
+
+    public void setMyViewScale(float my_view_scale) {
+        this.my_view_scale = my_view_scale;
+    }
 
     public int getTotalPage() {
         return total_page;
@@ -194,6 +204,8 @@ public class TFOBookModel implements Parcelable, IPageScale {
 
     @Override
     public void setPageScale(float scale) {
+        this.my_view_scale = scale;
+
         this.book_width *= scale;
         this.book_height *= scale;
         this.content_width *= scale;
@@ -225,6 +237,7 @@ public class TFOBookModel implements Parcelable, IPageScale {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(this.my_view_scale);
         dest.writeTypedList(this.content_list);
         dest.writeString(this.book_id);
         dest.writeString(this.book_cover);
@@ -241,9 +254,13 @@ public class TFOBookModel implements Parcelable, IPageScale {
         dest.writeInt(this.content_padding_top);
         dest.writeLong(this.create_date);
         dest.writeInt(this.total_page);
+        dest.writeInt(this.book_total_page);
+        dest.writeInt(this.book_orientation);
+        dest.writeInt(this.template_id);
     }
 
     protected TFOBookModel(Parcel in) {
+        this.my_view_scale = in.readFloat();
         this.content_list = in.createTypedArrayList(TFOBookContentModel.CREATOR);
         this.book_id = in.readString();
         this.book_cover = in.readString();
@@ -260,6 +277,9 @@ public class TFOBookModel implements Parcelable, IPageScale {
         this.content_padding_top = in.readInt();
         this.create_date = in.readLong();
         this.total_page = in.readInt();
+        this.book_total_page = in.readInt();
+        this.book_orientation = in.readInt();
+        this.template_id = in.readInt();
     }
 
     public static final Creator<TFOBookModel> CREATOR = new Creator<TFOBookModel>() {

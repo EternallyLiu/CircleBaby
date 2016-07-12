@@ -19,14 +19,13 @@ import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
-import cn.timeface.open.managers.interfaces.IPODResult;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.views.BookPodView;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public abstract class PODActivity extends BaseAppCompatActivity implements IPODResult {
+public abstract class PODActivity extends BaseAppCompatActivity {
 
     Toolbar toolbar;
     float pageScale = 1.f;
@@ -101,7 +100,8 @@ public abstract class PODActivity extends BaseAppCompatActivity implements IPODR
     }
 
     private void setData(TFOBookModel data) {
-        bookPodView.setupPodDate(getSupportFragmentManager(), data);
+        bookPodView.setupPodData(getSupportFragmentManager(), data);
+        pageScale = bookPodView.getPageScale();
         if (BuildConfig.DEBUG) {
             bookPodView.scrollBookPageIndex(3);
         }
