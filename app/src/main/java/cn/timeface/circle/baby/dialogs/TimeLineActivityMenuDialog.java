@@ -78,6 +78,9 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         if(timelineobj.getType()==1){
             tvDownload.setVisibility(View.VISIBLE);
         }
+        if(timelineobj.getAuthor().getUserId().equals(FastData.getUserId())){
+            tvEdit.setVisibility(View.VISIBLE);
+        }
         this.show();
     }
 

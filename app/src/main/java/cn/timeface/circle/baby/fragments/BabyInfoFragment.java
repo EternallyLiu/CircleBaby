@@ -12,6 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -56,8 +59,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BabyInfoFragment extends BaseFragment implements View.OnClickListener {
 
-    @Bind(R.id.tv_delete)
-    TextView tvDelete;
     @Bind(R.id.btn_save)
     Button btnSave;
     @Bind(R.id.toolbar)
@@ -104,6 +105,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         String userObj = getArguments().getString("userObj");
         Gson gson = new Gson();
         user = gson.fromJson(userObj, UserObj.class);
@@ -120,7 +122,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getActionBar().setTitle("宝宝信息");
 
         GlideUtil.displayImage(babyObj.getAvatar(), ivAvatar);
         tvName.setText(babyObj.getName());
@@ -131,15 +133,12 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         rbBoy.setChecked(babyObj.getGender() == 1);
 
         initView(user.getIsCreator() == 1);
-        tvDelete.setOnClickListener(this);
-
         return view;
     }
 
     public void initView(boolean isCreator) {
         if (isCreator) {
             //创建者
-            tvDelete.setText("删除");
             ivName.setVisibility(View.VISIBLE);
             ivBrithday.setVisibility(View.VISIBLE);
             ivBlood.setVisibility(View.VISIBLE);
@@ -155,13 +154,64 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
 
         } else {
             //关注者
-            tvDelete.setText("取消关注");
             ivName.setVisibility(View.INVISIBLE);
             ivBrithday.setVisibility(View.INVISIBLE);
             rlBlood.setVisibility(View.GONE);
             rbBoy.setClickable(false);
             rbGirl.setClickable(false);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_complete,menu);
+        MenuItem item = menu.findItem(R.id.complete);
+        if (user.getIsCreator() == 1) {
+            item.setTitle("删除");
+        }else{
+            item.setTitle("取消关注");
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (user.getIsCreator() == 1) {
+            //删除宝宝
+            new AlertDialog.Builder(getContext())
+                    .setTitle("确定删除本宝宝吗?")
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    apiService.delBabyInfo(babyObj.getBabyId())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(response -> {
+                                if (response.success()) {
+                                    getActivity().finish();
+                                }
+                            }, throwable -> {
+                                Log.e(TAG, "delBabyInfo:", throwable);
+                            });
+                }
+            }).show();
+        } else {
+            //取消关注宝宝
+            apiService.attentionCancel(babyObj.getBabyId())
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        if (response.success()) {
+                            getActivity().finish();
+                        }
+                    }, throwable -> {
+                        Log.e(TAG, "attentionCancel:", throwable);
+                    });
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -211,44 +261,6 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                 break;
             case R.id.iv_avatar:
                 startPhotoPick();
-                break;
-            case R.id.tv_delete:
-                if (user.getIsCreator() == 1) {
-                    //删除宝宝
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("确定删除本宝宝吗?")
-                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            apiService.delBabyInfo(babyObj.getBabyId())
-                                    .compose(SchedulersCompat.applyIoSchedulers())
-                                    .subscribe(response -> {
-                                        if (response.success()) {
-                                            getActivity().finish();
-                                        }
-                                    }, throwable -> {
-                                        Log.e(TAG, "delBabyInfo:", throwable);
-                                    });
-                        }
-                    }).show();
-                } else {
-                    //取消关注宝宝
-                    apiService.attentionCancel(babyObj.getBabyId())
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .subscribe(response -> {
-                                if (response.success()) {
-                                    getActivity().finish();
-                                }
-                            }, throwable -> {
-                                Log.e(TAG, "attentionCancel:", throwable);
-                            });
-                }
-
                 break;
             case R.id.btn_save:
                 String n = tvName.getText().toString();

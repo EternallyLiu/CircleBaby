@@ -80,12 +80,9 @@ public class BookSizeListFragment extends BaseFragment {
         BookSizeListAdapter adapter = new BookSizeListAdapter(getContext(), list);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         contentRecyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void clickItem(Object o) {
-                bookSizeId = o.toString();
-                startPhotoPick(dataList);
-            }
+        adapter.setOnItemClickListener(bookSizeId ->{
+            this.bookSizeId = bookSizeId+"";
+            startPhotoPick(dataList);
         });
     }
 

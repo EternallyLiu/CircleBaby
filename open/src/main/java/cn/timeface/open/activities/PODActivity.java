@@ -6,6 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -48,9 +50,9 @@ public abstract class PODActivity extends BaseAppCompatActivity implements IPODR
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
 
         setSupportActionBar(toolbar);
-        String publishObj = loadJSONFromAsset();
+//        String publishObj = loadJSONFromAsset();
 
-        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, publishObj);
+        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObj));
     }
 
     public String loadJSONFromAsset() {

@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_12"
-            android:text="小苹果的时光书"
+            android:text=""
             android:textColor="@color/text_color4"
             android:textSize="@dimen/text_normal" />
 
@@ -61,10 +61,10 @@
                 />
 
             <TextView
-                android:id="@+id/tv_pagecount"
+                android:id="@+id/tv_pagenum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="50"
+                android:text=""
 
                 />
         </LinearLayout>
@@ -86,7 +86,7 @@
                 android:id="@+id/tv_creattime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2016.06.01"
+                android:text=""
 
                 />
         </LinearLayout>
@@ -133,6 +133,7 @@
         android:orientation="horizontal"
         android:paddingBottom="@dimen/size_12"
         android:paddingLeft="@dimen/size_12"
+        android:paddingRight="@dimen/size_12"
         android:paddingTop="@dimen/size_12">
 
         <ImageView

@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.dialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
@@ -154,7 +155,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         Bundle bundle = new Bundle();
         bundle.putSerializable("cart_item", printCartItem);
         bundle.putSerializable("print_property", obj);
-        bundle.putSerializable("param_response", (Serializable) responseList);
+        bundle.putParcelableArrayList("param_response", (ArrayList<? extends Parcelable>) responseList);
         bundle.putString("book_id", bookId);
         bundle.putString("book_type", bookType);
         bundle.putInt("request_code", requestCode);
@@ -200,7 +201,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         bookName = getArguments().getString("bookName");
         createTime = getArguments().getString("createTime");
         if (cartItem == null) {
-            paramList = (List<PrintParamResponse>) getArguments().getSerializable("param_response");
+            paramList = getArguments().getParcelableArrayList("param_response");
         } else {
             paramList = cartItem.getParamList();
         }
