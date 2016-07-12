@@ -2,6 +2,9 @@
     android:id="@+id/ll_publish_menu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/view_space_small"
+    android:layout_marginLeft="@dimen/view_space_small"
+    android:layout_marginRight="@dimen/view_space_small"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -12,27 +15,28 @@
         android:clickable="true"
         android:focusable="true"
         android:minHeight="42dp">
-    <TextView
-        android:id="@+id/tv_action"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="回复"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:textColor="@color/text_color3"/>
+
+        <TextView
+            android:id="@+id/tv_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="回复"
+            android:textColor="@color/text_color3" />
     </RelativeLayout>
 
     <!--<TextView-->
-        <!--android:id="@+id/tv_cancel"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center"-->
-        <!--android:text="取消"-->
-        <!--android:textSize="@dimen/text_medium"-->
-        <!--android:background="@color/white"-->
-        <!--android:padding="@dimen/size_6"-->
-        <!--android:layout_marginTop="@dimen/size_6"/>-->
+    <!--android:id="@+id/tv_cancel"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:gravity="center"-->
+    <!--android:text="取消"-->
+    <!--android:textSize="@dimen/text_medium"-->
+    <!--android:background="@color/white"-->
+    <!--android:padding="@dimen/size_6"-->
+    <!--android:layout_marginTop="@dimen/size_6"/>-->
 
     <RelativeLayout
         android:id="@+id/rl_cancel"
@@ -43,16 +47,16 @@
         android:clickable="true"
         android:focusable="true"
         android:minHeight="42dp">
+
         <TextView
             android:id="@+id/tv_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="取消"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:textColor="@color/text_color3"
-            />
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="@color/text_color3" />
     </RelativeLayout>
 
 

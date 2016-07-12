@@ -11,7 +11,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -300,21 +303,26 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     private View initCommentItemView(CommentObj comment) {
         View view = getLayoutInflater().inflate(R.layout.view_comment, null);
-        TextView tvRelation = (TextView) view.findViewById(R.id.tv_relation);
         TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
         TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
-        if (comment.getToUserInfo().getRelationName() != null) {
-            String relation = comment.getUserInfo().getRelationName() + "回复" + comment.getToUserInfo().getRelationName();
-            tvRelation.setText(relation);
-        } else {
-            tvRelation.setText(comment.getUserInfo().getRelationName());
+        SpannableStringBuilder msb = new SpannableStringBuilder();
+        String relationName = comment.getUserInfo().getRelationName();
+        msb.append(relationName)
+                .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), 0, relationName.length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//第一个人名
+        if (comment.getToUserInfo() != null && !TextUtils.isEmpty(comment.getToUserInfo().getRelationName())) {
+            msb.append("回复");
+            msb.append(comment.getToUserInfo().getRelationName())
+                    .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), msb.length() - comment.getToUserInfo().getRelationName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        tvComment.setText(comment.getContent());
+        msb.append("：").append(comment.getContent());
+        tvComment.setText(msb);
         tvTime.setText(DateUtil.formatDate("MM-dd HH:mm", comment.getCommentDate()));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog = new AlertDialog.Builder(TimeLineDetailActivity.this).setView(initCommentMenu(comment)).show();
+                dialog.setCanceledOnTouchOutside(true);
                 Window window = dialog.getWindow();
                 WindowManager m = window.getWindowManager();
                 Display d = m.getDefaultDisplay();

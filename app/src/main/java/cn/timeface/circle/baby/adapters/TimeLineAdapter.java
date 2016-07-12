@@ -4,7 +4,10 @@ import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -187,11 +190,19 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
     private View initCommentItemView(CommentObj comment) {
         View view = mLayoutInflater.inflate(R.layout.view_comment, null);
-        TextView tvRelation = (TextView) view.findViewById(R.id.tv_relation);
         TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
         TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
-        tvRelation.setText(comment.getUserInfo().getRelationName());
-        tvComment.setText(comment.getContent());
+        SpannableStringBuilder msb = new SpannableStringBuilder();
+        msb.append(comment.getUserInfo().getRelationName())
+                .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), 0, comment.getUserInfo().getRelationName().length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//第一个人名
+        if (comment.getToUserInfo() != null && !TextUtils.isEmpty(comment.getToUserInfo().getRelationName())) {
+            msb.append("回复");
+            msb.append(comment.getToUserInfo().getRelationName())
+                    .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), msb.length() - comment.getToUserInfo().getRelationName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        msb.append("：").append(comment.getContent());
+        tvComment.setText(msb);
         tvTime.setText(DateUtil.formatDate("MM-dd HH:mm", comment.getCommentDate()));
         return view;
     }
