@@ -19,6 +19,24 @@ public class BookTypeListObj extends BaseObj implements Parcelable {
     String title;           //当前作品名称
     int type;               //当前作品的类型
 
+    public BookTypeListObj(int id, String coverTitle, String description, List<MediaObj> imgList, String title, int type) {
+        this.id = id;
+        this.coverTitle = coverTitle;
+        this.description = description;
+        this.imgList = imgList;
+        this.title = title;
+        this.type = type;
+    }
+
+    public BookTypeListObj(WorkObj obj) {
+        this.id = obj.getId();
+        this.coverTitle = obj.getCoverTitle();
+        this.description = obj.getDescription();
+        this.imgList = obj.getImgList();
+        this.title = obj.getTitle();
+        this.type = obj.getType();
+    }
+
     public int getId() {
         return id;
     }

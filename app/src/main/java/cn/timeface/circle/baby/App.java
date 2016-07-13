@@ -61,7 +61,7 @@ public class App extends MultiDexApplication {
         //初始化util
         TimeFaceUtilInit.init(this);
 
-        pushSetting();
+//        pushSetting();
 
         UploadService.setRecorder(new SimpleUploadRecorder());
 

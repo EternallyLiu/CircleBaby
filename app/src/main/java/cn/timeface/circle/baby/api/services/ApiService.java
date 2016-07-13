@@ -513,4 +513,10 @@ public interface ApiService {
      */
     @POST("babyBook/deleteBook")
     Observable<BaseResponse> deleteBook(@Query("bookId") String bookId);
+
+    /**
+     * 取消订单
+     */
+    @POST("babyOrder/operOrder")
+    Observable<BaseResponse> cancelOrder(@Query("orderId") String orderId);
 }

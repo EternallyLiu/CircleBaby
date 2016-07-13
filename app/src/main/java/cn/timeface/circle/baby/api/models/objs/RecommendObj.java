@@ -4,6 +4,8 @@ package cn.timeface.circle.baby.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 import cn.timeface.circle.baby.api.models.base.BaseObj;
 
 /**
@@ -14,6 +16,15 @@ public class RecommendObj extends BaseObj implements Parcelable {
     String url;
     String bgPicUrl;
     int actionType;
+    List<WorkObj> newWorkObj;
+
+    public List<WorkObj> getNewWorkObj() {
+        return newWorkObj;
+    }
+
+    public void setNewWorkObj(List<WorkObj> newWorkObj) {
+        this.newWorkObj = newWorkObj;
+    }
 
     public String getRecommendContent() {
         return recommendContent;
@@ -58,6 +69,7 @@ public class RecommendObj extends BaseObj implements Parcelable {
         dest.writeString(this.url);
         dest.writeString(this.bgPicUrl);
         dest.writeInt(this.actionType);
+        dest.writeTypedList(this.newWorkObj);
     }
 
     public RecommendObj() {
@@ -68,6 +80,7 @@ public class RecommendObj extends BaseObj implements Parcelable {
         this.url = in.readString();
         this.bgPicUrl = in.readString();
         this.actionType = in.readInt();
+        this.newWorkObj = in.createTypedArrayList(WorkObj.CREATOR);
     }
 
     public static final Creator<RecommendObj> CREATOR = new Creator<RecommendObj>() {

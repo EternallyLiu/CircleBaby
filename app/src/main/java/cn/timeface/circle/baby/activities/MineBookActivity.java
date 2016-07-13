@@ -113,7 +113,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             ToastUtil.showToast(response.getInfo());
-                            if(response.success()){
+                            if (response.success()) {
                                 adapter.notifyDataSetChanged();
                             }
                         }, error -> {
@@ -122,11 +122,11 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
             }
         });
         adapter.setOnItemClickListener(mineBookObj -> {
-            if(mineBookObj.getBookType()==5){
+            if (mineBookObj.getBookType() == 5) {
                 //照片书-跳转POD预览
                 ToastUtil.showToast("照片书-跳转POD预览");
-                MyPODActivity.open(MineBookActivity.this,mineBookObj.getOpenBookId(),23,null);
-            }else{
+                MyPODActivity.open(MineBookActivity.this, mineBookObj.getOpenBookId(), 23, null);
+            } else {
                 //日记书、识图卡片书，跳转本地预览
                 ToastUtil.showToast("日记书、识图卡片书，跳转本地预览");
 
@@ -202,7 +202,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.error_retry:
                 FragmentBridgeActivity.open(this, "AddBookListFragment");
                 break;

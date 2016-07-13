@@ -58,6 +58,7 @@ import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
 
@@ -304,6 +305,30 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_next:
+                //检测网络环境
+                if (Utils.isNetworkConnected(this)) {
+                    int networkType = Utils.getNetworkType(this);
+                    if (networkType != 1) {
+                        //非Wifi提示
+                        new AlertDialog.Builder(this).setTitle("当前为非Wifi网络环境，是否继续？")
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        return;
+                                    }
+                                }).setPositiveButton("继续", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    }
+                } else {
+                    ToastUtil.showToast("请检查是否联网");
+                    return;
+                }
+
                 switch (type) {
                     case 0:
                         postRecord();
@@ -544,13 +569,14 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
 
         }
         return true;
     }
-    public void delMileStone(){
+
+    public void delMileStone() {
         new AlertDialog.Builder(this).setTitle("确认退出发布流程？")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -576,5 +602,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         dialog.dismiss();
                     }
                 }).show();
-    };
+    }
+
+    ;
 }

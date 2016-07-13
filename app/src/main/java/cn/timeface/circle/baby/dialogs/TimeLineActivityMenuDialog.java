@@ -80,6 +80,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         }
         if(timelineobj.getAuthor().getUserId().equals(FastData.getUserId())){
             tvEdit.setVisibility(View.VISIBLE);
+            tvDlete.setVisibility(View.VISIBLE);
         }
         this.show();
     }
