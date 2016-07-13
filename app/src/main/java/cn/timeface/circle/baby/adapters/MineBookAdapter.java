@@ -87,7 +87,6 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
             @Override
             public void onClick(View v) {
                 if (onItemClickListener != null) {
-                    Log.d("MineBookAdapter","getBookName==========="+obj.getBookName());
                     onItemClickListener.clickItem(obj);
                 }
             }
@@ -190,15 +189,15 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                             .subscribe(printStatusResponse -> {
                                 int printCode = printStatusResponse.getPrintCode();
                                 switch (printCode){
-                                    case TypeConstant.PRINT_CODE_LIMIT_LESS:
-                                        notify = "少于12页，不可印刷";
-                                        break;
-                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
-                                        notify = "超出200页，不可印刷";
-                                        break;
-                                    case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
-                                        notify = "该时光书已被删除，不可印刷";
-                                        break;
+//                                    case TypeConstant.PRINT_CODE_LIMIT_LESS:
+//                                        notify = "少于12页，不可印刷";
+//                                        break;
+//                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
+//                                        notify = "超出200页，不可印刷";
+//                                        break;
+//                                    case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
+//                                        notify = "该时光书已被删除，不可印刷";
+//                                        break;
                                     case TypeConstant.PRINT_CODE_LIMIT_8806:
                                         notify = "3寸日记卡片需18张";
                                         break;

@@ -24,6 +24,7 @@ import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.payment.OrderInfoObj;
 import cn.timeface.circle.baby.payment.PrepareOrderException;
 import cn.timeface.circle.baby.payment.alipay.AlipayPayment;
+import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.OrderDetailFootView;
@@ -100,24 +101,32 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
                 break;
             case R.id.order_action_cancel_btn:
                 //取消订单
-
+                apiService.cancelOrder(orderId)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                reqOrderListData();
+                            }
+                        }, throwable -> {
+                        });
                 break;
         }
     }
 
     private void doPay() {
-//        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), listResponse.getOrderPrice(), "2").pay();
-        OrderInfoObj orderInfoObj = new OrderInfoObj();
-        orderInfoObj.setTradeNo(orderId);
+        float orderPrice = listResponse.getOrderPrice();
+        orderPrice = (float) 0.01;
+        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
+//        OrderInfoObj orderInfoObj = new OrderInfoObj();
+//        orderInfoObj.setTradeNo(orderId);
 //        orderInfoObj.setPrice(listResponse.getOrderPrice());
-        orderInfoObj.setPrice(0.01);
-        orderInfoObj.setSubject(getPayTitle());
-        orderInfoObj.setBody(getPayTitle());
-        try {
-            new AlipayPayment().requestPayment(this, orderInfoObj);
-        } catch (PrepareOrderException e) {
-            Log.e(TAG, "startPayment: ", e);
-        }
+//        orderInfoObj.setSubject(getPayTitle());
+//        orderInfoObj.setBody(getPayTitle());
+//        try {
+//            new AlipayPayment().requestPayment(this, orderInfoObj);
+//        } catch (PrepareOrderException e) {
+//            Log.e(TAG, "startPayment: ", e);
+//        }
     }
 
     /**

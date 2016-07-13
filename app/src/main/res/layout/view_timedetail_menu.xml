@@ -39,7 +39,8 @@
         android:background="@drawable/dialog_center_btn"
         android:clickable="true"
         android:focusable="true"
-        android:minHeight="42dp">
+        android:minHeight="42dp"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_delete"
