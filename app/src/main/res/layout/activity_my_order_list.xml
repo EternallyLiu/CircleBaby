@@ -10,17 +10,13 @@
         android:id="@+id/appbar_layout"
         layout="@layout/layout_toolbar" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swLayout"
+    <com.timeface.refreshload.PullRefreshLoadRecyclerView
+        android:id="@+id/rlRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/appbar_layout">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_below="@id/appbar_layout"
+        android:background="@color/bg_color2"
+        android:scrollbars="none" />
 
     <LinearLayout
         android:id="@+id/ll_no_data"
@@ -60,4 +56,8 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
     </LinearLayout>
+    <cn.timeface.circle.baby.views.TFStateView
+        android:id="@+id/tf_stateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package cn.timeface.open.api.models.objs;
 
+import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,6 +13,8 @@ import cn.timeface.open.managers.interfaces.IPageScale;
  * @date 2016-4-18 上午9:33:57
  */
 public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
+    float my_view_scale;//页面级的缩放比例
+
 
     String image_id;
     float image_width;// 图片尺寸－宽度
@@ -26,6 +29,41 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
     String image_url;// 图片绝对路径
     float image_padding_top;
     float image_padding_left;
+    int image_flip_horizontal;//图片是否水平翻转
+    int image_flip_vertical;//图片是否垂直翻转
+    int image_rotation;
+
+    public float getMyViewScale() {
+        return my_view_scale;
+    }
+
+    public void setMyViewScale(float my_view_scale) {
+        this.my_view_scale = my_view_scale;
+    }
+
+    public int getImageFlipHorizontal() {
+        return image_flip_horizontal;
+    }
+
+    public void setImageFlipHorizontal(int image_flip_horizontal) {
+        this.image_flip_horizontal = image_flip_horizontal;
+    }
+
+    public int getImageFlipVertical() {
+        return image_flip_vertical;
+    }
+
+    public void setImageFlipVertical(int image_flip_vertical) {
+        this.image_flip_vertical = image_flip_vertical;
+    }
+
+    public int getImageRotation() {
+        return image_rotation;
+    }
+
+    public void setImageRotation(int image_rotation) {
+        this.image_rotation = image_rotation;
+    }
 
     public String getImageId() {
         return image_id;
@@ -136,6 +174,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
 
     @Override
     public void setPageScale(float scale) {
+        this.my_view_scale = scale;
+
         this.image_padding_left *= scale;
         this.image_padding_top *= scale;
     }
@@ -158,6 +198,7 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(this.my_view_scale);
         dest.writeString(this.image_id);
         dest.writeFloat(this.image_width);
         dest.writeFloat(this.image_height);
@@ -171,9 +212,13 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         dest.writeString(this.image_url);
         dest.writeFloat(this.image_padding_top);
         dest.writeFloat(this.image_padding_left);
+        dest.writeInt(this.image_flip_horizontal);
+        dest.writeInt(this.image_flip_vertical);
+        dest.writeInt(this.image_rotation);
     }
 
     protected TFOBookImageModel(Parcel in) {
+        this.my_view_scale = in.readFloat();
         this.image_id = in.readString();
         this.image_width = in.readFloat();
         this.image_height = in.readFloat();
@@ -187,6 +232,9 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_url = in.readString();
         this.image_padding_top = in.readFloat();
         this.image_padding_left = in.readFloat();
+        this.image_flip_horizontal = in.readInt();
+        this.image_flip_vertical = in.readInt();
+        this.image_rotation = in.readInt();
     }
 
     public static final Creator<TFOBookImageModel> CREATOR = new Creator<TFOBookImageModel>() {
@@ -200,4 +248,15 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
             return new TFOBookImageModel[size];
         }
     };
+
+    //获取原图的裁剪区域
+    public Rect getOrgCropRect(float w, float h) {
+        Rect rect = new Rect();
+        float left = Math.abs(image_start_pointX / image_scale);
+        float top = Math.abs(image_start_pointY / image_scale);
+        float right = left + w / my_view_scale / image_scale;
+        float bottom = top + h / my_view_scale / image_scale;
+        rect.set((int) left, (int) top, (int) right, (int) bottom);
+        return rect;
+    }
 }

@@ -12,6 +12,8 @@ import cn.timeface.open.managers.interfaces.IMoveParams;
 import cn.timeface.open.managers.interfaces.IPageScale;
 
 public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IMoveParams {
+    float my_view_scale = 1.f;
+
 
     String font_family;// 字体名称
     String font_file_path;// 字体绝对路径
@@ -22,6 +24,14 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
     String text_color;// 字体颜色
     float text_line_height;// 行高
     int max_text_count;
+
+    public float getMyViewScale() {
+        return my_view_scale;
+    }
+
+    public void setMyViewScale(float my_view_scale) {
+        this.my_view_scale = my_view_scale;
+    }
 
     public int getMaxTextCount() {
         return max_text_count;
@@ -97,9 +107,30 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
         textView.setLineSpacing(text_line_height, 0);
 
         //字体设置待完善
+        // fix 字体设置已用图片,不需要再完善了
     }
 
     public TFOBookTextContentExpandModel() {
+    }
+
+    @Override
+    public void setPageScale(float scale) {
+        this.my_view_scale = scale;
+
+        this.font_size *= scale;
+        this.text_line_height *= scale;
+    }
+
+    @Override
+    public void resetPageScale(float scale) {
+        this.font_size /= scale;
+        this.text_line_height /= scale;
+    }
+
+    @Override
+    public void moveParams(float movedX, float movedY, int eleW, int eleH, float scale, float rotation) {
+        this.font_size *= scale;
+        this.text_line_height *= scale;
     }
 
     @Override
@@ -109,6 +140,7 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(this.my_view_scale);
         dest.writeString(this.font_family);
         dest.writeString(this.font_file_path);
         dest.writeFloat(this.font_size);
@@ -121,6 +153,7 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
     }
 
     protected TFOBookTextContentExpandModel(Parcel in) {
+        this.my_view_scale = in.readFloat();
         this.font_family = in.readString();
         this.font_file_path = in.readString();
         this.font_size = in.readFloat();
@@ -143,22 +176,4 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
             return new TFOBookTextContentExpandModel[size];
         }
     };
-
-    @Override
-    public void setPageScale(float scale) {
-        this.font_size *= scale;
-        this.text_line_height *= scale;
-    }
-
-    @Override
-    public void resetPageScale(float scale) {
-        this.font_size /= scale;
-        this.text_line_height /= scale;
-    }
-
-    @Override
-    public void moveParams(float movedX, float movedY, int eleW, int eleH, float scale, float rotation) {
-        this.font_size *= scale;
-        this.text_line_height *= scale;
-    }
 }

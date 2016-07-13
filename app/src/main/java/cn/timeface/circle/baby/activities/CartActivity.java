@@ -108,6 +108,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
      */
     public void clickPrint(View view) {
         MineBookActivity.open(this);
+        finish();
     }
 
     /**

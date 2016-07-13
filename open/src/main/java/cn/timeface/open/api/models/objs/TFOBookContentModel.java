@@ -20,6 +20,8 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
     public static int CONTENT_TYPE_BACK_COVER = 2;
     public static int PAGE_LEFT = 0;
     public static int PAGE_RIGHT = 1;
+    float my_view_scale = 1.f;
+
 
     String content_id;// 书页内容ID
     int page_number;//页码
@@ -30,6 +32,14 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
     String page_image;// 书页背景图片
     String web_content;//版芯html内容
     List<TFOBookElementModel> element_list = new ArrayList<>();// 书页版面元素列表
+
+    public float getMyViewScale() {
+        return my_view_scale;
+    }
+
+    public void setMyViewScale(float my_view_scale) {
+        this.my_view_scale = my_view_scale;
+    }
 
     public String getContentId() {
         return content_id;
@@ -123,12 +133,33 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
     }
 
     @Override
+    public void setPageScale(float scale) {
+        this.my_view_scale = scale;
+
+        if (element_list != null) {
+            for (TFOBookElementModel ele : element_list) {
+                ele.setPageScale(scale);
+            }
+        }
+    }
+
+    @Override
+    public void resetPageScale(float scale) {
+        if (element_list != null) {
+            for (TFOBookElementModel ele : element_list) {
+                ele.resetPageScale(scale);
+            }
+        }
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(this.my_view_scale);
         dest.writeString(this.content_id);
         dest.writeInt(this.page_number);
         dest.writeInt(this.content_type);
@@ -141,6 +172,7 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
     }
 
     protected TFOBookContentModel(Parcel in) {
+        this.my_view_scale = in.readFloat();
         this.content_id = in.readString();
         this.page_number = in.readInt();
         this.content_type = in.readInt();
@@ -163,23 +195,4 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
             return new TFOBookContentModel[size];
         }
     };
-
-    @Override
-    public void setPageScale(float scale) {
-        if (element_list != null) {
-            for (TFOBookElementModel ele : element_list) {
-                ele.setPageScale(scale);
-            }
-        }
-    }
-
-    @Override
-    public void resetPageScale(float scale) {
-        if (element_list != null) {
-            for (TFOBookElementModel ele : element_list) {
-                ele.resetPageScale(scale);
-            }
-        }
-    }
-
 }

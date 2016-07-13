@@ -6,6 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -17,14 +19,13 @@ import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
-import cn.timeface.open.managers.interfaces.IPODResult;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.views.BookPodView;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public abstract class PODActivity extends BaseAppCompatActivity implements IPODResult {
+public abstract class PODActivity extends BaseAppCompatActivity {
 
     Toolbar toolbar;
     float pageScale = 1.f;
@@ -48,9 +49,9 @@ public abstract class PODActivity extends BaseAppCompatActivity implements IPODR
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
 
         setSupportActionBar(toolbar);
-        String publishObj = loadJSONFromAsset();
+//        String publishObj = loadJSONFromAsset();
 
-        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, publishObj);
+        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObj));
     }
 
     public String loadJSONFromAsset() {
@@ -100,6 +101,7 @@ public abstract class PODActivity extends BaseAppCompatActivity implements IPODR
 
     private void setData(TFOBookModel data) {
         bookPodView.setupPodData(getSupportFragmentManager(), data);
+        pageScale = bookPodView.getPageScale();
         if (BuildConfig.DEBUG) {
             bookPodView.scrollBookPageIndex(3);
         }
