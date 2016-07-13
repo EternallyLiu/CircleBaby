@@ -30,7 +30,7 @@ public class BookPodView extends FrameLayout {
     private TFOBookModel tfoBookModel;
     List<TFOBookContentModel> imageModels = new ArrayList<>(2);
     private boolean isCover;
-    private float scale = 0;
+    private float scale = 1.f;
 
     public BookPodView(Context context) {
         super(context);
@@ -58,26 +58,25 @@ public class BookPodView extends FrameLayout {
     }
 
     public float getPageScale() {
-        if (scale != 0) {
+        if (scale != 1.f) {
             return scale;
         }
         Point screenInfo = new Point(getWidth(), getHeight());
-        float pageScale;
         if (screenInfo.y > screenInfo.x) {
             //竖屏
-            pageScale = screenInfo.x / (float) tfoBookModel.getBookWidth();
+            scale = screenInfo.x / (float) tfoBookModel.getBookWidth();
         } else {
             //横屏
             float pageW = tfoBookModel.getBookWidth() * 2;
             float pageH = tfoBookModel.getBookHeight();
 
-            pageScale = screenInfo.y / pageH;
-            if (pageW * pageScale > screenInfo.x) {
+            scale = screenInfo.y / pageH;
+            if (pageW * scale > screenInfo.x) {
                 //按照高度拉伸,如果拉伸后宽度超出屏幕
-                pageScale = screenInfo.x / pageW;
+                scale = screenInfo.x / pageW;
             }
         }
-        return pageScale;
+        return scale;
     }
 
     public void setupPodData(FragmentManager supportFragmentManager, TFOBookModel tfoBookModel) {
