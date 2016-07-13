@@ -3,6 +3,7 @@ package cn.timeface.open.api.models.objs;
 import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import cn.timeface.open.managers.interfaces.IMoveParams;
 import cn.timeface.open.managers.interfaces.IPageScale;
