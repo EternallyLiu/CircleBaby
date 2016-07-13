@@ -3,9 +3,12 @@ package cn.timeface.circle.baby.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.services.ApiService;
@@ -20,20 +23,20 @@ public class MyPODActivity extends PODActivity {
 
     private String dataList;
 
-    public static void open(Context context, String bookId, int bookType, TFOPublishObj publishObj, String dataList) {
+    public static void open(Context context, String bookId, int bookType, List<TFOPublishObj> publishObjs, String dataList) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", bookType);
         intent.putExtra("book_id", bookId);
-        intent.putExtra("publish_obj", publishObj);
+        intent.putParcelableArrayListExtra("publish_objs", (ArrayList<? extends Parcelable>) publishObjs);
         intent.putExtra("dataList", dataList);
         context.startActivity(intent);
     }
 
-    public static void open(Context context, String bookId, int bookType, TFOPublishObj publishObj) {
+    public static void open(Context context, String bookId, int bookType, List<TFOPublishObj> publishObjs) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", bookType);
         intent.putExtra("book_id", bookId);
-        intent.putExtra("publish_obj", publishObj);
+        intent.putParcelableArrayListExtra("publish_objs", (ArrayList<? extends Parcelable>) publishObjs);
         context.startActivity(intent);
     }
     @Override
