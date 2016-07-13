@@ -34,6 +34,7 @@ public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
         ImageView view = new ImageView(this.getContext());
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
         lp.height = getContext().getResources().getDimensionPixelOffset(R.dimen.size_96);
+        lp.width = getContext().getResources().getDimensionPixelOffset(R.dimen.size_96);
         view.setLayoutParams(lp);
         view.setScaleType(ImageView.ScaleType.FIT_CENTER);
         int padding = getContext().getResources().getDimensionPixelOffset(R.dimen.view_space_small);

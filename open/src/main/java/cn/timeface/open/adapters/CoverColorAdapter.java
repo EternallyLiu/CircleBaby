@@ -36,7 +36,7 @@ public class CoverColorAdapter extends BaseRecyclerAdapter<String> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         CircleImageView view = new CircleImageView(this.getContext());
-        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT);
+        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.WRAP_CONTENT);
         lp.height = getContext().getResources().getDimensionPixelOffset(R.dimen.size_56);
         lp.width = getContext().getResources().getDimensionPixelOffset(R.dimen.size_56);
         lp.topMargin = getContext().getResources().getDimensionPixelOffset(R.dimen.view_space_small);
