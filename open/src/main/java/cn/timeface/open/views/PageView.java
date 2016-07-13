@@ -195,24 +195,40 @@ public class PageView extends FrameLayout {
         return leftContent == null;
     }
 
+    /**
+     * 设置背景图片或背景色
+     *
+     * @param url
+     */
     public void setPageBG(String url) {
         ImageView left = (ImageView) this.findViewById(R.id.left_page_id);
-        if (left != null) {
-            Glide.with(getContext())
-                    .load(url)
-                    .centerCrop()
-                    .into(left);
-            leftContent.setPageImage(url);
-        }
-
         ImageView right = (ImageView) this.findViewById(R.id.right_page_id);
-        if (right != null) {
-            Glide.with(getContext())
-                    .load(url)
-                    .centerCrop()
-                    .into(right);
-            rightContent.setPageImage(url);
-        }
+        if (url.contains("http")) {//图片
+            if (left != null) {
+                Glide.with(getContext())
+                        .load(url)
+                        .centerCrop()
+                        .into(left);
+                leftContent.setPageImage(url);
+            }
 
+            if (right != null) {
+                Glide.with(getContext())
+                        .load(url)
+                        .centerCrop()
+                        .into(right);
+                rightContent.setPageImage(url);
+            }
+        } else {//颜色值
+            if (left != null) {
+                left.setBackgroundColor(Color.parseColor(url));
+                leftContent.setPageColor(url);
+            }
+
+            if (right != null) {
+                right.setBackgroundColor(Color.parseColor(url));
+                rightContent.setPageColor(url);
+            }
+        }
     }
 }

@@ -20,6 +20,17 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
     public static int CONTENT_TYPE_BACK_COVER = 2;
     public static int PAGE_LEFT = 0;
     public static int PAGE_RIGHT = 1;
+
+    public static int CONTENT_TYPE_ZHENGWEN = 1;
+    public static int CONTENT_TYPE_CHAYE = 2;
+    public static int CONTENT_TYPE_FENG1 = 3;
+    public static int CONTENT_TYPE_FENG2 = 4;
+    public static int CONTENT_TYPE_FENG3 = 5;
+    public static int CONTENT_TYPE_FENG4 = 6;
+    public static int CONTENT_TYPE_KONGBAIYE = 7;
+    public static int CONTENT_TYPE_FEIYE = 8;
+    public static int CONTENT_TYPE_JIYUYE = 9;
+    public static int CONTENT_TYPE_SHUJI2 = 10;
     float my_view_scale = 1.f;
 
 

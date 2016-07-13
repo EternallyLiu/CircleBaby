@@ -434,13 +434,20 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 .subscribe(new Action1<BaseResponse<TemplateInfo>>() {
                     @Override
                     public void call(BaseResponse<TemplateInfo> templateInfoBaseResponse) {
-                        TemplateInfo templateInfo = templateInfoBaseResponse.getData();
-                        List<TFOBookContentModel> contentModels = templateInfo.getContent_list();
+                        List<TFOBookContentModel> contentModels = templateInfoBaseResponse.getData().getContent_list();
                         if (contentModels == null || contentModels.size() == 0) return;
-                        rightModel = contentModels.get(0);
-                        if (contentModels.size() > 1) {
-                            leftModel = contentModels.get(1);
+                        for (TFOBookContentModel cm : contentModels) {
+                            if (cm.getPageType() == TFOBookContentModel.PAGE_RIGHT) {
+                                rightModel = cm;
+                                for (TFOBookElementModel em : rightModel.getElementList()) {
+                                    em.setRight(true);
+                                }
+                            } else if (cm.getPageType() == TFOBookContentModel.PAGE_LEFT) {
+                                leftModel = cm;
+                            }
                         }
+                        rightModel.setPageScale(pageScale);
+                        leftModel.setPageScale(pageScale);
                         setupViews();
                     }
                 }, new Action1<Throwable>() {
@@ -457,9 +464,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     public void selectColorEvent(SelectColorEvent colorEvent) {
         String color = colorEvent.getColor();
         colorAdapter.setSelectedColor(color);
-        Toast.makeText(this, color, Toast.LENGTH_SHORT).show();
+        pageView.setPageBG(color);
         showSelectRL(false);
-
     }
 
 }
