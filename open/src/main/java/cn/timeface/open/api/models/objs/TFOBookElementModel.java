@@ -58,7 +58,6 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     TFOBookTextContentExpandModel text_content_expand;// 元素文字扩展属性
 
 
-
     public float getMyViewScale() {
         return my_view_scale;
     }
@@ -343,7 +342,6 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
     public TFOBookElementModel() {
     }
-
 
 
     @Override

@@ -26,7 +26,9 @@ public class TFOUrlLoader extends BaseGlideUrlLoader<TFOBookElementModel> {
         String imgUrl = model.getImageContentExpand().getImageUrl();
         Rect rect = model.getImageContentExpand().getOrgCropRect(model.getContentWidth(), model.getContentHeight());
 
-        imgUrl += "@" + rect.left + "-" + rect.top + "-" + rect.width() + "-" + rect.height() + "a.webp";
+        int rotation = model.getImageContentExpand().getImageRotation();
+        rotation = (rotation + 360) % 360;
+        imgUrl += "@" + rect.left + "-" + rect.top + "-" + rect.width() + "-" + rect.height() + "a" + "_" + rotation + "r" + ".webp";
 
         Log.v("image url", imgUrl);
         return imgUrl;
