@@ -1,15 +1,12 @@
 package cn.timeface.circle.baby;
 
 import android.app.ActivityManager;
-import android.app.Application;
 import android.content.Context;
-import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.activeandroid.ActiveAndroid;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.umeng.analytics.AnalyticsConfig;
 import com.wbtech.ums.UmsAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
@@ -98,7 +95,7 @@ public class App extends MultiDexApplication {
             if (shouldInit()) {
                 MiPushClient.registerPush(this, TypeConstants.MI_PUSH_APP_ID, TypeConstants.MI_PUSH_APP_KEY);
                 MiPushClient.setAlias(this, new DeviceUuidFactory(
-                        TimeFaceUtilInit.getContext()).getDeviceId(), null);
+                        getApplicationContext()).getDeviceId(), null);
             }
             MiPushClient.setLocalNotificationType(app, TypeConstants.PUSH_VOICE_SHAKE);
         } else {

@@ -152,6 +152,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     public void clickEditType(View view) {
         int viewId = view.getId();
+        if (view.isSelected() && rvSelection.getVisibility() == View.VISIBLE) {
+            rvSelection.setVisibility(View.GONE);
+            return;
+        }
         changeSelectTypeBg(view);
         if (viewId == R.id.tv_edit_layout) {
 
@@ -195,7 +199,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             showSelectRL(true);
             return;
         }
-        Subscription subscribe = apiService.getAttachPendantList(bookModel.getBookId(), REQ_TYPE_WIDGET, String.valueOf(bookModel.getBookType()))
+        Subscription subscribe = apiService.getAttachPendantList(bookModel.getBookId(), String.valueOf(bookModel.getBookType()))
                 .compose(SchedulersCompat.<BaseResponse<List<TFOBookImageModel>>>applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<List<TFOBookImageModel>>>() {
                     @Override
@@ -223,7 +227,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             showSelectRL(true);
             return;
         }
-        Subscription subscribe = apiService.getAttachBgList(bookModel.getBookId(), REQ_TYPE_BG, String.valueOf(bookModel.getBookType()))
+        Subscription subscribe = apiService.getAttachBgList(bookModel.getBookId(), String.valueOf(bookModel.getBookType()))
                 .compose(SchedulersCompat.<BaseResponse<List<TFBookBgModel>>>applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<List<TFBookBgModel>>>() {
                     @Override
@@ -283,17 +287,11 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             showSelectRL(true);
             return;
         }
-        Subscription subscribe = apiService.getAttachColorList(bookModel.getBookId(), REQ_TYPE_COLOR, String.valueOf(bookModel.getBookType()))
+        Subscription subscribe = apiService.getAttachColorList(bookModel.getBookId(), String.valueOf(bookModel.getBookType()))
                 .compose(SchedulersCompat.<BaseResponse<List<String>>>applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<List<String>>>() {
                     @Override
                     public void call(BaseResponse<List<String>> listBaseResponse) {
-                       /* ArrayList<String> strings = new ArrayList<>();
-                        strings.add("#f7993d");
-                        strings.add("#ff382d");
-                        strings.add("#41b7f0");
-                        strings.add("#ffffff");
-                        strings.add("#025f8b");*/
                         colorAdapter = new CoverColorAdapter(EditActivity.this, listBaseResponse.getData());
                         rvSelection.setAdapter(colorAdapter);
                         showSelectRL(true);
@@ -404,7 +402,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         showSelectRL(false);
         TFBookBgModel bookBgModel = (TFBookBgModel) view.getTag(R.string.tag_obj);
         bgImageAdapter.setSelBgColor(bookBgModel);
-        Toast.makeText(EditActivity.this, bookBgModel.toString(), Toast.LENGTH_SHORT).show();
+        pageView.setPageBgPicture(bookBgModel);
     }
 
     /**
