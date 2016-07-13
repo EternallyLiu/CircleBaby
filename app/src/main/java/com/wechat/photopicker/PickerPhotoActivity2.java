@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -19,17 +18,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.wechat.photopicker.adapter.PhotoSelectorAdapter;
 import com.wechat.photopicker.adapter.PhotoSelectorAdapter2;
-import com.wechat.photopicker.endity.Photo;
-import com.wechat.photopicker.event.OnItemCheckListener;
 import com.wechat.photopicker.event.OnItemCheckListener2;
-import com.wechat.photopicker.fragment.PickerPhotoFragment;
 import com.wechat.photopicker.fragment.PickerPhotoFragment2;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
@@ -37,11 +31,9 @@ import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.open.activities.PODActivity;
 import cn.timeface.open.api.models.objs.TFOContentObj;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
 import cn.timeface.open.api.models.objs.TFOResourceObj;
@@ -201,7 +193,9 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                 TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
                 ArrayList<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
                 tfoContentObjs1.add(tfoContentObj);
-                MyPODActivity.open(this, "", bookTheme, new TFOPublishObj("", tfoContentObjs1) , s);
+                List<TFOPublishObj> publishObjs = new ArrayList<>();
+                publishObjs.add(new TFOPublishObj("", tfoContentObjs1));
+                MyPODActivity.open(this, "", bookTheme, publishObjs, s);
                 finish();
             }
         }
