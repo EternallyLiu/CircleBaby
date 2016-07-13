@@ -99,7 +99,7 @@ public abstract class PODActivity extends BaseAppCompatActivity implements IPODR
     }
 
     private void setData(TFOBookModel data) {
-        bookPodView.setupPodDate(getSupportFragmentManager(), data);
+        bookPodView.setupPodData(getSupportFragmentManager(), data);
         if (BuildConfig.DEBUG) {
             bookPodView.scrollBookPageIndex(3);
         }

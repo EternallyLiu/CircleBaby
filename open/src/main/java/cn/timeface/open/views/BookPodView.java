@@ -80,7 +80,8 @@ public class BookPodView extends FrameLayout {
         return pageScale;
     }
 
-    public void setupPodDate(FragmentManager supportFragmentManager, TFOBookModel tfoBookModel) {
+    public void setupPodData(FragmentManager supportFragmentManager, TFOBookModel tfoBookModel) {
+        this.tfoBookModel = tfoBookModel;
         tfoBookModel.setPageScale(getPageScale());
         for (TFOBookContentModel cm : tfoBookModel.getContentList()) {
             if (cm.getPageType() == TFOBookContentModel.PAGE_RIGHT) {
@@ -89,7 +90,6 @@ public class BookPodView extends FrameLayout {
                 }
             }
         }
-        this.tfoBookModel = tfoBookModel;
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
