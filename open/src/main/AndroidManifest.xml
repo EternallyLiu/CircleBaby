@@ -13,6 +13,7 @@
         <activity
             android:name="cn.timeface.open.activities.EditActivity"
             android:label="@string/title_activity_edit"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme" />
         <activity
             android:name="cn.timeface.open.activities.EditTextActivity"

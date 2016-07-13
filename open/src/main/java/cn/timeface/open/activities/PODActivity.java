@@ -49,9 +49,9 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
 
         setSupportActionBar(toolbar);
-//        String publishObj = loadJSONFromAsset();
+        String publishObj = loadJSONFromAsset();
 
-        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObj));
+        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0,publishObj);// new Gson().toJson(publishObj));
     }
 
     public String loadJSONFromAsset() {
@@ -115,7 +115,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         List<TFOBookContentModel> currentPage = bookPodView.getCurrentPage();
         TFOBookContentModel bookContentModel = currentPage.get(0);
         if (currentPage.size() == 1) {
-            EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, bookContentModel, bookContentModel.getContentType() == 0);
+            EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, bookContentModel, bookContentModel.getContentType() == 3);
         } else {
             EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, bookContentModel, currentPage.get(1), bookPodView.currentPageIsCover());
         }

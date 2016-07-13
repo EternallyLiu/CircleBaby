@@ -37,6 +37,7 @@ import cn.timeface.open.api.models.objs.TFOBookImageModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
 import cn.timeface.open.api.models.response.EditPod;
+import cn.timeface.open.api.models.response.TemplateInfo;
 import cn.timeface.open.events.ChangeStickerStatusEvent;
 import cn.timeface.open.events.SelectColorEvent;
 import cn.timeface.open.events.SelectTemplateEvent;
@@ -103,7 +104,6 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         leftModel = getIntent().getParcelableExtra("left_model");
         pageScale = getIntent().getFloatExtra("page_scale", 1.f);
         this.isCover = getIntent().getBooleanExtra("is_cover", false);
-
         setContentView(R.layout.activity_edit);
         this.pod = (FrameLayout) findViewById(R.id.pod);
         this.llEditController = (LinearLayout) findViewById(R.id.ll_edit_controller);
@@ -420,21 +420,22 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     }
 
     @Subscribe
-    public void selectTemplateEvent(SelectTemplateEvent templateEvent) {
+    public void selectTemplateEvent(final SelectTemplateEvent templateEvent) {
         final String templateId = templateEvent.getTemplateId();
         templateAdapter.setSelTemplateId(Integer.parseInt(templateId));
-        Subscription subscribe = apiService.templateInfo(bookModel.getBookId(), templateId)
-                .compose(SchedulersCompat.<BaseResponse<List<TFOBookContentModel>>>applyIoSchedulers())
+        Subscription subscribe = apiService.templateInfo(templateId, bookModel.getBookId())
+                .compose(SchedulersCompat.<BaseResponse<TemplateInfo>>applyIoSchedulers())
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
                         showSelectRL(false);
                     }
                 })
-                .subscribe(new Action1<BaseResponse<List<TFOBookContentModel>>>() {
+                .subscribe(new Action1<BaseResponse<TemplateInfo>>() {
                     @Override
-                    public void call(BaseResponse<List<TFOBookContentModel>> listBaseResponse) {
-                        List<TFOBookContentModel> contentModels = listBaseResponse.getData();
+                    public void call(BaseResponse<TemplateInfo> templateInfoBaseResponse) {
+                        TemplateInfo templateInfo = templateInfoBaseResponse.getData();
+                        List<TFOBookContentModel> contentModels = templateInfo.getContent_list();
                         if (contentModels == null || contentModels.size() == 0) return;
                         rightModel = contentModels.get(0);
                         if (contentModels.size() > 1) {
@@ -445,7 +446,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Log.d(TAG, "templateInfo: " + throwable);
+                        Log.e(TAG, "templateInfo: " + throwable.getMessage());
                     }
                 });
         addSubscription(subscribe);
