@@ -236,12 +236,14 @@ public class FastData extends Remember {
     }
 
     public static void setUserInfo(UserObj userObj) {
-        setUserName(userObj.getNickName());
-        setUserId(userObj.getUserId());
-        setAvatar(userObj.getAvatar());
-        setBabyObj(userObj.getBabyObj());
-        setRelationName(userObj.getRelationName());
-        setIsCreator(userObj.getIsCreator());
+        if(userObj!=null){
+            setUserName(userObj.getNickName());
+            setUserId(userObj.getUserId());
+            setAvatar(userObj.getAvatar());
+            setBabyObj(userObj.getBabyObj());
+            setRelationName(userObj.getRelationName());
+            setIsCreator(userObj.getIsCreator());
+        }
     }
 
     public static UserObj getUserInfo() {
@@ -256,17 +258,16 @@ public class FastData extends Remember {
     }
 
     public static void setBabyObj(BabyObj babyObj) {
-        if (null == babyObj) {
-            return;
+        if (babyObj!=null) {
+            setBabyAge(babyObj.getAge());
+            setBabyAvatar(babyObj.getAvatar());
+            setBabyId(babyObj.getBabyId());
+            setBabyBithday(babyObj.getBithday());
+            setBabyBlood(babyObj.getBlood());
+            setBabyConstellation(babyObj.getConstellation());
+            setBabyGender(babyObj.getGender());
+            setBabyName(babyObj.getName());
         }
-        setBabyAge(babyObj.getAge());
-        setBabyAvatar(babyObj.getAvatar());
-        setBabyId(babyObj.getBabyId());
-        setBabyBithday(babyObj.getBithday());
-        setBabyBlood(babyObj.getBlood());
-        setBabyConstellation(babyObj.getConstellation());
-        setBabyGender(babyObj.getGender());
-        setBabyName(babyObj.getName());
     }
 
     public static BabyObj getBabyObj() {

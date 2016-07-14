@@ -493,7 +493,8 @@ public interface ApiService {
                                         @Query("dataList") String dataList,
                                         @Query("description") String description,
                                         @Query("openBookId") long openBookId,
-                                        @Query("pageNum") int pageNum);
+                                        @Query("pageNum") int pageNum,
+                                        @Query("openBookType") int openBookType);
 
     /**
      * 作品列表

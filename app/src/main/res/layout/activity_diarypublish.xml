@@ -50,7 +50,7 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_margin="@dimen/size_12"
-            android:src="@drawable/bg_qq_phono_guide" />
+            android:src="@drawable/card_add" />
 
         <TextView
             android:id="@+id/tv_time"

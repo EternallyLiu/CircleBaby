@@ -11,7 +11,7 @@
         android:layout_marginTop="@dimen/size_36"
         android:background="@color/white"
         android:padding="@dimen/size_80"
-        android:src="@drawable/ic_publish_add_nor" />
+        android:src="@drawable/card_add" />
     <ImageView
         android:id="@+id/iv_delete"
         android:layout_width="wrap_content"

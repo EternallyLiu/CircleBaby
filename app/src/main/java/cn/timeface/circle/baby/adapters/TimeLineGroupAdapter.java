@@ -27,7 +27,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> {
 
-    private View.OnClickListener onClickListener;
     int normalColor;
     public static Context context;
     private ViewHolder holder;
@@ -75,7 +74,7 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
         return new Animator[0];
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.iv_avatar)
         CircleImageView ivAvatar;

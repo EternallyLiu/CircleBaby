@@ -29,7 +29,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     Toolbar toolbar;
     float pageScale = 1.f;
-    int bookType = 23;
+    public int bookType = 23;
 
     final int EDIT_REQUEST_CODE = 100;
     private BookPodView bookPodView;

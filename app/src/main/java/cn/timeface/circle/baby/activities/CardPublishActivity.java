@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.rayboot.widget.ratioview.RatioImageView;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -132,13 +134,17 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 break;
             case R.id.iv_deletecard:
                 int currentItem = vp.getCurrentItem();
-                dataList.remove(currentItem);
                 mViews.remove(currentItem);
+                if(mViews.size()==0){
+                    mViews.add(getAddCard());
+                }
                 vp.setAdapter(new MyAdapter(mViews));
                 apiService.delCard(dataList.get(currentItem).getId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-
+                            if(response.success()){
+                                dataList.remove(currentItem);
+                            }
                         }, throwable -> {
                             Log.e(TAG, "delCard:");
                         });
@@ -161,8 +167,11 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
     public View getCard(MediaObj media) {
         View view = getLayoutInflater().inflate(R.layout.view_card, null);
-        ImageView ivCard = (ImageView) view.findViewById(R.id.iv_cover);
+        RatioImageView ivCard = (RatioImageView) view.findViewById(R.id.iv_cover);
         ImageView ivDeletecard = (ImageView) view.findViewById(R.id.iv_deletecard);
+        int measuredWidth = ivDeletecard.getMeasuredWidth();
+        ivDeletecard.setTranslationX(measuredWidth/2);
+        ivDeletecard.setTranslationY(-measuredWidth/2);
         GlideUtil.displayImage(media.getImgUrl(), ivCard);
         ivDeletecard.setOnClickListener(this);
         return view;

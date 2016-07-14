@@ -2,7 +2,6 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -22,6 +21,7 @@ import android.widget.TextView;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.github.rayboot.widget.ratioview.RatioImageView;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,9 +33,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
-import cn.timeface.circle.baby.api.models.objs.DiaryImageInfo;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
@@ -62,7 +60,7 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.iv_bg)
-    ImageView ivBg;
+    RatioImageView ivBg;
     @Bind(R.id.rl_diary)
     RelativeLayout rlDiary;
     @Bind(R.id.rldiary)
@@ -71,6 +69,8 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
     TextView tvContent;
     @Bind(R.id.lv_horizontal)
     HorizontalListView lvHorizontal;
+    @Bind(R.id.iv_rotate)
+    ImageView ivRotate;
 
     private HorizontalListViewAdapter2 adapter;
     private DiaryPaperResponse diaryPaperResponse;
@@ -114,7 +114,7 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
         tvTime.setText(time);
         tvContent.setText(content);
         touchImageView = new ScaleImageView(getActivity(), url);
-        rlDiary.addView(touchImageView);
+        rlDiary.addView(touchImageView,0);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) touchImageView.getLayoutParams();
         layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
         layoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
@@ -127,7 +127,31 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
         int bottom = rlDiary.getBottom();
         center.x = left + right / 2;
         center.y = top + bottom / 2;
-        rldiary.setOnTouchListener(new View.OnTouchListener() {
+//        rldiary.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        oldRotation = getRotate(event);
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        float rotation = getRotate(event) - oldRotation;
+//                        if (rotation > -15 && rotation < 15) {
+//                            degree = rotation;
+//                            rlDiary.setRotation(rotation);
+//                            rlDiary.invalidate();
+//                        }
+//
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+
+        ivRotate.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -140,6 +164,7 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
                             degree = rotation;
                             rlDiary.setRotation(rotation);
                             rlDiary.invalidate();
+
                         }
 
                         break;
@@ -265,7 +290,7 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
 
                 List<String> contents = new ArrayList<>();
                 contents.add(time);
-                while(content.length()>18){
+                while (content.length() > 18) {
                     char c = content.charAt(17);
                     String[] split = content.split(String.valueOf(c));
                     contents.add(split[0]);
@@ -285,16 +310,16 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
 //                            Log.e(TAG, "diaryPublish:");
 //                        });
                 long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
-                TemplateImage templateImage = new TemplateImage(degree, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey,createTime);
+                TemplateImage templateImage = new TemplateImage(degree, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
 
                 List<TemplateAreaObj> templateList = templateObj.getTemplateList();
 
-                for(TemplateAreaObj templateAreaObj : templateList){
-                    if(templateAreaObj.getType()==3)
+                for (TemplateAreaObj templateAreaObj : templateList) {
+                    if (templateAreaObj.getType() == 3)
                         templateAreaObj.setTemplateImage(templateImage);
-                    if(contents.size()>0&&templateAreaObj.getType()==2){
-                            templateAreaObj.setText(contents.get(0));
-                            contents.remove(0);
+                    if (contents.size() > 0 && templateAreaObj.getType() == 2) {
+                        templateAreaObj.setText(contents.get(0));
+                        contents.remove(0);
                     }
                 }
                 Gson gson = new Gson();

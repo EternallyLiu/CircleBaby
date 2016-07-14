@@ -3,13 +3,19 @@
     android:layout_height="match_parent"
     android:background="@color/bg_color8">
 
-    <ImageView
+    <com.github.rayboot.widget.ratioview.RatioImageView
+        xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
         android:id="@+id/iv_cover"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        scaleimg:heightRatio="1"
+        scaleimg:widthRatio="1"
+        android:src="@drawable/ic_publish_add_nor"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_publish_add_nor" />
+        />
 
     <ImageView
         android:id="@+id/iv_deletecard"
@@ -17,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/iv_cover"
         android:layout_alignTop="@+id/iv_cover"
-        android:src="@drawable/ic_del_image" />
+        android:src="@drawable/card_delete"
+        />
 
 </RelativeLayout>

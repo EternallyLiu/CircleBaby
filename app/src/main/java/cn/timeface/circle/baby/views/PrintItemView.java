@@ -83,8 +83,8 @@ public class PrintItemView extends LinearLayout {
     public void setupViewData(MyOrderBookItem bookItem, PrintPropertyPriceObj obj) {
         Glide.with(getContext())
                 .load(bookItem.getCoverImage())
-                .error(R.drawable.book_back_default)
-                .placeholder(R.drawable.book_back_default)
+                .error(R.drawable.book_default_bg)
+                .placeholder(R.drawable.book_default_bg)
                 .into(ivBookCover);
         Resources resources = getResources();
         tvPrice.setText(resources.getString(R.string.total_price, obj.getPrice()));

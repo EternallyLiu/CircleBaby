@@ -229,17 +229,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
     }
 
-    private void reqData(int currentPage) {
-        apiService.timeline(currentPage, 10)
+    private void reqData(int page) {
+        apiService.timeline(page, 10)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
-                    
-                    Log.d(TAG,"showtimelinehead========="+Remember.getBoolean("showtimelinehead", true) );
 
-                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendObj() != null) {
-                        Log.d(TAG,"addHeader========="+Remember.getBoolean("showtimelinehead", true) );
-                        adapter.addHeader(initHeadView(timelineResponse.getRecommendObj()));
+                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
+                        adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
                     }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
@@ -397,9 +394,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         });
         ivClose.setOnClickListener(v -> {
-            view.setVisibility(View.GONE);
             Remember.putBoolean("showtimelinehead", false);
             adapter.removeHeader(view);
+            adapter.notifyDataSetChanged();
         });
         return view;
     }
