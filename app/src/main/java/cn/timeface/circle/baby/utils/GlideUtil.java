@@ -29,7 +29,7 @@ public class GlideUtil {
 
     public static void displayImage(String url, ImageView imageView) {
         if (TextUtils.isEmpty(url) || imageView == null) {
-            imageView.setImageResource(R.mipmap.ic_launcher);
+            imageView.setImageResource(R.drawable.ic_log);
             return;
         }
         Glide.with(context).load(url).into(imageView);

@@ -156,7 +156,7 @@
                             android:id="@+id/iv_book_cover"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/book_back_default"
+                            android:src="@drawable/book_default_bg"
                             app:fixRatio="fixWidth"
                             scaleimg:heightRatio="25"
                             scaleimg:widthRatio="18" />

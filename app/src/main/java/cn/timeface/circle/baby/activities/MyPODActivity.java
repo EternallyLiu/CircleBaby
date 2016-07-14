@@ -36,6 +36,7 @@ public class MyPODActivity extends PODActivity {
         intent.putExtra("publish_obj", publishObj);
         context.startActivity(intent);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,11 +45,11 @@ public class MyPODActivity extends PODActivity {
 
     @Override
     public void createBookInfo(TFOBookModel bookModel) {
-        createBook(bookModel.getBookAuthor(),dataList,bookModel.getBookCover(),bookModel.getBookTitle(),5,bookModel.getBookTotalPage(),bookModel.getBookId());
+        createBook(bookModel.getBookAuthor(), dataList, bookModel.getBookCover(), bookModel.getBookTitle(), 5, bookModel.getBookTotalPage(), bookModel.getBookId(), bookType);
     }
 
-    private void createBook(String author, String dataList, String bookCover, String bookName, int bookType, int pageNum,String openBookId) {
-        ApiFactory.getApi().getApiService().createBook(URLEncoder.encode(author), FastData.getBabyId(), bookCover, "", URLEncoder.encode(bookName), "", bookType, dataList, URLEncoder.encode(bookName), Long.valueOf(openBookId), pageNum)
+    private void createBook(String author, String dataList, String bookCover, String bookName, int type, int pageNum, String openBookId, int openBookType) {
+        ApiFactory.getApi().getApiService().createBook(URLEncoder.encode(author), FastData.getBabyId(), bookCover, "", URLEncoder.encode(bookName), "", type, dataList, URLEncoder.encode(bookName), Long.valueOf(openBookId), pageNum, openBookType)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {

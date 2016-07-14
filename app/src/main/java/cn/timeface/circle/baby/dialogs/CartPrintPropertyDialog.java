@@ -245,8 +245,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         mBookPrintNumberEt.addTextChangedListener(new EditTextWatcher(mBookPrintNumberEt, 99, false));
         Glide.with(getContext())
                 .load(bookCover)
-                .placeholder(R.drawable.book_back_default)
-                .error(R.drawable.book_back_default)
+                .placeholder(R.drawable.book_default_bg)
+                .error(R.drawable.book_default_bg)
                 .into(mIvBookCover);
         for (PrintParamResponse paramResponse : paramList) {
             if (PrintParamResponse.KEY_SIZE.equals(paramResponse.getKey())) {

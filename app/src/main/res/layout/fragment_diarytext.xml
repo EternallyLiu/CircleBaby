@@ -54,12 +54,14 @@
         android:background="@color/bg_color8"
         android:padding="@dimen/size_12">
         <TextView
+            android:id="@+id/tv_auto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="自动配文"
             android:textSize="@dimen/text_medium"
             android:layout_centerVertical="true"
+            android:textColor="@drawable/selector_applyprint_textcolor"
             />
         <TextView
             android:id="@+id/tv_change"
@@ -70,10 +72,12 @@
             android:text="换一批"
             android:textSize="@dimen/text_medium"
             android:layout_marginRight="@dimen/size_12"
+            android:textColor="@drawable/selector_applyprint_textcolor"
             />
     </RelativeLayout>
 
     <ListView
+        android:visibility="gone"
         android:id="@+id/lv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

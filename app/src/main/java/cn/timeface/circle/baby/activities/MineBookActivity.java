@@ -23,12 +23,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.MineBookAdapter;
+import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
@@ -125,11 +128,24 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
             if (mineBookObj.getBookType() == 5) {
                 //照片书-跳转POD预览
                 ToastUtil.showToast("照片书-跳转POD预览");
-                MyPODActivity.open(MineBookActivity.this, mineBookObj.getOpenBookId(), 23, null);
+                MyPODActivity.open(MineBookActivity.this, mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null);
             } else {
                 //日记书、识图卡片书，跳转本地预览
                 ToastUtil.showToast("日记书、识图卡片书，跳转本地预览");
 
+                apiService.queryImageInfoList(mineBookObj.getBookId(),mineBookObj.getBookType())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(imageInfoListResponse -> {
+                            ArrayList<String> urls = new ArrayList<>();
+                            for(ImageInfoListObj imageInfoListObj : imageInfoListResponse.getDataList()){
+                                for(MediaObj media : imageInfoListObj.getMediaList()){
+                                    urls.add(media.getImgUrl());
+                                }
+                            }
+                            FragmentBridgeActivity.openBigimageFragment(MineBookActivity.this, urls, 0);
+                        }, error -> {
+                            Log.e(TAG, "queryImageInfoList:");
+                        });
             }
         });
         errorRetry.setOnClickListener(this);
