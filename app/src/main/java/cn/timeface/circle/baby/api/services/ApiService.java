@@ -493,7 +493,8 @@ public interface ApiService {
                                         @Query("dataList") String dataList,
                                         @Query("description") String description,
                                         @Query("openBookId") long openBookId,
-                                        @Query("pageNum") int pageNum);
+                                        @Query("pageNum") int pageNum,
+                                        @Query("openBookType") int openBookType);
 
     /**
      * 作品列表
@@ -513,4 +514,10 @@ public interface ApiService {
      */
     @POST("babyBook/deleteBook")
     Observable<BaseResponse> deleteBook(@Query("bookId") String bookId);
+
+    /**
+     * 取消订单
+     */
+    @POST("babyOrder/operOrder")
+    Observable<BaseResponse> cancelOrder(@Query("orderId") String orderId);
 }

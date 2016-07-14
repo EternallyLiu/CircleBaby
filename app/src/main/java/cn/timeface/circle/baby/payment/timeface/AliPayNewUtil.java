@@ -21,6 +21,8 @@ import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.events.PayResultEvent;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 支付宝支付Util
@@ -58,22 +60,18 @@ public class AliPayNewUtil {
                         params.put("orderId", orderId);
                         params.put("payType", payType);
 
-                        if(payType.equals("2")){
-                            AliPayNewUtil.this.isSuccess = true;
-                        }else{
-                            Subscription s = BaseAppCompatActivity.apiService.wexinPay(orderId, payType)
-                                    .compose(SchedulersCompat.applyIoSchedulers())
-                                    .subscribe(
-                                            response -> {
-                                                AliPayNewUtil.this.isSuccess = response.success();
-                                            }
-                                            , throwable -> {
-                                                AliPayNewUtil.this.isSuccess = false;
-                                            }
-                                    );
-                            ((BaseAppCompatActivity) activity).addSubscription(s);
-                        }
-
+                        Subscription s = BaseAppCompatActivity.apiService.wexinPay(orderId, payType)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        response -> {
+                                            AliPayNewUtil.this.isSuccess = response.success();
+                                        }
+                                        , throwable -> {
+                                            AliPayNewUtil.this.isSuccess = false;
+                                        }
+                                );
+                        ((BaseAppCompatActivity) activity).addSubscription(s);
                     } else if (result.getResultCode().equals("6001")) {
                         Toast.makeText(activity, activity.getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
                     } else {
@@ -143,7 +141,7 @@ public class AliPayNewUtil {
 //        orderInfo += "total_fee=" + "\"" + 0.01 + "\"";
         orderInfo += "&";
 
-        orderInfo += "notify_url=" + "\"" + ApiService.ZFB_NOTIFY + "\"";
+        orderInfo += "&notify_url=" + "\"" + "http://dev1.v5time.net/baby/babyOrder/zfbNotify" + "\"";
 
         // 接口名称， 定值
         orderInfo += "&service=\"mobile.securitypay.pay\"";

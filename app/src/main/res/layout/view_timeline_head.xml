@@ -5,55 +5,62 @@
     android:background="@color/bg_color8"
     android:padding="@dimen/size_12">
 
-    <ImageView
-        android:id="@+id/iv_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_login_qq"
-        />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/iv_image"
-        android:layout_marginLeft="@dimen/size_12"
-        android:layout_centerVertical="true"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/tv_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="宝宝成长的点滴那么珍贵"
-            />
+            android:src="@drawable/ic_login_qq" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/size_12"
+            android:layout_toRightOf="@+id/iv_image"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
             <TextView
+                android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="为宝贝记录"
-                />
-            <TextView
-                android:id="@+id/tv_type"
+                android:text="宝宝成长的点滴那么珍贵" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="成长日记》"
-                android:textColor="@color/bg_color1"
-                />
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="为宝贝记录" />
+
+                <TextView
+                    android:id="@+id/tv_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="成长日记》"
+                    android:textColor="@color/bg_color1" />
+
+            </LinearLayout>
 
         </LinearLayout>
-
     </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_delete_press"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        />
-    
+        android:src="@drawable/ic_delete_press" />
 
 </RelativeLayout>

@@ -56,6 +56,11 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
         mPhotos = new ArrayList<>();
         for (ImageInfoListObj obj : dataList) {
             mPhotos.addAll(obj.getMediaList());
+            for (MediaObj media : obj.getMediaList()){
+                if(media.getSelected() == 1){
+                    mSelectorPhotos.add(media);
+                }
+            }
         }
     }
 

@@ -14,14 +14,14 @@ public class TimelineResponse extends BaseResponse {
     List<TimeLineGroupObj> dataList;
     int currentPage;
     int totalPage;
-    RecommendObj recommendObj;
+    RecommendObj recommendCard;
 
-    public RecommendObj getRecommendObj() {
-        return recommendObj;
+    public RecommendObj getRecommendCard() {
+        return recommendCard;
     }
 
-    public void setRecommendObj(RecommendObj recommendObj) {
-        this.recommendObj = recommendObj;
+    public void setRecommendCard(RecommendObj recommendCard) {
+        this.recommendCard = recommendCard;
     }
 
     public List<TimeLineGroupObj> getDataList() {

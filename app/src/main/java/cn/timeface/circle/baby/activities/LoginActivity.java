@@ -89,11 +89,28 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         setSupportActionBar(toolBar);
 
         ShareSDK.initSDK(this);
+        Remember.putBoolean("showtimelinehead", true);
 
-        String account = FastData.getAccount();
-        String password = FastData.getPassword();
-        if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
-            login(account, password, 0);
+        if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
+            //上次登录为手机号登录
+            String account = FastData.getAccount();
+            String password = FastData.getPassword();
+            if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
+                login(account, password, 0);
+            }
+        } else {
+            //上次登录为三方账号登录
+            String platform = Remember.getString("platform", "");
+            Platform plat = ShareSDK.getPlatform(platform);
+            thirdLogin(plat.getDb().getToken(),
+                    plat.getDb().getUserIcon(),
+                    plat.getDb().getExpiresIn(),
+                    FastData.getUserFrom(),
+                    "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
+                    plat.getDb().getUserName(),
+                    "",
+                    plat.getDb().getUserId(),
+                    "", LoginActivity.this);
         }
 
     }
@@ -126,13 +143,13 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         Subscription s = null;
         switch (view.getId()) {
             case R.id.btn_wechat:
-//                ShareSdkUtil.login(this, ShareSDK.getPlatform(this, Wechat.NAME), loginCallback);
+                ShareSdkUtil.login(this, ShareSDK.getPlatform(this, Wechat.NAME), loginCallback);
                 break;
             case R.id.btn_qq:
-//                login(QQ.NAME);
+                login(QQ.NAME);
                 break;
             case R.id.btn_sina:
-//                login(SinaWeibo.NAME);
+                login(SinaWeibo.NAME);
                 break;
             case R.id.tv_register:
                 RegisterActivity.open(this);
@@ -162,25 +179,16 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 .subscribe(userLoginResponse -> {
                     ToastUtil.showToast(userLoginResponse.getInfo());
                     if (userLoginResponse.success()) {
+                        FastData.setUserInfo(userLoginResponse.getUserInfo());
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
                         FastData.setAccount(account);
                         FastData.setPassword(psw);
-
-                        Gson gson = new Gson();
-                        FastData.putString("userObj", gson.toJson(userLoginResponse.getUserInfo()));
-//                        String userObj = FastData.getString("userObj", "");
-//                        UserObj o = gson.fromJson(userObj, UserObj.class);
+                        FastData.putString("userObj", new Gson().toJson(userLoginResponse.getUserInfo()));
                         if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
                             CreateBabyActivity.open(this);
                         } else {
-                            FastData.setUserInfo(userLoginResponse.getUserInfo());
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
-//                     else if (userLoginResponse.getUserInfo().getNickName() == null || TextUtils.isEmpty(userLoginResponse.getUserInfo().getNickName())) {
-//                        Remember.putInt("ensureRelation",0);
-//                        startActivity(new Intent(this, TabMainActivity.class));
-//                    }
-
                     }
 
                 }, throwable -> {
@@ -197,6 +205,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         api.setOnLoginListener(new OnLoginListener() {
             @Override
             public void onLogin(String platform, HashMap<String, Object> res) {
+                Remember.putString("platform", platform);
                 int from = TypeConstants.USER_FROM_LOCAL;
                 if (platform.equals(SinaWeibo.NAME)) {
                     from = TypeConstants.USER_FROM_SINA;
@@ -205,6 +214,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 } else if (platform.equals(Wechat.NAME)) {
                     from = TypeConstants.USER_FROM_WECHAT;
                 }
+                FastData.setUserFrom(from);
                 Platform plat = ShareSDK.getPlatform(platform);
                 final int finalFrom = from;
                 thirdLogin(plat.getDb().getToken(),
@@ -258,18 +268,18 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 // Do something with outer as your wish.
                 if (msg.what == 1) {
                     Platform plat = (Platform) msg.obj;
-                    String type = "1";
-                    if (plat.getName().equals(QZone.NAME)) {
-                        type = "2";
-                    } else if (plat.getName().equals(SinaWeibo.NAME)) {
-                        type = "1";
+                    int type = 1;
+                    if (plat.getName().equals(SinaWeibo.NAME)) {
+                        type = 1;
+                    } else if (plat.getName().equals(QQ.NAME)) {
+                        type = 2;
                     } else if (plat.getName().equals(Wechat.NAME)) {
-                        type = "3";
+                        type = 3;
                     }
                     thirdLogin(plat.getDb().getToken(),
                             plat.getDb().getUserIcon(),
                             plat.getDb().getExpiresIn(),
-                            3,
+                            type,
                             "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
                             plat.getDb().getUserName(),
                             plat.getDb().get("openid"),
@@ -297,18 +307,17 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-//                            if (response.getUserInfo().getUserType() == 0) {
-//                                FastData.setUserId(response.getUserInfo().getUserId());
-//                                SelectUserTypeActivity.open(context, "");
-//                                return;
-//                            }
-//                            EMChatUtil.regUser(response.getUserInfo().getUserId() + "",
-//                                    "888888");
-//                            FastData.setUserFrom(from);
-//                            FastData.setUserToken(response.getToken());
-//                            FastData.setUserInfo(response.getUserInfo());
-//                            TabMainActivity.open(context);
+                .subscribe(userLoginResponse -> {
+                    if (userLoginResponse.success()) {
+                        FastData.setUserInfo(userLoginResponse.getUserInfo());
+                        FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
+                        FastData.putString("userObj", new Gson().toJson(userLoginResponse.getUserInfo()));
+                        if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
+                            CreateBabyActivity.open(this);
+                        } else {
+                            startActivity(new Intent(this, TabMainActivity.class));
+                        }
+                    }
                 }, error -> {
 
                 });

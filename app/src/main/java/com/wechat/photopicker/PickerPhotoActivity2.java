@@ -203,7 +203,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     }
 
     private void createBook(String s) {
-        apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), imageInfoList.get(0).getMediaList().get(0).getImgUrl(), "", URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum)
+        apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), mPhotoSelectorAdapter.getSelectedPhotos().get(0).getImgUrl(), "", URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum,bookTheme)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {

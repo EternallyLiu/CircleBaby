@@ -45,6 +45,7 @@ import cn.timeface.circle.baby.api.models.objs.RecommendObj;
 import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.api.models.objs.WorkObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -228,13 +229,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
     }
 
-    private void reqData(int currentPage) {
-        apiService.timeline(currentPage, 10)
+    private void reqData(int page) {
+        apiService.timeline(page, 10)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     tfptrListViewHelper.finishTFPTRRefresh();
-                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendObj() != null) {
-                        adapter.addHeader(initHeadView(timelineResponse.getRecommendObj()));
+
+                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
+                        adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
                     }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
@@ -353,59 +355,48 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
 
         tvType.setOnClickListener(v -> {
-            if (obj.getActionType() == 0) {
-                //照片发布
-                PublishActivity.open(getContext(), PublishActivity.PHOTO);
-            } else {
-                apiService.getBabyBookWorksTypeList()
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(bookTypeListResponse -> {
-                            if (bookTypeListResponse.success()) {
-                                switch (obj.getActionType()) {
-                                    case 1:
-                                        //照片书
-                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
-                                            if (item.getType() == 5) {
-                                                FragmentBridgeActivity.openAddBookFragment(getContext(), item);
-                                            }
-                                        }
-                                        break;
-                                    case 2:
-                                        //成长书
-                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
-                                            if (item.getType() == 1) {
-                                                FragmentBridgeActivity.openAddBookFragment(getContext(), item);
-                                            }
-                                        }
-                                        break;
-                                    case 3:
-                                        //识图卡片书
-                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
-                                            if (item.getType() == 3) {
-                                                FragmentBridgeActivity.openAddBookFragment(getContext(), item);
-                                            }
-                                        }
-                                        break;
-                                    case 4:
-                                        //日记书
-                                        for (BookTypeListObj item : bookTypeListResponse.getDataList()) {
-                                            if (item.getType() == 2) {
-                                                FragmentBridgeActivity.openAddBookFragment(getContext(), item);
-                                            }
-                                        }
-                                        break;
-                                }
-                            }
-                        }, error -> {
-                            Log.e(TAG, "getBabyBookWorksTypeList:");
-                        });
+            switch (obj.getActionType()){
+                case 0:
+                    PublishActivity.open(getContext(), PublishActivity.PHOTO);
+                    break;
+                case 1:
+                    for (WorkObj work : obj.getNewWorkObj()){
+                        if (work.getType()==5){
+                            BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
+                            FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
+                        }
+                    }
+                    break;
+                case 2:
+                    for (WorkObj work : obj.getNewWorkObj()){
+                        if (work.getType()==1){
+                            BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
+                            FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
+                        }
+                    }
+                    break;
+                case 3:
+                    for (WorkObj work : obj.getNewWorkObj()){
+                        if (work.getType()==3){
+                            BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
+                            FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
+                        }
+                    }
+                    break;
+                case 4:
+                    for (WorkObj work : obj.getNewWorkObj()){
+                        if (work.getType()==2){
+                            BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
+                            FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
+                        }
+                    }
+                    break;
             }
-
         });
         ivClose.setOnClickListener(v -> {
-            view.setVisibility(View.GONE);
             Remember.putBoolean("showtimelinehead", false);
             adapter.removeHeader(view);
+            adapter.notifyDataSetChanged();
         });
         return view;
     }

@@ -52,7 +52,6 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
     private FragmentManager supportFragmentManager;
     private static OnClickListener clickListener;
     private OnItemClickListener<MineBookObj> onItemClickListener;
-    private MineBookObj obj;
 
     public MineBookAdapter(Context mContext, List<MineBookObj> listData) {
         super(mContext, listData);
@@ -73,7 +72,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = (ViewHolder) viewHolder;
-        obj = getItem(position);
+        MineBookObj obj = getItem(position);
         holder.onClickListener = onClickListener;
         holder.obj = obj;
         holder.supportFragmentManager = supportFragmentManager;
@@ -82,12 +81,13 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         holder.tvTitle.setText(obj.getBookName());
         holder.tvPageNum.setText(obj.getPageNum()+"");
         holder.tvCreattime.setText(DateUtil.getYear2(obj.getUpdateTime()));
-
+        if(obj.getBookType()==3||obj.getBookType()==5){
+            holder.ivBookbg.setBackgroundResource(R.drawable.book_front_mask2);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClickListener != null) {
-                    Log.d("MineBookAdapter","getBookName==========="+obj.getBookName());
                     onItemClickListener.clickItem(obj);
                 }
             }
@@ -109,6 +109,8 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.iv_book)
         ImageView ivBook;
+        @Bind(R.id.iv_bookbg)
+        ImageView ivBookbg;
         @Bind(R.id.tv_title)
         TextView tvTitle;
         @Bind(R.id.tv_pagenum)
@@ -190,15 +192,15 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                             .subscribe(printStatusResponse -> {
                                 int printCode = printStatusResponse.getPrintCode();
                                 switch (printCode){
-                                    case TypeConstant.PRINT_CODE_LIMIT_LESS:
-                                        notify = "少于12页，不可印刷";
-                                        break;
-                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
-                                        notify = "超出200页，不可印刷";
-                                        break;
-                                    case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
-                                        notify = "该时光书已被删除，不可印刷";
-                                        break;
+//                                    case TypeConstant.PRINT_CODE_LIMIT_LESS:
+//                                        notify = "少于12页，不可印刷";
+//                                        break;
+//                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
+//                                        notify = "超出200页，不可印刷";
+//                                        break;
+//                                    case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
+//                                        notify = "该时光书已被删除，不可印刷";
+//                                        break;
                                     case TypeConstant.PRINT_CODE_LIMIT_8806:
                                         notify = "3寸日记卡片需18张";
                                         break;
