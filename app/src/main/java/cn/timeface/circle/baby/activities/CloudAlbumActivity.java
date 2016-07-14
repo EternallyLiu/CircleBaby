@@ -121,7 +121,9 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_upload) {
             //进入图片选择页面
-            PublishActivity.open(this, PublishActivity.PHOTO);
+
+            MyPODActivity.open(this, "", 23, null);
+//            PublishActivity.open(this, PublishActivity.PHOTO);
             // SelectPhotoActivity.openToPublish(this, TypeConstants.PHOTO_COUNT_MAX);
         }
         return super.onOptionsItemSelected(item);
