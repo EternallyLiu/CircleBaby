@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <cn.timeface.open.views.PageFrameLayout
             android:id="@+id/pod"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

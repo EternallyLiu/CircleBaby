@@ -82,7 +82,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         holder.tvPageNum.setText(obj.getPageNum()+"");
         holder.tvCreattime.setText(DateUtil.getYear2(obj.getUpdateTime()));
         if(obj.getBookType()==3||obj.getBookType()==5){
-            holder.ivBookbg.setBackgroundResource(R.drawable.book_front_mask2);
+            //holder.ivBookbg.setBackgroundResource(R.drawable.book_front_mask2);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

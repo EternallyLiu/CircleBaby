@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import cn.timeface.open.R;
@@ -45,6 +44,7 @@ import cn.timeface.open.managers.interfaces.IEventBus;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.views.EditDoubleContentView;
+import cn.timeface.open.views.PageFrameLayout;
 import cn.timeface.open.views.PageView;
 import cn.timeface.open.views.StickerView;
 import cn.timeface.widget.drawabletextview.DrawableTextView;
@@ -53,18 +53,13 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 
 public class EditActivity extends BaseAppCompatActivity implements IEventBus {
-
-    public static final int REQ_TYPE_BG = 1;//背景
-    public static final int REQ_TYPE_WIDGET = 2;//挂件
-    public static final int REQ_TYPE_COLOR = 3;//色值组
     public static float SCALE = 1.0f;
     TFOBookModel bookModel;
     TFOBookContentModel rightModel;
     TFOBookContentModel leftModel;
-    FrameLayout pod;
+    PageFrameLayout pod;
     LinearLayout llEditController;
     Point screenInfo;
-    float pageScale = 1.f;
     PageView pageView;
     boolean isCover = false;
     DrawableTextView tvEditTemplate;
@@ -77,20 +72,18 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     TemplateAdapter templateAdapter;
     private BgImageAdapter bgImageAdapter;
     private PendantAdapter pendantAdapter;
-    Integer[] arr = {R.id.tv_edit_beauty, R.id.tv_edit_bg, R.id.tv_edit_pendant, R.id.tv_edit_template, R.id.tv_edit_layout};
-    private List<Integer> selectBtnArr;
-    private View selectBg;
-    private CoverColorAdapter colorAdapter;
 
-    public static void open4result(Activity activity, int requestCode, float pageScale, TFOBookContentModel contentModel, boolean isCover) {
-        open4result(activity, requestCode, pageScale, null, contentModel, isCover);
+    private CoverColorAdapter colorAdapter;
+    private float pageScale = 1.0f;
+
+    public static void open4result(Activity activity, int requestCode, TFOBookContentModel contentModel, boolean isCover) {
+        open4result(activity, requestCode, null, contentModel, isCover);
     }
 
-    public static void open4result(Activity activity, int requestCode, float pageScale, TFOBookContentModel leftModel, TFOBookContentModel rightModel, boolean isCover) {
+    public static void open4result(Activity activity, int requestCode, TFOBookContentModel leftModel, TFOBookContentModel rightModel, boolean isCover) {
         Intent intent = new Intent(activity, EditActivity.class);
         intent.putExtra("right_model", rightModel);
         intent.putExtra("left_model", leftModel);
-        intent.putExtra("page_scale", pageScale);
         intent.putExtra("is_cover", isCover);
         activity.startActivityForResult(intent, requestCode);
     }
@@ -102,10 +95,9 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         bookModel = BookModelCache.getInstance().getBookModel();
         rightModel = getIntent().getParcelableExtra("right_model");
         leftModel = getIntent().getParcelableExtra("left_model");
-        pageScale = getIntent().getFloatExtra("page_scale", 1.f);
         this.isCover = getIntent().getBooleanExtra("is_cover", false);
         setContentView(R.layout.activity_edit);
-        this.pod = (FrameLayout) findViewById(R.id.pod);
+        this.pod = (PageFrameLayout) findViewById(R.id.pod);
         this.llEditController = (LinearLayout) findViewById(R.id.ll_edit_controller);
         this.tvEditTemplate = (DrawableTextView) findViewById(R.id.tv_edit_template);
         this.tvBackgroundColor = (DrawableTextView) findViewById(R.id.tv_background_color);
@@ -114,7 +106,6 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         this.tvEditPendant = (DrawableTextView) findViewById(R.id.tv_edit_pendant);
         this.tvEditBeauty = (DrawableTextView) findViewById(R.id.tv_edit_beauty);
         this.rvSelection = (RecyclerView) findViewById(R.id.rv_selection);
-        selectBtnArr = Arrays.asList(arr);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvSelection.setLayoutManager(layoutManager);
@@ -129,6 +120,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             tvEditBeauty.setVisibility(View.GONE);
         }
 
+
         //增加整体布局监听
         ViewTreeObserver vto = pod.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -136,15 +128,30 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             public void onGlobalLayout() {
                 pod.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 screenInfo = new Point(pod.getWidth(), pod.getHeight());
+                if (screenInfo.y > screenInfo.x) {
+                    //竖屏
+                    pageScale = screenInfo.x / (float) bookModel.getBookWidth();
+                } else {
+                    //横屏
+                    float pageW = bookModel.getBookWidth() * 2;
+                    float pageH = bookModel.getBookHeight();
+
+                    pageScale = screenInfo.y / pageH;
+                    if (pageW * pageScale > screenInfo.x) {
+                        //按照高度拉伸,如果拉伸后宽度超出屏幕
+                        pageScale = screenInfo.x / pageW;
+                    }
+                }
+                if (leftModel != null) leftModel.setPageScale(pageScale);
+                if (rightModel != null) rightModel.setPageScale(pageScale);
                 setupViews();
             }
         });
-
     }
 
     private void setupViews() {
         pod.removeAllViews();
-        pageView = new PageView(this, true, leftModel, rightModel, isCover);
+        pageView = new PageView(this, true, leftModel, rightModel, isCover, pageScale);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
         lp.gravity = Gravity.CENTER;
         pod.addView(pageView, lp);
@@ -388,7 +395,6 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             if (elementModel != null
                     && elementModel.getElementType() == TFOBookElementModel.TYPE_TEXT) {
                 EditTextActivity.open(this, bookModel.getBookId(), contentId, elementModel);
-                return;
             }
         }
     }
@@ -402,7 +408,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         showSelectRL(false);
         TFBookBgModel bookBgModel = (TFBookBgModel) view.getTag(R.string.tag_obj);
         bgImageAdapter.setSelBgColor(bookBgModel);
-        pageView.setPageBgPicture(bookBgModel);
+        int pageOrientation = pod.getPageOrientation();
+        pageView.setPageBgPicture(bookBgModel, pageOrientation);
     }
 
     /**
@@ -444,8 +451,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                                 leftModel = cm;
                             }
                         }
-                        rightModel.setPageScale(pageScale);
-                        leftModel.setPageScale(pageScale);
+                        if (bookModel != null) bookModel.resetPageScale(pageScale);
                         setupViews();
                     }
                 }, new Action1<Throwable>() {
@@ -466,4 +472,9 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         showSelectRL(false);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (bookModel != null) bookModel.resetPageScale(pageScale);
+    }
 }

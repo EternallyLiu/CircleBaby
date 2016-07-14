@@ -6,8 +6,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -49,9 +47,9 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
 
         setSupportActionBar(toolbar);
-//        String publishObjs = loadJSONFromAsset();
+        String publishObjs = loadJSONFromAsset();
 
-        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObjs));
+        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, publishObjs);// new Gson().toJson(publishObjs));
     }
 
     public String loadJSONFromAsset() {
@@ -114,10 +112,14 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     public void clickEdit(View view) {
         List<TFOBookContentModel> currentPage = bookPodView.getCurrentPage();
         TFOBookContentModel bookContentModel = currentPage.get(0);
+        // 重置了页面的缩放比例
+        //bookContentModel.resetPageScale(pageScale);
         if (currentPage.size() == 1) {
-            EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, bookContentModel, bookContentModel.getContentType() == 3);
+            EditActivity.open4result(this, EDIT_REQUEST_CODE, bookContentModel, bookContentModel.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG1);
         } else {
-            EditActivity.open4result(this, EDIT_REQUEST_CODE, pageScale, bookContentModel, currentPage.get(1), bookPodView.currentPageIsCover());
+            TFOBookContentModel rightModel = currentPage.get(1);
+           // rightModel.resetPageScale(pageScale);
+            EditActivity.open4result(this, EDIT_REQUEST_CODE, bookContentModel, rightModel, bookPodView.currentPageIsCover());
         }
     }
 

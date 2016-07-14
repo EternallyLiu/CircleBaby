@@ -27,26 +27,27 @@ public class PageView extends FrameLayout {
     DoubleContentView doubleContentView;
     boolean editMode = false;
     boolean isCover = false;
-    float pageScale = 1.0f;
 
     public PageView(Context context, TFOBookContentModel contentModel, boolean isCover) {
-        this(context, false, null, contentModel, isCover);
+        this(context, false, null, contentModel, isCover, 1.0f);
     }
 
     public PageView(Context context, TFOBookContentModel leftContent, TFOBookContentModel rightContent, boolean isCover) {
-        this(context, false, leftContent, rightContent, isCover);
+        this(context, false, leftContent, rightContent, isCover, 1.0f);
     }
 
-    public PageView(Context context, boolean editMode, TFOBookContentModel leftContent, TFOBookContentModel rightContent, boolean isCover) {
+    public PageView(Context context, boolean editMode, TFOBookContentModel leftContent, TFOBookContentModel rightContent, boolean isCover, float pageScale) {
         super(context);
         this.leftContent = leftContent;
         this.rightContent = rightContent;
         this.editMode = editMode;
         this.isCover = isCover;
         this.bookModel = BookModelCache.getInstance().getBookModel();
+        if (pageScale != 1.0f) {
+            this.bookModel.setPageScale(pageScale);
+        }
 
         //右页需要修改paddingleft和paddingtop值
-
         setupView();
     }
 
@@ -202,38 +203,43 @@ public class PageView extends FrameLayout {
      * @param url
      */
     public void setPageBG(String url) {
+        setLeftPageBgPicture(url);
+        setRightPageBgPicture(url);
+    }
+
+    public void setLeftPageBgPicture(String bgPicture) {
         ImageView left = (ImageView) this.findViewById(R.id.left_page_id);
-        ImageView right = (ImageView) this.findViewById(R.id.right_page_id);
-        if (url.contains("http")) {//图片
-            if (left != null) {
-                Glide.with(getContext())
-                        .load(url)
-                        .centerCrop()
-                        .into(left);
-                leftContent.setPageImage(url);
-            }
-
-            if (right != null) {
-                Glide.with(getContext())
-                        .load(url)
-                        .centerCrop()
-                        .into(right);
-                rightContent.setPageImage(url);
-            }
-        } else {//颜色值
-            if (left != null) {
-                left.setBackgroundColor(Color.parseColor(url));
-                leftContent.setPageColor(url);
-            }
-
-            if (right != null) {
-                right.setBackgroundColor(Color.parseColor(url));
-                rightContent.setPageColor(url);
-            }
+        if (left != null) {
+            displayPageBg(bgPicture, left);
+            leftContent.setPageImage(bgPicture);
         }
     }
 
-    public void setPageBgPicture(TFBookBgModel bookBgModel) {
+    public void setRightPageBgPicture(String bgPicture) {
+        ImageView right = (ImageView) this.findViewById(R.id.right_page_id);
+        if (right != null) {
+            displayPageBg(bgPicture, right);
+            rightContent.setPageImage(bgPicture);
+        }
+    }
 
+    private void displayPageBg(String bg, ImageView imageView) {
+        if (bg.contains("http")) {//图片
+            Glide.with(getContext())
+                    .load(bg)
+                    .centerCrop()
+                    .into(imageView);
+        } else {
+            imageView.setBackgroundColor(Color.parseColor(bg));
+        }
+    }
+
+    public void setPageBgPicture(TFBookBgModel bookBgModel, int pageOrientation) {
+        if (pageOrientation == PageFrameLayout.LEFT) {
+            setLeftPageBgPicture(bookBgModel.getBackground_left());
+        }
+        if (pageOrientation == PageFrameLayout.RIGHT) {
+            setRightPageBgPicture(bookBgModel.getBackground_left());//接口现在只有左页有背景图url
+        }
     }
 }

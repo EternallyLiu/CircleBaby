@@ -90,13 +90,15 @@ public class DeviceUuidFactory {
      *
      * @return a UUID that may be used to uniquely identify your device for most
      * purposes.
-     *  http://code.google.com/p/android/issues/detail?id=10603
+     * http://code.google.com/p/android/issues/detail?id=10603
      */
     private UUID getDeviceUuid() {
         return uuid;
     }
 
     public String getDeviceId() {
-        return getDeviceUuid().toString();
+        UUID uuid = getDeviceUuid();
+        if (uuid == null) return "";
+        return uuid.toString();
     }
 }
