@@ -174,24 +174,21 @@ public interface ApiService {
     /**
      * 获取编辑内容挂件
      *
-     * @param book_id      时光书ID
-     * @param request_type 1 背景 2 挂件 3 色值组
-     * @param book_type    版式类型
+     * @param book_id   时光书ID
+     *                  1 背景 2 挂件 3 色值组
+     * @param book_type 版式类型
      * @return
      */
-    @GET("api/attachlist")
+    @GET("api/attachlist?request_type=1")
     Observable<BaseResponse<List<TFBookBgModel>>> getAttachBgList(@Query("book_id") String book_id,
-                                                                  @Query("request_type") int request_type,
                                                                   @Query("book_type") String book_type);
 
-    @POST("api/attachlist")
+    @GET("api/attachlist?request_type=2")
     Observable<BaseResponse<List<TFOBookImageModel>>> getAttachPendantList(@Query("book_id") String book_id,
-                                                                           @Query("request_type") int request_type,
                                                                            @Query("book_type") String book_type);
 
-    @POST("api/attachlist")
+    @GET("api/attachlist?request_type=3")
     Observable<BaseResponse<List<String>>> getAttachColorList(@Query("book_id") String book_id,
-                                                              @Query("request_type") int request_type,
                                                               @Query("book_type") String book_type);
 
     /**

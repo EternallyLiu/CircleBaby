@@ -33,7 +33,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     final int EDIT_REQUEST_CODE = 100;
     private BookPodView bookPodView;
-    TFOPublishObj publishObj;
+    List<TFOPublishObj> publishObjs;
     String bookId;
 
     @Override
@@ -43,15 +43,15 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         {
             this.bookType = getIntent().getIntExtra("book_type", 23);
             this.bookId = getIntent().getStringExtra("book_id");
-            this.publishObj = getIntent().getParcelableExtra("publish_obj");
+            this.publishObjs = getIntent().getParcelableArrayListExtra("publish_objs");
         }
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
 
         setSupportActionBar(toolbar);
-        String publishObj = loadJSONFromAsset();
+//        String publishObjs = loadJSONFromAsset();
 
-        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0,publishObj);// new Gson().toJson(publishObj));
+        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObjs));
     }
 
     public String loadJSONFromAsset() {
