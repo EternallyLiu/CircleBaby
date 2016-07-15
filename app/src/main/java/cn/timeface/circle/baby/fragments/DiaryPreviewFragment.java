@@ -3,8 +3,12 @@ package cn.timeface.circle.baby.fragments;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -37,6 +41,7 @@ import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.api.models.objs.TemplateAreaObj;
 import cn.timeface.circle.baby.api.models.objs.TemplateImage;
 import cn.timeface.circle.baby.api.models.objs.TemplateObj;
@@ -45,6 +50,7 @@ import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.utils.BitmapUtil;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -69,8 +75,6 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
     TextView tvContent;
     @Bind(R.id.lv_horizontal)
     HorizontalListView lvHorizontal;
-    @Bind(R.id.iv_rotate)
-    ImageView ivRotate;
 
     private HorizontalListViewAdapter2 adapter;
     private DiaryPaperResponse diaryPaperResponse;
@@ -114,44 +118,19 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
         tvTime.setText(time);
         tvContent.setText(content);
         touchImageView = new ScaleImageView(getActivity(), url);
-        rlDiary.addView(touchImageView,0);
+        rlDiary.addView(touchImageView, 0);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) touchImageView.getLayoutParams();
         layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
         layoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
         touchImageView.setLayoutParams(layoutParams);
 
-
         int left = rlDiary.getLeft();
         int right = rlDiary.getRight();
         int top = rlDiary.getTop();
         int bottom = rlDiary.getBottom();
-        center.x = left + right / 2;
-        center.y = top + bottom / 2;
-//        rldiary.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        oldRotation = getRotate(event);
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        float rotation = getRotate(event) - oldRotation;
-//                        if (rotation > -15 && rotation < 15) {
-//                            degree = rotation;
-//                            rlDiary.setRotation(rotation);
-//                            rlDiary.invalidate();
-//                        }
-//
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-
-        ivRotate.setOnTouchListener(new View.OnTouchListener() {
+        center.x = (left + right) / 2;
+        center.y = (top + bottom) / 2;
+        rldiary.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -164,7 +143,6 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
                             degree = rotation;
                             rlDiary.setRotation(rotation);
                             rlDiary.invalidate();
-
                         }
 
                         break;
@@ -175,12 +153,7 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
                 return true;
             }
         });
-
-
-//        GlideUtil.displayImage(url, scaleImageView);
-
         reqPaperList();
-
         lvHorizontal.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

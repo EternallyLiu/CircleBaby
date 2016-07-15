@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/iv_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/size_80"
+            android:layout_height="@dimen/size_56"
             android:src="@drawable/ic_login_qq" />
 
         <LinearLayout

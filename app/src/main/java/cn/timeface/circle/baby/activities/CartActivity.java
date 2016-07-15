@@ -231,7 +231,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                             mFoot.setVisibility(View.GONE);
                         } else {
                             mLlEmpty.setVisibility(View.GONE);
-                            mPtrLayout.setVisibility(View.VISIBLE);
+                            mPtrLayout.setVisibility(View.GONE);
                             mFoot.setVisibility(View.VISIBLE);
                         }
                         mAdapter.notifyDataSetChanged();
@@ -239,7 +239,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                         Toast.makeText(CartActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
                     }
                 }, throwable -> {
-                    mStateView.showException(throwable);
+//                    mStateView.showException(throwable);
                 });
         addSubscription(s);
     }

@@ -103,7 +103,7 @@ public class VideoEditActivity extends BaseAppCompatActivity implements View.OnC
                 tvTag.setText("剪裁视频中…");
                 try {
                     String s = ClipUtil.clipVideo(path, min, max);
-                    EventBus.getDefault().post(new ClipVideoSuccessEvent(s));
+                    EventBus.getDefault().post(new ClipVideoSuccessEvent(s,i));
                     finish();
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -1,458 +1,467 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/bg7"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/rl_pv_code"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_space_normal"
-        android:background="@drawable/selector_item_common_white"
-        android:clickable="true"
-        android:onClick="clickPVCode"
-        android:padding="12dp"
-        android:visibility="gone">
+        android:background="@color/bg7"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
 
-        <TextView
+
+        <RelativeLayout
+            android:id="@+id/rl_pv_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/tv_pv_code_desc"
-            android:gravity="center_vertical"
-            android:text="使用优惠码"
-            android:textColor="@color/text_color9"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_pv_code_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@+id/tv_pv_code_cancel"
-            android:gravity="center"
-            android:text="优惠 ¥10.00"
-            android:textColor="@color/bg27"
-            android:textSize="14sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tv_pv_code_cancel"
-            android:layout_width="50dp"
-            android:layout_height="24dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/selector_order_confirm_cancel_btn"
+            android:layout_marginTop="@dimen/view_space_normal"
+            android:background="@drawable/selector_item_common_white"
             android:clickable="true"
-            android:gravity="center"
-            android:onClick="clickCancelPVCode"
-            android:text="@string/cancel"
-            android:textColor="@color/text_color24"
-            android:textSize="14sp"
-            android:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/ivArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/arrow_right_grey"
-            android:visibility="visible" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_dispatch_select"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/view_space_normal"
-        android:layout_marginTop="@dimen/view_space_normal"
-        android:background="@android:color/white"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_select_dispatch"
-            style="@style/OrderTextLabel"
-            android:text="@string/select_dispatch_way" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_dispatch"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_full_site_coupon"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_space_normal"
-        android:background="@color/white"
-        android:clickable="true"
-        android:onClick="clickFullSiteCoupon"
-        android:padding="12dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_full_site_coupon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/tv_full_site_coupon_money"
-            android:gravity="center_vertical"
-            android:text="享受“全场8折”"
-            android:textColor="@color/bg27"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_full_site_coupon_money"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:gravity="center"
-            android:text="-￥10.00"
-            android:textColor="@color/bg27"
-            android:textSize="14sp" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_use_point_root"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_space_normal"
-        android:background="@drawable/selector_item_common_white"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:visibility="gone">
-
-        <CheckBox
-            android:id="@+id/cb_use_point"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:button="@null"
-            android:checked="false"
-            android:drawableLeft="@drawable/checkbox_apply_print"
-            android:drawablePadding="4dp"
-            android:gravity="center"
-            android:text="使用积分"
-            android:textColor="@color/text_color9"
-            android:textSize="14sp" />
-
-        <LinearLayout
-            android:id="@+id/ll_use_points_policy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:onClick="clickPVCode"
+            android:padding="12dp"
             android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="26dp"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/et_exchange_points"
-                    android:layout_width="90dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_grey_border_bg"
-                    android:inputType="number"
-                    android:paddingBottom="2dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="2dp"
-                    android:textColor="@color/text_color9" />
-
-                <TextView
-                    android:id="@+id/tv_points_replace"
-                    style="@style/OrderTextLabel"
-                    android:layout_marginLeft="10dp" />
-            </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_use_point_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/tv_pv_code_desc"
+                android:gravity="center_vertical"
+                android:text="使用优惠码"
+                android:textColor="@color/text_color9"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_pv_code_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="26dp"
-                android:layout_marginTop="6dp"
-                android:text="@string/my_points_use_policy"
-                android:textColor="@color/text_color2"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@+id/tv_pv_code_cancel"
+                android:gravity="center"
+                android:text="优惠 ¥10.00"
+                android:textColor="@color/bg27"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
-    <LinearLayout
-        android:id="@+id/ll_use_coupons_root"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_space_normal"
-        android:background="@drawable/selector_item_common_white"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_pv_code_cancel"
+                android:layout_width="50dp"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/selector_order_confirm_cancel_btn"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="clickCancelPVCode"
+                android:text="@string/cancel"
+                android:textColor="@color/text_color24"
+                android:textSize="14sp"
+                android:visibility="gone" />
 
-        <CheckBox
-            android:id="@+id/cb_use_coupons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:button="@null"
-            android:checked="false"
-            android:drawableLeft="@drawable/checkbox_apply_print_use_coupons"
-            android:drawablePadding="8dp"
-            android:gravity="center"
-            android:text="@string/use_coupons"
-            android:textColor="@color/text_color9"
-            android:textSize="14sp" />
+            <ImageView
+                android:id="@+id/ivArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/arrow_right_grey"
+                android:visibility="visible" />
+        </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/ll_use_coupons_policy"
+            android:id="@+id/ll_dispatch_select"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="26dp"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/view_space_normal"
+            android:layout_marginTop="@dimen/view_space_normal"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:padding="12dp"
             android:visibility="gone">
 
-            <RelativeLayout
-                android:id="@+id/rl_use_coupon"
+            <TextView
+                android:id="@+id/tv_select_dispatch"
+                style="@style/OrderTextLabel"
+                android:text="@string/select_dispatch_way" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_dispatch"
                 android:layout_width="match_parent"
-                android:layout_height="32dp">
-
-                <Spinner
-                    android:id="@+id/spinner_use_coupon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_print_use_coupons_edit_bg"
-                    android:dropDownVerticalOffset="2dp"
-                    android:popupBackground="@drawable/shape_print_use_coupons_spinner_pop_bg" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/ic_pull_down_default" />
-            </RelativeLayout>
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp" />
         </LinearLayout>
-    </LinearLayout>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:src="@color/line_color" />
-
-    <LinearLayout
-        android:id="@+id/ll_use_coupon_codes_root"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:background="@drawable/selector_item_common_white"
-        android:orientation="vertical"
-        android:padding="12dp"
-        android:visibility="gone">
-
-        <CheckBox
-            android:id="@+id/cb_use_coupon_codes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:button="@null"
-            android:checked="false"
-            android:drawableLeft="@drawable/checkbox_apply_print_use_coupons"
-            android:drawablePadding="8dp"
-            android:gravity="center"
-            android:text="@string/use_coupon_codes"
-            android:textColor="@color/text_color9"
-            android:textSize="14sp" />
-
-        <LinearLayout
-            android:id="@+id/ll_use_coupon_codes_policy"
+        <RelativeLayout
+            android:id="@+id/rl_full_site_coupon"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/view_space_normal"
+            android:background="@color/white"
+            android:clickable="true"
+            android:onClick="clickFullSiteCoupon"
+            android:padding="12dp"
             android:visibility="gone">
 
-            <RelativeLayout
+            <TextView
+                android:id="@+id/tv_full_site_coupon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="26dp">
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/tv_full_site_coupon_money"
+                android:gravity="center_vertical"
+                android:text="享受“全场8折”"
+                android:textColor="@color/bg27"
+                android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/tv_use_coupons_scanner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="12dp"
-                    android:clickable="true"
-                    android:drawablePadding="1dp"
-                    android:drawableTop="@drawable/ic_print_use_coupons_scanner"
-                    android:gravity="center"
-                    android:onClick="clickScanner"
-                    android:text="扫一扫"
-                    android:textColor="@color/text_color2"
-                    android:textSize="8sp" />
+            <TextView
+                android:id="@+id/tv_full_site_coupon_money"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:gravity="center"
+                android:text="-￥10.00"
+                android:textColor="@color/bg27"
+                android:textSize="14sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_use_point_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/view_space_normal"
+            android:background="@drawable/selector_item_common_white"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <CheckBox
+                android:id="@+id/cb_use_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:drawableLeft="@drawable/checkbox_apply_print"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:text="使用积分"
+                android:textColor="@color/text_color9"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/ll_use_points_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <LinearLayout
-                    android:id="@+id/ll_use_coupon_codes"
-                    android:layout_width="match_parent"
-                    android:layout_height="32dp"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/tv_use_coupons_scanner"
-                    android:background="@drawable/shape_print_use_coupons_edit_bg"
-                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginTop="12dp"
                     android:orientation="horizontal">
 
                     <EditText
-                        android:id="@+id/et_use_coupon_codes"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="4"
-                        android:background="@android:color/transparent"
-                        android:gravity="center_vertical"
-                        android:hint="输入您的印书券号码"
-                        android:inputType="text"
-                        android:maxLength="8"
-                        android:singleLine="true"
-                        android:textColor="@color/text_color9"
-                        android:textColorHint="@color/text_color24"
-                        android:textSize="12sp" />
-
-                    <View
-                        android:layout_width="1px"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="2dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="2dp"
-                        android:background="@color/line_color" />
+                        android:id="@+id/et_exchange_points"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_grey_border_bg"
+                        android:inputType="number"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="2dp"
+                        android:textColor="@color/text_color9" />
 
                     <TextView
-                        android:id="@+id/tv_use_coupon_codes"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:gravity="center"
-                        android:text="0元"
-                        android:textColor="@color/text_color9"
-                        android:textSize="12sp" />
+                        android:id="@+id/tv_points_replace"
+                        style="@style/OrderTextLabel"
+                        android:layout_marginLeft="10dp" />
                 </LinearLayout>
-            </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tv_use_point_policy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/my_points_use_policy"
+                    android:textColor="@color/text_color2"
+                    android:textSize="12sp" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
-
-        <CheckBox
-            android:id="@+id/cb_agree_service"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:button="@drawable/checkbox_apply_print"
-            android:checked="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="4dp"
-            android:gravity="center_vertical"
-            android:text="@string/agree"
-            android:textColor="@color/text_color9"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/accept_service_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:onClick="clickBtn"
-            android:text="@string/service_agreement"
-            android:textColor="#007dc7"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/white"
-        android:gravity="center_vertical"
-        android:paddingBottom="6dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="6dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/ll_use_coupons_root"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/view_space_normal"
+            android:background="@drawable/selector_item_common_white"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
 
-            <TextView
-                android:id="@+id/tv_promotion_info"
+            <CheckBox
+                android:id="@+id/cb_use_coupons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:drawableLeft="@drawable/checkbox_apply_print_use_coupons"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="@string/use_coupons"
                 android:textColor="@color/text_color9"
-                android:textSize="12sp"
-                android:visibility="gone" />
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/ll_use_coupons_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="26dp"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:id="@+id/rl_use_coupon"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp">
+
+                    <Spinner
+                        android:id="@+id/spinner_use_coupon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_print_use_coupons_edit_bg"
+                        android:dropDownVerticalOffset="2dp"
+                        android:popupBackground="@drawable/shape_print_use_coupons_spinner_pop_bg" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/ic_pull_down_default" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:src="@color/line_color" />
+
+        <LinearLayout
+            android:id="@+id/ll_use_coupon_codes_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/selector_item_common_white"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <CheckBox
+                android:id="@+id/cb_use_coupon_codes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="false"
+                android:drawableLeft="@drawable/checkbox_apply_print_use_coupons"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="@string/use_coupon_codes"
+                android:textColor="@color/text_color9"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/ll_use_coupon_codes_policy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="26dp">
+
+                    <TextView
+                        android:id="@+id/tv_use_coupons_scanner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="12dp"
+                        android:clickable="true"
+                        android:drawablePadding="1dp"
+                        android:drawableTop="@drawable/ic_print_use_coupons_scanner"
+                        android:gravity="center"
+                        android:onClick="clickScanner"
+                        android:text="扫一扫"
+                        android:textColor="@color/text_color2"
+                        android:textSize="8sp" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_use_coupon_codes"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/tv_use_coupons_scanner"
+                        android:background="@drawable/shape_print_use_coupons_edit_bg"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/et_use_coupon_codes"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="4"
+                            android:background="@android:color/transparent"
+                            android:gravity="center_vertical"
+                            android:hint="输入您的印书券号码"
+                            android:inputType="text"
+                            android:maxLength="8"
+                            android:singleLine="true"
+                            android:textColor="@color/text_color9"
+                            android:textColorHint="@color/text_color24"
+                            android:textSize="12sp" />
+
+                        <View
+                            android:layout_width="1px"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginTop="2dp"
+                            android:background="@color/line_color" />
+
+                        <TextView
+                            android:id="@+id/tv_use_coupon_codes"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="3"
+                            android:gravity="center"
+                            android:text="0元"
+                            android:textColor="@color/text_color9"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_agree_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:button="@drawable/checkbox_apply_print"
+                android:checked="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="4dp"
+                android:gravity="center_vertical"
+                android:text="@string/agree"
+                android:textColor="@color/text_color9"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/accept_service_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:onClick="clickBtn"
+                android:text="@string/service_agreement"
+                android:textColor="#007dc7"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical"
+            android:paddingBottom="6dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="6dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/order_amount_lb"
+                    android:id="@+id/tv_promotion_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="合计："
                     android:textColor="@color/text_color9"
-                    android:textSize="16sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/tv_order_amount"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:text=""
-                    android:textColor="@color/bg27"
-                    android:textSize="18sp" />
-            </LinearLayout>
-        </LinearLayout>
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btn_submit_order"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/selector_btn_login"
-            android:gravity="center_vertical"
-            android:onClick="clickBtn"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:text="@string/submit_order"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
-    </RelativeLayout>
-</LinearLayout>
+                    <TextView
+                        android:id="@+id/order_amount_lb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="合计："
+                        android:textColor="@color/text_color9"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_order_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:text=""
+                        android:textColor="@color/bg27"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_submit_order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/selector_btn_login"
+                android:gravity="center_vertical"
+                android:onClick="clickBtn"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:text="@string/submit_order"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

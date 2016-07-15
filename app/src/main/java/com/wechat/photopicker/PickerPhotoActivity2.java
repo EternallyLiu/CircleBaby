@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -18,12 +19,19 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.wechat.photopicker.adapter.PhotoSelectorAdapter;
 import com.wechat.photopicker.adapter.PhotoSelectorAdapter2;
+import com.wechat.photopicker.endity.Photo;
+import com.wechat.photopicker.event.OnItemCheckListener;
 import com.wechat.photopicker.event.OnItemCheckListener2;
+import com.wechat.photopicker.fragment.PickerPhotoFragment;
 import com.wechat.photopicker.fragment.PickerPhotoFragment2;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
@@ -31,9 +39,12 @@ import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.api.models.objs.SystemMsg;
+import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.open.activities.PODActivity;
 import cn.timeface.open.api.models.objs.TFOContentObj;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
 import cn.timeface.open.api.models.objs.TFOResourceObj;
@@ -58,15 +69,16 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     //可选图片大小
     private int optionalPhotoSize;
     private Button btPreview;
-    private ArrayList<ImageInfoListObj> dataList;
+    public ArrayList<ImageInfoListObj> dataList;
     private ArrayList<ImageInfoListObj> imageInfoList = new ArrayList<>();
     private int bookType;
     private String bookSizeId;
     private int pageNum;
     private String bookName = "";
     private ArrayList<TFOResourceObj> tfoResourceObjs;
-    private int bookTheme;
-    //    private ArrayList<MediaObj> mediaobjs;
+    private int openBookType;
+    private String bookId = "";
+    private String openBookId = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,8 +87,10 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
 //        checkPermission();
         Intent intent = getIntent();
         bookType = intent.getIntExtra("bookType", 0);
-        bookTheme = intent.getIntExtra("bookTheme", 0);
         bookSizeId = intent.getStringExtra("bookSizeId");
+        bookId = intent.getStringExtra("bookId");
+        openBookId = intent.getStringExtra("openBookId");
+        openBookType = intent.getIntExtra("openBookType", 0);
         dataList = intent.getParcelableArrayListExtra("dataList");
         optionalPhotoSize = MAX_SELECTOR_SIZE;
         Log.d(TAG, "optionalPhotoSize---" + optionalPhotoSize);
@@ -157,15 +171,10 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
             super.onBackPressed();
 
         } else if (i == R.id.done) {
-//            Intent intent = new Intent();
-//            intent.putStringArrayListExtra(KEY_SELECTED_PHOTOS, mPhotoSelectorAdapter.getSelectedPhotoPaths());
-//            setResult(RESULT_OK, intent);
-//            finish();
-
             List<Integer> timeIds = mPhotoSelectorAdapter.getTimeIds();
-            /*HashSet<Integer> integers = new HashSet<>(timeIds);
+            HashSet<Integer> integers = new HashSet<>(timeIds);
             timeIds.clear();
-            timeIds.addAll(integers);*/
+            timeIds.addAll(integers);
             pageNum = mPhotoSelectorAdapter.getSelectedPhotos().size();
             imageInfoList.clear();
             for (ImageInfoListObj obj : dataList) {
@@ -173,7 +182,9 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                     imageInfoList.add(obj);
                 }
             }
+
             String s = new Gson().toJson(imageInfoList);
+
             if (bookType == 2) {
                 bookName = FastData.getBabyName() + "日记卡片书";
                 createBook(s);
@@ -193,9 +204,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                 TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
                 ArrayList<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
                 tfoContentObjs1.add(tfoContentObj);
-                List<TFOPublishObj> publishObjs = new ArrayList<>();
-                publishObjs.add(new TFOPublishObj("", tfoContentObjs1));
-                MyPODActivity.open(this, "", bookTheme, publishObjs, s);
+                MyPODActivity.open(this, openBookId, openBookType, new TFOPublishObj("", tfoContentObjs1) , s);
                 finish();
             }
         }
@@ -203,11 +212,11 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     }
 
     private void createBook(String s) {
-        apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), mPhotoSelectorAdapter.getSelectedPhotos().get(0).getImgUrl(), "", URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum,bookTheme)
+        apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), mPhotoSelectorAdapter.getSelectedPhotos().get(0).getImgUrl(), bookId , URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum,openBookType)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
-                        ToastUtil.showToast("创建成功");
+                        EventBus.getDefault().post(new BookOptionEvent());
                         finish();
                     } else {
                         ToastUtil.showToast(response.getInfo());
@@ -216,6 +225,5 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                     Log.e(TAG, "createBook:");
                 });
     }
-
 
 }

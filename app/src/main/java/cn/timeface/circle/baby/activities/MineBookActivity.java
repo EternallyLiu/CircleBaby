@@ -23,7 +23,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,11 +33,11 @@ import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
+import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.managers.listeners.OnClickListener;
-import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
@@ -117,7 +116,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                         .subscribe(response -> {
                             ToastUtil.showToast(response.getInfo());
                             if (response.success()) {
-                                adapter.notifyDataSetChanged();
+                                EventBus.getDefault().post(new BookOptionEvent());
                             }
                         }, error -> {
                             Log.e(TAG, "deleteBook:");
@@ -133,12 +132,12 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                 //日记书、识图卡片书，跳转本地预览
                 ToastUtil.showToast("日记书、识图卡片书，跳转本地预览");
 
-                apiService.queryImageInfoList(mineBookObj.getBookId(),mineBookObj.getBookType())
+                apiService.queryImageInfoList(mineBookObj.getBookId(), mineBookObj.getBookType())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(imageInfoListResponse -> {
                             ArrayList<String> urls = new ArrayList<>();
-                            for(ImageInfoListObj imageInfoListObj : imageInfoListResponse.getDataList()){
-                                for(MediaObj media : imageInfoListObj.getMediaList()){
+                            for (ImageInfoListObj imageInfoListObj : imageInfoListResponse.getDataList()) {
+                                for (MediaObj media : imageInfoListObj.getMediaList()) {
                                     urls.add(media.getImgUrl());
                                 }
                             }
@@ -222,6 +221,14 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
             case R.id.error_retry:
                 FragmentBridgeActivity.open(this, "AddBookListFragment");
                 break;
+        }
+    }
+
+    @Subscribe
+    public void onEvent(BookOptionEvent event) {
+        if (event != null) {
+            currentPage = 1;
+            reqData(currentPage, true);
         }
     }
 }

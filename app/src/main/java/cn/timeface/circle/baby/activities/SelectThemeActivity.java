@@ -120,7 +120,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
     private void startPhotoPick() {
         Intent intent = new Intent(this, PickerPhotoActivity2.class);
         intent.putExtra("bookType",5);
-        intent.putExtra("bookTheme",bookTheme);
+        intent.putExtra("openBookType",bookTheme);
         intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
         startActivity(intent);

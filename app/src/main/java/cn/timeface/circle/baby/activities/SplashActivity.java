@@ -1,171 +1,480 @@
 package cn.timeface.circle.baby.activities;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
-import android.view.MotionEvent;
+import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.wbtech.ums.UmsAgent;
+import com.wbtech.ums.common.UmsConstants;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import cn.sharesdk.framework.ShareSDK;
+import cn.timeface.circle.baby.App;
+import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import com.jakewharton.rxbinding.view.RxView;
+import cn.timeface.circle.baby.api.models.PushItem;
+import cn.timeface.circle.baby.api.models.responses.PushResponse;
+import cn.timeface.circle.baby.api.models.responses.UpdateResponse;
+import cn.timeface.circle.baby.dialogs.TFDialog;
+import cn.timeface.circle.baby.fragments.WebViewFragment;
+import cn.timeface.circle.baby.managers.receivers.DownloadCompleteReceiver;
+import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.NotificationUtil;
+import cn.timeface.circle.baby.utils.Once;
+import cn.timeface.circle.baby.utils.Utils;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import cn.timeface.common.utils.ChannelUtil;
+import cn.timeface.common.utils.DeviceUtil;
+import cn.timeface.common.utils.NetworkUtil;
+import cn.timeface.common.utils.PackageUtils;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
+ * @author rayboot
+ * @from 14-8-18 14:08
+ * @TODO
  */
 public class SplashActivity extends BaseAppCompatActivity {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
+    private static final int REQUEST_CODE_WEBVIEW = 101;
+    private static final int REQUEST_CODE_GUIDE = 102;
+    public static TFProgressDialog progressDialog;
+    UpdateResponse updateModule;
+    @Bind(R.id.image)
+    ImageView image;
+    @Bind(R.id.logo)
+    ImageView logo;
+    private String adUrl = "";
+    private String scheme, data;
+    private boolean is_Scheme = false;
+    private final MyHandler handler = new MyHandler(this);
 
-    /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
-     */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+    static class MyHandler extends Handler {
+        // WeakReference to the outer class's instance.
+        private WeakReference<SplashActivity> mOuter;
 
-    /**
-     * Some older devices needs a small delay between UI widget updates
-     * and a change of the status and navigation bar.
-     */
-    private static final int UI_ANIMATION_DELAY = 300;
-    private final Handler mHideHandler = new Handler();
-    private View mContentView;
-    private final Runnable mHidePart2Runnable = new Runnable() {
-        @SuppressLint("InlinedApi")
-        @Override
-        public void run() {
-            // Delayed removal of status and navigation bar
-
-            // Note that some of these constants are new as of API 16 (Jelly Bean)
-            // and API 19 (KitKat). It is safe to use them, as they are inlined
-            // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        public MyHandler(SplashActivity activity) {
+            mOuter = new WeakReference<>(activity);
         }
-    };
-    private View mControlsView;
-    private final Runnable mShowPart2Runnable = new Runnable() {
+
         @Override
-        public void run() {
-            // Delayed display of UI elements
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
+        public void handleMessage(Message msg) {
+            SplashActivity outer = mOuter.get();
+            if (outer != null) {
+                outer.doNext();
             }
-            mControlsView.setVisibility(View.VISIBLE);
         }
-    };
-    private boolean mVisible;
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+        ButterKnife.bind(this);
+        //初始化sharesdk
+        ShareSDK.initSDK(this);
+        firstRun();
+        requestCheckUpdate();
+
+        if ("baidu".equals(ChannelUtil.getChannel(getApplicationContext()))) {
+            logo.setImageResource(R.drawable.baidu_first);
+        } else {
+            logo.setImageResource(R.drawable.splash_logo);
         }
-    };
+    }
+
+    private void firstRun() {
+        Subscription s = apiService.firstRun(Build.MODEL, Build.VERSION.RELEASE, BuildConfig.VERSION_NAME,
+                DeviceUtil.getScreenHeight(this) + "X" + DeviceUtil.getScreenWidth(this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        response -> {
+                        }
+                        , error -> {
+                            Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+        addSubscription(s);
+
+    }
+
+    private void requestCheckUpdate() {
+        FastData.setIsEnforceUpgrade(-1);
+
+        Subscription s = apiService.latestVersion(BuildConfig.VERSION_CODE, 2)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        response -> {
+                            if (response.success()) {
+                                if (!checkUpdate(response)) {
+                                    showGuide();
+                                }
+                            } else {
+                                if (!response.getInfo().equals("已是最新版本")) {
+                                    Toast.makeText(SplashActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
+                                }
+                                showGuide();
+                            }
+                        }
+                        , throwable -> {
+                            Toast.makeText(SplashActivity.this, "检测更新失败", Toast.LENGTH_SHORT).show();
+                            showGuide();
+                        });
+        addSubscription(s);
+    }
+
+    private void showGuide() {
+        new Once().show(
+                "show_guide_" + BuildConfig.VERSION_CODE
+                , new Once.OnceCallback() {
+                    @Override
+                    public void onOnce() {
+//                        GuideActivity.open(SplashActivity.this, REQUEST_CODE_GUIDE);
+                        showAD();
+                    }
+
+                    @Override
+                    public void onMore() {
+                        showAD();
+                    }
+                });
+    }
+
     /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
+     * 检测是否需要更新
+     * 如果需要更新则弹出提示框
+     *
+     * @param data
+     * @return 是否需要更新
      */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
+    private boolean checkUpdate(UpdateResponse data) {
+        updateModule = data;
+        updateModule.info = updateModule.info.replace("\\n", "\n");
+
+        if (BuildConfig.VERSION_CODE >= updateModule.getVersion()) {
             return false;
         }
-    };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(cn.timeface.circle.baby.R.layout.activity_splash);
-
-        mVisible = true;
-        mControlsView = findViewById(cn.timeface.circle.baby.R.id.fullscreen_content_controls);
-        mContentView = findViewById(cn.timeface.circle.baby.R.id.fullscreen_content);
-
-
-        // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
+        FastData.setIsEnforceUpgrade(updateModule.getEnforce());
+        if (updateModule.getEnforce() == 1) {
+            final TFDialog dialog = TFDialog.getInstance();
+            dialog.setTitle(R.string.check_update);
+            dialog.setMessage(updateModule.info);
+            dialog.setPositiveButton(R.string.dialog_submit,
+                    v -> {
+                        dialog.dismiss();
+                        if (needDownloadFile()) {
+                            fullScreen(false);
+                            doDownload();
+                        } else {
+                            sendBroadcast(new Intent(DownloadCompleteReceiver.ACTION_NOTIFICATION_CLICKED));
+                        }
+                    });
+            dialog.setNegativeButton(R.string.dialog_cancle,
+                    v -> {
+                        dialog.dismiss();
+                        SplashActivity.this.finish();
+                    });
+            dialog.show(getSupportFragmentManager(), TAG);
+        } else if (updateModule.getEnforce() == 0) {
+            if (needDownloadFile()) {
+                if (NetworkUtil.isWifiConnected(SplashActivity.this)) {
+                    doDownload();
+                }
+            } else {
+                showUpgradeNotification();
             }
-        });
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(cn.timeface.circle.baby.R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
-
-        RxView.clicks(findViewById(cn.timeface.circle.baby.R.id.dummy_button))
-                .subscribe(aVoid -> {
-                    TabMainActivity.open(this);
-                });
-
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
-    }
-
-    private void toggle() {
-        if (mVisible) {
-            hide();
-        } else {
-            show();
+            showGuide();
         }
-    }
 
-    private void hide() {
-        // Hide UI first
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-        mControlsView.setVisibility(View.GONE);
-        mVisible = false;
-
-        // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
-    }
-
-    @SuppressLint("InlinedApi")
-    private void show() {
-        // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        mVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+        return true;
     }
 
     /**
-     * Schedules a call to hide() in [delay] milliseconds, canceling any
-     * previously scheduled calls.
+     * 下载逻辑
      */
-    private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(mHideRunnable);
-        mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    private void doDownload() {
+//        fullScreen(false);
+        final DownloadManager.Request req = getDownloadRequest();
+        final DownloadManager downloadManager =
+                (DownloadManager) SplashActivity.this.getSystemService(
+                        Activity.DOWNLOAD_SERVICE);
+        if (NetworkUtil.getConnectedType(this) != ConnectivityManager.TYPE_WIFI) {
+            final TFDialog smileDialog = TFDialog.getInstance();
+            smileDialog.setTitle(R.string.check_update);
+            smileDialog.setMessage("温馨提示：当前处于非WiFi环境下，下载会耗费手机流量，是否继续下载？");
+            smileDialog.setPositiveButton("下载更新", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    smileDialog.dismiss();
+                    progressDialog =
+                            new TFProgressDialog(SplashActivity.this);
+                    progressDialog.setMessage("正在下载...");
+                    progressDialog.show();
+                    try {
+                        downloadManager.enqueue(req);
+                    } catch (Exception e) {
+                        showDownloadManagerStateDialog();
+                    }
+                }
+            });
+            smileDialog.setNegativeButton("取消", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    smileDialog.dismiss();
+                    //强制更新
+                    if (updateModule.getEnforce() == 1) {
+                        SplashActivity.this.finish();
+                    } else {
+                        showGuide();
+                    }
+                    return;
+                }
+            });
+            smileDialog.show(getSupportFragmentManager(), "");
+        } else {
+            progressDialog =
+                    new TFProgressDialog(SplashActivity.this);
+            progressDialog.setMessage("正在下载...");
+            progressDialog.show();
+            try {
+                downloadManager.enqueue(req);
+            } catch (Exception e) {
+                showDownloadManagerStateDialog();
+            }
+        }
+
+
     }
+
+    /**
+     * 打开通知栏，通知升级
+     */
+    private void showUpgradeNotification() {
+        List<PushItem> notifys = new ArrayList<PushItem>();
+        PushResponse notify = new PushResponse();
+        PushItem pushItem = new PushItem();
+        pushItem.setAlert("新版本已下载成功，点击安装更新！");
+        pushItem.setDataType(pushItem.DownloadSuccess);
+        pushItem.setPushId(0x33);
+        notifys.add(pushItem);
+        notify.setDatas(notifys);
+        NotificationUtil.showPushMsg(App.getInstance(), notify, true);
+    }
+
+    /**
+     * 如果已下载apk文件，且apk文件的versionCode不低于线上版本，则返回fale
+     *
+     * @return false 表示已下载最新apk文件，不需要重新下载
+     */
+    private boolean needDownloadFile() {
+        // 文件不存在  需要下载文件
+        if (TextUtils.isEmpty(FastData.getApkDownloadPath())
+                || !(new File(FastData.getApkDownloadPath()).exists())) {
+            return true;
+        }
+
+        // 文件存在且版本号不低于线上版本
+        return PackageUtils.getApkInfo(this, FastData.getApkDownloadPath()).versionCode < updateModule.getVersion();
+    }
+
+    private void showDownloadManagerStateDialog() {
+        final TFDialog dialog = TFDialog.getInstance();
+        dialog.setTitle(R.string.check_update);
+        dialog.setMessage("请手动 “开启” 下载管理程序才能完成新版本下载。");
+        dialog.setPositiveButton(R.string.dialog_submit, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Utils.openDownloadManagerState(SplashActivity.this)) {
+                    Toast.makeText(SplashActivity.this, "未发现下载管理器组件,已从浏览器直接下载。", Toast.LENGTH_LONG).show();
+                    Uri uri = Uri.parse(updateModule.getDownUrl());
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.setNegativeButton(R.string.dialog_cancle, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (updateModule.getEnforce() == 1)// 强制更新
+                {
+                    SplashActivity.this.finish();
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.show(getSupportFragmentManager(), "");
+    }
+
+    private DownloadManager.Request getDownloadRequest() {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(this.updateModule.getDownUrl()));
+        request.setDestinationInExternalFilesDir(this,
+                Environment.DIRECTORY_DOWNLOADS,
+                "TimeFace" + this.updateModule.getVersion() + ".apk");
+        request.setTitle(getString(R.string.app_name));
+        request.setDescription(getString(R.string.app_name));
+        // 设置允许使用的网络类型，这里是移动网络和wifi都可以
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        request.setAllowedOverRoaming(true);
+        return request;
+    }
+
+    private void showAD() {
+        Subscription s = apiService.getAD( DeviceUtil.getScreenWidth(this) + "X" + DeviceUtil.getScreenHeight(this))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    if (response.success() && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
+                        adUrl = response.getAdInfo().getAdUri();
+                        Glide.with(SplashActivity.this)
+                                .load(response.getAdInfo().getAdImgUrl())
+                                .into(image);
+                    }
+                }, throwable -> {
+                    Toast.makeText(SplashActivity.this, "服务器返回失败", Toast.LENGTH_SHORT).show();
+                });
+        addSubscription(s);
+        handler.sendEmptyMessageDelayed(1, 3000);
+    }
+
+    private void doNext() {
+        if (!TextUtils.isEmpty(FastData.getPreUserId())) {
+            FastData.setUserId(FastData.getPreUserId());
+            FastData.setPreUserId("");
+        }
+//        if (TextUtils.isEmpty(FastData.getUserId())) {
+//            NewLoginActivity.open(SplashActivity.this);
+//            finish();
+//        } else {
+//            checkLimit();
+//        }
+        LoginActivity.open(this);
+        finish();
+    }
+
+    /*private void checkLimit() {
+        Subscription s = apiServiceV2.userLimit()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        FastData.setUserInfo(response.getUserInfo());
+                        if (response.getLimitType() == 0) {
+                            if (is_Scheme) {
+                                MainActivity.open(SplashActivity.this, scheme, data);
+                            } else {
+                                MainActivity.open(SplashActivity.this);
+                            }
+                        } else if (response.getLimitType() == 1) {
+                            EditMineDataActivity.open(SplashActivity.this, response.getUserInfo().getUserId(), true);
+                        }
+                        finish();
+                    } else {
+                        if (is_Scheme) {
+                            MainActivity.open(SplashActivity.this, scheme, data);
+                        } else {
+                            MainActivity.open(SplashActivity.this);
+                        }
+                        finish();
+                    }
+                }, throwable -> {
+                    MainActivity.open(SplashActivity.this);
+                });
+        addSubscription(s);
+    }*/
+
+    /**
+     * 广告点击
+     */
+    public void toAd(View view) {
+        if (!TextUtils.isEmpty(adUrl)) {
+            handler.removeMessages(1);
+            String isShare = Uri.parse(adUrl).getQueryParameter("share");
+//            WebViewActivity.open4Result(this, adUrl, "", REQUEST_CODE_WEBVIEW, !TextUtils.isEmpty(isShare) && isShare.equals("0"));
+            FragmentBridgeActivity.openWebViewFragment(this,adUrl,"广告");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_WEBVIEW:
+                if (resultCode == RESULT_OK) {
+                    handler.sendEmptyMessage(1);
+                }
+                break;
+            case REQUEST_CODE_GUIDE:
+                doNext();
+                break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy() {
+        handler.removeMessages(1);
+        super.onDestroy();
+    }
+
+    private void fullScreen(boolean enable) {
+        if (enable) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            getWindow().setAttributes(lp);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        } else {
+            WindowManager.LayoutParams attr = getWindow().getAttributes();
+            attr.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setAttributes(attr);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        UmsAgent.onPause(this);
+    }
+
+    private void getScheme() {
+        scheme = getIntent().getScheme();//获得Scheme名称
+        data = getIntent().getDataString();//获得Uri全部路径
+        if (scheme != null && !scheme.equals("") && data != null && !data.equals("")) {
+            is_Scheme = true;
+        }
+    }
+
 }

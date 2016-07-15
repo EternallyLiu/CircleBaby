@@ -120,6 +120,47 @@ public class FastData extends Remember {
      * 地区数据库更新时间
      */
     public static final String REGION_DB_UPDATE_TIME = "up_date";
+    /**
+     * 下载的apk的路径
+     */
+    public static final String DOWNLOAD_APK_PATH = "apk_path";
+
+    /**
+     * 是否强制升级标识
+     */
+    public static final String IS_ENFORCE_UPGRADE = "is_enforce";
+    /**
+     * 上一个用户ID，用于切换账号
+     */
+    public static final String PRE_USER_UID = "pre_user_uid";
+
+    /**
+     * 获取下载的apk绝对路径
+     */
+    public static String getApkDownloadPath() {
+        return getString(DOWNLOAD_APK_PATH, "");
+    }
+
+    /**
+     * 存储下载的apk的路径
+     */
+    public static void setApkDownloadPath(String apkPath) {
+        putString(DOWNLOAD_APK_PATH, apkPath);
+    }
+
+    /**
+     * 获取是否强制升级标识
+     */
+    public static int getIsEnforceUpgrade() {
+        return getInt(IS_ENFORCE_UPGRADE, -1);
+    }
+
+    /**
+     * 存储是否强制升级标识
+     */
+    public static void setIsEnforceUpgrade(int enforce) {
+        putInt(IS_ENFORCE_UPGRADE, enforce);
+    }
 
 
     /**
@@ -127,6 +168,20 @@ public class FastData extends Remember {
      */
     public static String getDefaultSharedPreferencesName() {
         return BuildConfig.APPLICATION_ID + "_preferences";
+    }
+
+    /**
+     * 获取上一个用户ID，用于切换账号
+     */
+    public static String getPreUserId() {
+        return getString(PRE_USER_UID, null);
+    }
+
+    /**
+     * 设置上一个用户ID，用于切换账号
+     */
+    public static void setPreUserId(String userId) {
+        putString(PRE_USER_UID, userId);
     }
 
     public static String getAccount() {

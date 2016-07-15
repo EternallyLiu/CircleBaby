@@ -90,7 +90,7 @@
 -keepclasseswithmembers class * { @com.google.gson.annotations.Expose <fields>; }
 
 # 艹,由于gson解析需要,必须keeping所有序列化和反序列化的model
--keep com.github.rayboot.project.api.models.** { *; }
+#-keep com.github.rayboot.project.api.models.** { *; }
 
 # Parcelable
 -keep class * implements android.os.Parcelable {

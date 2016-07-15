@@ -289,7 +289,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                 if (response.success()) {
                                     boolean isContains = false;
                                     if (p == 1) {//之前没有点赞
-
+                                        llCommentLikeWrapper.setVisibility(View.VISIBLE);
                                         listData.get(position).setLike(1);
                                         int likeCount = listData.get(position).getLikeCount();
                                         listData.get(position).setLikeCount(likeCount + 1);
@@ -326,10 +326,12 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         if (timeLineObj.getLikeCount() == 0) {
                                             hsv.setVisibility(View.GONE);
                                             if (timeLineObj.getCommentCount() == 0) {
+                                                llCommentLikeWrapper.setVisibility(View.GONE);
                                             }
                                         } else if (timeLineObj.getLikeCount() == 1 && timeLineObj.getLikeList().get(0).getUserId().equals(FastData.getUserId())) {
                                             hsv.setVisibility(View.GONE);
                                             if (timeLineObj.getCommentCount() == 0) {
+                                                llCommentLikeWrapper.setVisibility(View.GONE);
                                             }
                                         } else {
                                             hsv.setVisibility(View.VISIBLE);

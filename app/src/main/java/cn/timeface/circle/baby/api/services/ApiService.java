@@ -4,6 +4,7 @@ import java.util.Map;
 
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.api.models.responses.ADResponse;
 import cn.timeface.circle.baby.api.models.responses.AddAddressResponse;
 import cn.timeface.circle.baby.api.models.responses.AddCartItemResponse;
 import cn.timeface.circle.baby.api.models.responses.AddressListResponse;
@@ -39,6 +40,7 @@ import cn.timeface.circle.baby.api.models.responses.RelationshipResponse;
 import cn.timeface.circle.baby.api.models.responses.SystemMsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.TimeDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.TimelineResponse;
+import cn.timeface.circle.baby.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.api.models.responses.UserLoginResponse;
 import cn.timeface.circle.baby.payment.timeface.WxPrepayResponse;
 import retrofit2.http.Field;
@@ -67,6 +69,27 @@ public interface ApiService {
 
     String IMAGE_BASE_URL = "http://img1.timeface.cn/";
 
+    /**
+     * 手机基本信息注册
+     */
+    @POST("auth/firstRun?platform=2")
+    Observable<BaseResponse> firstRun(@Query("deviceName") String deviceName,
+                                      @Query("osVersion") String osVersion,
+                                      @Query("clientVersion") String clientVersion,
+                                      @Query("screen") String screen);
+
+    /**
+     * App更新检测
+     */
+    @POST("auth/latestVersion")
+    Observable<UpdateResponse> latestVersion(@Query("version") int version,
+                                             @Query("platform") int platform);
+
+    /**
+     * 首页全屏广告
+     */
+    @POST("auth/screenAd")
+    Observable<ADResponse> getAD(@Query("screen") String screen);
 
     //登录
     @GET("auth/login")
@@ -520,4 +543,10 @@ public interface ApiService {
      */
     @POST("babyOrder/operOrder")
     Observable<BaseResponse> cancelOrder(@Query("orderId") String orderId);
+
+    /**
+     * 确认收货
+     */
+    @POST("babyOrder/receipt")
+    Observable<BaseResponse> receipt(@Query("orderId") String orderId);
 }

@@ -16,18 +16,16 @@
         app:fixRatio="fixWidth"
         app:heightRatio="25"
         app:widthRatio="18">
+        <ImageView
+            android:id="@+id/iv_bookbg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/book_front_mask" />
 
         <ImageView
             android:id="@+id/iv_book"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <ImageView
-            android:id="@+id/iv_bookbg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/book_front_mask" />
 
     </com.github.rayboot.widget.ratioview.RatioFrameLayout>
 

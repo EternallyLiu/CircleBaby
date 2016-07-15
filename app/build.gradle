@@ -18,9 +18,9 @@ android {
     signingConfigs {
         signingConfig {
             try {
-                keyAlias 'sixiangli'
+                keyAlias 'timeface'
                 keyPassword project.hasProperty('KEY_PASSWORD') ? KEY_PASSWORD : ''
-                storeFile file('../keystore.jks')
+                storeFile file('../tf215.ks')
                 storePassword project.hasProperty('STORE_PASSWORD') ? STORE_PASSWORD : ''
             }
             catch (ex) {

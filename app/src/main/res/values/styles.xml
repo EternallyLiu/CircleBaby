@@ -20,6 +20,40 @@
         <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 
+    <style name="AppTheme.TransparentActivity" parent="AppTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="AppTheme.TransparentActivity.FullScreen">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:textAppearanceSmall">@style/TFTextSmallAppearance</item>
+        <item name="android:textAppearanceMedium">@style/TFTextMediumAppearance</item>
+        <item name="android:textAppearanceLarge">@style/TFTextLargeAppearance</item>
+        <item name="android:textAppearance">@style/TFTextAppearance</item>
+    </style>
+
+    <style name="TFTextSmallAppearance" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TFTextMediumAppearance" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TFTextLargeAppearance" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TFTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>
@@ -76,16 +110,19 @@
         <item name="android:backgroundDimEnabled">false</item>
         <!-- 模糊 -->
     </style>
+
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom
         </item>
         <item name="android:windowExitAnimation">@anim/slide_out_to_bottom
         </item>
     </style>
+
     <style name="PrintPropertyText">
         <item name="android:textColor">@color/text_color9</item>
         <item name="android:textSize">@dimen/text_small_12</item>
     </style>
+
     <style name="OrderTextLabel">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -117,6 +154,7 @@
         <item name="android:horizontalSpacing">24dp</item>
         <item name="android:verticalSpacing">12dp</item>
     </style>
+
     <style name="bottom_dialog_animation" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/dialog_bottom_enter
         </item>
@@ -130,6 +168,7 @@
         <item name="android:textSize">16sp</item>
         <item name="android:padding">12dp</item>
     </style>
+
     <style name="AboutText">
         <item name="android:textSize">20sp</item>
         <item name="android:layout_width">wrap_content</item>
