@@ -202,9 +202,11 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                     }
                 }
                 TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
-                ArrayList<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+                List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
                 tfoContentObjs1.add(tfoContentObj);
-                MyPODActivity.open(this, openBookId, openBookType, new TFOPublishObj("", tfoContentObjs1) , s);
+                TFOPublishObj tfoPublishObj = new TFOPublishObj("", tfoContentObjs1);
+                List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+                MyPODActivity.open(this, openBookId, openBookType, tfoPublishObjs , s);
                 finish();
             }
         }
