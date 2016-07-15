@@ -103,6 +103,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     }
 
     private void selectImages() {
+        selImages.clear();
         SelectPhotoActivity.openForResult(this, selImages, PHOTO_COUNT_MAX, PICTURE);
     }
 

@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.URLEncoder;
 
 import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.services.ApiService;
+import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -53,7 +56,7 @@ public class MyPODActivity extends PODActivity {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
-                        ToastUtil.showToast("创建成功");
+                        EventBus.getDefault().post(new BookOptionEvent());
                     } else {
                         ToastUtil.showToast(response.getInfo());
                     }

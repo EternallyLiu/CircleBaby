@@ -49,7 +49,7 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = ((ViewHolder) viewHolder);
-        holder.contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(context).color(Color.TRANSPARENT).sizeResId(R.dimen.view_space_normal).build());
+//        holder.contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(context).color(Color.TRANSPARENT).sizeResId(R.dimen.view_space_normal).build());
         TimeLineGroupObj item = getItem(position);
         String month = DateUtil.getMonth(item.getDate());
         String day = DateUtil.getDay(item.getDate());

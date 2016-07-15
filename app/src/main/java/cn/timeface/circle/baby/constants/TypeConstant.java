@@ -35,13 +35,15 @@ public class TypeConstant {
 
 
     // 订单状态
-    public static final int STATUS_CHECKING = 0; // 审核中
+    public static final int STATUS_CHECKING = 0; // 待收货
     public static final int STATUS_CHECK_FAILED = 1; // 审核未通过
     public static final int STATUS_PRINTING = 2; // 印刷中
     public static final int STATUS_DELIVERING = 3; // 配送中
+    public static final int STATUS_REFUND = 4; // 退款中
     public static final int STATUS_DELIVERY_SUCCESS = 5; // 已送达
-    public static final int STATUS_TRANSACATION_CLOSED = 7; // 交易关闭
-    //    public static final int STATUS_NOT_CONFIRM = 98; // 未确认
+    public static final int STATUS_CLOSED = 6; // 已关闭
+    public static final int STATUS_TRANSACATION_CLOSED = 7; // 超时未支付
+    public static final int STATUS_NOT_CONFIRM = 98; // 待确认
     public static final int STATUS_NOT_PAY = 99; // 未支付
 
     // 时光书上下架状态

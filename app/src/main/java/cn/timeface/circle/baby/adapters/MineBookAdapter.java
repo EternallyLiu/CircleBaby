@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.managers.listeners.OnClickListener;
@@ -79,10 +80,12 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         holder.context = mContext;
         GlideUtil.displayImage(obj.getBookCover(), holder.ivBook);
         holder.tvTitle.setText(obj.getBookName());
-        holder.tvPageNum.setText(obj.getPageNum()+"");
+        holder.tvPageNum.setText(obj.getPageNum() + "");
         holder.tvCreattime.setText(DateUtil.getYear2(obj.getUpdateTime()));
-        if(obj.getBookType()==3||obj.getBookType()==5){
-            holder.ivBookbg.setBackgroundResource(R.drawable.book_front_mask2);
+        if (obj.getBookType() != 2) {
+            holder.ivBookbg.setImageResource(R.drawable.book_front_mask2);
+        }else{
+            holder.ivBookbg.setImageResource(R.drawable.book_front_mask);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,13 +194,13 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(printStatusResponse -> {
                                 int printCode = printStatusResponse.getPrintCode();
-                                switch (printCode){
+                                switch (printCode) {
 //                                    case TypeConstant.PRINT_CODE_LIMIT_LESS:
 //                                        notify = "少于12页，不可印刷";
 //                                        break;
-//                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
-//                                        notify = "超出200页，不可印刷";
-//                                        break;
+                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
+                                        notify = "照片书不能大于200页";
+                                        break;
 //                                    case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
 //                                        notify = "该时光书已被删除，不可印刷";
 //                                        break;
@@ -214,8 +217,9 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                                         notify = "识图卡片需8张";
                                         break;
                                 }
-                                if(!TextUtils.isEmpty(notify)){
+                                if (!TextUtils.isEmpty(notify)) {
                                     ToastUtil.showToast(notify);
+                                    notify = "";
                                     return;
                                 }
                                 obj.setPrintCode(printCode);
@@ -231,7 +235,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
             BaseAppCompatActivity.apiService.queryParamList(obj.getBookType(), obj.getPageNum())
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(paramListResponse -> {
-                        if(paramListResponse.success()){
+                        if (paramListResponse.success()) {
                             CartPrintPropertyDialog dialog = CartPrintPropertyDialog.getInstance(null,
                                     null,
                                     paramListResponse.getDataList(),
@@ -254,6 +258,9 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         private void startPhotoPick(List<ImageInfoListObj> dataList) {
             Intent intent = new Intent(context, PickerPhotoActivity2.class);
             intent.putExtra("bookType", obj.getBookType());
+            intent.putExtra("bookId",obj.getBookId());
+            intent.putExtra("openBookId",obj.getOpenBookId());
+            intent.putExtra("openBookType",obj.getOpenBookType());
             intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
             context.startActivity(intent);

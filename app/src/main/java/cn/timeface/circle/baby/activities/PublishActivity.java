@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,8 +73,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
     protected final int PHOTO_COUNT_MAX = 100;
 
-    @Bind(R.id.tv_next)
-    TextView tvNext;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.gv_grid_view)
@@ -100,6 +99,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     ImageView ivCover;
     @Bind(R.id.rl_video)
     RelativeLayout rlVideo;
+    @Bind(R.id.tv_videotime)
+    TextView tvVideotime;
+
     private PhotoGridAdapter adapter;
     private HashSet<String> imageUrls = new HashSet<>();
     public final int PICTURE = 0;
@@ -139,7 +141,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
         publishType = getIntent().getIntExtra("publish_type", NOMAL);
 
-        tvNext.setOnClickListener(this);
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
 
@@ -277,8 +278,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     String path = data.getStringExtra("path");
                     long duration = data.getLongExtra("duration", 0);
                     long date = data.getLongExtra("date", System.currentTimeMillis());
-                    videoInfo = new VideoInfo(duration, imgObjectKey, path, date);
-                    GlideUtil.displayImage("http://img1.timeface.cn/" + this.videoInfo.getImgObjectKey(), ivVideo);
+                    videoInfo = new VideoInfo(duration, imgObjectKey, path, date*1000);
+                    GlideUtil.displayImage("http://img1.timeface.cn/" + imgObjectKey, ivVideo);
                     rlVideo.setVisibility(View.VISIBLE);
                     gvGridView.setVisibility(View.GONE);
                     ViewGroup.LayoutParams layoutParams = ivVideo.getLayoutParams();
@@ -287,7 +288,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     layoutParams.height = width;
                     ivVideo.setLayoutParams(layoutParams);
                     ivCover.setLayoutParams(layoutParams);
-                    tvTime.setText(DateUtil.getYear2(date));
+                    tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate()));
+                    tvVideotime.setText("时长：" + videoInfo.getDuration() + "秒");
 
                     break;
             }
@@ -304,46 +306,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_next:
-                //检测网络环境
-                if (Utils.isNetworkConnected(this)) {
-                    int networkType = Utils.getNetworkType(this);
-                    if (networkType != 1) {
-                        //非Wifi提示
-                        new AlertDialog.Builder(this).setTitle("当前为非Wifi网络环境，是否继续？")
-                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        return;
-                                    }
-                                }).setPositiveButton("继续", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                }).show();
-                    }
-                } else {
-                    ToastUtil.showToast("请检查是否联网");
-                    return;
-                }
-
-                switch (type) {
-                    case 0:
-                        postRecord();
-                        break;
-                    case 1:
-                        uploadVideo(videoInfo.getPath());
-                        break;
-                    case 2:
-                        publishDiary();
-                        break;
-                    case 3:
-                        publishCard();
-                        break;
-                }
-                break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
@@ -392,7 +354,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private void publishDiary() {
         String content = etContent.getText().toString();
         if (TextUtils.isEmpty(content) && mediaObj == null) {
-            Toast.makeText(this, "发点文字吧~", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "发点文字或图片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
         String t = tvTime.getText().toString();
@@ -571,7 +533,45 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+        } else if (item.getItemId() == R.id.complete) {
+            //检测网络环境
+            if (Utils.isNetworkConnected(this)) {
+                int networkType = Utils.getNetworkType(this);
+                if (networkType != 1) {
+                    //非Wifi提示
+                    new AlertDialog.Builder(this).setTitle("当前为非Wifi网络环境，是否继续？")
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    return;
+                                }
+                            }).setPositiveButton("继续", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                }
+            } else {
+                ToastUtil.showToast("请检查是否联网");
+                return true;
+            }
 
+            switch (type) {
+                case 0:
+                    postRecord();
+                    break;
+                case 1:
+                    uploadVideo(videoInfo.getPath());
+                    break;
+                case 2:
+                    publishDiary();
+                    break;
+                case 3:
+                    publishCard();
+                    break;
+            }
         }
         return true;
     }
@@ -604,5 +604,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 }).show();
     }
 
-    ;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_complete, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
 }

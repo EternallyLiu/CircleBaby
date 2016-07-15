@@ -181,7 +181,9 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                     finish();
                     break;
                 case 2:
+                    System.out.println("orderStatus==================="+orderStatus);
                     if (orderStatus == TypeConstant.STATUS_CHECKING) {
+                        System.out.println("PaySuccessActivity===================PaySuccessActivity");
                         timer.cancel();
                         progressDialog.dismiss();
                         PaySuccessActivity.open(MyOrderConfirmActivity.this, orderId,
@@ -923,7 +925,8 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                 .subscribe(response -> {
                     progressDialog.dismiss();
                     if (response.success()) {
-                        startPayment();
+//                        startPayment();
+                        doPay();
                     } else {
                         Toast.makeText(MyOrderConfirmActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
                     }
@@ -958,24 +961,25 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //        if (orderPrice == 0) {//积分支付
 //            reqPayByPoint();
 //        } else {// 现金支付
-//            final SelectPayWayDialog dialog = new SelectPayWayDialog(original);
-//            dialog.setClickListener(new SelectPayWayDialog.ClickListener() {
-//                @Override
-//                public void okClick(int payType) {
-//                    dialog.dismiss();
-//                    progressDialog.show();
-//                    switch (payType) {
+            final SelectPayWayDialog dialog = new SelectPayWayDialog(original);
+            dialog.setClickListener(new SelectPayWayDialog.ClickListener() {
+                @Override
+                public void okClick(int payType) {
+                    dialog.dismiss();
+                    progressDialog.show();
+                    switch (payType) {
                         // 支付宝
-//                        case 1:
-//                            orderPrice = 0.01f;//一分钱测试支付
-                            /*if (isUsePoint || !TextUtils.isEmpty(getUseCouponId())) {
-                                //4混合支付(支付宝)
-                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
-                            } else {
-                                //2支付宝支付
+                        case 1:
+                            orderPrice = 0.01f;//一分钱测试支付
+//                            if (isUsePoint || !TextUtils.isEmpty(getUseCouponId())) {
+//                                //4混合支付(支付宝)
+//                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
+//                            } else {
+//                                //2支付宝支付
+                                System.out.println("2支付宝支付==========="+orderId);
                                 new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
-                            }
-                            break;*/
+//                            }
+                            break;
 
                         // 微信
 //                        case 2:
@@ -990,19 +994,19 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //                        case 3:
                            /* new EPayUtil(MyOrderConfirmActivity.this, orderId).pay();
                             break;*/
-//                    }
-//                }
-//
-//                @Override
-//                public void cancelClick() {
-//                    dialog.dismiss();
-//                    /*OrderDetailCartActivity.open(MyOrderConfirmActivity.this, orderId, TypeConstant.STATUS_NOT_PAY);*/
-//                    OrderDetailActivity.open(MyOrderConfirmActivity.this,orderId);
-//                    finish();
-//                }
-//            });
-//            dialog.setCancelable(false);
-//            dialog.show(getSupportFragmentManager(), "dialog");
+                    }
+                }
+
+                @Override
+                public void cancelClick() {
+                    dialog.dismiss();
+                    /*OrderDetailCartActivity.open(MyOrderConfirmActivity.this, orderId, TypeConstant.STATUS_NOT_PAY);*/
+                    OrderDetailActivity.open(MyOrderConfirmActivity.this,orderId);
+                    finish();
+                }
+            });
+            dialog.setCancelable(false);
+            dialog.show(getSupportFragmentManager(), "dialog");
 //        }
     }
 
@@ -1045,6 +1049,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("确认订单支付结果==========="+orderId);
                 Subscription s = apiService.findOrderDetail(orderId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {

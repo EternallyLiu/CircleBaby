@@ -80,7 +80,12 @@
     <string name="done">完成</string>
     <string name="done_selector_size">完成(%1$d/%2$d)</string>
     <string name="clear_photo">清理图片</string>
+    <string name="check_update">检测到新版本</string>
+    <string name="dialog_title">提示</string>
+    <string name="dialog_submit">确定</string>
+    <string name="dialog_cancle">取消</string>
 
+    <string name="publish">发布</string>
     <string name="picker_video">选择视频</string>
     <string name="cloudAlbum">云相册</string>
     <string name="state_404">内容未找到，先去看看别的吧</string>

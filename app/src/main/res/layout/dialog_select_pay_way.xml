@@ -51,7 +51,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#e0e0e0"/>
+            android:background="#e0e0e0"
+            android:visibility="gone"/>
 
         <RadioButton
             android:id="@+id/rb_wexin"
@@ -70,7 +71,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#e0e0e0"/>
+            android:background="#e0e0e0"
+            android:visibility="gone"/>
 
         <RadioButton
             android:id="@+id/rb_e"

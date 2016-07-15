@@ -13,7 +13,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.constants.TypeConstant;
 
 /**
  * @author SUN
@@ -46,7 +45,7 @@ public class SelectPayWayDialog extends DialogFragment {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(view);
         from = getArguments().getInt("from", 0);
-        if (from != 0) {
+        /*if (from != 0) {
             mZhifub.setVisibility(View.GONE);
             mWexin.setVisibility(View.GONE);
         }
@@ -55,7 +54,9 @@ public class SelectPayWayDialog extends DialogFragment {
             mZhifub.setVisibility(View.VISIBLE);
             mWexin.setVisibility(View.VISIBLE);
             mEPay.setVisibility(View.GONE);
-        }
+        }*/
+        mWexin.setVisibility(View.GONE);
+        mEPay.setVisibility(View.GONE);
         return dialog;
     }
 

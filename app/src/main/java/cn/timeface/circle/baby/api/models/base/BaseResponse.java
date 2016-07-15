@@ -6,7 +6,7 @@ package cn.timeface.circle.baby.api.models.base;
  */
 public class BaseResponse extends BaseObj {
     int errorCode;
-    String info;
+    public String info;
     int status;
 
     public int getErrorCode() {

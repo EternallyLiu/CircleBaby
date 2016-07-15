@@ -83,6 +83,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
                 .subscribe(listResponse -> {
                     this.listResponse = listResponse;
                     List<MyOrderBookItem> bookList = listResponse.getBookList();
+                    listData.clear();
                     listData.addAll(bookList);
                     detailHeaderView.setupViewData(listResponse);
                     detailFootView.setupViewData(listResponse);

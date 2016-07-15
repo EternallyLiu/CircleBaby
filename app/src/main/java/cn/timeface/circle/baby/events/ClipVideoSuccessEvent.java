@@ -5,9 +5,19 @@ package cn.timeface.circle.baby.events;
  */
 public class ClipVideoSuccessEvent {
     public String clipVideoPath;
+    public int duration;
 
-    public ClipVideoSuccessEvent(String clipVideoPath) {
+    public ClipVideoSuccessEvent(String clipVideoPath, int duration) {
         this.clipVideoPath = clipVideoPath;
+        this.duration = duration;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public String getClipVideoPath() {

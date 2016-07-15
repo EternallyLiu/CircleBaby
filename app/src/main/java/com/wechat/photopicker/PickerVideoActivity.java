@@ -252,7 +252,9 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
     @Subscribe
     public void onEvent(ClipVideoSuccessEvent event) {
         String clipVideoPath = event.getClipVideoPath();
+        int duration = event.getDuration();
         videoInfo.setPath(clipVideoPath);
+        videoInfo.setDuration(duration);
         uploadImage(videoInfo.getImgLocalUrl());
     }
 
