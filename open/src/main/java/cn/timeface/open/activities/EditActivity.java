@@ -44,9 +44,9 @@ import cn.timeface.open.managers.interfaces.IEventBus;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.views.EditDoubleContentView;
-import cn.timeface.open.views.PageFrameLayout;
 import cn.timeface.open.views.PageView;
 import cn.timeface.open.views.StickerView;
+import cn.timeface.open.views.PageFrameLayout;
 import cn.timeface.widget.drawabletextview.DrawableTextView;
 import rx.Subscription;
 import rx.functions.Action0;
@@ -331,7 +331,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         EditDoubleContentView contentView = (EditDoubleContentView) pageView.getContentView();
         List<TFOBookElementModel> elementModels = new ArrayList<>();
         for (StickerView sv : contentView.getStickerViews()) {
+
+            //做位移变换!!!!!!!!!!
             TFOBookElementModel em = sv.getFixedElementModel();
+
             Log.i(TAG, "onCreate: make change  left = " + (em.getElementLeft() + (em.isRight() ? screenInfo.x / 2 : 0)) + " top = " + em.getElementTop());
 
             if (em.isRight()) {
