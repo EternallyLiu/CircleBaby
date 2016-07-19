@@ -10,8 +10,8 @@
         android:layout_height="wrap_content"
         android:background="@color/bg_color1"
         android:fitsSystemWindows="true"
-        android:paddingTop="@dimen/toolbar_padding_top2"
-        android:minHeight="?attr/actionBarSize">
+        android:minHeight="?attr/actionBarSize"
+        android:paddingTop="@dimen/toolbar_padding_top2">
 
         <TextView
             android:id="@+id/tv_mine"
@@ -38,33 +38,17 @@
             android:layout_margin="@dimen/size_12"
             android:src="@color/bg_color5" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:background="@color/text_color1"
+            android:text="小宝的麻麻"
+            android:textColor="@color/text_color4"
+            android:textSize="@dimen/text_medium"
             android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:layout_toRightOf="@+id/iv_avatar">
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/text_color1"
-                android:text="小宝的麻麻"
-                android:textSize="@dimen/text_medium"
-                android:textColor="@color/text_color4"
-                />
-            <TextView
-                android:id="@+id/tv_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/text_color1"
-                android:text="共**条记录"
-                android:textSize="@dimen/text_small"
-                android:layout_marginTop="@dimen/size_6"
-                />
-
-        </LinearLayout>
+            />
 
 
         <ImageView

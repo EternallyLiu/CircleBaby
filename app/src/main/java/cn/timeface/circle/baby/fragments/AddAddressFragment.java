@@ -169,16 +169,16 @@ public class AddAddressFragment extends BaseFragment implements View.OnClickList
         String[] regionArray = regionStr.split(" ");
 
         if (regionArray.length == 3) {
-            cityId = DistrictModel.queryByName(regionArray[1]).locationId;
-            districtId = DistrictModel.queryByName(regionArray[2]).locationId;
+            cityId = DistrictModel.queryByName(regionArray[1]).getLocationId();
+            districtId = DistrictModel.queryByName(regionArray[2]).getLocationId();
         } else if (regionArray.length == 2) {
-            cityId = DistrictModel.queryByName(regionArray[1]).locationId;
+            cityId = DistrictModel.queryByName(regionArray[1]).getLocationId();
             districtId = "";
         } else if (regionArray.length == 1) {
             cityId = "";
             districtId = "";
         }
-        provId = DistrictModel.queryByName(regionArray[0]).locationId;
+        provId = DistrictModel.queryByName(regionArray[0]).getLocationId();
     }
 
     /**

@@ -66,11 +66,11 @@ public class SelectRegionActivity extends BaseAppCompatActivity {
                                     int position, long arg3) {
                 // 被点击 item Model
                 DistrictModel model = ((DistrictModel) mregionAdapter.getItem(position));
-                subRegionList = DistrictModel.queryDictsByParentId(model.locationId);
+                subRegionList = DistrictModel.queryDictsByParentId(model.getLocationId());
                 sbRegion.append(" ");
-                sbRegion.append(((DistrictModel) mregionAdapter.getItem(position)).locationName);
+                sbRegion.append(((DistrictModel) mregionAdapter.getItem(position)).getLocationName());
                 if (subRegionList != null && subRegionList.size() > 0) {
-                    SelectRegionActivity.this.parentid = Long.parseLong(model.locationPid);
+                    SelectRegionActivity.this.parentid = Long.parseLong(model.getLocationPid());
                     mregionAdapter = new RegionAdapter(subRegionList, SelectRegionActivity.this);
                     mRegionListView.setAdapter(mregionAdapter);
                 } else {
@@ -103,7 +103,7 @@ public class SelectRegionActivity extends BaseAppCompatActivity {
                 // 非顶级
                 else {
                     subRegionList = DistrictModel.queryDictsByParentId(String.valueOf(parentid));
-                    parentid = Long.parseLong(DistrictModel.query(parentid).locationPid);
+                    parentid = Long.parseLong(DistrictModel.query(String.valueOf(parentid)).getLocationPid());
                     mregionAdapter = new RegionAdapter(subRegionList, this);
                     mRegionListView.setAdapter(mregionAdapter);
                 }

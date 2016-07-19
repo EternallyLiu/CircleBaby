@@ -120,9 +120,9 @@ public class AddressAddActivity extends BaseAppCompatActivity {
         mReceiverName.setText(module.getContacts());
         mReceiverPhone.setText(module.getContactsPhone());
         StringBuffer sb = new StringBuffer();
-        sb.append(DistrictModel.query(module.getProv()).locationName).append(" ");
-        sb.append(DistrictModel.query(module.getCity()).locationName).append(" ");
-        sb.append(DistrictModel.query(module.getArea()).locationName);
+        sb.append(DistrictModel.query(module.getProv()).getLocationName()).append(" ");
+        sb.append(DistrictModel.query(module.getCity()).getLocationName()).append(" ");
+        sb.append(DistrictModel.query(module.getArea()).getLocationName());
         mRegion.setText(sb.toString().trim());
         mAddDetail.setText(module.getAddress());
         provId = module.getProv();
@@ -238,16 +238,16 @@ public class AddressAddActivity extends BaseAppCompatActivity {
         String[] regionArray = regionStr.split(" ");
 
         if (regionArray.length == 3) {
-            cityId = DistrictModel.queryByName(regionArray[1]).locationId;
-            districtId = DistrictModel.queryByName(regionArray[2]).locationId;
+            cityId = DistrictModel.queryByName(regionArray[1]).getLocationId();
+            districtId = DistrictModel.queryByName(regionArray[2]).getLocationId();
         } else if (regionArray.length == 2) {
-            cityId = DistrictModel.queryByName(regionArray[1]).locationId;
+            cityId = DistrictModel.queryByName(regionArray[1]).getLocationId();
             districtId = "";
         } else if (regionArray.length == 1) {
             cityId = "";
             districtId = "";
         }
-        provId = DistrictModel.queryByName(regionArray[0]).locationId;
+        provId = DistrictModel.queryByName(regionArray[0]).getLocationId();
     }
 
     @Override

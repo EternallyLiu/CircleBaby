@@ -117,6 +117,13 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         ActivityCompat.startActivityForResult((Activity) context, intent, requestCode, null);
     }
 
+    public static void openForResult(Context context, int maxCount, int requestCode) {
+        Intent intent = new Intent(context, SelectPhotoActivity.class);
+        intent.putExtra("max_count", maxCount);
+        intent.putExtra("forResult", true);
+        ActivityCompat.startActivityForResult((Activity) context, intent, requestCode, null);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

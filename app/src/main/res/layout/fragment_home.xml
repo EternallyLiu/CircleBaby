@@ -157,6 +157,15 @@
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="@dimen/size_12"
                 android:src="@drawable/msg" />
+            <ImageView
+                android:id="@+id/iv_dot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/shape_dot_red"
+                android:layout_gravity="right"
+                android:layout_marginRight="10dp"
+                android:visibility="gone"
+                />
         </FrameLayout>
     </android.support.v7.widget.Toolbar>
 

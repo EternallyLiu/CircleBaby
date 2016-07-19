@@ -1,8 +1,11 @@
 package cn.timeface.circle.baby.api.models.objs;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 /**
  * Created by zhsheng on 2016/6/21.
  */
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class PrintPropertyPriceObj extends BasePrintProperty{
     private float price; //单价
     private String date; //加入印刷车时间

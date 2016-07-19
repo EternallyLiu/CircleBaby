@@ -29,10 +29,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.wbtech.ums.UmsAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +54,12 @@ import cn.timeface.circle.baby.api.models.DistrictModel;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
 import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
+import cn.timeface.circle.baby.api.models.objs.PrintPropertyTypeObj;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.api.models.responses.PrintFullSiteCouponObj;
 import cn.timeface.circle.baby.constants.LogConstant;
 import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.constants.URLConstant;
 import cn.timeface.circle.baby.dialogs.SelectPayWayDialog;
 import cn.timeface.circle.baby.events.AddAddressFinishEvent;
 import cn.timeface.circle.baby.events.CartCouponCodeEvent;
@@ -194,11 +199,22 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
             }
         }
     };
+    private List<PrintPropertyTypeObj> baseObjs;
 
     public static void open(Context context, String orderId) {
         if (!isOpen) {
             Intent intent = new Intent(context, MyOrderConfirmActivity.class);
             intent.putExtra("orderId", orderId);
+            context.startActivity(intent);
+            isOpen = true;
+        }
+    }
+
+    public static void open(Context context, String orderId,List<PrintPropertyTypeObj> baseObjs) {
+        if (!isOpen) {
+            Intent intent = new Intent(context, MyOrderConfirmActivity.class);
+            intent.putExtra("orderId", orderId);
+            intent.putExtra("baseObjs", (Serializable) baseObjs);
             context.startActivity(intent);
             isOpen = true;
         }
@@ -225,6 +241,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 
         orderId = getIntent().getStringExtra("orderId");
         original = getIntent().getIntExtra("original", 0);
+        baseObjs = (List<PrintPropertyTypeObj>) getIntent().getSerializableExtra("baseObjs");
         Log.i("-------->", "orderId:" + orderId);
         progressDialog = new TFProgressDialog(this);
 
@@ -587,10 +604,15 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                     return;
                 }
 //                updateTotalPrice();
-                reqApplyOrder();
+                try {
+                    reqApplyOrder();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.accept_service_tv:
                 /*WebViewActivity.open(this, URLConstant.PAY_SERVICE_AGREEMENT, getString(R.string.terms_of_service), false);*/
+                FragmentBridgeActivity.openWebViewFragment(this, URLConstant.PAY_SERVICE_AGREEMENT, "服务条款");
                 break;
             case R.id.ll_dispatch:
                 int p = (int) view.getTag(R.string.tag_index);
@@ -903,7 +925,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
     /**
      * 提交订单
      */
-    private void reqApplyOrder() {
+    private void reqApplyOrder() throws IOException {
         int pointsExchange = 0;
         if (isUsePoint) {
             pointsExchange = Integer.valueOf(mExChangePoints.getText().toString());
@@ -912,15 +934,12 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         progressDialog.setMessage(getString(R.string.apply_order));
         progressDialog.show();
 
-        Subscription s = apiService.addOrderNew(
-                orderId,
-                addressId,
-                mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue() + "",
-                pointsExchange + "",
-                getUseCouponId(),
-                getUseCouponPersonType(),
-                getUseCouponType(),
-                original + 1 + "")
+        for(PrintPropertyTypeObj baseObj : baseObjs){
+            baseObj.setAddressId(Integer.valueOf(addressId));
+            baseObj.setExpressId(Integer.valueOf(mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue()));
+        }
+
+        Subscription s = apiService.addOrder(orderId, LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     progressDialog.dismiss();
@@ -1070,9 +1089,9 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         mReceiver.setText(addressModule.getContacts());
         mReceiverPhone.setText(addressModule.getContactsPhone());
         StringBuffer sb = new StringBuffer();
-        sb.append(DistrictModel.query(addressModule.getProv()).locationName);
-        sb.append(DistrictModel.query(addressModule.getCity()).locationName);
-        sb.append(DistrictModel.query(addressModule.getArea()).locationName);
+        sb.append(DistrictModel.query(addressModule.getProv()).getLocationName());
+        sb.append(DistrictModel.query(addressModule.getCity()).getLocationName());
+        sb.append(DistrictModel.query(addressModule.getArea()).getLocationName());
         sb.append(addressModule.getAddress());
         mReceiverAddress.setText(sb.toString());
     }

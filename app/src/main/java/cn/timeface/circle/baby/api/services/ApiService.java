@@ -40,6 +40,7 @@ import cn.timeface.circle.baby.api.models.responses.RelationshipResponse;
 import cn.timeface.circle.baby.api.models.responses.SystemMsgListResponse;
 import cn.timeface.circle.baby.api.models.responses.TimeDetailResponse;
 import cn.timeface.circle.baby.api.models.responses.TimelineResponse;
+import cn.timeface.circle.baby.api.models.responses.UnReadMsgResponse;
 import cn.timeface.circle.baby.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.api.models.responses.UserLoginResponse;
 import cn.timeface.circle.baby.payment.timeface.WxPrepayResponse;
@@ -217,6 +218,10 @@ public interface ApiService {
     @GET("babyMsgInfo/queryMsgList")
     Observable<MsgListResponse> queryMsgList();
 
+    //获取未读消息
+    @GET("babyMsgInfo/noReadMsg")
+    Observable<UnReadMsgResponse> noReadMsg();
+
     //获取系统消息列表
     @GET("babyMsgInfo/querySystemMsgList")
     Observable<SystemMsgListResponse> querySystemMsgList();
@@ -224,6 +229,11 @@ public interface ApiService {
     //消息删除
     @GET("babyMsgInfo/delMsg")
     Observable<BaseResponse> delMsg(@Query("id") int id,
+                                    @Query("type") int type);
+
+    //标记消息为已读
+    @GET("babyMsgInfo/read")
+    Observable<BaseResponse> read(@Query("id") int id,
                                     @Query("type") int type);
 
     //发布
@@ -387,7 +397,7 @@ public interface ApiService {
     Observable<AddCartItemResponse> addCartItem(@QueryMap Map<String, String> params);
 
     /**
-     * 提交订单
+     * 确认订单
      */
     @POST("babyOrder/addOrder")
     Observable<LessResponse> addOrderNew(@Query("orderId") String orderId,
@@ -409,7 +419,7 @@ public interface ApiService {
      * 提交订单
      */
     @POST("babyOrder/addOrder")
-    Observable<LessResponse> addOrderNew(@Query("from") String from,
+    Observable<LessResponse> addOrder(@Query("orderId") String orderId,
                                          @Query("dataList") String dataList);
 
     /**
@@ -426,7 +436,8 @@ public interface ApiService {
      * 印刷车列表
      */
     @POST("babyOrder/cartlist")
-    Observable<PrintCartListResponse> getCartList();
+    Observable<PrintCartListResponse> getCartList(@Query("pageSize") String pageSize,
+                                                  @Query("currentPage") String currentPage);
 
     /**
      * 时光书单价查询

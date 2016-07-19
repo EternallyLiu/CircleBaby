@@ -27,7 +27,6 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
-import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.managers.listeners.OnClickListener;

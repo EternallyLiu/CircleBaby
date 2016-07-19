@@ -60,6 +60,11 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
             holder.ivContent.setVisibility(View.VISIBLE);
             GlideUtil.displayImage(info.getTimeInfo().getMediaList().get(0).getImgUrl(), holder.ivContent);
         }
+        if (info.getIsRead() == 0) {
+            holder.ivDot.setVisibility(View.VISIBLE);
+        } else {
+            holder.ivDot.setVisibility(View.GONE);
+        }
         switch (info.getType()) {
             case 0:
                 break;
@@ -103,6 +108,8 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         ImageView ivContent;
         @Bind(R.id.rl_message)
         RelativeLayout rlMessage;
+        @Bind(R.id.iv_dot)
+        ImageView ivDot;
 
         View.OnClickListener onClickListener = null;
         Msg info;

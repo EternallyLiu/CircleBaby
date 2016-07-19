@@ -58,6 +58,7 @@ import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
+import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
@@ -535,8 +536,14 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     }
 
     @Subscribe
-    public void onEvent(DeleteTimeLineEvent event) {
-        finish();
+    public void onEvent(Object event) {
+        if(event instanceof DeleteTimeLineEvent){
+            finish();
+        }else if(event instanceof TimelineEditEvent){
+            finish();
+            open(this,timelineobj.getTimeId());
+        }
+
     }
 
     @Override

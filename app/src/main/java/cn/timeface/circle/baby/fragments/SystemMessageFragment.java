@@ -1,15 +1,19 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +24,11 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.SystemMessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class SystemMessageFragment extends BaseFragment implements View.OnClickListener {
 
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
-    @Bind(R.id.tv_delete)
-    TextView tvDelete;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
@@ -40,7 +41,7 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -49,10 +50,8 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
         View view = inflater.inflate(R.layout.fragment_message, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        getActionBar().setTitle("系统消息");
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        tvTitle.setText("系统消息");
-
 
         adapter = new SystemMessageAdapter(getActivity(), new ArrayList<>());
         adapter.setOnClickListener(this);
@@ -60,8 +59,6 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
         contentRecyclerView.setAdapter(adapter);
 
         reqData();
-
-        tvDelete.setOnClickListener(this);
 
         return view;
     }
@@ -101,5 +98,54 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_msg,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.read){
+            apiService.read(0, 1)
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        ToastUtil.showToast(response.getInfo());
+                        if (response.success()) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }, error -> {
+                        Log.e(TAG, "read:");
+                    });
+
+        }else if(item.getItemId() == R.id.del){
+            new AlertDialog.Builder(getContext())
+                    .setTitle("确定删除全部系统消息?")
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    apiService.delMsg(0, 1)
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(response -> {
+                                ToastUtil.showToast(response.getInfo());
+                                if (response.success()) {
+                                    adapter.getListData().clear();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }, error -> {
+                                Log.e(TAG, "delMsg:");
+                            });
+                }
+            }).show();
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

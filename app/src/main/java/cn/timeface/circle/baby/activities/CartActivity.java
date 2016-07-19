@@ -2,8 +2,6 @@ package cn.timeface.circle.baby.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,11 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.timeface.refreshload.PullRefreshLoadRecyclerView;
+import com.timeface.refreshload.headfoot.LoadMoreView;
+import com.timeface.refreshload.headfoot.RefreshView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,14 +52,10 @@ import rx.Subscription;
 
 
 public class CartActivity extends BaseAppCompatActivity implements IEventBus {
-    @Bind(R.id.tb_toolbar)
+    @Bind(R.id.toolbar)
     Toolbar mToolBar;
-    @Bind(R.id.ptr_layout)
-    RelativeLayout mPtrLayout;
-    @Bind(R.id.pull_refresh_list)
-    RecyclerView mPullRefreshList;
-    @Bind(R.id.ll_cart_empty)
-    LinearLayout mLlEmpty;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
     @Bind(R.id.stateView)
     TFStateView mStateView;
     @Bind(R.id.tv_total_balance)
@@ -66,11 +64,12 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
     ImageView mIvSelectAll;
     @Bind(R.id.foot_cart_list)
     RelativeLayout mFoot;
-    @Bind(R.id.tv_promotion_info)
-    TextView tvPromotionInfo;
-    List<PrintCartItem> dataList;
+    List<PrintCartItem> dataList = new ArrayList<>();
+    @Bind(R.id.rlRecyclerView)
+    PullRefreshLoadRecyclerView rlRecyclerView;
     private CartAdapter mAdapter;
     private LoadingDialog progressDialog;
+    public int currentPage = 1;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, CartActivity.class));
@@ -83,22 +82,33 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         ButterKnife.bind(this);
         setSupportActionBar(mToolBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        dataList = new ArrayList<>();
+        setupView();
+        reqData(1, true);
+    }
+
+    private void setupView() {
+        RecyclerView recyclerView = rlRecyclerView.getRecyclerView();
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL, R.color.bg7);
+        itemDecoration.setItemSize(getResources().getDimensionPixelOffset(R.dimen.view_space_normal));
+        recyclerView.addItemDecoration(itemDecoration);
+//        dataList = new ArrayList<>();
         progressDialog = LoadingDialog.getInstance();
-        mAdapter = new CartAdapter(CartActivity.this, dataList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mPullRefreshList.setLayoutManager(layoutManager);
+//        mAdapter = new CartAdapter(CartActivity.this, dataList);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        rlRecyclerView.setAdapter(mAdapter);
+        rlRecyclerView.setLoadRefreshListener(new PullRefreshLoadRecyclerView.LoadRefreshListener() {
+            @Override
+            public void onRefresh(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, RefreshView refreshView) {
+                reqData(1, true);
+            }
 
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL);
-        Paint paint = new Paint();
-        paint.setColor(Color.parseColor("#f2f2f2"));
-        itemDecoration.setPaint(paint);
-        itemDecoration.setItemSize(getResources().getDimensionPixelOffset(R.dimen.view_space_medium));
-        mPullRefreshList.addItemDecoration(itemDecoration);
-
-        mPullRefreshList.setAdapter(mAdapter);
-        mStateView.setOnRetryListener(this::requestData);
-        requestData();
+            @Override
+            public void onLoadMore(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, LoadMoreView loadMoreView) {
+                reqData(currentPage, false);
+            }
+        });
+        mStateView.setOnRetryListener(() -> reqData(1, true));
+        mStateView.loading();
     }
 
     /**
@@ -138,10 +148,8 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                                     mAdapter.notifyDataDelete();
                                 }
 
-                                if (dataList.size() <= 0) {
-                                    mLlEmpty.setVisibility(View.VISIBLE);
-                                    mPtrLayout.setVisibility(View.GONE);
-                                    mFoot.setVisibility(View.GONE);
+                                if (dataList.size() == 0) {
+                                    showNoDataView(true);
                                 }
                                 mAdapter.notifyDataSetChanged();
                                 calcTotalPrice();//删除一本后更新总价格
@@ -211,39 +219,43 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
     /**
      * 请求印刷车数据
      */
-    public void requestData() {
-        mStateView.loading();
-        Subscription s = apiService.getCartList()
+    public void reqData(int page, boolean refresh) {
+        apiService.getCartList(20 + "", page + "")
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
+                .doOnTerminate(() -> rlRecyclerView.complete())
+                .subscribe(printCartListResponse -> {
                     mStateView.finish();
-                    if (response.success()) {
-                        dataList = response.getDataList();
-                        mAdapter.setListData(dataList);
+                    if (printCartListResponse.success()) {
+                        currentPage += 1;
+                        if (refresh) {
+                            dataList.clear();
+                        }
+                        dataList.addAll(printCartListResponse.getDataList());
+                        if (mAdapter == null) {
+                            mAdapter = new CartAdapter(CartActivity.this, dataList);
+                            rlRecyclerView.setAdapter(mAdapter);
+                        } else {
+                            mAdapter.notifyDataSetChanged();
+                        }
                         for (PrintCartItem item : dataList) {
                             item.checkAllSelect();
                         }
                         calcTotalPrice();
                         mIvSelectAll.setSelected(checkSelectAll());
-                        if (dataList.size() <= 0) {
-                            mLlEmpty.setVisibility(View.VISIBLE);
-                            mPtrLayout.setVisibility(View.GONE);
-                            mFoot.setVisibility(View.GONE);
+                        if (dataList.size() == 0) {
+                            showNoDataView(true);
                         } else {
-                            mLlEmpty.setVisibility(View.GONE);
-                            mPtrLayout.setVisibility(View.GONE);
-                            mFoot.setVisibility(View.VISIBLE);
+                            showNoDataView(false);
                         }
                         mAdapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(CartActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CartActivity.this, printCartListResponse.getInfo(), Toast.LENGTH_SHORT).show();
                     }
                 }, throwable -> {
-//                    mStateView.showException(throwable);
+                    mStateView.showException(throwable);
+                    throwable.printStackTrace();
                 });
-        addSubscription(s);
     }
-
 
     /**
      * 计算总价
@@ -259,8 +271,6 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         }
         mTvTotalPrice.setText(Html.fromHtml(getString(R.string.cart_total_settlement, totalPrice)));
 
-        //是否显示优惠信息
-        tvPromotionInfo.setVisibility(View.GONE);
     }
 
     /**
@@ -281,6 +291,12 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                     baseObj.setPaper(obj.getPaper());
                     baseObj.setNum(obj.getNum());
                     baseObj.setColor(obj.getColor());
+                    baseObj.setPageNum(item.getTotalPage());
+                    baseObj.setBookCover(item.getCoverImage());
+                    baseObj.setAddressId(0);
+                    baseObj.setBookName(URLEncoder.encode(item.getTitle()));
+                    baseObj.setCreateTime(Long.valueOf(item.getDate()));
+                    baseObj.setExpressId(1);
                     baseObjs.add(baseObj);
                 }
             }
@@ -296,13 +312,14 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             e.printStackTrace();
         }
 
-        Subscription s = apiService.addOrderNew(params)
+        Subscription s = apiService.addOrder("", params)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
                             progressDialog.dismiss();
                             if (response.success()) {
-                                OrderDetailActivity.open(CartActivity.this, response.getOrderId());
+//                                OrderDetailActivity.open(CartActivity.this, response.getOrderId());
+                                MyOrderConfirmActivity.open(CartActivity.this, response.getOrderId(),baseObjs);
                             } else {
                                 Toast.makeText(CartActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
                             }
@@ -345,6 +362,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             Toast.makeText(this, getPrintInfo(item.getPrintCode()), Toast.LENGTH_SHORT).show();
             return;
         }
+        item.setIsSelect(item.isSelect() ? false : true);
         mIvSelectAll.setSelected(false);
         mAdapter.notifyDataSetChanged();
         calcTotalPrice();
@@ -383,6 +401,10 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 printProperties.add(property);
             }
             try {
+                params.put("pageNum", mAdapter.getItem(position).getTotalPage()+"");
+                params.put("createTime", mAdapter.getItem(position).getDate());
+                params.put("bookName",URLEncoder.encode(mAdapter.getItem(position).getTitle()));
+                params.put("bookCover", mAdapter.getItem(position).getCoverImage());
                 params.put("bookId", mAdapter.getItem(position).getBookId());
                 params.put("bookType", String.valueOf(mAdapter.getItem(position).getBookType()));
                 params.put("printList", LoganSquare.serialize(printProperties, BasePrintProperty.class));
@@ -406,7 +428,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                                 propertyAdapter.setPropertyState(CartPrintPropertyAdapter.PROPERTY_STATE_EDIT);
                                 Toast.makeText(CartActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
                             } else {
-                                requestData();
+                                reqData(1, true);
                                 propertyAdapter.setPropertyState(CartPrintPropertyAdapter.PROPERTY_STATE_NOMAL);
                                 propertyAdapter.notifyDataSetChanged();
                             }
@@ -455,6 +477,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         EventBus.getDefault().post(new CartItemClickEvent(view));
     }
 
+    //全选
     public void clickSelectAll(View view) {
         boolean selectAll = true;
         for (PrintCartItem item : dataList) {
@@ -463,6 +486,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                     || item.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_LESS) {
                 selectAll = false;
             }
+            item.setIsSelect(view.isSelected() ? false : true);
         }
         view.setSelected(selectAll ? (view.isSelected() ? false : true) : false);
 
@@ -507,6 +531,12 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 }
             }
         }
+    }
+
+    private void showNoDataView(boolean showNoData) {
+        llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
+        rlRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
+        mFoot.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
 
 }

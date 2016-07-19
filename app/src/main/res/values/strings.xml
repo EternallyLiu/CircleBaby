@@ -86,6 +86,7 @@
     <string name="dialog_cancle">取消</string>
 
     <string name="publish">发布</string>
+    <string name="edit_time">编辑时光</string>
     <string name="picker_video">选择视频</string>
     <string name="cloudAlbum">云相册</string>
     <string name="state_404">内容未找到，先去看看别的吧</string>
@@ -97,6 +98,7 @@
     <string name="state_error_timeout">网络连接超时或失败</string>
     <string name="action_edit">编辑</string>
     <string name="select_region">选择地区</string>
+    <string name="reset_psw">重置密码</string>
 
     <string name="price">价格:</string>
     <string name="price_promotion">活动价:</string>

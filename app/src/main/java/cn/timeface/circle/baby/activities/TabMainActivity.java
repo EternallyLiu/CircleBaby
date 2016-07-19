@@ -187,7 +187,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 ? System.currentTimeMillis()
                 : FastData.getRegionDBUpdateTime(0);
         if (FastData.getRegionDBUpdateTime(0) == 0 || CommonUtil.concurrent(preDate, System.currentTimeMillis()) > 6) {
-            //reqData();
+            reqData();
         }
     }
 

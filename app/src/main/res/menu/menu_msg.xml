@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/read"
+        android:title="全部已读"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/del"
+        android:title="全部删除"
+        app:showAsAction="ifRoom" />
+</menu>

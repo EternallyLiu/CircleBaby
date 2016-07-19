@@ -34,6 +34,7 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
     public CartAdapter(Context context, List<PrintCartItem> listData) {
         super(context, listData);
         adapterList = new ArrayList<>();
+        setListData(listData);
     }
 
     @Override

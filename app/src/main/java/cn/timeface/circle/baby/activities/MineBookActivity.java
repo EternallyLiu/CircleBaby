@@ -203,7 +203,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         if (event != null &&
                 event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_MINETIME) {
             if (event.response.success()) {
-                MyOrderConfirmActivity.open(this, event.response.getOrderId());
+                MyOrderConfirmActivity.open(this, event.response.getOrderId(),event.baseObjs);
             } else {
                 Toast.makeText(this, event.response.getInfo(), Toast.LENGTH_SHORT).show();
             }

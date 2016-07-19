@@ -4,105 +4,112 @@
     android:background="@color/bg_color2"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
+
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/text_color1"
+        android:gravity="start"
+        android:hint="点击记录照片后的故事"
+        android:padding="@dimen/size_12" />
+
+    <RelativeLayout
+        android:id="@+id/rl_mile_stone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_color1"
-        android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/toolbar_padding_top">
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
 
-        <FrameLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@color/text_color1"
+            android:text="里程碑"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/tv_mile_stone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/text_color1"
+            android:drawablePadding="@dimen/size_12"
+            android:drawableRight="@drawable/mine_data_go"
+            android:textSize="@dimen/text_medium" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@color/text_color1"
+            android:text="记录时间"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/text_color1"
+            android:drawablePadding="@dimen/size_12"
+            android:drawableRight="@drawable/mine_data_go"
+            android:textSize="@dimen/text_medium" />
+    </RelativeLayout>
+
+    <cn.timeface.circle.baby.views.NoScrollGridView
+        android:id="@+id/gv_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="4" />
+
+    <LinearLayout
+        android:id="@+id/ll_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextView
+            <ImageView
+                android:id="@+id/iv_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="发布"
-                android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_large" />
+                android:scaleType="centerCrop" />
 
-            <TextView
-                android:id="@+id/tv_next"
+            <ImageView
+                android:id="@+id/iv_cover"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="@dimen/size_12"
-                android:text="完成"
-                android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_large" />
-        </FrameLayout>
-    </android.support.v7.widget.Toolbar>
+                android:layout_centerInParent="true"
+                android:src="@drawable/video" />
 
 
-        <EditText
-            android:id="@+id/et_content"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@color/text_color1"
-            android:gravity="start"
-            android:hint="点击记录照片后的故事"
-            android:padding="@dimen/size_12" />
-
-        <cn.timeface.circle.baby.views.NoScrollGridView
-            android:id="@+id/gv_grid_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:numColumns="4"/>
-
-        <RelativeLayout
-            android:id="@+id/rl_mile_stone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/text_color1"
-            android:padding="@dimen/size_12">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="@color/text_color1"
-                android:text="里程碑"
-                android:textSize="@dimen/text_medium" />
-
-            <TextView
-                android:id="@+id/tv_mile_stone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@color/text_color1"
-                android:drawablePadding="@dimen/size_12"
-                android:drawableRight="@drawable/mine_data_go"
-                android:textSize="@dimen/text_medium" />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_time"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_videotime"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/text_color1"
-            android:padding="@dimen/size_12">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="@color/text_color1"
-                android:text="记录时间"
-                android:textSize="@dimen/text_medium" />
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@color/text_color1"
-                android:drawablePadding="@dimen/size_12"
-                android:drawableRight="@drawable/mine_data_go"
-                android:textSize="@dimen/text_medium" />
-        </RelativeLayout>
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/size_6" />
+    </LinearLayout>
 </LinearLayout>

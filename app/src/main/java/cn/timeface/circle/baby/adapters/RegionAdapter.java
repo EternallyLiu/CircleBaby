@@ -66,7 +66,7 @@ public class RegionAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.regionText.setText(regionList.get(position).locationName);
+        holder.regionText.setText(regionList.get(position).getLocationName());
 
         return convertView;
     }

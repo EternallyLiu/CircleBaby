@@ -38,9 +38,9 @@ public class SelectAddressAdapter extends BaseListAdapter<AddressItem> {
         viewHolder.mReceiverName.setText(item.getContacts());
         viewHolder.mReceiverPhone.setText(item.getContactsPhone());
         StringBuffer sb = new StringBuffer();
-        sb.append(DistrictModel.query(item.getProv()) == null ? "" : DistrictModel.query(item.getProv()).locationName);
-        sb.append(DistrictModel.query(item.getCity()) == null ? "" : DistrictModel.query(item.getCity()).locationName);
-        sb.append(DistrictModel.query(item.getArea()) == null ? "" : DistrictModel.query(item.getArea()).locationName);
+        sb.append(DistrictModel.query(item.getProv()) == null ? "" : DistrictModel.query(item.getProv()).getLocationName());
+        sb.append(DistrictModel.query(item.getCity()) == null ? "" : DistrictModel.query(item.getCity()).getLocationName());
+        sb.append(DistrictModel.query(item.getArea()) == null ? "" : DistrictModel.query(item.getArea()).getLocationName());
         sb.append(item.getAddress());
         viewHolder.mReceiverAddress.setText(sb.toString());
 

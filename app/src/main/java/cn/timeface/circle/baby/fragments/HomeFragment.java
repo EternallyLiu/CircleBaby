@@ -42,7 +42,6 @@ import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.RecommendObj;
-import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.objs.WorkObj;
@@ -52,7 +51,6 @@ import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -92,6 +90,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     LinearLayout llLayout;
     @Bind(R.id.fl_layout)
     FrameLayout flLayout;
+    @Bind(R.id.iv_dot)
+    ImageView ivDot;
 
     private int currentPage = 1;
     private String mParam1;
@@ -149,7 +149,24 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
         reqData(1);
 
+        initMsg();
+
         return view;
+    }
+
+    private void initMsg() {
+        apiService.noReadMsg()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(unReadMsgResponse -> {
+                    if (unReadMsgResponse.success()) {
+                        if (unReadMsgResponse.getUnreadMessageCount() > 0) {
+                            ivDot.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }, error -> {
+                    Log.e(TAG, "noReadMsg:");
+                    error.printStackTrace();
+                });
     }
 
     private void setupPTR() {
@@ -355,37 +372,37 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
 
         tvType.setOnClickListener(v -> {
-            switch (obj.getActionType()){
+            switch (obj.getActionType()) {
                 case 0:
                     PublishActivity.open(getContext(), PublishActivity.PHOTO);
                     break;
                 case 1:
-                    for (WorkObj work : obj.getNewWorkObj()){
-                        if (work.getType()==5){
+                    for (WorkObj work : obj.getNewWorkObj()) {
+                        if (work.getType() == 5) {
                             BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
                             FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
                         }
                     }
                     break;
                 case 2:
-                    for (WorkObj work : obj.getNewWorkObj()){
-                        if (work.getType()==1){
+                    for (WorkObj work : obj.getNewWorkObj()) {
+                        if (work.getType() == 1) {
                             BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
                             FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
                         }
                     }
                     break;
                 case 3:
-                    for (WorkObj work : obj.getNewWorkObj()){
-                        if (work.getType()==3){
+                    for (WorkObj work : obj.getNewWorkObj()) {
+                        if (work.getType() == 3) {
                             BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
                             FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
                         }
                     }
                     break;
                 case 4:
-                    for (WorkObj work : obj.getNewWorkObj()){
-                        if (work.getType()==2){
+                    for (WorkObj work : obj.getNewWorkObj()) {
+                        if (work.getType() == 2) {
                             BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
                             FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
                         }

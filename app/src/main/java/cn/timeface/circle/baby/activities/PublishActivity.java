@@ -287,7 +287,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     layoutParams.width = width;
                     layoutParams.height = width;
                     ivVideo.setLayoutParams(layoutParams);
-                    ivCover.setLayoutParams(layoutParams);
+//                    ivCover.setLayoutParams(layoutParams);
                     tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate()));
                     tvVideotime.setText("时长：" + videoInfo.getDuration() + "秒");
 
@@ -424,10 +424,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
+                        finish();
                         for (ImgObj img : selImages) {
                             uploadImage(img.getLocalPath());
                         }
-                        finish();
                     }
                 }, throwable -> {
                     Log.e(TAG, "publish:");

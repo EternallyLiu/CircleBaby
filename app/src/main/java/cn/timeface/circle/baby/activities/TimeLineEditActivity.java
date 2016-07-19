@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +24,8 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 
-import java.net.URL;
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,16 +35,17 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.PhotoRecode;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
@@ -49,8 +54,6 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     protected final int PHOTO_COUNT_MAX = 100;
 
-    @Bind(R.id.tv_next)
-    TextView tvNext;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.gv_grid_view)
@@ -65,6 +68,16 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     RelativeLayout rlTime;
     @Bind(R.id.et_content)
     EditText etContent;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.iv_video)
+    ImageView ivVideo;
+    @Bind(R.id.iv_cover)
+    ImageView ivCover;
+    @Bind(R.id.tv_videotime)
+    TextView tvVideotime;
+    @Bind(R.id.ll_video)
+    LinearLayout llVideo;
     private PhotoGridAdapter adapter;
     private HashSet<String> imageUrls = new HashSet<>();
     private final int PICTURE = 0;
@@ -87,30 +100,15 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        initView();
+    }
+
+    private void initView() {
         timelimeobj = getIntent().getParcelableExtra("timelimeobj");
         mediaList = timelimeobj.getMediaList();
         milestoneId = timelimeobj.getMilestoneId();
         time = DateUtil.getYear2(timelimeobj.getDate());
-        for (MediaObj media : mediaList) {
-            ImgObj imgObj = media.getImgObj();
-            selImages.add(imgObj);
-            imageUrls.add(media.getImgUrl());
-        }
-        adapter = new PhotoGridAdapter(this);
-        adapter.getData().addAll(imageUrls);
-        gvGridView.setAdapter(adapter);
-        gvGridView.setOnItemClickListener((parent, v, position, id) -> {
-            if (position == 0) {
-                selectImages();
-            } else {
-//                int relPosition = position - 1;
-//                imageUrls.remove(adapter.getData().get(relPosition));
-//                adapter.getData().remove(relPosition);
-//                adapter.notifyDataSetChanged();
-            }
-        });
 
-        tvNext.setOnClickListener(this);
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
 
@@ -118,10 +116,53 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         tvMileStone.setText(timelimeobj.getMilestone());
         tvTime.setText(time);
 
+        if (timelimeobj.getType() == 1) {
+            llVideo.setVisibility(View.VISIBLE);
+            gvGridView.setVisibility(View.GONE);
+
+            GlideUtil.displayImage(timelimeobj.getMediaList().get(0).getImgUrl(), ivVideo);
+            long length = timelimeobj.getMediaList().get(0).getLength();
+            tvVideotime.setText("时长：" + length / 1000 + "秒");
+
+            int width = Remember.getInt("width", 0);
+            ViewGroup.LayoutParams layoutParams = ivVideo.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = width;
+            ivVideo.setLayoutParams(layoutParams);
+
+        } else {
+            llVideo.setVisibility(View.GONE);
+            gvGridView.setVisibility(View.VISIBLE);
+
+            for (MediaObj media : mediaList) {
+                ImgObj imgObj = media.getImgObj();
+                selImages.add(imgObj);
+                imageUrls.add(media.getImgUrl());
+            }
+            if(timelimeobj.getType()==0){
+                adapter = new PhotoGridAdapter(this);
+                adapter.getData().addAll(imageUrls);
+                gvGridView.setAdapter(adapter);
+                gvGridView.setOnItemClickListener((parent, v, position, id) -> {
+                    if (position == 0) {
+                        selectImages();
+                    } else {
+//                int relPosition = position - 1;
+//                imageUrls.remove(adapter.getData().get(relPosition));
+//                adapter.getData().remove(relPosition);
+//                adapter.notifyDataSetChanged();
+                    }
+                });
+            }else{
+                PhotoGridAdapter2 photoGridAdapter2 = new PhotoGridAdapter2(this);
+                photoGridAdapter2.getData().addAll(imageUrls);
+                gvGridView.setAdapter(photoGridAdapter2);
+            }
+        }
     }
 
     private void selectImages() {
-        SelectPhotoActivity.openForResult(this, selImages, PHOTO_COUNT_MAX, PICTURE);
+        SelectPhotoActivity.openForResult(this, PHOTO_COUNT_MAX, PICTURE);
     }
 
     @Override
@@ -163,10 +204,6 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_next:
-                //标记时光
-                editTime();
-                break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
@@ -199,27 +236,23 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
+                        finish();
                         for (String url : urls) {
                             uploadImage(url);
                         }
-                        finish();
+                        EventBus.getDefault().post(new TimelineEditEvent());
                     }
                 }, throwable -> {
                     Log.e(TAG, "editTime:");
                 });
-
         finish();
     }
 
-
     private static class PhotoGridAdapter extends BaseAdapter {
-
         private static final int TYPE_HEADER = 1;
         private static final int TYPE_BODY = 2;
         private Context context;
-
         List<String> data = new ArrayList<>();
-
         public PhotoGridAdapter(Context context) {
             this.context = context;
         }
@@ -262,6 +295,45 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         }
     }
 
+    private static class PhotoGridAdapter2 extends BaseAdapter {
+
+        private Context context;
+
+        List<String> data = new ArrayList<>();
+
+        public PhotoGridAdapter2(Context context) {
+            this.context = context;
+        }
+
+        public List<String> getData() {
+            return data;
+        }
+
+        @Override
+        public int getCount() {
+            return data.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = View.inflate(context, R.layout.item_record_photo, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.iv_cover);
+            GlideUtil.displayImage(data.get(position), imageView);
+            return view;
+        }
+    }
+
     private void uploadImage(String path) {
         if (TextUtils.isEmpty(path)) {
             return;
@@ -289,5 +361,17 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 }
             }
         }.start();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_complete, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        editTime();
+        return super.onOptionsItemSelected(item);
     }
 }

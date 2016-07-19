@@ -15,7 +15,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.Msg;
 import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -56,6 +55,11 @@ public class SystemMessageAdapter extends BaseRecyclerAdapter<SystemMsg> {
         holder.tvTime.setText(DateUtil.getDisTime(info.getTime()));
         holder.tvContent.setText(info.getContent());
         holder.ivContent.setVisibility(View.GONE);
+        if(info.getIsRead()==0){
+            holder.ivDot.setVisibility(View.VISIBLE);
+        }else{
+            holder.ivDot.setVisibility(View.GONE);
+        }
 
     }
 
@@ -82,6 +86,8 @@ public class SystemMessageAdapter extends BaseRecyclerAdapter<SystemMsg> {
         ImageView ivContent;
         @Bind(R.id.rl_message)
         RelativeLayout rlMessage;
+        @Bind(R.id.iv_dot)
+        ImageView ivDot;
 
         View.OnClickListener onClickListener = null;
         SystemMsg info;

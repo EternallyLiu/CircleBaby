@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,17 +24,11 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.OrderListAdapter;
-import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.objs.OrderObj;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
-import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import rx.Subscription;
-import rx.functions.Action0;
 
 public class OrderListActivity extends BaseAppCompatActivity implements View.OnClickListener {
     public static final int START_PAGE = 1;

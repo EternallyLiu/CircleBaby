@@ -62,7 +62,7 @@
                 android:layout_width="@dimen/size_260"
                 android:layout_height="@dimen/size_260"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/size_24"
+                android:layout_marginTop="@dimen/size_48"
                 android:background="@color/white"
                 android:padding="@dimen/size_6">
 

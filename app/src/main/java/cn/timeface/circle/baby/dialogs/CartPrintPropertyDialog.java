@@ -591,7 +591,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
         btnOk.setBackgroundResource(R.drawable.shape_grey_btn_bg);
         btnOk.setClickable(false);
-        Subscription s = BaseAppCompatActivity.apiService.addOrderNew(original + 1 + "", LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class))
+        Subscription s = BaseAppCompatActivity.apiService.addOrder("", LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -599,7 +599,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             btnOk.setClickable(true);
                             tfProgressDialog.dismiss();
                             EventBus.getDefault()
-                                    .post(new CartBuyNowEvent(response, requestCode, original));
+                                    .post(new CartBuyNowEvent(response, requestCode, original,baseObjs));
                         }
                         , throwable -> {
                             btnOk.setBackgroundResource(R.drawable.selector_blue_btn_bg);

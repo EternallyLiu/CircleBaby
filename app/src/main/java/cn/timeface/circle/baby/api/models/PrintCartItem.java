@@ -11,6 +11,7 @@ import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
 import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.constants.TypeConstant;
 
 /**
  * @author YW.SUN
@@ -22,7 +23,7 @@ public class PrintCartItem extends BaseModule {
     private String bookId; //时光书编号
     private String title; //标题
     private UserObj author; //用户编号
-    //    private String summary; //描述
+    private String summary; //描述
     private String tagName; //分类
     private String date; //创建时间，时间戳
     private String coverImage; //封面图片
@@ -40,6 +41,19 @@ public class PrintCartItem extends BaseModule {
         return isSelect;
     }
 
+    public void setIsSelect(boolean isSelect) {
+        for (PrintPropertyPriceObj obj : printList) {
+            if (printCode == TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE
+                    || printCode == TypeConstant.PRINT_CODE_LIMIT_MORE
+                    || printCode == TypeConstant.PRINT_CODE_LIMIT_LESS) {
+                obj.setIsSelect(false);
+            } else {
+                obj.setIsSelect(isSelect);
+            }
+        }
+        checkAllSelect();
+    }
+
     public boolean checkAllSelect() {
         for (PrintPropertyPriceObj propertyObj : printList) {
             this.isSelect = true;
@@ -51,7 +65,6 @@ public class PrintCartItem extends BaseModule {
 
         return isSelect;
     }
-
 
     public String getBookId() {
         return bookId;
@@ -77,15 +90,15 @@ public class PrintCartItem extends BaseModule {
         this.author = author;
     }
 
-//    public String getSummary()
-//    {
-//        return summary;
-//    }
+    public String getSummary()
+    {
+        return summary;
+    }
 
-//    public void setSummary(String summary)
-//    {
-//        this.summary = summary;
-//    }
+    public void setSummary(String summary)
+    {
+        this.summary = summary;
+    }
 
     public String getTagName() {
         return tagName;

@@ -6,18 +6,25 @@
     android:background="@color/bg_color8"
     tools:context="cn.timeface.circle.baby.activities.CartActivity">
 
-    <LinearLayout
-        android:id="@+id/ll_cart_empty"
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
+
+    <com.timeface.refreshload.PullRefreshLoadRecyclerView
+        android:id="@+id/rlRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appbar_layout"
+        android:background="@color/bg_color2"
+        android:scrollbars="none" />
+
+    <LinearLayout
+        android:id="@+id/ll_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/appbar_layout"
+        android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:visibility="gone">
 
         <ImageView
@@ -37,6 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_marginLeft="@dimen/size_12"
+            android:layout_marginRight="@dimen/size_12"
             android:background="@drawable/selector_btn_login"
             android:clickable="true"
             android:onClick="clickPrint"
@@ -45,50 +54,11 @@
             android:textColor="@color/white" />
     </LinearLayout>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tb_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:theme="@style/ToolbarColor" />
-
-    <RelativeLayout
-        android:id="@+id/ptr_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/foot_cart_list"
-        android:layout_below="@+id/tb_toolbar"
-        android:visibility="gone">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/pull_refresh_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv_promotion_info"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/abc_action_bar_default_height_material"
-            android:background="@color/bg25"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:lineSpacingMultiplier="1.2"
-            android:onClick="clickDetail"
-            android:paddingLeft="@dimen/view_space_small"
-            android:paddingRight="@dimen/view_space_small"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            tools:text="现在下单打印时光书，单笔订单（印书总金额）满158元，即送专属台历一本！查看活动详情>>" />
-
-    </RelativeLayout>
-
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/stateView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tb_toolbar"/>
+        android:layout_below="@+id/appbar_layout" />
 
     <include
         android:id="@+id/foot_cart_list"

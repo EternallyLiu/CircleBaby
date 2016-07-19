@@ -30,8 +30,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     CircleImageView ivAvatar;
     @Bind(R.id.tv_name)
     TextView tvName;
-    @Bind(R.id.tv_count)
-    TextView tvCount;
     @Bind(R.id.ll_mine_info)
     RelativeLayout llMineInfo;
     @Bind(R.id.ll_mine_product)
