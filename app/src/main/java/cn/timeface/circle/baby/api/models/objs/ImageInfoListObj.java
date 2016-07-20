@@ -14,7 +14,15 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
 public class ImageInfoListObj extends BaseObj implements Parcelable {
     List<MediaObj> mediaList;
     int timeId;
+    long date;
 
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
 
     public List<MediaObj> getMediaList() {
         return mediaList;
@@ -41,6 +49,7 @@ public class ImageInfoListObj extends BaseObj implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.mediaList);
         dest.writeInt(this.timeId);
+        dest.writeLong(this.date);
     }
 
     public ImageInfoListObj() {
@@ -49,6 +58,7 @@ public class ImageInfoListObj extends BaseObj implements Parcelable {
     protected ImageInfoListObj(Parcel in) {
         this.mediaList = in.createTypedArrayList(MediaObj.CREATOR);
         this.timeId = in.readInt();
+        long date = in.readLong();
     }
 
     public static final Creator<ImageInfoListObj> CREATOR = new Creator<ImageInfoListObj>() {
