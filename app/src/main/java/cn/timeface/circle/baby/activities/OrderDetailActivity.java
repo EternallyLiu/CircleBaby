@@ -35,6 +35,7 @@ import cn.timeface.circle.baby.constants.LogConstant;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.SelectPayWayDialog;
 import cn.timeface.circle.baby.events.PayResultEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.payment.OrderInfoObj;
 import cn.timeface.circle.baby.payment.PrepareOrderException;
 import cn.timeface.circle.baby.payment.alipay.AlipayPayment;
@@ -46,7 +47,7 @@ import cn.timeface.circle.baby.views.OrderDetailHeaderView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Subscription;
 
-public class OrderDetailActivity extends BaseAppCompatActivity {
+public class OrderDetailActivity extends BaseAppCompatActivity implements IEventBus {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.appbar_layout)
@@ -126,8 +127,9 @@ public class OrderDetailActivity extends BaseAppCompatActivity {
                 .subscribe(listResponse -> {
                     this.listResponse = listResponse;
                     List<MyOrderBookItem> bookList = listResponse.getBookList();
-                    listData.clear();
-                    listData.addAll(bookList);
+//                    listData.clear();
+//                    listData.addAll(bookList);
+                    orderBookAdapter.setListData(bookList);
                     detailHeaderView.setupViewData(listResponse);
                     detailFootView.setupViewData(listResponse);
                     orderBookAdapter.notifyDataSetChanged();

@@ -186,7 +186,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                     finish();
                     break;
                 case 2:
-                    System.out.println("orderStatus==================="+orderStatus);
+                    System.out.println("orderStatus===================" + orderStatus);
                     if (orderStatus == TypeConstant.STATUS_CHECKING) {
                         System.out.println("PaySuccessActivity===================PaySuccessActivity");
                         timer.cancel();
@@ -200,6 +200,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         }
     };
     private List<PrintPropertyTypeObj> baseObjs;
+    private int expressId;
 
     public static void open(Context context, String orderId) {
         if (!isOpen) {
@@ -210,7 +211,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         }
     }
 
-    public static void open(Context context, String orderId,List<PrintPropertyTypeObj> baseObjs) {
+    public static void open(Context context, String orderId, List<PrintPropertyTypeObj> baseObjs) {
         if (!isOpen) {
             Intent intent = new Intent(context, MyOrderConfirmActivity.class);
             intent.putExtra("orderId", orderId);
@@ -926,20 +927,21 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
      * 提交订单
      */
     private void reqApplyOrder() throws IOException {
-        int pointsExchange = 0;
-        if (isUsePoint) {
-            pointsExchange = Integer.valueOf(mExChangePoints.getText().toString());
-        }
+//        int pointsExchange = 0;
+//        if (isUsePoint) {
+//            pointsExchange = Integer.valueOf(mExChangePoints.getText().toString());
+//        }
+        expressId = Integer.valueOf(mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue());
 
         progressDialog.setMessage(getString(R.string.apply_order));
         progressDialog.show();
 
-        for(PrintPropertyTypeObj baseObj : baseObjs){
-            baseObj.setAddressId(Integer.valueOf(addressId));
-            baseObj.setExpressId(Integer.valueOf(mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue()));
-        }
+//        for(PrintPropertyTypeObj baseObj : baseObjs){
+//            baseObj.setAddressId(Integer.valueOf(addressId));
+//            baseObj.setExpressId(Integer.valueOf(mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue()));
+//        }
 
-        Subscription s = apiService.addOrder(orderId, LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class))
+        Subscription s = apiService.addOrder(Integer.valueOf(addressId), LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), expressId, orderId)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     progressDialog.dismiss();
@@ -980,27 +982,27 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //        if (orderPrice == 0) {//积分支付
 //            reqPayByPoint();
 //        } else {// 现金支付
-            final SelectPayWayDialog dialog = new SelectPayWayDialog(original);
-            dialog.setClickListener(new SelectPayWayDialog.ClickListener() {
-                @Override
-                public void okClick(int payType) {
-                    dialog.dismiss();
-                    progressDialog.show();
-                    switch (payType) {
-                        // 支付宝
-                        case 1:
-                            orderPrice = 0.01f;//一分钱测试支付
+        final SelectPayWayDialog dialog = new SelectPayWayDialog(original);
+        dialog.setClickListener(new SelectPayWayDialog.ClickListener() {
+            @Override
+            public void okClick(int payType) {
+                dialog.dismiss();
+                progressDialog.show();
+                switch (payType) {
+                    // 支付宝
+                    case 1:
+                        orderPrice = 0.01f;//一分钱测试支付
 //                            if (isUsePoint || !TextUtils.isEmpty(getUseCouponId())) {
 //                                //4混合支付(支付宝)
 //                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
 //                            } else {
 //                                //2支付宝支付
-                                System.out.println("2支付宝支付==========="+orderId);
-                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
+                        System.out.println("2支付宝支付===========" + orderId);
+                        new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
 //                            }
-                            break;
+                        break;
 
-                        // 微信
+                    // 微信
 //                        case 2:
                             /*if (isUsePoint || !TextUtils.isEmpty(getUseCouponId())) {
                                 new WxUtil(MyOrderConfirmActivity.this, orderId, FastData.getUserId(), "3").pay();
@@ -1009,23 +1011,23 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                             }
                             break;*/
 
-                        //翼支付
+                    //翼支付
 //                        case 3:
                            /* new EPayUtil(MyOrderConfirmActivity.this, orderId).pay();
                             break;*/
-                    }
                 }
+            }
 
-                @Override
-                public void cancelClick() {
-                    dialog.dismiss();
+            @Override
+            public void cancelClick() {
+                dialog.dismiss();
                     /*OrderDetailCartActivity.open(MyOrderConfirmActivity.this, orderId, TypeConstant.STATUS_NOT_PAY);*/
-                    OrderDetailActivity.open(MyOrderConfirmActivity.this,orderId);
-                    finish();
-                }
-            });
-            dialog.setCancelable(false);
-            dialog.show(getSupportFragmentManager(), "dialog");
+                OrderDetailActivity.open(MyOrderConfirmActivity.this, orderId);
+                finish();
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.show(getSupportFragmentManager(), "dialog");
 //        }
     }
 
@@ -1068,7 +1070,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("确认订单支付结果==========="+orderId);
+                System.out.println("确认订单支付结果===========" + orderId);
                 Subscription s = apiService.findOrderDetail(orderId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
@@ -1139,7 +1141,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         } else {
             // 支付不成功跳转至订单详情页
             /*OrderDetailCartActivity.open(MyOrderConfirmActivity.this, orderId, TypeConstant.STATUS_NOT_PAY);*/
-            OrderDetailActivity.open(MyOrderConfirmActivity.this,orderId);
+            OrderDetailActivity.open(MyOrderConfirmActivity.this, orderId);
             finish();
         }
     }

@@ -119,11 +119,4 @@ public class MilestoneFragment extends BaseFragment{
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
-    private List<MilestoneTimeObj> mokeData(List<MilestoneTimeObj> dataList) {
-        MilestoneTimeObj item = new MilestoneTimeObj(1465193897000L, "http://img.pconline.com.cn/images/upload/upc/tx/itbbs/1402/27/c4/31612517_1393474458218_mthumb.jpg", "第一只兔子", new TimeLineObj());
-        dataList.add(item);
-        dataList.add(item);
-        return dataList;
-    }
 }

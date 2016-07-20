@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.api.models.responses.FamilyListResponse;
 import cn.timeface.circle.baby.api.models.responses.ImageInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
 import cn.timeface.circle.baby.api.models.responses.LessResponse;
+import cn.timeface.circle.baby.api.models.responses.MilestoneInfoResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
@@ -179,6 +180,10 @@ public interface ApiService {
     //首页-宝宝里程碑
     @GET("babyTime/milestone")
     Observable<MilestoneTimeResponse> milestone();
+
+    //首页-里程碑详情
+    @GET("babyTime/milestoneInfo")
+    Observable<MilestoneInfoResponse> milestoneInfo(@Query("milestoneId") int milestoneId);
 
     //里程碑删除
     @GET("babyTime/delMilestone")
@@ -429,7 +434,7 @@ public interface ApiService {
     Observable<LessResponse> addOrder(@Query("addressId") int addressId,
                                       @Query("dataList") String dataList,
                                       @Query("expressId") int expressId,
-                                      @Query("orderId") int orderId);
+                                      @Query("orderId") String orderId);
 
 
     /**

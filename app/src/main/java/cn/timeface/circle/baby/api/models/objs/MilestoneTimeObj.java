@@ -9,13 +9,14 @@ public class MilestoneTimeObj extends BaseObj {
     long date;
     String imgUrl;
     String milestone;
-    TimeLineObj timeInfo;
+    int milestoneId;
+    int isRead;
 
-    public MilestoneTimeObj(long date, String imgUrl, String milestone, TimeLineObj timeInfo) {
+    public MilestoneTimeObj(long date, String imgUrl, String milestone, int milestoneId) {
         this.date = date;
         this.imgUrl = imgUrl;
         this.milestone = milestone;
-        this.timeInfo = timeInfo;
+        this.milestoneId = milestoneId;
     }
 
     public long getDate() {
@@ -42,11 +43,19 @@ public class MilestoneTimeObj extends BaseObj {
         this.milestone = milestone;
     }
 
-    public TimeLineObj getTimeInfo() {
-        return timeInfo;
+    public int getMilestoneId() {
+        return milestoneId;
     }
 
-    public void setTimeInfo(TimeLineObj timeInfo) {
-        this.timeInfo = timeInfo;
+    public void setMilestoneId(int milestoneId) {
+        this.milestoneId = milestoneId;
+    }
+
+    public int getIsRead() {
+        return isRead;
+    }
+
+    public void setIsRead(int isRead) {
+        this.isRead = isRead;
     }
 }

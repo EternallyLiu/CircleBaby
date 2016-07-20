@@ -36,7 +36,6 @@ import cn.timeface.circle.baby.fragments.ChangeBabyFragment;
 import cn.timeface.circle.baby.fragments.ChangeInfoFragment;
 import cn.timeface.circle.baby.fragments.DiaryPreviewFragment;
 import cn.timeface.circle.baby.fragments.DiaryTextFragment;
-import cn.timeface.circle.baby.fragments.EnsureOrderFragment;
 import cn.timeface.circle.baby.fragments.FamilyMemberFragment;
 import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
 import cn.timeface.circle.baby.fragments.InviteFragment;
@@ -128,13 +127,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putParcelable("BookTypeListObj", obj);
         open(context, "AddBookFragment", bundle);
-    }
-
-    public static void openEnsureOrderFragment(Context context,BookObj bookObj,MineBookObj mineBookObj) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("BookObj", bookObj);
-        bundle.putParcelable("MineBookObj", mineBookObj);
-        open(context, "EnsureOrderFragment", bundle);
     }
 
     public static void openBookSizeListFragment(Context context,List<ImageInfoListObj> dataList) {
@@ -318,9 +310,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "AddBookFragment":
                 return new AddBookFragment();
-
-            case "EnsureOrderFragment":
-                return new EnsureOrderFragment();
 
             case "SelectAddressFragment":
                 return new SelectAddressFragment();

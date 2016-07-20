@@ -16,8 +16,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.Milestone;
-import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
+import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
@@ -25,12 +24,12 @@ import cn.timeface.circle.baby.utils.Remember;
 /**
  * Created by lidonglin on 2016/5/4.
  */
-public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
+public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
     private ViewHolder holder;
     private View.OnClickListener onClickListener;
 
-    public MilestoneAdapter(Context mContext, List<MilestoneTimeObj> listData) {
+    public MilestoneInfoAdapter(Context mContext, List<TimeLineObj> listData) {
         super(mContext, listData);
 
     }
@@ -41,7 +40,7 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
 
     @Override
     public ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_milestone, viewGroup, false);
+        View view = mLayoutInflater.inflate(R.layout.item_milestoneinfo, viewGroup, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -49,8 +48,8 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = (ViewHolder) viewHolder;
-        MilestoneTimeObj item = getItem(position);
-        holder.milestoneobj = item;
+        TimeLineObj item = getItem(position);
+        holder.timeLineObj = item;
         holder.context = mContext;
         int width = Remember.getInt("width", 0) * 3;
         ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
@@ -58,9 +57,11 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
         layoutParams.height = (int) (width * 0.6);
         holder.ivCover.setLayoutParams(layoutParams);
         holder.rlMilestone.setLayoutParams(layoutParams);
-        holder.tvName.setText(item.getMilestone());
         holder.tvTime.setText(DateUtil.getYear2(item.getDate()));
-        GlideUtil.displayImage(item.getImgUrl(),holder.ivCover);
+        GlideUtil.displayImage(item.getMediaList().get(0).getImgUrl(), holder.ivCover);
+        if(item.getType()==1){
+            holder.ivVideo.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -79,11 +80,11 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
         ImageView ivCover;
         @Bind(R.id.tv_time)
         TextView tvTime;
-        @Bind(R.id.tv_name)
-        TextView tvName;
+        @Bind(R.id.iv_video)
+        ImageView ivVideo;
         @Bind(R.id.rl_milestone)
         RelativeLayout rlMilestone;
-        MilestoneTimeObj milestoneobj;
+        TimeLineObj timeLineObj;
         Context context;
 
         ViewHolder(View view) {
@@ -94,7 +95,7 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
 
         @Override
         public void onClick(View v) {
-//            TimeLineDetailActivity.open(context,milestoneobj.getTimeInfo().getTimeId());
+            TimeLineDetailActivity.open(context,timeLineObj.getTimeId());
         }
     }
 }

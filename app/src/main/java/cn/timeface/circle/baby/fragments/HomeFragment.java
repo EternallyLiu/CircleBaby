@@ -37,6 +37,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CloudAlbumActivity;
 import cn.timeface.circle.baby.activities.ConfirmRelationActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.MileStoneActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
@@ -323,7 +324,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 FragmentBridgeActivity.openBabyInfoFragment(getActivity(), FastData.getString("userObj", ""));
                 break;
             case R.id.tv_milestone:
-                FragmentBridgeActivity.open(getActivity(), "MilestoneFragment");
+//                FragmentBridgeActivity.open(getActivity(), "MilestoneFragment");
+                MileStoneActivity.open(getActivity());
                 break;
             case R.id.tv_toensurerelation:
                 Intent intent = new Intent(getActivity(), ConfirmRelationActivity.class);
