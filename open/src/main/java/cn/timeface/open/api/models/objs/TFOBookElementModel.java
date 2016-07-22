@@ -1,7 +1,9 @@
 package cn.timeface.open.api.models.objs;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -12,9 +14,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.Resource;
+import com.bumptech.glide.load.resource.bitmap.BitmapResource;
+
+import java.io.File;
 
 import cn.timeface.open.managers.interfaces.IMoveParams;
 import cn.timeface.open.managers.interfaces.IPageScale;
+import cn.timeface.open.utils.Utils;
 import cn.timeface.open.utils.glide.TFOUrlLoader;
 
 /**
@@ -255,16 +263,16 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             elementFrameLayout.addView(getImageView(context));
         }
 
-        if (!TextUtils.isEmpty(this.element_mask_image)) {
-            //最后增加蒙版
-            ImageView mask = new ImageView(context);
-            mask.setLayoutParams(new FrameLayout.LayoutParams((int) this.element_width, (int) this.element_height));
-            Glide.with(context)
-                    .load(this.element_mask_image)
-                    .centerCrop()
-                    .into(mask);
-            elementFrameLayout.addView(mask);
-        }
+//        if (!TextUtils.isEmpty(this.element_mask_image)) {
+//            //最后增加蒙版
+//            ImageView mask = new ImageView(context);
+//            mask.setLayoutParams(new FrameLayout.LayoutParams((int) this.element_width, (int) this.element_height));
+//            Glide.with(context)
+//                    .load(this.element_mask_image)
+//                    .centerCrop()
+//                    .into(mask);
+//            elementFrameLayout.addView(mask);
+//        }
 
         if (!TextUtils.isEmpty(this.element_front_mask_image)) {
             //增加 最外层蒙版
@@ -285,18 +293,41 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         return elementFrameLayout;
     }
 
-    private ImageView getImageView(Context context) {
+    private ImageView getImageView(final Context context) {
         ImageView imageView = new ImageView(context);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         imageView.setLayoutParams(lp);
         imageView.setPadding((int) this.element_content_left, (int) this.element_content_top, (int) this.element_content_right, (int) this.element_content_bottom);
-        if (!TextUtils.isEmpty(this.image_content_expand.getImageUrl())) {
+
+        if (!TextUtils.isEmpty(this.element_mask_image)) {
             Glide.with(context)
                     .using(new TFOUrlLoader(context))
                     .load(this)
-                    .fitCenter()
+                    .centerCrop()
+                    .bitmapTransform(new Transformation<Bitmap>() {
+                        @Override
+                        public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
+                            return BitmapResource.obtain(Utils.fixBitmap(resource.get(), getMaskFile(context)), Glide.get(context).getBitmapPool());
+                        }
+
+                        @Override
+                        public String getId() {
+                            return "mask image";
+                        }
+                    })
                     .into(imageView);
+
+
+        } else {
+            if (!TextUtils.isEmpty(this.image_content_expand.getImageUrl())) {
+                Glide.with(context)
+                        .using(new TFOUrlLoader(context))
+                        .load(this)
+                        .centerCrop()
+                        .into(imageView);
+            }
         }
+
         return imageView;
     }
 
@@ -310,7 +341,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             Glide.with(context)
                     .using(new TFOUrlLoader(context))
                     .load(this)
-                    .fitCenter()
+                    .centerCrop()
                     .into(imageView);
             return imageView;
         }
@@ -498,5 +529,27 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
     public float getContentHeight() {
         return element_height - element_content_top - element_content_bottom;
+    }
+
+    public String getCropImageUrl(int width) {
+        String imgUrl = this.image_content_expand.getImageUrl();
+        Rect rect = this.image_content_expand.getOrgCropRect(getContentWidth(), getContentHeight());
+
+        int rotation = this.image_content_expand.getImageRotation();
+        rotation = (rotation + 360) % 360;
+        imgUrl += "@" + rect.left + "-" + rect.top + "-" + rect.width() + "-" + rect.height() + "a" + "_" + rotation + "r" + "_" + width + "w" + ".webp";
+        return imgUrl;
+    }
+
+    public String getCropImageUrl() {
+        return getCropImageUrl((int) getContentWidth());
+    }
+
+    public File getMaskFile(Context context) {
+        if (TextUtils.isEmpty(element_mask_image)) {
+            throw new NullPointerException("不存在遮罩图片");
+        }
+        File path = Glide.getPhotoCacheDir(context);
+        return new File(path, element_mask_image.hashCode() + ".png");
     }
 }

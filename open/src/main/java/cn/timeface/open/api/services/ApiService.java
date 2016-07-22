@@ -1,5 +1,7 @@
 package cn.timeface.open.api.services;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 import cn.timeface.open.api.models.base.BaseResponse;
@@ -14,11 +16,14 @@ import cn.timeface.open.api.models.response.BookList;
 import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.api.models.response.EditText;
 import cn.timeface.open.api.models.response.TemplateInfo;
+import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -235,4 +240,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("api/reformat")
     Observable<BaseResponse> reformat(@Field("content_ids") String content_ids);
+
+
+    @GET
+    @Streaming
+    Observable<ResponseBody> getImageStream(@Url String url);
+
 }
