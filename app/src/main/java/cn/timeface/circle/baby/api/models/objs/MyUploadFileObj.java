@@ -15,7 +15,7 @@ import cn.timeface.circle.baby.utils.MD5;
  */
 public class MyUploadFileObj extends UploadFileObj {
     public MyUploadFileObj(String filePath) {
-        super(filePath, "times/" + MD5.encode(new File(filePath)) + filePath.substring(filePath.lastIndexOf(".")));
+        super(filePath, "baby/" + MD5.encode(new File(filePath)) + filePath.substring(filePath.lastIndexOf(".")));
     }
 
     @Override

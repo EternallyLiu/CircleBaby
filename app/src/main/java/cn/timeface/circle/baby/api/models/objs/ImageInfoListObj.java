@@ -58,7 +58,7 @@ public class ImageInfoListObj extends BaseObj implements Parcelable {
     protected ImageInfoListObj(Parcel in) {
         this.mediaList = in.createTypedArrayList(MediaObj.CREATOR);
         this.timeId = in.readInt();
-        long date = in.readLong();
+        this.date = in.readLong();
     }
 
     public static final Creator<ImageInfoListObj> CREATOR = new Creator<ImageInfoListObj>() {

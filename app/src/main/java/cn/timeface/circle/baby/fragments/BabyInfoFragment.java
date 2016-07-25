@@ -113,6 +113,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         String s = babyObj.getAvatar();
         int i = s.lastIndexOf("/");
         objectKey = s.substring(i - 4);
+        System.out.println("objectKey=========="+objectKey);
     }
 
     @Override

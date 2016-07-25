@@ -19,11 +19,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.BookObj;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.fragments.AddAddressFragment;
@@ -41,7 +39,6 @@ import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
 import cn.timeface.circle.baby.fragments.InviteFragment;
 import cn.timeface.circle.baby.fragments.MessageFragment;
 import cn.timeface.circle.baby.fragments.MilestoneFragment;
-import cn.timeface.circle.baby.fragments.MineBookFragment;
 import cn.timeface.circle.baby.fragments.MineInfoFragment;
 import cn.timeface.circle.baby.fragments.SelectAddressFragment;
 import cn.timeface.circle.baby.fragments.SettingFragment;
@@ -301,9 +298,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "SettingMsgFragment":
                 return new SettingMsgFragment();
-
-            case "MineBookFragment":
-                return new MineBookFragment();
 
             case "AddBookListFragment":
                 return new AddBookListFragment();

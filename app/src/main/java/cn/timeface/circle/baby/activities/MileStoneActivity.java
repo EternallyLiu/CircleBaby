@@ -81,8 +81,8 @@ public class MileStoneActivity extends BaseAppCompatActivity {
     private void initView() {
         width = Remember.getInt("width", 0);
         tvName.setText(FastData.getBabyName());
-        GlideUtil.displayImage(FastData.getBabyAvatar(),ivAvatar);
-        llLeft.setTranslationY(width/2);
+        GlideUtil.displayImage(FastData.getBabyAvatar(), ivAvatar);
+        llLeft.setTranslationY((float) (width * 0.7));
     }
 
 
@@ -98,6 +98,11 @@ public class MileStoneActivity extends BaseAppCompatActivity {
                             llRight.addView(initRightView(obj));
                         }
                     }
+                    if (llLeft.getChildCount() < llRight.getChildCount()) {
+                        llLeft.addView(initEmptyView(1));
+                    } else {
+                        llRight.addView(initEmptyView(2));
+                    }
                 }, throwable -> {
                     Log.e(TAG, "milestone:");
                 });
@@ -111,10 +116,14 @@ public class MileStoneActivity extends BaseAppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        new ShareDialog(this).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
-                ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_log),
-                ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_log),
-                "http://www.timeface.cn/tf_mobile/download.html");
+        if (item.getItemId() == R.id.home) {
+            onBackPressed();
+        } else if (item.getItemId() == R.id.item_share) {
+            new ShareDialog(this).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
+                    ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_log),
+                    ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_log),
+                    "http://www.timeface.cn/tf_mobile/download.html");
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -136,7 +145,7 @@ public class MileStoneActivity extends BaseAppCompatActivity {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MileStoneInfoActivity.open(MileStoneActivity.this,obj.getMilestone(),obj.getMilestoneId());
+                MileStoneInfoActivity.open(MileStoneActivity.this, obj.getMilestone(), obj.getMilestoneId());
             }
         });
         return view;
@@ -160,15 +169,18 @@ public class MileStoneActivity extends BaseAppCompatActivity {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MileStoneInfoActivity.open(MileStoneActivity.this,obj.getMilestone(),obj.getMilestoneId());
+                MileStoneInfoActivity.open(MileStoneActivity.this, obj.getMilestone(), obj.getMilestoneId());
             }
         });
         return view;
     }
 
-    public View initEmptyView() {
+    public View initEmptyView(int left) {
         View view = View.inflate(this, R.layout.view_milestone_empty, null);
         View tv = view.findViewById(R.id.tv);
+        if(left == 1){
+            tv.setBackgroundResource(R.drawable.milestone_diy_left);
+        }
         ViewGroup.LayoutParams layoutParams = tv.getLayoutParams();
         layoutParams.height = width;
         layoutParams.width = width;

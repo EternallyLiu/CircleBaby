@@ -39,6 +39,7 @@ public class BookSizeListFragment extends BaseFragment {
     RecyclerView contentRecyclerView;
     private List<ImageInfoListObj> dataList;
     private String bookSizeId;
+    private int bookPage;
 
 
     public BookSizeListFragment() {
@@ -72,6 +73,7 @@ public class BookSizeListFragment extends BaseFragment {
                     }
                 }, error -> {
                     Log.e(TAG, "getBabyBookWorksTypeList:");
+                    error.printStackTrace();
                 });
 
     }
@@ -80,9 +82,14 @@ public class BookSizeListFragment extends BaseFragment {
         BookSizeListAdapter adapter = new BookSizeListAdapter(getContext(), list);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         contentRecyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(bookSizeId ->{
-            this.bookSizeId = bookSizeId+"";
-            startPhotoPick(dataList);
+        adapter.setOnItemClickListener(new OnItemClickListener<Integer>() {
+            @Override
+            public void clickItem(Integer position) {
+                CardBookSizeObj cardBookSizeObj = list.get(position);
+                bookSizeId = cardBookSizeObj.getBookSizeId()+"";
+                bookPage = cardBookSizeObj.getBookPage();
+                startPhotoPick();
+            }
         });
     }
 
@@ -92,10 +99,11 @@ public class BookSizeListFragment extends BaseFragment {
         ButterKnife.unbind(this);
     }
 
-    private void startPhotoPick(List<ImageInfoListObj> dataList) {
+    private void startPhotoPick() {
         Intent intent = new Intent(getActivity(), PickerPhotoActivity2.class);
         intent.putExtra("bookType",2);
         intent.putExtra("bookSizeId",bookSizeId);
+        intent.putExtra("bookPage",bookPage);
         intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
         startActivity(intent);

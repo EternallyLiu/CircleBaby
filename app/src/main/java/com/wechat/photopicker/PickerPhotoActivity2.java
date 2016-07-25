@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -15,6 +16,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -29,8 +33,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
+import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
@@ -43,7 +50,8 @@ import cn.timeface.open.api.models.objs.TFOPublishObj;
 import cn.timeface.open.api.models.objs.TFOResourceObj;
 
 /**
- * 选择图界面
+ * 新建识图卡片书和日记卡片书
+ * 选择图片界面
  */
 public class PickerPhotoActivity2 extends BaseAppCompatActivity {
 
@@ -54,6 +62,18 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     public final static String KEY_OPTIONAL_PICTURE_SIZE = "OPTIONAL_PICTURE_SIZE";
     private static final int RECORD_CAMERA_REQUEST_CODE = 50;
     protected PickerPhotoFragment2 mPickerPhotoFragment;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.container)
+    FrameLayout container;
+    @Bind(R.id.tv_msg)
+    TextView tvMsg;
+    @Bind(R.id.tv_tocreate)
+    TextView tvTocreate;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
     private PhotoSelectorAdapter2 mPhotoSelectorAdapter;
     public static final int MAX_SELECTOR_SIZE = 99;
     public static final String TAG = "PickerPhotoActivity2";
@@ -72,11 +92,15 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     private int openBookType;
     private String bookId = "";
     private String openBookId = "";
+    private int bookPage;
+    private String notifyString;
+    private String coverTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo2);
+        ButterKnife.bind(this);
 //        checkPermission();
         Intent intent = getIntent();
         bookType = intent.getIntExtra("bookType", 0);
@@ -85,10 +109,11 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
         openBookId = intent.getStringExtra("openBookId");
         openBookType = intent.getIntExtra("openBookType", 0);
         dataList = intent.getParcelableArrayListExtra("dataList");
-        optionalPhotoSize = MAX_SELECTOR_SIZE;
+        coverTitle = intent.getStringExtra("coverTitle");
+        bookPage = intent.getIntExtra("bookPage", MAX_SELECTOR_SIZE);
+        optionalPhotoSize = bookPage;
         Log.d(TAG, "optionalPhotoSize---" + optionalPhotoSize);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle(R.string.picker_photo);
@@ -108,7 +133,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                     Log.d(TAG, "btPreview is GONE");
                 } else if (btPreview.getVisibility() == View.GONE) {
                     mMenuDoneItem.setVisible(true);
-                    btPreview.setVisibility(View.VISIBLE);
+//                    btPreview.setVisibility(View.VISIBLE);
                     Log.d(TAG, "btPreview is VISIBLE");
                 }
                 mMenuDoneItem.setTitle(getString(R.string.done_selector_size, mPhotoSelectorAdapter.getSelectedItemCount(), optionalPhotoSize));
@@ -118,6 +143,26 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
             }
 
         });
+        initView();
+    }
+
+    private void initView() {
+        if (dataList == null || dataList.size() == 0) {
+            llNoData.setVisibility(View.VISIBLE);
+        }
+        tvTocreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bookType==2){
+                    //日记卡片
+                    PublishActivity.open(PickerPhotoActivity2.this, PublishActivity.DIALY);
+                }else if(bookType == 3){
+                    //识图卡片
+                    PublishActivity.open(PickerPhotoActivity2.this, PublishActivity.CARD);
+                }
+            }
+        });
+
     }
 
     private void checkPermission() {
@@ -169,6 +214,19 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
             timeIds.clear();
             timeIds.addAll(integers);
             pageNum = mPhotoSelectorAdapter.getSelectedPhotos().size();
+
+            if (pageNum < bookPage) {
+                if (bookType == 2) {
+                    //日记卡片
+                    notifyString = "印制" + coverTitle + "日记卡需要" + bookPage + "张，只选了" + pageNum + "张还少" + (bookPage - pageNum) + "张";
+                } else if (bookType == 3) {
+                    //识图卡片
+                    notifyString = "印制识图卡需要" + bookPage + "张，只选了" + pageNum + "张还少" + (bookPage - pageNum) + "张";
+                }
+                ToastUtil.showToast(notifyString);
+                return true;
+            }
+
             imageInfoList.clear();
             for (ImageInfoListObj obj : dataList) {
                 if (timeIds.contains(obj.getTimeId())) {
@@ -199,7 +257,8 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                 tfoContentObjs1.add(tfoContentObj);
                 TFOPublishObj tfoPublishObj = new TFOPublishObj("", tfoContentObjs1);
                 List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
-                MyPODActivity.open(this, openBookId, openBookType, tfoPublishObjs , s);
+                tfoPublishObjs.add(tfoPublishObj);
+                MyPODActivity.open(this, openBookId, openBookType, tfoPublishObjs, s);
                 finish();
             }
         }
@@ -207,7 +266,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
     }
 
     private void createBook(String s) {
-        apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), mPhotoSelectorAdapter.getSelectedPhotos().get(0).getImgUrl(), bookId , URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum,openBookType)
+        apiService.createBook(URLEncoder.encode(FastData.getUserInfo().getNickName()), FastData.getBabyId(), mPhotoSelectorAdapter.getSelectedPhotos().get(0).getImgUrl(), bookId, URLEncoder.encode(bookName), bookSizeId, bookType, s, URLEncoder.encode(bookName), 0, pageNum, openBookType)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {

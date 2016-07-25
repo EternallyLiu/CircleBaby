@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.gson.Gson;
 
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -150,8 +151,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
                 int bitmapHeight = touchImageView.getBitmapHeight();
                 long createTime = DateUtil.getTime(date, "yyyyMMdd");
                 TemplateImage templateImage = new TemplateImage(0, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
-                Gson gson = new Gson();
-                String imageInfo = gson.toJson(templateImage);
+                String imageInfo = new Gson().toJson(templateImage);
 
                 apiService.cardComposed(URLEncoder.encode(content), imageInfo, URLEncoder.encode(etPinyin.getText().toString()))
                         .compose(SchedulersCompat.applyIoSchedulers())

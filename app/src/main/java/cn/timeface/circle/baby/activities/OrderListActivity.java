@@ -120,6 +120,7 @@ public class OrderListActivity extends BaseAppCompatActivity implements View.OnC
                         }
                     }
                 }, throwable -> {
+                    tfStateView.showException(throwable);
                     Log.d(TAG, "reqOrderListData: " + throwable.getMessage());
                 });
         addSubscription(subscribe);

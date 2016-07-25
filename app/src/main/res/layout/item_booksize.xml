@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/size_6">
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        />
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@color/tran_30_black"
+        />
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        >
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3寸"
+            android:textSize="@dimen/text_normal"
+            android:textColor="@color/white"
+            android:background="@drawable/shape_minebookadapter_bg"
+            android:paddingLeft="@dimen/size_36"
+            android:paddingRight="@dimen/size_36"
+            android:paddingTop="@dimen/size_12"
+            android:paddingBottom="@dimen/size_12"
+            />
+        <TextView
+            android:id="@+id/tv_pagenum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="打印需要18张"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_medium"
+            android:layout_marginTop="@dimen/size_12"
+            />
+        <TextView
+            android:id="@+id/tv_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="尺寸：10x8cm"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_medium"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -18,6 +18,12 @@ public class BookTypeListObj extends BaseObj implements Parcelable {
     List<MediaObj> imgList; //介绍当前作品类型的图片数组
     String title;           //当前作品名称
     int type;               //当前作品的类型
+    MediaObj detail;
+    int price;
+    float height;
+    float width;
+    int bookSizeId;
+    int bookPage;
 
     public BookTypeListObj(int id, String coverTitle, String description, List<MediaObj> imgList, String title, int type) {
         this.id = id;
@@ -35,6 +41,54 @@ public class BookTypeListObj extends BaseObj implements Parcelable {
         this.imgList = obj.getImgList();
         this.title = obj.getTitle();
         this.type = obj.getType();
+    }
+
+    public MediaObj getDetail() {
+        return detail;
+    }
+
+    public void setDetail(MediaObj detail) {
+        this.detail = detail;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public int getBookSizeId() {
+        return bookSizeId;
+    }
+
+    public void setBookSizeId(int bookSizeId) {
+        this.bookSizeId = bookSizeId;
+    }
+
+    public int getBookPage() {
+        return bookPage;
+    }
+
+    public void setBookPage(int bookPage) {
+        this.bookPage = bookPage;
     }
 
     public int getId() {
@@ -98,6 +152,13 @@ public class BookTypeListObj extends BaseObj implements Parcelable {
         dest.writeTypedList(this.imgList);
         dest.writeString(this.title);
         dest.writeInt(this.type);
+        dest.writeParcelable(this.detail,flags);
+        dest.writeInt(this.price);
+        dest.writeFloat(this.height);
+        dest.writeFloat(this.width);
+        dest.writeInt(this.bookSizeId);
+        dest.writeInt(this.bookPage);
+
     }
 
     public BookTypeListObj() {
@@ -110,6 +171,12 @@ public class BookTypeListObj extends BaseObj implements Parcelable {
         this.imgList = in.createTypedArrayList(MediaObj.CREATOR);
         this.title = in.readString();
         this.type = in.readInt();
+        this.detail = in.readParcelable(MediaObj.class.getClassLoader());
+        this.price = in.readInt();
+        this.height = in.readFloat();
+        this.width = in.readFloat();
+        this.bookSizeId = in.readInt();
+        this.bookPage = in.readInt();
     }
 
     public static final Creator<BookTypeListObj> CREATOR = new Creator<BookTypeListObj>() {
