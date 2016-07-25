@@ -54,6 +54,8 @@ import rx.functions.Action1;
 
 public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     public static float SCALE = 1.0f;
+    public static final int EDIT_TEXT = 109;
+
     TFOBookModel bookModel;
     TFOBookContentModel rightModel;
     TFOBookContentModel leftModel;
@@ -411,7 +413,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
             if (elementModel != null
                     && elementModel.getElementType() == TFOBookElementModel.TYPE_TEXT) {
-                EditTextActivity.open(this, bookModel.getBookId(), contentId, elementModel);
+                EditTextActivity.open4result(this, EDIT_TEXT, bookModel.getBookId(), contentId, elementModel);
             }
         }
     }
@@ -498,4 +500,48 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         }
         super.onDestroy();
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case EDIT_TEXT:
+                if (resultCode != Activity.RESULT_OK) {
+                    return;
+                }
+
+                TFOBookElementModel editedModel = data.getParcelableExtra("edit_text_result");
+                editedModel.setPageScale(pageScale);//先设置缩放比
+
+                TFOBookElementModel orgModel = null;
+
+            {
+                //更换model
+                if (leftModel != null) {
+                    for (TFOBookElementModel model : leftModel.getElementList()) {
+                        if (model.getElementId() == editedModel.getElementId()) {
+                            orgModel = model;
+                            leftModel.getElementList().remove(orgModel);
+                            leftModel.getElementList().add(editedModel);
+                            break;
+                        }
+                    }
+                }
+
+                if (rightModel != null && orgModel == null) {
+                    for (TFOBookElementModel model : rightModel.getElementList()) {
+                        if (model.getElementId() == editedModel.getElementId()) {
+                            orgModel = model;
+                            leftModel.getElementList().remove(orgModel);
+                            leftModel.getElementList().add(editedModel);
+                            break;
+                        }
+                    }
+                }
+            }
+            setupViews();
+            break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

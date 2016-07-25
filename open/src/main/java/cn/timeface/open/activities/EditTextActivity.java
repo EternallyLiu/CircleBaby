@@ -1,6 +1,6 @@
 package cn.timeface.open.activities;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -33,12 +34,12 @@ public class EditTextActivity extends BaseAppCompatActivity {
     int maxTextCount = 100;
     EditText etContent;
 
-    public static void open(Context context, String book_id, String content_id, TFOBookElementModel elementModel) {
-        Intent intent = new Intent(context, EditTextActivity.class);
+    public static void open4result(Activity activity, int requestCode, String book_id, String content_id, TFOBookElementModel elementModel) {
+        Intent intent = new Intent(activity, EditTextActivity.class);
         intent.putExtra("content_id", content_id);
         intent.putExtra("book_id", book_id);
         intent.putExtra("element_model", elementModel);
-        context.startActivity(intent);
+        activity.startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -55,6 +56,10 @@ public class EditTextActivity extends BaseAppCompatActivity {
         contentId = getIntent().getStringExtra("content_id");
         bookId = getIntent().getStringExtra("book_id");
         elementModel = getIntent().getParcelableExtra("element_model");
+        {
+            //还原model
+            elementModel.resetPageScale();
+        }
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("编辑描述");
@@ -108,8 +113,15 @@ public class EditTextActivity extends BaseAppCompatActivity {
                         new Action1<BaseResponse<cn.timeface.open.api.models.response.EditText>>() {
                             @Override
                             public void call(BaseResponse<cn.timeface.open.api.models.response.EditText> response) {
-
                                 Log.i(TAG, "reqData: " + response.toString());
+                                if (response.success()) {
+                                    Intent data = new Intent();
+                                    data.putExtra("edit_text_result", response.getData().getElementModel());
+                                    setResult(Activity.RESULT_OK, data);
+                                    finish();
+                                } else {
+                                    Toast.makeText(EditTextActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                         , new Action1<Throwable>() {
