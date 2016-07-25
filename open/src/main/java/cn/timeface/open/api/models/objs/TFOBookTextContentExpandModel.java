@@ -115,16 +115,20 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
 
     @Override
     public void setPageScale(float scale) {
-        this.my_view_scale = scale;
+        if (scale != my_view_scale) {
+            this.my_view_scale = scale;
 
-        this.font_size *= scale;
-        this.text_line_height *= scale;
+            this.font_size *= scale;
+            this.text_line_height *= scale;
+        }
     }
 
     @Override
-    public void resetPageScale(float scale) {
-        this.font_size /= scale;
-        this.text_line_height /= scale;
+    public void resetPageScale() {
+        this.font_size /= my_view_scale;
+        this.text_line_height /= my_view_scale;
+
+        my_view_scale = 1.f;
     }
 
     @Override

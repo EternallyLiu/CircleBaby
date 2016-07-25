@@ -11,6 +11,12 @@ import java.io.File;
  */
 public class Utils {
 
+    /**
+     * 图片合成
+     * @param picBitmap 原图
+     * @param maskFile 合成的形状
+     * @return 合成后的bigmap
+     */
     public static Bitmap fixBitmap(Bitmap picBitmap, File maskFile) {
 
         if (!maskFile.exists()) {

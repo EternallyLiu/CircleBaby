@@ -377,17 +377,18 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
     @Override
     public void setPageScale(float scale) {
-        this.my_view_scale = scale;
+        if (scale != my_view_scale) {
+            this.my_view_scale = scale;
 
-
-        this.element_top *= scale;
-        this.element_left *= scale;
-        this.element_width *= scale;
-        this.element_height *= scale;
-        this.element_content_top *= scale;
-        this.element_content_left *= scale;
-        this.element_content_right *= scale;
-        this.element_content_bottom *= scale;
+            this.element_top *= scale;
+            this.element_left *= scale;
+            this.element_width *= scale;
+            this.element_height *= scale;
+            this.element_content_top *= scale;
+            this.element_content_left *= scale;
+            this.element_content_right *= scale;
+            this.element_content_bottom *= scale;
+        }
 
         if (this.image_content_expand != null) {
             this.image_content_expand.setPageScale(scale);
@@ -437,22 +438,24 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     }
 
     @Override
-    public void resetPageScale(float scale) {
-        this.element_top /= scale;
-        this.element_left /= scale;
-        this.element_width /= scale;
-        this.element_height /= scale;
-        this.element_content_top /= scale;
-        this.element_content_left /= scale;
-        this.element_content_right /= scale;
-        this.element_content_bottom /= scale;
+    public void resetPageScale() {
+        this.element_top /= my_view_scale;
+        this.element_left /= my_view_scale;
+        this.element_width /= my_view_scale;
+        this.element_height /= my_view_scale;
+        this.element_content_top /= my_view_scale;
+        this.element_content_left /= my_view_scale;
+        this.element_content_right /= my_view_scale;
+        this.element_content_bottom /= my_view_scale;
 
         if (this.image_content_expand != null) {
-            this.image_content_expand.resetPageScale(scale);
+            this.image_content_expand.resetPageScale();
         }
         if (this.text_content_expand != null) {
-            this.text_content_expand.resetPageScale(scale);
+            this.text_content_expand.resetPageScale();
         }
+
+        my_view_scale = 1.f;
     }
 
     @Override

@@ -204,30 +204,34 @@ public class TFOBookModel implements Parcelable, IPageScale {
 
     @Override
     public void setPageScale(float scale) {
-        this.my_view_scale = scale;
+        if (scale != my_view_scale) {
+            this.my_view_scale = scale;
 
-        this.book_width *= scale;
-        this.book_height *= scale;
-        this.content_width *= scale;
-        this.content_height *= scale;
-        this.content_padding_left *= scale;
-        this.content_padding_top *= scale;
+            this.book_width *= scale;
+            this.book_height *= scale;
+            this.content_width *= scale;
+            this.content_height *= scale;
+            this.content_padding_left *= scale;
+            this.content_padding_top *= scale;
+        }
         for (TFOBookContentModel contentModel : content_list) {
             contentModel.setPageScale(scale);
         }
     }
 
     @Override
-    public void resetPageScale(float scale) {
-        this.book_width /= scale;
-        this.book_height /= scale;
-        this.content_width /= scale;
-        this.content_height /= scale;
-        this.content_padding_left /= scale;
-        this.content_padding_top /= scale;
+    public void resetPageScale() {
+        this.book_width /= my_view_scale;
+        this.book_height /= my_view_scale;
+        this.content_width /= my_view_scale;
+        this.content_height /= my_view_scale;
+        this.content_padding_left /= my_view_scale;
+        this.content_padding_top /= my_view_scale;
         for (TFOBookContentModel contentModel : content_list) {
-            contentModel.resetPageScale(scale);
+            contentModel.resetPageScale();
         }
+
+        my_view_scale = 1.f;
     }
 
     @Override

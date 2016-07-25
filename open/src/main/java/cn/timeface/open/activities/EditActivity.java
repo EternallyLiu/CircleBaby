@@ -44,9 +44,9 @@ import cn.timeface.open.managers.interfaces.IEventBus;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.views.EditDoubleContentView;
+import cn.timeface.open.views.PageFrameLayout;
 import cn.timeface.open.views.PageView;
 import cn.timeface.open.views.StickerView;
-import cn.timeface.open.views.PageFrameLayout;
 import cn.timeface.widget.drawabletextview.DrawableTextView;
 import rx.Subscription;
 import rx.functions.Action0;
@@ -75,6 +75,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     private CoverColorAdapter colorAdapter;
     private float pageScale = 1.0f;
+    private float orgScale = 1.f;
 
     public static void open4result(Activity activity, int requestCode, TFOBookContentModel contentModel, boolean isCover) {
         open4result(activity, requestCode, null, contentModel, isCover);
@@ -120,6 +121,14 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             tvEditBeauty.setVisibility(View.GONE);
         }
 
+        {
+            //首先还原数据
+            orgScale = bookModel.getMyViewScale();
+            bookModel.resetPageScale();
+            if (leftModel != null) leftModel.resetPageScale();
+            if (rightModel != null) rightModel.resetPageScale();
+        }
+
 
         //增加整体布局监听
         ViewTreeObserver vto = pod.getViewTreeObserver();
@@ -142,8 +151,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                         pageScale = screenInfo.x / pageW;
                     }
                 }
+
                 if (leftModel != null) leftModel.setPageScale(pageScale);
                 if (rightModel != null) rightModel.setPageScale(pageScale);
+                bookModel.setPageScale(pageScale);
                 setupViews();
             }
         });
@@ -151,7 +162,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     private void setupViews() {
         pod.removeAllViews();
-        pageView = new PageView(this, true, leftModel, rightModel, isCover, pageScale);
+        pageView = new PageView(this, true, leftModel, rightModel, isCover);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
         lp.gravity = Gravity.CENTER;
         pod.addView(pageView, lp);
@@ -348,9 +359,12 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 leftModel.getElementList().add(em);
             }
 
-            em.resetPageScale(pageScale);
             Log.i(TAG, "onCreate: make change  left = " + (em.getElementLeft() + (em.isRight() ? screenInfo.x / 2 : 0)) + " top = " + em.getElementTop());
         }
+
+        if (rightModel != null) rightModel.resetPageScale();
+        if (leftModel != null) leftModel.resetPageScale();
+
         List<TFOBookContentModel> list = new ArrayList<>();
         list.add(rightModel);
         list.add(0, leftModel);
@@ -454,7 +468,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                                 leftModel = cm;
                             }
                         }
-                        if (bookModel != null) bookModel.resetPageScale(pageScale);
+                        if (leftModel != null) leftModel.setPageScale(pageScale);
+                        if (rightModel != null) rightModel.setPageScale(pageScale);
                         setupViews();
                     }
                 }, new Action1<Throwable>() {
@@ -477,7 +492,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Override
     protected void onDestroy() {
+        if (bookModel != null) {
+            bookModel.resetPageScale();
+            bookModel.setPageScale(orgScale);
+        }
         super.onDestroy();
-        if (bookModel != null) bookModel.resetPageScale(pageScale);
     }
 }

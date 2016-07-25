@@ -29,23 +29,20 @@ public class PageView extends FrameLayout {
     boolean isCover = false;
 
     public PageView(Context context, TFOBookContentModel contentModel, boolean isCover) {
-        this(context, false, null, contentModel, isCover, 1.0f);
+        this(context, false, null, contentModel, isCover);
     }
 
     public PageView(Context context, TFOBookContentModel leftContent, TFOBookContentModel rightContent, boolean isCover) {
-        this(context, false, leftContent, rightContent, isCover, 1.0f);
+        this(context, false, leftContent, rightContent, isCover);
     }
 
-    public PageView(Context context, boolean editMode, TFOBookContentModel leftContent, TFOBookContentModel rightContent, boolean isCover, float pageScale) {
+    public PageView(Context context, boolean editMode, TFOBookContentModel leftContent, TFOBookContentModel rightContent, boolean isCover) {
         super(context);
         this.leftContent = leftContent;
         this.rightContent = rightContent;
         this.editMode = editMode;
         this.isCover = isCover;
         this.bookModel = BookModelCache.getInstance().getBookModel();
-        if (pageScale != 1.0f) {
-            this.bookModel.setPageScale(pageScale);
-        }
 
         //右页需要修改paddingleft和paddingtop值
         setupView();

@@ -120,7 +120,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
             EditActivity.open4result(this, EDIT_REQUEST_CODE, bookContentModel, bookContentModel.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG1);
         } else {
             TFOBookContentModel rightModel = currentPage.get(1);
-           // rightModel.resetPageScale(pageScale);
+            // rightModel.resetPageScale(pageScale);
             EditActivity.open4result(this, EDIT_REQUEST_CODE, bookContentModel, rightModel, bookPodView.currentPageIsCover());
         }
     }
@@ -135,6 +135,9 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
                 TFOBookContentModel leftModel = data.getParcelableExtra("left_model");
                 TFOBookContentModel rightModel = data.getParcelableExtra("right_model");
+//                if (leftModel != null) leftModel.setPageScale(pageScale);
+//                if (rightModel != null) rightModel.setPageScale(pageScale);
+
                 String bookId = data.getStringExtra("book_id");
 
                 reqPod(bookId, bookType, 0, "");

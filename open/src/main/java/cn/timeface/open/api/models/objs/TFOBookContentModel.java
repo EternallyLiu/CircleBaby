@@ -155,12 +155,14 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
     }
 
     @Override
-    public void resetPageScale(float scale) {
+    public void resetPageScale() {
         if (element_list != null) {
             for (TFOBookElementModel ele : element_list) {
-                ele.resetPageScale(scale);
+                ele.resetPageScale();
             }
         }
+
+        my_view_scale = 1.f;
     }
 
     @Override

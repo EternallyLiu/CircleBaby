@@ -7,5 +7,5 @@ package cn.timeface.open.managers.interfaces;
 public interface IPageScale {
     void setPageScale(float scale);
 
-    void resetPageScale(float scale);
+    void resetPageScale();
 }
