@@ -512,28 +512,21 @@ public interface ApiService {
                                                          @Query("type") int type);
 
     /**
-     * 我的作品列表
-     */
-    @POST("babyBook/getBookList")
-    Observable<MineBookListResponse> getBookList(@Query("currentPage") int currentPage,
-                                                 @Query("pageSize") int pageSize);
-
-    /**
      * 创建作品
      */
     @POST("babyBook/createBook")
-    Observable<BaseResponse> createBook(@Query("author") String author,
-                                        @Query("babyId") int babyId,
-                                        @Query("bookCover") String bookCover,
-                                        @Query("bookId") String bookId,
-                                        @Query("bookName") String bookName,
-                                        @Query("bookSizeId") String bookSizeId,
-                                        @Query("bookType") int bookType,
-                                        @Query("dataList") String dataList,
-                                        @Query("description") String description,
-                                        @Query("openBookId") long openBookId,
-                                        @Query("pageNum") int pageNum,
-                                        @Query("openBookType") int openBookType);
+    Observable<BaseResponse> createBook(@Field("author") String author,
+                                        @Field("babyId") int babyId,
+                                        @Field("bookCover") String bookCover,
+                                        @Field("bookId") String bookId,
+                                        @Field("bookName") String bookName,
+                                        @Field("bookSizeId") String bookSizeId,
+                                        @Field("bookType") int bookType,
+                                        @Field("dataList") String dataList,
+                                        @Field("description") String description,
+                                        @Field("openBookId") long openBookId,
+                                        @Field("pageNum") int pageNum,
+                                        @Field("openBookType") int openBookType);
 
     /**
      * 作品列表

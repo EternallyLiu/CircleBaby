@@ -51,6 +51,7 @@ public class MyPODActivity extends PODActivity {
 
     @Override
     public void createBookInfo(TFOBookModel bookModel) {
+        Log.d(TAG,"createBookInfo:");
         createBook(bookModel.getBookAuthor(), dataList, bookModel.getBookCover(), bookModel.getBookTitle(), 5, bookModel.getBookTotalPage(), bookModel.getBookId(), bookType);
     }
 
@@ -65,6 +66,7 @@ public class MyPODActivity extends PODActivity {
                     }
                 }, error -> {
                     Log.e(TAG, "createBook:");
+                    error.printStackTrace();
                 });
     }
 

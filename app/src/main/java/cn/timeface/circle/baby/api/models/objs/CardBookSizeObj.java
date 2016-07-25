@@ -14,11 +14,57 @@ public class CardBookSizeObj extends BaseObj implements Parcelable {
     int id;
     String title;
     List<MediaObj> imgList;
-    int bookSizeId;
     String description;
     String coverTitle;
     int type;
+    MediaObj detail;
+    int price;
+    float height;
+    float width;
+    int bookSizeId;
+    int bookPage;
+
+    public MediaObj getDetail() {
+        return detail;
+    }
+
+    public void setDetail(MediaObj detail) {
+        this.detail = detail;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
     public CardBookSizeObj() {
+    }
+
+    public int getBookPage() {
+        return bookPage;
+    }
+
+    public void setBookPage(int bookPage) {
+        this.bookPage = bookPage;
     }
 
     public int getId() {
@@ -87,20 +133,30 @@ public class CardBookSizeObj extends BaseObj implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.title);
         dest.writeTypedList(this.imgList);
-        dest.writeInt(this.bookSizeId);
         dest.writeString(this.description);
         dest.writeString(this.coverTitle);
         dest.writeInt(this.type);
+        dest.writeParcelable(this.detail,flags);
+        dest.writeInt(this.price);
+        dest.writeFloat(this.height);
+        dest.writeFloat(this.width);
+        dest.writeInt(this.bookSizeId);
+        dest.writeInt(this.bookPage);
     }
 
     protected CardBookSizeObj(Parcel in) {
         this.id = in.readInt();
         this.title = in.readString();
         this.imgList = in.createTypedArrayList(MediaObj.CREATOR);
-        this.bookSizeId = in.readInt();
         this.description = in.readString();
         this.coverTitle = in.readString();
         this.type = in.readInt();
+        this.detail = in.readParcelable(MediaObj.class.getClassLoader());
+        this.price = in.readInt();
+        this.height = in.readFloat();
+        this.width = in.readFloat();
+        this.bookSizeId = in.readInt();
+        this.bookPage = in.readInt();
     }
 
     public static final Creator<CardBookSizeObj> CREATOR = new Creator<CardBookSizeObj>() {

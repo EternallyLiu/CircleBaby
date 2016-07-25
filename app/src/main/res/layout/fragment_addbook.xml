@@ -1,57 +1,79 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color8"
-    android:orientation="vertical">
+    android:background="@color/bg_color8">
 
     <include
         android:id="@+id/appbar_layout"
         layout="@layout/layout_toolbar" />
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appbar_layout"
+        android:layout_above="@+id/ll_creat">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/content_recycler_view"
+            <FrameLayout
+                android:id="@+id/fl_ad"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_220"
+                android:layout_below="@+id/appbar_layout"
+                android:background="@color/bg_color7" />
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/bg_color2"
-                android:scrollbars="none" />
+                android:layout_below="@+id/fl_ad"
+                android:background="@color/white"
+                android:padding="@dimen/size_6">
+                <TextView
+                    android:id="@+id/tv_booktitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="识图卡片"
+                    android:textSize="@dimen/text_large"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/size_6"
+                    />
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="¥18元/套"
+                    android:textSize="@dimen/text_large"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/size_6"
+                    android:layout_alignParentRight="true"
+                    />
 
-            <TextView
-                android:id="@+id/tv_bookname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/size_12"
-                android:text="书本名称"
-                android:textSize="@dimen/text_medium" />
-
-            <TextView
-                android:id="@+id/tv_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/size_12"
-                android:text="简介"
-                android:textSize="@dimen/text_small" />
-
+            </RelativeLayout>
+            
             <ImageView
-                android:id="@+id/iv_creatbook"
-                android:layout_width="wrap_content"
+                android:id="@+id/iv_image"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/size_12"
-                android:src="@drawable/selector_creatbook"
-                android:layout_marginBottom="@dimen/size_24"/>
+                android:adjustViewBounds="true"
+                />
         </LinearLayout>
+
     </ScrollView>
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_creat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_creatbook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_6"
+            android:src="@drawable/selector_creatbook"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

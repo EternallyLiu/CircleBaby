@@ -49,6 +49,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     private List<View> mViews;
     private List<MediaObj> dataList;
     private MyAdapter adapter;
+    private List<View> newViews;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, CardPublishActivity.class);
@@ -135,11 +136,20 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 break;
             case R.id.iv_deletecard:
                 int currentItem = vp.getCurrentItem();
-                mViews.remove(currentItem);
-                if(mViews.size()==0){
-                    mViews.add(getAddCard());
+                System.out.println("currentItem======="+currentItem);
+                newViews = new ArrayList<>();
+                for(int i=0;i<mViews.size();i++){
+                    if(i!=currentItem){
+                        newViews.add(mViews.get(i));
+                    }
                 }
-                vp.setAdapter(new MyAdapter(mViews));
+//                mViews.remove(currentItem);
+                if(newViews.size()==0){
+                    newViews.add(getAddCard());
+                }
+                System.out.println("mViews.size()======="+mViews.size());
+                vp.setAdapter(new MyAdapter(newViews));
+                mViews = newViews;
                 apiService.delCard(dataList.get(currentItem).getId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
@@ -186,7 +196,11 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     }
 
     public boolean isAddCard() {
-        return mViews.size() > dataList.size();
+        boolean b = false;
+        if (mViews!=null){
+            b = mViews.size() > dataList.size();
+        }
+        return b;
     }
 
     public class MyAdapter extends PagerAdapter {
@@ -194,6 +208,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
         public MyAdapter(List<View> list) {
             this.list = list;
+            System.out.println("MyAdapter.list.size========"+this.list.size());
         }
 
         @Override
@@ -209,6 +224,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
 //            super.destroyItem(container, position, object);
+            System.out.println("destroyItem.position========"+position);
             container.removeView(list.get(position));
         }
 

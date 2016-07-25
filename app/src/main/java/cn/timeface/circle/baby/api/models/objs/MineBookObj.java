@@ -22,15 +22,23 @@ public class MineBookObj extends BaseObj implements Parcelable {
     int bookSizeId;          //日记卡片size
     String openBookId;       //开放平台bookid
     int openBookType;        //时光书主题id
+    String coverTitle;
+    int bookPage;
 
-    public MineBookObj(String bookCover, long updateTime, int pageNum, String bookName, int bookType , String bookId , String author) {
-        this.bookCover = bookCover;
-        this.updateTime = updateTime;
-        this.pageNum = pageNum;
-        this.bookName = bookName;
-        this.bookType = bookType;
-        this.bookId = bookId;
-        this.author = author;
+    public String getCoverTitle() {
+        return coverTitle;
+    }
+
+    public void setCoverTitle(String coverTitle) {
+        this.coverTitle = coverTitle;
+    }
+
+    public int getBookPage() {
+        return bookPage;
+    }
+
+    public void setBookPage(int bookPage) {
+        this.bookPage = bookPage;
     }
 
     public int getOpenBookType() {
@@ -148,6 +156,8 @@ public class MineBookObj extends BaseObj implements Parcelable {
         dest.writeInt(this.bookSizeId);
         dest.writeString(this.openBookId);
         dest.writeInt(this.openBookType);
+        dest.writeString(this.coverTitle);
+        dest.writeInt(this.bookPage);
     }
 
     public MineBookObj() {
@@ -166,6 +176,8 @@ public class MineBookObj extends BaseObj implements Parcelable {
         this.bookSizeId = in.readInt();
         this.openBookId = in.readString();
         this.openBookType = in.readInt();
+        this.coverTitle = in.readString();
+        this.bookPage = in.readInt();
     }
 
     public static final Creator<MineBookObj> CREATOR = new Creator<MineBookObj>() {

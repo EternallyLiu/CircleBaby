@@ -45,11 +45,12 @@ public class DateUtil {
         String s = formatDate(format, timeInMillis);
         String[] split = s.split(":");
         String month = split[0];
-        if(month.startsWith("0")){
+        if (month.startsWith("0")) {
             month = month.substring(1);
         }
         return month;
     }
+
     public static String getDay(long timeInMillis) {
         String format = "MM:dd";
         String s = formatDate(format, timeInMillis);
@@ -103,15 +104,13 @@ public class DateUtil {
     /**
      * 周几
      *
-     * @param time
-     * long 系统时间的long类型
+     * @param time long 系统时间的long类型
      * @return 周一到周日
-     *
-     * */
+     */
     public static String getWeekOfDate(long time) {
 
         Date date = new Date(time);
-        String[] weekDays = { "周日", "周一", "周二", "周三", "周四", "周五", "周六" };
+        String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
@@ -198,7 +197,7 @@ public class DateUtil {
         return disTime;
     }
 
-    public static long getTime(String time , String format) {
+    public static long getTime(String time, String format) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         long time1 = 0;
         try {
@@ -207,5 +206,19 @@ public class DateUtil {
             e.printStackTrace();
         }
         return time1;
+    }
+
+    public static String getDate2(long date) {
+        String str = date + "";
+        str = str.length() < 13 ? str + "000" : str;
+        String s = formatDate("yyyy.MM.dd", Long.valueOf(str));
+        String today = formatDate("yyyy.MM.dd", System.currentTimeMillis());
+        String yestoday = formatDate("yyyy.MM.dd", System.currentTimeMillis() - (24 * 3600000));
+        if (s.equals(today)) {
+            s = "今天";
+        } else if (s.equals(yestoday)) {
+            s = "昨天";
+        }
+        return s;
     }
 }

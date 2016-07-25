@@ -10,9 +10,10 @@
         android:text="自定义"
         android:textSize="@dimen/text_medium"
         android:gravity="center"
-        android:background="#dddddd"
+        android:background="@drawable/milestone_diy_right"
         android:padding="@dimen/size_12"
-        android:layout_margin="@dimen/size_24"/>
+        android:layout_margin="@dimen/size_24"
+        />
 
 
 </RelativeLayout>
