@@ -14,7 +14,7 @@ import cn.timeface.open.managers.interfaces.IPageScale;
  * @date 2016-4-18 上午9:33:57
  */
 public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
-    float my_view_scale;//页面级的缩放比例
+    float my_view_scale = 1.f;//页面级的缩放比例
 
 
     String image_id;

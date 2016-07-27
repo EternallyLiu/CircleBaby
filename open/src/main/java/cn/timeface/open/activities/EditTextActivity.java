@@ -116,6 +116,10 @@ public class EditTextActivity extends BaseAppCompatActivity {
                                 Log.i(TAG, "reqData: " + response.toString());
                                 if (response.success()) {
                                     Intent data = new Intent();
+                                    {
+                                        //设置自定义的属性
+                                        response.getData().getElementModel().setRight(elementModel.isRight());
+                                    }
                                     data.putExtra("edit_text_result", response.getData().getElementModel());
                                     setResult(Activity.RESULT_OK, data);
                                     finish();
