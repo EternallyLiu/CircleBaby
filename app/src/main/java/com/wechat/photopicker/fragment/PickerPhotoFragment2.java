@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.wechat.photopicker.adapter.PhotoSelectorAdapter2;
 import com.wechat.photopicker.event.OnPhotoClickListener;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 
@@ -40,16 +42,19 @@ public class PickerPhotoFragment2 extends Fragment implements View.OnClickListen
 
     private Button btPreview;
     private View rootView;
-    private int mOptionalPhotoSize;
     private List<MediaObj> mediaobjs;
     private List<ImageInfoListObj> dataList;
+    private TextView tvCreat;
+    private int bookType;
+    private int bookPage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getActivity().getIntent();
         dataList = intent.getParcelableArrayListExtra("dataList");
-        mOptionalPhotoSize = MAX_SELECTOR_SIZE;
+        bookType = intent.getIntExtra("bookType", 0);
+        bookPage = intent.getIntExtra("bookPage", MAX_SELECTOR_SIZE);
     }
 
     @Override
@@ -58,9 +63,11 @@ public class PickerPhotoFragment2 extends Fragment implements View.OnClickListen
         rootView = inflater.inflate(R.layout.fragment_picker_photo2,container,false);
 
         btPreview = (Button) rootView.findViewById(R.id.bt_preview);
+        tvCreat = (TextView) rootView.findViewById(R.id.tv_creat);
+        tvCreat.setOnClickListener(this);
         btPreview.setOnClickListener(this);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_photos);
-        mPhotoSelectorAdapter = new PhotoSelectorAdapter2(dataList,getActivity(),mOptionalPhotoSize);
+        mPhotoSelectorAdapter = new PhotoSelectorAdapter2(dataList,getActivity(),bookPage);
         //初始显示第一个文件夹内的图片（全图图片）
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
@@ -107,6 +114,14 @@ public class PickerPhotoFragment2 extends Fragment implements View.OnClickListen
             bigImageShowIntent.setPhotoPaths(mPhotoSelectorAdapter.getSelectedPhotoPaths());
             startActivity(bigImageShowIntent);
 
+        }else if(i == R.id.tv_creat){
+            if(bookType==2){
+                //日记卡片
+                PublishActivity.open(getContext(), PublishActivity.DIALY);
+            }else if(bookType == 3){
+                //识图卡片
+                PublishActivity.open(getContext(), PublishActivity.CARD);
+            }
         }
     }
     public PhotoSelectorAdapter2 getPhotoSelectorAdapter(){

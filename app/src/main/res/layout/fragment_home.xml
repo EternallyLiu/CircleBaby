@@ -89,7 +89,9 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/size_12"
-                android:text="云相册" />
+                android:text="云相册"
+                android:textColor="@color/white"
+                android:background="@drawable/cloud_bg"/>
 
             <View
                 android:layout_width="1dp"
@@ -103,7 +105,9 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/size_12"
-                android:text="成长里程碑" />
+                android:text="成长里程碑"
+                android:textColor="@color/white"
+                android:background="@drawable/mile_bg"/>
 
             <View
                 android:layout_width="1dp"
@@ -117,7 +121,9 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/size_12"
-                android:text="亲友团" />
+                android:text="亲友团"
+                android:textColor="@color/white"
+                android:background="@drawable/family_bg"/>
         </LinearLayout>
 
         <View

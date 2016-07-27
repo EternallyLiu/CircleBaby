@@ -17,6 +17,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.CardBookSizeObj;
 import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 
 /**
  * Created by lidonglin on 2016/7/7.
@@ -38,7 +39,7 @@ public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
 
     @Override
     public ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_addbooklisttype, viewGroup, false);
+        View view = mLayoutInflater.inflate(R.layout.item_booksize, viewGroup, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -52,14 +53,23 @@ public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
         holder.context = mContext;
         GlideUtil.displayImage(obj.getImgList().get(0).getImgUrl(), holder.iv);
         holder.tvTitle.setText(obj.getCoverTitle());
+        holder.tvPagenum.setText("打印需要" + obj.getBookPage() + "张");
+        holder.tvSize.setText("尺寸：" + obj.getHeight() + "×" + obj.getWidth() + "cm");
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onItemClickListener!=null){
-                    onItemClickListener.clickItem(obj.getBookSizeId());
+                if (onItemClickListener != null) {
+                    onItemClickListener.clickItem(position);
                 }
             }
         });
+
+        int width = Remember.getInt("width", 0)*3;
+        ViewGroup.LayoutParams layoutParams = holder.iv.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = (int) (width*0.58);
+        holder.iv.setLayoutParams(layoutParams);
+        holder.ivCover.setLayoutParams(layoutParams);
     }
 
     @Override
@@ -72,11 +82,17 @@ public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
         return new Animator[0];
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv)
         ImageView iv;
+        @Bind(R.id.iv_cover)
+        ImageView ivCover;
         @Bind(R.id.tv_title)
         TextView tvTitle;
+        @Bind(R.id.tv_pagenum)
+        TextView tvPagenum;
+        @Bind(R.id.tv_size)
+        TextView tvSize;
         Context context;
 
         View.OnClickListener onClickListener = null;
@@ -91,7 +107,7 @@ public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
     }
 
 
-    public void setOnItemClickListener(OnItemClickListener<Integer> onItemClickListener){
+    public void setOnItemClickListener(OnItemClickListener<Integer> onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 }

@@ -1,19 +1,23 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bigkoo.convenientbanner.ConvenientBanner;
+import com.bigkoo.convenientbanner.holder.Holder;
+import com.bumptech.glide.Glide;
 import com.wechat.photopicker.PickerPhotoActivity2;
 
 import java.util.ArrayList;
@@ -24,11 +28,12 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.SelectThemeActivity;
-import cn.timeface.circle.baby.adapters.AddBookAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
@@ -36,16 +41,21 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.tv_bookname)
-    TextView tvBookname;
-    @Bind(R.id.tv_desc)
-    TextView tvDesc;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.fl_ad)
+    FrameLayout flAd;
+    @Bind(R.id.tv_booktitle)
+    TextView tvBooktitle;
+    @Bind(R.id.tv_price)
+    TextView tvPrice;
+    @Bind(R.id.iv_image)
+    ImageView ivImage;
     @Bind(R.id.iv_creatbook)
     ImageView ivCreatbook;
-    @Bind(R.id.content_recycler_view)
-    RecyclerView contentRecyclerView;
     private BookTypeListObj bookTypeListObj;
     private List<MediaObj> imgList;
+    private ConvenientBanner banner;
 
     public AddBookFragment() {
     }
@@ -70,14 +80,19 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void initData() {
-        tvBookname.setText(bookTypeListObj.getTitle());
-        tvDesc.setText(bookTypeListObj.getDescription());
-
-        AddBookAdapter adapter = new AddBookAdapter(getContext(), imgList);
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        contentRecyclerView.setAdapter(adapter);
-
+        tvBooktitle.setText(bookTypeListObj.getCoverTitle());
+        tvPrice.setText("¥"+bookTypeListObj.getPrice()+"元/套起");
+        GlideUtil.displayImage(bookTypeListObj.getDetail().getImgUrl(),ivImage);
         ivCreatbook.setOnClickListener(this);
+
+        banner = new ConvenientBanner(getActivity(), true);
+        banner.startTurning(3000);
+        banner.setMinimumHeight((int) (Remember.getInt("width", 0)*1.8));
+        flAd.addView(banner);
+
+        banner.setPages(() -> new NetworkImageHolderView(), imgList)
+                .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
+                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL);
     }
 
 
@@ -97,31 +112,31 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
                             if (response.success()) {
                                 List<MediaObj> mediaObjs = new ArrayList<>();
                                 List<ImageInfoListObj> dataList = response.getDataList();
-                                if(dataList.size()>0){
+//                                if (dataList.size() > 0) {
                                     for (ImageInfoListObj obj : dataList) {
                                         List<MediaObj> mediaList = obj.getMediaList();
                                         int timeId = obj.getTimeId();
 //                                        mediaObjs.addAll(mediaList);
-                                        for(MediaObj mediaObj : mediaList){
+                                        for (MediaObj mediaObj : mediaList) {
                                             mediaObj.setTimeId(timeId);
                                         }
                                     }
-                                    if(bookTypeListObj.getType()==2){
+                                    if (bookTypeListObj.getType() == 2) {
                                         //日记卡片书，进入选择size界面
-                                        FragmentBridgeActivity.openBookSizeListFragment(getContext(),dataList);
-                                    }else if(bookTypeListObj.getType()==5){
+                                        FragmentBridgeActivity.openBookSizeListFragment(getContext(), dataList);
+                                    } else if (bookTypeListObj.getType() == 5) {
                                         //照片书，进入选择主题界面
                                         Intent intent = new Intent(getActivity(), SelectThemeActivity.class);
                                         intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
                                         startActivity(intent);
-                                    }else{
+                                    } else {
                                         startPhotoPick(dataList);
                                     }
-                                }else{
-                                    ToastUtil.showToast("没有此类图片");
-                                }
+//                                } else {
+//                                    ToastUtil.showToast("没有此类图片");
+//                                }
                                 getActivity().finish();
-                            }else{
+                            } else {
                                 ToastUtil.showToast(response.getInfo());
                             }
                         }, error -> {
@@ -133,9 +148,26 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
 
     private void startPhotoPick(List<ImageInfoListObj> dataList) {
         Intent intent = new Intent(getActivity(), PickerPhotoActivity2.class);
-        intent.putExtra("bookType",bookTypeListObj.getType());
+        intent.putExtra("bookType", bookTypeListObj.getType());
+        intent.putExtra("bookPage", bookTypeListObj.getBookPage());
         intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
         startActivity(intent);
+    }
+
+    class NetworkImageHolderView implements Holder<MediaObj> {
+        private ImageView imageView;
+
+        @Override
+        public View createView(Context context) {
+            imageView = new ImageView(context);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            return imageView;
+        }
+
+        @Override
+        public void UpdateUI(Context context, int position, MediaObj data) {
+            Glide.with(getActivity()).load(data.getImgUrl()).into(imageView);
+        }
     }
 }

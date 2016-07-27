@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.TimeBookPickerPhotoActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
@@ -179,9 +180,15 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 if (response.success()) {
-                                    List<MediaObj> mediaObjs = new ArrayList<>();
                                     List<ImageInfoListObj> dataList = response.getDataList();
-                                    startPhotoPick(dataList);
+                                    if(obj.getBookType()==5){
+                                        //编辑照片书
+                                        startTimeBookPhotoPick(dataList);
+                                    }else{
+                                        //编辑日记书和识图卡片书
+                                        startPhotoPick(dataList);
+                                    }
+
                                 }
                             }, error -> {
                                 Log.e("MineBookAdapter", "queryImageInfoList:");
@@ -197,12 +204,12 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 //                                    case TypeConstant.PRINT_CODE_LIMIT_LESS:
 //                                        notify = "少于12页，不可印刷";
 //                                        break;
-                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
-                                        notify = "照片书不能大于200页";
-                                        break;
-//                                    case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
-//                                        notify = "该时光书已被删除，不可印刷";
+//                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
+//                                        notify = "照片书不能大于200页";
 //                                        break;
+                                    case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
+                                        notify = "该时光书已被删除，不可印刷";
+                                        break;
                                     case TypeConstant.PRINT_CODE_LIMIT_8806:
                                         notify = "3寸日记卡片需18张";
                                         break;
@@ -260,6 +267,20 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
             intent.putExtra("bookId",obj.getBookId());
             intent.putExtra("openBookId",obj.getOpenBookId());
             intent.putExtra("openBookType",obj.getOpenBookType());
+            intent.putExtra("coverTitle",obj.getCoverTitle());
+            intent.putExtra("bookPage",obj.getBookPage());
+            intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
+//        startActivityForResult(intent, 10);
+            context.startActivity(intent);
+        }
+
+        private void startTimeBookPhotoPick(List<ImageInfoListObj> dataList) {
+            Intent intent = new Intent(context, TimeBookPickerPhotoActivity.class);
+            intent.putExtra("bookType", obj.getBookType());
+            intent.putExtra("bookId",obj.getBookId());
+            intent.putExtra("openBookId",obj.getOpenBookId());
+            intent.putExtra("openBookType",obj.getOpenBookType());
+            intent.putExtra("coverTitle",obj.getCoverTitle());
             intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
             context.startActivity(intent);

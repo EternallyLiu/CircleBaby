@@ -51,6 +51,7 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
 
     public PhotoSelectorAdapter2(List<ImageInfoListObj> dataList, Context context, int optionalPhotoSize) {
         this.dataList = dataList;
+
         mContext = context;
         mOptionalPhotoSize = optionalPhotoSize;
         mPhotos = new ArrayList<>();

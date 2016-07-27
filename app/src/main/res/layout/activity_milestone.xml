@@ -54,12 +54,13 @@
             <RelativeLayout
                 android:id="@+id/rl_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/size_24">
 
                 <LinearLayout
                     android:id="@+id/ll_left"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:background="@color/trans"
                     android:layout_toLeftOf="@+id/dash"
@@ -70,14 +71,15 @@
                 <View
                     android:id="@+id/dash"
                     android:layout_width="1dp"
-                    android:layout_height="1000dp"
+                    android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/shape_dash" />
+                    android:background="@drawable/shape_dash"
+                    android:layout_alignBottom="@+id/ll_left"/>
 
                 <LinearLayout
                     android:id="@+id/ll_right"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:background="@color/trans"
                     android:layout_toRightOf="@+id/dash"
