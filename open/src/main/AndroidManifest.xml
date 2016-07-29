@@ -7,17 +7,21 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-        <!--<meta-data-->
-        <!--android:name="cn.timeface.open.utils.glide.TFGlideModule"-->
-        <!--android:value="GlideModule" />-->
+        <!-- <meta-data -->
+        <!-- android:name="cn.timeface.open.utils.glide.TFGlideModule" -->
+        <!-- android:value="GlideModule" /> -->
         <activity
-            android:name="cn.timeface.open.activities.EditActivity"
+            android:name=".activities.EditActivity"
             android:label="@string/title_activity_edit"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="cn.timeface.open.activities.EditTextActivity"
+            android:name=".activities.EditTextActivity"
             android:label="@string/title_activity_edit_text"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.CropImageActivity"
+            android:label="@string/title_activity_crop_image"
             android:theme="@style/AppTheme" />
     </application>
 

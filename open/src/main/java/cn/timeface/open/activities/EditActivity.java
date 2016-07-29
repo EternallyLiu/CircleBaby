@@ -55,6 +55,7 @@ import rx.functions.Action1;
 public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     public static float SCALE = 1.0f;
     public static final int EDIT_TEXT = 109;
+    public static final int EDIT_IMAGE = 110;
 
     TFOBookModel bookModel;
     TFOBookContentModel rightModel;
@@ -411,9 +412,17 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
             TFOBookElementModel elementModel = (TFOBookElementModel) event.getStickerView().getTag(R.string.tag_obj);
 
-            if (elementModel != null
-                    && elementModel.getElementType() == TFOBookElementModel.TYPE_TEXT) {
-                EditTextActivity.open4result(this, EDIT_TEXT, bookModel.getBookId(), contentId, elementModel);
+            if (elementModel == null) {
+                return;
+            }
+
+            switch (elementModel.getElementType()) {
+                case TFOBookElementModel.TYPE_TEXT:
+                    EditTextActivity.open4result(this, EDIT_TEXT, bookModel.getBookId(), contentId, elementModel);
+                    break;
+                case TFOBookElementModel.TYPE_IMAGE:
+                    CropImageActivity.open4result(this, EDIT_IMAGE, elementModel.getImageContentExpand().getImageUrl(), elementModel.getContentWidth(), elementModel.getContentHeight());
+                    break;
             }
         }
     }
