@@ -9,6 +9,15 @@ public class InviteResponse extends BaseResponse {
 
     int inviteCode;
     String inviteUrl;
+    String codeUrl;
+
+    public String getCodeUrl() {
+        return codeUrl;
+    }
+
+    public void setCodeUrl(String codeUrl) {
+        this.codeUrl = codeUrl;
+    }
 
     public int getInviteCode() {
         return inviteCode;

@@ -27,7 +27,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.sharesdk.framework.ShareSDK;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
@@ -36,17 +35,16 @@ import cn.timeface.circle.baby.api.models.PushItem;
 import cn.timeface.circle.baby.api.models.responses.PushResponse;
 import cn.timeface.circle.baby.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.dialogs.TFDialog;
-import cn.timeface.circle.baby.fragments.WebViewFragment;
 import cn.timeface.circle.baby.managers.receivers.DownloadCompleteReceiver;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.NotificationUtil;
 import cn.timeface.circle.baby.utils.Once;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
-import cn.timeface.common.utils.ChannelUtil;
 import cn.timeface.common.utils.DeviceUtil;
 import cn.timeface.common.utils.NetworkUtil;
 import cn.timeface.common.utils.PackageUtils;
+import cn.timeface.common.utils.Remember;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -63,8 +61,6 @@ public class SplashActivity extends BaseAppCompatActivity {
     UpdateResponse updateModule;
     @Bind(R.id.image)
     ImageView image;
-    @Bind(R.id.logo)
-    ImageView logo;
     private String adUrl = "";
     private String scheme, data;
     private boolean is_Scheme = false;
@@ -93,15 +89,12 @@ public class SplashActivity extends BaseAppCompatActivity {
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         //初始化sharesdk
-        ShareSDK.initSDK(this);
+//        ShareSDK.initSDK(this);
+        Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
         firstRun();
-        requestCheckUpdate();
+        showGuide();
+//        requestCheckUpdate();
 
-        if ("baidu".equals(ChannelUtil.getChannel(getApplicationContext()))) {
-            logo.setImageResource(R.drawable.baidu_first);
-        } else {
-            logo.setImageResource(R.drawable.splash_logo);
-        }
     }
 
     private void firstRun() {
@@ -151,8 +144,8 @@ public class SplashActivity extends BaseAppCompatActivity {
                 , new Once.OnceCallback() {
                     @Override
                     public void onOnce() {
-//                        GuideActivity.open(SplashActivity.this, REQUEST_CODE_GUIDE);
-                        showAD();
+                        GuideActivity.open(SplashActivity.this);
+                        finish();
                     }
 
                     @Override
@@ -346,7 +339,7 @@ public class SplashActivity extends BaseAppCompatActivity {
     }
 
     private void showAD() {
-        Subscription s = apiService.getAD( DeviceUtil.getScreenWidth(this) + "X" + DeviceUtil.getScreenHeight(this))
+        Subscription s = apiService.getAD(DeviceUtil.getScreenWidth(this) + "X" + DeviceUtil.getScreenHeight(this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -364,10 +357,10 @@ public class SplashActivity extends BaseAppCompatActivity {
     }
 
     private void doNext() {
-        if (!TextUtils.isEmpty(FastData.getPreUserId())) {
-            FastData.setUserId(FastData.getPreUserId());
-            FastData.setPreUserId("");
-        }
+//        if (!TextUtils.isEmpty(FastData.getPreUserId())) {
+//            FastData.setUserId(FastData.getPreUserId());
+//            FastData.setPreUserId("");
+//        }
 //        if (TextUtils.isEmpty(FastData.getUserId())) {
 //            NewLoginActivity.open(SplashActivity.this);
 //            finish();
@@ -417,7 +410,7 @@ public class SplashActivity extends BaseAppCompatActivity {
             handler.removeMessages(1);
             String isShare = Uri.parse(adUrl).getQueryParameter("share");
 //            WebViewActivity.open4Result(this, adUrl, "", REQUEST_CODE_WEBVIEW, !TextUtils.isEmpty(isShare) && isShare.equals("0"));
-            FragmentBridgeActivity.openWebViewFragment(this,adUrl,"广告");
+            FragmentBridgeActivity.openWebViewFragment(this, adUrl, "广告");
         }
     }
 
@@ -428,9 +421,6 @@ public class SplashActivity extends BaseAppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     handler.sendEmptyMessage(1);
                 }
-                break;
-            case REQUEST_CODE_GUIDE:
-                doNext();
                 break;
         }
 

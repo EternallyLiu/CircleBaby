@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,6 +52,7 @@ import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.circle.baby.views.ScaleImageView;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class DiaryPreviewFragment extends BaseFragment implements View.OnClickListener {
 
@@ -60,14 +64,18 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
     Toolbar toolbar;
     @Bind(R.id.iv_bg)
     RatioImageView ivBg;
-    @Bind(R.id.rl_diary)
-    RelativeLayout rlDiary;
+    @Bind(R.id.rl_cover)
+    RelativeLayout rlCover;
     @Bind(R.id.rldiary)
     RelativeLayout rldiary;
     @Bind(R.id.tv_content)
     TextView tvContent;
     @Bind(R.id.lv_horizontal)
     HorizontalListView lvHorizontal;
+    @Bind(R.id.iv_rotate)
+    ImageView ivRotate;
+    @Bind(R.id.fl)
+    FrameLayout fl;
 
     private HorizontalListViewAdapter2 adapter;
     private DiaryPaperResponse diaryPaperResponse;
@@ -75,7 +83,9 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
     private String content;
     private String url;
     private ScaleImageView touchImageView;
-    PointF center = new PointF();
+    private PointF center = new PointF();
+    private PointF mPreMovePointF = new PointF();
+    private PointF mCurMovePointF = new PointF();
     private float oldRotation;
     private int width;
     private int hight;
@@ -84,7 +94,9 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
     private TemplateObj templateObj;
     private ImgObj imgObj;
     private String date;
-    private float degree;
+    private float degree = 0;
+    private float mDegree = 0;
+    private TFProgressDialog tfProgressDialog;
 
     public DiaryPreviewFragment() {
     }
@@ -107,20 +119,20 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        tfProgressDialog = new TFProgressDialog(getActivity());
         tvTime.setText(time);
         tvContent.setText(content);
         touchImageView = new ScaleImageView(getActivity(), url);
-        rlDiary.addView(touchImageView, 0);
+        rlCover.addView(touchImageView, 0);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) touchImageView.getLayoutParams();
         layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
         layoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
         touchImageView.setLayoutParams(layoutParams);
 
-        int left = rlDiary.getLeft();
-        int right = rlDiary.getRight();
-        int top = rlDiary.getTop();
-        int bottom = rlDiary.getBottom();
+        int left = rlCover.getLeft();
+        int right = rlCover.getRight();
+        int top = rlCover.getTop();
+        int bottom = rlCover.getBottom();
         center.x = (left + right) / 2;
         center.y = (top + bottom) / 2;
         rldiary.setOnTouchListener(new View.OnTouchListener() {
@@ -134,8 +146,8 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
                         float rotation = getRotate(event) - oldRotation;
                         if (rotation > -15 && rotation < 15) {
                             degree = rotation;
-                            rlDiary.setRotation(rotation);
-                            rlDiary.invalidate();
+                            fl.setRotation(rotation);
+                            fl.invalidate();
                         }
 
                         break;
@@ -146,6 +158,63 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
                 return true;
             }
         });
+
+//        ivRotate.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        mPreMovePointF.set(event.getX(), event.getY());
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        mCurMovePointF.set(event.getX(), event.getY());
+//
+//                        // 角度
+//                        double a = distance4PointF(center, mPreMovePointF);
+//                        double b = distance4PointF(mPreMovePointF, mCurMovePointF);
+//                        double c = distance4PointF(center, mCurMovePointF);
+//
+//                        double cosb = (a * a + c * c - b * b) / (2 * a * c);
+//
+//                        if (cosb >= 1) {
+//                            cosb = 1f;
+//                        }
+//
+//                        double radian = Math.acos(cosb);
+//                        float newDegree = (float) radianToDegree(radian);
+//
+//                        //center -> proMove的向量， 我们使用PointF来实现
+//                        PointF centerToProMove = new PointF((mPreMovePointF.x - center.x), (mPreMovePointF.y - center.y));
+//
+//                        //center -> curMove 的向量
+//                        PointF centerToCurMove = new PointF((mCurMovePointF.x - centerToProMove.x), (mCurMovePointF.y - centerToProMove.y));
+//
+//                        //向量叉乘结果, 如果结果为负数， 表示为逆时针， 结果为正数表示顺时针
+//                        float result = centerToProMove.x * centerToCurMove.y - centerToProMove.y * centerToCurMove.x;
+//
+//                        if (result < 0) {
+//                            newDegree = -newDegree;
+//                        }
+//                        mDegree = mDegree + newDegree;
+//                        if (mDegree >= -15 && mDegree <= 15) {
+//                            degree = mDegree;
+//                            fl.setRotation(mDegree);
+//                            fl.invalidate();
+//                        }else if(mDegree<-15){
+//                            mDegree = -15;
+//                        }else if(mDegree>15){
+//                            mDegree = 15;
+//                        }
+//                        mPreMovePointF.set(mCurMovePointF);
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+
+
         reqPaperList();
         lvHorizontal.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -161,6 +230,19 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
 
 
         return view;
+    }
+
+    private float distance4PointF(PointF pf1, PointF pf2) {
+        float disX = pf2.x - pf1.x;
+        float disY = pf2.y - pf1.y;
+        return (float) Math.sqrt(disX * disX + disY * disY);
+    }
+
+    /**
+     * 弧度换算成角度
+     */
+    public static double radianToDegree(double radian) {
+        return radian * 180 / Math.PI;
     }
 
     // 取旋转角度
@@ -239,6 +321,8 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_complete:
+                tfProgressDialog.setMessage("合成卡片中…");
+                tfProgressDialog.show();
                 //日记卡片合成
 //                BitmapDrawable bd = new BitmapDrawable(myShot(getActivity()));
 //                ivBg.setBackgroundDrawable(bd);
@@ -296,6 +380,7 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
                         .subscribe(diaryComposedResponse -> {
                             MediaObj mediaObj = diaryComposedResponse.getMediaObj();
                             System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
+                            tfProgressDialog.dismiss();
                             getActivity().finish();
                             EventBus.getDefault().post(new MediaObjEvent(mediaObj));
                         }, throwable -> {

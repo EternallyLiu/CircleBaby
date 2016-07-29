@@ -17,7 +17,6 @@ import com.wbtech.ums.UmsAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -28,7 +27,6 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.MyOrderBookAdapter;
-import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.constants.LogConstant;
@@ -36,11 +34,7 @@ import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.SelectPayWayDialog;
 import cn.timeface.circle.baby.events.PayResultEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.payment.OrderInfoObj;
-import cn.timeface.circle.baby.payment.PrepareOrderException;
-import cn.timeface.circle.baby.payment.alipay.AlipayPayment;
 import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
-import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.OrderDetailFootView;
 import cn.timeface.circle.baby.views.OrderDetailHeaderView;
@@ -151,6 +145,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {
+                                setupView();
                                 reqOrderListData();
                             }
                         }, throwable -> {

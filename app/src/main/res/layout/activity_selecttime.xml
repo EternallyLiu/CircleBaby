@@ -3,23 +3,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg_color2">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        android:background="@color/bg_color1"
-        android:fitsSystemWindows="true"
-        android:paddingTop="@dimen/toolbar_padding_top">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="记录时间"
-            android:textColor="@color/text_color1"
-            android:textSize="@dimen/text_medium" />
-    </android.support.v7.widget.Toolbar>
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
 
     <View
         android:layout_width="match_parent"

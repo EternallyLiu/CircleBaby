@@ -126,19 +126,18 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         adapter.setOnItemClickListener(mineBookObj -> {
             if (mineBookObj.getBookType() == 5) {
                 //照片书-跳转POD预览
-                ToastUtil.showToast("照片书-跳转POD预览");
                 MyPODActivity.open(MineBookActivity.this, mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null);
             } else {
                 //日记书、识图卡片书，跳转本地预览
-                ToastUtil.showToast("日记书、识图卡片书，跳转本地预览");
-
                 apiService.queryImageInfoList(mineBookObj.getBookId(), mineBookObj.getBookType())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(imageInfoListResponse -> {
                             ArrayList<String> urls = new ArrayList<>();
                             for (ImageInfoListObj imageInfoListObj : imageInfoListResponse.getDataList()) {
                                 for (MediaObj media : imageInfoListObj.getMediaList()) {
-                                    urls.add(media.getImgUrl());
+                                    if(media.getSelected()==1){
+                                        urls.add(media.getImgUrl());
+                                    }
                                 }
                             }
                             FragmentBridgeActivity.openBigimageFragment(MineBookActivity.this, urls, 0);

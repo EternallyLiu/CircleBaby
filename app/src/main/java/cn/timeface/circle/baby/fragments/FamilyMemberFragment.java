@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,15 +27,13 @@ import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.common.utils.ShareSdkUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FamilyMemberFragment extends BaseFragment implements View.OnClickListener {
+public class FamilyMemberFragment extends BaseFragment {
 
 
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
-    @Bind(R.id.tv_invite)
-    TextView tvInvite;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.iv_avatar)
@@ -67,6 +68,7 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         relationNames.add("爸爸");
         relationNames.add("妈妈");
         relationNames.add("爷爷");
@@ -83,13 +85,10 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.fragment_family, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        getActionBar().setTitle(FastData.getBabyName() + "一家");
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        tvTitle.setText(FastData.getBabyName() + "一家");
-
         reqData();
-
-        tvInvite.setOnClickListener(this);
 
         return view;
     }
@@ -177,11 +176,16 @@ public class FamilyMemberFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_invite:
-                FragmentBridgeActivity.openInviteFragment(getActivity(), "");
-                break;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_invite, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.invite){
+            FragmentBridgeActivity.openInviteFragment(getActivity(), "");
         }
+        return super.onOptionsItemSelected(item);
     }
 }

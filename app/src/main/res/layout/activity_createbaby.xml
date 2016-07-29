@@ -58,7 +58,7 @@
         android:layout_height="@dimen/size_80"
         android:layout_gravity="center"
         android:layout_margin="@dimen/size_12"
-        android:src="@color/bg_color5" />
+        android:src="@drawable/baby_avater" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/size_12"
         android:background="@color/text_color1"
-        android:drawableLeft="@drawable/ic_login_qq"
+        android:drawableLeft="@drawable/baby_name"
         android:drawablePadding="@dimen/size_12"
         android:hint="请输入宝宝的小名"
         android:padding="@dimen/size_12" />
@@ -94,7 +94,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_login_qq" />
+            android:src="@drawable/baby_gender" />
 
         <RadioButton
             android:id="@+id/rb_girl"
@@ -128,7 +128,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/text_color1"
-        android:drawableLeft="@drawable/ic_login_qq"
+        android:drawableLeft="@drawable/brithday"
         android:drawablePadding="@dimen/size_12"
         android:hint="请输入宝宝的生日"
         android:padding="@dimen/size_12"
@@ -140,17 +140,32 @@
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
 
-    <TextView
-        android:id="@+id/et_relationship"
+    <RelativeLayout
+        android:id="@+id/rl_relation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/text_color1"
-        android:drawableLeft="@drawable/ic_login_qq"
-        android:drawablePadding="@dimen/size_12"
-        android:hint="与宝宝的关系"
-        android:padding="@dimen/size_12"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/text_medium"/>
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/size_12"
+        android:paddingRight="@dimen/size_12">
+        <TextView
+            android:id="@+id/et_relationship"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/text_color1"
+            android:drawablePadding="@dimen/size_12"
+            android:hint="请选择你与宝宝的关系"
+            android:padding="@dimen/size_12"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/text_medium"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/edit"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_focus"
@@ -161,5 +176,6 @@
         android:gravity="center"
         android:text="亲友已经创建过宝宝，去关注他"
         android:padding="@dimen/size_12"
-        android:textSize="@dimen/text_normal" />
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone"/>
 </LinearLayout>

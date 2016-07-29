@@ -185,6 +185,10 @@ public interface ApiService {
     @GET("babyTime/milestoneInfo")
     Observable<MilestoneInfoResponse> milestoneInfo(@Query("milestoneId") int milestoneId);
 
+    //首页-里程碑已读
+    @GET("babyTime/milestoneRead")
+    Observable<BaseResponse> milestoneRead(@Query("milestoneId") int milestoneId);
+
     //里程碑删除
     @GET("babyTime/delMilestone")
     Observable<BaseResponse> delMilestone(@Query("id") int id);
@@ -242,9 +246,10 @@ public interface ApiService {
                                     @Query("type") int type);
 
     //发布
-    @GET("babyTime/publish")
-    Observable<BaseResponse> publish(@Query("dataList") String dataList,
-                                     @Query("type") int type);
+    @FormUrlEncoded
+    @POST("babyTime/publish")
+    Observable<BaseResponse> publish(@Field("dataList") String dataList,
+                                     @Field("type") int type);
 
     //获取里程碑列表
     @GET("babyTime/queryMilestoneList")
@@ -341,9 +346,10 @@ public interface ApiService {
     Observable<BookTypeListResponse> getBabyBookWorksTypeList();
 
     //云相册编辑
-    @GET("babyCloudAlbums/editCloudAlbum")
-    Observable<BaseResponse> editCloudAlbum(@Query("cloudAlbumId") String cloudAlbumId,
-                                            @Query("mediaList") String mediaList);
+    @FormUrlEncoded
+    @POST("babyCloudAlbums/editCloudAlbum")
+    Observable<BaseResponse> editCloudAlbum(@Field("cloudAlbumId") String cloudAlbumId,
+                                            @Field("dataList") String dataList);
 
     //删除云相册
     @GET("babyCloudAlbums/deleteCloudAlbum")
@@ -425,7 +431,8 @@ public interface ApiService {
      */
     @POST("babyOrder/addOrder")
     Observable<LessResponse> addOrder(@Query("orderId") String orderId,
-                                         @Query("dataList") String dataList);
+                                         @Query("dataList") String dataList,
+                                      @Query("appId") String appId);
 
     /**
      * 提交订单-新增订单
@@ -434,7 +441,8 @@ public interface ApiService {
     Observable<LessResponse> addOrder(@Query("addressId") int addressId,
                                       @Query("dataList") String dataList,
                                       @Query("expressId") int expressId,
-                                      @Query("orderId") String orderId);
+                                      @Query("orderId") String orderId,
+                                      @Query("appId") String appId);
 
 
     /**
@@ -494,26 +502,28 @@ public interface ApiService {
     /**
      * 向相册中添加照片
      */
+    @FormUrlEncoded
     @POST("babyCloudAlbums/addPicToCloudAlbum")
-    Observable<BaseResponse> addPicToCloudAlbum(@Query("cloudAlbumId") String cloudAlbumId,
-                                                @Query("mediaList") String mediaList);
+    Observable<BaseResponse> addPicToCloudAlbum(@Field("cloudAlbumId") String cloudAlbumId,
+                                                @Field("mediaList") String mediaList);
 
     /**
      * 印刷车条目删除
      */
-    @POST("babyOrder/delCartitem")
+    @GET("babyOrder/delCartitem")
     Observable<BaseResponse> delCartitem(@Query("printId") String printId);
 
     /**
      * 获取图片数据
      */
-    @POST("babyTime/queryImageInfoList")
+    @GET("babyTime/queryImageInfoList")
     Observable<ImageInfoListResponse> queryImageInfoList(@Query("bookId") String bookId,
                                                          @Query("type") int type);
 
     /**
      * 创建作品
      */
+    @FormUrlEncoded
     @POST("babyBook/createBook")
     Observable<BaseResponse> createBook(@Field("author") String author,
                                         @Field("babyId") int babyId,

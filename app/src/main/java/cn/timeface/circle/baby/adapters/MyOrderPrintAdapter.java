@@ -52,7 +52,7 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
         viewHolder.tvPrice.setText(mContext.getString(R.string.total_price, obj.getPrice()));
         viewHolder.tvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
 
-        if (bookItem.getBookType() != TypeConstant.BOOK_TYPE_DESK_CALENDAR) {
+//        if (bookItem.getBookType() != TypeConstant.BOOK_TYPE_DESK_CALENDAR) {
             viewHolder.tvColor.setText(mContext.getString(R.string.cart_print_property_color,
                     bookItem.getPropertyShow("color", String.valueOf(obj.getColor()))));
             viewHolder.tvPaper.setText(mContext.getString(R.string.cart_print_property_paper,
@@ -68,16 +68,16 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
             viewHolder.tvPack.setVisibility(View.VISIBLE);
 
             viewHolder.flCover.setBackgroundResource(R.drawable.timelist_book_bg);
-        } else {
-            //台历数据
-            viewHolder.tvSize.setText("规格：" + bookItem.getPropertyShow("calendar", obj.getCalendar()));
-
-            viewHolder.tvColor.setVisibility(View.GONE);
-            viewHolder.tvPaper.setVisibility(View.GONE);
-            viewHolder.tvPack.setVisibility(View.GONE);
-
-            viewHolder.flCover.setBackgroundResource(R.drawable.bg_cart_calendar_cover);
-        }
+//        } else {
+//            //台历数据
+//            viewHolder.tvSize.setText("规格：" + bookItem.getPropertyShow("calendar", obj.getCalendar()));
+//
+//            viewHolder.tvColor.setVisibility(View.GONE);
+//            viewHolder.tvPaper.setVisibility(View.GONE);
+//            viewHolder.tvPack.setVisibility(View.GONE);
+//
+//            viewHolder.flCover.setBackgroundResource(R.drawable.bg_cart_calendar_cover);
+//        }
 
         return convertView;
     }

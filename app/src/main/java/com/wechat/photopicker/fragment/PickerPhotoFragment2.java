@@ -79,16 +79,16 @@ public class PickerPhotoFragment2 extends Fragment implements View.OnClickListen
         /**
          * PhotoAdapter点击图片跳转到BigImageActivity显示大图
          */
-        mPhotoSelectorAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
-            @Override
-            public void onClick(View view, int position, boolean showCamera) {
-                BigImageShowIntent bigImageShowIntent = new BigImageShowIntent(getActivity());
-                bigImageShowIntent.setPhotoPaths(mPhotoSelectorAdapter.getCurrentDirPhotoPaths());
-                bigImageShowIntent.setSelectorPosition(showCamera ? position -1 :position);
-                startActivity(bigImageShowIntent);
-                Log.d(TAG,mPhotoSelectorAdapter.getCurrentDirPhotoPaths().size()+"");
-            }
-        });
+//        mPhotoSelectorAdapter.setOnPhotoClickListener(new OnPhotoClickListener() {
+//            @Override
+//            public void onClick(View view, int position, boolean showCamera) {
+//                BigImageShowIntent bigImageShowIntent = new BigImageShowIntent(getActivity());
+//                bigImageShowIntent.setPhotoPaths(mPhotoSelectorAdapter.getCurrentDirPhotoPaths());
+//                bigImageShowIntent.setSelectorPosition(showCamera ? position -1 :position);
+//                startActivity(bigImageShowIntent);
+//                Log.d(TAG,mPhotoSelectorAdapter.getCurrentDirPhotoPaths().size()+"");
+//            }
+//        });
         return rootView;
     }
 

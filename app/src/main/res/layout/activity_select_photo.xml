@@ -70,7 +70,7 @@
         android:layout_height="@dimen/size_56"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|end"
-        android:background="#99000000"
+        android:background="#55000000"
         android:paddingLeft="@dimen/view_space_small"
         android:paddingRight="@dimen/view_space_small">
 
@@ -83,7 +83,7 @@
             android:layout_centerVertical="true"
             android:text="照片张数在200-300张,成书效果最佳"
             android:textColor="#ffffff"
-            android:visibility="invisible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_sel_count"

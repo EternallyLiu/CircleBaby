@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,8 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.MessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.Msg;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -110,6 +114,16 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         break;
 
                 }
+                apiService.read(msg.getId(),0)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if(response.success()){
+                                reqData();
+                            }
+                        }, error -> {
+                            Log.e(TAG, "read:");
+                            error.printStackTrace();
+                        });
                 break;
         }
     }
@@ -129,6 +143,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         ToastUtil.showToast(response.getInfo());
                         if (response.success()) {
                             adapter.notifyDataSetChanged();
+                            EventBus.getDefault().post(new UnreadMsgEvent());
                         }
                     }, error -> {
                         Log.e(TAG, "read:");

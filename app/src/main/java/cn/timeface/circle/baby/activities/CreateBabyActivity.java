@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +64,9 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     TextView etRelationship;
     @Bind(R.id.tv_focus)
     TextView tvFocus;
+    @Bind(R.id.rl_relation)
+    RelativeLayout rlRelation;
+
 
     public static final String KEY_SELECTED_PHOTO_SIZE = "SELECTED_PHOTO_SIZE";
     private final int PicutreSelcted = 10;
@@ -93,7 +97,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         rbGirl.setOnClickListener(this);
         rbBoy.setOnClickListener(this);
         etBirthday.setOnClickListener(this);
-        etRelationship.setOnClickListener(this);
+        rlRelation.setOnClickListener(this);
         tvFocus.setOnClickListener(this);
     }
 
@@ -161,7 +165,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 dialog.show();
                 break;
-            case R.id.et_relationship:
+            case R.id.rl_relation:
                 Intent intent = new Intent(this, RelationshipActivity.class);
                 startActivityForResult(intent, RELATIONSHIP);
                 break;

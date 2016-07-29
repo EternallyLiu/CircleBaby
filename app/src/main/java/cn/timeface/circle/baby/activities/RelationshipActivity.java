@@ -33,8 +33,6 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 public class RelationshipActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
 
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_relationship)

@@ -99,6 +99,7 @@
     <string name="action_edit">编辑</string>
     <string name="select_region">选择地区</string>
     <string name="reset_psw">重置密码</string>
+    <string name="video_edit">裁剪视频</string>
 
     <string name="price">价格:</string>
     <string name="price_promotion">活动价:</string>

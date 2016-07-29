@@ -7,12 +7,12 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:theme="@style/ToolbarColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:minHeight="?attr/actionBarSize" />
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        app:theme="@style/ToolbarColor" />
 
     <LinearLayout
         android:id="@+id/ll_single_date"
@@ -96,29 +96,31 @@
             android:id="@+id/rl_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            >
-
-            <ImageView
-                android:id="@+id/iv_video"
+            android:visibility="gone">
+            <RelativeLayout
+                android:id="@+id/rlvideo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop" />
-
-            <ImageView
-                android:id="@+id/iv_cover"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/iv_video"
-                android:src="@drawable/video" />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/iv_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/splash" />
+                <ImageView
+                    android:id="@+id/iv_cover"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/video"
+                    android:layout_centerInParent="true"/>
+            </RelativeLayout>
             <TextView
                 android:id="@+id/tv_videotime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/iv_video"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/size_6"
-                />
+                android:layout_toRightOf="@+id/rlvideo" />
         </RelativeLayout>
     </LinearLayout>
 

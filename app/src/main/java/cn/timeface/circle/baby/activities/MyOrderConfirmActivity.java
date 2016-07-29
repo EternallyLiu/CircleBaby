@@ -941,7 +941,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //            baseObj.setExpressId(Integer.valueOf(mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue()));
 //        }
 
-        Subscription s = apiService.addOrder(Integer.valueOf(addressId), LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), expressId, orderId)
+        Subscription s = apiService.addOrder(Integer.valueOf(addressId), LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), expressId, orderId,TypeConstant.APP_ID)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     progressDialog.dismiss();

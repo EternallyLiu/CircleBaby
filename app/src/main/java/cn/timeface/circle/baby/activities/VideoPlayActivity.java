@@ -29,8 +29,9 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
     @Bind(R.id.videoview)
     VideoView videoview;
 
-    public static void open(Context context) {
+    public static void open(Context context , String url) {
         Intent intent = new Intent(context, VideoPlayActivity.class);
+        intent.putExtra("url",url);
         context.startActivity(intent);
     }
 
@@ -45,10 +46,10 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("视频播放");
 
-        MediaObj media = (MediaObj) getIntent().getParcelableExtra("media");
+        String url = getIntent().getStringExtra("url");
         MediaController mc = new MediaController(this);
         videoview.setMediaController(mc);
-        videoview.setVideoPath(media.getVideoUrl());
+        videoview.setVideoPath(url);
         videoview.start();
         videoview.requestFocus();
 

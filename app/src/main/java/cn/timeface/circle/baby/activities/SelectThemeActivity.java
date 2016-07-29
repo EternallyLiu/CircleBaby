@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.github.rayboot.widget.ratioview.RatioImageView;
+import com.google.gson.Gson;
 import com.wechat.photopicker.PickerPhotoActivity2;
 
 import java.util.ArrayList;
@@ -26,11 +27,15 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter3;
 import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookType;
+import cn.timeface.open.api.models.objs.TFOContentObj;
+import cn.timeface.open.api.models.objs.TFOPublishObj;
+import cn.timeface.open.api.models.objs.TFOResourceObj;
 
 public class SelectThemeActivity extends BaseAppCompatActivity {
 
@@ -47,6 +52,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
     private String templateName;
     private ArrayList<ImageInfoListObj> dataList;
     private BaseResponse<List<TFOBookType>> listBaseResponse;
+    private int cloudAlbum;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, SelectThemeActivity.class);
@@ -65,6 +71,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
 
         Intent intent = getIntent();
         dataList = intent.getParcelableArrayListExtra("dataList");
+        cloudAlbum = intent.getIntExtra("cloudAlbum", 0);
         reqData();
 
         lvHorizontal.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -106,16 +113,21 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_complete,menu);
+        getMenuInflater().inflate(R.menu.menu_complete, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startPhotoPick();
+        if(item.getItemId() == R.id.complete){
+            if (cloudAlbum == 1) {
+                creatBook();
+            } else {
+                startPhotoPick();
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
-
 
 //    private void startPhotoPick() {
 //        Intent intent = new Intent(this, PickerPhotoActivity2.class);
@@ -129,11 +141,29 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
 
     private void startPhotoPick() {
         Intent intent = new Intent(this, TimeBookPickerPhotoActivity.class);
-        intent.putExtra("bookType",5);
-        intent.putExtra("openBookType",bookTheme);
+        intent.putExtra("bookType", 5);
+        intent.putExtra("openBookType", bookTheme);
         intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
         startActivity(intent);
+        finish();
+    }
+
+    private void creatBook() {
+        ArrayList<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+        for (ImageInfoListObj obj : dataList) {
+            for (MediaObj media : obj.getMediaList()) {
+                    TFOResourceObj tfoResourceObj = media.toTFOResourceObj();
+                    tfoResourceObjs.add(tfoResourceObj);
+            }
+        }
+        TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+        List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+        tfoContentObjs1.add(tfoContentObj);
+        TFOPublishObj tfoPublishObj = new TFOPublishObj("", tfoContentObjs1);
+        List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+        tfoPublishObjs.add(tfoPublishObj);
+        MyPODActivity.open(this, "", bookTheme, tfoPublishObjs, new Gson().toJson(dataList));
         finish();
     }
 }

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -27,13 +29,13 @@ import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.views.NoScrollGridView;
+import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.common.utils.ShareSdkUtil;
 
 public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
     protected final int PHOTO_COUNT_MAX = 100;
 
-    @Bind(R.id.tv_next)
-    TextView tvNext;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.gv_grid_view)
@@ -87,7 +89,6 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
             }
         });
 
-        tvNext.setOnClickListener(this);
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
 
@@ -145,9 +146,6 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_next:
-                postRecord();
-                break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
@@ -227,5 +225,21 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
             }
             return view;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_next, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.home) {
+            onBackPressed();
+        } else if (item.getItemId() == R.id.next) {
+            postRecord();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

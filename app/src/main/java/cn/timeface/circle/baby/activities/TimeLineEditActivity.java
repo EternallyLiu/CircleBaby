@@ -116,14 +116,13 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         tvMileStone.setText(timelimeobj.getMilestone());
         tvTime.setText(time);
 
-        if (timelimeobj.getType() == 1) {
+        if (timelimeobj.getType() == 1 || !TextUtils.isEmpty(timelimeobj.getMediaList().get(0).getVideoUrl())) {
             llVideo.setVisibility(View.VISIBLE);
             gvGridView.setVisibility(View.GONE);
 
             GlideUtil.displayImage(timelimeobj.getMediaList().get(0).getImgUrl(), ivVideo);
             long length = timelimeobj.getMediaList().get(0).getLength();
-            tvVideotime.setText("时长：" + length / 1000 + "秒");
-
+            tvVideotime.setText("时长：" + DateUtil.getTime4(length * 1000));
             int width = Remember.getInt("width", 0);
             ViewGroup.LayoutParams layoutParams = ivVideo.getLayoutParams();
             layoutParams.width = width;
@@ -139,7 +138,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 selImages.add(imgObj);
                 imageUrls.add(media.getImgUrl());
             }
-            if(timelimeobj.getType()==0){
+            if (timelimeobj.getType() == 0) {
                 adapter = new PhotoGridAdapter(this);
                 adapter.getData().addAll(imageUrls);
                 gvGridView.setAdapter(adapter);
@@ -153,7 +152,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 //                adapter.notifyDataSetChanged();
                     }
                 });
-            }else{
+            } else {
                 PhotoGridAdapter2 photoGridAdapter2 = new PhotoGridAdapter2(this);
                 photoGridAdapter2.getData().addAll(imageUrls);
                 gvGridView.setAdapter(photoGridAdapter2);
@@ -253,6 +252,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         private static final int TYPE_BODY = 2;
         private Context context;
         List<String> data = new ArrayList<>();
+
         public PhotoGridAdapter(Context context) {
             this.context = context;
         }

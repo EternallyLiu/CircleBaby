@@ -112,16 +112,16 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
                 .into(((ViewHolder) viewHolder).ivBookCover);
 
         //台历数据
-        if (TypeConstant.BOOK_TYPE_DESK_CALENDAR == cartItem.getBookType()) {
-            String calendar = cartItem.getPropertyShow("calendar", obj.getCalendar());
-//            ((ViewHolder) viewHolder).llPaperPackLayout.setVisibility(View.GONE);
-            ((ViewHolder) viewHolder).mTvColor.setCompoundDrawables(null, null, null, null);
-            ((ViewHolder) viewHolder).mTvSize.setText("规格:" + calendar);
-            ((ViewHolder) viewHolder).mTvColor.setVisibility(View.GONE);
-            ((ViewHolder) viewHolder).mTvColor.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
-            ((ViewHolder) viewHolder).flBookBg.setBackgroundResource(R.drawable.bg_cart_calendar_cover);
-            ((ViewHolder) viewHolder).ivBookTopBg.setVisibility(View.VISIBLE);
-        } else {
+//        if (TypeConstant.BOOK_TYPE_DESK_CALENDAR == cartItem.getBookType()) {
+//            String calendar = cartItem.getPropertyShow("calendar", obj.getCalendar());
+////            ((ViewHolder) viewHolder).llPaperPackLayout.setVisibility(View.GONE);
+//            ((ViewHolder) viewHolder).mTvColor.setCompoundDrawables(null, null, null, null);
+//            ((ViewHolder) viewHolder).mTvSize.setText("规格:" + calendar);
+//            ((ViewHolder) viewHolder).mTvColor.setVisibility(View.GONE);
+//            ((ViewHolder) viewHolder).mTvColor.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
+//            ((ViewHolder) viewHolder).flBookBg.setBackgroundResource(R.drawable.bg_cart_calendar_cover);
+//            ((ViewHolder) viewHolder).ivBookTopBg.setVisibility(View.VISIBLE);
+//        } else {
 //            ((ViewHolder) viewHolder).llPaperPackLayout.setVisibility(View.VISIBLE);
             ((ViewHolder) viewHolder).mTvColor.setVisibility(View.VISIBLE);
             ((ViewHolder) viewHolder).mTvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
@@ -135,7 +135,7 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
 
             ((ViewHolder) viewHolder).flBookBg.setBackgroundResource(R.drawable.timelist_book_bg);
             ((ViewHolder) viewHolder).ivBookTopBg.setVisibility(View.GONE);
-        }
+//        }
 
         ((ViewHolder) viewHolder).ivBookCover.setTag(R.string.tag_obj, cartItem);
                 ((ViewHolder) viewHolder).mIvRadio.setTag(R.string.tag_obj, obj);
@@ -175,11 +175,11 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
             case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
 //                holder.mBtnPrintAgain.setVisibility(View.GONE);
                 ((ViewHolder) viewHolder).tvLimitInfo.setVisibility(View.VISIBLE);
-                if(cartItem.getBookType() == TypeConstant.BOOK_TYPE_DESK_CALENDAR){
-                    ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete_calendar));
-                } else {
+//                if(cartItem.getBookType() == TypeConstant.BOOK_TYPE_DESK_CALENDAR){
+//                    ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete_calendar));
+//                } else {
                     ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete));
-                }
+//                }
                 break;
 
             default:

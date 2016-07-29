@@ -1,5 +1,9 @@
 package cn.timeface.circle.baby.api.models.objs;
 
+import android.os.Parcelable;
+
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import java.util.List;
 
 import cn.timeface.circle.baby.api.models.base.BaseObj;
@@ -8,11 +12,15 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
  * Created by lidonglin on 2016/5/13.
  * 发布类
  */
+//@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class PublishObj extends BaseObj {
     String content;
     List<MediaObj> mediaList;
     int milestone;
     long time;                 //时间戳
+
+    public PublishObj() {
+    }
 
     public PublishObj(String content, List<MediaObj> mediaList, int milestone, long time) {
         this.content = content;

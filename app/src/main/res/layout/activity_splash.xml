@@ -10,28 +10,10 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_bottom"
         android:clickable="true"
         android:onClick="toAd"
         android:scaleType="fitXY"
-        android:src="@drawable/splash_back_img"/>
+        android:src="@drawable/splash"/>
 
-    <LinearLayout
-        android:id="@+id/ll_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/view_space_medium"
-        android:paddingTop="@dimen/view_space_medium">
-
-        <ImageView
-            android:id="@+id/logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/splash_logo"/>
-
-    </LinearLayout>
 
 </RelativeLayout>

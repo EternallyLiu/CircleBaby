@@ -17,6 +17,7 @@ import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
+import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.CommentObj;
@@ -52,7 +54,6 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
     public static Context context;
     private ViewHolder holder;
     public List<TimeLineObj> listData;
-    private TimeLineObj item;
     private List<TimeLineGroupObj> allDetailsList;
     public int allDetailsListPosition;
 
@@ -79,7 +80,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = ((ViewHolder) viewHolder);
-        item = getItem(position);
+        TimeLineObj item = getItem(position);
         holder.timeLineObj = item;
         holder.tvContent.setText(item.getContent());
         holder.tvAuthor.setText(item.getAuthor().getRelationName());
@@ -93,11 +94,10 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         if (item.getMediaList().size() == 1) {
             holder.gv.setVisibility(View.GONE);
-            holder.ivCover.setVisibility(View.VISIBLE);
             String url = item.getMediaList().get(0).getImgUrl();
             GlideUtil.displayImage(url, holder.ivCover);
         } else {
-            holder.ivCover.setVisibility(View.GONE);
+            holder.rlSingle.setVisibility(View.GONE);
         }
 
         if (item.getMediaList().size() > 1) {
@@ -160,15 +160,20 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.llGoodListUsersBar.removeAllViews();
         }
 
-        if (item.getType() == 1) {
+        if (item.getType() == 1 || !TextUtils.isEmpty(item.getMediaList().get(0).getVideoUrl())) {
             holder.ivVideo.setVisibility(View.VISIBLE);
-            int width = Remember.getInt("width", 0);
-            ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
-            layoutParams.width = width;
-            layoutParams.height = width;
-            holder.ivCover.setLayoutParams(layoutParams);
-//            holder.ivVideo.setLayoutParams(layoutParams);
+//            int width = Remember.getInt("width", 0);
+//            ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
+//            layoutParams.width = width;
+//            layoutParams.height = width;
+//            holder.ivCover.setLayoutParams(layoutParams);
             holder.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            holder.rlSingle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    VideoPlayActivity.open(context,item.getMediaList().get(0).getVideoUrl());
+                }
+            });
         }
         holder.position = position;
         holder.allDetailsPosition = allDetailsListPosition;
@@ -247,6 +252,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         TextView tvMoreComment;
         @Bind(R.id.ll_recode)
         LinearLayout llRecode;
+        @Bind(R.id.rl_single)
+        RelativeLayout rlSingle;
         List<TimeLineObj> listData;
         TimeLineObj timeLineObj;
         int position;

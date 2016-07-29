@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +39,14 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumDetailAdapter;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.DeviceUtil;
+import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog;
@@ -88,10 +92,13 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private boolean currentStateEdit;
     private MediaObj mediaObjHeader;
     private String albumId;
+    private List<ImageInfoListObj> imageInfoList;
+    private int type;
 
-    public static void open(Activity activity, String albumId) {
+    public static void open(Activity activity, String albumId, int type) {
         Intent intent = new Intent(activity, CloudAlbumEditActivity.class);
         intent.putExtra("albumId", albumId);
+        intent.putExtra("type", type);
         activity.startActivity(intent);
     }
 
@@ -105,6 +112,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //toolbar.setNavigationIcon(R.drawable.ic_back);
         albumId = getIntent().getStringExtra("albumId");
+        type = getIntent().getIntExtra("type", 0);
         setupRecyclerView();
         loadingDialog = LoadingDialog.getInstance();
         loadingDialog.show(getSupportFragmentManager(), "");
@@ -124,8 +132,15 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 .doOnTerminate(() -> loadingDialog.dismiss())
                 .subscribe(albumDetailResponse -> {
                     if (albumDetailResponse.success()) {
-                        List<MediaObj> dataList = albumDetailResponse.getDataList();
-
+                        List<MediaObj> dataList = new ArrayList<MediaObj>();
+                        imageInfoList = albumDetailResponse.getDataList();
+                        for (ImageInfoListObj obj : imageInfoList) {
+                            for (MediaObj media : obj.getMediaList()) {
+                                media.setDate(obj.getDate());
+                                media.setTimeId(obj.getTimeId());
+                            }
+                            dataList.addAll(obj.getMediaList());
+                        }
                         for (MediaObj mediaObj : dataList) {
                             if (mediaObj.getIsCover() == 1) {
                                 mediaObjHeader = mediaObj;
@@ -133,6 +148,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                             }
                         }
                         if (mediaObjHeader == null) {//没有封面图片，使用第一个
+                            dataList.get(0).setIsCover(1);
                             mediaObjHeader = dataList.get(0);
                         }
                         setupHeaderView();
@@ -144,7 +160,8 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                         ToastUtil.showToast(albumDetailResponse.getInfo());
                     }
                 }, throwable -> {
-                    Log.d(TAG, "reqCloudAlbumDetail: " + throwable.getMessage());
+                    Log.d(TAG, "reqCloudAlbumDetail: ");
+                    throwable.printStackTrace();
                     ToastUtil.showToast(R.string.state_error_timeout);
                 });
         addSubscription(subscribe);
@@ -165,9 +182,11 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit) {
-            BottomMenuDialog menuDialog = BottomMenuDialog.getInstance();
-            menuDialog.setOnMenuClick(this);
-            menuDialog.show(getSupportFragmentManager(), "");
+            if (type != 2) {
+                BottomMenuDialog menuDialog = BottomMenuDialog.getInstance();
+                menuDialog.setOnMenuClick(this);
+                menuDialog.show(getSupportFragmentManager(), "");
+            }
         } else if (item.getItemId() == android.R.id.home) {
             if (currentStateEdit) {
                 goCommState();
@@ -219,7 +238,32 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
 
     private void completeEdit() {
         mediaObjs.add(mediaObjHeader);
-        String list = new Gson().toJson(mediaObjs);
+
+        List<ImageInfoListObj> imageInfoListObjs = new ArrayList<>();
+        for (int x = 0; x < mediaObjs.size(); x++) {
+            if (x == 0 || mediaObjs.get(x).getTimeId() != mediaObjs.get(x - 1).getTimeId()) {
+                ImageInfoListObj imageInfoListObj = new ImageInfoListObj();
+                List<MediaObj> mediaList = new ArrayList<>();
+                int timeId = mediaObjs.get(x).getTimeId();
+                long date = mediaObjs.get(x).getDate();
+                for (int y = x; y < mediaObjs.size(); y++) {
+                    if (timeId == mediaObjs.get(y).getTimeId()) {
+                        mediaList.add(mediaObjs.get(y));
+                    }
+                }
+                imageInfoListObj.setMediaList(mediaList);
+                imageInfoListObj.setTimeId(timeId);
+                imageInfoListObj.setDate(date);
+                imageInfoListObjs.add(imageInfoListObj);
+            }
+        }
+        for (ImageInfoListObj obj : imageInfoListObjs) {
+            for (MediaObj media : obj.getMediaList()) {
+                Log.d(TAG, media.toString());
+            }
+        }
+
+        String list = new Gson().toJson(imageInfoList);
         Log.d(TAG, "clickFinishEdit: " + list);
         Subscription subscribe = apiService.editCloudAlbum(albumId, Uri.encode(list))
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -243,7 +287,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 .asBitmap()
                 .atMost()
                 .into(ivHeader);
-        tvDate.setText(DateUtil.formatDate("yyyy.MM.dd", mediaObjHeader.getPhotographTime()));
+        tvDate.setText(DateUtil.formatDate("yyyy.MM.dd", mediaObjHeader.getDate()));
         String content = mediaObjHeader.getContent();
         if (!TextUtils.isEmpty(content)) {
             etInputText.setText(content);
@@ -290,7 +334,12 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     }
 
     public void clickBtnChangeCover(View view) {
-        SelectPhotoActivity.open4result(this, 1, REQ_SELECT_COVER);
+//        SelectPhotoActivity.open4result(this, 1, REQ_SELECT_COVER);
+        Intent intent = new Intent(this, CloudAlbumPhotoSelectActivity.class);
+        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) imageInfoList);
+        intent.putExtra("bookPage", 1);
+        startActivityForResult(intent, REQ_SELECT_COVER);
+
     }
 
     @Override
@@ -306,6 +355,10 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 break;
             case R.id.rl_book_pre:
                 //进入POD预览
+                Intent intent = new Intent(this, SelectThemeActivity.class);
+                intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) imageInfoList);
+                intent.putExtra("cloudAlbum", 1);
+                startActivity(intent);
                 break;
             case R.id.rl_delete_album:
                 //删除相册
@@ -346,22 +399,36 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            ArrayList<ImgObj> imgObjs = data.getParcelableArrayListExtra("result_select_image_list");
-            if (imgObjs == null || imgObjs.size() == 0) return;
+        if (data != null && resultCode == Activity.RESULT_OK) {
+
             switch (requestCode) {
                 case REQ_SELECT_COVER:
-                    loadingDialog.show(getSupportFragmentManager(), "");
-                    Subscription subscribe = OSSManager.getOSSManager(this).uploadPicToBabys(imgObjs.get(0).getLocalPath())
+//                    loadingDialog.show(getSupportFragmentManager(), "");
+                    List<MediaObj> imgs = data.getParcelableArrayListExtra("result_select_image_list");
+                    if (imgs == null || imgs.size() == 0) break;
+                    /*Subscription subscribe = OSSManager.getOSSManager(this).uploadPicToBabys(imgs.get(0).getLocalPath())
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(objectKey -> {
                                 mediaObjHeader.setIsCover(1);
-                                mediaObjHeader.setImgUrl(objectKey);
-                                completeEdit();
+                                mediaObjHeader.setImgUrl("http://img1.timeface.cn/"+objectKey);
+                                setupHeaderView();
+                                loadingDialog.dismiss();
+//                                completeEdit();
                             });
-                    addSubscription(subscribe);
+                    addSubscription(subscribe);*/
+                    MediaObj mediaObj = imgs.get(0);
+                    for (MediaObj media : mediaObjs) {
+                        if (media.getImgUrl().equals(mediaObj.getImgUrl())) {
+                            media.setIsCover(1);
+                            GlideUtil.displayImage(mediaObj.getImgUrl(), ivHeader);
+                        }
+                    }
+                    mediaObjHeader.setIsCover(0);
+
                     break;
                 case REQ_SELECT_PHOTO:
+                    ArrayList<ImgObj> imgObjs = data.getParcelableArrayListExtra("result_select_image_list");
+                    if (imgObjs == null || imgObjs.size() == 0) break;
                     //1、上传选择的图片
                     //2、转化为MediaObj
                     //3、转化为JSON

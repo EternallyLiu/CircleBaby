@@ -44,13 +44,19 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/iv_diary"
+        <RelativeLayout
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/size_12"
-            android:src="@drawable/card_add" />
+            android:layout_margin="@dimen/size_12">
+            <ImageView
+                android:id="@+id/iv_diary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/card_add" />
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/tv_time"
@@ -60,7 +66,7 @@
             android:layout_marginRight="@dimen/size_12"
             android:background="@drawable/shape_dash_bg"
             android:padding="@dimen/size_12"
-            android:text="编辑日期" />
+            android:hint="编辑日期" />
 
 
         <TextView
@@ -71,7 +77,7 @@
             android:layout_marginRight="@dimen/size_12"
             android:background="@drawable/shape_dash_bg"
             android:padding="@dimen/size_12"
-            android:text="请输入文本内容（60字以内）"
+            android:hint="请输入文本内容（60字以内）"
             android:layout_marginTop="@dimen/size_12"/>
 
     </LinearLayout>
