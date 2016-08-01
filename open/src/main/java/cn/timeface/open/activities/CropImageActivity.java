@@ -54,7 +54,7 @@ public class CropImageActivity extends AppCompatActivity {
         intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_X, ratioX);
         intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_Y, ratioY);
         Uri in;
-        File file = new File(Glide.getPhotoCacheDir(activity), url.hashCode() + "." + url.substring(url.lastIndexOf(".")));
+        File file = new File(Glide.getPhotoCacheDir(activity), url.hashCode() + url.substring(url.lastIndexOf(".")));
         if (file.exists()) {
             in = Uri.fromFile(file);
         } else {
