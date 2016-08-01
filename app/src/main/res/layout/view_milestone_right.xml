@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <TextView
         android:id="@+id/tv_time"
@@ -11,7 +12,8 @@
         android:text="2016.7.20"
         android:textSize="@dimen/text_medium"
         android:layout_alignLeft="@+id/iv_cover"
-        android:layout_alignRight="@+id/iv_cover"/>
+        android:layout_alignRight="@+id/iv_cover"
+        android:layout_marginTop="@dimen/size_12"/>
 
     <TextView
         android:id="@+id/tv_milestonename"
@@ -21,10 +23,14 @@
         android:layout_alignRight="@+id/iv_cover"
         android:layout_below="@id/tv_time"
         android:background="@drawable/milestone_name_bg_right"
-        android:padding="@dimen/size_12"
+        android:paddingRight="@dimen/size_6"
+        android:paddingLeft="@dimen/size_12"
+        android:paddingTop="@dimen/size_6"
+        android:paddingBottom="@dimen/size_6"
         android:text="翻身"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_medium"/>
+        android:textSize="@dimen/text_medium"
+        android:drawableRight="@drawable/shape_dot_red"/>
 
     <ImageView
         android:id="@+id/iv_cover"
@@ -33,13 +39,14 @@
         android:layout_below="@+id/tv_milestonename"
         android:layout_marginLeft="@dimen/size_24"
         android:scaleType="centerCrop"
-        android:src="@drawable/setting_sina_share_img" />
+        android:src="@drawable/ic_log"
+        android:paddingLeft="5dp"/>
 
     <View
         android:layout_width="@dimen/size_6"
         android:layout_height="@dimen/size_6"
         android:layout_alignTop="@+id/tv_milestonename"
         android:background="@drawable/shape_circle_orange"
-        android:translationY="18dp"/>
+        android:translationY="14dp"/>
 
 </RelativeLayout>

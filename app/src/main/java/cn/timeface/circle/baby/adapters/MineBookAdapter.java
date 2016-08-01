@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 import com.wechat.photopicker.PickerPhotoActivity2;
 
 import java.util.ArrayList;
@@ -81,13 +82,17 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         GlideUtil.displayImage(obj.getBookCover(), holder.ivBook);
         holder.tvTitle.setText(obj.getBookName());
         holder.tvPageNum.setText(obj.getPageNum()+"");
+        if(obj.getBookType()==TypeConstant.BOOK_TYPE_DIARY){
+            holder.llType.setVisibility(View.VISIBLE);
+            holder.tvType.setText(obj.getCoverTitle());
+        }
         holder.tvCreattime.setText(DateUtil.getYear2(obj.getUpdateTime()));
         if (obj.getBookType() != 2) {
             holder.ivBookbg.setImageResource(R.drawable.book_front_mask2);
         }else{
             holder.ivBookbg.setImageResource(R.drawable.book_front_mask);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.flBookCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClickListener != null) {
@@ -126,6 +131,13 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         TextView tvPrint;
         @Bind(R.id.ll_menu)
         LinearLayout llMenu;
+        @Bind(R.id.ll_type)
+        LinearLayout llType;
+        @Bind(R.id.tv_type)
+        TextView tvType;
+        @Bind(R.id.fl_book_cover)
+        RatioFrameLayout flBookCover;
+
 
         Context context;
         FragmentManager supportFragmentManager;
@@ -162,7 +174,6 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                                         TimeFaceUtilInit.getContext()).getDeviceId();
                                 new ShareDialog(context).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
                                         ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
-                                        ShareSdkUtil.getImgStrByResource(context, R.drawable.setting_sina_share_img),
                                         url);
                                 break;
                             case R.id.del:

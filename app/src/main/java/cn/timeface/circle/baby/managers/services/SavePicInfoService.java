@@ -155,7 +155,7 @@ public class SavePicInfoService extends Service {
                     })
                     // .map(photoModel -> AlbumUtil.compressPhotoModelLocalPathTemp(photoModel, 16384))
                     .map(photoModel -> {
-                        photoModel.setStringDate(DateUtil.formatDate("yyyyMMdd", photoModel.getDateTaken()));
+                        photoModel.setStringDate(DateUtil.formatDate("yyyy.MM.dd", photoModel.getDateTaken()));
                         return photoModel;
                     })
                     .toList();

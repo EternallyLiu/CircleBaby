@@ -167,7 +167,13 @@
             android:label="@string/app_name"
             android:noHistory="false"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.TransparentActivity.FullScreen"></activity>
+            android:theme="@style/AppTheme.TransparentActivity.FullScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".activities.MainActivity"
@@ -178,38 +184,57 @@
         <activity
             android:name="cn.timeface.circle.baby.activities.LoginActivity"
             android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activities.GuideActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.TransparentActivity.FullScreen">
+
         </activity>
         <activity android:name=".activities.TabMainActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.ConfirmPasswordActivity" />
         <activity android:name=".activities.ForgetPasswordActivity" />
-        <activity android:name=".activities.SetPasswordActivity"
-            android:label="@string/edit_time"
+        <activity
+            android:name=".activities.SetPasswordActivity"
+            android:label="设置密码"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.CreateBabyActivity" />
         <activity android:name=".activities.InviteCodeActivity" />
-        <activity android:name=".activities.RelationshipActivity" />
+        <activity
+            android:name=".activities.RelationshipActivity"
+            android:label="与宝宝关系"
+            android:screenOrientation="portrait" />
         <activity android:name="com.wechat.photopicker.PickerPhotoActivity" />
         <activity android:name="com.wechat.photopicker.PickerPhotoActivity2" />
         <activity android:name="com.wechat.photopicker.PickerVideoActivity" />
         <activity android:name=".activities.DiaryPublishActivity" />
         <activity android:name=".activities.CardPublishActivity" />
-        <activity android:name=".activities.SelectMileStoneActivity" />
-        <activity android:name=".activities.SelectTimeActivity" />
+        <activity
+            android:name=".activities.SelectMileStoneActivity"
+            android:label="里程碑"
+            android:screenOrientation="portrait" />
         <activity android:name="com.wechat.photopicker.BigImageShowActivity" />
-        <activity android:name=".activities.VideoEditActivity" />
         <activity android:name=".activities.VideoPlayActivity" />
         <activity android:name=".activities.PhotoRecodeDetailActivity" />
         <activity android:name=".activities.FragmentBridgeActivity" />
-        <activity android:name=".activities.TimeBookPickerPhotoActivity" />
+        <activity
+            android:name=".activities.SelectTimeActivity"
+            android:label="记录时间"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.TimeBookPickerPhotoActivity"
+            android:label="@string/picker_photo"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.VideoEditActivity"
+            android:label="@string/video_edit"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.TimeLineEditActivity"
-            android:label="@string/reset_psw"
+            android:label="@string/edit_time"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.PublishActivity"
@@ -285,7 +310,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SelectThemeActivity"
-            android:label="更换主题"
+            android:label="选择主题"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AboutActivity"
@@ -305,6 +330,17 @@
         <activity
             android:name=".activities.MileStoneInfoActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MilestoneDiyActivity"
+            android:label="自定义"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CloudAlbumPhotoSelectActivity"
+            android:label="@string/picker_photo"
+            android:screenOrientation="portrait" />
+
+
+
     </application>
 
 </manifest>

@@ -26,6 +26,15 @@ public class CloudAlbumObj extends BaseObj implements Parcelable {
     private String imgUrl;
     private long time;
     private String title;
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getContentInfo() {
         return contentInfo;
@@ -88,6 +97,7 @@ public class CloudAlbumObj extends BaseObj implements Parcelable {
         dest.writeString(this.imgUrl);
         dest.writeLong(this.time);
         dest.writeString(this.title);
+        dest.writeInt(this.type);
     }
 
     public CloudAlbumObj() {
@@ -100,6 +110,7 @@ public class CloudAlbumObj extends BaseObj implements Parcelable {
         this.imgUrl = in.readString();
         this.time = in.readLong();
         this.title = in.readString();
+        this.type = in.readInt();
     }
 
     public static final Parcelable.Creator<CloudAlbumObj> CREATOR = new Parcelable.Creator<CloudAlbumObj>() {

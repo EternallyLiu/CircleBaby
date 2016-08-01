@@ -12,9 +12,6 @@ import android.widget.RelativeLayout;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
 
-/**
- *
- */
 public class TimeLineActivityCommentDialog extends BaseDialog{
 
     RelativeLayout rl_action;

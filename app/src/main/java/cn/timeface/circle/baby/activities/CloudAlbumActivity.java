@@ -15,6 +15,9 @@ import com.timeface.refreshload.PullRefreshLoadRecyclerView;
 import com.timeface.refreshload.headfoot.LoadMoreView;
 import com.timeface.refreshload.headfoot.RefreshView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,9 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumListAdapter;
 import cn.timeface.circle.baby.api.models.objs.CloudAlbumObj;
+import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
@@ -33,7 +39,7 @@ import rx.Subscription;
 /**
  * Created by zhsheng on 2016/6/7.
  */
-public class CloudAlbumActivity extends BaseAppCompatActivity {
+public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -122,9 +128,9 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
         if (item.getItemId() == R.id.action_upload) {
             //进入图片选择页面
 
-            MyPODActivity.open(this, "", 23, null);
-//            PublishActivity.open(this, PublishActivity.PHOTO);
-            // SelectPhotoActivity.openToPublish(this, TypeConstants.PHOTO_COUNT_MAX);
+//            MyPODActivity.open(this, "", 23, null);
+            PublishActivity.open(this, PublishActivity.PHOTO);
+//             SelectPhotoActivity.openToPublish(this, TypeConstants.PHOTO_COUNT_MAX);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -132,6 +138,11 @@ public class CloudAlbumActivity extends BaseAppCompatActivity {
     public void clickCloudAlbum(View view) {
         CloudAlbumObj cloudAlbumObj = (CloudAlbumObj) view.getTag(R.string.tag_obj);
         String cloudAlbumObjId = cloudAlbumObj.getId();
-        CloudAlbumEditActivity.open(this, cloudAlbumObjId);
+        CloudAlbumEditActivity.open(this, cloudAlbumObjId,cloudAlbumObj.getType());
+    }
+
+    @Subscribe
+    public void onEvent(HomeRefreshEvent event) {
+        reqCloudAlbumImages();
     }
 }

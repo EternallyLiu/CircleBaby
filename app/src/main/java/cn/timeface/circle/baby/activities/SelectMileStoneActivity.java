@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.SelectMilestoneAdapter;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class SelectMileStoneActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -60,7 +61,6 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        tvTitle.setText("里程碑");
         etRelationship.setHint("输入并创建里程碑");
         tvCreate.setOnClickListener(this);
         adapter = new SelectMilestoneAdapter(this, new ArrayList<>());
@@ -90,7 +90,7 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
             case R.id.tv_create:
                 String milestoneName = etRelationship.getText().toString().trim();
                 if (TextUtils.isEmpty(milestoneName)) {
-                    Toast.makeText(this, "请输入里程碑", Toast.LENGTH_SHORT).show();
+                    ToastUtil.showToast( "请输入里程碑");
                     return;
                 }
                 apiService.addMilestone(URLEncoder.encode(milestoneName))
@@ -102,7 +102,7 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {
-                                Toast.makeText(this, milestoneResponse.getInfo(), Toast.LENGTH_SHORT).show();
+                                ToastUtil.showToast(milestoneResponse.getInfo());
                             }
                         }, throwable -> {
                             Log.e(TAG, "addMilestone:", throwable);

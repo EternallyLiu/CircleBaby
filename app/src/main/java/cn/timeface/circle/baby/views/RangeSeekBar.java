@@ -593,7 +593,7 @@ public class RangeSeekBar<T extends Number> extends ImageView {
 	 */
 	private Paint getThumbValuePaint() {
 		Paint p = new Paint();
-		p.setColor(Color.RED);
+		p.setColor(getResources().getColor(R.color.bg_color1));
 		p.setAntiAlias(true);// ȥ�����
 		p.setFilterBitmap(true);// ��λͼ�����˲�����
 		p.setTextSize(50);

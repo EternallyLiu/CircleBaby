@@ -21,5 +21,6 @@
         android:clickable="true"
         android:padding="5dp"
         android:layout_margin="5dp"
+        android:textColor="@color/bg_color1"
         />
 </com.wechat.photopicker.widget.SquareItemLayout>

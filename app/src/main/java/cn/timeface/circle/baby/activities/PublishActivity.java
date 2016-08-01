@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +30,7 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
@@ -51,6 +53,7 @@ import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.PublishObj;
 import cn.timeface.circle.baby.events.CardEvent;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
@@ -62,6 +65,7 @@ import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
@@ -123,6 +127,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private MediaObj mediaObj;
     private List<MediaObj> mediaObjs;
     private VideoInfo videoInfo;
+    private TFProgressDialog tfProgressDialog;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -138,6 +143,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        tfProgressDialog = new TFProgressDialog(this);
 
         publishType = getIntent().getIntExtra("publish_type", NOMAL);
 
@@ -278,7 +284,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     String path = data.getStringExtra("path");
                     long duration = data.getLongExtra("duration", 0);
                     long date = data.getLongExtra("date", System.currentTimeMillis());
-                    videoInfo = new VideoInfo(duration, imgObjectKey, path, date*1000);
+                    String s = date + "";
+                    s = s.length() == 13 ? s : s + "000";
+                    date = Long.valueOf(s);
+                    videoInfo = new VideoInfo(duration, imgObjectKey, path, date);
                     GlideUtil.displayImage("http://img1.timeface.cn/" + imgObjectKey, ivVideo);
                     rlVideo.setVisibility(View.VISIBLE);
                     gvGridView.setVisibility(View.GONE);
@@ -287,9 +296,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     layoutParams.width = width;
                     layoutParams.height = width;
                     ivVideo.setLayoutParams(layoutParams);
-//                    ivCover.setLayoutParams(layoutParams);
                     tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate()));
-                    tvVideotime.setText("时长：" + videoInfo.getDuration() + "秒");
+                    tvVideotime.setText("时长：" + DateUtil.getTime4(videoInfo.getDuration() * 1000));
 
                     break;
             }
@@ -322,8 +330,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布识图卡片
     private void publishCard() {
         String content = etContent.getText().toString();
-        if (TextUtils.isEmpty(content)) {
-            ToastUtil.showToast("发点文字吧~");
+        if (TextUtils.isEmpty(content) && mediaObjs.size() == 0) {
+            Toast.makeText(this, "发点文字或图片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
         String t = tvTime.getText().toString();
@@ -342,10 +350,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
+                        EventBus.getDefault().post(new HomeRefreshEvent());
                         finish();
                     }
                 }, throwable -> {
                     Log.e(TAG, "publish:");
+                    throwable.printStackTrace();
                 });
 
     }
@@ -370,16 +380,21 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
+        System.out.println("s============" + s);
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
-                        new File(videoInfo.getPath()).delete();
+                        if (type == 1) {
+                            new File(videoInfo.getPath()).delete();
+                        }
+                        EventBus.getDefault().post(new HomeRefreshEvent());
                         finish();
                     }
                 }, throwable -> {
                     Log.e(TAG, "publish:");
+                    throwable.printStackTrace();
                 });
 
     }
@@ -428,9 +443,11 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         for (ImgObj img : selImages) {
                             uploadImage(img.getLocalPath());
                         }
+                        EventBus.getDefault().post(new HomeRefreshEvent());
                     }
                 }, throwable -> {
                     Log.e(TAG, "publish:");
+                    throwable.printStackTrace();
                 });
 
 
@@ -492,8 +509,11 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
     private void uploadVideo(String path) {
         if (TextUtils.isEmpty(path)) {
+            ToastUtil.showToast("视频文件异常");
             return;
         }
+        tfProgressDialog.setMessage("上传视频中");
+        tfProgressDialog.show();
         OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override
@@ -512,13 +532,16 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         videoInfo.setVideoObjectKey(videoObjectKey);
 //                        new File(path).delete();
                         mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
+                        tfProgressDialog.dismiss();
                         publishDiary();
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
+                        tfProgressDialog.dismiss();
                         e.printStackTrace();
                     }
                 } catch (Exception e) {
-
+                    tfProgressDialog.dismiss();
+                    e.printStackTrace();
                 }
             }
         }.start();

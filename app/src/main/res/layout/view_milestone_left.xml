@@ -13,7 +13,9 @@
         android:textSize="@dimen/text_medium"
         android:layout_alignLeft="@+id/iv_cover"
         android:layout_alignRight="@+id/iv_cover"
-        android:gravity="right"/>
+        android:gravity="right"
+        android:layout_marginTop="@dimen/size_12"
+        />
 
     <TextView
         android:id="@+id/tv_milestonename"
@@ -23,11 +25,15 @@
         android:layout_alignRight="@+id/iv_cover"
         android:layout_below="@id/tv_time"
         android:background="@drawable/milestone_name_bg_left"
-        android:padding="@dimen/size_12"
+        android:paddingRight="@dimen/size_12"
+        android:paddingLeft="@dimen/size_6"
+        android:paddingTop="@dimen/size_6"
+        android:paddingBottom="@dimen/size_6"
         android:text="翻身"
         android:textColor="@color/white"
         android:textSize="@dimen/text_medium"
-        android:gravity="right"/>
+        android:gravity="right"
+        android:drawableLeft="@drawable/shape_dot_red"/>
 
     <ImageView
         android:id="@+id/iv_cover"
@@ -36,8 +42,9 @@
         android:layout_below="@+id/tv_milestonename"
         android:layout_marginRight="@dimen/size_24"
         android:scaleType="centerCrop"
-        android:src="@drawable/setting_sina_share_img"
-        android:layout_alignParentRight="true"/>
+        android:src="@drawable/ic_log"
+        android:layout_alignParentRight="true"
+        android:paddingRight="5dp"/>
 
     <View
         android:layout_width="@dimen/size_6"
@@ -45,6 +52,6 @@
         android:layout_alignTop="@+id/tv_milestonename"
         android:background="@drawable/shape_circle_orange"
         android:layout_alignParentRight="true"
-        android:translationY="18dp"/>
+        android:translationY="14dp"/>
 
 </RelativeLayout>

@@ -135,7 +135,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                         TimeFaceUtilInit.getContext()).getDeviceId();
                 new ShareDialog(getActivity()).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
                         ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.setting_sina_share_img),
                         url);
 
                 break;

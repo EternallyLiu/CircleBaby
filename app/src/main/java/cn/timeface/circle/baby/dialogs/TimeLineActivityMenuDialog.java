@@ -12,33 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;
-import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.onekeyshare.CustomerLogo;
-import cn.sharesdk.onekeyshare.OnekeyShare;
-import cn.sharesdk.sina.weibo.SinaWeibo;
-import cn.sharesdk.tencent.qq.QQ;
-import cn.sharesdk.tencent.qzone.QZone;
-import cn.sharesdk.wechat.friends.Wechat;
-import cn.sharesdk.wechat.moments.WechatMoments;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.activities.TimeLineEditActivity;
-import cn.timeface.circle.baby.api.Api;
 import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.services.ApiService;
-import cn.timeface.circle.baby.events.DeleteDynamicEvent;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ToastUtil;
@@ -75,7 +61,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
 
     public void share(TimeLineObj timelineobj){
         this.timelineobj = timelineobj;
-        if(timelineobj.getType()==1){
+        if(timelineobj.getType()==1 || !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getVideoUrl())){
             tvDownload.setVisibility(View.VISIBLE);
         }
         if(timelineobj.getAuthor().getUserId().equals(FastData.getUserId())){
@@ -129,6 +115,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
                             .subscribe(response -> {
                                 if (response.success()) {
                                     EventBus.getDefault().post(new DeleteTimeLineEvent());
+                                    EventBus.getDefault().post(new HomeRefreshEvent());
                                 }else{
                                     ToastUtil.showToast(response.getInfo());
                                 }
@@ -149,7 +136,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
                     TimeFaceUtilInit.getContext()).getDeviceId() + "&recordId=" + timelineobj.getTimeId();
             new ShareDialog(context).share(false, timelineobj.getTimeId(), "宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
                     ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
-                    ShareSdkUtil.getImgStrByResource(context, R.drawable.setting_sina_share_img),
+                    ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
                     url);
         });
         tvCancel.setOnClickListener(v -> {

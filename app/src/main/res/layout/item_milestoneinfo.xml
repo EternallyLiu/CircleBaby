@@ -39,7 +39,24 @@
             android:layout_centerInParent="true"
             android:visibility="gone"
             />
-
+        <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_normal"
+            android:paddingTop="@dimen/size_6"
+            android:paddingBottom="@dimen/size_6"
+            android:paddingLeft="@dimen/size_12"
+            android:paddingRight="@dimen/size_12"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/shape_milestone_count_bg"
+            android:layout_marginRight="@dimen/size_6"
+            android:layout_marginBottom="@dimen/size_6"
+            android:visibility="gone"
+            />
 
     </RelativeLayout>
 </RelativeLayout>

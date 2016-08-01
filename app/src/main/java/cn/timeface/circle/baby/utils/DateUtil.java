@@ -81,8 +81,22 @@ public class DateUtil {
     }
 
     public static String getTime4(long timeInMillis) {
-        String format = "mm:ss";
-        return formatDate(format, timeInMillis);
+        String mm;
+        String ss;
+        int s = (int) (timeInMillis / 1000);
+        int m = s / 60;
+        if (m < 10) {
+            mm = "0" + m;
+        } else {
+            mm = m + "";
+        }
+        s = s - 60 * m;
+        if (s < 10) {
+            ss = "0" + s;
+        } else {
+            ss = s + "";
+        }
+        return mm+":"+ss;
     }
 
 
@@ -153,6 +167,11 @@ public class DateUtil {
      * @param format {@link java.text.SimpleDateFormat}
      */
     public static String formatDate(String format, long timeInMillis) {
+        String s = String.valueOf(timeInMillis);
+        if (s.length() < 13) {
+            s = s + "000";
+            timeInMillis = Long.valueOf(s);
+        }
         Calendar dealTime = Calendar.getInstance();
         dealTime.setTimeInMillis(timeInMillis);
         return DateFormat.format(format, dealTime).toString();

@@ -61,6 +61,9 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         GlideUtil.displayImage(item.getMediaList().get(0).getImgUrl(), holder.ivCover);
         if(item.getType()==1){
             holder.ivVideo.setVisibility(View.VISIBLE);
+        }else{
+            holder.tvCount.setVisibility(View.VISIBLE);
+            holder.tvCount.setText(item.getMediaList().size()+"张");
         }
 
     }
@@ -84,6 +87,8 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         ImageView ivVideo;
         @Bind(R.id.rl_milestone)
         RelativeLayout rlMilestone;
+        @Bind(R.id.tv_count)
+        TextView tvCount;
         TimeLineObj timeLineObj;
         Context context;
 

@@ -35,6 +35,14 @@ public class GlideUtil {
         Glide.with(context).load(url).into(imageView);
     }
 
+    public static void displayImage(String url, ImageView imageView,int id) {
+        if (TextUtils.isEmpty(url) || imageView == null) {
+            imageView.setImageResource(id);
+            return;
+        }
+        Glide.with(context).load(url).into(imageView);
+    }
+
     public static String getCacheDir() {
         return Glide.getPhotoCacheDir(context).toString();
     }

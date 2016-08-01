@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -51,6 +53,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     @Bind(R.id.ll_single_date)
     LinearLayout llSingleDate;
     private List<ImgObj> selImages = new ArrayList<>();
+    private String content = "";
 
     public static void open(Context context) {
         Intent intent = new Intent(context, DiaryPublishActivity.class);
@@ -68,7 +71,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         tvTime.setText(DateUtil.getYear2(System.currentTimeMillis()));
 
         int width = Remember.getInt("width", 0) * 3;
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) ivDiary.getLayoutParams();
+        ViewGroup.LayoutParams layoutParams = ivDiary.getLayoutParams();
         layoutParams.height = width / 2;
         layoutParams.width = width / 2;
         ivDiary.setLayoutParams(layoutParams);
@@ -111,7 +114,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_next:
-                String content = tvContent.getText().toString();
+                content = tvContent.getText().toString();
                 String time = tvTime.getText().toString();
                 if (selImages.size() < 1) {
                     ToastUtil.showToast("请选择一张图片");

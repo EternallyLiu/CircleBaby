@@ -337,7 +337,7 @@ public class Utils {
      * @param podType
      * @return
      */
-    public static int changePodType2BookType(int podType) {
+    /*public static int changePodType2BookType(int podType) {
         int bookType = 0;
         switch (podType) {
             case TypeConstant.POD_TYPE_TIME_BOOK:
@@ -365,7 +365,7 @@ public class Utils {
                 break;
         }
         return bookType;
-    }
+    }*/
 
     /**
      * 根据booktype转换成请求参数podtype
@@ -373,7 +373,7 @@ public class Utils {
      * @param bookType
      * @return
      */
-    public static int changeBookType2PodType(int bookType) {
+/*    public static int changeBookType2PodType(int bookType) {
         int podType = 0;
         switch (bookType) {
             case TypeConstant.BOOK_TYPE_TIME:
@@ -397,7 +397,7 @@ public class Utils {
                 break;
         }
         return podType;
-    }
+    }*/
 
     /**
      * 布局到指定位置

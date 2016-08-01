@@ -13,6 +13,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wechat.photopicker.adapter.PhotoPagerAdapter;
@@ -31,7 +33,7 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 /**
  * Created by yellowstart on 15/12/15.
  */
-public class BigImageFragment extends Fragment {
+public class BigImageFragment extends Fragment implements View.OnClickListener {
 
     private ViewPager mViewPager;
     private List<String> mPaths;
@@ -39,6 +41,9 @@ public class BigImageFragment extends Fragment {
     private Bundle mBundle;
     private PhotoPagerAdapter mPhotoPagerAdapter;
     private int mCurrenItem;
+    private ImageView ivBack;
+    private TextView tvTitle;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,20 +56,48 @@ public class BigImageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.viewpage_big_image_show,container,false);
+        View view = inflater.inflate(R.layout.viewpage_big_image_show, container, false);
         mViewPager = (ViewPager) view.findViewById(R.id.vp_big_image);
-        if (mPaths.size() > 0 && mPaths != null){
-            mPhotoPagerAdapter = new PhotoPagerAdapter(getActivity(),mPaths);
+        ivBack = (ImageView) view.findViewById(R.id.iv_back);
+        tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        if (mPaths.size() > 0 && mPaths != null) {
+            mPhotoPagerAdapter = new PhotoPagerAdapter(getActivity(), mPaths);
         }
         mViewPager.setAdapter(mPhotoPagerAdapter);
         mViewPager.setCurrentItem(mCurrenItem);
+        initListener();
         return view;
     }
+
+    private void initListener() {
+        tvTitle.setText(mCurrenItem+1 + "/" + mPaths.size());
+        ivBack.setOnClickListener(this);
+
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                position = position + 1;
+                tvTitle.setText(position + "/" + mPaths.size());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_bigimage, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save) {
@@ -94,4 +127,12 @@ public class BigImageFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_back:
+                getActivity().onBackPressed();
+                break;
+        }
+    }
 }

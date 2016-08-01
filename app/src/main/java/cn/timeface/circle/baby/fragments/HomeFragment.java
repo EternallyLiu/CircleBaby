@@ -48,6 +48,8 @@ import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.objs.WorkObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.events.CommentSubmit;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -254,17 +256,19 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     tfptrListViewHelper.finishTFPTRRefresh();
 
                     if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
-                        adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
+                        if(!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())){
+                            adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
+                        }
                     }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
                     }
-
                     tempList = timelineResponse.getDataList();
                     setDataList(timelineResponse.getDataList());
                 }, error -> {
                     Log.e(TAG, "timeline:");
                     tfptrListViewHelper.finishTFPTRRefresh();
+                    error.printStackTrace();
                 });
 
 
@@ -345,35 +349,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         ImageView ivImage = (ImageView) view.findViewById(R.id.iv_image);
         ImageView ivClose = (ImageView) view.findViewById(R.id.iv_close);
         TextView tvContent = (TextView) view.findViewById(R.id.tv_content);
-        TextView tvType = (TextView) view.findViewById(R.id.tv_type);
 
         GlideUtil.displayImage(obj.getBgPicUrl(), ivImage);
         tvContent.setText(obj.getRecommendContent());
-        switch (obj.getActionType()) {
-            case 0:
-                //照片发布
-                tvType.setText("发布照片吧》");
-                break;
-            case 1:
-                //照片书
-                tvType.setText("照片书》");
-                break;
-            case 2:
-                //成长书
-                tvType.setText("成长书》");
-                break;
-            case 3:
-                //识图卡片书
-                tvType.setText("识图卡片书》");
-                break;
-            case 4:
-                //日记书
-                tvType.setText("日记书》");
-                break;
 
-        }
-
-        tvType.setOnClickListener(v -> {
+        view.setOnClickListener(v -> {
             switch (obj.getActionType()) {
                 case 0:
                     PublishActivity.open(getContext(), PublishActivity.PHOTO);
@@ -424,6 +404,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onEvent(CommentSubmit commentSubmit) {
 
         replaceList(commentSubmit.getReplacePosition(), commentSubmit.getListPos(), commentSubmit.getTimeLineObj());
+    }
+
+    @Subscribe
+    public void onEvent(HomeRefreshEvent event) {
+        reqData(1);
+    }
+
+    @Subscribe
+    public void onEvent(UnreadMsgEvent event) {
+        initMsg();
     }
 
     public void replaceList(int replacePosition, int listPos, TimeLineObj timeLineObj) {

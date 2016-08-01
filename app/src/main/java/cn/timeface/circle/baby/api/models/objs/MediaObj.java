@@ -23,6 +23,7 @@ public class MediaObj extends BaseObj
     int selected;           //成书的时候图片选中状态 1-选中 默认是0-不选中
     private int isCover;
     int timeId;
+    long date;
 
     //图片
     public MediaObj(String content, String imgUrl, int w, int h, long photographTime) {
@@ -52,6 +53,14 @@ public class MediaObj extends BaseObj
         this.localPath = localPath;
         this.photographTime = photographTime;
         this.videoUrl = videoUrl;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public int getTimeId() {
@@ -207,5 +216,24 @@ public class MediaObj extends BaseObj
 
     public TFOResourceObj toTFOResourceObj() {
         return new TFOResourceObj(imgUrl, h, w, "");
+    }
+
+    @Override
+    public String toString() {
+        return "MediaObj{" +
+                "content='" + content + '\'' +
+                ", h=" + h +
+                ", w=" + w +
+                ", id=" + id +
+                ", imgUrl='" + imgUrl + '\'' +
+                ", length=" + length +
+                ", localPath='" + localPath + '\'' +
+                ", photographTime=" + photographTime +
+                ", videoUrl='" + videoUrl + '\'' +
+                ", selected=" + selected +
+                ", isCover=" + isCover +
+                ", timeId=" + timeId +
+                ", date=" + date +
+                '}';
     }
 }

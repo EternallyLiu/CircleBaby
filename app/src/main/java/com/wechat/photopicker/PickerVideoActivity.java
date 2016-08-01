@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
@@ -103,8 +104,8 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                 } else {
                     //跳转到裁剪视频界面
                     videoInfo = videos.get(position);
-                    String s = ImageFactory.saveImage(videoInfo.getThumbnail());
-                    videoInfo.setImgLocalUrl(s);
+//                    String s = ImageFactory.saveImage(videoInfo.getThumbnail());
+//                    videoInfo.setImgLocalUrl(s);
                     Intent intent = new Intent(PickerVideoActivity.this, VideoEditActivity.class);
                     intent.putExtra("path", videoInfo.getPath());
                     startActivity(intent);
@@ -255,6 +256,11 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
         int duration = event.getDuration();
         videoInfo.setPath(clipVideoPath);
         videoInfo.setDuration(duration);
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(clipVideoPath);
+        Bitmap bitmap = retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
+        String s = ImageFactory.saveImage(bitmap);
+        videoInfo.setImgLocalUrl(s);
         uploadImage(videoInfo.getImgLocalUrl());
     }
 

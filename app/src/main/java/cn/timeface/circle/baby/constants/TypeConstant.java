@@ -63,13 +63,9 @@ public class TypeConstant {
     public static final int POD_TYPE_FAST_CREATE_ALBUM = 8;//极速成书图册
 
     //BookInfo 请求参数bookType
-    public static final int BOOK_TYPE_TIME = 0;//时光书（默认）
-    public static final int BOOK_TYPE_WECHAT = 1;//微信书
-    public static final int BOOK_TYPE_CIRCLE = 2;//时光圈时光书
-    public static final int BOOK_TYPE_CIRCLE_CONTACT = 3;//时光圈通讯录
-    public static final int BOOK_TYPE_QQ = 4;//QQ相册时光书
-    public static final int BOOK_TYPE_BLOG = 5;//博客时光书
-    public static final int BOOK_TYPE_DESK_CALENDAR = 6;//时光台历数据
+    public static final int BOOK_TYPE_DIARY = 2;//日记卡片
+    public static final int BOOK_TYPE_CARD = 3;//识图卡片
+    public static final int BOOK_TYPE_PHOTO = 5;//照片书
 
     //印刷车printCode
     public static final int PRINT_CODE_NORMAL = 8800;//可印刷

@@ -46,27 +46,43 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/lv_horizontal">
-            
-            <com.github.rayboot.widget.ratioview.RatioImageView
-                xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
+
+            <com.github.rayboot.widget.ratioview.RatioImageView xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/iv_bg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/size_6"
-                android:scaleType="fitXY"
                 android:layout_centerInParent="true"
-                />
+                android:layout_margin="@dimen/size_6"
+                android:scaleType="fitXY" />
 
-            <RelativeLayout
-                android:id="@+id/rl_diary"
-                android:layout_width="@dimen/size_260"
-                android:layout_height="@dimen/size_260"
+            <FrameLayout
+                android:id="@+id/fl"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/size_48"
-                android:background="@color/white"
-                android:padding="@dimen/size_6">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_36"
+                >
 
-            </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/rl_cover"
+                    android:layout_width="@dimen/size_220"
+                    android:layout_height="@dimen/size_220"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/white"
+                    android:padding="@dimen/size_6"
+                    android:layout_margin="@dimen/size_6">
+
+                </RelativeLayout>
+                
+                <ImageView
+                    android:id="@+id/iv_rotate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/cardrotate"
+                    android:layout_gravity="bottom|right"
+                    />
+            </FrameLayout>
+
 
 
 
@@ -74,21 +90,21 @@
                 android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2016.05.20"
+                android:layout_below="@+id/fl"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/size_36"
+                android:text="2016.05.20"
                 android:textColor="@color/text_color4"
-                android:textSize="@dimen/text_medium"
-                android:layout_below="@+id/rl_diary"
-                android:layout_marginTop="@dimen/size_24"/>
+                android:textSize="@dimen/text_medium" />
 
             <TextView
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/size_12"
                 android:layout_below="@+id/tv_time"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/size_12"
+                android:gravity="center"
                 android:lineSpacingMultiplier="1.2"
                 android:text="[穿衣歌]\n小胳膊，穿袖子，穿上衣，扣扣子，\n小脚丫，穿裤子，穿上袜子穿鞋子。"
                 android:textColor="@color/text_color4"

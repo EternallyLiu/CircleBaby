@@ -37,9 +37,12 @@ import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.events.PhotoSelectEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.open.api.models.objs.TFOContentObj;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
 import cn.timeface.open.api.models.objs.TFOResourceObj;
@@ -48,7 +51,7 @@ import cn.timeface.open.api.models.objs.TFOResourceObj;
  * 新建照片书
  * 选择图片界面
  */
-public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implements IEventBus, View.OnClickListener {
+public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implements IEventBus{
 
     public final static String EXTRA_MAX_COUNT = "MAX_COUNT";
     public final static String EXTRA_SHOW_CAMERA = "SHOW_CAMERA";
@@ -56,18 +59,12 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
     public final static String KEY_SELECTED_PHOTOS = "SELECTED_PHOTOS";
     public final static String KEY_OPTIONAL_PICTURE_SIZE = "OPTIONAL_PICTURE_SIZE";
     private static final int RECORD_CAMERA_REQUEST_CODE = 50;
-    @Bind(R.id.tv_category)
-    TextView tvCategory;
-    @Bind(R.id.tv_next)
-    TextView tvNext;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.appbar_layout)
     AppBarLayout appbarLayout;
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
-    @Bind(R.id.fl_container)
-    FrameLayout flContainer;
     @Bind(R.id.textView)
     TextView textView;
     @Bind(R.id.tv_sel_count)
@@ -79,7 +76,6 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
     @Bind(R.id.ll_no_data)
     LinearLayout llNoData;
     public static final int MAX_SELECTOR_SIZE = 300;
-    public static final String TAG = "PickerPhotoActivity2";
     private boolean isMenuInflater = false;
     private MenuItem mMenuDoneItem;
     //可选图片大小
@@ -140,14 +136,13 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
         });
 
         //将日期相同的图片合并
-        List<Object> objects = new ArrayList<>();
         for (int x = 0; x < dataList.size(); x++) {
-            if (x == 0 || dataList.get(x).getDate() != dataList.get(x - 1).getDate()) {
+            if (x == 0 || !DateUtil.formatDate("yyyy.MM.dd", dataList.get(x).getDate()).equals(DateUtil.formatDate("yyyy.MM.dd", dataList.get(x - 1).getDate()))) {
                 ImageInfoListObj imageInfoListObj = dataList.get(x);
                 List<MediaObj> mediaList = new ArrayList<>();
                 long date = dataList.get(x).getDate();
                 for (int y = x; y < dataList.size(); y++) {
-                    if (date == dataList.get(y).getDate()) {
+                    if (DateUtil.formatDate("yyyy.MM.dd", date).equals(DateUtil.formatDate("yyyy.MM.dd", dataList.get(y).getDate()))) {
                         mediaList.addAll(dataList.get(y).getMediaList());
                     }
                 }
@@ -158,7 +153,6 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
 
         adapter = new TimeBookPickerPhotoAdapter(this, imageInfoList, optionalPhotoSize);
         rvContent.setAdapter(adapter);
-        tvNext.setOnClickListener(this);
     }
 
     @Subscribe
@@ -171,32 +165,40 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_next:
-                pageNum = adapter.getSelImgs().size();
-                String s = new Gson().toJson(imageInfoList);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_next, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-                //跳转开放平台POD接口；
-                bookName = FastData.getBabyName() + "照片书";
-                tfoResourceObjs = new ArrayList<TFOResourceObj>();
-                for (ImageInfoListObj obj : imageInfoList) {
-                    for (MediaObj media : obj.getMediaList()) {
-                        if(media.getSelected()==1){
-                            TFOResourceObj tfoResourceObj = media.toTFOResourceObj();
-                            tfoResourceObjs.add(tfoResourceObj);
-                        }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.home) {
+            onBackPressed();
+        } else if (item.getItemId() == R.id.next) {
+            pageNum = adapter.getSelImgs().size();
+            String s = new Gson().toJson(imageInfoList);
+
+            //跳转开放平台POD接口；
+            bookName = FastData.getBabyName() + "照片书";
+            tfoResourceObjs = new ArrayList<TFOResourceObj>();
+            for (ImageInfoListObj obj : imageInfoList) {
+                for (MediaObj media : obj.getMediaList()) {
+                    if(media.getSelected()==1){
+                        TFOResourceObj tfoResourceObj = media.toTFOResourceObj();
+                        tfoResourceObjs.add(tfoResourceObj);
                     }
                 }
-                TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
-                List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
-                tfoContentObjs1.add(tfoContentObj);
-                TFOPublishObj tfoPublishObj = new TFOPublishObj("", tfoContentObjs1);
-                List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
-                tfoPublishObjs.add(tfoPublishObj);
-                MyPODActivity.open(this, openBookId, openBookType, tfoPublishObjs, s);
-                finish();
-                break;
+            }
+            TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+            List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+            tfoContentObjs1.add(tfoContentObj);
+            TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
+            List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+            tfoPublishObjs.add(tfoPublishObj);
+            MyPODActivity.open(this, openBookId, openBookType, tfoPublishObjs, s);
+            finish();
         }
+        return super.onOptionsItemSelected(item);
     }
+
 }

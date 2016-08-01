@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
+
+    <EditText
+        android:id="@+id/et_milestone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:hint="输入里程碑名称"
+        android:padding="@dimen/size_12" />
+
+    <Button
+        android:id="@+id/btn_creat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_24"
+        android:layout_marginRight="@dimen/size_24"
+        android:layout_marginTop="@dimen/size_24"
+        android:background="@drawable/selector_btn_login"
+        android:text="创建"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_medium" />
+</LinearLayout>

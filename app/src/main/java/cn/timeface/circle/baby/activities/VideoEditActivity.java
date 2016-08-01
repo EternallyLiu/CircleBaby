@@ -3,10 +3,9 @@ package cn.timeface.circle.baby.activities;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,11 +29,12 @@ import cn.timeface.circle.baby.utils.ClipUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.views.RangeSeekBar;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 /**
  * Created by lidonglin on 2016/5/10.
  */
-public class VideoEditActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class VideoEditActivity extends BaseAppCompatActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.videoview)
@@ -47,8 +47,6 @@ public class VideoEditActivity extends BaseAppCompatActivity implements View.OnC
     TextView tvLong;
     @Bind(R.id.rl_clip)
     RelativeLayout rlClip;
-    @Bind(R.id.tv_next)
-    TextView tvNext;
     @Bind(R.id.tv_tag)
     TextView tvTag;
     private int max;
@@ -56,6 +54,7 @@ public class VideoEditActivity extends BaseAppCompatActivity implements View.OnC
     private String path;
     private int seconds;
     private int j;
+    private TFProgressDialog tfProgressDialog;
 
 
     @Override
@@ -64,7 +63,8 @@ public class VideoEditActivity extends BaseAppCompatActivity implements View.OnC
         setContentView(R.layout.activity_video_edit);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        tfProgressDialog = new TFProgressDialog(this);
         path = getIntent().getStringExtra("path");
         MediaController mc = new MediaController(this);
         videoview.setMediaController(mc);
@@ -87,31 +87,8 @@ public class VideoEditActivity extends BaseAppCompatActivity implements View.OnC
             }
         });
         rlClip.addView(seekBar);
-        tvNext.setOnClickListener(this);
 
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_next:
-                int i = max - min;
-                if(i>60){
-                    ToastUtil.showToast("视频不能超过60秒");
-                    return;
-                }
-                tvTag.setText("剪裁视频中…");
-                try {
-                    String s = ClipUtil.clipVideo(path, min, max);
-                    EventBus.getDefault().post(new ClipVideoSuccessEvent(s,i));
-                    finish();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
-    }
-
 
     public List<Bitmap> getBitmaps() {
         ArrayList<Bitmap> bitmaps = new ArrayList<>();
@@ -126,6 +103,7 @@ public class VideoEditActivity extends BaseAppCompatActivity implements View.OnC
         }else{
             j=10;
         }
+        llImage.removeAllViews();
         for (int i = 1; i < seconds; i= i+j) {
             Bitmap bitmap = retriever.getFrameAtTime(i * 1000 * 1000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
             bitmaps.add(bitmap);
@@ -143,6 +121,39 @@ public class VideoEditActivity extends BaseAppCompatActivity implements View.OnC
         iv.setLayoutParams(params);
         iv.setImageBitmap(bitmap);
         return iv;
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_next, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.home) {
+            onBackPressed();
+        } else if (item.getItemId() == R.id.next) {
+            int i = max - min;
+            if(i>60){
+                ToastUtil.showToast("视频不能超过60秒");
+                return true;
+            }
+            tvTag.setText("剪裁视频中…");
+            tfProgressDialog.setMessage("剪裁视频中…");
+            tfProgressDialog.show();
+            try {
+                String s = ClipUtil.clipVideo(path, min, max);
+                EventBus.getDefault().post(new ClipVideoSuccessEvent(s,i));
+                tfProgressDialog.dismiss();
+                finish();
+            } catch (IOException e) {
+                tfProgressDialog.dismiss();
+                e.printStackTrace();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

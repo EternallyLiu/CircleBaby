@@ -45,6 +45,7 @@ import cn.timeface.circle.baby.utils.Pinyin4jUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ScaleImageView;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class CardPreviewFragment extends BaseFragment implements View.OnClickListener {
 
@@ -70,6 +71,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
     private String objectKey;
     private ImgObj imgObj;
     private String date;
+    private TFProgressDialog tfProgressDialog;
 
     public CardPreviewFragment() {
     }
@@ -90,7 +92,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        tfProgressDialog = new TFProgressDialog(getActivity());
         touchImageView = new ScaleImageView(getActivity(), url);
         rlDiary.addView(touchImageView);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) touchImageView.getLayoutParams();
@@ -142,7 +144,8 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
                     ToastUtil.showToast("标题字数不能大于6个");
                     return;
                 }
-
+                tfProgressDialog.setMessage("合成图片中…");
+                tfProgressDialog.show();
                 PointF leftTop = touchImageView.getLeftTop();
 //                float degree = touchImageView.getDegree();
                 float cropWidth = touchImageView.getCropWidth();
@@ -156,6 +159,7 @@ public class CardPreviewFragment extends BaseFragment implements View.OnClickLis
                 apiService.cardComposed(URLEncoder.encode(content), imageInfo, URLEncoder.encode(etPinyin.getText().toString()))
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(diaryComposeResponse -> {
+                            tfProgressDialog.dismiss();
                             if (diaryComposeResponse.success()) {
                                 MediaObj mediaObj = diaryComposeResponse.getMediaObj();
                                 System.out.println("合成的识图卡片===============" + mediaObj.getImgUrl());

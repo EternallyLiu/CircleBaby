@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -15,10 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -27,11 +24,8 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
-import cn.timeface.circle.baby.api.models.responses.MilestoneInfoResponse;
-import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
-import cn.timeface.circle.baby.events.CartBuyNowEvent;
-import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
@@ -61,6 +55,7 @@ public class MileStoneActivity extends BaseAppCompatActivity {
     RelativeLayout rlLayout;
 
     private int width;
+    private int measuredHeight;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, MileStoneActivity.class));
@@ -78,6 +73,7 @@ public class MileStoneActivity extends BaseAppCompatActivity {
 
     }
 
+
     private void initView() {
         width = Remember.getInt("width", 0);
         tvName.setText(FastData.getBabyName());
@@ -91,6 +87,8 @@ public class MileStoneActivity extends BaseAppCompatActivity {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(milestoneTimeResponse -> {
                     List<MilestoneTimeObj> dataList = milestoneTimeResponse.getDataList();
+                    llLeft.removeAllViews();
+                    llRight.removeAllViews();
                     for (MilestoneTimeObj obj : dataList) {
                         if (llLeft.getChildCount() < llRight.getChildCount()) {
                             llLeft.addView(initLeftView(obj));
@@ -99,13 +97,30 @@ public class MileStoneActivity extends BaseAppCompatActivity {
                         }
                     }
                     if (llLeft.getChildCount() < llRight.getChildCount()) {
-                        llLeft.addView(initEmptyView(1));
+                        llLeft.addView(initEmptyViewLeft());
                     } else {
-                        llRight.addView(initEmptyView(2));
+                        llRight.addView(initEmptyViewRight());
                     }
+
                 }, throwable -> {
                     Log.e(TAG, "milestone:");
+                    throwable.printStackTrace();
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                measuredHeight = rlLayout.getMeasuredHeight();
+                ViewGroup.LayoutParams layoutParams = dash.getLayoutParams();
+                layoutParams.height = measuredHeight;
+                layoutParams.width = DeviceUtil.dpToPx(getResources(), 1);
+                dash.setLayoutParams(layoutParams);
+            }
+        }, 1000);
     }
 
     @Override
@@ -121,7 +136,6 @@ public class MileStoneActivity extends BaseAppCompatActivity {
         } else if (item.getItemId() == R.id.item_share) {
             new ShareDialog(this).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
                     ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_log),
-                    ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_log),
                     "http://www.timeface.cn/tf_mobile/download.html");
         }
         return super.onOptionsItemSelected(item);
@@ -135,17 +149,21 @@ public class MileStoneActivity extends BaseAppCompatActivity {
 
         tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", obj.getDate()));
         tvMilestonename.setText(obj.getMilestone());
-        GlideUtil.displayImage(obj.getImgUrl(), ivCover);
+        GlideUtil.displayImage(obj.getImgUrl(), ivCover, R.drawable.milestone_nodata);
 
         ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
         layoutParams.height = width;
         layoutParams.width = width;
         ivCover.setLayoutParams(layoutParams);
 
+        if (obj.getIsRead() == 1) {
+            tvMilestonename.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        }
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MileStoneInfoActivity.open(MileStoneActivity.this, obj.getMilestone(), obj.getMilestoneId());
+                milestoneRead(obj.getMilestoneId());
             }
         });
         return view;
@@ -159,39 +177,81 @@ public class MileStoneActivity extends BaseAppCompatActivity {
 
         tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", obj.getDate()));
         tvMilestonename.setText(obj.getMilestone());
-        GlideUtil.displayImage(obj.getImgUrl(), ivCover);
+        GlideUtil.displayImage(obj.getImgUrl(), ivCover, R.drawable.milestone_nodata);
 
         ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
         layoutParams.height = width;
         layoutParams.width = width;
         ivCover.setLayoutParams(layoutParams);
 
+        if (obj.getIsRead() == 1) {
+            tvMilestonename.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        }
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MileStoneInfoActivity.open(MileStoneActivity.this, obj.getMilestone(), obj.getMilestoneId());
+                milestoneRead(obj.getMilestoneId());
             }
         });
         return view;
     }
 
-    public View initEmptyView(int left) {
-        View view = View.inflate(this, R.layout.view_milestone_empty, null);
-        View tv = view.findViewById(R.id.tv);
-        if(left == 1){
-            tv.setBackgroundResource(R.drawable.milestone_diy_left);
-        }
+    public View initEmptyViewRight() {
+        View view = View.inflate(this, R.layout.view_milestone_diy_right, null);
+        View tv = view.findViewById(R.id.tv_diy);
         ViewGroup.LayoutParams layoutParams = tv.getLayoutParams();
-        layoutParams.height = width;
         layoutParams.width = width;
+        layoutParams.height = width;
         tv.setLayoutParams(layoutParams);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MileStoneActivity.this, MilestoneDiyActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
         return view;
+    }
+
+    public View initEmptyViewLeft() {
+        View view = View.inflate(this, R.layout.view_milestone_diy_left, null);
+        View tv = view.findViewById(R.id.tv_diy);
+        ViewGroup.LayoutParams layoutParams = tv.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = width;
+        tv.setLayoutParams(layoutParams);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MileStoneActivity.this, MilestoneDiyActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+        return view;
+    }
+
+    public void milestoneRead(int milestoneId) {
+        apiService.milestoneRead(milestoneId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        reqData();
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "milestoneRead:");
+                    throwable.printStackTrace();
+                });
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && requestCode == 1) {
+            reqData();
+        }
     }
 }

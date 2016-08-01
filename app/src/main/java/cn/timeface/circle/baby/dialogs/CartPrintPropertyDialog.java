@@ -221,11 +221,11 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         wl.y = getActivity().getWindowManager().getDefaultDisplay().getHeight();
         dialog.onWindowAttributesChanged(wl);
         queryBookPrice();
-        if(Integer.parseInt(bookType) == TypeConstant.BOOK_TYPE_CIRCLE){
-            mTvPack.setVisibility(View.GONE);
-        } else {
+//        if(Integer.parseInt(bookType) == TypeConstant.BOOK_TYPE_CIRCLE){
+//            mTvPack.setVisibility(View.GONE);
+//        } else {
             mTvPack.setVisibility(View.VISIBLE);
-        }
+//        }
 
         dialog.setOnKeyListener((dialog1, keyCode, event) -> {
 
@@ -278,20 +278,20 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             btnAddCart.setVisibility(View.GONE);
             btnBuyNow.setVisibility(View.GONE);
             btnOk.setVisibility(View.VISIBLE);
-            switch (cartItem.getBookType()) {
-                case TypeConstant.BOOK_TYPE_QQ:
-                    mIvBookTag.setImageResource(R.drawable.ic_time_book_tag_qq);
-                    break;
-
-                case TypeConstant.BOOK_TYPE_WECHAT:
-                    mIvBookTag.setImageResource(R.drawable.ic_time_book_tag_wechat);
-                    break;
-
-                default:
+//            switch (cartItem.getBookType()) {
+//                case TypeConstant.BOOK_TYPE_QQ:
+//                    mIvBookTag.setImageResource(R.drawable.ic_time_book_tag_qq);
+//                    break;
+//
+//                case TypeConstant.BOOK_TYPE_WECHAT:
+//                    mIvBookTag.setImageResource(R.drawable.ic_time_book_tag_wechat);
+//                    break;
+//
+//                default:
                     mIvBookTag.setVisibility(View.GONE);
-                    break;
-
-            }
+//                    break;
+//
+//            }
         }
 
         if (propertyObj == null) {
@@ -591,7 +591,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
         btnOk.setBackgroundResource(R.drawable.shape_grey_btn_bg);
         btnOk.setClickable(false);
-        Subscription s = BaseAppCompatActivity.apiService.addOrder("", LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class))
+        Subscription s = BaseAppCompatActivity.apiService.addOrder("", LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class),TypeConstant.APP_ID)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -755,7 +755,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                     }
 
                     //圈子时光书
-                    if (Integer.parseInt(bookType) == TypeConstant.BOOK_TYPE_CIRCLE) {
+                    /*if (Integer.parseInt(bookType) == TypeConstant.BOOK_TYPE_CIRCLE) {
                         for (PrintParamObj printParamObj : packList) {
                             int packIndex = packList.indexOf(printParamObj);
                             //铜版纸 只能平装
@@ -784,7 +784,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             }
                             packAdapter.notifyDataSetChanged();
                         }
-                    }
+                    }*/
 
                     paramObj.setIsSelect(true);
                     paperAdapter.notifyDataSetChanged();

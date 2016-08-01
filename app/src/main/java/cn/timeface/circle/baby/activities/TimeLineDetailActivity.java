@@ -259,14 +259,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             ll_commentLikeWrapper.setVisibility(View.VISIBLE);
         }
 
-        if (timelineobj.getType() == 1) {
+        if (timelineobj.getType() == 1 || !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getVideoUrl())) {
             ivVideo.setVisibility(View.VISIBLE);
-            int width = Remember.getInt("width", 0);
-            ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
-            layoutParams.width = width;
-            layoutParams.height = width;
-            ivCover.setLayoutParams(layoutParams);
-//            ivVideo.setLayoutParams(layoutParams);
+//            int width = Remember.getInt("width", 0);
+//            ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
+//            layoutParams.width = width;
+//            layoutParams.height = width;
+//            ivCover.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             rlSingle.setOnClickListener(this);
         }
@@ -399,9 +398,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                         });
                 break;
             case R.id.rl_single:
-                Intent intent = new Intent(this, VideoPlayActivity.class);
-                intent.putExtra("media", timelineobj.getMediaList().get(0));
-                startActivity(intent);
+                VideoPlayActivity.open(this,timelineobj.getMediaList().get(0).getVideoUrl());
                 break;
             case R.id.icon_like:
                 int p = iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;

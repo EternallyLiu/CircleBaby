@@ -12,11 +12,11 @@
     <ScrollView
         android:id="@+id/sv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -50,7 +50,6 @@
 
             </RelativeLayout>
 
-
             <RelativeLayout
                 android:id="@+id/rl_layout"
                 android:layout_width="match_parent"
@@ -68,14 +67,6 @@
                     <!--<include layout="@layout/view_milestone_left" />-->
                 </LinearLayout>
 
-                <View
-                    android:id="@+id/dash"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/shape_dash"
-                    android:layout_alignBottom="@+id/ll_left"/>
-
                 <LinearLayout
                     android:id="@+id/ll_right"
                     android:layout_width="wrap_content"
@@ -88,6 +79,13 @@
                     <!--<include layout="@layout/view_milestone_right" />-->
 
                 </LinearLayout>
+
+                <View
+                    android:id="@+id/dash"
+                    android:layout_width="1dp"
+                    android:layout_height="500dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/shape_dash"/>
 
             </RelativeLayout>
 
