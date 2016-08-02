@@ -37,6 +37,7 @@ import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
 import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.api.models.response.TemplateInfo;
+import cn.timeface.open.constants.Constant;
 import cn.timeface.open.events.ChangeStickerStatusEvent;
 import cn.timeface.open.events.SelectColorEvent;
 import cn.timeface.open.events.SelectTemplateEvent;
@@ -428,7 +429,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                     EditTextActivity.open4result(this, EDIT_TEXT, bookModel.getBookId(), contentId, elementModel);
                     break;
                 case TFOBookElementModel.TYPE_IMAGE:
-                    CropImageActivity.open4result(this, EDIT_IMAGE, elementModel.getImageContentExpand().getImageUrl(), elementModel.getContentWidth(), elementModel.getContentHeight());
+                    CropImageActivity.open4result(this, EDIT_IMAGE, elementModel, contentId);
                     break;
             }
         }
@@ -519,45 +520,59 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        TFOBookElementModel editedModel;
+        String editedContentId;
         switch (requestCode) {
             case EDIT_TEXT:
                 if (resultCode != Activity.RESULT_OK) {
                     return;
                 }
 
-                TFOBookElementModel editedModel = data.getParcelableExtra("edit_text_result");
+                editedModel = data.getParcelableExtra(Constant.ELEMENT_MODEL);
+                editedContentId = data.getStringExtra(Constant.CONTENT_ID);
                 editedModel.setPageScale(pageScale);//先设置缩放比
 
-                TFOBookElementModel orgModel = null;
-
-            {
                 //更换model
-                if (leftModel != null) {
-                    for (TFOBookElementModel model : leftModel.getElementList()) {
-                        if (model.getElementId() == editedModel.getElementId()) {
-                            orgModel = model;
-                            leftModel.getElementList().remove(orgModel);
-                            leftModel.getElementList().add(editedModel);
-                            break;
-                        }
-                    }
+                changeElementModel(editedContentId, editedModel);
+                setupViews();
+                break;
+            case EDIT_IMAGE:
+                if (resultCode != Activity.RESULT_OK) {
+                    return;
                 }
+                editedModel = data.getParcelableExtra(Constant.ELEMENT_MODEL);
+                editedContentId = data.getStringExtra(Constant.CONTENT_ID);
 
-                if (rightModel != null && orgModel == null) {
-                    for (TFOBookElementModel model : rightModel.getElementList()) {
-                        if (model.getElementId() == editedModel.getElementId()) {
-                            orgModel = model;
-                            leftModel.getElementList().remove(orgModel);
-                            leftModel.getElementList().add(editedModel);
-                            break;
-                        }
-                    }
-                }
-            }
-            setupViews();
-            break;
+                //更换model
+                changeElementModel(editedContentId, editedModel);
+                setupViews();
+                break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public boolean changeElementModel(String editedContentId, TFOBookElementModel edited) {
+
+        if (leftModel != null && leftModel.getContentId().equals(editedContentId)) {
+            for (TFOBookElementModel model : leftModel.getElementList()) {
+                if (model.getElementId() == edited.getElementId()) {
+                    leftModel.getElementList().remove(model);
+                    leftModel.getElementList().add(edited);
+                    return true;
+                }
+            }
+        }
+
+        if (rightModel != null && rightModel.getContentId().equals(editedContentId)) {
+            for (TFOBookElementModel model : rightModel.getElementList()) {
+                if (model.getElementId() == edited.getElementId()) {
+                    leftModel.getElementList().remove(model);
+                    leftModel.getElementList().add(edited);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

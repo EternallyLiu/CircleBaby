@@ -3,6 +3,7 @@ package cn.timeface.open.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -20,15 +22,25 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
+import cn.timeface.open.GlobalSetting;
 import cn.timeface.open.R;
 import cn.timeface.open.activities.base.BaseAppCompatActivity;
+import cn.timeface.open.api.models.objs.TFOBookElementModel;
+import cn.timeface.open.constants.Constant;
 import cn.timeface.open.ucrop.UCrop;
 import cn.timeface.open.ucrop.model.AspectRatio;
+import cn.timeface.open.ucrop.model.ImageState;
 import cn.timeface.open.ucrop.view.CropImageView;
 import cn.timeface.open.ucrop.view.GestureCropImageView;
 import cn.timeface.open.ucrop.view.OverlayView;
 import cn.timeface.open.ucrop.view.TransformImageView;
 import cn.timeface.open.ucrop.view.UCropView;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class CropImageActivity extends BaseAppCompatActivity {
 
@@ -38,6 +50,11 @@ public class CropImageActivity extends BaseAppCompatActivity {
     ImageView ivChangeImage;
     ImageView ivRotation;
     ImageView ivOk;
+
+    TFOBookElementModel elementModel;
+    String contentId;
+    String newImageUrl;
+    boolean changeImage = false;
 
     public static final int NONE = 0;
     public static final int SCALE = 1;
@@ -55,11 +72,12 @@ public class CropImageActivity extends BaseAppCompatActivity {
     private int[] mAllowedGestures = new int[]{SCALE, ROTATE, ALL};
 
 
-    public static void open4result(Activity activity, int requestCode, String url, float ratioX, float ratioY) {
+    public static void open4result(Activity activity, int requestCode, TFOBookElementModel elementModel, String contentId) {
         Intent intent = new Intent(activity, CropImageActivity.class);
-        intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_X, ratioX);
-        intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_Y, ratioY);
+        intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_X, elementModel.getContentWidth());
+        intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_Y, elementModel.getContentHeight());
         Uri in;
+        String url = elementModel.getImageContentExpand().getImageUrl();
         File file = new File(Glide.getPhotoCacheDir(activity), url.hashCode() + url.substring(url.lastIndexOf(".")));
         if (file.exists()) {
             in = Uri.fromFile(file);
@@ -68,6 +86,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
         }
         intent.putExtra(UCrop.EXTRA_INPUT_URI, in);
         intent.putExtra(UCrop.EXTRA_OUTPUT_URI, Uri.fromFile(file));
+        intent.putExtra(Constant.ELEMENT_MODEL, elementModel);
+        intent.putExtra(Constant.CONTENT_ID, contentId);
 
         activity.startActivityForResult(intent, requestCode);
     }
@@ -85,6 +105,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
         mOverlayView = mUCropView.getOverlayView();
         mGestureCropImageView.setTransformImageListener(mImageListener);
 
+        elementModel = getIntent().getParcelableExtra(Constant.ELEMENT_MODEL);
+        contentId = getIntent().getStringExtra(Constant.CONTENT_ID);
 
         setImageData(getIntent());
     }
@@ -123,9 +145,6 @@ public class CropImageActivity extends BaseAppCompatActivity {
         @Override
         public void onLoadComplete() {
             mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
-//            mBlockingView.setClickable(false);
-//            mShowLoader = false;
-            supportInvalidateOptionsMenu();
         }
 
         @Override
@@ -136,10 +155,10 @@ public class CropImageActivity extends BaseAppCompatActivity {
 
     };
 
-    protected void setResultUri(Uri uri, float resultAspectRatio) {
+    protected void setResultSuccess() {
         setResult(RESULT_OK, new Intent()
-                .putExtra(UCrop.EXTRA_OUTPUT_URI, uri)
-                .putExtra(UCrop.EXTRA_OUTPUT_CROP_ASPECT_RATIO, resultAspectRatio));
+                .putExtra(Constant.ELEMENT_MODEL, elementModel)
+                .putExtra(Constant.CONTENT_ID, contentId));
     }
 
     protected void setResultError(Throwable throwable) {
@@ -220,6 +239,34 @@ public class CropImageActivity extends BaseAppCompatActivity {
     }
 
     public void clickOK(View view) {
+        if (changeImage) {
+            makeModify(elementModel.getImageContentExpand().getImageUrl());
+        } else {
+            makeModify(newImageUrl);
+        }
+
+        setResultSuccess();
+        finish();
+    }
+
+    public void makeModify(String newImageUrl) {
+        ImageState imageState = mGestureCropImageView.getImageState();
+        RectF cropRect = imageState.getCropRect();
+        RectF imageRect = imageState.getCurrentImageRect();
+
+        float top = cropRect.top - imageRect.top;
+        float left = cropRect.left - imageRect.left;
+        float width = cropRect.width() / imageState.getCurrentScale();
+        float height = cropRect.height() / imageState.getCurrentScale();
+
+        elementModel.setElementContent(newImageUrl);
+        elementModel.getImageContentExpand().setImageUrl(newImageUrl);
+        elementModel.getImageContentExpand().setImageScale(imageState.getCurrentScale());
+        elementModel.getImageContentExpand().setImageWidth(width);
+        elementModel.getImageContentExpand().setImageHeight(height);
+        elementModel.getImageContentExpand().setImageStartPointX(left);
+        elementModel.getImageContentExpand().setImageStartPointY(top);
+        elementModel.getImageContentExpand().setImageRotation(Math.round(imageState.getCurrentAngle()));
     }
 
 
@@ -237,11 +284,44 @@ public class CropImageActivity extends BaseAppCompatActivity {
             return;
         }
         if (requestCode == REQUEST_SELECT_PICTURE) {
+            changeImage = true;
             Intent intent = getIntent();
             intent.putExtra(UCrop.EXTRA_INPUT_URI, data.getData());
             intent.putExtra(UCrop.EXTRA_OUTPUT_URI, data.getData());
             setImageData(intent);
+            doUpload(data.getData());
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void doUpload(Uri uri) {
+        Observable.just(uri)
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        newImageUrl = null;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(new Func1<Uri, String>() {
+                    @Override
+                    public String call(Uri uri) {
+                        return GlobalSetting.getInstance().getUploadServices().doUpload(uri);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<String>() {
+                               @Override
+                               public void call(String url) {
+                                   newImageUrl = url;
+                               }
+                           }
+                        , new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Toast.makeText(CropImageActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
     }
 }

@@ -25,7 +25,7 @@ import cn.timeface.open.ucrop.util.RectUtils;
 
 /**
  * Created by Oleksii Shliama (https://github.com/shliama).
- * <p/>
+ * <p>
  * This class adds crop feature, methods to draw crop guidelines, and keep image in correct state.
  * Also it extends parent class methods to add checks for scale; animating zoom in/out.
  */
@@ -36,6 +36,7 @@ public class CropImageView extends TransformImageView {
     public static final float DEFAULT_MAX_SCALE_MULTIPLIER = 10.0f;
     public static final float SOURCE_IMAGE_ASPECT_RATIO = 0f;
     public static final float DEFAULT_ASPECT_RATIO = SOURCE_IMAGE_ASPECT_RATIO;
+
 
     private final RectF mCropRect = new RectF();
 
@@ -264,7 +265,7 @@ public class CropImageView extends TransformImageView {
 
     /**
      * If image doesn't fill the crop bounds it must be translated and scaled properly to fill those.
-     * <p/>
+     * <p>
      * Therefore this method calculates delta X, Y and scale values and passes them to the
      * {@link WrapCropBoundsRunnable} which animates image.
      * Scale value must be calculated only if image won't fill the crop bounds after it's translated to the
@@ -618,4 +619,9 @@ public class CropImageView extends TransformImageView {
 
     }
 
+    public ImageState getImageState() {
+        return new ImageState(
+                mCropRect, RectUtils.trapToRect(mCurrentImageCorners),
+                getCurrentScale(), getCurrentAngle());
+    }
 }

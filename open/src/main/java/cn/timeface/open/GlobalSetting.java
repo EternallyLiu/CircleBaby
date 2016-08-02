@@ -9,6 +9,7 @@ import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.UserObj;
 import cn.timeface.open.api.models.response.Authorize;
 import cn.timeface.open.constants.Constant;
+import cn.timeface.open.managers.interfaces.IUploadServices;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -17,8 +18,25 @@ import rx.schedulers.Schedulers;
  * email : sy0725work@gmail.com
  */
 public class GlobalSetting {
+    IUploadServices uploadServices;
+    private static volatile GlobalSetting sInst = null;  // volatile
 
-    public static void init(String app_id, String secret, UserObj user) {
+    public static GlobalSetting getInstance() {
+        GlobalSetting inst = sInst;
+        if (inst == null) {
+            synchronized (GlobalSetting.class) {
+                inst = sInst;
+                if (inst == null) {
+                    inst = new GlobalSetting();
+                    sInst = inst;
+                }
+            }
+        }
+        return inst;
+    }
+
+    public void init(String app_id, String secret, UserObj user, IUploadServices uploadServices) {
+        this.setUploadServices(uploadServices);
         OpenApiFactory.getOpenApi()
                 .getApiService()
                 .authorize(app_id, secret, new Gson().toJson(user))
@@ -32,8 +50,8 @@ public class GlobalSetting {
                                     Constant.EXPIRES_IN = response.getData().getExpiresIn();
                                     Constant.UNIONID = response.getData().getUnionId();
 
-                                    Log.d("Constant.UNIONID=======",Constant.UNIONID);
-                                    Log.d("Constant.ACCESS_TOKEN",Constant.ACCESS_TOKEN);
+                                    Log.d("Constant.UNIONID=======", Constant.UNIONID);
+                                    Log.d("Constant.ACCESS_TOKEN", Constant.ACCESS_TOKEN);
                                 }
                             }
                         }
@@ -44,5 +62,13 @@ public class GlobalSetting {
                             }
                         }
                 );
+    }
+
+    public void setUploadServices(IUploadServices uploadServices) {
+        this.uploadServices = uploadServices;
+    }
+
+    public IUploadServices getUploadServices() {
+        return uploadServices;
     }
 }

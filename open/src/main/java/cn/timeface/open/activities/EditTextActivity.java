@@ -19,6 +19,7 @@ import cn.timeface.open.R;
 import cn.timeface.open.activities.base.BaseAppCompatActivity;
 import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookElementModel;
+import cn.timeface.open.constants.Constant;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import rx.functions.Action1;
 
@@ -120,7 +121,8 @@ public class EditTextActivity extends BaseAppCompatActivity {
                                         //设置自定义的属性
                                         response.getData().getElementModel().setRight(elementModel.isRight());
                                     }
-                                    data.putExtra("edit_text_result", response.getData().getElementModel());
+                                    data.putExtra(Constant.ELEMENT_MODEL, response.getData().getElementModel());
+                                    data.putExtra(Constant.CONTENT_ID, contentId);
                                     setResult(Activity.RESULT_OK, data);
                                     finish();
                                 } else {
