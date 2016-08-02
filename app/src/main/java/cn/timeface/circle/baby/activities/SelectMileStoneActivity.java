@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -33,10 +33,10 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 public class SelectMileStoneActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
 
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
     @Bind(R.id.et_relationship)
     EditText etRelationship;
     @Bind(R.id.tv_create)
@@ -90,7 +90,7 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
             case R.id.tv_create:
                 String milestoneName = etRelationship.getText().toString().trim();
                 if (TextUtils.isEmpty(milestoneName)) {
-                    ToastUtil.showToast( "请输入里程碑");
+                    ToastUtil.showToast("请输入里程碑");
                     return;
                 }
                 apiService.addMilestone(URLEncoder.encode(milestoneName))
@@ -98,7 +98,7 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
                         .subscribe(milestoneResponse -> {
                             if (milestoneResponse.success()) {
                                 Intent intent = new Intent();
-                                intent.putExtra("milestone",milestoneResponse.getMilestone());
+                                intent.putExtra("milestone", milestoneResponse.getMilestone());
                                 setResult(RESULT_OK, intent);
                                 finish();
                             } else {

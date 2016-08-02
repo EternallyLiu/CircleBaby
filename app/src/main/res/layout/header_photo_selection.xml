@@ -5,7 +5,7 @@
     android:layout_marginTop="?actionBarSize"
     android:orientation="horizontal"
     android:padding="@dimen/view_space_small"
-    android:weightSum="3.0">
+    android:weightSum="4.0">
 
     <com.github.rayboot.widget.ratioview.RatioFrameLayout
         android:clickable="true"
@@ -56,6 +56,27 @@
             android:textColor="@color/text_color2" />
     </com.github.rayboot.widget.ratioview.RatioFrameLayout>
 
+    <com.github.rayboot.widget.ratioview.RatioFrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/view_space_small"
+        android:layout_marginRight="@dimen/view_space_small"
+        android:layout_weight="1.0"
+        android:background="@color/bg25"
+        android:visibility="invisible"
+        app:fixRatio="fixWidth"
+        app:heightRatio="1"
+        app:widthRatio="1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableTop="@drawable/ic_publish_camera"
+            android:gravity="center"
+            android:text="相机"
+            android:textColor="@color/white" />
+    </com.github.rayboot.widget.ratioview.RatioFrameLayout>
     <com.github.rayboot.widget.ratioview.RatioFrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"

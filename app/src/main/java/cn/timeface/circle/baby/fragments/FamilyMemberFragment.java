@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,11 +86,12 @@ public class FamilyMemberFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_family, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setTitle(FastData.getBabyName() + "一家");
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle(FastData.getBabyName() + "一家");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         reqData();
-
         return view;
     }
 

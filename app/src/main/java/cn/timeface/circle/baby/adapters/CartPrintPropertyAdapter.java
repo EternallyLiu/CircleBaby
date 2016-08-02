@@ -8,13 +8,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
     }
 
     @Override
-    public CartPrintPropertyAdapter.ViewHolder getViewHolder(ViewGroup viewGroup, int i) {
+    public ViewHolder getViewHolder(ViewGroup viewGroup, int i) {
         View view = mLayoutInflater.inflate(R.layout.item_print_cart_property, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
@@ -99,10 +99,16 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
                 break;
         }
 
-        if(i < getItemCount() - 1){
+        if (i < getItemCount() - 1) {
             ((ViewHolder) viewHolder).ivDivider.setVisibility(View.VISIBLE);
         } else {
             ((ViewHolder) viewHolder).ivDivider.setVisibility(View.GONE);
+        }
+
+        if (cartItem.getBookType() != 2) {
+            ((ViewHolder) viewHolder).ivBookbg.setImageResource(R.drawable.book_front_mask2);
+        } else {
+            ((ViewHolder) viewHolder).ivBookbg.setImageResource(R.drawable.book_front_mask);
         }
 
         Glide.with(mContext)
@@ -119,26 +125,22 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
 //            ((ViewHolder) viewHolder).mTvSize.setText("规格:" + calendar);
 //            ((ViewHolder) viewHolder).mTvColor.setVisibility(View.GONE);
 //            ((ViewHolder) viewHolder).mTvColor.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
-//            ((ViewHolder) viewHolder).flBookBg.setBackgroundResource(R.drawable.bg_cart_calendar_cover);
-//            ((ViewHolder) viewHolder).ivBookTopBg.setVisibility(View.VISIBLE);
 //        } else {
 //            ((ViewHolder) viewHolder).llPaperPackLayout.setVisibility(View.VISIBLE);
-            ((ViewHolder) viewHolder).mTvColor.setVisibility(View.VISIBLE);
-            ((ViewHolder) viewHolder).mTvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
-            ((ViewHolder) viewHolder).mTvSize.setText(mContext.getString(R.string.cart_print_property_size, size));
-            ((ViewHolder) viewHolder).tvPaper.setText(mContext.getString(R.string.cart_print_property_paper,
-                    cartItem.getPropertyShow("paper", String.valueOf(obj.getPaper()))));
-            ((ViewHolder) viewHolder).mTvColor.setText(mContext.getString(R.string.cart_print_property_color,
-                    cartItem.getPropertyShow("color", String.valueOf(obj.getColor()))));
-            ((ViewHolder) viewHolder).mTvPack.setText(mContext.getString(R.string.cart_print_property_pack,
-                    cartItem.getPropertyShow("pack", String.valueOf(obj.getPack()))));
+        ((ViewHolder) viewHolder).mTvColor.setVisibility(View.VISIBLE);
+        ((ViewHolder) viewHolder).mTvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
+        ((ViewHolder) viewHolder).mTvSize.setText(mContext.getString(R.string.cart_print_property_size, size));
+        ((ViewHolder) viewHolder).tvPaper.setText(mContext.getString(R.string.cart_print_property_paper,
+                cartItem.getPropertyShow("paper", String.valueOf(obj.getPaper()))));
+        ((ViewHolder) viewHolder).mTvColor.setText(mContext.getString(R.string.cart_print_property_color,
+                cartItem.getPropertyShow("color", String.valueOf(obj.getColor()))));
+        ((ViewHolder) viewHolder).mTvPack.setText(mContext.getString(R.string.cart_print_property_pack,
+                cartItem.getPropertyShow("pack", String.valueOf(obj.getPack()))));
 
-            ((ViewHolder) viewHolder).flBookBg.setBackgroundResource(R.drawable.timelist_book_bg);
-            ((ViewHolder) viewHolder).ivBookTopBg.setVisibility(View.GONE);
 //        }
 
         ((ViewHolder) viewHolder).ivBookCover.setTag(R.string.tag_obj, cartItem);
-                ((ViewHolder) viewHolder).mIvRadio.setTag(R.string.tag_obj, obj);
+        ((ViewHolder) viewHolder).mIvRadio.setTag(R.string.tag_obj, obj);
         ((ViewHolder) viewHolder).mIvRadio.setTag(R.string.tag_ex, cartItem);
         ((ViewHolder) viewHolder).mTvColor.setTag(R.string.tag_ex, cartItem);
         ((ViewHolder) viewHolder).mTvColor.setTag(R.string.tag_obj, obj);
@@ -178,7 +180,7 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
 //                if(cartItem.getBookType() == TypeConstant.BOOK_TYPE_DESK_CALENDAR){
 //                    ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete_calendar));
 //                } else {
-                    ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete));
+                ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete));
 //                }
                 break;
 
@@ -200,6 +202,7 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
 
     /**
      * 设置状态
+     *
      * @param state
      */
     public void setPropertyState(int state) {
@@ -209,21 +212,23 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
 
     /**
      * adapter state
+     *
      * @return
      */
-    public int getPropertyState(){
+    public int getPropertyState() {
         return propertyState;
     }
 
     /**
      * get adapter bookId
+     *
      * @return
      */
-    public String getBookId(){
+    public String getBookId() {
         return cartItem.getBookId();
     }
 
-    public List<PrintPropertyPriceObj> getDataList(){
+    public List<PrintPropertyPriceObj> getDataList() {
         return listData;
     }
 
@@ -234,26 +239,46 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
      * @author ButterKnifeZelezny, plugin for Android Studio by Avast Developers (http://github.com/avast)
      */
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_radio) ImageView mIvRadio;
-        @Bind(R.id.tv_size) TextView mTvSize;
-        @Bind(R.id.tv_color) TextView mTvColor;
-        @Bind(R.id.tv_paper) TextView tvPaper;
-        @Bind(R.id.tv_number) TextView mTvNumber;
-        @Bind(R.id.tv_pack) TextView mTvPack;
-        @Bind(R.id.tv_price) TextView mTvPrice;
-        @Bind(R.id.ll_price_number) LinearLayout llPriceNo;
-        @Bind(R.id.tv_delete) TextView tvDelete;
-        @Bind(R.id.ll_paper_pack) LinearLayout llPaperPackLayout;
-        @Bind(R.id.ll_plus_minus) LinearLayout llPlusMinusLayout;
-        @Bind(R.id.book_print_number_et) EditText etNumber;
-        @Bind(R.id.book_print_number_minus_ib) ImageButton ibMinus;
-        @Bind(R.id.book_print_number_plus_ib) ImageButton ibPlus;
-        @Bind(R.id.cart_property_divider) View ivDivider;
-        @Bind(R.id.iv_book_cover)RatioImageView ivBookCover;
-        @Bind(R.id.iv_cart_calendar_top)
-        RatioImageView ivBookTopBg;
-        @Bind(R.id.fl_cover) FrameLayout flBookBg;
-        @Bind(R.id.tv_print_limit_info) TextView tvLimitInfo;
+        @Bind(R.id.iv_radio)
+        ImageView mIvRadio;
+        @Bind(R.id.iv_bookbg)
+        ImageView ivBookbg;
+        @Bind(R.id.iv_book_cover)
+        ImageView ivBookCover;
+        @Bind(R.id.fl_book_cover)
+        RatioFrameLayout flBookCover;
+        @Bind(R.id.tv_size)
+        TextView mTvSize;
+        @Bind(R.id.tv_color)
+        TextView mTvColor;
+        @Bind(R.id.tv_paper)
+        TextView tvPaper;
+        @Bind(R.id.tv_pack)
+        TextView mTvPack;
+        @Bind(R.id.ll_paper_pack)
+        LinearLayout llPaperPackLayout;
+        @Bind(R.id.book_print_number_minus_ib)
+        ImageButton ibMinus;
+        @Bind(R.id.book_print_number_et)
+        EditText etNumber;
+        @Bind(R.id.book_print_number_plus_ib)
+        ImageButton ibPlus;
+        @Bind(R.id.ll_plus_minus)
+        LinearLayout llPlusMinusLayout;
+        @Bind(R.id.tv_price)
+        TextView mTvPrice;
+        @Bind(R.id.tv_number)
+        TextView mTvNumber;
+        @Bind(R.id.ll_price_number)
+        LinearLayout llPriceNo;
+        @Bind(R.id.tv_delete)
+        TextView tvDelete;
+        @Bind(R.id.ll_root)
+        LinearLayout llRoot;
+        @Bind(R.id.tv_print_limit_info)
+        TextView tvLimitInfo;
+        @Bind(R.id.cart_property_divider)
+        View ivDivider;
 
         ViewHolder(View view) {
             super(view);

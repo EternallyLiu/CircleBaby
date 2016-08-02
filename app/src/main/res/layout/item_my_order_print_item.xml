@@ -8,24 +8,30 @@
     android:padding="@dimen/view_space_normal"
     android:orientation="horizontal">
 
-    <FrameLayout
-        android:id="@+id/fl_cover"
-        android:layout_width="wrap_content"
+
+    <com.github.rayboot.widget.ratioview.RatioFrameLayout
+        android:id="@+id/fl_book_cover"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/timelist_book_bg">
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        app:fixRatio="fixWidth"
+        app:heightRatio="20"
+        app:widthRatio="15">
+        <ImageView
+            android:id="@+id/iv_bookbg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/book_front_mask" />
 
-        <com.github.rayboot.widget.ratioview.RatioImageView
+        <ImageView
             android:id="@+id/iv_book_cover"
-            android:layout_width="@dimen/size_80"
-            android:layout_height="wrap_content"
-            android:src="@drawable/book_default_bg"
-            app:fixRatio="fixWidth"
-            app:heightRatio="20"
-            app:widthRatio="15" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/size_2"/>
 
-    </FrameLayout>
+    </com.github.rayboot.widget.ratioview.RatioFrameLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"

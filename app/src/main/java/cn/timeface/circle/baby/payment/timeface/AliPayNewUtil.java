@@ -141,7 +141,8 @@ public class AliPayNewUtil {
 //        orderInfo += "total_fee=" + "\"" + 0.01 + "\"";
         orderInfo += "&";
 
-        orderInfo += "notify_url=" + "\"" + "http://dev1.v5time.net/baby/babyOrder/zfbNotify" + "\"";
+//        orderInfo += "notify_url=" + "\"" + "http://dev1.v5time.net/baby/babyOrder/zfbNotify" + "\"";
+        orderInfo += "notify_url=" + "\"" + "http://stg2.v5time.net/baby/babyOrder/zfbNotify" + "\"";
 
         // 接口名称， 定值
         orderInfo += "&service=\"mobile.securitypay.pay\"";

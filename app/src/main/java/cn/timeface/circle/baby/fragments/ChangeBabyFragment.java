@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -60,9 +61,10 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
         View view = inflater.inflate(R.layout.fragment_changebaby, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         adapter = new ChangebabyAdapter(getActivity(), new ArrayList<>());
         adapter.setOnClickListener(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

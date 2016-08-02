@@ -59,18 +59,18 @@ public class BaseFragment extends Fragment {
     }
     public void setActionBar(android.support.v7.widget.Toolbar view){
         if (getActivity() instanceof AppCompatActivity) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ((AppCompatActivity) getActivity()).setSupportActionBar(view);
-            }
+//            }
         }
     }
 
     public ActionBar getActionBar(){
         if (getActivity() instanceof AppCompatActivity) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
                 return supportActionBar;
-            }
+//            }
         }
         return null;
     }

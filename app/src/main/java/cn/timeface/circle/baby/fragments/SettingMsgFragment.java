@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 
 public class SettingMsgFragment extends BaseFragment implements View.OnClickListener {
@@ -53,7 +55,10 @@ public class SettingMsgFragment extends BaseFragment implements View.OnClickList
         View view = inflater.inflate(R.layout.fragment_settingmsg, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         initData();
         return view;
     }

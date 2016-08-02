@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 import com.wechat.photopicker.PickerPhotoActivity2;
 
@@ -212,9 +213,9 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                             .subscribe(printStatusResponse -> {
                                 int printCode = printStatusResponse.getPrintCode();
                                 switch (printCode) {
-//                                    case TypeConstant.PRINT_CODE_LIMIT_LESS:
-//                                        notify = "少于12页，不可印刷";
-//                                        break;
+                                    case TypeConstant.PRINT_CODE_LIMIT_LESS:
+                                        notify = "少于12页，不可印刷";
+                                        break;
 //                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
 //                                        notify = "照片书不能大于200页";
 //                                        break;

@@ -50,6 +50,7 @@ import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog;
+import cn.timeface.circle.baby.views.dialog.BottomMenuDialog2;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import rx.Observable;
 import rx.Subscription;
@@ -57,7 +58,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 
-public class CloudAlbumEditActivity extends BaseAppCompatActivity implements BottomMenuDialog.OnMenuClickListener {
+public class CloudAlbumEditActivity extends BaseAppCompatActivity implements BottomMenuDialog.OnMenuClickListener, BottomMenuDialog2.OnMenuClickListener {
 
 
     private static final int REQ_SELECT_PHOTO = 202;
@@ -182,10 +183,14 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit) {
-            if (type != 2) {
+            if (type == 0) {
                 BottomMenuDialog menuDialog = BottomMenuDialog.getInstance();
                 menuDialog.setOnMenuClick(this);
                 menuDialog.show(getSupportFragmentManager(), "");
+            }else if(type == 1){
+                BottomMenuDialog2 menuDialog2 = BottomMenuDialog2.getInstance();
+                menuDialog2.setOnMenuClick(this);
+                menuDialog2.show(getSupportFragmentManager(), "");
             }
         } else if (item.getItemId() == android.R.id.home) {
             if (currentStateEdit) {

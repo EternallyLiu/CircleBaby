@@ -25,12 +25,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.0"
-            android:drawableTop="@drawable/babytime"
+            android:drawableTop="@drawable/selector_home_babytime"
             android:onClick="clickTab"
             android:padding="@dimen/view_space_normal"
             android:tag="0"
             android:text="宝宝时光"
-            android:drawablePadding="@dimen/size_2"/>
+            android:drawablePadding="@dimen/size_2"
+            android:textColor="@drawable/selector_home_mine_textcolor"/>
 
         <FrameLayout
             android:layout_width="0dp"
@@ -62,12 +63,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.0"
-            android:drawableTop="@drawable/mine"
+            android:drawableTop="@drawable/selector_home_mine"
             android:onClick="clickTab"
             android:padding="@dimen/view_space_normal"
             android:tag="1"
             android:text="我的"
-            android:drawablePadding="@dimen/size_2"/>
+            android:drawablePadding="@dimen/size_2"
+            android:textColor="@drawable/selector_home_mine_textcolor"/>
 
     </LinearLayout>
 </LinearLayout>

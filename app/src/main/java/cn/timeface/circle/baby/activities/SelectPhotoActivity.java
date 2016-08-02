@@ -19,10 +19,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +42,12 @@ import cn.timeface.circle.baby.fragments.PhotoCategoryFragment;
 import cn.timeface.circle.baby.managers.PhotoDataSave;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.managers.services.SavePicInfoService;
+import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ImageUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.mediastore.MediaStoreBucket;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DateUtil;
 import cn.timeface.common.utils.StorageUtil;
 import rx.Observable;
@@ -342,7 +347,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     }
 
     private void changeSelCount(int count) {
-        tvSelCount.setText(Html.fromHtml("全部已选" + count + "张"));
+        tvSelCount.setText(Html.fromHtml(count + "/" + maxCount));
     }
 
     public void clickPhotoView(View view) {
@@ -360,8 +365,37 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
 
     public void clickDone(View view) {
         if (forResult) {
+            ArrayList<ImgObj> imgObjs = transToImgObj(adapter.getSelImgs());
+
+            if (imgObjs.size() == 0) {
+                ToastUtil.showToast("请选择图片");
+                return;
+            }
+//            else{
+//                Toast.makeText(SelectPhotoActivity.this,"正在压缩图片…",Toast.LENGTH_LONG).show();
+//            }
+//            for (ImgObj imgObj : imgObjs) {
+//                String fileName = System.currentTimeMillis() + ".jpg";
+//                File file = new File(ImageFactory.getSDPath(SelectPhotoActivity.this) + "/picture");
+//                if (!file.exists()) {
+//                    file.mkdirs();
+//                }
+//                File outDir = new File(file, fileName);//将要保存图片的路径，android推荐这种写法，将目录名和文件名分开，不然容易报错。
+//                try {
+//                    ImageFactory.getDefault().compressAndGenImage(imgObj.getLocalPath(), outDir.toString(), 100, false);
+//                } catch (IOException e) {
+//                    Log.e(TAG, "IOException:");
+//                }
+//                imgObj.setLocalPath(outDir.toString());
+//                imgObj.setMd5();
+//                imgObj.setUrl();
+//                imgObj.setObjectKey();
+//                Log.d(TAG, "压缩后的图片getLocalPath========" + imgObj.getLocalPath());
+//                Log.d(TAG, "压缩后的图片getUrl========" + imgObj.getUrl());
+//            }
+
             Intent resultIntent = new Intent();
-            resultIntent.putParcelableArrayListExtra("result_select_image_list", transToImgObj(adapter.getSelImgs()));
+            resultIntent.putParcelableArrayListExtra("result_select_image_list", imgObjs);
             setResult(RESULT_OK, resultIntent);
             finish();
         }
@@ -379,7 +413,9 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     protected void onDestroy() {
         super.onDestroy();
         PhotoDataSave.getInstance().clear();
-        if (loadingDialog != null) loadingDialog.dismiss();
+        if (loadingDialog != null) {
+            loadingDialog.dismiss();
+        }
     }
 
     @Override

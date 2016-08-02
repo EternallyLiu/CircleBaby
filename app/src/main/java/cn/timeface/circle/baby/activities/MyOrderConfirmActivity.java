@@ -67,7 +67,6 @@ import cn.timeface.circle.baby.events.OrderCancelEvent;
 import cn.timeface.circle.baby.events.PayResultEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.payment.OrderInfoObj;
-import cn.timeface.circle.baby.payment.PaymentFactory;
 import cn.timeface.circle.baby.payment.PrepareOrderException;
 import cn.timeface.circle.baby.payment.alipay.AlipayPayment;
 import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
@@ -89,6 +88,10 @@ import rx.Subscription;
 public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEventBus {
 
     private static final int REQUEST_CODE_SCAN_PV_CODE = 1001;
+    @Bind(R.id.tv_order_amount)
+    TextView mOrderAmount;
+    @Bind(R.id.btn_submit_order)
+    Button mBtnSubmit;
 
     private int COUPON_CODE_LENGTH = 8;//印书码长度
     private float POINT_USE_RATIO = 0.5f; //积分使用比例，如0.5
@@ -133,9 +136,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
     private TextView mExChangedPints;
     private TextView mPointUse;
     private CheckBox mServiceItem;
-    private TextView mOrderAmount;
-    private TextView mTvPromotionInfo;
-    private Button mBtnSubmit;
     // 印书券
     private CheckBox cbUseCoupons;
     private LinearLayout llUseCoupons;
@@ -276,7 +276,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         llUseCouponCodesRoot = ButterKnife.findById(footerView, R.id.ll_use_coupon_codes_root);
         llUseCouponCodesRoot.setVisibility(View.GONE);
 
-        mRvDispatch = ButterKnife.findById(footerView, R.id.rv_dispatch);
+        mRvDispatch = ButterKnife.findById(headerView, R.id.rv_dispatch);
         mRvDispatchAdapter = new OrderDispatchAdapter(this);
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(MyOrderConfirmActivity.this, LinearLayoutManager.HORIZONTAL);
@@ -286,7 +286,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvDispatch.setLayoutManager(layoutManager);
         mRvDispatch.setAdapter(mRvDispatchAdapter);
-        mDispatchSelectLayout = ButterKnife.findById(footerView, R.id.ll_dispatch_select);
+        mDispatchSelectLayout = ButterKnife.findById(headerView, R.id.ll_dispatch_select);
 
         mRlFullSiteCoupon = ButterKnife.findById(footerView, R.id.rl_full_site_coupon);//全站优惠信息
         mTvFullSiteCoupon = ButterKnife.findById(footerView, R.id.tv_full_site_coupon);
@@ -297,9 +297,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         mExChangedPints = ButterKnife.findById(footerView, R.id.tv_points_replace);
         mPointUse = ButterKnife.findById(footerView, R.id.tv_use_point_policy);
         mServiceItem = ButterKnife.findById(footerView, R.id.cb_agree_service);
-        mOrderAmount = ButterKnife.findById(footerView, R.id.tv_order_amount);
-        mTvPromotionInfo = ButterKnife.findById(footerView, R.id.tv_promotion_info);
-        mBtnSubmit = ButterKnife.findById(footerView, R.id.btn_submit_order);
 
         cbUseCoupons = ButterKnife.findById(footerView, R.id.cb_use_coupons);
         llUseCoupons = ButterKnife.findById(footerView, R.id.ll_use_coupons_policy);
@@ -370,6 +367,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
             mReceiverPhone.setText(response.getContactsPhone());
             mReceiverAddress.setText(response.getAddress());
             mReceiver.setText(response.getContacts());
+            expressPrice = 0;
         } else {
             mAddAddressLayout.setVisibility(View.GONE);
             mAddressInfoLayout.setVisibility(View.VISIBLE);
@@ -392,13 +390,13 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         bookPrice = response.getOrderPrice();
 
         // 台历优惠活动
-        if (response.hasPromotion() && response.getPromotionFee() > 0) {
+        /*if (response.hasPromotion() && response.getPromotionFee() > 0) {
             mTvPromotionInfo.setText(String.format(getString(R.string.cart_promotion_fee),
                     "台历", response.getPromotionFee()));
             mTvPromotionInfo.setVisibility(View.VISIBLE);
         } else {
             mTvPromotionInfo.setVisibility(View.GONE);
-        }
+        }*/
 
         mExChangePoints.addTextChangedListener(new EditTextWatcher());
         mIsUsePoints.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -941,7 +939,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //            baseObj.setExpressId(Integer.valueOf(mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue()));
 //        }
 
-        Subscription s = apiService.addOrder(Integer.valueOf(addressId), LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), expressId, orderId,TypeConstant.APP_ID)
+        Subscription s = apiService.addOrder(Integer.valueOf(addressId), LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), expressId, orderId, TypeConstant.APP_ID)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     progressDialog.dismiss();
@@ -1116,6 +1114,8 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                 }
                 if (event.count <= 0) {
                     mDispatchSelectLayout.setVisibility(View.GONE);
+                    expressPrice = 0;
+                    updateTotalPrice();
                 }
                 break;
         }

@@ -37,8 +37,7 @@
                 android:layout_marginRight="@dimen/view_space_medium"
                 android:layout_weight="1.0"
                 android:drawablePadding="@dimen/view_space_small"
-                tools:drawableLeft="@drawable/ic_flag_qq_time_book"
-                tools:text="结婚田奈"/>
+                tools:drawableLeft="@drawable/ic_flag_qq_time_book"/>
 
             <TextView
                 android:id="@+id/tv_item_edit"
