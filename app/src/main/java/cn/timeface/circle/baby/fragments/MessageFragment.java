@@ -4,6 +4,7 @@ package cn.timeface.circle.baby.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +32,7 @@ import cn.timeface.circle.baby.api.models.objs.Msg;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
@@ -57,9 +59,11 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_message, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setTitle("消息");
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("消息");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         adapter = new MessageAdapter(getActivity(), new ArrayList<>());
         adapter.setOnClickListener(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

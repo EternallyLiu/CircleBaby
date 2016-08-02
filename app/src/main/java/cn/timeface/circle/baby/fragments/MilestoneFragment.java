@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
@@ -63,10 +64,11 @@ public class MilestoneFragment extends BaseFragment{
         View view = inflater.inflate(R.layout.fragment_milestone, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setTitle("里程碑");
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("里程碑");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         adapter = new MilestoneAdapter(getActivity(), new ArrayList<>());
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         contentRecyclerView.setAdapter(adapter);

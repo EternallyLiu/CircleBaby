@@ -4,6 +4,7 @@ package cn.timeface.circle.baby.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +25,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.SystemMessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
@@ -50,9 +52,11 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
         View view = inflater.inflate(R.layout.fragment_message, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setTitle("系统消息");
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("系统消息");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         adapter = new SystemMessageAdapter(getActivity(), new ArrayList<>());
         adapter.setOnClickListener(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

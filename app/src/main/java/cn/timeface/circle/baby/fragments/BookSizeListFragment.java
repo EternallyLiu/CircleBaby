@@ -4,6 +4,7 @@ package cn.timeface.circle.baby.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -58,8 +59,11 @@ public class BookSizeListFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_addbooklist, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("选择尺寸");
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("选择尺寸");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         reqData();
         return view;
     }

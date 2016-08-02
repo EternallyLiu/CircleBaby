@@ -85,7 +85,9 @@
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
             android:text="我的作品"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:drawableLeft="@drawable/ic_minebook"
+            android:drawablePadding="@dimen/size_6"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -93,7 +95,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_12"
-            android:src="@drawable/mine_data_go" />
+            android:src="@drawable/mine_data_go"
+            />
     </RelativeLayout>
 
     <View
@@ -116,7 +119,9 @@
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
             android:text="我的订单"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:drawableLeft="@drawable/ic_mineorder"
+            android:drawablePadding="@dimen/size_6"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -147,7 +152,9 @@
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
             android:text="我的印刷车"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:drawableLeft="@drawable/ic_cart"
+            android:drawablePadding="@dimen/size_6"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -178,7 +185,9 @@
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
             android:text="设置"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"
+            android:drawableLeft="@drawable/ic_setting"
+            android:drawablePadding="@dimen/size_6"/>
 
         <ImageView
             android:layout_width="wrap_content"

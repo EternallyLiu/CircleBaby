@@ -5,20 +5,24 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.api.models.base.BaseImgObj;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ImageUtil;
+import cn.timeface.circle.baby.utils.MD5;
 
 /**
  * @author SUN
@@ -312,5 +316,25 @@ public class ImgObj extends BaseImgObj {
     public MediaObj getMediaObj() {
         MediaObj mediaObj = new MediaObj(getContent(), getUrl(), 0, 0, getDateMills());
         return mediaObj;
+    }
+
+
+    public void setUrl(){
+        this.url =  TypeConstants.UPLOAD_FOLDER
+                + "/"
+                + getMd5()
+                + localPath.substring(localPath.lastIndexOf("."));
+        System.out.println("ImgObj.setUrl()  =============  " + url);
+    }
+
+    public void setObjectKey(){
+        this.objectKey =  TypeConstants.UPLOAD_FOLDER
+                + "/"
+                + getMd5()
+                + localPath.substring(localPath.lastIndexOf("."));
+    }
+
+    public void setMd5(){
+        this.md5 = MD5.encode(new File(localPath));
     }
 }

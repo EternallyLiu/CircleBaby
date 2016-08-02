@@ -124,21 +124,39 @@
                             android:layout_alignParentRight="true"
                             android:orientation="horizontal">
 
-                            <cn.timeface.circle.baby.views.IconTextView
+                            <ImageView
                                 android:id="@+id/icon_like"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:text="@string/icon_like"
-                                android:textSize="@dimen/text_large" />
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/selector_timeline_like"
+                                android:layout_marginRight="@dimen/size_2"
+                                />
 
-                            <cn.timeface.circle.baby.views.IconTextView
+                            <TextView
+                                android:id="@+id/tv_likecount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:layout_gravity="center_vertical"
+                                />
+
+                            <ImageView
                                 android:id="@+id/icon_comment"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:text="@string/icon_comment"
-                                android:textSize="@dimen/text_large" />
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/timeline_comment"
+                                android:layout_marginLeft="@dimen/size_6"
+                                android:layout_marginRight="@dimen/size_2"
+                                />
+                            <TextView
+                                android:id="@+id/tv_commentcount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:layout_gravity="center_vertical"
+                                />
                         </LinearLayout>
                     </RelativeLayout>
 

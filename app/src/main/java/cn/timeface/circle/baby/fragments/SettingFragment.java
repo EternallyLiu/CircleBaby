@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.fragments;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -74,8 +75,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("设置");
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("设置");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         initData();
         return view;
     }

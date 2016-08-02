@@ -16,13 +16,11 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.api.models.objs.PhotoGroupItem;
 import cn.timeface.circle.baby.events.PhotoSelectEvent;
-import cn.timeface.circle.baby.managers.services.UploadAllPicService;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
 
@@ -200,7 +198,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
             int line = (int) v.getTag(R.string.tag_index);
             int dataIndex = getDataPosition(line);
             if (selImgs.size() + listData.get(dataIndex).getImgList().size() > maxCount) {
-                ToastUtil.showToast("最多还能选" + maxCount + "张照片");
+                ToastUtil.showToast("最多只能选" + maxCount + "张照片");
                 ((CheckBox) v).setChecked(false);
                 return;
             }
@@ -249,7 +247,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
     private void doSelImg(int dataIndex, PhotoModel img) {
         if (!selImgs.contains(img)) {
             //选中上传
-            UploadAllPicService.addUrgent(App.getInstance(), img);
+//            UploadAllPicService.addUrgent(App.getInstance(), img);
             selImgs.add(img);
             everyGroupUnSelImgSize[dataIndex] -= 1;
             if (everyGroupUnSelImgSize[dataIndex] == 0) {
@@ -263,7 +261,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
     private void doUnSelImg(int dataIndex, PhotoModel img) {
         if (selImgs.contains(img)) {
             //取消上传
-            UploadAllPicService.addUrgent(App.getInstance(), img);
+//            UploadAllPicService.addUrgent(App.getInstance(), img);
             selImgs.remove(img);
             everyGroupUnSelImgSize[dataIndex] += 1;
             if (everyGroupUnSelImgSize[dataIndex] == 1) {

@@ -75,7 +75,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public static final int DIALY = 3;
     public static final int CARD = 4;
 
-    protected final int PHOTO_COUNT_MAX = 100;
+    protected final int PHOTO_COUNT_MAX = 99;
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -107,7 +107,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     TextView tvVideotime;
 
     private PhotoGridAdapter adapter;
-    private HashSet<String> imageUrls = new HashSet<>();
+    private List<String> imageUrls = new ArrayList<>();
     public final int PICTURE = 0;
     public final int MILESTONE = 1;
     public final int TIME = 2;
@@ -250,6 +250,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         contentRecyclerView.setVisibility(View.GONE);
 
                         if (imageUrls.size() > 0) {
+                            Log.d(TAG,"imageUrls.get(0) ===================== "+imageUrls.get(0));
                             adapter.getData().clear();
                             adapter.getData().addAll(imageUrls);
                             adapter.notifyDataSetChanged();
@@ -420,9 +421,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             List<ImgObj> imgObjList = photoRecode.getImgObjList();
             List<MediaObj> mediaObjs = new ArrayList<>();
             for (ImgObj img : imgObjList) {
-                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
-                int height = bitmap.getHeight();
-                int width = bitmap.getWidth();
+//                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
+                int height = img.getHeight();
+                int width = img.getWidth();
+                System.out.println("img.getUrl ============ "+img.getUrl());
                 MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
                 mediaObjs.add(mediaObj);
             }
@@ -496,6 +498,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
+                        String objectKey = uploadFileObj.getObjectKey();
+                        System.out.println("uploadImage  objectKey============ "+objectKey);
+//                        File file = new File(path);
+//                        if(file.exists()){
+//                            file.delete();
+//                        }
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
                     }

@@ -70,7 +70,7 @@
         android:layout_height="@dimen/size_56"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|end"
-        android:background="#55000000"
+        android:background="@color/bg_color1"
         android:paddingLeft="@dimen/view_space_small"
         android:paddingRight="@dimen/view_space_small">
 

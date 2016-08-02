@@ -4,6 +4,7 @@ package cn.timeface.circle.baby.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,8 +50,10 @@ public class ChangeInfoFragment extends BaseFragment{
         View view = inflater.inflate(R.layout.fragment_changeinfo, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         tvTitle.setText(title);
         cet.setText(info);
 

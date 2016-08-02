@@ -100,4 +100,27 @@
             android:textColor="@color/text_color2"
             android:textSize="14sp"/>
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_dispatch_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/view_space_normal"
+        android:layout_marginTop="@dimen/view_space_normal"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_select_dispatch"
+            style="@style/OrderTextLabel"
+            android:text="@string/select_dispatch_way" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_dispatch"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
 </LinearLayout>

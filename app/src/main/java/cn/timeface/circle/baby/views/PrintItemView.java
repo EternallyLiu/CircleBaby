@@ -7,12 +7,12 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.github.rayboot.widget.ratioview.RatioImageView;
+import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,10 +24,13 @@ import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
  * Created by zhsheng on 2016/6/22.
  */
 public class PrintItemView extends LinearLayout {
+
+    @Bind(R.id.iv_bookbg)
+    ImageView ivBookbg;
     @Bind(R.id.iv_book_cover)
-    RatioImageView ivBookCover;
-    @Bind(R.id.fl_cover)
-    FrameLayout flCover;
+    ImageView ivBookCover;
+    @Bind(R.id.fl_book_cover)
+    RatioFrameLayout flBookCover;
     @Bind(R.id.tv_size)
     TextView tvSize;
     @Bind(R.id.tv_color)
@@ -86,6 +89,11 @@ public class PrintItemView extends LinearLayout {
                 .error(R.drawable.book_default_bg)
                 .placeholder(R.drawable.book_default_bg)
                 .into(ivBookCover);
+        if (bookItem.getBookType() != 2) {
+            ivBookbg.setImageResource(R.drawable.book_front_mask2);
+        } else {
+            ivBookbg.setImageResource(R.drawable.book_front_mask);
+        }
         Resources resources = getResources();
         tvPrice.setText(resources.getString(R.string.total_price, obj.getPrice()));
         tvNumber.setText(resources.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
@@ -103,6 +111,5 @@ public class PrintItemView extends LinearLayout {
         tvPaper.setVisibility(View.VISIBLE);
         tvPack.setVisibility(View.VISIBLE);
 
-        flCover.setBackgroundResource(R.drawable.timelist_book_bg);
     }
 }
