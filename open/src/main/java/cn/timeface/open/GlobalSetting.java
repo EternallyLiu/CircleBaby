@@ -1,5 +1,6 @@
 package cn.timeface.open;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -35,7 +36,7 @@ public class GlobalSetting {
         return inst;
     }
 
-    public void init(String app_id, String secret, TFOUserObj user, IUploadServices uploadServices) {
+    public void init(@NonNull String app_id,@NonNull String secret,@NonNull TFOUserObj user,@NonNull IUploadServices uploadServices) {
         this.setUploadServices(uploadServices);
         OpenApiFactory.getOpenApi()
                 .getApiService()

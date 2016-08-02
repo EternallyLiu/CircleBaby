@@ -215,7 +215,7 @@ public class MediaObj extends BaseObj
     };
 
     public TFOResourceObj toTFOResourceObj() {
-        return new TFOResourceObj(imgUrl, h, w, "");
+        return new TFOResourceObj(imgUrl, w, h, "");
     }
 
     @Override

@@ -310,7 +310,7 @@ public class ImgObj extends BaseImgObj {
     };
 
     public MediaObj getMediaObj() {
-        MediaObj mediaObj = new MediaObj(getContent(), getUrl(), 0, 0, getDateMills());
+        MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
         return mediaObj;
     }
 }

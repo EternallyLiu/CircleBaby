@@ -3,7 +3,6 @@ package cn.timeface.open.api.models.objs;
 import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import cn.timeface.open.managers.interfaces.IMoveParams;
 import cn.timeface.open.managers.interfaces.IPageScale;
@@ -180,6 +179,7 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
 
             this.image_padding_left *= scale;
             this.image_padding_top *= scale;
+            this.image_scale *= scale;
         }
     }
 
@@ -187,6 +187,7 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
     public void resetPageScale() {
         this.image_padding_left /= my_view_scale;
         this.image_padding_top /= my_view_scale;
+        this.image_scale /= my_view_scale;
 
         my_view_scale = 1.f;
     }
@@ -259,8 +260,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         Rect rect = new Rect();
         float left = Math.abs(image_start_pointX / image_scale);
         float top = Math.abs(image_start_pointY / image_scale);
-        float right = left + w / my_view_scale / image_scale;
-        float bottom = top + h / my_view_scale / image_scale;
+        float right = left + w / image_scale;
+        float bottom = top + h / image_scale;
         rect.set((int) left, (int) top, (int) right, (int) bottom);
         return rect;
     }

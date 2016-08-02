@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
@@ -541,6 +542,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         int rotation = this.image_content_expand.getImageRotation();
         rotation = (rotation + 360) % 360;
         imgUrl += "@" + rect.left + "-" + rect.top + "-" + rect.width() + "-" + rect.height() + "a" + "_" + rotation + "r" + "_" + width + "w" + ".webp";
+        Log.i("open glide image url", "getCropImageUrl: " + imgUrl);
         return imgUrl;
     }
 

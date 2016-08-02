@@ -3,6 +3,7 @@ package cn.timeface.open.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import cn.timeface.open.constants.Constant;
 import cn.timeface.open.ucrop.UCrop;
 import cn.timeface.open.ucrop.model.AspectRatio;
 import cn.timeface.open.ucrop.model.ImageState;
+import cn.timeface.open.ucrop.util.FileUtils;
 import cn.timeface.open.ucrop.view.CropImageView;
 import cn.timeface.open.ucrop.view.GestureCropImageView;
 import cn.timeface.open.ucrop.view.OverlayView;
@@ -54,6 +56,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
     TFOBookElementModel elementModel;
     String contentId;
     String newImageUrl;
+    float newImageW = 0;
+    float newImageH = 0;
     boolean changeImage = false;
 
     public static final int NONE = 0;
@@ -107,6 +111,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
 
         elementModel = getIntent().getParcelableExtra(Constant.ELEMENT_MODEL);
         contentId = getIntent().getStringExtra(Constant.CONTENT_ID);
+        newImageW = elementModel.getImageContentExpand().getImageWidth();
+        newImageH = elementModel.getImageContentExpand().getImageHeight();
 
         setImageData(getIntent());
     }
@@ -240,9 +246,9 @@ public class CropImageActivity extends BaseAppCompatActivity {
 
     public void clickOK(View view) {
         if (changeImage) {
-            makeModify(elementModel.getImageContentExpand().getImageUrl());
-        } else {
             makeModify(newImageUrl);
+        } else {
+            makeModify(elementModel.getImageContentExpand().getImageUrl());
         }
 
         setResultSuccess();
@@ -254,16 +260,16 @@ public class CropImageActivity extends BaseAppCompatActivity {
         RectF cropRect = imageState.getCropRect();
         RectF imageRect = imageState.getCurrentImageRect();
 
-        float top = cropRect.top - imageRect.top;
-        float left = cropRect.left - imageRect.left;
-        float width = cropRect.width() / imageState.getCurrentScale();
-        float height = cropRect.height() / imageState.getCurrentScale();
+        float scale = cropRect.width() / elementModel.getContentWidth();
+
+        float top = Math.round((cropRect.top - imageRect.top) / scale);
+        float left = Math.round((cropRect.left - imageRect.left) / scale);
 
         elementModel.setElementContent(newImageUrl);
         elementModel.getImageContentExpand().setImageUrl(newImageUrl);
-        elementModel.getImageContentExpand().setImageScale(imageState.getCurrentScale());
-        elementModel.getImageContentExpand().setImageWidth(width);
-        elementModel.getImageContentExpand().setImageHeight(height);
+        elementModel.getImageContentExpand().setImageScale(imageState.getCurrentScale() / scale);
+        elementModel.getImageContentExpand().setImageWidth(newImageW);
+        elementModel.getImageContentExpand().setImageHeight(newImageH);
         elementModel.getImageContentExpand().setImageStartPointX(left);
         elementModel.getImageContentExpand().setImageStartPointY(top);
         elementModel.getImageContentExpand().setImageRotation(Math.round(imageState.getCurrentAngle()));
@@ -289,6 +295,14 @@ public class CropImageActivity extends BaseAppCompatActivity {
             intent.putExtra(UCrop.EXTRA_INPUT_URI, data.getData());
             intent.putExtra(UCrop.EXTRA_OUTPUT_URI, data.getData());
             setImageData(intent);
+
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(FileUtils.getPath(this, data.getData()), options);
+            newImageW = options.outWidth;
+            newImageH = options.outHeight;
+            //// TODO: 16/8/2 这个地方可能存在图片有旋转而导致宽度和高度不准确的问题
+
             doUpload(data.getData());
         }
         super.onActivityResult(requestCode, resultCode, data);
