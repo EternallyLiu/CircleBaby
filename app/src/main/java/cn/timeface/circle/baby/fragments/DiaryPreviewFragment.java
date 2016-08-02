@@ -6,12 +6,16 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,15 +53,14 @@ import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.circle.baby.views.ScaleImageView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
-public class DiaryPreviewFragment extends BaseFragment implements View.OnClickListener {
+public class DiaryPreviewFragment extends BaseFragment {
 
-    @Bind(R.id.tv_complete)
-    TextView tvComplete;
     @Bind(R.id.tv_time)
     TextView tvTime;
     @Bind(R.id.toolbar)
@@ -104,6 +107,7 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         time = getArguments().getString("time");
         content = getArguments().getString("content");
         imgObj = getArguments().getParcelable("imgObj");
@@ -118,7 +122,10 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.fragment_diarypreview, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         tfProgressDialog = new TFProgressDialog(getActivity());
         tvTime.setText(time);
         tvContent.setText(content);
@@ -226,9 +233,6 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
                 templateObj = diaryPaperResponse.getDataList().get(position);
             }
         });
-        tvComplete.setOnClickListener(this);
-
-
         return view;
     }
 
@@ -317,80 +321,6 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
         ButterKnife.unbind(this);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_complete:
-                tfProgressDialog.setMessage("合成卡片中…");
-                tfProgressDialog.show();
-                //日记卡片合成
-//                BitmapDrawable bd = new BitmapDrawable(myShot(getActivity()));
-//                ivBg.setBackgroundDrawable(bd);
-//                ivBg.setImageBitmap(myShot(getActivity()));
-
-
-                PointF leftTop = touchImageView.getLeftTop();
-//                float degree = touchImageView.getDegree();
-                float cropWidth = touchImageView.getCropWidth();
-                float cropHeight = touchImageView.getCropHeight();
-                int bitmapWidth = touchImageView.getBitmapWidth();
-                int bitmapHeight = touchImageView.getBitmapHeight();
-                String content = tvContent.getText().toString();
-                String time = tvTime.getText().toString();
-
-                List<String> contents = new ArrayList<>();
-                contents.add(time);
-                while (content.length() > 18) {
-                    char c = content.charAt(17);
-                    String[] split = content.split(String.valueOf(c));
-                    contents.add(split[0]);
-                    content = split[1];
-                }
-                contents.add(content);
-
-//                DiaryImageInfo diaryImageInfo = new DiaryImageInfo(objectKey, bitmapWidth, bitmapHeight);
-//                Gson gson = new Gson();
-//                String imageInfo = gson.toJson(diaryImageInfo);
-
-//                apiService.diaryPublish(content, imageInfo, time, cropWidth, cropHeight, leftTop.x, leftTop.y, paperId, degree)
-//                        .compose(SchedulersCompat.applyIoSchedulers())
-//                        .subscribe(diaryComposeResponse -> {
-//                            ImgObj imgObj = diaryComposeResponse.getImgObj();
-//                        }, throwable -> {
-//                            Log.e(TAG, "diaryPublish:");
-//                        });
-                long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
-                TemplateImage templateImage = new TemplateImage(degree, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
-
-                List<TemplateAreaObj> templateList = templateObj.getTemplateList();
-
-                for (TemplateAreaObj templateAreaObj : templateList) {
-                    if (templateAreaObj.getType() == 3)
-                        templateAreaObj.setTemplateImage(templateImage);
-                    if (contents.size() > 0 && templateAreaObj.getType() == 2) {
-                        templateAreaObj.setText(contents.get(0));
-                        contents.remove(0);
-                    }
-                }
-                Gson gson = new Gson();
-                String s = gson.toJson(templateObj);
-                System.out.println(s);
-                apiService.diaryComposed(URLEncoder.encode(s))
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(diaryComposedResponse -> {
-                            MediaObj mediaObj = diaryComposedResponse.getMediaObj();
-                            System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
-                            tfProgressDialog.dismiss();
-                            getActivity().finish();
-                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
-                        }, throwable -> {
-                            Log.e(TAG, "diaryPublish:");
-                        });
-                break;
-        }
-    }
-
-
     private void uploadImage() {
         if (TextUtils.isEmpty(url)) {
             return;
@@ -420,5 +350,84 @@ public class DiaryPreviewFragment extends BaseFragment implements View.OnClickLi
             }
         }.start();
 
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_complete, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.complete){
+            tfProgressDialog.setMessage("合成卡片中…");
+            tfProgressDialog.show();
+            //日记卡片合成
+//                BitmapDrawable bd = new BitmapDrawable(myShot(getActivity()));
+//                ivBg.setBackgroundDrawable(bd);
+//                ivBg.setImageBitmap(myShot(getActivity()));
+
+
+            PointF leftTop = touchImageView.getLeftTop();
+//                float degree = touchImageView.getDegree();
+            float cropWidth = touchImageView.getCropWidth();
+            float cropHeight = touchImageView.getCropHeight();
+            int bitmapWidth = touchImageView.getBitmapWidth();
+            int bitmapHeight = touchImageView.getBitmapHeight();
+            String content = tvContent.getText().toString();
+            String time = tvTime.getText().toString();
+
+            List<String> contents = new ArrayList<>();
+            contents.add(time);
+            while (content.length() > 18) {
+                char c = content.charAt(17);
+                String[] split = content.split(String.valueOf(c));
+                contents.add(split[0]);
+                content = split[1];
+            }
+            contents.add(content);
+
+//                DiaryImageInfo diaryImageInfo = new DiaryImageInfo(objectKey, bitmapWidth, bitmapHeight);
+//                Gson gson = new Gson();
+//                String imageInfo = gson.toJson(diaryImageInfo);
+
+//                apiService.diaryPublish(content, imageInfo, time, cropWidth, cropHeight, leftTop.x, leftTop.y, paperId, degree)
+//                        .compose(SchedulersCompat.applyIoSchedulers())
+//                        .subscribe(diaryComposeResponse -> {
+//                            ImgObj imgObj = diaryComposeResponse.getImgObj();
+//                        }, throwable -> {
+//                            Log.e(TAG, "diaryPublish:");
+//                        });
+            long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
+            TemplateImage templateImage = new TemplateImage(degree, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
+
+            List<TemplateAreaObj> templateList = templateObj.getTemplateList();
+
+            for (TemplateAreaObj templateAreaObj : templateList) {
+                if (templateAreaObj.getType() == 3)
+                    templateAreaObj.setTemplateImage(templateImage);
+                if (contents.size() > 0 && templateAreaObj.getType() == 2) {
+                    templateAreaObj.setText(contents.get(0));
+                    contents.remove(0);
+                }
+            }
+            Gson gson = new Gson();
+            String s = gson.toJson(templateObj);
+            System.out.println(s);
+            apiService.diaryComposed(URLEncoder.encode(s))
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(diaryComposedResponse -> {
+                        MediaObj mediaObj = diaryComposedResponse.getMediaObj();
+                        System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
+                        tfProgressDialog.dismiss();
+                        getActivity().finish();
+                        EventBus.getDefault().post(new MediaObjEvent(mediaObj));
+                    }, throwable -> {
+                        Log.e(TAG, "diaryPublish:");
+                    });
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

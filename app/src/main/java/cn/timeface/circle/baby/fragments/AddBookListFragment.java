@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -49,8 +50,11 @@ public class AddBookListFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_addbooklist, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("为" + FastData.getBabyName() + "定制");
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("为" + FastData.getBabyName() + "定制");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         reqData();
         return view;
     }

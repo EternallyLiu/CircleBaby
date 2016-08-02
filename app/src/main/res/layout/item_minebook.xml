@@ -25,7 +25,8 @@
         <ImageView
             android:id="@+id/iv_book"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:padding="@dimen/size_2"/>
 
     </com.github.rayboot.widget.ratioview.RatioFrameLayout>
 

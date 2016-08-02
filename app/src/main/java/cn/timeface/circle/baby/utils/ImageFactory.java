@@ -239,7 +239,7 @@ public class ImageFactory {
      */
     public void compressAndGenImage(String imgPath, String outPath, int maxSize,
                                     boolean needsDelete) throws IOException {
-        compressAndGenImage(compressBySize(imgPath, 1080, 720), outPath, maxSize);
+        compressAndGenImage(compressBySize(imgPath, 800, 480), outPath, maxSize);
 
         // Delete original file
         if (needsDelete) {

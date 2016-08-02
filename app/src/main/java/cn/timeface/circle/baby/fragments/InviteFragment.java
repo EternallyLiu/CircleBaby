@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,6 +20,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ShareSdkUtil;
@@ -65,10 +67,11 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_invite, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setTitle("邀请");
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
-
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("邀请");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         reqData();
         btnWx.setOnClickListener(this);
         btnQq.setOnClickListener(this);

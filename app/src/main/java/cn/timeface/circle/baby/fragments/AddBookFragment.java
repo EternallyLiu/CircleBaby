@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -73,8 +74,11 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_addbook, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle(bookTypeListObj.getCoverTitle());
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle(bookTypeListObj.getCoverTitle());
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         initData();
         return view;
     }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.FastData;
 
 /**
  * Created by Tao on 3/3/16.
@@ -46,8 +48,11 @@ public class WebViewFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_webview, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle(title);
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle(title);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         setupLayout();
         return view;
     }

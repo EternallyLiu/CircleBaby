@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wbtech.ums.UmsAgent;
@@ -49,13 +51,19 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     List<MyOrderBookItem> listData = new ArrayList<>();
+    @Bind(R.id.order_total_price_tv)
+    TextView orderTotalPriceTv;
+    @Bind(R.id.order_action_cancel_btn)
+    Button orderActionCancelBtn;
+    @Bind(R.id.order_action_btn)
+    Button orderActionBtn;
     private OrderDetailHeaderView detailHeaderView;
     private String orderId;
     private MyOrderBookAdapter orderBookAdapter;
     private OrderDetailFootView detailFootView;
     private MyOrderConfirmListResponse listResponse;
     private float orderPrice;
-    private TFProgressDialog progressDialog ;
+    private TFProgressDialog progressDialog;
     private int orderStatus;
     private String orderSummary;
     private Timer timer = new Timer(true);
@@ -126,6 +134,30 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                     orderBookAdapter.setListData(bookList);
                     detailHeaderView.setupViewData(listResponse);
                     detailFootView.setupViewData(listResponse);
+
+
+                    // 配送中 || 已送达
+                    if (listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
+                        // 商家优惠码现场配送不显示运单号、物流信息
+                        if (listResponse.getOrderStatus() == 5) {
+                            orderActionBtn.setText(getResources().getString(R.string.show_order));
+                            orderActionBtn.setVisibility(View.INVISIBLE);//不显示晒单
+                        }
+                    }
+                    // 待确认(未支付)
+                    if (listResponse.getOrderStatus() == TypeConstant.STATUS_NOT_PAY) {
+                        orderActionBtn.setVisibility(View.VISIBLE);
+                        orderActionCancelBtn.setVisibility(View.VISIBLE);
+                        orderActionBtn.setText(getResources().getString(R.string.payoff_at_once));
+                        orderActionBtn.setBackgroundResource(R.drawable.selector_red_btn_bg);
+                    }else if(listResponse.getOrderStatus() == TypeConstant.STATUS_CLOSED){
+                        //已关闭
+                        orderActionBtn.setVisibility(View.GONE);
+                        orderActionCancelBtn.setVisibility(View.GONE);
+                    }
+                    orderTotalPriceTv.setText(String.format(getResources().getString(R.string.total_price), listResponse.getOrderPrice()));
+
+
                     orderBookAdapter.notifyDataSetChanged();
                 }, throwable -> {
 
@@ -180,7 +212,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
 //                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
 //                            } else {
 //                                //2支付宝支付
-                        System.out.println("2支付宝支付==========="+orderId);
+                        System.out.println("2支付宝支付===========" + orderId);
                         new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
 //                            }
                         break;
@@ -205,7 +237,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
             public void cancelClick() {
                 dialog.dismiss();
                     /*OrderDetailCartActivity.open(MyOrderConfirmActivity.this, orderId, TypeConstant.STATUS_NOT_PAY);*/
-                OrderDetailActivity.open(OrderDetailActivity.this,orderId);
+                OrderDetailActivity.open(OrderDetailActivity.this, orderId);
                 finish();
             }
         });
@@ -259,7 +291,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("确认订单支付结果==========="+orderId);
+                System.out.println("确认订单支付结果===========" + orderId);
                 Subscription s = apiService.findOrderDetail(orderId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
@@ -273,7 +305,6 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
             }
         }, 0, 2 * 1000);
     }
-
 
 
 }

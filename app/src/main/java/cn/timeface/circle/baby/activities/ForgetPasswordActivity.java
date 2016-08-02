@@ -124,10 +124,13 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
             public void handleMessage(Message msg) {
                 if (sec[0] > 0) {
                     sec[0] = sec[0] - 1;
+                    if (tvGetCode != null)
                     tvGetCode.setText(sec[0] + "秒后再次获取");
                 } else {
-                    tvGetCode.setText("获取验证码");
-                    tvGetCode.setEnabled(true);
+                    if (tvGetCode != null){
+                        tvGetCode.setText("获取验证码");
+                        tvGetCode.setEnabled(true);
+                    }
                     timer.cancel();
                     task.cancel();
                 }

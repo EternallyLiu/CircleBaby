@@ -66,7 +66,6 @@ import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.IconTextView;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.functions.Func1;
@@ -107,10 +106,12 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     RelativeLayout rlSingle;
     @Bind(R.id.tv_milestone)
     TextView tvMilestone;
+    @Bind(R.id.tv_commentcount)
+    TextView tvCommentcount;
+    @Bind(R.id.tv_likecount)
+    TextView tvLikecount;
     @Bind(R.id.icon_like)
-    IconTextView iconLike;
-    @Bind(R.id.icon_comment)
-    IconTextView iconComment;
+    ImageView iconLike;
     @Bind(R.id.view_line)
     View viewLine;
     @Bind(R.id.rl_comment)
@@ -189,7 +190,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         tvAuthor.setText(timelineobj.getAuthor().getRelationName());
         tvDate.setText(DateUtil.getTime2(timelineobj.getDate()));
         getSupportActionBar().setTitle(timelineobj.getAuthor().getBabyObj().getName());
-        iconLike.setTextColor(timelineobj.getLike() == 1 ? Color.RED : normalColor);
+        iconLike.setSelected(timelineobj.getLike() == 1 ? true : false);
 
         if (!TextUtils.isEmpty(timelineobj.getMilestone())) {
             tvMilestone.setVisibility(View.VISIBLE);
@@ -228,10 +229,15 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             gv.setVisibility(View.GONE);
         }
 
+        tvLikecount.setText(timelineobj.getLikeCount()+"");
+        tvCommentcount.setText(timelineobj.getCommentCount()+"");
 
         if (timelineobj.getLikeCount() > 0) {
             hsv.setVisibility(View.VISIBLE);
             llGoodListUsersBar.removeAllViews();
+            ImageView like = new ImageView(this);
+            like.setImageResource(R.drawable.like_select);
+            llGoodListUsersBar.addView(like);
             for (UserObj u : timelineobj.getLikeList()) {
                 ImageView imageView = initPraiseItem();
                 llGoodListUsersBar.addView(imageView);
@@ -401,7 +407,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 VideoPlayActivity.open(this,timelineobj.getMediaList().get(0).getVideoUrl());
                 break;
             case R.id.icon_like:
-                int p = iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;
+                int p = iconLike.isSelected() == true ? 0 : 1;
                 apiService.like(timelineobj.getTimeId(), p)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
@@ -425,7 +431,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                         timelineobj.getLikeList().add(FastData.getUserInfo());
                                     }
 
-                                    iconLike.setTextColor(Color.RED);
+                                    iconLike.setSelected(true);
                                     hsv.setVisibility(View.VISIBLE);
                                     ImageView imageView = initPraiseItem();
                                     llGoodListUsersBar.addView(imageView);
@@ -448,7 +454,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
                                     EventBus.getDefault().post(new CommentSubmit(replacePosition, listPos, timelineobj));
 
-                                    iconLike.setTextColor(normalColor);
+                                    iconLike.setSelected(false);
                                     llGoodListUsersBar.removeAllViews();
                                     if (timelineobj.getLikeCount() == 0) {
                                         hsv.setVisibility(View.GONE);

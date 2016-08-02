@@ -41,7 +41,6 @@ import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.IconTextView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -85,7 +84,9 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder.tvContent.setText(item.getContent());
         holder.tvAuthor.setText(item.getAuthor().getRelationName());
         holder.tvDate.setText(DateUtil.getTime2(item.getDate()));
-        holder.iconLike.setTextColor(item.getLike() == 1 ? Color.RED : normalColor);
+        holder.iconLike.setSelected(item.getLike() == 1 ? true : false);
+        holder.tvCommentcount.setText(item.getCommentCount()+"");
+        holder.tvLikecount.setText(item.getLikeCount()+"");
 
         if (!TextUtils.isEmpty(item.getMilestone())) {
             holder.tvMilestone.setVisibility(View.VISIBLE);
@@ -171,7 +172,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.rlSingle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    VideoPlayActivity.open(context,item.getMediaList().get(0).getVideoUrl());
+                    VideoPlayActivity.open(context, item.getMediaList().get(0).getVideoUrl());
                 }
             });
         }
@@ -223,6 +224,10 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        List<TimeLineObj> listData;
+        TimeLineObj timeLineObj;
+        int position;
+        int allDetailsPosition;
 
         @Bind(R.id.tv_content)
         TextView tvContent;
@@ -232,6 +237,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         ImageView ivCover;
         @Bind(R.id.iv_video)
         ImageView ivVideo;
+        @Bind(R.id.rl_single)
+        RelativeLayout rlSingle;
         @Bind(R.id.tv_milestone)
         TextView tvMilestone;
         @Bind(R.id.tv_author)
@@ -239,9 +246,13 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         @Bind(R.id.tv_date)
         TextView tvDate;
         @Bind(R.id.icon_like)
-        IconTextView iconLike;
+        ImageView iconLike;
+        @Bind(R.id.tv_likecount)
+        TextView tvLikecount;
         @Bind(R.id.icon_comment)
-        IconTextView iconComment;
+        ImageView iconComment;
+        @Bind(R.id.tv_commentcount)
+        TextView tvCommentcount;
         @Bind(R.id.ll_good_list_users_bar)
         LinearLayout llGoodListUsersBar;
         @Bind(R.id.hsv)
@@ -250,16 +261,10 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         LinearLayout llCommentWrapper;
         @Bind(R.id.tv_more_comment)
         TextView tvMoreComment;
-        @Bind(R.id.ll_recode)
-        LinearLayout llRecode;
-        @Bind(R.id.rl_single)
-        RelativeLayout rlSingle;
-        List<TimeLineObj> listData;
-        TimeLineObj timeLineObj;
-        int position;
-        int allDetailsPosition;
         @Bind(R.id.commentAnd)
         LinearLayout llCommentLikeWrapper;
+        @Bind(R.id.ll_recode)
+        LinearLayout llRecode;
 
 
         ViewHolder(View view) {
@@ -288,7 +293,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                     TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
                     break;
                 case R.id.icon_like:
-                    int p = iconLike.getCurrentTextColor() == Color.RED ? 0 : 1;
+                    int p = iconLike.isSelected() == true ? 0 : 1;
                     ApiFactory.getApi().getApiService().like(timeLineObj.getTimeId(), p)
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
@@ -311,7 +316,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                             isContains = false;
                                         }
 
-                                        iconLike.setTextColor(Color.RED);
+                                        iconLike.setSelected(true);
                                         hsv.setVisibility(View.VISIBLE);
 
                                         ImageView imageView = initPraiseItem();
@@ -328,7 +333,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                             }
                                         }
 
-                                        iconLike.setTextColor(context.getResources().getColor(R.color.gray_normal));
+                                        iconLike.setSelected(false);
                                         llGoodListUsersBar.removeAllViews();
                                         if (timeLineObj.getLikeCount() == 0) {
                                             hsv.setVisibility(View.GONE);

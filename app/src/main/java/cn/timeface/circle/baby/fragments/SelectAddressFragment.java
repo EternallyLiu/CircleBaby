@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,7 @@ import cn.timeface.circle.baby.api.models.AddressItem;
 import cn.timeface.circle.baby.api.models.objs.AddressObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
@@ -55,7 +57,10 @@ public class SelectAddressFragment extends BaseFragment implements View.OnClickL
         View view = inflater.inflate(R.layout.fragment_minebook, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         tvTitle.setText("确认收货地址");
         ivAdd.setOnClickListener(this);
 //        reqData();

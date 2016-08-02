@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import java.io.File;
 
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.MD5;
 
@@ -15,7 +16,7 @@ import cn.timeface.circle.baby.utils.MD5;
  */
 public class MyUploadFileObj extends UploadFileObj {
     public MyUploadFileObj(String filePath) {
-        super(filePath, "baby/" + MD5.encode(new File(filePath)) + filePath.substring(filePath.lastIndexOf(".")));
+        super(filePath,  TypeConstants.UPLOAD_FOLDER + "/" + MD5.encode(new File(filePath)) + filePath.substring(filePath.lastIndexOf(".")));
     }
 
     @Override

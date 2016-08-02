@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -122,9 +123,12 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         View view = inflater.inflate(R.layout.fragment_babyinfo, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setTitle("宝宝信息");
 
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setTitle("宝宝信息");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         GlideUtil.displayImage(babyObj.getAvatar(), ivAvatar);
         tvName.setText(babyObj.getName());
         tvAge.setText(babyObj.getAge());

@@ -6,9 +6,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -21,6 +19,7 @@ import cn.timeface.circle.baby.constants.TypeConstant;
  * Created by zhsheng on 2016/6/22.
  */
 public class OrderDetailFootView extends LinearLayout {
+
     @Bind(R.id.tv_total_count)
     TextView tvTotalCount;
     @Bind(R.id.tv_exchange_point)
@@ -39,16 +38,6 @@ public class OrderDetailFootView extends LinearLayout {
     LinearLayout llPvCode;
     @Bind(R.id.tv_express_fee)
     TextView tvExpressFee;
-    @Bind(R.id.order_total_price_lb)
-    TextView orderTotalPriceLb;
-    @Bind(R.id.order_total_price_tv)
-    TextView orderTotalPriceTv;
-    @Bind(R.id.order_action_cancel_btn)
-    Button orderActionCancelBtn;
-    @Bind(R.id.order_action_btn)
-    Button orderActionBtn;
-    @Bind(R.id.rl_bottom)
-    RelativeLayout rlBottom;
 
     public OrderDetailFootView(Context context) {
         super(context);
@@ -80,22 +69,22 @@ public class OrderDetailFootView extends LinearLayout {
 
     public void setupViewData(MyOrderConfirmListResponse listResponse) {
 
-        // 配送中 || 已送达
-        if (listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
-            // 商家优惠码现场配送不显示运单号、物流信息
-            if (listResponse.getOrderStatus() == 5) {
-                orderActionBtn.setText(getResources().getString(R.string.show_order));
-                orderActionBtn.setVisibility(View.INVISIBLE);//不显示晒单
-            }
-        }
-        // 待确认(未支付)
-        if (listResponse.getOrderStatus() == TypeConstant.STATUS_NOT_PAY) {
-            orderActionBtn.setVisibility(View.VISIBLE);
-            orderActionCancelBtn.setVisibility(View.VISIBLE);
-            orderActionBtn.setText(getResources().getString(R.string.payoff_at_once));
-            orderActionBtn.setBackgroundResource(R.drawable.selector_red_btn_bg);
-        }
-        orderTotalPriceTv.setText(String.format(getResources().getString(R.string.total_price), listResponse.getOrderPrice()));
+//        // 配送中 || 已送达
+//        if (listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
+//            // 商家优惠码现场配送不显示运单号、物流信息
+//            if (listResponse.getOrderStatus() == 5) {
+//                orderActionBtn.setText(getResources().getString(R.string.show_order));
+//                orderActionBtn.setVisibility(View.INVISIBLE);//不显示晒单
+//            }
+//        }
+//        // 待确认(未支付)
+//        if (listResponse.getOrderStatus() == TypeConstant.STATUS_NOT_PAY) {
+//            orderActionBtn.setVisibility(View.VISIBLE);
+//            orderActionCancelBtn.setVisibility(View.VISIBLE);
+//            orderActionBtn.setText(getResources().getString(R.string.payoff_at_once));
+//            orderActionBtn.setBackgroundResource(R.drawable.selector_red_btn_bg);
+//        }
+//        orderTotalPriceTv.setText(String.format(getResources().getString(R.string.total_price), listResponse.getOrderPrice()));
         tvTotalCount.setText(String.format(getResources().getString(R.string.total_price), listResponse.getTotalPrice()));
        /* // 是否使用了商家优惠
         boolean pvCodeEnable = listResponse.getPersonType() == 5;

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -69,8 +70,10 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
         View view = inflater.inflate(R.layout.fragment_familymemberinfo, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
+        ActionBar actionBar = getActionBar();
+        if(actionBar!=null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         tvRelation.setText(userObj.getRelationName());
         tvNickname.setText(userObj.getNickName());
 

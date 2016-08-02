@@ -41,7 +41,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class SavePicInfoService extends Service {
 
-    private static final String TAG = "==PictureData==";
+    private static final String TAG = "==SavePicInfoService==";
     private CompositeSubscription subscription;
     public static boolean saveComplete = false;
 

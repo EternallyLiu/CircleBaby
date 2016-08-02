@@ -25,35 +25,32 @@
             android:onClick="clickProperty"
             android:src="@drawable/selector_cart_item" />
 
-        <FrameLayout
-            android:id="@+id/fl_cover"
-            android:layout_width="wrap_content"
+        <com.github.rayboot.widget.ratioview.RatioFrameLayout
+            android:id="@+id/fl_book_cover"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/view_space_medium"
-            android:layout_marginTop="@dimen/view_space_medium"
-            android:background="@drawable/timelist_book_bg">
-
-            <com.github.rayboot.widget.ratioview.RatioImageView
-                android:id="@+id/iv_book_cover"
-                android:layout_width="@dimen/size_80"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:onClick="clickToPod"
-                android:src="@drawable/book_default_bg"
-                app:fixRatio="fixWidth"
-                app:heightRatio="20"
-                app:widthRatio="15" />
-
-            <com.github.rayboot.widget.ratioview.RatioImageView
-                android:id="@+id/iv_cart_calendar_top"
-                android:layout_width="@dimen/size_80"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            app:fixRatio="fixWidth"
+            app:heightRatio="20"
+            app:widthRatio="15">
+            <ImageView
+                android:id="@+id/iv_bookbg"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_cart_calendar_top"
-                android:paddingLeft="@dimen/view_space_small"
-                android:paddingRight="@dimen/view_space_small"
-                android:visibility="visible"
-                app:fixRatio="fixWidth"/>
-        </FrameLayout>
+                android:src="@drawable/book_front_mask" />
+
+            <ImageView
+                android:id="@+id/iv_book_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/size_2"
+                android:src="@drawable/book_default_bg"/>
+
+        </com.github.rayboot.widget.ratioview.RatioFrameLayout>
+
+
 
         <LinearLayout
             android:layout_width="wrap_content"
