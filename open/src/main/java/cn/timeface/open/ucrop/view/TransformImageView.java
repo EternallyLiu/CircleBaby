@@ -150,6 +150,7 @@ public class TransformImageView extends ImageView {
 
                         mBitmapDecoded = true;
                         setImageBitmap(bitmap);
+                        onImageLaidOut();
                     }
 
                     @Override

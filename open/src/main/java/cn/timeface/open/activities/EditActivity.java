@@ -117,6 +117,13 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         if (!isCover) {
             tvEditTemplate.setVisibility(View.GONE);
             tvBackgroundColor.setVisibility(View.GONE);
+
+
+            tvEditLayout.setVisibility(View.GONE);
+            tvEditPendant.setVisibility(View.GONE);
+            tvEditBeauty.setVisibility(View.GONE);
+
+
         } else {
             tvEditLayout.setVisibility(View.GONE);
             tvEditBg.setVisibility(View.GONE);

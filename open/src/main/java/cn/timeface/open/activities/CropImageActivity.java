@@ -7,9 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -20,14 +21,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 import cn.timeface.open.R;
+import cn.timeface.open.activities.base.BaseAppCompatActivity;
 import cn.timeface.open.ucrop.UCrop;
 import cn.timeface.open.ucrop.model.AspectRatio;
 import cn.timeface.open.ucrop.view.CropImageView;
 import cn.timeface.open.ucrop.view.GestureCropImageView;
 import cn.timeface.open.ucrop.view.OverlayView;
+import cn.timeface.open.ucrop.view.TransformImageView;
 import cn.timeface.open.ucrop.view.UCropView;
 
-public class CropImageActivity extends AppCompatActivity {
+public class CropImageActivity extends BaseAppCompatActivity {
 
     private UCropView mUCropView;
     private GestureCropImageView mGestureCropImageView;
@@ -41,11 +44,14 @@ public class CropImageActivity extends AppCompatActivity {
     public static final int ROTATE = 2;
     public static final int ALL = 3;
 
+    private static final int REQUEST_SELECT_PICTURE = 0x01;
+
     @IntDef({NONE, SCALE, ROTATE, ALL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface GestureTypes {
 
     }
+
     private int[] mAllowedGestures = new int[]{SCALE, ROTATE, ALL};
 
 
@@ -77,6 +83,7 @@ public class CropImageActivity extends AppCompatActivity {
         this.ivOk = (ImageView) findViewById(R.id.iv_ok);
         mGestureCropImageView = mUCropView.getCropImageView();
         mOverlayView = mUCropView.getOverlayView();
+        mGestureCropImageView.setTransformImageListener(mImageListener);
 
 
         setImageData(getIntent());
@@ -101,6 +108,33 @@ public class CropImageActivity extends AppCompatActivity {
         }
 
     }
+
+    private TransformImageView.TransformImageListener mImageListener = new TransformImageView.TransformImageListener() {
+        @Override
+        public void onRotate(float currentAngle) {
+            Log.i(TAG, "onRotate: " + currentAngle);
+        }
+
+        @Override
+        public void onScale(float currentScale) {
+            Log.i(TAG, "onScale: " + currentScale);
+        }
+
+        @Override
+        public void onLoadComplete() {
+            mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
+//            mBlockingView.setClickable(false);
+//            mShowLoader = false;
+            supportInvalidateOptionsMenu();
+        }
+
+        @Override
+        public void onLoadFailure(@NonNull Exception e) {
+            setResultError(e);
+            finish();
+        }
+
+    };
 
     protected void setResultUri(Uri uri, float resultAspectRatio) {
         setResult(RESULT_OK, new Intent()
@@ -168,5 +202,46 @@ public class CropImageActivity extends AppCompatActivity {
             mGestureCropImageView.setMaxResultImageSizeX(maxSizeX);
             mGestureCropImageView.setMaxResultImageSizeY(maxSizeY);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGestureCropImageView != null) {
+            mGestureCropImageView.cancelAllAnimations();
+        }
+    }
+
+    public void clickChangeImage(View view) {
+        pickFromGallery();
+    }
+
+    public void clickRotation(View view) {
+    }
+
+    public void clickOK(View view) {
+    }
+
+
+    private void pickFromGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(Intent.createChooser(intent, "请选择照片"), REQUEST_SELECT_PICTURE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_SELECT_PICTURE) {
+            Intent intent = getIntent();
+            intent.putExtra(UCrop.EXTRA_INPUT_URI, data.getData());
+            intent.putExtra(UCrop.EXTRA_OUTPUT_URI, data.getData());
+            setImageData(intent);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
