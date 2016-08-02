@@ -25,6 +25,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.DistrictModel;
 import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
+import cn.timeface.circle.baby.api.services.OpenUploadServices;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.EventTabMainWake;
@@ -37,7 +38,7 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.CommonUtil;
 import cn.timeface.open.GlobalSetting;
-import cn.timeface.open.api.models.objs.UserObj;
+import cn.timeface.open.api.models.objs.TFOUserObj;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -86,7 +87,13 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         EventBus.getDefault().post(new EventTabMainWake());
 
         //初始化开放平台
-        GlobalSetting.init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, UserObj.genUserObj(), );
+        TFOUserObj tfoUserObj = new TFOUserObj();
+        tfoUserObj.setAvatar(FastData.getAvatar());
+        tfoUserObj.setGender(FastData.getBabyGender());
+        tfoUserObj.setNick_name(FastData.getUserName());
+        tfoUserObj.setPhone(FastData.getAccount());
+
+        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, new OpenUploadServices());
     }
 
     public void clickTab(View view) {

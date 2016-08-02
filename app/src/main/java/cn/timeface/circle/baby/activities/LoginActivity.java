@@ -50,6 +50,7 @@ import cn.timeface.circle.baby.utils.login.LoginApi;
 import cn.timeface.circle.baby.utils.login.OnLoginListener;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.encode.AES;
+import cn.timeface.open.BuildConfig;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -112,7 +113,6 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                     plat.getDb().getUserId(),
                     "", LoginActivity.this);
         }
-
     }
 
     private ShareSdkUtil.LoginCallback loginCallback = new ShareSdkUtil.LoginCallback() {

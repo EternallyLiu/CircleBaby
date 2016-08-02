@@ -9,7 +9,7 @@ import com.google.gson.Gson;
  * author: rayboot  Created on 15/12/3.
  * email : sy0725work@gmail.com
  */
-public class UserObj implements Parcelable{
+public class TFOUserObj implements Parcelable{
 
     String unionid;//用户唯一ID
     String nick_name;//用户昵称，会显示为时光书作者
@@ -66,12 +66,12 @@ public class UserObj implements Parcelable{
         this.avatar = avatar;
     }
 
-    public UserObj() {
+    public TFOUserObj() {
     }
 
-    public static UserObj genUserObj() {
+    public static TFOUserObj genUserObj() {
         String json_data = "{\"gender\":0,\"phone\":\"18656130727\",\"nick_name\":\"Melvin\",\"mail\":\"melvin7@126.com\",\"avatar\":\"http://img1.timeface.cn/uploads/avator/162c581fc30d43cb61f52b962609cbba.png\"}";
-        return new Gson().fromJson(json_data, UserObj.class);
+        return new Gson().fromJson(json_data, TFOUserObj.class);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class UserObj implements Parcelable{
         dest.writeString(this.avatar);
     }
 
-    protected UserObj(Parcel in) {
+    protected TFOUserObj(Parcel in) {
         this.unionid = in.readString();
         this.nick_name = in.readString();
         this.phone = in.readString();
@@ -98,15 +98,15 @@ public class UserObj implements Parcelable{
         this.avatar = in.readString();
     }
 
-    public static final Creator<UserObj> CREATOR = new Creator<UserObj>() {
+    public static final Creator<TFOUserObj> CREATOR = new Creator<TFOUserObj>() {
         @Override
-        public UserObj createFromParcel(Parcel source) {
-            return new UserObj(source);
+        public TFOUserObj createFromParcel(Parcel source) {
+            return new TFOUserObj(source);
         }
 
         @Override
-        public UserObj[] newArray(int size) {
-            return new UserObj[size];
+        public TFOUserObj[] newArray(int size) {
+            return new TFOUserObj[size];
         }
     };
 }

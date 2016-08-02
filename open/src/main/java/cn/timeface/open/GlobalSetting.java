@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 
 import cn.timeface.open.api.OpenApiFactory;
 import cn.timeface.open.api.models.base.BaseResponse;
-import cn.timeface.open.api.models.objs.UserObj;
+import cn.timeface.open.api.models.objs.TFOUserObj;
 import cn.timeface.open.api.models.response.Authorize;
 import cn.timeface.open.constants.Constant;
 import cn.timeface.open.managers.interfaces.IUploadServices;
@@ -35,7 +35,7 @@ public class GlobalSetting {
         return inst;
     }
 
-    public void init(String app_id, String secret, UserObj user, IUploadServices uploadServices) {
+    public void init(String app_id, String secret, TFOUserObj user, IUploadServices uploadServices) {
         this.setUploadServices(uploadServices);
         OpenApiFactory.getOpenApi()
                 .getApiService()
