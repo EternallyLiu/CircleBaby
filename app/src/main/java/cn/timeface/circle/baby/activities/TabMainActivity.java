@@ -86,7 +86,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         EventBus.getDefault().post(new EventTabMainWake());
 
         //初始化开放平台
-        GlobalSetting.init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, UserObj.genUserObj());
+        GlobalSetting.init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, UserObj.genUserObj(), );
     }
 
     public void clickTab(View view) {
