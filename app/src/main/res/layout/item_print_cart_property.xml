@@ -45,8 +45,7 @@
                 android:id="@+id/iv_book_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/size_2"
-                android:src="@drawable/book_default_bg"/>
+                android:padding="@dimen/size_2"/>
 
         </com.github.rayboot.widget.ratioview.RatioFrameLayout>
 

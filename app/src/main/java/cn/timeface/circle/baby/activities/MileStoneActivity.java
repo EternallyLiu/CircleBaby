@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -24,6 +27,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
+import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.FastData;
@@ -56,6 +60,7 @@ public class MileStoneActivity extends BaseAppCompatActivity {
 
     private int width;
     private int measuredHeight;
+    private MilestoneTimeResponse milestoneTimeResponse;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, MileStoneActivity.class));
@@ -86,6 +91,7 @@ public class MileStoneActivity extends BaseAppCompatActivity {
         apiService.milestone()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(milestoneTimeResponse -> {
+                    this.milestoneTimeResponse = milestoneTimeResponse;
                     List<MilestoneTimeObj> dataList = milestoneTimeResponse.getDataList();
                     llLeft.removeAllViews();
                     llRight.removeAllViews();
@@ -134,8 +140,18 @@ public class MileStoneActivity extends BaseAppCompatActivity {
         if (item.getItemId() == R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.item_share) {
-            new ShareDialog(this).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
-                    ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_log),
+            String imgUrl = "";
+            for (MilestoneTimeObj obj : milestoneTimeResponse.getDataList()){
+                imgUrl = obj.getImgUrl();
+                if(!TextUtils.isEmpty(imgUrl)){
+                    break;
+                }
+            }
+            if(TextUtils.isEmpty(imgUrl)){
+                imgUrl = ShareSdkUtil.getImgStrByResource(this, R.mipmap.ic_launcher);
+            }
+            new ShareDialog(this).share(FastData.getBabyName() + "成长里程碑", FastData.getBabyName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑",
+                    imgUrl,
                     "http://www.timeface.cn/tf_mobile/download.html");
         }
         return super.onOptionsItemSelected(item);

@@ -39,7 +39,7 @@
         android:layout_below="@+id/tv_milestonename"
         android:layout_marginLeft="@dimen/size_24"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_log"
+        android:src="@drawable/ic_launcher"
         android:paddingLeft="5dp"/>
 
     <View

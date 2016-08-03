@@ -3,7 +3,6 @@ package cn.timeface.circle.baby.fragments;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -109,15 +106,19 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_wx:
-                new ShareDialog(getActivity()).shareToWx("亲子好习惯，让家庭充满和谐，让教育充满温馨。", "邀请码为:" + inviteResponse.getInviteCode(),
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_log),
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_login_wechat),
+//                new ShareDialog(getActivity()).shareToWx("亲子好习惯，让家庭充满和谐，让教育充满温馨。", "邀请码为:" + inviteResponse.getInviteCode(),
+//                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_launcher),
+//                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_login_wechat),
+//                        inviteResponse.getInviteUrl());
+                new ShareDialog(getActivity()).shareToWx("成长印记", "我在成长印记记录了"+ FastData.getBabyName() +"的成长，快来一起关注涵涵的成长瞬间。",
+                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
+                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
                         inviteResponse.getInviteUrl());
                 break;
             case R.id.btn_qq:
-                new ShareDialog(getActivity()).shareToQQ("亲子好习惯，让家庭充满和谐，让教育充满温馨。", "邀请码为:" + inviteResponse.getInviteCode(),
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_log),
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_login_qq),
+                new ShareDialog(getActivity()).shareToQQ("成长印记", "我在成长印记记录了"+ FastData.getBabyName() +"的成长，快来一起关注涵涵的成长瞬间。",
+                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
+                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
                         inviteResponse.getInviteUrl());
                 break;
             case R.id.btn_sms:

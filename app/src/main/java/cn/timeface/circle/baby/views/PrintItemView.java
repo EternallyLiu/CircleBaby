@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.utils.GlideUtil;
 
 /**
  * Created by zhsheng on 2016/6/22.
@@ -84,11 +85,7 @@ public class PrintItemView extends LinearLayout {
     }
 
     public void setupViewData(MyOrderBookItem bookItem, PrintPropertyPriceObj obj) {
-        Glide.with(getContext())
-                .load(bookItem.getCoverImage())
-                .error(R.drawable.book_default_bg)
-                .placeholder(R.drawable.book_default_bg)
-                .into(ivBookCover);
+        GlideUtil.displayImage(bookItem.getCoverImage(),ivBookCover);
         if (bookItem.getBookType() != 2) {
             ivBookbg.setImageResource(R.drawable.book_front_mask2);
         } else {

@@ -137,7 +137,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 String baseUrl = "http://h5.stg1.v5time.net/hobbyDetail?";
                 String url = baseUrl + "userId=" + FastData.getUserId() + "&deviceId=" + new DeviceUuidFactory(
                         TimeFaceUtilInit.getContext()).getDeviceId();
-                new ShareDialog(getActivity()).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
+                new ShareDialog(getActivity()).share("成长印记，印下美好成长时光", "一键汇聚宝宝的成长点滴，轻松愉快地为宝宝定制专属印刷品，和家人一起见证宝宝成长的每一步。",
                         ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
                         url);
 

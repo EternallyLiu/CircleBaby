@@ -18,24 +18,21 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.bumptech.glide.Glide;
-import com.github.rayboot.widget.ratioview.RatioImageView;
-
+import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +57,7 @@ import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.CartPropertyChangeEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DeviceUtil;
+import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
@@ -79,45 +77,54 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     public final static int REQUEST_CODE_QQ = 2;
     public final static int REQUEST_CODE_POD = 3;
     public final static int REQUEST_CODE_SPLIT = 4;
+
+    List<PrintParamObj> sizeList = new ArrayList<>();
+    List<PrintParamObj> colorList = new ArrayList<>();
+    List<PrintParamObj> packList = new ArrayList<>();
+    List<PrintParamObj> paperList = new ArrayList<>();
+    DismissListener dismissListener;
+    @Bind(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @Bind(R.id.tv_price)
+    TextView mTvPrice;
+    @Bind(R.id.iv_close)
+    ImageView ivClose;
     @Bind(R.id.book_print_number_minus_ib)
     ImageButton mBookPrintNumberMinusIb;
     @Bind(R.id.book_print_number_et)
     EditText mBookPrintNumberEt;
     @Bind(R.id.book_print_number_plus_ib)
     ImageButton mBookPrintNumberPlusIb;
-    @Bind(R.id.iv_book_cover)
-    RatioImageView mIvBookCover;
-    @Bind(R.id.fl_cover)
-    FrameLayout mFlCover;
+    @Bind(R.id.iv_bookbg)
+    ImageView ivBookbg;
+    @Bind(R.id.iv_book)
+    ImageView ivBook;
+    @Bind(R.id.fl_book_cover)
+    RatioFrameLayout flBookCover;
+    @Bind(R.id.iv_book_tag)
+    ImageView mIvBookTag;
     @Bind(R.id.rl_cover)
     RelativeLayout mRlCover;
+    @Bind(R.id.rl_header_cover)
+    RelativeLayout rlHeaderCover;
     @Bind(R.id.gv_book_size)
     NoScrollGridView mGvBookSize;
     @Bind(R.id.gv_print_color)
     NoScrollGridView mGvPrintColor;
-    @Bind(R.id.gv_pack)
-    NoScrollGridView mGvPack;
     @Bind(R.id.gv_paper)
     NoScrollGridView mGvPaper;
-    @Bind(R.id.tv_price)
-    TextView mTvPrice;
-    @Bind(R.id.iv_book_tag)
-    ImageView mIvBookTag;
     @Bind(R.id.tv_pack_label)
     TextView mTvPack;
-    @Bind(R.id.progressBar)
-    ProgressBar mProgressBar;
+    @Bind(R.id.gv_pack)
+    NoScrollGridView mGvPack;
     @Bind(R.id.btn_add_to_cart)
     Button btnAddCart;
     @Bind(R.id.btn_buy_now)
     Button btnBuyNow;
     @Bind(R.id.btn_ok)
     Button btnOk;
-    List<PrintParamObj> sizeList = new ArrayList<>();
-    List<PrintParamObj> colorList = new ArrayList<>();
-    List<PrintParamObj> packList = new ArrayList<>();
-    List<PrintParamObj> paperList = new ArrayList<>();
-    DismissListener dismissListener;
+    @Bind(R.id.ll_btn_ok)
+    LinearLayout llBtnOk;
     private PrintCartItem cartItem;
     private PrintPropertyPriceObj propertyObj;
     private List<PrintParamResponse> paramList;
@@ -183,6 +190,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     public void onDestroyView() {
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
+        ButterKnife.unbind(this);
     }
 
     @NonNull
@@ -224,7 +232,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 //        if(Integer.parseInt(bookType) == TypeConstant.BOOK_TYPE_CIRCLE){
 //            mTvPack.setVisibility(View.GONE);
 //        } else {
-            mTvPack.setVisibility(View.VISIBLE);
+        mTvPack.setVisibility(View.VISIBLE);
 //        }
 
         dialog.setOnKeyListener((dialog1, keyCode, event) -> {
@@ -243,11 +251,12 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
     private void setupLayout() {
         mBookPrintNumberEt.addTextChangedListener(new EditTextWatcher(mBookPrintNumberEt, 99, false));
-        Glide.with(getContext())
-                .load(bookCover)
-                .placeholder(R.drawable.book_default_bg)
-                .error(R.drawable.book_default_bg)
-                .into(mIvBookCover);
+        GlideUtil.displayImage(bookCover, ivBook);
+        if (Integer.valueOf(bookType) != 2) {
+            ivBookbg.setImageResource(R.drawable.book_front_mask2);
+        } else {
+            ivBookbg.setImageResource(R.drawable.book_front_mask);
+        }
         for (PrintParamResponse paramResponse : paramList) {
             if (PrintParamResponse.KEY_SIZE.equals(paramResponse.getKey())) {
                 sizeList = paramResponse.getValueList();
@@ -288,7 +297,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 //                    break;
 //
 //                default:
-                    mIvBookTag.setVisibility(View.GONE);
+            mIvBookTag.setVisibility(View.GONE);
 //                    break;
 //
 //            }
@@ -298,7 +307,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             sizeList.get(0).setIsSelect(true);
             colorList.get(0).setIsSelect(true);
             packList.get(0).setIsSelect(true);
-            if(paperList.size() > 0) paperList.get(0).setIsSelect(true);
+            if (paperList.size() > 0) paperList.get(0).setIsSelect(true);
 
             for (PrintParamObj obj : packList) {
                 if (printCode == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
@@ -392,11 +401,11 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             case R.id.btn_ok:
                 List<BasePrintProperty> printProperties = null;
                 try {
-                    printProperties = LoganSquare.parseList( getParams(0).get("printList"), BasePrintProperty.class);
+                    printProperties = LoganSquare.parseList(getParams(0).get("printList"), BasePrintProperty.class);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(printProperties != null){
+                if (printProperties != null) {
                     EventBus.getDefault().post(new CartPropertyChangeEvent(printProperties.get(0), bookPrice));
                 }
                 this.dismiss();
@@ -591,7 +600,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
         btnOk.setBackgroundResource(R.drawable.shape_grey_btn_bg);
         btnOk.setClickable(false);
-        Subscription s = BaseAppCompatActivity.apiService.addOrder("", LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class),TypeConstant.APP_ID)
+        Subscription s = BaseAppCompatActivity.apiService.addOrder("", LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), TypeConstant.APP_ID)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -599,7 +608,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             btnOk.setClickable(true);
                             tfProgressDialog.dismiss();
                             EventBus.getDefault()
-                                    .post(new CartBuyNowEvent(response, requestCode, original,baseObjs));
+                                    .post(new CartBuyNowEvent(response, requestCode, original, baseObjs));
                         }
                         , throwable -> {
                             btnOk.setBackgroundResource(R.drawable.selector_blue_btn_bg);
@@ -613,6 +622,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
     /**
      * 获取印刷参数
+     *
      * @param type 0默认是返回object形式，1是返回string形式的参数
      * @return
      */
@@ -623,19 +633,19 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         if (cartItem == null) {
             params.put("bookId", bookId);
             params.put("bookType", bookType);
-            params.put("pageNum",String.valueOf(pageNum));
-            params.put("bookCover",bookCover);
-            params.put("bookName",URLEncoder.encode(bookName));
-            params.put("createTime",createTime);
+            params.put("pageNum", String.valueOf(pageNum));
+            params.put("bookCover", bookCover);
+            params.put("bookName", URLEncoder.encode(bookName));
+            params.put("createTime", createTime);
 
 
         } else {
             params.put("bookId", cartItem.getBookId());
             params.put("bookType", String.valueOf(cartItem.getBookType()));
-            params.put("pageNum",String.valueOf(cartItem.getTotalPage()));
-            params.put("bookCover",cartItem.getCoverImage());
-            params.put("bookName",URLEncoder.encode(cartItem.getTitle()));
-            params.put("createTime",cartItem.getDate());
+            params.put("pageNum", String.valueOf(cartItem.getTotalPage()));
+            params.put("bookCover", cartItem.getCoverImage());
+            params.put("bookName", URLEncoder.encode(cartItem.getTitle()));
+            params.put("createTime", cartItem.getDate());
         }
         printProperty.setNum(Integer.parseInt(mBookPrintNumberEt.getText().toString()));
         if (propertyObj != null) {
@@ -678,7 +688,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         }
 
         try {
-            if(type == 1){
+            if (type == 1) {
                 if (propertyObj != null) {
                     params.put("printId", propertyObj.getPrintId());
                 }
@@ -707,8 +717,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             switch (key) {
                 case PrintParamResponse.KEY_SIZE:
                     for (PrintParamObj obj : sizeList) {
-                        if(obj.getValue() == paramObj.getValue() &&
-                                obj.isSelect() && paramObj.isSelect()){
+                        if (obj.getValue() == paramObj.getValue() &&
+                                obj.isSelect() && paramObj.isSelect()) {
                             return;
                         }
                         obj.setIsSelect(false);
@@ -719,8 +729,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
                 case PrintParamResponse.KEY_COLOR:
                     for (PrintParamObj obj : colorList) {
-                        if(obj.getValue() == paramObj.getValue() &&
-                                obj.isSelect() && paramObj.isSelect()){
+                        if (obj.getValue() == paramObj.getValue() &&
+                                obj.isSelect() && paramObj.isSelect()) {
                             return;
                         }
                         obj.setIsSelect(false);
@@ -734,8 +744,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         return;
                     }
                     for (PrintParamObj obj : packList) {
-                        if(obj.getValue() == paramObj.getValue() &&
-                                obj.isSelect() && paramObj.isSelect()){
+                        if (obj.getValue() == paramObj.getValue() &&
+                                obj.isSelect() && paramObj.isSelect()) {
                             return;
                         }
                         obj.setIsSelect(false);
@@ -793,6 +803,14 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             queryBookPrice();
         }
     }
+
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        // TODO: inflate a fragment view
+//        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+//        ButterKnife.bind(this, rootView);
+//        return rootView;
+//    }
 
     public interface DismissListener {
         void dismiss();
