@@ -129,24 +129,29 @@
                     android:id="@+id/rl_cover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-
-                    <FrameLayout
-                        android:id="@+id/fl_cover"
-                        android:layout_width="wrap_content"
+                    <com.github.rayboot.widget.ratioview.RatioFrameLayout
+                        android:id="@+id/fl_book_cover"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="26dp"
-                        android:background="@drawable/timelist_book_bg">
+                        android:layout_centerVertical="true"
+                        android:clickable="true"
+                        app:fixRatio="fixWidth"
+                        app:heightRatio="25"
+                        app:widthRatio="18">
+                        <ImageView
+                            android:id="@+id/iv_bookbg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/book_front_mask" />
 
-                        <com.github.rayboot.widget.ratioview.RatioImageView
-                            android:id="@+id/iv_book_cover"
-                            xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/book_default_bg"
-                            app:fixRatio="fixWidth"
-                            scaleimg:heightRatio="25"
-                            scaleimg:widthRatio="18"/>
-                    </FrameLayout>
+                        <ImageView
+                            android:id="@+id/iv_book"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="@dimen/size_2"/>
+
+                    </com.github.rayboot.widget.ratioview.RatioFrameLayout>
 
                     <ImageView
                         android:visibility="invisible"

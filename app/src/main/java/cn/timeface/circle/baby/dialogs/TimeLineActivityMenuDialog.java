@@ -131,12 +131,21 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         });
         tvShare.setOnClickListener(v -> {
             dismiss();
+            String imgUrl = "";
             String baseUrl = "http://h5.stg1.v5time.net/hobbyDetail?";
             String url = baseUrl + "userId=" + FastData.getUserId() + "&deviceId=" + new DeviceUuidFactory(
                     TimeFaceUtilInit.getContext()).getDeviceId() + "&recordId=" + timelineobj.getTimeId();
-            new ShareDialog(context).share(false, timelineobj.getTimeId(), "宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
-                    ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
-                    ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
+//            new ShareDialog(context).share(false, timelineobj.getTimeId(), "宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
+//                    ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
+//                    ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
+//                    url);
+            if(timelineobj.getMediaList().size()>0 && !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getImgUrl())){
+                imgUrl = timelineobj.getMediaList().get(0).getImgUrl();
+            }else{
+                imgUrl = ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher);
+            }
+            new ShareDialog(context).share(FastData.getBabyName() + "长大了", FastData.getBabyName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyName() + "的新变化",
+                    imgUrl,
                     url);
         });
         tvCancel.setOnClickListener(v -> {

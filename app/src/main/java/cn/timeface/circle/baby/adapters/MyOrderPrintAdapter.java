@@ -18,6 +18,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseListAdapter;
 import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.utils.GlideUtil;
 
 /**
  * @author WXW
@@ -45,11 +46,7 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
         }
         final PrintPropertyPriceObj obj = listData.get(position);
 
-        Glide.with(mContext)
-                .load(bookItem.getCoverImage())
-                .error(R.drawable.book_default_bg)
-                .placeholder(R.drawable.book_default_bg)
-                .into(viewHolder.ivBookCover);
+        GlideUtil.displayImage(bookItem.getCoverImage(),viewHolder.ivBookCover);
         viewHolder.tvPrice.setText(mContext.getString(R.string.total_price, obj.getPrice()));
         viewHolder.tvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
 

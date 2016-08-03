@@ -161,7 +161,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.llGoodListUsersBar.removeAllViews();
         }
 
-        if (item.getType() == 1 || !TextUtils.isEmpty(item.getMediaList().get(0).getVideoUrl())) {
+        if (item.getType() == 1) {
             holder.ivVideo.setVisibility(View.VISIBLE);
 //            int width = Remember.getInt("width", 0);
 //            ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
@@ -305,6 +305,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         listData.get(position).setLike(1);
                                         int likeCount = listData.get(position).getLikeCount();
                                         listData.get(position).setLikeCount(likeCount + 1);
+                                        tvLikecount.setText(likeCount + 1 + "");
                                         for (UserObj u : listData.get(position).getLikeList()) {
                                             if (u.getUserId().equals(FastData.getUserInfo().getUserId())) {
                                                 isContains = true;
@@ -327,6 +328,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         listData.get(position).setLike(0);
                                         int likeCount = listData.get(position).getLikeCount();
                                         listData.get(position).setLikeCount(likeCount - 1);
+                                        tvLikecount.setText(likeCount - 1 + "");
                                         for (UserObj u : listData.get(position).getLikeList()) {
                                             if (u.getUserId().equals(FastData.getUserId())) {
                                                 listData.get(position).getLikeList().remove(u);

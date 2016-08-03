@@ -129,34 +129,31 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:src="@drawable/selector_timeline_like"
                                 android:layout_marginRight="@dimen/size_2"
-                                />
+                                android:src="@drawable/selector_timeline_like" />
 
                             <TextView
                                 android:id="@+id/tv_likecount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
                                 android:layout_gravity="center_vertical"
-                                />
+                                android:text="0" />
 
                             <ImageView
                                 android:id="@+id/icon_comment"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:src="@drawable/timeline_comment"
                                 android:layout_marginLeft="@dimen/size_6"
                                 android:layout_marginRight="@dimen/size_2"
-                                />
+                                android:src="@drawable/timeline_comment" />
+
                             <TextView
                                 android:id="@+id/tv_commentcount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
                                 android:layout_gravity="center_vertical"
-                                />
+                                android:text="0" />
                         </LinearLayout>
                     </RelativeLayout>
 
@@ -183,10 +180,25 @@
                             android:layout_gravity="center_vertical">
 
                             <LinearLayout
-                                android:id="@+id/ll_good_list_users_bar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal" />
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:src="@drawable/like_select" />
+
+                                <LinearLayout
+                                    android:id="@+id/ll_good_list_users_bar"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal" />
+
+                            </LinearLayout>
                         </HorizontalScrollView>
 
                         <LinearLayout

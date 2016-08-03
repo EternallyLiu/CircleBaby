@@ -26,6 +26,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.PrintCartItem;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.utils.GlideUtil;
 
 /**
  * @author YW.SUN
@@ -111,11 +112,7 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
             ((ViewHolder) viewHolder).ivBookbg.setImageResource(R.drawable.book_front_mask);
         }
 
-        Glide.with(mContext)
-                .load(cartItem.getCoverImage())
-                .placeholder(R.drawable.book_default_bg)
-                .error(R.drawable.book_default_bg)
-                .into(((ViewHolder) viewHolder).ivBookCover);
+        GlideUtil.displayImage(cartItem.getCoverImage(),((ViewHolder) viewHolder).ivBookCover);
 
         //台历数据
 //        if (TypeConstant.BOOK_TYPE_DESK_CALENDAR == cartItem.getBookType()) {

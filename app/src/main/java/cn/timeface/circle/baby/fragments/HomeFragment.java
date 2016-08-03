@@ -417,6 +417,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     public void replaceList(int replacePosition, int listPos, TimeLineObj timeLineObj) {
+
         if (tempList.size() > replacePosition) {
             if (tempList.get(replacePosition).getTimeLineList().size() > listPos) {
                 tempList.get(replacePosition).getTimeLineList().remove(listPos);

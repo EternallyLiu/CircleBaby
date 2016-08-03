@@ -161,6 +161,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                     }
                 }, error -> {
                     Log.e("TimeLineDetailActivity", "queryBabyTimeDetail:");
+                    error.printStackTrace();
                 });
 
     }
@@ -235,9 +236,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         if (timelineobj.getLikeCount() > 0) {
             hsv.setVisibility(View.VISIBLE);
             llGoodListUsersBar.removeAllViews();
-            ImageView like = new ImageView(this);
-            like.setImageResource(R.drawable.like_select);
-            llGoodListUsersBar.addView(like);
             for (UserObj u : timelineobj.getLikeList()) {
                 ImageView imageView = initPraiseItem();
                 llGoodListUsersBar.addView(imageView);
@@ -265,7 +263,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             ll_commentLikeWrapper.setVisibility(View.VISIBLE);
         }
 
-        if (timelineobj.getType() == 1 || !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getVideoUrl())) {
+        if (timelineobj.getType() == 1) {
             ivVideo.setVisibility(View.VISIBLE);
 //            int width = Remember.getInt("width", 0);
 //            ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
@@ -401,6 +399,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                             }
                         }, error -> {
                             Log.e(TAG, "comment");
+                            error.printStackTrace();
                         });
                 break;
             case R.id.rl_single:
@@ -418,6 +417,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                     timelineobj.setLike(1);
                                     int likeCount = timelineobj.getLikeCount();
                                     timelineobj.setLikeCount(likeCount + 1);
+                                    tvLikecount.setText(likeCount + 1 + "");
                                     for (UserObj u : timelineobj.getLikeList()) {
                                         if (u.getUserId() != null) {
                                             if (u.getUserId().equals(FastData.getUserInfo().getUserId())) {
@@ -435,6 +435,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                     hsv.setVisibility(View.VISIBLE);
                                     ImageView imageView = initPraiseItem();
                                     llGoodListUsersBar.addView(imageView);
+
                                     EventBus.getDefault().post(new CommentSubmit(replacePosition, listPos, timelineobj));
 
                                     GlideUtil.displayImage(FastData.getAvatar(), imageView);
@@ -444,6 +445,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                     timelineobj.setLike(0);
                                     int likeCount = timelineobj.getLikeCount();
                                     timelineobj.setLikeCount(likeCount - 1);
+                                    tvLikecount.setText(likeCount - 1 + "");
                                     for (UserObj u : timelineobj.getLikeList()) {
                                         if (u.getUserId() != null) {
                                             if (u.getUserId().equals(FastData.getUserId())) {
@@ -482,6 +484,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                             }
                         }, error -> {
                             Log.e(TAG, "like:");
+                            error.printStackTrace();
                         });
 
                 break;
@@ -524,6 +527,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                         }
                                     }, error -> {
                                         Log.e(TAG, "delComment:");
+                                        error.printStackTrace();
                                     });
                         }
                     }).show();
@@ -632,6 +636,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
      * 重新加载评论
      */
     private void reLoadCommend() {
+        tvCommentcount.setText(timelineobj.getCommentCount()+"");
         if (timelineobj.getCommentList().size() > 0) {
             ll_commentLikeWrapper.setVisibility(View.VISIBLE);
             llCommentWrapper.setVisibility(View.VISIBLE);
