@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -83,6 +84,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
                 .subscribe(new Action1<TFOBookModel>() {
                                @Override
                                public void call(TFOBookModel podResponse) {
+                                   Log.i(TAG, "call: 111111 reqPod + " + new Gson().toJson(podResponse));
                                    BookModelCache.getInstance().setBookModel(podResponse);
                                    setData(podResponse);
                                    if (TextUtils.isEmpty(bookId)) {

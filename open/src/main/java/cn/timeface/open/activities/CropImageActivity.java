@@ -1,6 +1,7 @@
 package cn.timeface.open.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,6 +54,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
     ImageView ivRotation;
     ImageView ivOk;
 
+    ProgressDialog pd;
+
     TFOBookElementModel elementModel;
     String contentId;
     String newImageUrl;
@@ -82,6 +85,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
         intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_Y, elementModel.getContentHeight());
         Uri in;
         String url = elementModel.getImageContentExpand().getImageUrl();
+        Log.i("open edit url", "open4result: " + url);
         File file = new File(Glide.getPhotoCacheDir(activity), url.hashCode() + url.substring(url.lastIndexOf(".")));
         if (file.exists()) {
             in = Uri.fromFile(file);
@@ -113,6 +117,11 @@ public class CropImageActivity extends BaseAppCompatActivity {
         contentId = getIntent().getStringExtra(Constant.CONTENT_ID);
         newImageW = elementModel.getImageContentExpand().getImageWidth();
         newImageH = elementModel.getImageContentExpand().getImageHeight();
+
+        pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setMessage("正在上传");
+        pd.setCancelable(false);
 
         setImageData(getIntent());
     }
@@ -309,13 +318,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
     }
 
     public void doUpload(Uri uri) {
+        Log.i(TAG, "doUpload: 111111  start");
         Observable.just(uri)
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        newImageUrl = null;
-                    }
-                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(new Func1<Uri, String>() {
@@ -325,9 +329,23 @@ public class CropImageActivity extends BaseAppCompatActivity {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        pd.show();
+                        newImageUrl = null;
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        pd.dismiss();
+                    }
+                })
                 .subscribe(new Action1<String>() {
                                @Override
                                public void call(String url) {
+                                   Log.i(TAG, "doUpload: 111111  222222  end" + url);
                                    newImageUrl = url;
                                }
                            }
@@ -335,7 +353,18 @@ public class CropImageActivity extends BaseAppCompatActivity {
                             @Override
                             public void call(Throwable throwable) {
                                 Toast.makeText(CropImageActivity.this, "上传失败", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "call: ", throwable);
+                                setResultError(throwable);
+                                finish();
                             }
                         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 }

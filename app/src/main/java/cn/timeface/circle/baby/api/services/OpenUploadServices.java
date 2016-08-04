@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
-import com.alibaba.sdk.android.oss.model.PutObjectResult;
 
 import java.io.File;
 
@@ -25,8 +24,10 @@ public class OpenUploadServices implements IUploadServices {
         MyUploadFileObj uploadFileObj = new MyUploadFileObj(file.getAbsolutePath());
 
         try {
-            OSSManager.getOSSManager(App.getInstance())
-                    .upload(uploadFileObj.getObjectKey(), file.getAbsolutePath());
+            if (!OSSManager.getOSSManager(App.getInstance()).checkFileExist(uploadFileObj.getObjectKey())) {
+                OSSManager.getOSSManager(App.getInstance())
+                        .upload(uploadFileObj.getObjectKey(), file.getAbsolutePath());
+            }
             return ApiService.IMAGE_BASE_URL + uploadFileObj.getObjectKey();
         } catch (ClientException e) {
             e.printStackTrace();

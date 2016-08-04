@@ -380,6 +380,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         list.add(rightModel);
         list.add(0, leftModel);
 
+        Log.i(TAG, "doSave: 111111   " + new Gson().toJson(list));
+
         apiService.editPod(bookModel.getBookId(), new Gson().toJson(list))
                 .compose(SchedulersCompat.<BaseResponse<EditPod>>applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<EditPod>>() {
@@ -532,6 +534,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 editedContentId = data.getStringExtra(Constant.CONTENT_ID);
                 editedModel.setPageScale(pageScale);//先设置缩放比
 
+                Log.i(TAG, "onActivityResult: 111111  modeljson = " + new Gson().toJson(editedModel));
+
                 //更换model
                 changeElementModel(editedContentId, editedModel);
                 setupViews();
@@ -542,6 +546,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 }
                 editedModel = data.getParcelableExtra(Constant.ELEMENT_MODEL);
                 editedContentId = data.getStringExtra(Constant.CONTENT_ID);
+                Log.i(TAG, "onActivityResult: 111111  modeljson = " + new Gson().toJson(editedModel));
 
                 //更换model
                 changeElementModel(editedContentId, editedModel);
@@ -558,6 +563,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 if (model.getElementId() == edited.getElementId()) {
                     leftModel.getElementList().remove(model);
                     leftModel.getElementList().add(edited);
+
+                    Log.i(TAG, "changeElementModel: 111111  change true");
                     return true;
                 }
             }
@@ -566,12 +573,14 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         if (rightModel != null && rightModel.getContentId().equals(editedContentId)) {
             for (TFOBookElementModel model : rightModel.getElementList()) {
                 if (model.getElementId() == edited.getElementId()) {
-                    leftModel.getElementList().remove(model);
-                    leftModel.getElementList().add(edited);
+                    rightModel.getElementList().remove(model);
+                    rightModel.getElementList().add(edited);
+                    Log.i(TAG, "changeElementModel: 111111  change true");
                     return true;
                 }
             }
         }
+        Log.i(TAG, "changeElementModel: 111111  change false");
         return false;
     }
 
