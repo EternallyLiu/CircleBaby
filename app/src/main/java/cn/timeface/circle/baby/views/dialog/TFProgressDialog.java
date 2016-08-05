@@ -2,7 +2,10 @@ package cn.timeface.circle.baby.views.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import cn.timeface.circle.baby.R;
@@ -13,9 +16,11 @@ import cn.timeface.circle.baby.R;
  */
 public class TFProgressDialog extends BaseDialog {
     private TextView message;
+    private ImageView dialogProgress;
 
     public TFProgressDialog(Context context) {
-        super(context, R.style.TFProgressDialogStyle);
+        super(context);
+//        super(context, R.style.TFProgressDialogStyle);
         init(context);
     }
 
@@ -34,8 +39,11 @@ public class TFProgressDialog extends BaseDialog {
         View view = View.inflate(context, R.layout.layout_progress, null);
         setContentView(view);
         message = (TextView) view.findViewById(R.id.dialog_progress_message);
+        dialogProgress = (ImageView) view.findViewById(R.id.dialog_progress);
         message.setText("正在加载…");
         this.setCanceledOnTouchOutside(false);
+        ((Animatable) dialogProgress.getDrawable()).start();
+
     }
 
     public void setMessage(String str) {

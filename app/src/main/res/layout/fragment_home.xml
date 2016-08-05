@@ -154,7 +154,8 @@
                 android:layout_gravity="center_vertical"
                 android:text="选择宝宝"
                 android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_medium"
+                android:drawableLeft="@drawable/back"/>
 
             <ImageView
                 android:id="@+id/iv_message"

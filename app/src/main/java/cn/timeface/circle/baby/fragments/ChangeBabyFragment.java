@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
 import cn.timeface.circle.baby.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
@@ -78,6 +81,12 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
         return view;
     }
 
+    @Override
+    public void onResume() {
+        reqData();
+        super.onResume();
+    }
+
     private void reqData() {
         apiService.queryBabyInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -125,6 +134,7 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
                         .subscribe(response -> {
                             if (response.success()) {
                                 Remember.putBoolean("showtimelinehead", true);
+                                EventBus.getDefault().post(new HomeRefreshEvent());
                                 getActivity().finish();
                             }
                         }, throwable -> {

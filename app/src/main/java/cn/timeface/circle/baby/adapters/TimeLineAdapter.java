@@ -85,8 +85,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder.tvAuthor.setText(item.getAuthor().getRelationName());
         holder.tvDate.setText(DateUtil.getTime2(item.getDate()));
         holder.iconLike.setSelected(item.getLike() == 1 ? true : false);
-        holder.tvCommentcount.setText(item.getCommentCount()+"");
-        holder.tvLikecount.setText(item.getLikeCount()+"");
+        holder.tvCommentcount.setText(item.getCommentCount() + "");
+        holder.tvLikecount.setText(item.getLikeCount() + "");
 
         if (!TextUtils.isEmpty(item.getMilestone())) {
             holder.tvMilestone.setVisibility(View.VISIBLE);
@@ -392,11 +392,17 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = View.inflate(context, R.layout.item_image, null);
+            View view = View.inflate(context, R.layout.item_image_and_count, null);
             ImageView iv = (ImageView) view.findViewById(R.id.iv_image);
+            TextView tvCount = (TextView) view.findViewById(R.id.tv_count);
+            if (position == 8 && urls.size() > 9) {
+                tvCount.setVisibility(View.VISIBLE);
+                tvCount.setText(urls.size() - 9 + "+");
+            }
             int width = Remember.getInt("width", 0);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width);
             iv.setLayoutParams(params);
+            tvCount.setLayoutParams(params);
             GlideUtil.displayImage(urls.get(position), iv);
 //            iv.setOnClickListener(new View.OnClickListener() {
 //                @Override

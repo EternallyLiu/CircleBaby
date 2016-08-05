@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +93,7 @@ public class DiaryPreviewFragment extends BaseFragment {
     private float oldRotation;
     private int width;
     private int hight;
-    private String objectKey;
+    private String objectKey = "";
     private int paperId;
     private TemplateObj templateObj;
     private ImgObj imgObj;
@@ -111,9 +112,8 @@ public class DiaryPreviewFragment extends BaseFragment {
         time = getArguments().getString("time");
         content = getArguments().getString("content");
         imgObj = getArguments().getParcelable("imgObj");
-        url = imgObj.getLocalPath();
         date = imgObj.getDate();
-        uploadImage();
+
     }
 
     @Override
@@ -123,13 +123,21 @@ public class DiaryPreviewFragment extends BaseFragment {
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         tfProgressDialog = new TFProgressDialog(getActivity());
         tvTime.setText(time);
         tvContent.setText(content);
-        touchImageView = new ScaleImageView(getActivity(), url);
+        touchImageView = new ScaleImageView(getActivity(), imgObj);
+        url = imgObj.getLocalPath();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("DiaryPreviewFragment.url === "+url);
+                uploadImage();
+            }
+        }).run();
         rlCover.addView(touchImageView, 0);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) touchImageView.getLayoutParams();
         layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
@@ -340,6 +348,10 @@ public class DiaryPreviewFragment extends BaseFragment {
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         objectKey = uploadFileObj.getObjectKey();
+                        File file = new File(url);
+                        if(file.exists()){
+                            file.delete();
+                        }
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
@@ -361,7 +373,7 @@ public class DiaryPreviewFragment extends BaseFragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.complete){
+        if (item.getItemId() == R.id.complete) {
             tfProgressDialog.setMessage("合成卡片中…");
             tfProgressDialog.show();
             //日记卡片合成
@@ -401,7 +413,16 @@ public class DiaryPreviewFragment extends BaseFragment {
 //                            Log.e(TAG, "diaryPublish:");
 //                        });
             long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
+            while (TextUtils.isEmpty(objectKey)){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             TemplateImage templateImage = new TemplateImage(degree, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
+
+            System.out.println("degree == " + degree + "\ncropHeight=" + cropHeight + "\nbitmapHeight=" + bitmapHeight + "\nbitmapWidth=" + bitmapWidth + "\ncropWidth=" + cropWidth + "\nleftTop.x" + leftTop.x + "\nleftTop.y" + leftTop.x + "\nobjectKey=" + objectKey + "\ncreateTime=" + createTime);
 
             List<TemplateAreaObj> templateList = templateObj.getTemplateList();
 
@@ -419,11 +440,15 @@ public class DiaryPreviewFragment extends BaseFragment {
             apiService.diaryComposed(URLEncoder.encode(s))
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(diaryComposedResponse -> {
-                        MediaObj mediaObj = diaryComposedResponse.getMediaObj();
-                        System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
-                        tfProgressDialog.dismiss();
-                        getActivity().finish();
-                        EventBus.getDefault().post(new MediaObjEvent(mediaObj));
+                        if(diaryComposedResponse.success()){
+                            MediaObj mediaObj = diaryComposedResponse.getMediaObj();
+                            System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
+                            tfProgressDialog.dismiss();
+                            getActivity().finish();
+                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
+                        }else{
+                            ToastUtil.showToast(diaryComposedResponse.getInfo());
+                        }
                     }, throwable -> {
                         Log.e(TAG, "diaryPublish:");
                     });

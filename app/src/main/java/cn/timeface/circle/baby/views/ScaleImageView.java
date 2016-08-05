@@ -15,6 +15,9 @@ import android.widget.ImageView;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.utils.ImageFactory;
+
 /**
  * Created by lidonglin on 2016/5/23.
  */
@@ -47,12 +50,13 @@ public class ScaleImageView extends ImageView {
     private float bitmapHeight;
     private float picWidth;
     private float picHeight;
-
-    public ScaleImageView(Activity activity, String path) {
+    private ImgObj imgObj;
+    public ScaleImageView(Activity activity, ImgObj imgObj) {
         super(activity);
+        this.imgObj = imgObj;
 //        gintama = BitmapFactory.decodeResource(getResources(), R.drawable.ic_login_qq);
-        gintama = BitmapFactory.decodeFile(path);
-        gintama = comp(gintama);
+//        gintama = BitmapFactory.decodeFile(path);
+        gintama = comp(imgObj.getLocalPath());
 
         DisplayMetrics dm = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -290,7 +294,7 @@ public class ScaleImageView extends ImageView {
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         if (baos.toByteArray().length / 1024 > 1024) {//判断如果图片大于1M,进行压缩避免在生成图片（BitmapFactory.decodeStream）时溢出
             baos.reset();//重置baos即清空baos
-            image.compress(Bitmap.CompressFormat.JPEG, 50, baos);//这里压缩50%，把压缩后的数据存放到baos中
+            image.compress(Bitmap.CompressFormat.JPEG, 10, baos);//这里压缩10%，把压缩后的数据存放到baos中
         }
         ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
@@ -301,8 +305,8 @@ public class ScaleImageView extends ImageView {
         int w = newOpts.outWidth;
         int h = newOpts.outHeight;
         //现在主流手机比较多是800*480分辨率，所以高和宽我们设置为
-        float hh = 1980f;//这里设置高度为800f
-        float ww = 1080f;//这里设置宽度为480f
+        float hh = 800f;//这里设置高度为800f
+        float ww = 400f;//这里设置宽度为480f
         //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
         int be = 1;//be=1表示不缩放
         if (w > h && w > ww) {//如果宽度大的话根据宽度固定大小缩放
@@ -317,6 +321,29 @@ public class ScaleImageView extends ImageView {
         isBm = new ByteArrayInputStream(baos.toByteArray());
         bitmap = BitmapFactory.decodeStream(isBm, null, newOpts);
         return bitmap;//压缩好比例大小后再进行质量压缩
+    }
+
+    private Bitmap comp(String path) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+        int w = options.outWidth;
+        int h = options.outHeight;
+        float hh = 1080f;
+        float ww = 720f;
+        int scale = 1;
+        int scaleX = (int) (w / ww);
+        int scaleY = (int) (h / hh);
+        scale = scaleX > scaleY ? scaleX : scaleY;
+        options.inSampleSize = scale;
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap1 = BitmapFactory.decodeFile(path, options);
+        if (scale!=1){
+            String url = ImageFactory.saveImage(bitmap1);
+            imgObj.setLocalPath(url);
+            System.out.println("ScaleImageView.url ===== " + url);
+        }
+        return bitmap1;
     }
 
     //图片左上角在原图中的位置
@@ -339,8 +366,8 @@ public class ScaleImageView extends ImageView {
         int bitmapHeight = getBitmapHeight();
 
         PointF pointF = new PointF();
-        pointF.x = w*bitmapWidth/width;
-        pointF.y = h*bitmapHeight/height;
+        pointF.x = w * bitmapWidth / width;
+        pointF.y = h * bitmapHeight / height;
         return pointF;
     }
 

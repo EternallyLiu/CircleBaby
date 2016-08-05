@@ -8,6 +8,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class CardPublishActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -37,8 +40,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
 
     public final int PICTURE = 0;
-    @Bind(R.id.tv_publish)
-    TextView tvPublish;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.vp)
@@ -64,10 +65,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        tvPublish.setOnClickListener(this);
         tvAdd.setOnClickListener(this);
-
 //        reqData();
 //        selectImages();
     }
@@ -128,10 +126,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_back:
-                finish();
-                break;
-            case R.id.tv_publish:
-                EventBus.getDefault().post(new CardEvent(dataList));
                 finish();
                 break;
             case R.id.iv_deletecard:
@@ -237,5 +231,27 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         public void setDataList(List<View> list) {
             this.list = list;
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_complete, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.home) {
+            onBackPressed();
+        } else if (item.getItemId() == R.id.complete) {
+            if(dataList.size() == 0){
+                ToastUtil.showToast("先制作一张识图卡片吧~");
+                return true;
+            }
+            EventBus.getDefault().post(new CardEvent(dataList));
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

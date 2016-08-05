@@ -20,6 +20,8 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.wechat.photopicker.PickerPhotoActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -136,8 +138,8 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                 apiService.createBaby(time, gender, objectKey, URLEncoder.encode(name), relationId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(userLoginResponse -> {
-                            FastData.setUserInfo(userLoginResponse.getUserInfo());
-                            TabMainActivity.open(this);
+//                            FastData.setUserInfo(userLoginResponse.getUserInfo());
+//                            TabMainActivity.open(this);
                             finish();
                         }, throwable -> {
                             Log.e(TAG, "createBaby:", throwable);

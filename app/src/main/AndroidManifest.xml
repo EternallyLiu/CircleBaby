@@ -210,8 +210,13 @@
         <activity android:name="com.wechat.photopicker.PickerPhotoActivity" />
         <activity android:name="com.wechat.photopicker.PickerPhotoActivity2" />
         <activity android:name="com.wechat.photopicker.PickerVideoActivity" />
-        <activity android:name=".activities.DiaryPublishActivity" />
-        <activity android:name=".activities.CardPublishActivity" />
+        <activity android:name=".activities.DiaryPublishActivity"
+            android:label="宝宝日记"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activities.CardPublishActivity"
+            android:label="识图卡片"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".activities.SelectMileStoneActivity"
             android:label="里程碑"

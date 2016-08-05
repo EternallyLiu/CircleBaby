@@ -86,10 +86,12 @@
                 android:textSize="@dimen/text_medium" />
         </RelativeLayout>
 
-        <cn.timeface.circle.baby.views.NoScrollGridView
+        <GridView
             android:id="@+id/gv_grid_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:horizontalSpacing="@dimen/size_2"
+            android:verticalSpacing="@dimen/size_2"
             android:numColumns="4" />
 
         <RelativeLayout

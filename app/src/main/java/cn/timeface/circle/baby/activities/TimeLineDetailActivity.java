@@ -230,8 +230,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             gv.setVisibility(View.GONE);
         }
 
-        tvLikecount.setText(timelineobj.getLikeCount()+"");
-        tvCommentcount.setText(timelineobj.getCommentCount()+"");
+        tvLikecount.setText(timelineobj.getLikeCount() + "");
+        tvCommentcount.setText(timelineobj.getCommentCount() + "");
 
         if (timelineobj.getLikeCount() > 0) {
             hsv.setVisibility(View.VISIBLE);
@@ -403,7 +403,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                         });
                 break;
             case R.id.rl_single:
-                VideoPlayActivity.open(this,timelineobj.getMediaList().get(0).getVideoUrl());
+                VideoPlayActivity.open(this, timelineobj.getMediaList().get(0).getVideoUrl());
                 break;
             case R.id.icon_like:
                 int p = iconLike.isSelected() == true ? 0 : 1;
@@ -544,11 +544,11 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     @Subscribe
     public void onEvent(Object event) {
-        if(event instanceof DeleteTimeLineEvent){
+        if (event instanceof DeleteTimeLineEvent) {
             finish();
-        }else if(event instanceof TimelineEditEvent){
+        } else if (event instanceof TimelineEditEvent) {
             finish();
-            open(this,timelineobj.getTimeId());
+            open(this, timelineobj.getTimeId());
         }
 
     }
@@ -589,11 +589,17 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = View.inflate(TimeLineDetailActivity.this, R.layout.item_image, null);
+            View view = View.inflate(TimeLineDetailActivity.this, R.layout.item_image_and_count, null);
             ImageView iv = (ImageView) view.findViewById(R.id.iv_image);
+            TextView tvCount = (TextView) view.findViewById(R.id.tv_count);
+            if (position == 8 && urls.size() > 9) {
+                tvCount.setVisibility(View.VISIBLE);
+                tvCount.setText(urls.size() - 9 + "+");
+            }
             int width = Remember.getInt("width", 0);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width);
             iv.setLayoutParams(params);
+            tvCount.setLayoutParams(params);
             GlideUtil.displayImage(urls.get(position), iv);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -636,7 +642,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
      * 重新加载评论
      */
     private void reLoadCommend() {
-        tvCommentcount.setText(timelineobj.getCommentCount()+"");
+        tvCommentcount.setText(timelineobj.getCommentCount() + "");
         if (timelineobj.getCommentList().size() > 0) {
             ll_commentLikeWrapper.setVisibility(View.VISIBLE);
             llCommentWrapper.setVisibility(View.VISIBLE);
