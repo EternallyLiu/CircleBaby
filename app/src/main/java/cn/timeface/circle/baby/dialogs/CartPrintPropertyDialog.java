@@ -2,10 +2,12 @@ package cn.timeface.circle.baby.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -42,6 +44,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CartActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CartPrintPropertyGvAdapter;
 import cn.timeface.circle.baby.api.models.PrintCartItem;
@@ -544,7 +547,21 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                     //新加到印刷车
                                 } else {
                                     EventBus.getDefault().post(new CartAddClickEvent());
-                                    Toast.makeText(getActivity(), "恭喜，已添加到印刷车", Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(getActivity(), "恭喜，已添加到印刷车", Toast.LENGTH_LONG).show();
+                                   new AlertDialog.Builder(getActivity())
+                                           .setMessage("已添加到印刷车")
+                                           .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                               @Override
+                                               public void onClick(DialogInterface dialog, int which) {
+                                                   dialog.dismiss();
+                                               }
+                                           }).setPositiveButton("去查看", new DialogInterface.OnClickListener() {
+                                       @Override
+                                       public void onClick(DialogInterface dialog, int which) {
+                                           dialog.dismiss();
+                                           CartActivity.open(getActivity());
+                                       }
+                                   }).show();
                                 }
                             } else {
                                 Toast.makeText(getActivity(), response.getInfo(), Toast.LENGTH_SHORT).show();

@@ -19,7 +19,7 @@
         android:id="@+id/iv_photo_selector"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/photo_selector"
+        android:src="@drawable/selector_item_photo_select"
         android:clickable="true"
         android:padding="5dp"
         android:layout_margin="5dp"

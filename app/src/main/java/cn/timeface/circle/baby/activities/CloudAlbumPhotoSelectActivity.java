@@ -99,7 +99,7 @@ public class CloudAlbumPhotoSelectActivity extends BaseAppCompatActivity impleme
 //        }
 
         //将日期相同的图片合并
-        for (int x = 0; x < dataList.size(); x++) {
+        /*for (int x = 0; x < dataList.size(); x++) {
             if (x == 0 || !DateUtil.formatDate("yyyy.MM.dd", dataList.get(x).getDate()).equals(DateUtil.formatDate("yyyy.MM.dd", dataList.get(x - 1).getDate()))) {
                 ImageInfoListObj imageInfoListObj = dataList.get(x);
                 List<MediaObj> mediaList = new ArrayList<>();
@@ -112,9 +112,9 @@ public class CloudAlbumPhotoSelectActivity extends BaseAppCompatActivity impleme
                 imageInfoListObj.setMediaList(mediaList);
                 imageInfoList.add(imageInfoListObj);
             }
-        }
+        }*/
 
-        adapter = new TimeBookPickerPhotoAdapter(this, imageInfoList, optionalPhotoSize);
+        adapter = new TimeBookPickerPhotoAdapter(this, dataList, optionalPhotoSize);
         rvContent.setAdapter(adapter);
     }
 

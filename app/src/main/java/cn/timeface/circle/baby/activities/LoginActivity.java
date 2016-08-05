@@ -193,6 +193,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
                 }, throwable -> {
                     Log.e(TAG, "login:", throwable);
+                    throwable.printStackTrace();
                 });
         return s;
     }
@@ -319,7 +320,8 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         }
                     }
                 }, error -> {
-
+                    Log.e(TAG, "vendorLogin:", error);
+                    error.printStackTrace();
                 });
     }
 

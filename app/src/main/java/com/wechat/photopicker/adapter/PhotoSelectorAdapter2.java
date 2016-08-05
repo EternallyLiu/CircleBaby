@@ -141,6 +141,34 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
 //                }
 //            });
 
+            holder.mSelector.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "------CLICK SELECTOR");
+                    int selectedPhotosSize = mSelectorPhotos.size();
+                    if (mSelectorPhotos.contains(photo)) {
+                        Log.d(TAG, "remove photo");
+                        photo.setSelected(0);
+                        timeIds.remove(Integer.valueOf(photo.getTimeId()));
+                        mPhotos.set(position, photo);
+                        mSelectorPhotos.remove(photo);
+                        notifyItemChanged(position);
+                    } else if (selectedPhotosSize != mOptionalPhotoSize) {
+                        Log.d(TAG, "add photo");
+                        photo.setSelected(1);
+                        timeIds.add(photo.getTimeId());
+                        mPhotos.set(position, photo);
+                        mSelectorPhotos.add(photo);
+                        notifyItemChanged(position);
+                    } else {
+                        Toast.makeText(mContext, "你最多只能选择" + mOptionalPhotoSize + "张照片", Toast.LENGTH_SHORT).show();
+                    }
+                    if (onItemCheckListener != null) {
+                        onItemCheckListener.OnItemCheck(position, photo, isSelector, mSelectorPhotos.size());
+                    }
+                }
+            });
+
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

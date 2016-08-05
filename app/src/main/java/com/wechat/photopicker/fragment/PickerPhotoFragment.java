@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 
 import static android.app.Activity.RESULT_OK;
 import static com.wechat.photopicker.PickerPhotoActivity.MAX_SELECTOR_SIZE;
@@ -197,10 +198,10 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
             }
 
         } else if (i == R.id.bt_preview) {
-            BigImageShowIntent bigImageShowIntent = new BigImageShowIntent(getActivity());
-            bigImageShowIntent.setPhotoPaths(mPhotoSelectorAdapter.getSelectedPhotoPaths());
-            startActivity(bigImageShowIntent);
-
+//            BigImageShowIntent bigImageShowIntent = new BigImageShowIntent(getActivity());
+//            bigImageShowIntent.setPhotoPaths(mPhotoSelectorAdapter.getSelectedPhotoPaths());
+//            startActivity(bigImageShowIntent);
+            FragmentBridgeActivity.openBigimageFragment(v.getContext(), mPhotoSelectorAdapter.getSelectedPhotoPaths(), 0);
         }
     }
     public PhotoSelectorAdapter getPhotoSelectorAdapter(){

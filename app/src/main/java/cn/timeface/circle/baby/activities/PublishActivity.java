@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -36,7 +34,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import butterknife.Bind;
@@ -64,7 +61,6 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.NoScrollGridView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
@@ -80,7 +76,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.gv_grid_view)
-    NoScrollGridView gvGridView;
+    GridView gvGridView;
     @Bind(R.id.tv_mile_stone)
     TextView tvMileStone;
     @Bind(R.id.rl_mile_stone)
@@ -152,7 +148,26 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
         adapter = new PhotoGridAdapter(this);
         gvGridView.setAdapter(adapter);
-        gvGridView.setOnItemClickListener((parent, v, position, id) -> {
+        adapter.setOnAddClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (publishType) {
+                    case PHOTO:
+                        selectImages();
+                        break;
+                    case VIDEO:
+                        selectVideos();
+                        break;
+                    case DIALY:
+                        DiaryPublishActivity.open(PublishActivity.this);
+                        break;
+                    case CARD:
+                        CardPublishActivity.open(PublishActivity.this);
+                        break;
+                }
+            }
+        });
+        /*gvGridView.setOnItemClickListener((parent, v, position, id) -> {
             if (position == 0) {
                 switch (publishType) {
                     case PHOTO:
@@ -167,16 +182,14 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     case CARD:
                         CardPublishActivity.open(this);
                         break;
-
                 }
-
             } else {
 //                int relPosition = position - 1;
 //                imageUrls.remove(adapter.getData().get(relPosition));
 //                adapter.getData().remove(relPosition);
 //                adapter.notifyDataSetChanged();
             }
-        });
+        });*/
 
         switch (publishType) {
             case PHOTO:
@@ -461,6 +474,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             gvGridView.setVisibility(View.GONE);
             mediaObj = ((MediaObjEvent) event).getMediaObj();
             GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
+            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
         } else if (event instanceof CardEvent) {
             mediaObjs = ((CardEvent) event).getMediaObjs();
             List<String> list = new ArrayList<>();
@@ -469,6 +483,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
+            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
         }
     }
 

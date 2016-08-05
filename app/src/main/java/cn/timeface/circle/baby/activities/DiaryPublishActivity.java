@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -26,12 +28,16 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
 import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.common.utils.ShareSdkUtil;
 
 public class DiaryPublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
@@ -40,8 +46,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
 
     public final int PICTURE = 0;
     public final int DIARYTEXT = 1;
-    @Bind(R.id.tv_next)
-    TextView tvNext;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.tv_time)
@@ -78,7 +82,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
 
 
         tvTime.setOnClickListener(this);
-        tvNext.setOnClickListener(this);
         ivDiary.setOnClickListener(this);
         tvContent.setOnClickListener(this);
 
@@ -99,6 +102,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
                     if (selImages.size() > 0) {
                         String localPath = selImages.get(0).getLocalPath();
+                        ivDiary.setScaleType(ImageView.ScaleType.CENTER_CROP);
                         GlideUtil.displayImage(localPath, ivDiary);
                     }
                     break;
@@ -113,22 +117,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_next:
-                content = tvContent.getText().toString();
-                String time = tvTime.getText().toString();
-                if (selImages.size() < 1) {
-                    ToastUtil.showToast("请选择一张图片");
-                    return;
-                }
-                if (TextUtils.isEmpty(content)) {
-                    ToastUtil.showToast("记录宝宝今天的成长吧~");
-                    return;
-                }
-                //跳转到预览界面
-                ImgObj imgObj = selImages.get(0);
-                FragmentBridgeActivity.openDiaryPreviewFragment(this, time, content, imgObj);
-
-                break;
             case R.id.tv_time:
                 Calendar calendar = Calendar.getInstance();
                 DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -152,5 +140,33 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     @Subscribe
     public void onEvent(MediaObjEvent event) {
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_next, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.home) {
+            onBackPressed();
+        } else if (item.getItemId() == R.id.next) {
+            content = tvContent.getText().toString();
+            String time = tvTime.getText().toString();
+            if (selImages.size() < 1) {
+                ToastUtil.showToast("请选择一张图片");
+                return true;
+            }
+//            if (TextUtils.isEmpty(content)) {
+//                ToastUtil.showToast("记录宝宝今天的成长吧~");
+//                return true;
+//            }
+            //跳转到预览界面
+            ImgObj imgObj = selImages.get(0);
+            FragmentBridgeActivity.openDiaryPreviewFragment(this, time, content, imgObj);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

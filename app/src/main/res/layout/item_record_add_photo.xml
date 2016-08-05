@@ -5,6 +5,7 @@
     android:padding="8dp">
 
     <TextView
+        android:id="@+id/tv_add"
         android:text="+"
         android:textSize="40sp"
         android:layout_width="@dimen/size_72"

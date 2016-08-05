@@ -37,7 +37,8 @@ android {
             signingConfig signingConfigs.signingConfig
         }
         release {
-            buildConfigField "String", "API_URL", '"http://dev1.v5time.net/baby/"'
+            buildConfigField "String", "API_URL", '"http://stg2.v5time.net/baby/"'
+//            buildConfigField "String", "API_URL", '"http://dev1.v5time.net/baby/"'
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             shrinkResources true

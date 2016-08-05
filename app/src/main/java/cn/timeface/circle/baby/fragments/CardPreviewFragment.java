@@ -22,6 +22,7 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.net.URLEncoder;
 
 import butterknife.Bind;
@@ -62,7 +63,7 @@ public class CardPreviewFragment extends BaseFragment{
     private float oldRotation;
     private int width;
     private int hight;
-    private String objectKey;
+    private String objectKey = "";
     private ImgObj imgObj;
     private String date;
     private TFProgressDialog tfProgressDialog;
@@ -75,9 +76,7 @@ public class CardPreviewFragment extends BaseFragment{
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         imgObj = getArguments().getParcelable("imgObj");
-        url = imgObj.getLocalPath();
         date = imgObj.getDate();
-        uploadImage();
     }
 
     @Override
@@ -88,10 +87,19 @@ public class CardPreviewFragment extends BaseFragment{
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
         if(actionBar!=null){
+            actionBar.setTitle("识图卡片");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         tfProgressDialog = new TFProgressDialog(getActivity());
-        touchImageView = new ScaleImageView(getActivity(), url);
+        touchImageView = new ScaleImageView(getActivity(), imgObj);
+        url = imgObj.getLocalPath();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("DiaryPreviewFragment.url === "+url);
+                uploadImage();
+            }
+        }).run();
         rlDiary.addView(touchImageView);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) touchImageView.getLayoutParams();
         layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
@@ -151,6 +159,10 @@ public class CardPreviewFragment extends BaseFragment{
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         objectKey = uploadFileObj.getObjectKey();
+                        File file = new File(url);
+                        if(file.exists()){
+                            file.delete();
+                        }
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
@@ -191,8 +203,17 @@ public class CardPreviewFragment extends BaseFragment{
             int bitmapWidth = touchImageView.getBitmapWidth();
             int bitmapHeight = touchImageView.getBitmapHeight();
             long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
+
+            while (TextUtils.isEmpty(objectKey)){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
             TemplateImage templateImage = new TemplateImage(0, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
             String imageInfo = new Gson().toJson(templateImage);
+
 
             apiService.cardComposed(URLEncoder.encode(content), imageInfo, URLEncoder.encode(etPinyin.getText().toString()))
                     .compose(SchedulersCompat.applyIoSchedulers())

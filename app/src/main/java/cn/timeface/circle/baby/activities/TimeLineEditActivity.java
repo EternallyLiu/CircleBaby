@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -57,7 +59,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.gv_grid_view)
-    NoScrollGridView gvGridView;
+    GridView gvGridView;
     @Bind(R.id.tv_mile_stone)
     TextView tvMileStone;
     @Bind(R.id.rl_mile_stone)
@@ -95,7 +97,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo_record_detail);
+        setContentView(R.layout.activity_timeline_edit);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -142,7 +144,13 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 adapter = new PhotoGridAdapter(this);
                 adapter.getData().addAll(imageUrls);
                 gvGridView.setAdapter(adapter);
-                gvGridView.setOnItemClickListener((parent, v, position, id) -> {
+                adapter.setOnAddClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectImages();
+                    }
+                });
+                /*gvGridView.setOnItemClickListener((parent, v, position, id) -> {
                     if (position == 0) {
                         selectImages();
                     } else {
@@ -151,7 +159,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 //                adapter.getData().remove(relPosition);
 //                adapter.notifyDataSetChanged();
                     }
-                });
+                });*/
             } else {
                 PhotoGridAdapter2 photoGridAdapter2 = new PhotoGridAdapter2(this);
                 photoGridAdapter2.getData().addAll(imageUrls);
@@ -251,6 +259,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         private static final int TYPE_HEADER = 1;
         private static final int TYPE_BODY = 2;
         private Context context;
+        private View.OnClickListener listener;
         List<String> data = new ArrayList<>();
 
         public PhotoGridAdapter(Context context) {
@@ -278,20 +287,37 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
         @Override
         public int getItemViewType(int position) {
-            return position == 0 ? TYPE_HEADER : TYPE_BODY;
+            return position == data.size() ? TYPE_HEADER : TYPE_BODY;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view;
+            int width = (int) (Remember.getInt("width", 0) * 0.75);
             if (getItemViewType(position) == TYPE_HEADER) {
-                view = View.inflate(context, R.layout.item_record_add_photo, null);
+                view = View.inflate(context, R.layout.item_timeline_add, null);
+                ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
+                ivAdd.setLayoutParams(new FrameLayout.LayoutParams(width,width));
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(listener!=null){
+                            listener.onClick(v);
+                        }
+                    }
+                });
             } else {
-                view = View.inflate(context, R.layout.item_record_photo, null);
-                ImageView imageView = (ImageView) view.findViewById(R.id.iv_cover);
-                GlideUtil.displayImage(data.get(position - 1), imageView);
+                view = View.inflate(context, R.layout.item_image, null);
+                ImageView imageView = (ImageView) view.findViewById(R.id.iv_image);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
+                imageView.setLayoutParams(params);
+                GlideUtil.displayImage(data.get(position), imageView);
             }
             return view;
+        }
+
+        public void setOnAddClickListener(View.OnClickListener listener){
+            this.listener = listener;
         }
     }
 
@@ -327,8 +353,11 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = View.inflate(context, R.layout.item_record_photo, null);
-            ImageView imageView = (ImageView) view.findViewById(R.id.iv_cover);
+            int width = (int) (Remember.getInt("width", 0) * 0.75);
+            View view = View.inflate(context, R.layout.item_image, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.iv_image);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, width);
+            imageView.setLayoutParams(params);
             GlideUtil.displayImage(data.get(position), imageView);
             return view;
         }

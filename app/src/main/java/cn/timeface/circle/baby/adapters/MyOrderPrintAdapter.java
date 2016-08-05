@@ -45,7 +45,9 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
             viewHolder = (ViewHolder) convertView.getTag();
         }
         final PrintPropertyPriceObj obj = listData.get(position);
-
+        if(bookItem.getBookType()!=2){
+            viewHolder.ivBookbg.setImageResource(R.drawable.book_front_mask2);
+        }
         GlideUtil.displayImage(bookItem.getCoverImage(),viewHolder.ivBookCover);
         viewHolder.tvPrice.setText(mContext.getString(R.string.total_price, obj.getPrice()));
         viewHolder.tvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
