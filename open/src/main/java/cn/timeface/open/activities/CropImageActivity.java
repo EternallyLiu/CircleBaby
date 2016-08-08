@@ -246,11 +246,22 @@ public class CropImageActivity extends BaseAppCompatActivity {
         }
     }
 
+    public void clickClose(View view) {
+        finish();
+    }
+
     public void clickChangeImage(View view) {
         pickFromGallery();
     }
 
     public void clickRotation(View view) {
+        rotateByAngle(90);
+    }
+
+
+    private void rotateByAngle(int angle) {
+        mGestureCropImageView.postRotate(angle);
+        mGestureCropImageView.setImageToWrapCropBounds();
     }
 
     public void clickOK(View view) {

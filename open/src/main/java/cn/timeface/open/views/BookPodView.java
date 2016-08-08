@@ -165,6 +165,13 @@ public class BookPodView extends FrameLayout {
     }
 
     /**
+     * 清空监听事件
+     */
+    public void clearOnPageChangeListeners() {
+        viewPager.clearOnPageChangeListeners();
+    }
+
+    /**
      * 获取当前页的内容数据
      *
      * @return 竖屏list.size =1;横屏的list.size=2(左右);

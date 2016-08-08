@@ -197,4 +197,12 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     }
 
     public abstract void createBookInfo(TFOBookModel bookModel);
+
+    @Override
+    protected void onDestroy() {
+        if (bookPodView != null) {
+            bookPodView.clearOnPageChangeListeners();
+        }
+        super.onDestroy();
+    }
 }
