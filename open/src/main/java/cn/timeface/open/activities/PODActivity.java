@@ -2,10 +2,12 @@ package cn.timeface.open.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.SeekBar;
 
 import com.google.gson.Gson;
 
@@ -13,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import cn.timeface.open.BuildConfig;
 import cn.timeface.open.R;
 import cn.timeface.open.activities.base.BaseAppCompatActivity;
 import cn.timeface.open.api.models.base.BaseResponse;
@@ -29,6 +30,7 @@ import rx.functions.Func1;
 public abstract class PODActivity extends BaseAppCompatActivity {
 
     Toolbar toolbar;
+    SeekBar seekBar;
     float pageScale = 1.f;
     public int bookType = 23;
 
@@ -48,6 +50,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         }
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
+        seekBar = (SeekBar) findViewById(R.id.seek_bar);
 
         setSupportActionBar(toolbar);
 //        String publishObjs = loadJSONFromAsset();
@@ -90,6 +93,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
                                    if (TextUtils.isEmpty(bookId)) {
                                        createBookInfo(podResponse);
                                    }
+                                   setupSeekBar();
                                }
                            }
                         , new Action1<Throwable>() {
@@ -104,9 +108,42 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     private void setData(TFOBookModel data) {
         bookPodView.setupPodData(getSupportFragmentManager(), data);
         pageScale = bookPodView.getPageScale();
-        if (BuildConfig.DEBUG) {
-            bookPodView.scrollBookPageIndex(3);
-        }
+    }
+
+    private void setupSeekBar() {
+        seekBar.setMax(bookPodView.getPageCount() - 1);
+        bookPodView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                seekBar.setProgress(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                bookPodView.setCurrentIndex(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     public void clickBack(View view) {
@@ -114,7 +151,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     }
 
     public void clickEdit(View view) {
-        List<TFOBookContentModel> currentPage = bookPodView.getCurrentPage();
+        List<TFOBookContentModel> currentPage = bookPodView.getCurrentPageData();
         TFOBookContentModel bookContentModel = currentPage.get(0);
         // 重置了页面的缩放比例
         //bookContentModel.resetPageScale(pageScale);

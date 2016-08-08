@@ -89,26 +89,9 @@ public class BookPodView extends FrameLayout {
                 }
             }
         }
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                getCurrentPage();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         viewPager.setPageTransformer(true, new StackTransformer());
         adapter = new PODViewPagerAdapter(supportFragmentManager, tfoBookModel, new Point(getWidth(), getHeight()));
         viewPager.setAdapter(adapter);
-
     }
 
     private void initView() {
@@ -124,7 +107,6 @@ public class BookPodView extends FrameLayout {
      * 翻到上一页
      */
     public void clickPre() {
-
         if (viewPager.getCurrentItem() > 0) {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
@@ -151,11 +133,43 @@ public class BookPodView extends FrameLayout {
     }
 
     /**
+     * 获取页数
+     * @return
+     */
+    public int getPageCount() {
+        return viewPager.getAdapter().getCount();
+    }
+
+    /**
+     * 获取当前页码
+     * @return
+     */
+    public int getCurrentIndex() {
+        return viewPager.getCurrentItem();
+    }
+
+    /**
+     * 设置当前页码
+     * @return
+     */
+    public void setCurrentIndex(int index) {
+        viewPager.setCurrentItem(index);
+    }
+
+    /**
+     * 添加监听事件
+     * @param listener
+     */
+    public void addOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
+        viewPager.addOnPageChangeListener(listener);
+    }
+
+    /**
      * 获取当前页的内容数据
      *
      * @return 竖屏list.size =1;横屏的list.size=2(左右);
      */
-    public List<TFOBookContentModel> getCurrentPage() {
+    public List<TFOBookContentModel> getCurrentPageData() {
         imageModels.clear();
         int[] index = adapter.getContentIndex(viewPager.getCurrentItem());
         if (index.length == 1) {
