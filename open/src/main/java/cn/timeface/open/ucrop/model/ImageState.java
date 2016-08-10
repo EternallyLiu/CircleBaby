@@ -34,4 +34,12 @@ public class ImageState {
     public float getCurrentAngle() {
         return mCurrentAngle;
     }
+
+    @Override
+    public String toString() {
+        return "\nmCropRect = " + mCropRect.toString() +
+                "\nmCurrentImageRect = " + mCurrentImageRect.toString() +
+                "\nmCurrentScale = " + mCurrentScale +
+                "\nmCurrentAngle = " + mCurrentAngle;
+    }
 }

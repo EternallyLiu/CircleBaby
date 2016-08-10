@@ -258,7 +258,6 @@ public class CropImageActivity extends BaseAppCompatActivity {
         rotateByAngle(90);
     }
 
-
     private void rotateByAngle(int angle) {
         mGestureCropImageView.postRotate(angle);
         mGestureCropImageView.setImageToWrapCropBounds();
@@ -277,22 +276,66 @@ public class CropImageActivity extends BaseAppCompatActivity {
 
     public void makeModify(String newImageUrl) {
         ImageState imageState = mGestureCropImageView.getImageState();
+        Log.i(TAG, "makeModify: imageState = " + imageState.toString());
         RectF cropRect = imageState.getCropRect();
         RectF imageRect = imageState.getCurrentImageRect();
 
+        float top = Math.round((cropRect.top - imageRect.top) / imageState.getCurrentScale());
+        float left = Math.round((cropRect.left - imageRect.left) / imageState.getCurrentScale());
+        int width = Math.round(cropRect.width() / imageState.getCurrentScale());
+        int height = Math.round(cropRect.height() / imageState.getCurrentScale());
+
+        int rotation = Math.round(imageState.getCurrentAngle());
+        if (rotation < 0) {
+            rotation = rotation % 360 + 360;
+        }
+
+        if (rotation == 90 || rotation == 270) {
+            int temp = width;
+            width = height;
+            height = temp;
+        }
+
+        {
+            //旋转后,映射到原图位置
+            float tempX;
+            switch (rotation) {
+                case 90:
+                    left += width;
+                    left = newImageH - left;
+
+                    tempX = left;
+                    left = top;
+                    top = tempX;
+                    break;
+                case 180:
+                    left += width;
+                    top += height;
+                    left = newImageW - left;
+                    top = newImageH - top;
+                    break;
+                case 270:
+                    top += height;
+                    top = newImageW - top;
+
+                    tempX = left;
+                    left = top;
+                    top = tempX;
+                    break;
+            }
+        }
+
+        // TODO: 8/10/16 旋转角度是否对该参数有影像??
         float scale = cropRect.width() / elementModel.getContentWidth();
-
-        float top = Math.round((cropRect.top - imageRect.top) / scale);
-        float left = Math.round((cropRect.left - imageRect.left) / scale);
-
+        float finalImageScale = imageState.getCurrentScale() / scale;
         elementModel.setElementContent(newImageUrl);
         elementModel.getImageContentExpand().setImageUrl(newImageUrl);
-        elementModel.getImageContentExpand().setImageScale(imageState.getCurrentScale() / scale);
+        elementModel.getImageContentExpand().setImageScale(finalImageScale);
         elementModel.getImageContentExpand().setImageWidth(newImageW);
         elementModel.getImageContentExpand().setImageHeight(newImageH);
-        elementModel.getImageContentExpand().setImageStartPointX(left);
-        elementModel.getImageContentExpand().setImageStartPointY(top);
-        elementModel.getImageContentExpand().setImageRotation(Math.round(imageState.getCurrentAngle()));
+        elementModel.getImageContentExpand().setImageStartPointX(left * finalImageScale);
+        elementModel.getImageContentExpand().setImageStartPointY(top * finalImageScale);
+        elementModel.getImageContentExpand().setImageRotation(rotation);
     }
 
 
