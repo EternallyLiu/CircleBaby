@@ -244,7 +244,8 @@
         <activity
             android:name=".activities.PublishActivity"
             android:label="@string/publish"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activities.SelectRegionActivity"
             android:label="@string/select_region"

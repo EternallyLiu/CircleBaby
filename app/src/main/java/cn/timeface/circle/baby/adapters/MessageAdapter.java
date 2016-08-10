@@ -34,6 +34,12 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
 
     }
 
+    public void setAllRead(){
+        for(Msg msg : listData){
+            msg.setIsRead(1);
+        }
+    }
+
     public void setOnClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }

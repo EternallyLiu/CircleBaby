@@ -78,6 +78,10 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
         }
     }
 
+    public void setDataList(List<ImageInfoListObj> dataList){
+        this.dataList = dataList;
+    }
+
     @Override
     public void setSelectableIndex(int index) {
         mSelectorDirIndex = index;

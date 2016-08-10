@@ -176,12 +176,12 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             onBackPressed();
         } else if (item.getItemId() == R.id.next) {
             pageNum = adapter.getSelImgs().size();
-            String s = new Gson().toJson(imageInfoList);
+            String s = new Gson().toJson(dataList);
 
             //跳转开放平台POD接口；
             bookName = FastData.getBabyName() + "照片书";
             tfoResourceObjs = new ArrayList<TFOResourceObj>();
-            for (ImageInfoListObj obj : imageInfoList) {
+            for (ImageInfoListObj obj : dataList) {
                 for (MediaObj media : obj.getMediaList()) {
                     if(media.getSelected()==1){
                         TFOResourceObj tfoResourceObj = media.toTFOResourceObj();

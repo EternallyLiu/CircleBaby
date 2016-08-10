@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
+import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DateUtil;
@@ -86,7 +87,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         tvContent.setOnClickListener(this);
 
 
-        selectImages();
+//        selectImages();
     }
 
     private void selectImages() {
@@ -168,5 +169,9 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
             FragmentBridgeActivity.openDiaryPreviewFragment(this, time, content, imgObj);
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Subscribe
+    public void onEvent(DiaryPublishEvent event) {
+        finish();
     }
 }

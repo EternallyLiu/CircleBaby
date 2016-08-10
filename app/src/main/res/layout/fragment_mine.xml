@@ -7,11 +7,9 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/bg_color1"
-        android:fitsSystemWindows="true"
-        android:minHeight="?attr/actionBarSize"
-        android:paddingTop="@dimen/toolbar_padding_top2">
+        android:fitsSystemWindows="true">
 
         <TextView
             android:id="@+id/tv_mine"

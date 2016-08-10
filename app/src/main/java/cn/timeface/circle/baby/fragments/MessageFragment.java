@@ -146,6 +146,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                     .subscribe(response -> {
                         ToastUtil.showToast(response.getInfo());
                         if (response.success()) {
+                            adapter.setAllRead();
                             adapter.notifyDataSetChanged();
                             EventBus.getDefault().post(new UnreadMsgEvent());
                         }

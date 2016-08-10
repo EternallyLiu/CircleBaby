@@ -16,13 +16,13 @@ public class RecommendObj extends BaseObj implements Parcelable {
     String url;
     String bgPicUrl;
     int actionType;
-    List<WorkObj> newWorkObj;
+    List<BookTypeListObj> newWorkObj;
 
-    public List<WorkObj> getNewWorkObj() {
+    public List<BookTypeListObj> getNewWorkObj() {
         return newWorkObj;
     }
 
-    public void setNewWorkObj(List<WorkObj> newWorkObj) {
+    public void setNewWorkObj(List<BookTypeListObj> newWorkObj) {
         this.newWorkObj = newWorkObj;
     }
 
@@ -80,7 +80,7 @@ public class RecommendObj extends BaseObj implements Parcelable {
         this.url = in.readString();
         this.bgPicUrl = in.readString();
         this.actionType = in.readInt();
-        this.newWorkObj = in.createTypedArrayList(WorkObj.CREATOR);
+        this.newWorkObj = in.createTypedArrayList(BookTypeListObj.CREATOR);
     }
 
     public static final Creator<RecommendObj> CREATOR = new Creator<RecommendObj>() {

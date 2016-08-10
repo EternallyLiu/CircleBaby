@@ -18,6 +18,8 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CardPublishActivity;
+import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.TimeLineEditActivity;
 import cn.timeface.circle.baby.api.ApiFactory;
@@ -98,11 +100,13 @@ public class PublishDialog extends BaseDialog {
         });
         tvDiary.setOnClickListener(v -> {
             dismiss();
-            PublishActivity.open(context, PublishActivity.DIALY);
+//            PublishActivity.open(context, PublishActivity.DIALY);
+            DiaryPublishActivity.open(context);
         });
         tvCard.setOnClickListener(v -> {
             dismiss();
-            PublishActivity.open(context, PublishActivity.CARD);
+//            PublishActivity.open(context, PublishActivity.CARD);
+            CardPublishActivity.open(context);
         });
     }
 
