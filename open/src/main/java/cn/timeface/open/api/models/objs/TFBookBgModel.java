@@ -10,19 +10,19 @@ public class TFBookBgModel implements Parcelable {
     String background_left;
     String background_right;
 
-    public String getBackground_left() {
+    public String getBackgroundLeft() {
         return background_left;
     }
 
-    public void setBackground_left(String background_left) {
+    public void setBackgroundLeft(String background_left) {
         this.background_left = background_left;
     }
 
-    public String getBackground_right() {
+    public String getBackgroundRight() {
         return background_right;
     }
 
-    public void setBackground_right(String background_right) {
+    public void setBackgroundRight(String background_right) {
         this.background_right = background_right;
     }
 

@@ -40,10 +40,10 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBgModel> {
         ViewHolder viewHolder = (ViewHolder) holder;
         TFBookBgModel template = listData.get(position);
 
-        if (!TextUtils.isEmpty(template.getBackground_left())) {
+        if (!TextUtils.isEmpty(template.getBackgroundLeft())) {
             viewHolder.ivBgLeft.setVisibility(View.VISIBLE);
             Glide.with(getContext())
-                    .load(template.getBackground_left())
+                    .load(template.getBackgroundLeft())
                     .asBitmap()
                     .atMost()
                     .fitCenter()
@@ -51,10 +51,10 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBgModel> {
         } else {
             viewHolder.ivBgLeft.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(template.getBackground_right())) {
+        if (!TextUtils.isEmpty(template.getBackgroundRight())) {
             viewHolder.ivBgRight.setVisibility(View.VISIBLE);
             Glide.with(getContext())
-                    .load(template.getBackground_right())
+                    .load(template.getBackgroundRight())
                     .asBitmap()
                     .atMost()
                     .fitCenter()

@@ -232,11 +232,18 @@ public class PageView extends FrameLayout {
     }
 
     public void setPageBgPicture(TFBookBgModel bookBgModel, int pageOrientation) {
-        if (pageOrientation == PageFrameLayout.LEFT) {
-            setLeftPageBgPicture(bookBgModel.getBackground_left());
-        }
-        if (pageOrientation == PageFrameLayout.RIGHT) {
-            setRightPageBgPicture(bookBgModel.getBackground_left());//接口现在只有左页有背景图url
+        if (!TextUtils.isEmpty(bookBgModel.getBackgroundLeft()) && !TextUtils.isEmpty(bookBgModel.getBackgroundRight())) {
+            setLeftPageBgPicture(bookBgModel.getBackgroundLeft());
+            setRightPageBgPicture(bookBgModel.getBackgroundRight());
+        } else {
+            switch (pageOrientation) {
+                case PageFrameLayout.LEFT:
+                    setLeftPageBgPicture(bookBgModel.getBackgroundLeft());
+                    break;
+                case PageFrameLayout.RIGHT:
+                    setRightPageBgPicture(bookBgModel.getBackgroundLeft());
+                    break;
+            }
         }
     }
 }

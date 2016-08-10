@@ -38,6 +38,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     private BookPodView bookPodView;
     List<TFOPublishObj> publishObjs;
     String bookId;
+    int curIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,12 +103,12 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
                             }
                         });
-
     }
 
     private void setData(TFOBookModel data) {
         bookPodView.setupPodData(getSupportFragmentManager(), data);
         pageScale = bookPodView.getPageScale();
+        bookPodView.setCurrentIndex(curIndex);
     }
 
     private void setupSeekBar() {
@@ -197,6 +198,12 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     }
 
     public abstract void createBookInfo(TFOBookModel bookModel);
+
+    @Override
+    protected void onPause() {
+        curIndex = bookPodView.getCurrentIndex();
+        super.onPause();
+    }
 
     @Override
     protected void onDestroy() {
