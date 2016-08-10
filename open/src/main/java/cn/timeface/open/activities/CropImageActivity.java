@@ -118,12 +118,29 @@ public class CropImageActivity extends BaseAppCompatActivity {
         newImageW = elementModel.getImageContentExpand().getImageWidth();
         newImageH = elementModel.getImageContentExpand().getImageHeight();
 
-        pd = new ProgressDialog(this);
-        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        pd.setMessage("正在上传");
-        pd.setCancelable(false);
-
         setImageData(getIntent());
+    }
+
+
+    private void showProgressDialog(String msg) {
+        if (pd == null) {
+            pd = new ProgressDialog(this);
+            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pd.setCancelable(false);
+        }
+
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+        pd.setMessage(msg);
+
+        pd.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
     }
 
     private void setImageData(Intent intent) {
@@ -386,14 +403,14 @@ public class CropImageActivity extends BaseAppCompatActivity {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        pd.show();
+                        showProgressDialog("正在上传");
                         newImageUrl = null;
                     }
                 })
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
-                        pd.dismiss();
+                        dismissProgressDialog();
                     }
                 })
                 .subscribe(new Action1<String>() {
@@ -417,8 +434,6 @@ public class CropImageActivity extends BaseAppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (pd.isShowing()) {
-            pd.dismiss();
-        }
+        dismissProgressDialog();
     }
 }

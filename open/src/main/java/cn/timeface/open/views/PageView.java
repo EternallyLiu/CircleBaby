@@ -13,6 +13,7 @@ import cn.timeface.open.R;
 import cn.timeface.open.api.models.objs.TFBookBgModel;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
+import cn.timeface.open.api.models.response.SimplePageTemplate;
 import cn.timeface.open.utils.BookModelCache;
 
 /**
@@ -246,4 +247,5 @@ public class PageView extends FrameLayout {
             }
         }
     }
+
 }

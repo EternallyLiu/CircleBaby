@@ -7,7 +7,7 @@ package cn.timeface.open.api.models.response;
 public class SimplePageTemplate {
     int template_id;//
     String template_cover;//
-    int template_singe_page;//
+    int template_singe_page;//1  单页   2双页一起
 
     public int getTemplateId() {
         return template_id;
@@ -31,5 +31,9 @@ public class SimplePageTemplate {
 
     public void setTemplateSingePage(int template_singe_page) {
         this.template_singe_page = template_singe_page;
+    }
+
+    public boolean single() {
+        return template_singe_page == 1;
     }
 }

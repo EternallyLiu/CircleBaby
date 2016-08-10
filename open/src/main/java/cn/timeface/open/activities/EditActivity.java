@@ -1,6 +1,7 @@
 package cn.timeface.open.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -63,7 +64,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     TFOBookModel bookModel;
     TFOBookContentModel rightModel;
     TFOBookContentModel leftModel;
-    PageFrameLayout pod;
+    PageFrameLayout podFrameLayout;
     LinearLayout llEditController;
     Point screenInfo;
     PageView pageView;
@@ -83,6 +84,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     private CoverColorAdapter colorAdapter;
     private float pageScale = 1.0f;
     private float orgScale = 1.f;
+
+    ProgressDialog pd;
 
     public static void open4result(Activity activity, int requestCode, TFOBookContentModel contentModel, boolean isCover) {
         open4result(activity, requestCode, null, contentModel, isCover);
@@ -105,7 +108,9 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         leftModel = getIntent().getParcelableExtra("left_model");
         this.isCover = getIntent().getBooleanExtra("is_cover", false);
         setContentView(R.layout.activity_edit);
-        this.pod = (PageFrameLayout) findViewById(R.id.pod);
+
+
+        this.podFrameLayout = (PageFrameLayout) findViewById(R.id.pod);
         this.llEditController = (LinearLayout) findViewById(R.id.ll_edit_controller);
         this.tvEditTemplate = (DrawableTextView) findViewById(R.id.tv_edit_template);
         this.tvBackgroundColor = (DrawableTextView) findViewById(R.id.tv_background_color);
@@ -142,12 +147,12 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
 
         //增加整体布局监听
-        ViewTreeObserver vto = pod.getViewTreeObserver();
+        ViewTreeObserver vto = podFrameLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                pod.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                screenInfo = new Point(pod.getWidth(), pod.getHeight());
+                podFrameLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                screenInfo = new Point(podFrameLayout.getWidth(), podFrameLayout.getHeight());
                 if (screenInfo.y > screenInfo.x) {
                     //竖屏
                     pageScale = screenInfo.x / (float) bookModel.getBookWidth();
@@ -171,12 +176,33 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         });
     }
 
+    private void showProgressDialog(String msg) {
+        if (pd == null) {
+            pd = new ProgressDialog(this);
+            pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            pd.setCancelable(false);
+        }
+
+        if (pd.isShowing()) {
+            pd.dismiss();
+        }
+        pd.setMessage(msg);
+
+        pd.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (pd != null && pd.isShowing()) {
+            pd.dismiss();
+        }
+    }
+
     private void setupViews() {
-        pod.removeAllViews();
+        podFrameLayout.removeAllViews();
         pageView = new PageView(this, true, leftModel, rightModel, isCover);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
         lp.gravity = Gravity.CENTER;
-        pod.addView(pageView, lp);
+        podFrameLayout.addView(pageView, lp);
     }
 
     public void clickEditType(View view) {
@@ -471,6 +497,81 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     }
 
     /**
+     * 选中的挂件
+     *
+     * @param view
+     */
+    public void clickLayout(View view) {
+        showSelectRL(false);
+        SimplePageTemplate templateModel = (SimplePageTemplate) view.getTag(R.string.tag_obj);
+        int pageOrientation = podFrameLayout.getPageOrientation();
+        reqNewPageLayout(templateModel);
+    }
+
+    private void reqNewPageLayout(SimplePageTemplate template) {
+        List<TFOBookContentModel> contentList = new ArrayList<>(2);
+        if (template.single()) {
+            if (podFrameLayout.getPageOrientation() == PageFrameLayout.LEFT) {
+                leftModel.resetPageScale();
+                contentList.add(leftModel);
+            } else if (podFrameLayout.getPageOrientation() == PageFrameLayout.RIGHT) {
+                rightModel.resetPageScale();
+                contentList.add(rightModel);
+            }
+        } else {
+            leftModel.resetPageScale();
+            rightModel.resetPageScale();
+            contentList.add(leftModel);
+            contentList.add(rightModel);
+        }
+
+        Subscription subscribe = apiService.reformat(bookModel.getBookId(), template.getTemplateId(), new Gson().toJson(contentList))
+                .compose(SchedulersCompat.<BaseResponse<List<TFOBookContentModel>>>applyIoSchedulers())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        showProgressDialog("正在重新排版");
+                    }
+                })
+                .doOnTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        dismissProgressDialog();
+                    }
+                })
+                .subscribe(new Action1<BaseResponse<List<TFOBookContentModel>>>() {
+                               @Override
+                               public void call(BaseResponse<List<TFOBookContentModel>> listBaseResponse) {
+                                   if (listBaseResponse.getData().size() == 2) {
+                                       leftModel = listBaseResponse.getData().get(0);
+                                       rightModel = listBaseResponse.getData().get(1);
+                                       leftModel.setPageScale(pageScale);
+                                       rightModel.setPageScale(pageScale);
+                                   } else if (listBaseResponse.getData().size() == 1) {
+                                       switch (podFrameLayout.getPageOrientation()) {
+                                           case PageFrameLayout.LEFT:
+                                               leftModel = listBaseResponse.getData().get(0);
+                                               leftModel.setPageScale(pageScale);
+                                               break;
+                                           case PageFrameLayout.RIGHT:
+                                               rightModel = listBaseResponse.getData().get(0);
+                                               rightModel.setPageScale(pageScale);
+                                               break;
+                                       }
+                                   }
+                                   setupViews();
+                               }
+                           }
+                        , new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+
+                            }
+                        });
+        addSubscription(subscribe);
+    }
+
+    /**
      * 选中的背景图片
      *
      * @param view
@@ -479,7 +580,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         showSelectRL(false);
         TFBookBgModel bookBgModel = (TFBookBgModel) view.getTag(R.string.tag_obj);
         bgImageAdapter.setSelBgColor(bookBgModel);
-        int pageOrientation = pod.getPageOrientation();
+        int pageOrientation = podFrameLayout.getPageOrientation();
         pageView.setPageBgPicture(bookBgModel, pageOrientation);
     }
 
@@ -533,7 +634,6 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                     }
                 });
         addSubscription(subscribe);
-
     }
 
     @Subscribe
@@ -550,6 +650,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             bookModel.resetPageScale();
             bookModel.setPageScale(orgScale);
         }
+        dismissProgressDialog();
         super.onDestroy();
     }
 
@@ -620,5 +721,4 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         }
         return false;
     }
-
 }

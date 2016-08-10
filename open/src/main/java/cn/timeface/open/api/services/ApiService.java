@@ -233,12 +233,16 @@ public interface ApiService {
     /**
      * Page 重新排版
      *
-     * @param content_ids 需要重新排版的2页id
+     * @param book_id
+     * @param template_id
+     * @param content_list 需要重新排版的2页原始数据
      * @return
      */
     @FormUrlEncoded
     @POST("api/reformat")
-    Observable<BaseResponse> reformat(@Field("content_ids") String content_ids);
+    Observable<BaseResponse<List<TFOBookContentModel>>> reformat(@Field("book_id") String book_id,
+                                                                 @Field("template_id") int template_id,
+                                                                 @Field("content_list") String content_list);
 
     /**
      * Page TemplateInfo List 页面版式列表接口
@@ -247,8 +251,7 @@ public interface ApiService {
      * @param content_ids list 需要重新排版的2页contentid
      * @return
      */
-    @FormUrlEncoded
-    @POST("api/pagetemplate")
+    @GET("api/pagetemplate")
     Observable<BaseResponse<List<SimplePageTemplate>>> pageTemplate(@Field("book_id") String book_id,
                                                                     @Field("content_ids") String content_ids);
 
