@@ -34,15 +34,6 @@ public class BookTypeListObj extends BaseObj implements Parcelable {
         this.type = type;
     }
 
-    public BookTypeListObj(WorkObj obj) {
-        this.id = obj.getId();
-        this.coverTitle = obj.getCoverTitle();
-        this.description = obj.getDescription();
-        this.imgList = obj.getImgList();
-        this.title = obj.getTitle();
-        this.type = obj.getType();
-    }
-
     public MediaObj getDetail() {
         return detail;
     }

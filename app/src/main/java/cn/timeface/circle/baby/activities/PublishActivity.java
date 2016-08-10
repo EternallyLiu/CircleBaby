@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -131,6 +132,18 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         context.startActivity(intent);
     }
 
+    public static void open(Context context, MediaObj mediaObj) {
+        Intent intent = new Intent(context, PublishActivity.class);
+        intent.putExtra("mediaObj",mediaObj);
+        context.startActivity(intent);
+    }
+
+    public static void open(Context context, List<MediaObj> mediaObjs) {
+        Intent intent = new Intent(context, PublishActivity.class);
+        intent.putParcelableArrayListExtra("mediaObjs", (ArrayList<? extends Parcelable>) mediaObjs);
+        context.startActivity(intent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +155,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         tfProgressDialog = new TFProgressDialog(this);
 
         publishType = getIntent().getIntExtra("publish_type", NOMAL);
+        mediaObj =  getIntent().getParcelableExtra("mediaObj");
+        mediaObjs = getIntent().getParcelableArrayListExtra("mediaObjs");
 
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
@@ -209,6 +224,27 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 CardPublishActivity.open(this);
                 break;
         }
+
+        if(mediaObj!=null){
+            type = 2;
+            gvGridView.setVisibility(View.GONE);
+            ivCard.setVisibility(View.VISIBLE);
+            GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
+            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
+        }
+        if(mediaObjs!=null){
+            type = 3;
+            gvGridView.setVisibility(View.VISIBLE);
+            ivCard.setVisibility(View.GONE);
+            List<String> list = new ArrayList<>();
+            for (MediaObj media : mediaObjs) {
+                list.add(media.getImgUrl());
+            }
+            adapter.setData(list);
+            adapter.notifyDataSetChanged();
+            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
+        }
+
     }
 
     private void selectImages() {

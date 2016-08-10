@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CardPublishActivity;
+import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
@@ -117,10 +119,12 @@ public class PickerPhotoFragment2 extends Fragment implements View.OnClickListen
         }else if(i == R.id.tv_creat){
             if(bookType==2){
                 //日记卡片
-                PublishActivity.open(getContext(), PublishActivity.DIALY);
+                DiaryPublishActivity.open(getContext());
+//                PublishActivity.open(getContext(), PublishActivity.DIALY);
             }else if(bookType == 3){
                 //识图卡片
-                PublishActivity.open(getContext(), PublishActivity.CARD);
+                CardPublishActivity.open(getContext());
+//                PublishActivity.open(getContext(), PublishActivity.CARD);
             }
         }
     }

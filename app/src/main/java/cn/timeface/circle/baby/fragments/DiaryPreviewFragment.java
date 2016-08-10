@@ -40,6 +40,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
@@ -48,6 +49,7 @@ import cn.timeface.circle.baby.api.models.objs.TemplateAreaObj;
 import cn.timeface.circle.baby.api.models.objs.TemplateImage;
 import cn.timeface.circle.baby.api.models.objs.TemplateObj;
 import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
+import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
@@ -444,8 +446,10 @@ public class DiaryPreviewFragment extends BaseFragment {
                             MediaObj mediaObj = diaryComposedResponse.getMediaObj();
                             System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
                             tfProgressDialog.dismiss();
+                            PublishActivity.open(getContext(),mediaObj);
                             getActivity().finish();
-                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
+                            EventBus.getDefault().post(new DiaryPublishEvent());
+//                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
                         }else{
                             ToastUtil.showToast(diaryComposedResponse.getInfo());
                         }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
+import com.bigkoo.convenientbanner.view.CBLoopViewPager;
 import com.bumptech.glide.Glide;
 import com.wbtech.ums.UmsAgent;
 
@@ -33,6 +35,7 @@ public class GuideActivity extends BaseAppCompatActivity {
 
     @Bind(R.id.fl_guide)
     FrameLayout flGuide;
+    private float dowm_x;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, GuideActivity.class));
@@ -79,6 +82,44 @@ public class GuideActivity extends BaseAppCompatActivity {
             public void onPageSelected(int position) {
                 if(position == imgs.size()-1){
                     banner.setCanLoop(false);
+                    CBLoopViewPager viewPager = banner.getViewPager();
+                    viewPager.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            boolean b = false;
+                            switch (event.getAction()){
+                                case MotionEvent.ACTION_DOWN:
+                                    dowm_x = event.getX();
+                                    b = false;
+                                    System.out.println("down");
+                                    break;
+                                case MotionEvent.ACTION_MOVE:
+                                    float x1 = event.getX();
+                                    if(x1>dowm_x){
+                                        System.out.println("右滑");
+                                        b = false;
+                                    }else{
+                                        System.out.println("左滑");
+                                        b = true;
+                                    }
+                                    break;
+                                case MotionEvent.ACTION_UP:
+                                    b = false;
+                                    System.out.println("up");
+                                    break;
+                            }
+                            return b;
+                        }
+                    });
+                }else{
+                    banner.setCanLoop(true);
+                    CBLoopViewPager viewPager = banner.getViewPager();
+                    viewPager.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            return false;
+                        }
+                    });
                 }
             }
 

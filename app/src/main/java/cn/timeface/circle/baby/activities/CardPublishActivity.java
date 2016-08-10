@@ -249,7 +249,8 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 ToastUtil.showToast("先制作一张识图卡片吧~");
                 return true;
             }
-            EventBus.getDefault().post(new CardEvent(dataList));
+            PublishActivity.open(this,dataList);
+//            EventBus.getDefault().post(new CardEvent(dataList));
             finish();
         }
         return super.onOptionsItemSelected(item);

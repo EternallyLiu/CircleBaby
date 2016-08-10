@@ -27,6 +27,7 @@ import com.wechat.photopicker.event.OnItemCheckListener2;
 import com.wechat.photopicker.fragment.PickerPhotoFragment2;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -39,9 +40,12 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.events.BookOptionEvent;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -53,7 +57,7 @@ import cn.timeface.open.api.models.objs.TFOResourceObj;
  * 新建识图卡片书和日记卡片书
  * 选择图片界面
  */
-public class PickerPhotoActivity2 extends BaseAppCompatActivity {
+public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEventBus{
 
     public final static String EXTRA_MAX_COUNT = "MAX_COUNT";
     public final static String EXTRA_SHOW_CAMERA = "SHOW_CAMERA";
@@ -277,6 +281,26 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity {
                     }
                 }, error -> {
                     Log.e(TAG, "createBook:");
+                });
+    }
+
+    @Subscribe
+    public void onEvent(HomeRefreshEvent event) {
+//        reqData();
+    }
+
+    private void reqData() {
+        apiService.queryImageInfoList("", bookType)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        List<ImageInfoListObj> dataList = response.getDataList();
+                        List<ImageInfoListObj> dataList1 = mPhotoSelectorAdapter.getDataList();
+                        dataList1.add(dataList.get(0));
+                        mPhotoSelectorAdapter.notifyDataSetChanged();
+                    }
+                }, error -> {
+                    Log.e(TAG, "queryImageInfoList:");
                 });
     }
 

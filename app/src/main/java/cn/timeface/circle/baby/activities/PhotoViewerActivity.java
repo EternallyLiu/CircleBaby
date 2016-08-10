@@ -143,6 +143,7 @@ public class PhotoViewerActivity extends BaseAppCompatActivity {
             allSelImgs.remove(curPhotoModel);
         }
         setTitle();
+        close();
     }
 
     public void setCheckState(PhotoModel photoModel) {

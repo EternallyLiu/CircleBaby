@@ -47,7 +47,7 @@
         android:background="@color/text_color1"
         android:hint="手机号"
         android:inputType="number"
-        android:padding="@dimen/size_12" />
+        android:padding="@dimen/size_12"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -60,7 +60,7 @@
         android:background="@color/text_color1"
         android:hint="密码"
         android:inputType="textPassword"
-        android:padding="@dimen/size_12" />
+        android:padding="@dimen/size_12"/>
 
 
     <Button

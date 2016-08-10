@@ -1,14 +1,9 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,14 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.rayboot.widget.ratioview.RatioImageView;
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+import com.timeface.refreshload.PullRefreshLoadRecyclerView;
+import com.timeface.refreshload.headfoot.LoadMoreView;
+import com.timeface.refreshload.headfoot.RefreshView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,13 +34,11 @@ import cn.timeface.circle.baby.activities.ConfirmRelationActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MileStoneActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
-import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.RecommendObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
-import cn.timeface.circle.baby.api.models.objs.WorkObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
@@ -57,6 +50,7 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.TFStateView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener {
@@ -81,20 +75,24 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     TextView tvMilestone;
     @Bind(R.id.tv_relative)
     TextView tvRelative;
-    @Bind(R.id.content_recycler_view)
-    RecyclerView contentRecyclerView;
-    @Bind(R.id.swipe_refresh_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
+//    @Bind(R.id.content_recycler_view)
+//    RecyclerView contentRecyclerView;
+//    @Bind(R.id.swipe_refresh_layout)
+//    SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.tv_toensurerelation)
     TextView tvToensurerelation;
     @Bind(R.id.iv_cover_bg)
-    RatioImageView ivCoverBg;
+    ImageView ivCoverBg;
     @Bind(R.id.ll_layout)
     LinearLayout llLayout;
-    @Bind(R.id.fl_layout)
-    FrameLayout flLayout;
     @Bind(R.id.iv_dot)
     ImageView ivDot;
+    @Bind(R.id.rlRecyclerView)
+    PullRefreshLoadRecyclerView rlRecyclerView;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
 
     private int currentPage = 1;
     private String mParam1;
@@ -103,7 +101,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private IPTRRecyclerListener ptrListener;
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
     private boolean enableAnimation = true;
-    private boolean bottomMenuShow;
+    private boolean bottomMenuShow = true;
+    private boolean contentRecyclerViewAdd = true;
 
     private List<TimeLineGroupObj> tempList;
     AnimatorSet animatorSet = new AnimatorSet();
@@ -132,15 +131,27 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home2, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        setupPTR();
+//        setupPTR();
         initData();
 //        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
         adapter = new TimeLineGroupAdapter(getActivity(), new ArrayList<>());
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        contentRecyclerView.setAdapter(adapter);
+        rlRecyclerView.setAdapter(adapter);
+        rlRecyclerView.setLoadRefreshListener(new PullRefreshLoadRecyclerView.LoadRefreshListener() {
+            @Override
+            public void onRefresh(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, RefreshView refreshView) {
+                reqData(1);
+            }
+
+            @Override
+            public void onLoadMore(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, LoadMoreView loadMoreView) {
+                reqData(currentPage);
+            }
+        });
+        tfStateView.setOnRetryListener(() -> reqData(1));
+        tfStateView.loading();
 
         tvAlbum.setOnClickListener(this);
         tvMilestone.setOnClickListener(this);
@@ -164,6 +175,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     if (unReadMsgResponse.success()) {
                         if (unReadMsgResponse.getUnreadMessageCount() > 0) {
                             ivDot.setVisibility(View.VISIBLE);
+                        }else{
+                            ivDot.setVisibility(View.GONE);
                         }
                     }
                 }, error -> {
@@ -175,31 +188,57 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private void setupPTR() {
         animatorSet.setInterpolator(new DecelerateInterpolator());
         animatorSet.setDuration(400);
-        contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        /*contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
+                if (dy > 50) {
                     if (enableAnimation && bottomMenuShow) {
                         bottomMenuShow = false;
                         ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
                                 "translationY",
                                 0,
                                 ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
-//                        ObjectAnimator anim2 = ObjectAnimator.ofFloat(llLayout, "translationY", 0, -toolbar.getMeasuredHeight());
+                        ObjectAnimator anim2 = ObjectAnimator.ofFloat(llLayout, "translationY", 0, -toolbar.getMeasuredHeight());
                         animatorSet.playTogether(anim);
                         animatorSet.start();
+                        llMineInfo.setVisibility(View.GONE);
+
+                        if(!contentRecyclerViewAdd){
+                            System.out.println("==========contentRecyclerViewAdd  1111111==========");
+                            contentRecyclerViewAdd = false;
+
+                            int measuredHeight = llLayout.getMeasuredHeight();
+                            int measuredWidth = llLayout.getMeasuredWidth();
+                            System.out.println("measuredHeight=="+measuredHeight);
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            layoutParams.height = measuredHeight + toolbar.getMeasuredHeight();
+                            layoutParams.width = measuredWidth;
+                            System.out.println("layoutParams.height=="+layoutParams.height);
+                            llLayout.setLayoutParams(layoutParams);
+
+                            int measuredHeight1 = contentRecyclerView.getMeasuredHeight();
+                            int measuredWidth1 = contentRecyclerView.getMeasuredWidth();
+                            System.out.println("measuredHeight1=="+measuredHeight1);
+                            ViewGroup.LayoutParams layoutParams1 = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            layoutParams1.height = measuredHeight + toolbar.getMeasuredHeight();
+                            layoutParams1.width = measuredWidth1;
+                            System.out.println("layoutParams1.height=="+layoutParams1.height);
+                            contentRecyclerView.setLayoutParams(layoutParams1);
+                            System.out.println("==========contentRecyclerViewAdd  22222==========");
+                        }
                     }
-                } else {
+                } else if(dy < -50){
                     if (enableAnimation && !bottomMenuShow) {
                         bottomMenuShow = true;
                         Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
                                 "translationY",
                                 ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
                                 0);
-//                        ObjectAnimator anim4 = ObjectAnimator.ofFloat(llLayout, "translationY", -toolbar.getMeasuredHeight(), 0);
+                        ObjectAnimator anim4 = ObjectAnimator.ofFloat(llLayout, "translationY", -toolbar.getMeasuredHeight(), 0);
                         animatorSet.playTogether(anim3);
                         animatorSet.start();
+                        llMineInfo.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -219,7 +258,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         break;
                 }
             }
-        });
+        });*/
 
 
         ptrListener = new IPTRRecyclerListener() {
@@ -243,35 +282,37 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         };
 
-        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
-                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
-                .tfPtrListener(ptrListener);
-        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
+//        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
+//                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
+//                .tfPtrListener(ptrListener);
+//        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
+
     }
 
     private void reqData(int page) {
         apiService.timeline(page, 10)
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnTerminate(() -> rlRecyclerView.complete())
                 .subscribe(timelineResponse -> {
-                    tfptrListViewHelper.finishTFPTRRefresh();
+                    tfStateView.finish();
+//                    tfptrListViewHelper.finishTFPTRRefresh();
 
                     if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
                         if(!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())){
                             adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
                         }
                     }
-                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
-                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
-                    }
+//                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
+//                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
+//                    }
                     tempList = timelineResponse.getDataList();
                     setDataList(timelineResponse.getDataList());
                 }, error -> {
+                    tfStateView.showException(error);
                     Log.e(TAG, "timeline:");
-                    tfptrListViewHelper.finishTFPTRRefresh();
+//                    tfptrListViewHelper.finishTFPTRRefresh();
                     error.printStackTrace();
                 });
-
-
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
@@ -280,6 +321,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             if (obj.getTimeLineList().size() > 0) {
                 lists.add(obj);
             }
+        }
+        if(lists.size()==0){
+            showNoDataView(true);
+            return;
         }
         if (currentPage == 1) {
             adapter.setListData(lists);
@@ -359,33 +404,29 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     PublishActivity.open(getContext(), PublishActivity.PHOTO);
                     break;
                 case 1:
-                    for (WorkObj work : obj.getNewWorkObj()) {
-                        if (work.getType() == 5) {
-                            BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
+                    for (BookTypeListObj bookTypeListObj : obj.getNewWorkObj()) {
+                        if (bookTypeListObj.getType() == 5) {
                             FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
                         }
                     }
                     break;
                 case 2:
-                    for (WorkObj work : obj.getNewWorkObj()) {
-                        if (work.getType() == 1) {
-                            BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
+                    for (BookTypeListObj bookTypeListObj : obj.getNewWorkObj()) {
+                        if (bookTypeListObj.getType() == 1) {
                             FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
                         }
                     }
                     break;
                 case 3:
-                    for (WorkObj work : obj.getNewWorkObj()) {
-                        if (work.getType() == 3) {
-                            BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
+                    for (BookTypeListObj bookTypeListObj : obj.getNewWorkObj()) {
+                        if (bookTypeListObj.getType() == 3) {
                             FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
                         }
                     }
                     break;
                 case 4:
-                    for (WorkObj work : obj.getNewWorkObj()) {
-                        if (work.getType() == 2) {
-                            BookTypeListObj bookTypeListObj = new BookTypeListObj(work);
+                    for (BookTypeListObj bookTypeListObj : obj.getNewWorkObj()) {
+                        if (bookTypeListObj.getType() == 2) {
                             FragmentBridgeActivity.openAddBookFragment(getContext(), bookTypeListObj);
                         }
                     }
@@ -426,5 +467,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
         adapter.setListData(tempList);
         adapter.notifyDataSetChanged();
+    }
+
+    private void showNoDataView(boolean showNoData) {
+        llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
+        rlRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
 }
