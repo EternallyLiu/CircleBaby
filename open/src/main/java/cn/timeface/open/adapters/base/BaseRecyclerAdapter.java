@@ -20,6 +20,15 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
         this.listData = listData;
     }
 
+    public void clearData() {
+        this.listData.clear();
+    }
+
+    public void setListData(List<T> data) {
+        clearData();
+        this.listData.addAll(data);
+    }
+
     public Context getContext() {
         return context;
     }

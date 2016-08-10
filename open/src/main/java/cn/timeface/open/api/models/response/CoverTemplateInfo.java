@@ -7,7 +7,7 @@ import cn.timeface.open.api.models.objs.TFOBookContentModel;
 /**
  * Created by zhsheng on 2016/7/13.
  */
-public class TemplateInfo {
+public class CoverTemplateInfo {
     private List<TFOBookContentModel> content_list;
 
 

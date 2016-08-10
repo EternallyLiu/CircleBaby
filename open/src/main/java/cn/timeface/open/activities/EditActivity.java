@@ -26,6 +26,7 @@ import cn.timeface.open.R;
 import cn.timeface.open.activities.base.BaseAppCompatActivity;
 import cn.timeface.open.adapters.BgImageAdapter;
 import cn.timeface.open.adapters.CoverColorAdapter;
+import cn.timeface.open.adapters.LayoutAdapter;
 import cn.timeface.open.adapters.PendantAdapter;
 import cn.timeface.open.adapters.TemplateAdapter;
 import cn.timeface.open.api.models.base.BaseResponse;
@@ -35,8 +36,9 @@ import cn.timeface.open.api.models.objs.TFOBookElementModel;
 import cn.timeface.open.api.models.objs.TFOBookImageModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
+import cn.timeface.open.api.models.response.CoverTemplateInfo;
 import cn.timeface.open.api.models.response.EditPod;
-import cn.timeface.open.api.models.response.TemplateInfo;
+import cn.timeface.open.api.models.response.SimplePageTemplate;
 import cn.timeface.open.constants.Constant;
 import cn.timeface.open.events.ChangeStickerStatusEvent;
 import cn.timeface.open.events.SelectColorEvent;
@@ -76,6 +78,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     TemplateAdapter templateAdapter;
     private BgImageAdapter bgImageAdapter;
     private PendantAdapter pendantAdapter;
+    private LayoutAdapter layoutAdapter;
 
     private CoverColorAdapter colorAdapter;
     private float pageScale = 1.0f;
@@ -115,19 +118,16 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvSelection.setLayoutManager(layoutManager);
 
-        if (!isCover) {
+        if (isCover) {
+            tvEditLayout.setVisibility(View.GONE);
+            tvEditBg.setVisibility(View.GONE);
+            tvEditPendant.setVisibility(View.GONE);
+            tvEditBeauty.setVisibility(View.GONE);
+        } else {
+            //不是封面
             tvEditTemplate.setVisibility(View.GONE);
             tvBackgroundColor.setVisibility(View.GONE);
 
-
-            tvEditLayout.setVisibility(View.GONE);
-            tvEditPendant.setVisibility(View.GONE);
-            tvEditBeauty.setVisibility(View.GONE);
-
-
-        } else {
-            tvEditLayout.setVisibility(View.GONE);
-            tvEditBg.setVisibility(View.GONE);
             tvEditPendant.setVisibility(View.GONE);
             tvEditBeauty.setVisibility(View.GONE);
         }
@@ -187,7 +187,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         }
         changeSelectTypeBg(view);
         if (viewId == R.id.tv_edit_layout) {
-
+            //编辑布局
+            reqContentLayout();
         } else if (viewId == R.id.tv_edit_bg) {
             //背景图片
             reqBookBgImgList();
@@ -202,11 +203,45 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         } else if (viewId == R.id.tv_background_color) {
             //背景颜色
             reqCoverBgColor();
-
         }
-
     }
 
+    private void reqContentLayout() {
+        if (layoutAdapter != null) {
+            rvSelection.setAdapter(layoutAdapter);
+            showSelectRL(true);
+            return;
+        }
+
+        List<String> contentIDs = new ArrayList<>(2);
+        if (leftModel != null) {
+            contentIDs.add(leftModel.getContentId());
+        }
+        if (rightModel != null) {
+            contentIDs.add(rightModel.getContentId());
+        }
+
+        Subscription subscribe = apiService.pageTemplate(bookModel.getBookId(), new Gson().toJson(contentIDs))
+                .compose(SchedulersCompat.<BaseResponse<List<SimplePageTemplate>>>applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse<List<SimplePageTemplate>>>() {
+                    @Override
+                    public void call(BaseResponse<List<SimplePageTemplate>> listBaseResponse) {
+                        layoutAdapter = new LayoutAdapter(EditActivity.this, listBaseResponse.getData());
+                        rvSelection.setAdapter(layoutAdapter);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.d(TAG, "reqContentLayout: " + throwable);
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        showSelectRL(true);
+                    }
+                });
+        addSubscription(subscribe);
+    }
 
     private void changeSelectTypeBg(View view) {
         tvEditLayout.setSelected(false);
@@ -380,8 +415,6 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         list.add(rightModel);
         list.add(0, leftModel);
 
-        Log.i(TAG, "doSave: 111111   " + new Gson().toJson(list));
-
         apiService.editPod(bookModel.getBookId(), new Gson().toJson(list))
                 .compose(SchedulersCompat.<BaseResponse<EditPod>>applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<EditPod>>() {
@@ -467,16 +500,16 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         final String templateId = templateEvent.getTemplateId();
         templateAdapter.setSelTemplateId(Integer.parseInt(templateId));
         Subscription subscribe = apiService.templateInfo(templateId, bookModel.getBookId())
-                .compose(SchedulersCompat.<BaseResponse<TemplateInfo>>applyIoSchedulers())
+                .compose(SchedulersCompat.<BaseResponse<CoverTemplateInfo>>applyIoSchedulers())
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
                         showSelectRL(false);
                     }
                 })
-                .subscribe(new Action1<BaseResponse<TemplateInfo>>() {
+                .subscribe(new Action1<BaseResponse<CoverTemplateInfo>>() {
                     @Override
-                    public void call(BaseResponse<TemplateInfo> templateInfoBaseResponse) {
+                    public void call(BaseResponse<CoverTemplateInfo> templateInfoBaseResponse) {
                         List<TFOBookContentModel> contentModels = templateInfoBaseResponse.getData().getContent_list();
                         if (contentModels == null || contentModels.size() == 0) return;
                         for (TFOBookContentModel cm : contentModels) {
@@ -556,6 +589,14 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * 更换element mode
+     * 删除原有的element,再add编辑后的element
+     *
+     * @param editedContentId
+     * @param edited
+     * @return
+     */
     public boolean changeElementModel(String editedContentId, TFOBookElementModel edited) {
 
         if (leftModel != null && leftModel.getContentId().equals(editedContentId)) {
@@ -563,8 +604,6 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 if (model.getElementId() == edited.getElementId()) {
                     leftModel.getElementList().remove(model);
                     leftModel.getElementList().add(edited);
-
-                    Log.i(TAG, "changeElementModel: 111111  change true");
                     return true;
                 }
             }
@@ -575,12 +614,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 if (model.getElementId() == edited.getElementId()) {
                     rightModel.getElementList().remove(model);
                     rightModel.getElementList().add(edited);
-                    Log.i(TAG, "changeElementModel: 111111  change true");
                     return true;
                 }
             }
         }
-        Log.i(TAG, "changeElementModel: 111111  change false");
         return false;
     }
 

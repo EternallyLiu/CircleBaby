@@ -1,7 +1,5 @@
 package cn.timeface.open.api.services;
 
-import android.graphics.Bitmap;
-
 import java.util.List;
 
 import cn.timeface.open.api.models.base.BaseResponse;
@@ -13,9 +11,10 @@ import cn.timeface.open.api.models.objs.TFOBookType;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
 import cn.timeface.open.api.models.response.Authorize;
 import cn.timeface.open.api.models.response.BookList;
+import cn.timeface.open.api.models.response.CoverTemplateInfo;
 import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.api.models.response.EditText;
-import cn.timeface.open.api.models.response.TemplateInfo;
+import cn.timeface.open.api.models.response.SimplePageTemplate;
 import okhttp3.ResponseBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -130,8 +129,8 @@ public interface ApiService {
      * @return
      */
     @GET("api/templateinfo")
-    Observable<BaseResponse<TemplateInfo>> templateInfo(@Query("template_id") String template_id,
-                                                        @Query("book_id") String book_id);
+    Observable<BaseResponse<CoverTemplateInfo>> templateInfo(@Query("template_id") String template_id,
+                                                             @Query("book_id") String book_id);
 
     /**
      * 时光书创建成功后，获取完整封面数据用于编辑封面
@@ -240,6 +239,18 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("api/reformat")
     Observable<BaseResponse> reformat(@Field("content_ids") String content_ids);
+
+    /**
+     * Page TemplateInfo List 页面版式列表接口
+     *
+     * @param book_id     时光书ID
+     * @param content_ids list 需要重新排版的2页contentid
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/pagetemplate")
+    Observable<BaseResponse<List<SimplePageTemplate>>> pageTemplate(@Field("book_id") String book_id,
+                                                                    @Field("content_ids") String content_ids);
 
 
     @GET
