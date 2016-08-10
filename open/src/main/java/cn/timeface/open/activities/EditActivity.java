@@ -544,7 +544,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                                    if (listBaseResponse.getData().size() == 2) {
                                        leftModel = listBaseResponse.getData().get(0);
                                        rightModel = listBaseResponse.getData().get(1);
-                                       rightModel.setRightPage();
+                                       rightModel.setRightPage(true);
                                        leftModel.setPageScale(pageScale);
                                        rightModel.setPageScale(pageScale);
                                    } else if (listBaseResponse.getData().size() == 1) {
@@ -555,7 +555,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                                                break;
                                            case PageFrameLayout.RIGHT:
                                                rightModel = listBaseResponse.getData().get(0);
-                                               rightModel.setRightPage();
+                                               rightModel.setRightPage(true);
                                                rightModel.setPageScale(pageScale);
                                                break;
                                        }

@@ -84,7 +84,7 @@ public class BookPodView extends FrameLayout {
         tfoBookModel.setPageScale(getPageScale());
         for (TFOBookContentModel cm : tfoBookModel.getContentList()) {
             if (cm.getPageType() == TFOBookContentModel.PAGE_RIGHT) {
-                cm.setRightPage();
+                cm.setRightPage(true);
             }
         }
         viewPager.setPageTransformer(true, new StackTransformer());

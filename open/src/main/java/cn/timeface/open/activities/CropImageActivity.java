@@ -84,16 +84,23 @@ public class CropImageActivity extends BaseAppCompatActivity {
         intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_X, elementModel.getContentWidth());
         intent.putExtra(UCrop.EXTRA_ASPECT_RATIO_Y, elementModel.getContentHeight());
         Uri in;
+        Uri out;
         String url = elementModel.getImageContentExpand().getImageUrl();
         Log.i("open edit url", "open4result: " + url);
-        File file = new File(Glide.getPhotoCacheDir(activity), url.hashCode() + url.substring(url.lastIndexOf(".")));
-        if (file.exists()) {
-            in = Uri.fromFile(file);
+        if (TextUtils.isEmpty(url)) {
+            in = null;
+            out = null;
         } else {
-            in = Uri.parse(url);
+            File file = new File(Glide.getPhotoCacheDir(activity), url.hashCode() + url.substring(url.lastIndexOf(".")));
+            if (file.exists()) {
+                in = Uri.fromFile(file);
+            } else {
+                in = Uri.parse(url);
+            }
+            out = Uri.fromFile(file);
         }
         intent.putExtra(UCrop.EXTRA_INPUT_URI, in);
-        intent.putExtra(UCrop.EXTRA_OUTPUT_URI, Uri.fromFile(file));
+        intent.putExtra(UCrop.EXTRA_OUTPUT_URI, out);
         intent.putExtra(Constant.ELEMENT_MODEL, elementModel);
         intent.putExtra(Constant.CONTENT_ID, contentId);
 
