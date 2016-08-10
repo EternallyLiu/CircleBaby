@@ -208,4 +208,10 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
             return new TFOBookContentModel[size];
         }
     };
+
+    public void setRightPage() {
+        for (TFOBookElementModel ele : element_list) {
+            ele.setRight(true);
+        }
+    }
 }

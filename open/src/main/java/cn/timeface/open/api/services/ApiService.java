@@ -252,8 +252,8 @@ public interface ApiService {
      * @return
      */
     @GET("api/pagetemplate")
-    Observable<BaseResponse<List<SimplePageTemplate>>> pageTemplate(@Field("book_id") String book_id,
-                                                                    @Field("content_ids") String content_ids);
+    Observable<BaseResponse<List<SimplePageTemplate>>> pageTemplate(@Query("book_id") String book_id,
+                                                                    @Query("content_ids") String content_ids);
 
 
     @GET
