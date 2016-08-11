@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.events.CardEvent;
+import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -249,6 +250,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 ToastUtil.showToast("先制作一张识图卡片吧~");
                 return true;
             }
+            EventBus.getDefault().post(new PublishRefreshEvent(dataList));
             PublishActivity.open(this,dataList);
 //            EventBus.getDefault().post(new CardEvent(dataList));
             finish();

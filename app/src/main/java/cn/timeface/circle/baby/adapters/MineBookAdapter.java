@@ -265,7 +265,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                                     TypeConstant.FROM_PHONE,
                                     obj.getPageNum(),
                                     obj.getBookName(),
-                                    String.valueOf(obj.getUpdateTime()));
+                                    String.valueOf(obj.getUpdateTime()),context);
                             dialog.show(supportFragmentManager, "dialog");
                         }
                     }, error -> {

@@ -21,6 +21,9 @@ import com.wechat.photopicker.event.OnPhotoClickListener;
 import com.wechat.photopicker.utils.ImageCaptureManager;
 import com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +31,13 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
+import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.NewPickerAdapterEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 import static com.wechat.photopicker.PickerPhotoActivity2.MAX_SELECTOR_SIZE;
 
@@ -130,5 +138,27 @@ public class PickerPhotoFragment2 extends Fragment implements View.OnClickListen
     }
     public PhotoSelectorAdapter2 getPhotoSelectorAdapter(){
         return mPhotoSelectorAdapter;
+    }
+
+    public void reqData() {
+        System.out.println("PickerPhotoFragment2============HomeRefreshEvent");
+        ApiFactory.getApi().getApiService().queryImageInfoList("", bookType)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        List<ImageInfoListObj> dataList = response.getDataList();
+                        List<ImageInfoListObj> dataList1 = mPhotoSelectorAdapter.getDataList();
+                        dataList1.add(0,dataList.get(0));
+                        mPhotoSelectorAdapter = new PhotoSelectorAdapter2(dataList1,getActivity(),bookPage);
+                        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
+                        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
+                        mRecyclerView.setLayoutManager(layoutManager);
+                        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                        mRecyclerView.setAdapter(mPhotoSelectorAdapter);
+                        EventBus.getDefault().post(new NewPickerAdapterEvent(mPhotoSelectorAdapter));
+                    }
+                }, error -> {
+                    Log.e(TAG, "queryImageInfoList:");
+                });
     }
 }

@@ -45,6 +45,7 @@ import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.NewPickerAdapterEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
@@ -132,11 +133,11 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
             @Override
             public boolean OnItemCheck(int position, MediaObj photo, boolean isCheck, int mSelectorPhotoSize) {
                 if (mSelectorPhotoSize == 0) {
-                    mMenuDoneItem.setVisible(false);
+//                    mMenuDoneItem.setVisible(false);
                     btPreview.setVisibility(View.GONE);
                     Log.d(TAG, "btPreview is GONE");
                 } else if (btPreview.getVisibility() == View.GONE) {
-                    mMenuDoneItem.setVisible(true);
+//                    mMenuDoneItem.setVisible(true);
 //                    btPreview.setVisibility(View.VISIBLE);
                     Log.d(TAG, "btPreview is VISIBLE");
                 }
@@ -200,6 +201,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
         if (!isMenuInflater) {
             getMenuInflater().inflate(R.menu.menu_picker, menu);
             mMenuDoneItem = menu.findItem(R.id.done);
+            mMenuDoneItem.setVisible(true);
             isMenuInflater = true;
             return true;
         }
@@ -238,7 +240,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
                 }
             }
 
-            String s = new Gson().toJson(imageInfoList);
+            String s = new Gson().toJson(mPhotoSelectorAdapter.getDataList());
 
             if (bookType == 2) {
                 bookName = FastData.getBabyName() + "日记卡片书";
@@ -286,22 +288,30 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
 
     @Subscribe
     public void onEvent(HomeRefreshEvent event) {
-//        reqData();
+        System.out.println("PickerPhotoActivity2============HomeRefreshEvent");
+        mPickerPhotoFragment.reqData();
     }
 
-    private void reqData() {
-        apiService.queryImageInfoList("", bookType)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
-                    if (response.success()) {
-                        List<ImageInfoListObj> dataList = response.getDataList();
-                        List<ImageInfoListObj> dataList1 = mPhotoSelectorAdapter.getDataList();
-                        dataList1.add(dataList.get(0));
-                        mPhotoSelectorAdapter.notifyDataSetChanged();
-                    }
-                }, error -> {
-                    Log.e(TAG, "queryImageInfoList:");
-                });
+    @Subscribe
+    public void onEvent(NewPickerAdapterEvent event) {
+        mPhotoSelectorAdapter = event.getPhotoSelectorAdapter2();
+        mPhotoSelectorAdapter.setOnItemCheckListener(new OnItemCheckListener2() {
+            @Override
+            public boolean OnItemCheck(int position, MediaObj photo, boolean isCheck, int mSelectorPhotoSize) {
+                if (mSelectorPhotoSize == 0) {
+                    btPreview.setVisibility(View.GONE);
+                    Log.d(TAG, "btPreview is GONE");
+                } else if (btPreview.getVisibility() == View.GONE) {
+                    Log.d(TAG, "btPreview is VISIBLE");
+                }
+                mMenuDoneItem.setTitle(getString(R.string.done_selector_size, mPhotoSelectorAdapter.getSelectedItemCount(), optionalPhotoSize));
+                btPreview.setText(getString(R.string.preview_selector_paths, mPhotoSelectorAdapter.getSelectedItemCount(), optionalPhotoSize));
+                Log.d(TAG, mPhotoSelectorAdapter.getSelectedItemCount() + "");
+                return true;
+            }
+
+        });
     }
+
 
 }
