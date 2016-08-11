@@ -117,7 +117,8 @@ public interface ApiService {
 
     //获取验证码
     @GET("auth/getVeriCode")
-    Observable<BaseResponse> getVeriCode(@Query("account") String account);
+    Observable<BaseResponse> getVeriCode(@Query("account") String account,
+                                         @Query("type") int type);
 
     //验证码校验
     @GET("auth/verifyCode")

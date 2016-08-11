@@ -212,7 +212,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 TypeConstant.FROM_PHONE,
                 cartItem.getTotalPage(),
                 cartItem.getTitle(),
-                cartItem.getDate());
+                cartItem.getDate(),CartActivity.this);
         dialog.show(getSupportFragmentManager(), "dialog");
     }
 

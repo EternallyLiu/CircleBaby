@@ -74,11 +74,13 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
                 if (!TextUtils.isEmpty(phone) && CheckedUtil.isMobileNum(phone)) {
                     registerSMSReceiver();// 注册接收短信，获取的手机验证码并自动填充
 
-                    s = apiService.getVeriCode(phone)
+                    s = apiService.getVeriCode(phone,2)
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
-                                timeRun();
+                                if(response.getStatus()==1){
+                                    timeRun();
+                                }
                             }, error -> {
                                 Toast.makeText(this, "获取验证码失败", Toast.LENGTH_SHORT).show();
                             });

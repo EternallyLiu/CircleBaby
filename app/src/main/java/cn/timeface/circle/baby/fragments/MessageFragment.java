@@ -111,7 +111,11 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                     case 1://赞
                     case 2://发布动态
                     case 3://评论，跳转动态详情
-                        TimeLineDetailActivity.open(getActivity(), msg.getTimeInfo());
+                        if(msg.getTimeInfo().getTimeId()==0){
+                            ToastUtil.showToast("时光已删除");
+                        }else{
+                            TimeLineDetailActivity.open(getActivity(), msg.getTimeInfo());
+                        }
                         break;
                     case 4://新成员加入，跳转亲友圈
                         FragmentBridgeActivity.open(getActivity(), "FamilyMemberFragment");
