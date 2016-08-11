@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -133,7 +132,6 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             tvEditTemplate.setVisibility(View.GONE);
             tvBackgroundColor.setVisibility(View.GONE);
 
-            tvEditPendant.setVisibility(View.GONE);
             tvEditBeauty.setVisibility(View.GONE);
         }
 
@@ -593,8 +591,22 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     public void clickPendant(View view) {
         showSelectRL(false);
         TFOBookImageModel imageModel = (TFOBookImageModel) view.getTag(R.string.tag_obj);
-        pendantAdapter.setSelImgModel(imageModel);
-        Toast.makeText(EditActivity.this, imageModel.toString(), Toast.LENGTH_SHORT).show();
+        {
+            //缩放imageModel,如果不做这一步,初始化的挂件会非常大,看起来不和谐
+            imageModel.setImageScale(imageModel.getImageWidth() / bookModel.getBookWidth() / 2);
+        }
+        TFOBookElementModel elementModel = new TFOBookElementModel(imageModel);
+        elementModel.setPageScale(pageScale);
+        switch (podFrameLayout.getPageOrientation()) {
+            case PageFrameLayout.LEFT:
+                leftModel.getElementList().add(elementModel);
+                break;
+            case PageFrameLayout.RIGHT:
+                elementModel.setRight(true);
+                rightModel.getElementList().add(elementModel);
+                break;
+        }
+        setupViews();
     }
 
     @Subscribe

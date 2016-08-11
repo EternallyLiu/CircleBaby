@@ -7,7 +7,7 @@
     android:padding="@dimen/view_space_small">
 
     <ImageView
-        android:id="@+id/iv_bg_left"
+        android:id="@+id/iv_pendant"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1" />

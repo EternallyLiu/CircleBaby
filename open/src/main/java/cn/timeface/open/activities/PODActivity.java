@@ -21,6 +21,7 @@ import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
+import cn.timeface.open.constants.Constant;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.views.BookPodView;
@@ -47,7 +48,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         {
             this.bookType = getIntent().getIntExtra("book_type", 23);
             this.bookId = getIntent().getStringExtra("book_id");
-            this.publishObjs = getIntent().getParcelableArrayListExtra("publish_objs");
+            this.publishObjs = getIntent().getParcelableArrayListExtra(Constant.PUBLISH_OBJS);
         }
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);

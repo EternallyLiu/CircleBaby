@@ -1,7 +1,6 @@
 package cn.timeface.open.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +21,6 @@ import cn.timeface.open.api.models.objs.TFOBookImageModel;
  */
 public class PendantAdapter extends BaseRecyclerAdapter<TFOBookImageModel> {
 
-    private TFOBookImageModel selImgModel;
-
     public PendantAdapter(Context mContext, List<TFOBookImageModel> listData) {
         super(mContext, listData);
     }
@@ -39,38 +36,23 @@ public class PendantAdapter extends BaseRecyclerAdapter<TFOBookImageModel> {
         ViewHolder viewHolder = (ViewHolder) holder;
         TFOBookImageModel template = listData.get(position);
 
-        viewHolder.ivBgLeft.setVisibility(View.VISIBLE);
         Glide.with(getContext())
                 .load(template.getImageUrl())
                 .asBitmap()
                 .atMost()
                 .fitCenter()
-                .into(viewHolder.ivBgLeft);
+                .into(viewHolder.ivPendant);
 
-        if (selImgModel != null && selImgModel.equals(template)) {
-            holder.itemView.setBackgroundResource(R.drawable.shape_rect_border);
-        } else {
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-        }
         holder.itemView.setTag(R.string.tag_obj, template);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView ivBgLeft;
+        ImageView ivPendant;
 
         public ViewHolder(View view) {
             super(view);
-            ivBgLeft = (ImageView) view.findViewById(R.id.iv_bg_left);
+            ivPendant = (ImageView) view.findViewById(R.id.iv_pendant);
+            ivPendant.setVisibility(View.VISIBLE);
         }
-    }
-
-    public TFOBookImageModel getSelImgModel() {
-        return selImgModel;
-    }
-
-    public void setSelImgModel(TFOBookImageModel selTemplateId) {
-        this.selImgModel = selTemplateId;
-        notifyDataSetChanged();
     }
 }

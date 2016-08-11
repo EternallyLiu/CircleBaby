@@ -21,6 +21,7 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.activities.PODActivity;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
+import cn.timeface.open.constants.Constant;
 
 public class MyPODActivity extends PODActivity {
 
@@ -30,7 +31,7 @@ public class MyPODActivity extends PODActivity {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", bookType);
         intent.putExtra("book_id", bookId);
-        intent.putParcelableArrayListExtra("publish_objs", (ArrayList<? extends Parcelable>) publishObjs);
+        intent.putParcelableArrayListExtra(Constant.PUBLISH_OBJS, (ArrayList<? extends Parcelable>) publishObjs);
         intent.putExtra("dataList", dataList);
         context.startActivity(intent);
     }
@@ -39,7 +40,7 @@ public class MyPODActivity extends PODActivity {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", bookType);
         intent.putExtra("book_id", bookId);
-        intent.putParcelableArrayListExtra("publish_objs", (ArrayList<? extends Parcelable>) publishObjs);
+        intent.putParcelableArrayListExtra(Constant.PUBLISH_OBJS, (ArrayList<? extends Parcelable>) publishObjs);
         context.startActivity(intent);
     }
 

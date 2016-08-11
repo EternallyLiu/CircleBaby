@@ -11,4 +11,5 @@ public class Constant {
     public static String ELEMENT_MODEL = "element_model";
     public static String BOOK_MODEL = "book_model";
     public static String CONTENT_ID = "content_id";
+    public static String PUBLISH_OBJS = "publish_objs";
 }

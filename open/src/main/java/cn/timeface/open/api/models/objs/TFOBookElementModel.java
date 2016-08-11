@@ -67,6 +67,19 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     TFOBookTextContentExpandModel text_content_expand;// 元素文字扩展属性
 
 
+    public TFOBookElementModel() {
+    }
+
+    public TFOBookElementModel(TFOBookImageModel imageModel) {
+        this.element_type = TYPE_PENDANT;
+        this.image_content_expand = imageModel;
+        this.element_top = 10;
+        this.element_left = 10;
+        this.element_content = imageModel.getImageUrl();
+        this.element_width = imageModel.getImageWidth() * imageModel.getImageScale();
+        this.element_height = imageModel.getImageHeight() * imageModel.getImageScale();
+    }
+
     public float getMyViewScale() {
         return my_view_scale;
     }
@@ -371,10 +384,6 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         }
         return webView;
     }
-
-    public TFOBookElementModel() {
-    }
-
 
     @Override
     public void setPageScale(float scale) {
