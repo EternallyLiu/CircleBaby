@@ -30,7 +30,7 @@ import cn.timeface.open.adapters.LayoutAdapter;
 import cn.timeface.open.adapters.PendantAdapter;
 import cn.timeface.open.adapters.TemplateAdapter;
 import cn.timeface.open.api.models.base.BaseResponse;
-import cn.timeface.open.api.models.objs.TFBookBgModel;
+import cn.timeface.open.api.models.objs.TFBookBackgroundModel;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookElementModel;
 import cn.timeface.open.api.models.objs.TFOBookImageModel;
@@ -316,10 +316,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             return;
         }
         Subscription subscribe = apiService.getAttachBgList(bookModel.getBookId(), String.valueOf(bookModel.getBookType()))
-                .compose(SchedulersCompat.<BaseResponse<List<TFBookBgModel>>>applyIoSchedulers())
-                .subscribe(new Action1<BaseResponse<List<TFBookBgModel>>>() {
+                .compose(SchedulersCompat.<BaseResponse<List<TFBookBackgroundModel>>>applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse<List<TFBookBackgroundModel>>>() {
                     @Override
-                    public void call(BaseResponse<List<TFBookBgModel>> listBaseResponse) {
+                    public void call(BaseResponse<List<TFBookBackgroundModel>> listBaseResponse) {
                         setupBgListData(listBaseResponse.getData());
                     }
                 }, new Action1<Throwable>() {
@@ -337,7 +337,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     }
 
-    private void setupBgListData(List<TFBookBgModel> data) {
+    private void setupBgListData(List<TFBookBackgroundModel> data) {
         bgImageAdapter = new BgImageAdapter(this, data);
         rvSelection.setAdapter(bgImageAdapter);
     }
@@ -577,7 +577,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
      */
     public void clickChangeBg(View view) {
         showSelectRL(false);
-        TFBookBgModel bookBgModel = (TFBookBgModel) view.getTag(R.string.tag_obj);
+        TFBookBackgroundModel bookBgModel = (TFBookBackgroundModel) view.getTag(R.string.tag_obj);
         bgImageAdapter.setSelBgColor(bookBgModel);
         int pageOrientation = podFrameLayout.getPageOrientation();
         pageView.setPageBgPicture(bookBgModel, pageOrientation);
@@ -653,7 +653,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     public void selectColorEvent(SelectColorEvent colorEvent) {
         String color = colorEvent.getColor();
         colorAdapter.setSelectedColor(color);
-        pageView.setPageBG(color);
+        pageView.setPageColor(color);
         showSelectRL(false);
     }
 

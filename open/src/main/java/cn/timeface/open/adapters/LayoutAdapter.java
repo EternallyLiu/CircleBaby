@@ -13,7 +13,6 @@ import java.util.List;
 
 import cn.timeface.open.R;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.open.api.models.objs.TFBookBgModel;
 import cn.timeface.open.api.models.response.SimplePageTemplate;
 
 /**

@@ -3,7 +3,7 @@ package cn.timeface.open.api.services;
 import java.util.List;
 
 import cn.timeface.open.api.models.base.BaseResponse;
-import cn.timeface.open.api.models.objs.TFBookBgModel;
+import cn.timeface.open.api.models.objs.TFBookBackgroundModel;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookImageModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
@@ -184,8 +184,8 @@ public interface ApiService {
      * @return
      */
     @GET("api/attachlist?request_type=1")
-    Observable<BaseResponse<List<TFBookBgModel>>> getAttachBgList(@Query("book_id") String book_id,
-                                                                  @Query("book_type") String book_type);
+    Observable<BaseResponse<List<TFBookBackgroundModel>>> getAttachBgList(@Query("book_id") String book_id,
+                                                                          @Query("book_type") String book_type);
 
     @GET("api/attachlist?request_type=2")
     Observable<BaseResponse<List<TFOBookImageModel>>> getAttachPendantList(@Query("book_id") String book_id,

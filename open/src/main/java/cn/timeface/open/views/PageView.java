@@ -10,11 +10,11 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import cn.timeface.open.R;
-import cn.timeface.open.api.models.objs.TFBookBgModel;
+import cn.timeface.open.api.models.objs.TFBookBackgroundModel;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
-import cn.timeface.open.api.models.response.SimplePageTemplate;
 import cn.timeface.open.utils.BookModelCache;
+import cn.timeface.open.utils.glide.TFOBgUrlLoader;
 
 /**
  * author: rayboot  Created on 16/4/25.
@@ -83,7 +83,8 @@ public class PageView extends FrameLayout {
             //画背景图片
             if (!TextUtils.isEmpty(contentModel.getPageImage())) {
                 Glide.with(getContext())
-                        .load(contentModel.getPageImage())
+                        .using(new TFOBgUrlLoader(getContext()))
+                        .load(contentModel)
                         .centerCrop()
                         .into(ivBg);
             }
@@ -141,7 +142,8 @@ public class PageView extends FrameLayout {
                 }
                 if (!TextUtils.isEmpty(leftModel.getPageImage())) {
                     Glide.with(getContext())
-                            .load(leftModel.getPageImage())
+                            .using(new TFOBgUrlLoader(getContext()))
+                            .load(leftModel)
                             .centerCrop()
                             .into(ivBgLeft);
                 }
@@ -154,7 +156,8 @@ public class PageView extends FrameLayout {
                 }
                 if (!TextUtils.isEmpty(rightModel.getPageImage())) {
                     Glide.with(getContext())
-                            .load(rightModel.getPageImage())
+                            .using(new TFOBgUrlLoader(getContext()))
+                            .load(rightModel)
                             .centerCrop()
                             .into(ivBgRight);
                 }
@@ -198,11 +201,11 @@ public class PageView extends FrameLayout {
     /**
      * 设置背景图片或背景色
      *
-     * @param url
+     * @param color
      */
-    public void setPageBG(String url) {
-        setLeftPageBgPicture(url);
-        setRightPageBgPicture(url);
+    public void setPageColor(String color) {
+        setLeftPageBgPicture(color);
+        setRightPageBgPicture(color);
     }
 
     public void setLeftPageBgPicture(String bgPicture) {
@@ -221,18 +224,21 @@ public class PageView extends FrameLayout {
         }
     }
 
-    private void displayPageBg(String bg, ImageView imageView) {
-        if (bg.contains("http")) {//图片
+    private void displayPageBg(String bgImageOrColor, ImageView imageView) {
+        if (bgImageOrColor.contains("http")) {//图片
+            TFOBookContentModel temp = new TFOBookContentModel();
+            temp.setPageImage(bgImageOrColor);
             Glide.with(getContext())
-                    .load(bg)
+                    .using(new TFOBgUrlLoader(getContext()))
+                    .load(temp)
                     .centerCrop()
                     .into(imageView);
         } else {
-            imageView.setBackgroundColor(Color.parseColor(bg));
+            imageView.setBackgroundColor(Color.parseColor(bgImageOrColor));
         }
     }
 
-    public void setPageBgPicture(TFBookBgModel bookBgModel, int pageOrientation) {
+    public void setPageBgPicture(TFBookBackgroundModel bookBgModel, int pageOrientation) {
         if (!TextUtils.isEmpty(bookBgModel.getBackgroundLeft()) && !TextUtils.isEmpty(bookBgModel.getBackgroundRight())) {
             setLeftPageBgPicture(bookBgModel.getBackgroundLeft());
             setRightPageBgPicture(bookBgModel.getBackgroundRight());

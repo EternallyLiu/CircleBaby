@@ -11,8 +11,8 @@ import cn.timeface.open.api.models.objs.TFOBookElementModel;
  * author: rayboot  Created on 16/7/11.
  * email : sy0725work@gmail.com
  */
-public class TFOUrlLoader extends BaseGlideUrlLoader<TFOBookElementModel> {
-    public TFOUrlLoader(Context context) {
+public class TFOContentUrlLoader extends BaseGlideUrlLoader<TFOBookElementModel> {
+    public TFOContentUrlLoader(Context context) {
         super(context);
     }
 

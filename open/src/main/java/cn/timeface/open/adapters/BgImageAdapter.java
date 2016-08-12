@@ -15,17 +15,17 @@ import java.util.List;
 
 import cn.timeface.open.R;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.open.api.models.objs.TFBookBgModel;
+import cn.timeface.open.api.models.objs.TFBookBackgroundModel;
 
 /**
  * author: rayboot  Created on 16/7/4.
  * email : sy0725work@gmail.com
  */
-public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBgModel> {
+public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
 
-    private TFBookBgModel selBgColor;
+    private TFBookBackgroundModel selBgColor;
 
-    public BgImageAdapter(Context mContext, List<TFBookBgModel> listData) {
+    public BgImageAdapter(Context mContext, List<TFBookBackgroundModel> listData) {
         super(mContext, listData);
     }
 
@@ -38,7 +38,7 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBgModel> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        TFBookBgModel template = listData.get(position);
+        TFBookBackgroundModel template = listData.get(position);
 
         if (!TextUtils.isEmpty(template.getBackgroundLeft())) {
             viewHolder.ivBgLeft.setVisibility(View.VISIBLE);
@@ -82,11 +82,11 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBgModel> {
         }
     }
 
-    public TFBookBgModel getSelBgColor() {
+    public TFBookBackgroundModel getSelBgColor() {
         return selBgColor;
     }
 
-    public void setSelBgColor(TFBookBgModel selTemplateId) {
+    public void setSelBgColor(TFBookBackgroundModel selTemplateId) {
         this.selBgColor = selTemplateId;
         notifyDataSetChanged();
     }

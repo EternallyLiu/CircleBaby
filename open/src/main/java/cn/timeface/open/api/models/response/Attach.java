@@ -1,6 +1,6 @@
 package cn.timeface.open.api.models.response;
 
-import cn.timeface.open.api.models.objs.TFBookBgModel;
+import cn.timeface.open.api.models.objs.TFBookBackgroundModel;
 import cn.timeface.open.api.models.objs.TFOBookImageModel;
 
 /**
@@ -9,7 +9,7 @@ import cn.timeface.open.api.models.objs.TFOBookImageModel;
 public class Attach {
     String color;
 
-    TFBookBgModel tfBookBgModel;
+    TFBookBackgroundModel tfBookBackgroundModel;
     TFOBookImageModel imageModel;
 
     public String getColor() {
@@ -29,11 +29,11 @@ public class Attach {
         this.imageModel = imageModel;
     }
 
-    public TFBookBgModel getTfBookBgModel() {
-        return tfBookBgModel;
+    public TFBookBackgroundModel getTfBookBackgroundModel() {
+        return tfBookBackgroundModel;
     }
 
-    public void setTfBookBgModel(TFBookBgModel tfBookBgModel) {
-        this.tfBookBgModel = tfBookBgModel;
+    public void setTfBookBackgroundModel(TFBookBackgroundModel tfBookBackgroundModel) {
+        this.tfBookBackgroundModel = tfBookBackgroundModel;
     }
 }

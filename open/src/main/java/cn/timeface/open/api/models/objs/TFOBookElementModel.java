@@ -25,7 +25,7 @@ import cn.timeface.open.R;
 import cn.timeface.open.managers.interfaces.IMoveParams;
 import cn.timeface.open.managers.interfaces.IPageScale;
 import cn.timeface.open.utils.Utils;
-import cn.timeface.open.utils.glide.TFOUrlLoader;
+import cn.timeface.open.utils.glide.TFOContentUrlLoader;
 
 /**
  * @author liuxz:
@@ -316,7 +316,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
         if (!TextUtils.isEmpty(this.element_mask_image)) {
             Glide.with(context)
-                    .using(new TFOUrlLoader(context))
+                    .using(new TFOContentUrlLoader(context))
                     .load(this)
                     .centerCrop()
                     .bitmapTransform(new Transformation<Bitmap>() {
@@ -335,7 +335,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
         } else {
             Glide.with(context)
-                    .using(new TFOUrlLoader(context))
+                    .using(new TFOContentUrlLoader(context))
                     .load(this)
                     .error(R.drawable.tfo_empty_img)
                     .centerCrop()
@@ -353,7 +353,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             imageView.setLayoutParams(lp);
             imageView.setPadding((int) (this.element_content_left + this.image_content_expand.getImagePaddingLeft()), (int) (this.element_content_top + this.image_content_expand.getImagePaddingTop()), (int) this.element_content_right, (int) this.element_content_bottom);
             Glide.with(context)
-                    .using(new TFOUrlLoader(context))
+                    .using(new TFOContentUrlLoader(context))
                     .load(this)
                     .centerCrop()
                     .into(imageView);
@@ -550,7 +550,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
         int rotation = this.image_content_expand.getImageRotation();
         rotation = (rotation + 360) % 360;
-        imgUrl += "@" + rect.left + "-" + rect.top + "-" + rect.width() + "-" + rect.height() + "a" + "_" + rotation + "r" + "_" + width + "w_1o" + ".webp";
+        imgUrl += "@" + rect.left + "-" + rect.top + "-" + rect.width() + "-" + rect.height() + "a" + "_" + rotation + "r" + "_" + width + "w_1l_1o" + ".webp";
         Log.i("open glide image url", "getCropImageUrl: " + imgUrl);
         return imgUrl;
     }

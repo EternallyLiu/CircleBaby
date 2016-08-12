@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -86,7 +89,16 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         int width = wm.getDefaultDisplay().getWidth() / 3;
         Remember.putInt("width", width);
 
-        SavePicInfoService.open(getApplicationContext());
+        RxPermissions.getInstance(this).request(Manifest.permission.MEDIA_CONTENT_CONTROL)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            SavePicInfoService.open(getApplicationContext());
+                        }
+                    }
+                });
+
         clickTab(menuHomeTv);
         ivPublish.setOnClickListener(this);
 

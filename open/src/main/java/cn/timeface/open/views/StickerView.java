@@ -164,7 +164,7 @@ public class StickerView extends FrameLayout {
                     clickRawX = event.getRawX();
                     clickRawY = event.getRawY();
                 } else if (action == MotionEvent.ACTION_UP) {
-                    if (System.currentTimeMillis() - clickTime < 10) {
+                    if (System.currentTimeMillis() - clickTime < 100) {
                         RectF rect = new RectF(clickRawX - 5, clickRawY - 5, clickRawX + 5, clickRawY + 5);
                         if (rect.contains(event.getRawX(), event.getRawY())) {
                             EventBus.getDefault().post(new ChangeStickerStatusEvent(action, StickerView.this));

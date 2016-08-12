@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Created by zhsheng on 2016/7/8.
  */
-public class TFBookBgModel implements Parcelable {
+public class TFBookBackgroundModel implements Parcelable {
     String background_left;
     String background_right;
 
@@ -37,23 +37,23 @@ public class TFBookBgModel implements Parcelable {
         dest.writeString(this.background_right);
     }
 
-    public TFBookBgModel() {
+    public TFBookBackgroundModel() {
     }
 
-    protected TFBookBgModel(Parcel in) {
+    protected TFBookBackgroundModel(Parcel in) {
         this.background_left = in.readString();
         this.background_right = in.readString();
     }
 
-    public static final Parcelable.Creator<TFBookBgModel> CREATOR = new Parcelable.Creator<TFBookBgModel>() {
+    public static final Parcelable.Creator<TFBookBackgroundModel> CREATOR = new Parcelable.Creator<TFBookBackgroundModel>() {
         @Override
-        public TFBookBgModel createFromParcel(Parcel source) {
-            return new TFBookBgModel(source);
+        public TFBookBackgroundModel createFromParcel(Parcel source) {
+            return new TFBookBackgroundModel(source);
         }
 
         @Override
-        public TFBookBgModel[] newArray(int size) {
-            return new TFBookBgModel[size];
+        public TFBookBackgroundModel[] newArray(int size) {
+            return new TFBookBackgroundModel[size];
         }
     };
 
@@ -70,7 +70,7 @@ public class TFBookBgModel implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TFBookBgModel that = (TFBookBgModel) o;
+        TFBookBackgroundModel that = (TFBookBackgroundModel) o;
 
         if (background_left != null ? !background_left.equals(that.background_left) : that.background_left != null)
             return false;
