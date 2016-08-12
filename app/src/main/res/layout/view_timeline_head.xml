@@ -24,7 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="宝宝成长的点滴那么珍贵" />
+            android:layout_marginLeft="@dimen/size_6"
+            android:layout_marginRight="@dimen/size_12"/>
 
     </LinearLayout>
 

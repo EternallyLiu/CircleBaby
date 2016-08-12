@@ -66,8 +66,8 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     TextView etRelationship;
     @Bind(R.id.tv_focus)
     TextView tvFocus;
-    @Bind(R.id.rl_relation)
-    RelativeLayout rlRelation;
+    @Bind(R.id.rl_focus)
+    RelativeLayout rlFocus;
 
 
     public static final String KEY_SELECTED_PHOTO_SIZE = "SELECTED_PHOTO_SIZE";
@@ -79,9 +79,11 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     private String objectKey = "";
     private int relationId;
     private String relationName;
+    private boolean showFocus;
 
-    public static void open(Context context) {
+    public static void open(Context context,boolean showFocus) {
         Intent intent = new Intent(context, CreateBabyActivity.class);
+        intent.putExtra("showFocus",showFocus);
         context.startActivity(intent);
     }
 
@@ -92,6 +94,12 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        showFocus = getIntent().getBooleanExtra("showFocus", true);
+        if(showFocus){
+            rlFocus.setVisibility(View.VISIBLE);
+        }else{
+            rlFocus.setVisibility(View.GONE);
+        }
 
         tvBack.setOnClickListener(this);
         tvNext.setOnClickListener(this);
@@ -99,8 +107,8 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         rbGirl.setOnClickListener(this);
         rbBoy.setOnClickListener(this);
         etBirthday.setOnClickListener(this);
-        rlRelation.setOnClickListener(this);
-        tvFocus.setOnClickListener(this);
+        rlFocus.setOnClickListener(this);
+        etRelationship.setOnClickListener(this);
     }
 
 
@@ -167,12 +175,13 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 dialog.show();
                 break;
-            case R.id.rl_relation:
+            case R.id.et_relationship:
                 Intent intent = new Intent(this, RelationshipActivity.class);
                 startActivityForResult(intent, RELATIONSHIP);
                 break;
-            case R.id.tv_focus:
+            case R.id.rl_focus:
                 startActivity(new Intent(this, InviteCodeActivity.class));
+
                 break;
 
         }

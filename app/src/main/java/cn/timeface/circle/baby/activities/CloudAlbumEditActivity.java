@@ -367,11 +367,23 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 break;
             case R.id.rl_delete_album:
                 //删除相册
-                deleteAlbum();
+                deleteNotify();
                 break;
             case R.id.cancel:
                 break;
         }
+    }
+
+    public void deleteNotify(){
+        new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("相册里有图片，不能删除哦~")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 
     private void deleteAlbum() {

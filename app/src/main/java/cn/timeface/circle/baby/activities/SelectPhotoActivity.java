@@ -401,6 +401,20 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         }
     }
 
+    public void clickDone(){
+        if(forResult){
+            ArrayList<ImgObj> imgObjs = transToImgObj(adapter.getSelImgs());
+            if (imgObjs.size() == 0) {
+                ToastUtil.showToast("请选择图片");
+                return;
+            }
+            Intent resultIntent = new Intent();
+            resultIntent.putParcelableArrayListExtra("result_select_image_list", imgObjs);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        }
+    }
+
     private ArrayList<ImgObj> transToImgObj(List<PhotoModel> photoModels) {
         ArrayList<ImgObj> imgObjs = new ArrayList<>();
         for (PhotoModel photoModel : photoModels) {
@@ -428,6 +442,9 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
                         adapter.setSelImgs(selImgs);
                         adapter.notifyDataSetChanged();
                         changeSelCount(selImgs.size());
+                        if (selImgs.size() == maxCount) {
+                            clickDone();
+                        }
                     }
                 }
                 break;

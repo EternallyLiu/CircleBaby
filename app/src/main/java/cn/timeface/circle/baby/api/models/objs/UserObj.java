@@ -16,19 +16,39 @@ public class UserObj extends BaseObj implements Parcelable {
     String userId;
     String relationName;
     int isCreator;
+    String phoneNumber;
+    String uniId;
+
 
     public UserObj() {
     }
 
-    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId, String relationName, int isCreator) {
+    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId, String relationName, int isCreator, String phoneNumber, String uniId) {
         this.avatar = avatar;
         this.babyObj = babyObj;
         this.nickName = nickName;
         this.userId = userId;
         this.relationName = relationName;
         this.isCreator = isCreator;
+        this.phoneNumber = phoneNumber;
+        this.uniId = uniId;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getUniId() {
+        return uniId;
+    }
+
+    public void setUniId(String uniId) {
+        this.uniId = uniId;
+    }
 
     public String getRelationName() {
         return relationName;
@@ -105,6 +125,8 @@ public class UserObj extends BaseObj implements Parcelable {
         dest.writeString(this.userId);
         dest.writeString(this.relationName);
         dest.writeInt(this.isCreator);
+        dest.writeString(this.phoneNumber);
+        dest.writeString(this.uniId);
     }
 
     protected UserObj(Parcel in) {
@@ -114,6 +136,8 @@ public class UserObj extends BaseObj implements Parcelable {
         this.userId = in.readString();
         this.relationName = in.readString();
         this.isCreator = in.readInt();
+        this.phoneNumber = in.readString();
+        this.uniId = in.readString();
     }
 
     public static final Parcelable.Creator<UserObj> CREATOR = new Parcelable.Creator<UserObj>() {

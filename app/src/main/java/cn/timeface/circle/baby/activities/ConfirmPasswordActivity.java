@@ -73,7 +73,7 @@ public class ConfirmPasswordActivity extends BaseAppCompatActivity {
                                 Toast.makeText(this, registerResponse.getInfo(), Toast.LENGTH_SHORT).show();
                                 if(registerResponse.success()){
                                     FastData.setUserInfo(registerResponse.getUserInfo());
-                                    CreateBabyActivity.open(ConfirmPasswordActivity.this);
+                                    CreateBabyActivity.open(ConfirmPasswordActivity.this,true);
                                     finish();
                                 }
                                 return;
