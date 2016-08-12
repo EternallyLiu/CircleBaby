@@ -14,15 +14,15 @@
             android:name=".activities.EditActivity"
             android:label="@string/title_activity_edit"
             android:screenOrientation="landscape"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".activities.EditTextActivity"
             android:label="@string/title_activity_edit_text"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".activities.CropImageActivity"
             android:label="@string/title_activity_crop_image"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>

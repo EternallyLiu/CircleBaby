@@ -1,9 +1,14 @@
 package cn.timeface.open.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * author: rayboot  Created on 16/7/18.
@@ -13,8 +18,9 @@ public class Utils {
 
     /**
      * 图片合成
+     *
      * @param picBitmap 原图
-     * @param maskFile 合成的形状
+     * @param maskFile  合成的形状
      * @return 合成后的bigmap
      */
     public static Bitmap fixBitmap(Bitmap picBitmap, File maskFile) {
@@ -58,5 +64,36 @@ public class Utils {
         }
 
         return resultBitmap;
+    }
+
+    static public void copyFileFromAssets(Context context, String file, String dest) throws Exception {
+        InputStream in = null;
+        OutputStream fout = null;
+        int count = 0;
+
+        try {
+            in = context.getAssets().open(file);
+            fout = new FileOutputStream(new File(dest));
+
+            byte data[] = new byte[1024];
+            while ((count = in.read(data, 0, 1024)) != -1) {
+                fout.write(data, 0, count);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                }
+            }
+            if (fout != null) {
+                try {
+                    fout.close();
+                } catch (IOException e) {
+                }
+            }
+        }
     }
 }

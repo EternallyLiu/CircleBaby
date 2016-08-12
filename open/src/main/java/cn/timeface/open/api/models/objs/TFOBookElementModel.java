@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 
 import java.io.File;
 
+import cn.timeface.open.R;
 import cn.timeface.open.managers.interfaces.IMoveParams;
 import cn.timeface.open.managers.interfaces.IPageScale;
 import cn.timeface.open.utils.Utils;
@@ -333,13 +334,12 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
 
         } else {
-            if (!TextUtils.isEmpty(this.image_content_expand.getImageUrl())) {
-                Glide.with(context)
-                        .using(new TFOUrlLoader(context))
-                        .load(this)
-                        .centerCrop()
-                        .into(imageView);
-            }
+            Glide.with(context)
+                    .using(new TFOUrlLoader(context))
+                    .load(this)
+                    .error(R.drawable.tfo_empty_img)
+                    .centerCrop()
+                    .into(imageView);
         }
 
         return imageView;

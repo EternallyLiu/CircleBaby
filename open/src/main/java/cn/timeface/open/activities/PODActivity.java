@@ -55,25 +55,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.seek_bar);
 
         setSupportActionBar(toolbar);
-//        String publishObjs = loadJSONFromAsset();
-
         reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObjs));
-    }
-
-    public String loadJSONFromAsset() {
-        String json;
-        try {
-            InputStream is = getAssets().open("content_list_data.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
     }
 
     private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {

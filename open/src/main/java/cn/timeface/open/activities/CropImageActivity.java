@@ -38,6 +38,7 @@ import cn.timeface.open.ucrop.view.GestureCropImageView;
 import cn.timeface.open.ucrop.view.OverlayView;
 import cn.timeface.open.ucrop.view.TransformImageView;
 import cn.timeface.open.ucrop.view.UCropView;
+import cn.timeface.open.utils.Utils;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -153,6 +154,23 @@ public class CropImageActivity extends BaseAppCompatActivity {
     private void setImageData(Intent intent) {
         Uri inputUri = intent.getParcelableExtra(UCrop.EXTRA_INPUT_URI);
         Uri outputUri = intent.getParcelableExtra(UCrop.EXTRA_OUTPUT_URI);
+
+        if (inputUri == null) {
+            try {
+                File emptyFile = new File(Glide.getPhotoCacheDir(this), "tfo_empty_img.png");
+                if (!emptyFile.exists()) {
+                    Utils.copyFileFromAssets(this, "tfo_empty_img.png", new File(Glide.getPhotoCacheDir(this), "tfo_empty_img.png").getAbsolutePath());
+                }
+                inputUri = Uri.fromFile(emptyFile);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (outputUri == null) {
+            outputUri = Uri.fromFile(new File(Glide.getPhotoCacheDir(this), "temp.jpg"));
+        }
 
         processOptions(intent);
 
