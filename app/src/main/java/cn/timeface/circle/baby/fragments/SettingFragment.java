@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 
 import butterknife.Bind;
@@ -25,6 +27,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.AboutActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
+import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
@@ -162,9 +165,12 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 apiService.logout()
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            FastData.setAccount("");
-                            LoginActivity.open(getActivity());
-                            getActivity().finish();
+                            if(response.success()){
+                                FastData.setAccount("");
+                                LoginActivity.open(getActivity());
+                                getActivity().finish();
+                                EventBus.getDefault().post(new LogoutEvent());
+                            }
                         }, throwable -> {
                             Log.e(TAG, "logout:");
                         });

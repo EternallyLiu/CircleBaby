@@ -53,6 +53,7 @@ import cn.timeface.circle.baby.api.models.objs.PublishObj;
 import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
+import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -163,49 +164,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
         adapter = new PhotoGridAdapter(this);
         gvGridView.setAdapter(adapter);
-        adapter.setOnAddClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (publishType) {
-                    case PHOTO:
-                        selectImages();
-                        break;
-                    case VIDEO:
-                        selectVideos();
-                        break;
-                    case DIALY:
-                        DiaryPublishActivity.open(PublishActivity.this);
-                        break;
-                    case CARD:
-                        CardPublishActivity.open(PublishActivity.this);
-                        break;
-                }
-            }
-        });
-        /*gvGridView.setOnItemClickListener((parent, v, position, id) -> {
-            if (position == 0) {
-                switch (publishType) {
-                    case PHOTO:
-                        selectImages();
-                        break;
-                    case VIDEO:
-                        selectVideos();
-                        break;
-                    case DIALY:
-                        DiaryPublishActivity.open(this);
-                        break;
-                    case CARD:
-                        CardPublishActivity.open(this);
-                        break;
-                }
-            } else {
-//                int relPosition = position - 1;
-//                imageUrls.remove(adapter.getData().get(relPosition));
-//                adapter.getData().remove(relPosition);
-//                adapter.notifyDataSetChanged();
-            }
-        });*/
-
         switch (publishType) {
             case PHOTO:
                 type = 0;
@@ -244,6 +202,26 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             adapter.notifyDataSetChanged();
             tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
         }
+
+        adapter.setOnAddClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (type) {
+                    case 0:
+                        selectImages();
+                        break;
+                    case 1:
+                        selectVideos();
+                        break;
+                    case 2:
+                        DiaryPublishActivity.open(PublishActivity.this);
+                        break;
+                    case 3:
+                        CardPublishActivity.open(PublishActivity.this);
+                        break;
+                }
+            }
+        });
 
     }
 
@@ -520,6 +498,14 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             adapter.setData(list);
             adapter.notifyDataSetChanged();
             tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
+        }else if(event instanceof PublishRefreshEvent){
+            mediaObjs = ((PublishRefreshEvent) event).getDataList();
+            List<String> list = new ArrayList<>();
+            for (MediaObj media : mediaObjs) {
+                list.add(media.getImgUrl());
+            }
+            adapter.setData(list);
+            adapter.notifyDataSetChanged();
         }
     }
 

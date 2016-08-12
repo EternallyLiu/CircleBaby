@@ -148,6 +148,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     private int pageNum;
     private String bookName;
     private String createTime;
+    private Context context;
 
     public static CartPrintPropertyDialog getInstance(PrintCartItem printCartItem,
                                                       PrintPropertyPriceObj obj,
@@ -160,8 +161,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                                       int original,
                                                       int pageNum,
                                                       String bookName,
-                                                      String createTime) {
-        CartPrintPropertyDialog dialog = new CartPrintPropertyDialog();
+                                                      String createTime,Context context) {
+        CartPrintPropertyDialog dialog = new CartPrintPropertyDialog(context);
         Bundle bundle = new Bundle();
         bundle.putSerializable("cart_item", printCartItem);
         bundle.putSerializable("print_property", obj);
@@ -177,6 +178,10 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         bundle.putString("createTime", createTime);
         dialog.setArguments(bundle);
         return dialog;
+    }
+
+    public CartPrintPropertyDialog(Context context) {
+        this.context = context;
     }
 
     public void setDismissListener(DismissListener dismissListener) {
@@ -559,7 +564,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                        @Override
                                        public void onClick(DialogInterface dialog, int which) {
                                            dialog.dismiss();
-                                           CartActivity.open(getActivity());
+                                           CartActivity.open(context);
                                        }
                                    }).show();
                                 }

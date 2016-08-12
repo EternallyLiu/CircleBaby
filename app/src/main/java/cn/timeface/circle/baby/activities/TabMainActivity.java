@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.WindowCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -30,9 +32,11 @@ import cn.timeface.circle.baby.api.services.OpenUploadServices;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.EventTabMainWake;
+import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
@@ -45,7 +49,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener ,IEventBus{
     @Bind(R.id.menu_home_tv)
     TextView menuHomeTv;
     @Bind(R.id.menu_mime_tv)
@@ -71,7 +75,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
+//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_tab_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -246,5 +250,11 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     public View getFootMenuView() {
         return footMenu;
+    }
+
+//    @SuppressWarnings("unused")
+    @Subscribe
+    public void onEvent(LogoutEvent event) {
+        finish();
     }
 }

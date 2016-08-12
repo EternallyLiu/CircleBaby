@@ -1,13 +1,20 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -19,6 +26,7 @@ import android.widget.TextView;
 import com.timeface.refreshload.PullRefreshLoadRecyclerView;
 import com.timeface.refreshload.headfoot.LoadMoreView;
 import com.timeface.refreshload.headfoot.RefreshView;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,6 +42,7 @@ import cn.timeface.circle.baby.activities.ConfirmRelationActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MileStoneActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
 import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.api.models.objs.RecommendObj;
@@ -75,20 +84,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     TextView tvMilestone;
     @Bind(R.id.tv_relative)
     TextView tvRelative;
-//    @Bind(R.id.content_recycler_view)
-//    RecyclerView contentRecyclerView;
-//    @Bind(R.id.swipe_refresh_layout)
-//    SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.content_recycler_view)
+    RecyclerView contentRecyclerView;
+    @Bind(R.id.swipe_refresh_layout)
+    SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.tv_toensurerelation)
     TextView tvToensurerelation;
     @Bind(R.id.iv_cover_bg)
     ImageView ivCoverBg;
-    @Bind(R.id.ll_layout)
-    LinearLayout llLayout;
     @Bind(R.id.iv_dot)
     ImageView ivDot;
-    @Bind(R.id.rlRecyclerView)
-    PullRefreshLoadRecyclerView rlRecyclerView;
+//    @Bind(R.id.rlRecyclerView)
+//    PullRefreshLoadRecyclerView rlRecyclerView;
     @Bind(R.id.tf_stateView)
     TFStateView tfStateView;
     @Bind(R.id.ll_no_data)
@@ -102,11 +109,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
     private boolean enableAnimation = true;
     private boolean bottomMenuShow = true;
-    private boolean contentRecyclerViewAdd = true;
 
     private List<TimeLineGroupObj> tempList;
     AnimatorSet animatorSet = new AnimatorSet();
     private int y;
+    private float y1;
 
     public HomeFragment() {
     }
@@ -134,22 +141,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_home2, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-//        setupPTR();
+        setupPTR();
         initData();
 //        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
         adapter = new TimeLineGroupAdapter(getActivity(), new ArrayList<>());
-        rlRecyclerView.setAdapter(adapter);
-        rlRecyclerView.setLoadRefreshListener(new PullRefreshLoadRecyclerView.LoadRefreshListener() {
-            @Override
-            public void onRefresh(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, RefreshView refreshView) {
-                reqData(1);
-            }
+        contentRecyclerView.setAdapter(adapter);
 
-            @Override
-            public void onLoadMore(PullRefreshLoadRecyclerView pullRefreshLoadRecyclerView, LoadMoreView loadMoreView) {
-                reqData(currentPage);
-            }
-        });
         tfStateView.setOnRetryListener(() -> reqData(1));
         tfStateView.loading();
 
@@ -185,10 +182,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 });
     }
 
+//    @TargetApi(Build.VERSION_CODES.M)
     private void setupPTR() {
         animatorSet.setInterpolator(new DecelerateInterpolator());
         animatorSet.setDuration(400);
-        /*contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -199,34 +197,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                                 "translationY",
                                 0,
                                 ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
-                        ObjectAnimator anim2 = ObjectAnimator.ofFloat(llLayout, "translationY", 0, -toolbar.getMeasuredHeight());
                         animatorSet.playTogether(anim);
                         animatorSet.start();
-                        llMineInfo.setVisibility(View.GONE);
-
-                        if(!contentRecyclerViewAdd){
-                            System.out.println("==========contentRecyclerViewAdd  1111111==========");
-                            contentRecyclerViewAdd = false;
-
-                            int measuredHeight = llLayout.getMeasuredHeight();
-                            int measuredWidth = llLayout.getMeasuredWidth();
-                            System.out.println("measuredHeight=="+measuredHeight);
-                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                            layoutParams.height = measuredHeight + toolbar.getMeasuredHeight();
-                            layoutParams.width = measuredWidth;
-                            System.out.println("layoutParams.height=="+layoutParams.height);
-                            llLayout.setLayoutParams(layoutParams);
-
-                            int measuredHeight1 = contentRecyclerView.getMeasuredHeight();
-                            int measuredWidth1 = contentRecyclerView.getMeasuredWidth();
-                            System.out.println("measuredHeight1=="+measuredHeight1);
-                            ViewGroup.LayoutParams layoutParams1 = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                            layoutParams1.height = measuredHeight + toolbar.getMeasuredHeight();
-                            layoutParams1.width = measuredWidth1;
-                            System.out.println("layoutParams1.height=="+layoutParams1.height);
-                            contentRecyclerView.setLayoutParams(layoutParams1);
-                            System.out.println("==========contentRecyclerViewAdd  22222==========");
-                        }
                     }
                 } else if(dy < -50){
                     if (enableAnimation && !bottomMenuShow) {
@@ -235,30 +207,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                                 "translationY",
                                 ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
                                 0);
-                        ObjectAnimator anim4 = ObjectAnimator.ofFloat(llLayout, "translationY", -toolbar.getMeasuredHeight(), 0);
                         animatorSet.playTogether(anim3);
                         animatorSet.start();
-                        llMineInfo.setVisibility(View.VISIBLE);
                     }
                 }
             }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                switch (newState) {
-                    case RecyclerView.SCROLL_STATE_DRAGGING:
-                        //拖动
-                        break;
-                    case RecyclerView.SCROLL_STATE_IDLE:
-                        //静止
-                        break;
-                    case RecyclerView.SCROLL_STATE_SETTLING:
-                        //滑动
-                        break;
-                }
-            }
-        });*/
+        });
 
 
         ptrListener = new IPTRRecyclerListener() {
@@ -282,35 +236,34 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         };
 
-//        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
-//                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
-//                .tfPtrListener(ptrListener);
-//        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
+        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
+                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FROM_END)
+                .tfPtrListener(ptrListener);
+        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
 
     }
 
     private void reqData(int page) {
         apiService.timeline(page, 10)
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .doOnTerminate(() -> rlRecyclerView.complete())
                 .subscribe(timelineResponse -> {
                     tfStateView.finish();
-//                    tfptrListViewHelper.finishTFPTRRefresh();
+                    tfptrListViewHelper.finishTFPTRRefresh();
 
                     if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
                         if(!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())){
                             adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
                         }
                     }
-//                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
-//                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
-//                    }
+                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
+                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.DISABLED);
+                    }
                     tempList = timelineResponse.getDataList();
                     setDataList(timelineResponse.getDataList());
                 }, error -> {
                     tfStateView.showException(error);
                     Log.e(TAG, "timeline:");
-//                    tfptrListViewHelper.finishTFPTRRefresh();
+                    tfptrListViewHelper.finishTFPTRRefresh();
                     error.printStackTrace();
                 });
     }
@@ -471,6 +424,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     private void showNoDataView(boolean showNoData) {
         llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
-        rlRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
+//        contentRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
 }
