@@ -18,10 +18,12 @@
         <activity
             android:name=".activities.EditTextActivity"
             android:label="@string/title_activity_edit_text"
+            android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".activities.CropImageActivity"
             android:label="@string/title_activity_crop_image"
+            android:screenOrientation="landscape"
             android:theme="@style/FullscreenTheme" />
     </application>
 
