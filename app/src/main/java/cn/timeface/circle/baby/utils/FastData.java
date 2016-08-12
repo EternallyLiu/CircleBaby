@@ -279,7 +279,7 @@ public class FastData extends Remember {
     }
 
     public static String getRelationName() {
-        return getString(RELATION_NAME,"");
+        return getString(RELATION_NAME, "");
     }
 
     private static void setIsCreator(int creator) {
@@ -290,14 +290,32 @@ public class FastData extends Remember {
         return getInt(IS_CREATOR, 0);
     }
 
+    private static void setPhoneNumber(String phoneNumber) {
+        putString("phoneNumber", phoneNumber);
+    }
+
+    private static String getPhoneNumber() {
+        return getString("phoneNumber", "");
+    }
+
+    private static void setUniId(String uniId) {
+        putString("uniId", uniId);
+    }
+
+    private static String getUniId() {
+        return getString("uniId", "");
+    }
+
     public static void setUserInfo(UserObj userObj) {
-        if(userObj!=null){
+        if (userObj != null) {
             setUserName(userObj.getNickName());
             setUserId(userObj.getUserId());
             setAvatar(userObj.getAvatar());
             setBabyObj(userObj.getBabyObj());
             setRelationName(userObj.getRelationName());
             setIsCreator(userObj.getIsCreator());
+            setPhoneNumber(userObj.getPhoneNumber());
+            setUniId(userObj.getUniId());
         }
     }
 
@@ -308,12 +326,15 @@ public class FastData extends Remember {
         BabyObj babyObj = getBabyObj();
         String relationName = getRelationName();
         int isCreator = getIsCreator();
+        String phoneNumber = getPhoneNumber();
+        String uniId = getUniId();
 
-        return new UserObj(avatar, babyObj, userName, userId,relationName,isCreator);
+        return new UserObj(avatar, babyObj, userName, userId, relationName, isCreator, phoneNumber, uniId);
     }
 
     public static void setBabyObj(BabyObj babyObj) {
-        if (babyObj!=null) {
+        System.out.println("babyObj ===== " + babyObj);
+        if (babyObj != null) {
             setBabyAge(babyObj.getAge());
             setBabyAvatar(babyObj.getAvatar());
             setBabyId(babyObj.getBabyId());
@@ -339,7 +360,9 @@ public class FastData extends Remember {
     }
 
     public static void setBabyName(String name) {
-        putString(BABY_Name, name);
+        if(!TextUtils.isEmpty(name)){
+            putString(BABY_Name, name);
+        }
     }
 
     public static String getBabyName() {
@@ -355,7 +378,9 @@ public class FastData extends Remember {
     }
 
     public static void setBabyConstellation(String constellation) {
-        putString(BABY_Constellation, constellation);
+        if(!TextUtils.isEmpty(constellation)){
+            putString(BABY_Constellation, constellation);
+        }
     }
 
     public static String getBabyConstellation() {
@@ -363,7 +388,9 @@ public class FastData extends Remember {
     }
 
     public static void setBabyBlood(String blood) {
-        putString(BABY_Blood, blood);
+        if(!TextUtils.isEmpty(blood)){
+            putString(BABY_Blood, blood);
+        }
     }
 
     public static String getBabyBlood() {
@@ -371,7 +398,9 @@ public class FastData extends Remember {
     }
 
     public static void setBabyBithday(long bithday) {
-        putLong(BABY_Bithday, bithday);
+        if(bithday!=0){
+            putLong(BABY_Bithday, bithday);
+        }
     }
 
     public static long getBabyBithday() {
@@ -379,7 +408,9 @@ public class FastData extends Remember {
     }
 
     public static void setBabyId(int babyId) {
-        putInt(BABY_ID, babyId);
+        if (babyId != 0) {
+            putInt(BABY_ID, babyId);
+        }
     }
 
     public static int getBabyId() {
@@ -387,7 +418,9 @@ public class FastData extends Remember {
     }
 
     public static void setBabyAvatar(String avatar) {
-        putString(BABY_Avatar, avatar);
+        if (!TextUtils.isEmpty(avatar)) {
+            putString(BABY_Avatar, avatar);
+        }
     }
 
     public static String getBabyAvatar() {
@@ -395,7 +428,9 @@ public class FastData extends Remember {
     }
 
     public static void setBabyAge(String age) {
-        putString(BABY_AGE, age);
+        if (!TextUtils.isEmpty(age)) {
+            putString(BABY_AGE, age);
+        }
     }
 
     public static String getBabyAge() {

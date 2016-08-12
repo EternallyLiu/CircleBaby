@@ -1,6 +1,8 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +18,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
+import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -104,24 +108,23 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
+        String content = "我在成长印记记录了" + FastData.getBabyName() + "的成长，快来一起关注涵涵的成长瞬间！";
+        String url = getActivity().getString(R.string.share_url_invite, FastData.getBabyId(), inviteResponse.getInviteCode());
         switch (v.getId()) {
             case R.id.btn_wx:
-//                new ShareDialog(getActivity()).shareToWx("亲子好习惯，让家庭充满和谐，让教育充满温馨。", "邀请码为:" + inviteResponse.getInviteCode(),
-//                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_launcher),
-//                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_login_wechat),
-//                        inviteResponse.getInviteUrl());
-                new ShareDialog(getActivity()).shareToWx("成长印记", "我在成长印记记录了"+ FastData.getBabyName() +"的成长，快来一起关注涵涵的成长瞬间。",
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
-                        inviteResponse.getInviteUrl());
+                new ShareDialog(getActivity()).shareToWx("成长印记", content,
+                        FastData.getBabyAvatar(),"",url);
                 break;
             case R.id.btn_qq:
-                new ShareDialog(getActivity()).shareToQQ("成长印记", "我在成长印记记录了"+ FastData.getBabyName() +"的成长，快来一起关注涵涵的成长瞬间。",
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
-                        inviteResponse.getInviteUrl());
+                new ShareDialog(getActivity()).shareToQQ("成长印记", content,
+                        FastData.getBabyAvatar(),"",url);
                 break;
             case R.id.btn_sms:
+                String sms_body = content + url;
+                Uri smsToUri = Uri.parse("smsto:");
+                Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
+                intent.putExtra("sms_body", sms_body);
+                startActivity(intent);
                 break;
         }
     }

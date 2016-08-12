@@ -15,7 +15,7 @@
         android:textSize="@dimen/text_large"
         android:textColor="@color/bg_color1"
         android:gravity="center"
-        android:layout_marginTop="@dimen/size_24"
+        android:layout_marginTop="@dimen/size_12"
         android:background="@color/bg_color8"
         />
 

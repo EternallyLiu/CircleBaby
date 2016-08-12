@@ -43,4 +43,17 @@ public class TypeConstants {
     //图片上传文件夹
     public static final String UPLOAD_FOLDER = "baby";
     public static final int PHOTO_COUNT_MAX = 100;
+
+    public static final int PHOTO = 0;
+    public static final int VIDEO = 1;
+    public static final int DIARY = 2;
+    public static final int CARD = 3;
+
+    //分享url
+    public static final String SHARE_URL_TIME = "http://stg2.v5time.net/baby/babyShare/groupPicture.html?timeId=%1$d";//照片组
+    public static final String SHARE_URL_MILESTONR = "http://stg2.v5time.net/baby/babyShare/milestone.html?timeId=%1$d";//里程碑
+    public static final String SHARE_URL_GENERALMAP = "http://stg2.v5time.net/baby/babyShare/generalMap.html?timeId=%1$d";//识图卡片
+    public static final String SHARE_URL_DIARY = "http://stg2.v5time.net/baby/babyShare/diary.html?timeId=%1$d";//日记卡片
+    public static final String SHARE_URL_VIDEO = "http://stg2.v5time.net/baby/babyShare/video.html?timeId=%1$d";//视频分享
+    public static final String SHARE_URL_INVITE = "http://stg2.v5time.net/baby/babyShare/invite.html?babyId=%1$d&inviteCode=%2$d";//邀请码分享
 }

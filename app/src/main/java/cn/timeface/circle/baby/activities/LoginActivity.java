@@ -185,7 +185,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.setPassword(psw);
                         FastData.putString("userObj", new Gson().toJson(userLoginResponse.getUserInfo()));
                         if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
-                            CreateBabyActivity.open(this);
+                            CreateBabyActivity.open(this,true);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
@@ -314,7 +314,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
                         FastData.putString("userObj", new Gson().toJson(userLoginResponse.getUserInfo()));
                         if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
-                            CreateBabyActivity.open(this);
+                            CreateBabyActivity.open(this,true);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
