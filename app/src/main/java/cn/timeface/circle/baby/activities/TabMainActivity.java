@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.WindowCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
 import cn.timeface.circle.baby.api.services.OpenUploadServices;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
+import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.HomeFragment;
@@ -61,6 +64,10 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     ImageView ivPublish;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.rl_toensurerelation)
+    RelativeLayout rlToensurerelation;
+    @Bind(R.id.tv_toensurerelation)
+    TextView tvToensurerelation;
     @Bind(R.id.foot_menu_ll)
     View footMenu;
     private long lastPressedTime = 0;
@@ -101,6 +108,13 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
         clickTab(menuHomeTv);
         ivPublish.setOnClickListener(this);
+        tvToensurerelation.setOnClickListener(this);
+
+        if (TextUtils.isEmpty(FastData.getRelationName())) {
+            rlToensurerelation.setVisibility(View.VISIBLE);
+        }else{
+            rlToensurerelation.setVisibility(View.GONE);
+        }
 
         EventBus.getDefault().post(new EventTabMainWake());
 
@@ -200,6 +214,12 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             case R.id.iv_publish:
                 new PublishDialog(this).show();
                 break;
+            case R.id.tv_toensurerelation:
+                Intent intent = new Intent(this, ConfirmRelationActivity.class);
+                String code = Remember.getString("code", "");
+                intent.putExtra("code", code);
+                startActivity(intent);
+                break;
 
         }
     }
@@ -268,5 +288,14 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Subscribe
     public void onEvent(LogoutEvent event) {
         finish();
+    }
+
+    @Subscribe
+    public void onEvent(ConfirmRelationEvent event) {
+        if(TextUtils.isEmpty(FastData.getRelationName())){
+            rlToensurerelation.setVisibility(View.VISIBLE);
+        }else{
+            rlToensurerelation.setVisibility(View.GONE);
+        }
     }
 }

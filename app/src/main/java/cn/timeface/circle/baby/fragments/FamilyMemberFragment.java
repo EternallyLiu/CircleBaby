@@ -95,6 +95,12 @@ public class FamilyMemberFragment extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        reqData();
+        super.onResume();
+    }
+
     private void initFoot() {
         for(String s : relationNames){
             View view = initView2(s);
@@ -114,6 +120,8 @@ public class FamilyMemberFragment extends BaseFragment {
     }
 
     private void setDataList(List<FamilyMemberInfo> dataList) {
+        llFamilymemberNone.removeAllViews();
+        llFamilymember.removeAllViews();
         for (FamilyMemberInfo info : dataList) {
             String relationName = info.getUserInfo().getRelationName();
             if (relationNames.contains(relationName)) {
@@ -148,7 +156,7 @@ public class FamilyMemberFragment extends BaseFragment {
         GlideUtil.displayImage(info.getUserInfo().getAvatar(), ivAvatar);
         tvName.setText(info.getUserInfo().getRelationName());
         tvCount.setText("来过" + info.getCount() + "次");
-        tvTime.setText("最近" + DateUtil.formatDate("MM-dd HH:mm", info.getTime()));
+        tvTime.setText("最近" + DateUtil.formatDate("MM-dd kk:mm", info.getTime()));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

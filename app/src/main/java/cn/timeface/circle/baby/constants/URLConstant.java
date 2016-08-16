@@ -11,7 +11,8 @@ public class URLConstant {
     /**
      * 支付服务协议
      */
-    public static final String PAY_SERVICE_AGREEMENT = "http://m.timeface.cn/app/APP-Help/html/payNeedKnow.html";
+    public static final String PAY_SERVICE_AGREEMENT = "http://dev1.v5time.net/baby/serviceAgreement.html";
+
 
     /**
      * 分享Pod根地址

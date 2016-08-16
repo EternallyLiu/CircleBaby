@@ -19,6 +19,9 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.CommonUtil;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -30,7 +33,7 @@ import rx.schedulers.Schedulers;
  * @from 14-4-10 16:06
  * @TODO 意见反馈
  */
-public class FeedbackActivity extends BaseAppCompatActivity {
+public class FeedbackActivity extends BaseAppCompatActivity implements View.OnClickListener {
     @Bind(R.id.etFeedback)
     EditText mEtFeedback;
     @Bind(R.id.btnAccept)
@@ -49,12 +52,13 @@ public class FeedbackActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mBtnAccept.setOnClickListener(this);
     }
 
     /**
      * 点击 提交
      */
-    public void clickSubmit(View v) {
+    public void clickSubmit() {
         CommonUtil.hideSoftInput(this);
         String feedbackString = mEtFeedback.getText().toString();
         if (TextUtils.isEmpty(feedbackString)) {
@@ -63,28 +67,16 @@ public class FeedbackActivity extends BaseAppCompatActivity {
         }
 
         mBtnAccept.setEnabled(false);
-
-//        Subscription s = apiService.feedback(Uri.encode(feedbackString), "timeface")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        new Action1<BaseResponse>() {
-//                            @Override
-//                            public void call(BaseResponse response) {
-//                                Toast.makeText(FeedbackActivity.this, response.info, Toast.LENGTH_SHORT)
-//                                        .show();
-//                                mBtnAccept.setEnabled(true);
-//                                finish();
-//                            }
-//                        }
-//                        , new Action1<Throwable>() {
-//                            @Override
-//                            public void call(Throwable throwable) {
-//                                mBtnAccept.setEnabled(true);
-//                            }
-//                        }
-//                );
-//        addSubscription(s);
+        apiService.feedback(Uri.encode(feedbackString), FastData.getUserId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                            ToastUtil.showToast(response.getInfo());
+                            if (response.success()) {
+                                mEtFeedback.setText("");
+                            }
+                            mBtnAccept.setEnabled(true);
+                        }
+                );
     }
 
     @Override
@@ -97,5 +89,12 @@ public class FeedbackActivity extends BaseAppCompatActivity {
     protected void onPause() {
         super.onPause();
         UmsAgent.onPause(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.btnAccept){
+            clickSubmit();
+        }
     }
 }

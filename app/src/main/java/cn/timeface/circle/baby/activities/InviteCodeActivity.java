@@ -12,12 +12,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.Subscribe;
 import org.w3c.dom.Text;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.events.ConfirmRelationEvent;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
@@ -71,6 +74,7 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
                         .subscribe(userLoginResponse -> {
                             if (userLoginResponse.success()) {
                                 Remember.putString("code",code);
+                                FastData.setUserInfo(userLoginResponse.getUserInfo());
                                 if(TextUtils.isEmpty(userLoginResponse.getUserInfo().getRelationName())){
                                     //跳转到确认关系界面
                                     Intent intent = new Intent(this,ConfirmRelationActivity.class);
@@ -88,4 +92,5 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
                 break;
         }
     }
+
 }

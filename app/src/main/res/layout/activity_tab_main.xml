@@ -27,4 +27,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center_horizontal|bottom"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_toensurerelation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/tran_30_black"
+        android:visibility="gone">
+        <Button
+            android:id="@+id/tv_toensurerelation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="完善与宝宝关系"
+            android:background="@drawable/selector_btn_login"
+            android:textColor="@color/white"
+            android:layout_marginLeft="@dimen/size_24"
+            android:layout_marginRight="@dimen/size_24"
+            android:paddingLeft="@dimen/size_12"
+            android:paddingRight="@dimen/size_12"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>

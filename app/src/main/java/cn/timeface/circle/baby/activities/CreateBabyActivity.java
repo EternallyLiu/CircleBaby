@@ -21,6 +21,7 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.wechat.photopicker.PickerPhotoActivity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.Serializable;
 import java.net.URLEncoder;
@@ -32,6 +33,8 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.Relationship;
+import cn.timeface.circle.baby.events.ConfirmRelationEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
@@ -41,7 +44,7 @@ import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CreateBabyActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class CreateBabyActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
 
     @Bind(R.id.tv_back)
@@ -81,9 +84,9 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     private String relationName;
     private boolean showFocus;
 
-    public static void open(Context context,boolean showFocus) {
+    public static void open(Context context, boolean showFocus) {
         Intent intent = new Intent(context, CreateBabyActivity.class);
-        intent.putExtra("showFocus",showFocus);
+        intent.putExtra("showFocus", showFocus);
         context.startActivity(intent);
     }
 
@@ -95,9 +98,9 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         showFocus = getIntent().getBooleanExtra("showFocus", true);
-        if(showFocus){
+        if (showFocus) {
             rlFocus.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rlFocus.setVisibility(View.GONE);
         }
 
@@ -138,7 +141,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     Toast.makeText(this, "请设置与宝宝关系", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(TextUtils.isEmpty(objectKey)){
+                if (TextUtils.isEmpty(objectKey)) {
                     ToastUtil.showToast("给宝宝设置一个好看的头像吧~");
                     return;
                 }
@@ -146,8 +149,10 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                 apiService.createBaby(time, gender, objectKey, URLEncoder.encode(name), relationId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(userLoginResponse -> {
-//                            FastData.setUserInfo(userLoginResponse.getUserInfo());
-//                            TabMainActivity.open(this);
+                            if (showFocus) {
+                                TabMainActivity.open(this);
+                            }
+                            FastData.setUserInfo(userLoginResponse.getUserInfo());
                             finish();
                         }, throwable -> {
                             Log.e(TAG, "createBaby:", throwable);
@@ -248,5 +253,11 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
             }
         }.start();
 
+    }
+
+    @Subscribe
+    public void onEvent(ConfirmRelationEvent event) {
+        TabMainActivity.open(this);
+        finish();
     }
 }

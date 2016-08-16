@@ -2,6 +2,8 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -9,6 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -30,8 +35,6 @@ import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class DiaryTextFragment extends BaseFragment implements View.OnClickListener {
 
-    @Bind(R.id.tv_complete)
-    TextView tvComplete;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.tv_change)
@@ -52,6 +55,7 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -63,8 +67,8 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
         ActionBar actionBar = getActionBar();
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle("日记卡片配文");
         }
-        tvComplete.setOnClickListener(this);
         tvChange.setOnClickListener(this);
         tvAuto.setOnClickListener(this);
 
@@ -109,25 +113,10 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
                 reqData();
                 break;
             case R.id.tv_change:
-                setDataList(diaryTextResponse.getDataList());
-                break;
-            case R.id.tv_complete:
-                String content = etContent.getText().toString();
-                if (TextUtils.isEmpty(content)) {
-                    ToastUtil.showToast("记录宝宝今天的成长吧~");
-                    return;
+                if(diaryTextResponse!=null){
+                    setDataList(diaryTextResponse.getDataList());
                 }
-                if (content.length() > 54) {
-                    ToastUtil.showToast("日记不能超过54个字哦~");
-                    return;
-                }
-                System.out.println(etContent.getText());
-                Intent intent = new Intent();
-                intent.putExtra("content", content);
-                getActivity().setResult(Activity.RESULT_OK, intent);
-                getActivity().finish();
                 break;
-
         }
     }
 
@@ -182,5 +171,32 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
             });
             return textView;
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_complete,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.complete){
+            String content = etContent.getText().toString();
+            if (TextUtils.isEmpty(content)) {
+                ToastUtil.showToast("记录宝宝今天的成长吧~");
+                return true;
+            }
+            if (content.length() > 54) {
+                ToastUtil.showToast("日记不能超过54个字哦~");
+                return true;
+            }
+            System.out.println(etContent.getText());
+            Intent intent = new Intent();
+            intent.putExtra("content", content);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

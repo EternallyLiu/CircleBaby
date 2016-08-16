@@ -38,6 +38,7 @@ public class AboutActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("关于时光印记");
         mTvVersion.setText(BuildConfig.VERSION_NAME);
     }
 
@@ -59,7 +60,7 @@ public class AboutActivity extends BaseAppCompatActivity {
      * 点击跳转至->服务条款
      */
     public void clickClause(View v) {
-        FragmentBridgeActivity.openWebViewFragment(this, "http://m.timeface.cn/app/APP-Help/html/Clause.html", "服务条款");
+        FragmentBridgeActivity.openWebViewFragment(this, "http://dev1.v5time.net/baby/serviceProvision.html", "服务条款");
     }
 
     @Override

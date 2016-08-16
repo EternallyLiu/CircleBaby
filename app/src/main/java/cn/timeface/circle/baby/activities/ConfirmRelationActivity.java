@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.RelationshipAdapter;
 import cn.timeface.circle.baby.api.models.objs.Relationship;
+import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
@@ -96,14 +99,22 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
                     Toast.makeText(this, "与宝宝的关系不能超过20个字符，请修改", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                attention(relationship);
+                apiService.addRelationship(URLEncoder.encode(relationship))
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(relationIdResponse -> {
+                            if (relationIdResponse.success()) {
+                                attention(relationship);
+                            } else {
+                                Toast.makeText(this, relationIdResponse.getInfo(), Toast.LENGTH_SHORT).show();
+                            }
+                        }, throwable -> {
+                            Log.e(TAG, "addRelationship:", throwable);
+                        });
                 break;
             case R.id.tv_relationship:
                 Relationship relation = (Relationship) v.getTag(R.string.tag_ex);
 
                 attention(relation.getRelationName());
-
-                finish();
                 break;
         }
     }
@@ -120,9 +131,11 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(userLoginResponse -> {
                     if (userLoginResponse.success()) {
-                        Toast.makeText(this, userLoginResponse.getInfo(), Toast.LENGTH_SHORT).show();
                         FastData.setUserInfo(userLoginResponse.getUserInfo());
+                        EventBus.getDefault().post(new ConfirmRelationEvent());
                         finish();
+                    }else{
+                        Toast.makeText(this, userLoginResponse.getInfo(), Toast.LENGTH_SHORT).show();
                     }
                 }, error -> {
                     Toast.makeText(this, "邀请码校验失败", Toast.LENGTH_SHORT).show();

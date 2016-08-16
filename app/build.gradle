@@ -31,6 +31,7 @@ android {
 
     buildTypes {
         debug {
+//            buildConfigField "String", "API_URL", '"http://192.168.1.106:8080/Baby/"'
             buildConfigField "String", "API_URL", '"http://stg2.v5time.net/baby/"'
 //            buildConfigField "String", "API_URL", '"http://dev1.v5time.net/baby/"'
             signingConfig signingConfigs.signingConfig

@@ -83,21 +83,12 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                 break;
             case R.id.ll_time_shot:
                 setChecked(1);
-                Calendar calendar = Calendar.getInstance();
-                DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        monthOfYear = monthOfYear + 1;
-                        tvTimeShot.setText(year + "." + monthOfYear + "." + dayOfMonth);
-                        time = tvTimeShot.getText().toString();
+                time = tvTimeShot.getText().toString();
 
-                        Intent intent = new Intent();
-                        intent.putExtra("time",time);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-                dialog.show();
+                Intent intent1 = new Intent();
+                intent1.putExtra("time",time);
+                setResult(RESULT_OK, intent1);
+                finish();
                 break;
             case R.id.ll_time_set:
                 setChecked(2);
@@ -106,8 +97,16 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         monthOfYear = monthOfYear + 1;
-                        tvTimeSet.setText(year + "." + monthOfYear + "." + dayOfMonth);
-                        time = tvTimeSet.getText().toString();
+                        String m = String.valueOf(monthOfYear);
+                        String d = String.valueOf(dayOfMonth);
+                        if(m.length()==1){
+                            m = "0"+m;
+                        }
+                        if(d.length()==1){
+                            d = "0"+d;
+                        }
+                        time = year + "." + m + "." + d;
+                        tvTimeShot.setText(time);
 
                         Intent intent = new Intent();
                         intent.putExtra("time",time);

@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.net.URLEncoder;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
@@ -82,11 +84,11 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
 
 
     private void reqData() {
-        apiService.inviteFamily(relationName)
+        apiService.inviteFamily(URLEncoder.encode(relationName))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(inviteResponse -> {
                     this.inviteResponse = inviteResponse;
-                    tvCode.setText(inviteResponse.getInviteCode() + "");
+                    tvCode.setText(inviteResponse.getInviteCode());
                     GlideUtil.displayImage(inviteResponse.getCodeUrl(), iv);
                     int width = Remember.getInt("width", 0);
                     ViewGroup.LayoutParams layoutParams = iv.getLayoutParams();
@@ -95,6 +97,7 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
                     iv.setLayoutParams(layoutParams);
                 }, throwable -> {
                     Log.e(TAG, "queryBabyFamilyList:");
+                    throwable.printStackTrace();
                 });
 
     }
@@ -108,8 +111,11 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        String content = "我在成长印记记录了" + FastData.getBabyName() + "的成长，快来一起关注涵涵的成长瞬间！";
-        String url = getActivity().getString(R.string.share_url_invite, FastData.getBabyId(), inviteResponse.getInviteCode());
+        String content = "我在成长印记记录了" + FastData.getBabyName() + "的成长，快来一起关注" + FastData.getBabyName() + "的成长瞬间！";
+        String url = "";
+        if (inviteResponse!=null){
+            url = getActivity().getString(R.string.share_url_invite, FastData.getBabyId(), Integer.valueOf(inviteResponse.getInviteCode()));
+        }
         switch (v.getId()) {
             case R.id.btn_wx:
                 new ShareDialog(getActivity()).shareToWx("成长印记", content,

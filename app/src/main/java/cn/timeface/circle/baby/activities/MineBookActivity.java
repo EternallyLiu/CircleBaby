@@ -167,6 +167,8 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                         adapter.notifyDataSetChanged();
                         if (bookList.size() == 0) {
                             showNoDataView(true);
+                        }else{
+                            showNoDataView(false);
                         }
                     } else {
                         ToastUtil.showToast(mineBookListResponse.getInfo());

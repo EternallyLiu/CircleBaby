@@ -569,4 +569,11 @@ public interface ApiService {
      */
     @POST("babyOrder/receipt")
     Observable<BaseResponse> receipt(@Query("orderId") String orderId);
+
+    /**
+     * 意见反馈
+     */
+    @POST("member/feedback")
+    Observable<BaseResponse> feedback(@Query("content") String content,
+                                      @Query("userId") String userId);
 }

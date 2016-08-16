@@ -7,7 +7,7 @@ import cn.timeface.circle.baby.api.models.base.BaseResponse;
  */
 public class InviteResponse extends BaseResponse {
 
-    int inviteCode;
+    String inviteCode;
     String inviteUrl;
     String codeUrl;
 
@@ -19,11 +19,11 @@ public class InviteResponse extends BaseResponse {
         this.codeUrl = codeUrl;
     }
 
-    public int getInviteCode() {
+    public String getInviteCode() {
         return inviteCode;
     }
 
-    public void setInviteCode(int inviteCode) {
+    public void setInviteCode(String inviteCode) {
         this.inviteCode = inviteCode;
     }
 
