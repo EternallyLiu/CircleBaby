@@ -61,12 +61,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- 友盟设置 -->
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="Channel ID" />
-        <!-- 友盟设置 -->
-
         <meta-data
             android:name="cn.timeface.circle.baby.utils.glide.TFGlideModule"
             android:value="GlideModule" />

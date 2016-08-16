@@ -7,8 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.wbtech.ums.common.UmsConstants;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.BuildConfig;

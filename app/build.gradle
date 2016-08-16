@@ -104,7 +104,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.5'
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.umeng.analytics:analytics:5.6.1'
+    compile 'com.umeng.analytics:analytics:6.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.3.1'
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.3.1'
     compile 'com.squareup.okio:okio:1.8.0'
