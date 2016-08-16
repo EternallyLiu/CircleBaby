@@ -42,7 +42,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="下载宝宝时光输入邀请码完成验证后，"
+        android:text="下载成长印记输入邀请码完成验证后，"
         android:textSize="@dimen/text_medium"
         android:textColor="@color/text_color3"
         android:gravity="center"
@@ -66,7 +66,7 @@
         android:layout_marginLeft="@dimen/size_24"
         android:layout_marginRight="@dimen/size_24"
         android:layout_marginTop="@dimen/size_12"
-        android:background="@drawable/selector_btn_login"
+        android:background="@drawable/shape_green_bg"
         android:text="通过微信邀请"
         android:textColor="@android:color/white"
         android:textSize="@dimen/text_medium" />
@@ -83,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/selector_btn_login"
+            android:background="@drawable/shape_blue_bg"
             android:text="QQ邀请"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_medium" />

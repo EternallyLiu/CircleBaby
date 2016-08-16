@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -42,6 +43,7 @@ import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -81,7 +83,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     @Bind(R.id.ll_video)
     LinearLayout llVideo;
     private PhotoGridAdapter adapter;
-    private HashSet<String> imageUrls = new HashSet<>();
+    private List<String> imageUrls = new ArrayList<>();
     private final int PICTURE = 0;
     private final int MILESTONE = 1;
     private final int TIME = 2;
@@ -150,16 +152,12 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                         selectImages();
                     }
                 });
-                /*gvGridView.setOnItemClickListener((parent, v, position, id) -> {
-                    if (position == 0) {
-                        selectImages();
-                    } else {
-//                int relPosition = position - 1;
-//                imageUrls.remove(adapter.getData().get(relPosition));
-//                adapter.getData().remove(relPosition);
-//                adapter.notifyDataSetChanged();
+                gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, (ArrayList<String>) adapter.getData(), position);
                     }
-                });*/
+                });
             } else {
                 PhotoGridAdapter2 photoGridAdapter2 = new PhotoGridAdapter2(this);
                 photoGridAdapter2.getData().addAll(imageUrls);
@@ -169,7 +167,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     }
 
     private void selectImages() {
-        SelectPhotoActivity.openForResult(this, PHOTO_COUNT_MAX, PICTURE);
+        SelectPhotoActivity.openForResult(this, imgObjs , PHOTO_COUNT_MAX, PICTURE);
     }
 
     @Override
@@ -184,7 +182,10 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                         urls.add(item.getLocalPath());
                     }
                     if (urls.size() > 0) {
-                        adapter.getData().addAll(urls);
+                        List<String> imgs = new ArrayList<>();
+                        imgs.addAll(imageUrls);
+                        imgs.addAll(urls);
+                        adapter.setData(imgs);
                         adapter.notifyDataSetChanged();
                     }
                     break;
@@ -236,9 +237,9 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             }
         }
         String s = new Gson().toJson(mediaList);
-//        long t = DateUtil.getTime(time, "yyyy.MM.dd");
-        long t = System.currentTimeMillis();
-        apiService.editTime(URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, t, timelimeobj.getTimeId())
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+        apiService.editTime(URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, time, timelimeobj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
@@ -248,6 +249,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                             uploadImage(url);
                         }
                         EventBus.getDefault().post(new TimelineEditEvent());
+                        EventBus.getDefault().post(new HomeRefreshEvent());
                     }
                 }, throwable -> {
                     Log.e(TAG, "editTime:");
@@ -268,6 +270,10 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
         public List<String> getData() {
             return data;
+        }
+
+        public void setData(List<String> data){
+            this.data = data;
         }
 
         @Override

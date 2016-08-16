@@ -56,7 +56,7 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
         holder.tvMonth.setText(month);
         holder.tvDay.setText(day);
         holder.tvDateex.setText(item.getDateEx());
-        holder.tvAge.setText(item.getAge());
+        holder.tvAge.setText("宝宝"+item.getAge());
         List<TimeLineObj> timeLineList = item.getTimeLineList();
         TimeLineAdapter adapter = new TimeLineAdapter(context, timeLineList, position);
         holder.contentRecyclerView.setLayoutManager(new LinearLayoutManager(context));

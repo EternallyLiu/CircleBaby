@@ -1,16 +1,23 @@
 package cn.timeface.circle.baby.adapters;
 
 import android.animation.Animator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -19,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +39,15 @@ import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.ApiFactory;
+import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.events.ActionCallBackEvent;
+import cn.timeface.circle.baby.events.CommentSubmit;
+import cn.timeface.circle.baby.events.IconCommentClickEvent;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -42,6 +55,7 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.functions.Func1;
 
 /**
  * Created by lidonglin on 2016/5/31.
@@ -79,14 +93,15 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         holder = ((ViewHolder) viewHolder);
+        holder.context = context;
         TimeLineObj item = getItem(position);
         holder.timeLineObj = item;
         holder.tvContent.setText(item.getContent());
         holder.tvAuthor.setText(item.getAuthor().getRelationName());
-        holder.tvDate.setText(DateUtil.getTime2(item.getDate()));
+        holder.tvDate.setText(DateUtil.formatDate("MM-dd kk:mm",item.getDate()));
         holder.iconLike.setSelected(item.getLike() == 1 ? true : false);
-        holder.tvCommentcount.setText(item.getCommentCount() + "");
-        holder.tvLikecount.setText(item.getLikeCount() + "");
+        holder.tvCommentcount.setText(item.getCommentList().size() + "");
+        holder.tvLikecount.setText(item.getLikeList().size() + "");
 
         if (!TextUtils.isEmpty(item.getMilestone())) {
             holder.tvMilestone.setVisibility(View.VISIBLE);
@@ -136,7 +151,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             int comments = item.getCommentList().size() > 3 ? 3 : item.getCommentList().size();
             for (int i = 0; i < comments; i++) {
                 CommentObj commentObj = item.getCommentList().get(i);
-                holder.llCommentWrapper.addView(initCommentItemView(commentObj));
+                holder.llCommentWrapper.addView(holder.initCommentItemView(commentObj));
             }
         } else {
             holder.llCommentWrapper.setVisibility(View.GONE);
@@ -194,7 +209,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         return imageView;
     }
 
-    private View initCommentItemView(CommentObj comment) {
+    /*private View initCommentItemView(CommentObj comment) {
         View view = mLayoutInflater.inflate(R.layout.view_comment, null);
         TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
         TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
@@ -210,8 +225,43 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         msb.append("：").append(comment.getContent());
         tvComment.setText(msb);
         tvTime.setText(DateUtil.formatDate("MM-dd HH:mm", comment.getCommentDate()));
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog dialog = new AlertDialog.Builder(context).setView(initCommentMenu(comment)).show();
+                dialog.setCanceledOnTouchOutside(true);
+                Window window = dialog.getWindow();
+                WindowManager m = window.getWindowManager();
+                Display d = m.getDefaultDisplay();
+                WindowManager.LayoutParams p = window.getAttributes();
+
+                p.width = d.getWidth();
+                window.setAttributes(p);
+                window.setGravity(Gravity.BOTTOM);
+                window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+                window.setWindowAnimations(R.style.bottom_dialog_animation);
+            }
+        });
+
         return view;
     }
+
+    public View initCommentMenu(CommentObj comment) {
+        View view = View.inflate(context,R.layout.view_comment_menu, null);
+        LinearLayout backView = (LinearLayout) view.findViewById(R.id.ll_publish_menu);
+        backView.setBackgroundColor(context.getResources().getColor(R.color.trans));
+        RelativeLayout tvAction = (RelativeLayout) view.findViewById(R.id.rl_action);
+        TextView tv = (TextView) view.findViewById(R.id.tv_action);
+        RelativeLayout tvCancel = (RelativeLayout) view.findViewById(R.id.rl_cancel);
+        if (comment.getUserInfo().getUserId().equals(FastData.getUserId())) {
+            tv.setText("删除");
+        }
+        tvAction.setTag(R.string.tag_obj, comment);
+        tvAction.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
+        return view;
+    }*/
 
     @Override
     public int getItemType(int position) {
@@ -228,6 +278,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         TimeLineObj timeLineObj;
         int position;
         int allDetailsPosition;
+        public Context context;
 
         @Bind(R.id.tv_content)
         TextView tvContent;
@@ -265,6 +316,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         LinearLayout llCommentLikeWrapper;
         @Bind(R.id.ll_recode)
         LinearLayout llRecode;
+        private AlertDialog dialog;
 
 
         ViewHolder(View view) {
@@ -272,6 +324,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             ButterKnife.bind(this, view);
             llRecode.setOnClickListener(this);
             iconLike.setOnClickListener(this);
+            iconComment.setOnClickListener(this);
             gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -293,6 +346,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                     TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
                     break;
                 case R.id.icon_like:
+                    iconLike.setClickable(false);
                     int p = iconLike.isSelected() == true ? 0 : 1;
                     ApiFactory.getApi().getApiService().like(timeLineObj.getTimeId(), p)
                             .compose(SchedulersCompat.applyIoSchedulers())
@@ -303,7 +357,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                     if (p == 1) {//之前没有点赞
                                         llCommentLikeWrapper.setVisibility(View.VISIBLE);
                                         listData.get(position).setLike(1);
-                                        int likeCount = listData.get(position).getLikeCount();
+                                        int likeCount = listData.get(position).getLikeList().size();
                                         listData.get(position).setLikeCount(likeCount + 1);
                                         tvLikecount.setText(likeCount + 1 + "");
                                         for (UserObj u : listData.get(position).getLikeList()) {
@@ -318,6 +372,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         }
 
                                         iconLike.setSelected(true);
+
                                         hsv.setVisibility(View.VISIBLE);
 
                                         ImageView imageView = initPraiseItem();
@@ -326,7 +381,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                     } else {
 
                                         listData.get(position).setLike(0);
-                                        int likeCount = listData.get(position).getLikeCount();
+                                        int likeCount = listData.get(position).getLikeList().size();
                                         listData.get(position).setLikeCount(likeCount - 1);
                                         tvLikecount.setText(likeCount - 1 + "");
                                         for (UserObj u : listData.get(position).getLikeList()) {
@@ -336,6 +391,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         }
 
                                         iconLike.setSelected(false);
+
                                         llGoodListUsersBar.removeAllViews();
                                         if (timeLineObj.getLikeCount() == 0) {
                                             hsv.setVisibility(View.GONE);
@@ -359,12 +415,119 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                         }
                                     }
                                 }
+                                iconLike.setClickable(true);
                             }, error -> {
+                                iconLike.setClickable(true);
                                 Log.e("RecoderAdapter", "like:");
                             });
                     break;
+                case R.id.icon_comment:
+                    EventBus.getDefault().post(new IconCommentClickEvent(allDetailsPosition,position,timeLineObj));
+                    break;
+                case R.id.rl_action:
+
+                    CommentObj commment = (CommentObj) v.getTag(R.string.tag_obj);
+                    dialog.dismiss();
+                    if (commment.getUserInfo().getUserId().equals(FastData.getUserId())) {
+                        //删除评论操作
+                        new AlertDialog.Builder(context)
+                                .setTitle("确定删除这条评论吗?")
+                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ApiFactory.getApi().getApiService().delComment(commment.getCommentId())
+                                        .filter(new Func1<BaseResponse, Boolean>() {
+                                            @Override
+                                            public Boolean call(BaseResponse response) {
+                                                return response.success();
+                                            }
+                                        })
+                                        .flatMap(baseResponse -> ApiFactory.getApi().getApiService().queryBabyTimeDetail(timeLineObj.getTimeId()))
+                                        .compose(SchedulersCompat.applyIoSchedulers())
+                                        .subscribe(response -> {
+                                            ToastUtil.showToast(response.getInfo());
+                                            if (response.success()) {
+                                                //重新加载评论列表
+                                                timeLineObj = response.getTimeInfo();
+                                                if (allDetailsPosition >= 0 && position >= 0) {
+                                                    EventBus.getDefault().post(new CommentSubmit(allDetailsPosition, position, timeLineObj));
+                                                }
+                                            }
+                                        }, error -> {
+                                            Log.e("timeLineAdapter", "delComment:");
+                                            error.printStackTrace();
+                                        });
+                            }
+                        }).show();
+                    } else {
+                        //回复操作
+                        EventBus.getDefault().post( new ActionCallBackEvent(commment,allDetailsPosition,position,timeLineObj));
+                    }
+                    break;
+                case R.id.rl_cancel:
+                    dialog.dismiss();
+                    break;
 
             }
+        }
+
+        private View initCommentItemView(CommentObj comment) {
+            View view = View.inflate(context,R.layout.view_comment, null);
+            TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
+            TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
+            SpannableStringBuilder msb = new SpannableStringBuilder();
+            msb.append(comment.getUserInfo().getRelationName())
+                    .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), 0, comment.getUserInfo().getRelationName().length(),
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//第一个人名
+            if (comment.getToUserInfo() != null && !TextUtils.isEmpty(comment.getToUserInfo().getRelationName())) {
+                msb.append("回复");
+                msb.append(comment.getToUserInfo().getRelationName())
+                        .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), msb.length() - comment.getToUserInfo().getRelationName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            msb.append("：").append(comment.getContent());
+            tvComment.setText(msb);
+            tvTime.setText(DateUtil.formatDate("MM-dd kk:mm", comment.getCommentDate()));
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog = new AlertDialog.Builder(context).setView(initCommentMenu(comment)).show();
+                    dialog.setCanceledOnTouchOutside(true);
+                    Window window = dialog.getWindow();
+                    WindowManager m = window.getWindowManager();
+                    Display d = m.getDefaultDisplay();
+                    WindowManager.LayoutParams p = window.getAttributes();
+
+                    p.width = d.getWidth();
+                    window.setAttributes(p);
+                    window.setGravity(Gravity.BOTTOM);
+                    window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+                    window.setWindowAnimations(R.style.bottom_dialog_animation);
+                }
+            });
+
+            return view;
+        }
+
+        public View initCommentMenu(CommentObj comment) {
+            View view = View.inflate(context,R.layout.view_comment_menu, null);
+            LinearLayout backView = (LinearLayout) view.findViewById(R.id.ll_publish_menu);
+            backView.setBackgroundColor(context.getResources().getColor(R.color.trans));
+            RelativeLayout tvAction = (RelativeLayout) view.findViewById(R.id.rl_action);
+            TextView tv = (TextView) view.findViewById(R.id.tv_action);
+            RelativeLayout tvCancel = (RelativeLayout) view.findViewById(R.id.rl_cancel);
+            if (comment.getUserInfo().getUserId().equals(FastData.getUserId())) {
+                tv.setText("删除");
+            }
+            tvAction.setTag(R.string.tag_obj, comment);
+            tvAction.setOnClickListener(this);
+            tvCancel.setOnClickListener(this);
+            return view;
         }
     }
 

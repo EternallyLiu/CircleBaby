@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -53,6 +54,7 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
     Button btnDelete;
     private MessageAdapter adapter;
     private UserObj userObj;
+    private AlertDialog dialog;
 
     public FamilyMemberInfoFragment() {
     }
@@ -111,7 +113,15 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
                 String nickname = tvNickname.getText().toString();
                 FragmentBridgeActivity.openChangeInfoFragment(this, TypeConstants.EDIT_NICKNAME, nickname);
                 break;
-            case R.id.tv_delete:
+            case R.id.btn_delete:
+                dialog = new AlertDialog.Builder(getContext()).setView(initDeleteView()).show();
+                dialog.setCanceledOnTouchOutside(false);
+                break;
+            case R.id.btn_cancel:
+                dialog.dismiss();
+                break;
+            case R.id.btn_ok:
+                dialog.dismiss();
                 //删除亲友
                 apiService.delRelationship(userObj.getUserId())
                         .compose(SchedulersCompat.applyIoSchedulers())
@@ -119,13 +129,27 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
                             ToastUtil.showToast(response.getInfo());
                             if (response.success()) {
                                 getActivity().finish();
+                            }else {
+                                ToastUtil.showToast(response.getInfo());
                             }
                         }, throwable -> {
                             Log.e(TAG, "queryBabyInfo:");
                         });
-
                 break;
         }
+    }
+
+    private View initDeleteView() {
+        View view = View.inflate(getActivity(),R.layout.view_dialog, null);
+        TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        TextView tvMsg = (TextView) view.findViewById(R.id.tv_msg);
+        Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        Button btnOk = (Button) view.findViewById(R.id.btn_ok);
+
+        tvMsg.setText("确定删除 " + userObj.getRelationName() + " 吗");
+        btnCancel.setOnClickListener(this);
+        btnOk.setOnClickListener(this);
+        return view;
     }
 
 
@@ -150,7 +174,7 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+
         if (FastData.getUserInfo().getIsCreator() == 1) {
             String nickName = tvNickname.getText().toString();
             String relationName = tvRelation.getText().toString();
@@ -159,11 +183,12 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
             apiService.updateFamilyRelationshipInfo(nickName, relationName, userId)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
-                        ToastUtil.showToast(response.getInfo());
+
                     }, throwable -> {
                         Log.e(TAG, "queryBabyInfo:");
                     });
         }
         ButterKnife.unbind(this);
+        super.onDestroyView();
     }
 }

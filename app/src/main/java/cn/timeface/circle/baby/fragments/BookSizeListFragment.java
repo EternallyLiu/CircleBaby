@@ -41,6 +41,7 @@ public class BookSizeListFragment extends BaseFragment {
     private List<ImageInfoListObj> dataList;
     private String bookSizeId;
     private int bookPage;
+    private String coverTitle;
 
 
     public BookSizeListFragment() {
@@ -92,6 +93,7 @@ public class BookSizeListFragment extends BaseFragment {
                 CardBookSizeObj cardBookSizeObj = list.get(position);
                 bookSizeId = cardBookSizeObj.getBookSizeId()+"";
                 bookPage = cardBookSizeObj.getBookPage();
+                coverTitle = cardBookSizeObj.getCoverTitle();
                 startPhotoPick();
             }
         });
@@ -108,6 +110,7 @@ public class BookSizeListFragment extends BaseFragment {
         intent.putExtra("bookType",2);
         intent.putExtra("bookSizeId",bookSizeId);
         intent.putExtra("bookPage",bookPage);
+        intent.putExtra("coverTitle",coverTitle);
         intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
         startActivity(intent);

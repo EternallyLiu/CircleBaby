@@ -88,7 +88,6 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         setSupportActionBar(toolBar);
-
         ShareSDK.initSDK(this);
         Remember.putBoolean("showtimelinehead", true);
 
@@ -143,7 +142,8 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         Subscription s = null;
         switch (view.getId()) {
             case R.id.btn_wechat:
-                ShareSdkUtil.login(this, ShareSDK.getPlatform(this, Wechat.NAME), loginCallback);
+//                ShareSdkUtil.login(this, ShareSDK.getPlatform(this, Wechat.NAME), loginCallback);
+                login(Wechat.NAME);
                 break;
             case R.id.btn_qq:
                 login(QQ.NAME);
@@ -183,7 +183,6 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
                         FastData.setAccount(account);
                         FastData.setPassword(psw);
-                        FastData.putString("userObj", new Gson().toJson(userLoginResponse.getUserInfo()));
                         if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
                             CreateBabyActivity.open(this,true);
                         } else {
@@ -311,8 +310,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 .subscribe(userLoginResponse -> {
                     if (userLoginResponse.success()) {
                         FastData.setUserInfo(userLoginResponse.getUserInfo());
-                        FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
-                        FastData.putString("userObj", new Gson().toJson(userLoginResponse.getUserInfo()));
+                        FastData.setUserFrom(from);
                         if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
                             CreateBabyActivity.open(this,true);
                         } else {

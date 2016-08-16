@@ -128,8 +128,6 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
             case R.id.rl_baby:
                 UserObj info = (UserObj) v.getTag(R.string.tag_ex);
                 FastData.setUserInfo(info);
-                Gson gson = new Gson();
-                FastData.putString("userObj", gson.toJson(info));
                 apiService.updateLoginInfo()
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {

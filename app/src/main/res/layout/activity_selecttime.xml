@@ -81,11 +81,10 @@
             android:layout_height="wrap_content"
             android:background="@color/text_color1"
             android:textSize="@dimen/text_medium"
-            android:drawableRight="@drawable/mine_data_go"
             android:drawablePadding="@dimen/size_12"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/size_12"
+            android:layout_marginRight="28dp"
             />
     </RelativeLayout>
     <View

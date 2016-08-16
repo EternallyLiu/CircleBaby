@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +32,8 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 import com.wechat.photopicker.PickerPhotoActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -48,6 +51,7 @@ import cn.timeface.circle.baby.api.models.objs.Msg;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -99,6 +103,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
     public static final String KEY_SELECTED_PHOTO_SIZE = "SELECTED_PHOTO_SIZE";
     private final int PicutreSelcted = 10;
     private String objectKey;
+    private AlertDialog alertDialog;
 
     public BabyInfoFragment() {
     }
@@ -107,9 +112,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        String userObj = getArguments().getString("userObj");
-        Gson gson = new Gson();
-        user = gson.fromJson(userObj, UserObj.class);
+        user = getArguments().getParcelable("userObj");
         babyObj = user.getBabyObj();
         String s = babyObj.getAvatar();
         int baby = s.indexOf("baby");
@@ -197,7 +200,10 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 if (response.success()) {
+                                    FragmentBridgeActivity.open(getActivity(), "ChangeBabyFragment");
                                     getActivity().finish();
+                                }else{
+                                    ToastUtil.showToast(response.getInfo());
                                 }
                             }, throwable -> {
                                 Log.e(TAG, "delBabyInfo:", throwable);
@@ -205,18 +211,23 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                 }
             }).show();
         } else {
-            //取消关注宝宝
-            apiService.attentionCancel(babyObj.getBabyId())
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-                        if (response.success()) {
-                            getActivity().finish();
-                        }
-                    }, throwable -> {
-                        Log.e(TAG, "attentionCancel:", throwable);
-                    });
+            alertDialog = new AlertDialog.Builder(getContext()).setView(initUnFocusView()).show();
+            alertDialog.setCanceledOnTouchOutside(false);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private View initUnFocusView() {
+        View view = View.inflate(getActivity(),R.layout.view_dialog, null);
+        TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        TextView tvMsg = (TextView) view.findViewById(R.id.tv_msg);
+        Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        Button btnOk = (Button) view.findViewById(R.id.btn_ok);
+
+        tvMsg.setText("你确定不再关注宝宝" + FastData.getBabyName() + "吗?这会导致你不能继续查看宝宝相关内容。");
+        btnCancel.setOnClickListener(this);
+        btnOk.setOnClickListener(this);
+        return view;
     }
 
     @Override
@@ -282,26 +293,34 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                                             if(babyInfoResponse.success()){
                                                 babyObj = babyInfoResponse.getBabyInfo();
                                                 FastData.setBabyObj(babyObj);
-                                                Gson gson = new Gson();
-                                                FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
+                                                EventBus.getDefault().post(new HomeRefreshEvent());
                                                 getActivity().finish();
                                             }
                                         }, throwable -> {
                                             Log.e(TAG, "queryBabyInfoDetail:", throwable);
                                         });
-
-//                                FastData.setBabyName(n);
-//                                FastData.setBabyBithday(time);
-//                                FastData.setBabyBlood(b);
-//                                FastData.setBabyAvatar("http://img1.timeface.cn/" + objectKey);
-//                                FastData.setBabyGender(gender);
-//
-//                                Gson gson = new Gson();
-//                                FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
-//                                getActivity().finish();
                             }
                         }, throwable -> {
                             Log.e(TAG, "editBabyInfo:", throwable);
+                        });
+                break;
+            case R.id.btn_cancel:
+                alertDialog.dismiss();
+                break;
+            case R.id.btn_ok:
+                alertDialog.dismiss();
+                //取消关注宝宝
+                apiService.attentionCancel(babyObj.getBabyId())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                FragmentBridgeActivity.open(getActivity(), "ChangeBabyFragment");
+                                getActivity().finish();
+                            }else{
+                                ToastUtil.showToast(response.getInfo());
+                            }
+                        }, throwable -> {
+                            Log.e(TAG, "attentionCancel:", throwable);
                         });
                 break;
         }

@@ -127,6 +127,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         .subscribe(response -> {
                             if(response.success()){
                                 reqData();
+                                EventBus.getDefault().post(new UnreadMsgEvent());
                             }
                         }, error -> {
                             Log.e(TAG, "read:");

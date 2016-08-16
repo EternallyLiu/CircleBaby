@@ -219,7 +219,9 @@ public class FastData extends Remember {
      * 存储用户ID
      */
     public static void setUserId(String userId) {
-        putString(USER_ID, userId);
+        if(!TextUtils.isEmpty(userId)){
+            putString(USER_ID, userId);
+        }
     }
 
     public static int getUserFrom() {
@@ -408,9 +410,7 @@ public class FastData extends Remember {
     }
 
     public static void setBabyId(int babyId) {
-        if (babyId != 0) {
             putInt(BABY_ID, babyId);
-        }
     }
 
     public static int getBabyId() {

@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -222,6 +223,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 }
             }
         });
+        gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position);
+            }
+        });
 
     }
 
@@ -294,7 +301,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     }
                     break;
                 case TIME:
-                    String time = data.getStringExtra("time");
+                    String time =  data.getStringExtra("time");
                     tvTime.setText(time);
                     break;
                 case PHOTO_RECORD_DETAIL:
@@ -362,12 +369,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             Toast.makeText(this, "发点文字或图片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
-        String t = tvTime.getText().toString();
-        long time = DateUtil.getTime(t, "yyyy.MM.dd");
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
 
         List<PublishObj> datalist = new ArrayList<>();
 
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), System.currentTimeMillis());
+        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
         datalist.add(publishObj);
 
         Gson gson = new Gson();
@@ -395,14 +402,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             Toast.makeText(this, "发点文字或图片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
-        String t = tvTime.getText().toString();
-        long time = DateUtil.getTime(t, "yyyy.MM.dd");
-
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         List<PublishObj> datalist = new ArrayList<>();
         List<MediaObj> mediaObjs = new ArrayList<>();
         mediaObjs.add(mediaObj);
 
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), System.currentTimeMillis());
+        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
         datalist.add(publishObj);
 
         Gson gson = new Gson();
@@ -440,8 +446,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         //发布
         List<PublishObj> datalist = new ArrayList<>();
         for (PhotoRecode photoRecode : photoRecodes) {
-            String t = photoRecode.getTitle();
-            long time = DateUtil.getTime(t, "yyyy.MM.dd");
+            String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+            long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+
+            System.out.println("t ============ "+t);
+            System.out.println("time ============ "+time);
+
             String content = photoRecode.getContent();
             Milestone mileStone = photoRecode.getMileStone();
             int mileStoneId = mileStone == null ? 0 : mileStone.getId();
@@ -455,7 +465,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
                 mediaObjs.add(mediaObj);
             }
-            PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, System.currentTimeMillis());
+            PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, time);
             datalist.add(publishObj);
         }
         Gson gson = new Gson();

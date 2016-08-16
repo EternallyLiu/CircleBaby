@@ -114,7 +114,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="@dimen/size_2"
-                    android:src="@drawable/selector_timeline_like" />
+                    android:src="@drawable/selector_timeline_like"
+                    android:padding="@dimen/size_6"/>
 
                 <TextView
                     android:id="@+id/tv_likecount"
@@ -130,7 +131,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="@dimen/size_6"
                     android:layout_marginRight="@dimen/size_2"
-                    android:src="@drawable/timeline_comment" />
+                    android:src="@drawable/timeline_comment"
+                    android:padding="@dimen/size_6"/>
 
                 <TextView
                     android:id="@+id/tv_commentcount"

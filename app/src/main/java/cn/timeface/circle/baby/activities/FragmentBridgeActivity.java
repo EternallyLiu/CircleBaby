@@ -67,9 +67,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         open(context, "BigImageFragment", "", bundle);
     }
 
-    public static void openBabyInfoFragment(Context context, String user) {
+    public static void openBabyInfoFragment(Context context, UserObj user) {
         Bundle bundle = new Bundle();
-        bundle.putString("userObj", user);
+        bundle.putParcelable("userObj",user);
         open(context, "BabyInfoFragment", bundle);
     }
 
