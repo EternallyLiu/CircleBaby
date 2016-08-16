@@ -3,6 +3,7 @@ package cn.timeface.open.fragments;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -131,6 +132,7 @@ public class PageFragment extends BaseFragment {
                             @Override
                             public void call() {
                                 PageView pageView = new PageView(getActivity(), leftModel, rightModel, false);
+                                pageView.setBackgroundColor(Color.BLACK);
                                 FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
                                 lp.gravity = Gravity.CENTER;
                                 mainFrameLayout.addView(pageView, lp);
