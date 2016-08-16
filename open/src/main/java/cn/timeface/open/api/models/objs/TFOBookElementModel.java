@@ -347,15 +347,16 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
     private View getTextView(Context context) {
         //如果文字有图片,则加载图片
-        if (this.image_content_expand != null && TextUtils.isEmpty(this.image_content_expand.getImageUrl())) {
+        if (this.image_content_expand != null && !TextUtils.isEmpty(this.image_content_expand.getImageUrl())) {
             ImageView imageView = new ImageView(context);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
             imageView.setLayoutParams(lp);
-            imageView.setPadding((int) (this.element_content_left + this.image_content_expand.getImagePaddingLeft()), (int) (this.element_content_top + this.image_content_expand.getImagePaddingTop()), (int) this.element_content_right, (int) this.element_content_bottom);
+//            imageView.setPadding((int) (this.element_content_left + this.image_content_expand.getImagePaddingLeft()), (int) (this.element_content_top + this.image_content_expand.getImagePaddingTop()), (int) this.element_content_right, (int) this.element_content_bottom);
+            imageView.setPadding((int) (this.element_content_left), (int) (this.element_content_top), (int) this.element_content_right, (int) this.element_content_bottom);
             Glide.with(context)
                     .using(new TFOContentUrlLoader(context))
                     .load(this)
-                    .centerCrop()
+                    .fitCenter()
                     .into(imageView);
             return imageView;
         }
