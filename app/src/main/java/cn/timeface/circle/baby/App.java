@@ -8,14 +8,12 @@ import com.activeandroid.ActiveAndroid;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.leakcanary.LeakCanary;
-import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.util.List;
 
 import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.constants.URLConstant;
 import cn.timeface.circle.baby.managers.recorders.SimpleUploadRecorder;
 import cn.timeface.circle.baby.oss.uploadservice.UploadService;
 import cn.timeface.circle.baby.push.MiPushMessageReceive;
@@ -55,6 +53,7 @@ public class App extends MultiDexApplication {
 
         //友盟key
         MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this, "570b24bbe0f55a4fc7000c00", ChannelUtil.getChannel(this)));
+        MobclickAgent.setDebugMode(BuildConfig.DEBUG);
 
         //初始化util
         TimeFaceUtilInit.init(this);
