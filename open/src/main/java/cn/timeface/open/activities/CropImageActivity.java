@@ -31,6 +31,7 @@ import cn.timeface.open.api.models.objs.TFOBookElementModel;
 import cn.timeface.open.constants.Constant;
 import cn.timeface.open.ucrop.UCrop;
 import cn.timeface.open.ucrop.model.AspectRatio;
+import cn.timeface.open.ucrop.model.ExifInfo;
 import cn.timeface.open.ucrop.model.ImageState;
 import cn.timeface.open.ucrop.util.FileUtils;
 import cn.timeface.open.ucrop.view.CropImageView;
@@ -318,6 +319,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
 
     public void makeModify(String newImageUrl) {
         ImageState imageState = mGestureCropImageView.getImageState();
+        ExifInfo exifInfo = mGestureCropImageView.getExifInfo();
+        exifInfo.getExifDegrees();
         Log.i(TAG, "makeModify: imageState = " + imageState.toString());
         RectF cropRect = imageState.getCropRect();
         RectF imageRect = imageState.getCurrentImageRect();
@@ -328,6 +331,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
         int height = Math.round(cropRect.height() / imageState.getCurrentScale());
 
         int rotation = Math.round(imageState.getCurrentAngle());
+        rotation += exifInfo.getExifDegrees();
         if (rotation < 0) {
             rotation = rotation % 360 + 360;
         }
@@ -377,7 +381,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
         elementModel.getImageContentExpand().setImageHeight(newImageH);
         elementModel.getImageContentExpand().setImageStartPointX(left * finalImageScale);
         elementModel.getImageContentExpand().setImageStartPointY(top * finalImageScale);
-        elementModel.getImageContentExpand().setImageRotation(rotation);
+        elementModel.getImageContentExpand().setImageRotation(rotation - exifInfo.getExifDegrees());
     }
 
 
