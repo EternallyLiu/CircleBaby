@@ -74,6 +74,7 @@ public class ShareDialog extends BaseDialog {
 
     public void share(String title, String content, String imgUrl, String url, CustomerLogo... logos) {
         share(title, content, imgUrl, imgUrl, url, logos);
+        System.out.println("share_url ========== "+url);
     }
 
     public void share(String title, String content, String imgUrl, String imgSinaUrl, String url, CustomerLogo... logos) {

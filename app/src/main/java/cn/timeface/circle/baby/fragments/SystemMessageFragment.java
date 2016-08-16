@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.OrderDetailActivity;
 import cn.timeface.circle.baby.adapters.SystemMessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -98,7 +99,7 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
                 SystemMsg msg = (SystemMsg) v.getTag(R.string.tag_ex);
                 if (msg.getContent().contains("订单详情")) {
                     //跳转订单详情
-
+                    OrderDetailActivity.open(getContext(),msg.getDataId()+"");
                 }
                 break;
         }

@@ -245,6 +245,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 case PICTURE:
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
                     photoRecodes.clear();
+                    imageUrls.clear();
                     for (ImgObj item : selImages) {
                         imageUrls.add(item.getLocalPath());
                         String title = item.getDate();
@@ -277,7 +278,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         contentRecyclerView.setVisibility(View.GONE);
 
                         if (imageUrls.size() > 0) {
-                            Log.d(TAG,"imageUrls.get(0) ===================== "+imageUrls.get(0));
                             adapter.getData().clear();
                             adapter.getData().addAll(imageUrls);
                             adapter.notifyDataSetChanged();

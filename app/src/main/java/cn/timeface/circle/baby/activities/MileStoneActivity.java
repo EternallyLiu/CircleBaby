@@ -148,11 +148,12 @@ public class MileStoneActivity extends BaseAppCompatActivity {
                 }
             }
             if(TextUtils.isEmpty(imgUrl)){
-                imgUrl = ShareSdkUtil.getImgStrByResource(this, R.mipmap.ic_launcher);
+                imgUrl = FastData.getBabyAvatar();
             }
-            new ShareDialog(this).share(FastData.getBabyName() + "成长里程碑", FastData.getBabyName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑",
-                    imgUrl,
-                    "http://www.timeface.cn/tf_mobile/download.html");
+            String title = FastData.getBabyName() + "成长里程碑";
+            String content = FastData.getBabyName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑";
+            String url = getString(R.string.share_url_milestone,FastData.getBabyId());
+            new ShareDialog(this).share(title, content, imgUrl, url);
         }
         return super.onOptionsItemSelected(item);
     }

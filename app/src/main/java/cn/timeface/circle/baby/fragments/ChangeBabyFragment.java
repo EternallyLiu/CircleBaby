@@ -66,6 +66,7 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
         if(actionBar!=null){
+            actionBar.setTitle("选择宝宝");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         adapter = new ChangebabyAdapter(getActivity(), new ArrayList<>());
@@ -119,7 +120,7 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_createbaby:
-                CreateBabyActivity.open(getActivity());
+                CreateBabyActivity.open(getActivity(),false);
                 break;
             case R.id.tv_focusbaby:
                 InviteCodeActivity.open(getActivity());

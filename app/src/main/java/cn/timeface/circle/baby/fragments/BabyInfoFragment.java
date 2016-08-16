@@ -276,15 +276,29 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {
-                                FastData.setBabyName(n);
-                                FastData.setBabyBithday(time);
-                                FastData.setBabyBlood(b);
-                                FastData.setBabyAvatar("http://img1.timeface.cn/" + objectKey);
-                                FastData.setBabyGender(gender);
+                                apiService.queryBabyInfoDetail(babyObj.getBabyId())
+                                        .compose(SchedulersCompat.applyIoSchedulers())
+                                        .subscribe(babyInfoResponse -> {
+                                            if(babyInfoResponse.success()){
+                                                babyObj = babyInfoResponse.getBabyInfo();
+                                                FastData.setBabyObj(babyObj);
+                                                Gson gson = new Gson();
+                                                FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
+                                                getActivity().finish();
+                                            }
+                                        }, throwable -> {
+                                            Log.e(TAG, "queryBabyInfoDetail:", throwable);
+                                        });
 
-                                Gson gson = new Gson();
-                                FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
-                                getActivity().finish();
+//                                FastData.setBabyName(n);
+//                                FastData.setBabyBithday(time);
+//                                FastData.setBabyBlood(b);
+//                                FastData.setBabyAvatar("http://img1.timeface.cn/" + objectKey);
+//                                FastData.setBabyGender(gender);
+//
+//                                Gson gson = new Gson();
+//                                FastData.putString("userObj", gson.toJson(FastData.getUserInfo()));
+//                                getActivity().finish();
                             }
                         }, throwable -> {
                             Log.e(TAG, "editBabyInfo:", throwable);

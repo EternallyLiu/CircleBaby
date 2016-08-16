@@ -111,7 +111,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
-            android:text="关于时光宝宝"
+            android:text="关于时光印记"
             android:textSize="@dimen/text_medium" />
 
         <ImageView

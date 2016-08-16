@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="宝宝信息"
+                android:text="创建宝宝"
                 android:textColor="@color/text_color1"
                 android:textSize="@dimen/text_large" />
 
@@ -140,20 +140,32 @@
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
 
+    <TextView
+        android:id="@+id/et_relationship"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:drawableLeft="@drawable/relation"
+        android:drawablePadding="@dimen/size_12"
+        android:hint="请选择你和宝宝的关系"
+        android:padding="@dimen/size_12"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_medium"/>
+
     <RelativeLayout
-        android:id="@+id/rl_relation"
+        android:id="@+id/rl_focus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:layout_marginTop="@dimen/size_12"
         android:paddingRight="@dimen/size_12">
         <TextView
-            android:id="@+id/et_relationship"
+            android:id="@+id/tv_focus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/text_color1"
             android:drawablePadding="@dimen/size_12"
-            android:hint="请选择你与宝宝的关系"
+            android:text="亲友已经创建过宝宝，去关注他"
             android:padding="@dimen/size_12"
             android:gravity="center_vertical"
             android:textSize="@dimen/text_medium"/>
@@ -166,16 +178,4 @@
             />
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_focus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_24"
-        android:background="@color/text_color1"
-        android:gravity="center"
-        android:text="亲友已经创建过宝宝，去关注他"
-        android:padding="@dimen/size_12"
-        android:textSize="@dimen/text_normal"
-        android:visibility="gone"/>
 </LinearLayout>

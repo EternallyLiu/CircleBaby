@@ -190,7 +190,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (dy > 50) {
+                if (dy > 0) {
                     if (enableAnimation && bottomMenuShow) {
                         bottomMenuShow = false;
                         ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
@@ -200,7 +200,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         animatorSet.playTogether(anim);
                         animatorSet.start();
                     }
-                } else if(dy < -50){
+                } else if(dy < 0){
                     if (enableAnimation && !bottomMenuShow) {
                         bottomMenuShow = true;
                         Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
@@ -277,7 +277,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
         if(lists.size()==0){
             showNoDataView(true);
-            return;
+        }else{
+            showNoDataView(false);
         }
         if (currentPage == 1) {
             adapter.setListData(lists);
@@ -424,6 +425,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     private void showNoDataView(boolean showNoData) {
         llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
-//        contentRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
+        contentRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
 }
