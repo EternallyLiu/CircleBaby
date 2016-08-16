@@ -11,22 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.wbtech.ums.UmsAgent;
-import com.wbtech.ums.common.UmsConstants;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.CommonUtil;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author rayboot
@@ -79,17 +72,17 @@ public class FeedbackActivity extends BaseAppCompatActivity implements View.OnCl
                 );
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        UmsAgent.onPause(this);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        UmsAgent.onPause(this);
+//    }
 
     @Override
     public void onClick(View v) {
