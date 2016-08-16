@@ -7,6 +7,7 @@ import android.support.multidex.MultiDexApplication;
 import com.activeandroid.ActiveAndroid;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.squareup.leakcanary.LeakCanary;
 import com.wbtech.ums.UmsAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
@@ -67,6 +68,11 @@ public class App extends MultiDexApplication {
         if (handler == null) {
             handler = new MiPushMessageReceive.DemoHandler(getApplicationContext());
         }
+
+        if (BuildConfig.DEBUG) {
+            LeakCanary.install(this);
+        }
+
     }
 
     /**

@@ -15,8 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wbtech.ums.UmsAgent;
-
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -191,7 +189,6 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
      */
     private void doPay() {
         orderPrice = listResponse.getOrderPrice();
-        UmsAgent.onEvent(this, LogConstant.IMMEDIATELY_PAY);
         progressDialog.setMessage(R.string.begin_payoff);
         Log.i("------->", "orderPrice:" + orderPrice + "-->getPayTitle:" + getPayTitle());
 //        if (orderPrice == 0) {//积分支付

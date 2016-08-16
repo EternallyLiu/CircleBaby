@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.wbtech.ums.UmsAgent;
 import com.wbtech.ums.common.UmsConstants;
 
 import butterknife.Bind;
@@ -60,17 +59,5 @@ public class AboutActivity extends BaseAppCompatActivity {
      */
     public void clickClause(View v) {
         FragmentBridgeActivity.openWebViewFragment(this, "http://m.timeface.cn/app/APP-Help/html/Clause.html", "服务条款");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        UmsAgent.onPause(this);
     }
 }

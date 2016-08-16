@@ -15,7 +15,6 @@ import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.bigkoo.convenientbanner.view.CBLoopViewPager;
 import com.bumptech.glide.Glide;
-import com.wbtech.ums.UmsAgent;
 
 import java.util.ArrayList;
 import java.util.List;

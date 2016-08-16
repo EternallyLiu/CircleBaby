@@ -30,8 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.wbtech.ums.UmsAgent;
-
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
@@ -974,7 +972,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
      * 支付
      */
     private void doPay() {
-        UmsAgent.onEvent(this, LogConstant.IMMEDIATELY_PAY);
         progressDialog.setMessage(R.string.begin_payoff);
         Log.i("------->", "orderPrice:" + orderPrice + "-->getPayTitle:" + getPayTitle());
 //        if (orderPrice == 0) {//积分支付

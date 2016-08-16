@@ -14,10 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wbtech.ums.UmsAgent;
-import com.wbtech.ums.common.UmsConstants;
-
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
@@ -248,17 +244,5 @@ public class AddressAddActivity extends BaseAppCompatActivity {
             districtId = "";
         }
         provId = DistrictModel.queryByName(regionArray[0]).getLocationId();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        UmsAgent.onPause(this);
     }
 }

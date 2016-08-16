@@ -11,9 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.wbtech.ums.UmsAgent;
-import com.wbtech.ums.common.UmsConstants;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
@@ -85,17 +82,5 @@ public class FeedbackActivity extends BaseAppCompatActivity {
 //                        }
 //                );
 //        addSubscription(s);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        UmsAgent.onPause(this);
     }
 }

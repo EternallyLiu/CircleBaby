@@ -12,10 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.wbtech.ums.UmsAgent;
-import com.wbtech.ums.common.UmsConstants;
-
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -202,18 +198,6 @@ public class SelectReceiverAddActivity extends BaseAppCompatActivity implements 
     @Subscribe
     public void onEvent(AddAddressFinishEvent event) {
         reqData();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        UmsAgent.onPause(this);
     }
 
 }

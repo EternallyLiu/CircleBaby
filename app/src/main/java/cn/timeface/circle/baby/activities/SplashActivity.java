@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.wbtech.ums.UmsAgent;
-import com.wbtech.ums.common.UmsConstants;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -445,18 +443,6 @@ public class SplashActivity extends BaseAppCompatActivity {
             getWindow().setAttributes(attr);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        UmsAgent.onPause(this);
     }
 
     private void getScheme() {

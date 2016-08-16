@@ -11,9 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.wbtech.ums.UmsAgent;
-import com.wbtech.ums.common.UmsConstants;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -141,15 +138,4 @@ public class PaySuccessActivity extends BaseAppCompatActivity {
 //        }
 //    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        UmsAgent.onResume(this, UmsConstants.MODULE_PERSONAL_CENTER + this.getClass().getSimpleName());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        UmsAgent.onPause(this);
-    }
 }
