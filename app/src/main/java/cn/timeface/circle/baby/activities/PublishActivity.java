@@ -437,21 +437,24 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布照片
     private void postRecord() {
         String value = etContent.getText().toString();
-
+        long time = 0;
         if (value.length() < 1 && imageUrls.size() < 1) {
             Toast.makeText(this, "发点文字或图片吧", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        if(photoRecodes.size() == 1){
+            String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+            time =  DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+        }
         //发布
         List<PublishObj> datalist = new ArrayList<>();
         for (PhotoRecode photoRecode : photoRecodes) {
-            String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
-            long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
-
-            System.out.println("t ============ "+t);
-            System.out.println("time ============ "+time);
-
+            if(photoRecodes.size()>1){
+                String title = photoRecode.getTitle();
+                String t = title + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+                time =  DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+            }
             String content = photoRecode.getContent();
             Milestone mileStone = photoRecode.getMileStone();
             int mileStoneId = mileStone == null ? 0 : mileStone.getId();

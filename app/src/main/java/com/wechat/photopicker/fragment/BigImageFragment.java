@@ -26,6 +26,7 @@ import java.util.List;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.utils.ImageFactory;
+import cn.timeface.circle.baby.utils.ToastUtil;
 
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_PHOTO_PATHS;
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SELECTOR_POSITION;
@@ -43,6 +44,7 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
     private int mCurrenItem;
     private ImageView ivBack;
     private TextView tvTitle;
+    private TextView tvDownload;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
         mViewPager = (ViewPager) view.findViewById(R.id.vp_big_image);
         ivBack = (ImageView) view.findViewById(R.id.iv_back);
         tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        tvDownload = (TextView) view.findViewById(R.id.tv_download);
         if (mPaths.size() > 0 && mPaths != null) {
             mPhotoPagerAdapter = new PhotoPagerAdapter(getActivity(), mPaths);
         }
@@ -72,7 +75,7 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
     private void initListener() {
         tvTitle.setText(mCurrenItem+1 + "/" + mPaths.size());
         ivBack.setOnClickListener(this);
-
+        tvDownload.setOnClickListener(this);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -102,27 +105,7 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save) {
             //保存图片到本地
-            int currentItem = mViewPager.getCurrentItem();
-            String path = mPaths.get(currentItem);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        InputStream is = new URL(path).openStream();
-                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        ImageFactory.saveImage(bitmap);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getContext(), "保存成功", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-
+            saveImage();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -133,6 +116,35 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
             case R.id.iv_back:
                 getActivity().onBackPressed();
                 break;
+            case R.id.tv_download:
+                tvDownload.setEnabled(false);
+                saveImage();
+                break;
         }
+    }
+
+    public void saveImage(){
+        int currentItem = mViewPager.getCurrentItem();
+        String path = mPaths.get(currentItem);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InputStream is = new URL(path).openStream();
+                    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    ImageFactory.saveImage(bitmap);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), "已下载到baby文件夹下", Toast.LENGTH_SHORT).show();
+                            tvDownload.setEnabled(true);
+                        }
+                    });
+                } catch (IOException e) {
+                    tvDownload.setEnabled(true);
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

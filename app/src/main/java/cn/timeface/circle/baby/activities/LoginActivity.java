@@ -101,16 +101,18 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         } else {
             //上次登录为三方账号登录
             String platform = Remember.getString("platform", "");
-            Platform plat = ShareSDK.getPlatform(platform);
-            thirdLogin(plat.getDb().getToken(),
-                    plat.getDb().getUserIcon(),
-                    plat.getDb().getExpiresIn(),
-                    FastData.getUserFrom(),
-                    "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
-                    plat.getDb().getUserName(),
-                    "",
-                    plat.getDb().getUserId(),
-                    "", LoginActivity.this);
+            if(!TextUtils.isEmpty(platform)){
+                Platform plat = ShareSDK.getPlatform(platform);
+                thirdLogin(plat.getDb().getToken(),
+                        plat.getDb().getUserIcon(),
+                        plat.getDb().getExpiresIn(),
+                        FastData.getUserFrom(),
+                        "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
+                        plat.getDb().getUserName(),
+                        "",
+                        plat.getDb().getUserId(),
+                        "", LoginActivity.this);
+            }
         }
     }
 

@@ -109,6 +109,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         clickTab(menuHomeTv);
         ivPublish.setOnClickListener(this);
         tvToensurerelation.setOnClickListener(this);
+        rlToensurerelation.setOnClickListener(this);
 
         if (TextUtils.isEmpty(FastData.getRelationName())) {
             rlToensurerelation.setVisibility(View.VISIBLE);
@@ -215,6 +216,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 new PublishDialog(this).show();
                 break;
             case R.id.tv_toensurerelation:
+            case R.id.rl_toensurerelation:
                 Intent intent = new Intent(this, ConfirmRelationActivity.class);
                 String code = Remember.getString("code", "");
                 intent.putExtra("code", code);

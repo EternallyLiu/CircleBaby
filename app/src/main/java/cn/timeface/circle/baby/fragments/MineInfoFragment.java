@@ -91,6 +91,11 @@ public class MineInfoFragment extends BaseFragment implements View.OnClickListen
     private void initData() {
         GlideUtil.displayImage(FastData.getAvatar(), ivAvatar);
         tvNickname.setText(FastData.getUserName());
+        if(FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL){
+            rlChangepsw.setVisibility(View.VISIBLE);
+        }else{
+            rlChangepsw.setVisibility(View.GONE);
+        }
     }
 
     @Override

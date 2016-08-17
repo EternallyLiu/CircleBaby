@@ -45,7 +45,7 @@
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="@dimen/size_12"
                 android:text="下一步"
-                android:textColor="@color/text_color1"
+                android:textColor="@drawable/selector_textcolor_white"
                 android:textSize="@dimen/text_medium" />
 
         </FrameLayout>

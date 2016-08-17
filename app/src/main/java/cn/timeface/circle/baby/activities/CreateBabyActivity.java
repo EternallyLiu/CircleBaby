@@ -145,15 +145,21 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     ToastUtil.showToast("给宝宝设置一个好看的头像吧~");
                     return;
                 }
+                tvNext.setEnabled(false);
                 long time = DateUtil.getTime(birthday, "yyyy-MM-dd");
                 apiService.createBaby(time, gender, objectKey, URLEncoder.encode(name), relationId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(userLoginResponse -> {
-                            if (showFocus) {
-                                TabMainActivity.open(this);
+                            if(userLoginResponse.success()){
+                                if (showFocus) {
+                                    TabMainActivity.open(this);
+                                }
+                                FastData.setUserInfo(userLoginResponse.getUserInfo());
+                                finish();
+                            }else{
+                                ToastUtil.showToast(userLoginResponse.getInfo());
                             }
-                            FastData.setUserInfo(userLoginResponse.getUserInfo());
-                            finish();
+                            tvNext.setEnabled(true);
                         }, throwable -> {
                             Log.e(TAG, "createBaby:", throwable);
                         });

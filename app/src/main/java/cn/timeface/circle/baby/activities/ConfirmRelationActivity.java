@@ -31,6 +31,7 @@ import cn.timeface.circle.baby.adapters.RelationshipAdapter;
 import cn.timeface.circle.baby.api.models.objs.Relationship;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class ConfirmRelationActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -99,17 +100,18 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
                     Toast.makeText(this, "与宝宝的关系不能超过20个字符，请修改", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                apiService.addRelationship(URLEncoder.encode(relationship))
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(relationIdResponse -> {
-                            if (relationIdResponse.success()) {
-                                attention(relationship);
-                            } else {
-                                Toast.makeText(this, relationIdResponse.getInfo(), Toast.LENGTH_SHORT).show();
-                            }
-                        }, throwable -> {
-                            Log.e(TAG, "addRelationship:", throwable);
-                        });
+                attention(relationship);
+//                apiService.addRelationship(URLEncoder.encode(relationship))
+//                        .compose(SchedulersCompat.applyIoSchedulers())
+//                        .subscribe(relationIdResponse -> {
+//                            if (relationIdResponse.success()) {
+//                                attention(relationship);
+//                            } else {
+//                                Toast.makeText(this, relationIdResponse.getInfo(), Toast.LENGTH_SHORT).show();
+//                            }
+//                        }, throwable -> {
+//                            Log.e(TAG, "addRelationship:", throwable);
+//                        });
                 break;
             case R.id.tv_relationship:
                 Relationship relation = (Relationship) v.getTag(R.string.tag_ex);
@@ -127,15 +129,19 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
     }
 
     public void attention(String name){
-        apiService.babyAttention(code, URLEncoder.encode(name))
+        apiService.babyAttention("", URLEncoder.encode(name))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(userLoginResponse -> {
                     if (userLoginResponse.success()) {
-                        FastData.setUserInfo(userLoginResponse.getUserInfo());
-                        EventBus.getDefault().post(new ConfirmRelationEvent());
-                        finish();
+                        if(userLoginResponse.getErrorCode()!=0){
+                            ToastUtil.showToast(userLoginResponse.getInfo());
+                        }else{
+                            FastData.setUserInfo(userLoginResponse.getUserInfo());
+                            EventBus.getDefault().post(new ConfirmRelationEvent());
+                            finish();
+                        }
                     }else{
-                        Toast.makeText(this, userLoginResponse.getInfo(), Toast.LENGTH_SHORT).show();
+                        ToastUtil.showToast(userLoginResponse.getInfo());
                     }
                 }, error -> {
                     Toast.makeText(this, "邀请码校验失败", Toast.LENGTH_SHORT).show();

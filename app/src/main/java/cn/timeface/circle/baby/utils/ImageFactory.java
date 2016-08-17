@@ -469,7 +469,7 @@ public class ImageFactory {
             while ((len = is.read(bytes)) != -1) {
                 fos.write(bytes, 0, len);
             }
-            ToastUtil.showToast("下载完成");
+            ToastUtil.showToast("已下载到baby文件夹下");
             fos.close();
             is.close();
         } catch (Exception e) {

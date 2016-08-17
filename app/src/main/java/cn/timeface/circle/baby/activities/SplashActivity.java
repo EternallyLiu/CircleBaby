@@ -142,7 +142,7 @@ public class SplashActivity extends BaseAppCompatActivity {
                 , new Once.OnceCallback() {
                     @Override
                     public void onOnce() {
-                        GuideActivity.open(SplashActivity.this);
+                        startActivity(new Intent(SplashActivity.this, GuideActivity.class));
                         finish();
                     }
 

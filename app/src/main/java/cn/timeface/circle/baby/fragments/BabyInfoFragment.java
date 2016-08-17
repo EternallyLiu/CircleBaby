@@ -43,6 +43,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.ChangeBabyActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.MessageAdapter;
@@ -200,7 +201,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 if (response.success()) {
-                                    FragmentBridgeActivity.open(getActivity(), "ChangeBabyFragment");
+                                    ChangeBabyActivity.open(getActivity());
                                     getActivity().finish();
                                 }else{
                                     ToastUtil.showToast(response.getInfo());
@@ -224,7 +225,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
         Button btnOk = (Button) view.findViewById(R.id.btn_ok);
 
-        tvMsg.setText("你确定不再关注宝宝" + FastData.getBabyName() + "吗?这会导致你不能继续查看宝宝相关内容。");
+        tvMsg.setText("你确定不再关注宝宝 " + FastData.getBabyName() + " 吗?这会导致你不能继续查看宝宝相关内容。");
         btnCancel.setOnClickListener(this);
         btnOk.setOnClickListener(this);
         return view;
@@ -283,6 +284,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                 String brithday = tvBrithday.getText().toString();
                 long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
                 String b = tvBlood.getText().toString();
+                btnSave.setEnabled(false);
                 apiService.editBabyInfo(time, URLEncoder.encode(b), gender, URLEncoder.encode(n), objectKey)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
@@ -300,6 +302,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                                             Log.e(TAG, "queryBabyInfoDetail:", throwable);
                                         });
                             }
+                            btnSave.setEnabled(true);
                         }, throwable -> {
                             Log.e(TAG, "editBabyInfo:", throwable);
                         });
@@ -314,7 +317,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {
-                                FragmentBridgeActivity.open(getActivity(), "ChangeBabyFragment");
+                                ChangeBabyActivity.open(getActivity());
                                 getActivity().finish();
                             }else{
                                 ToastUtil.showToast(response.getInfo());
@@ -363,6 +366,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         if (TextUtils.isEmpty(path)) {
             return;
         }
+        btnSave.setEnabled(false);
         OSSManager ossManager = OSSManager.getOSSManager(getContext());
         new Thread() {
             @Override
@@ -378,6 +382,12 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         objectKey = uploadFileObj.getObjectKey();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                btnSave.setEnabled(true);
+                            }
+                        });
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();

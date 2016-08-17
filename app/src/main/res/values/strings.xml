@@ -73,7 +73,7 @@
     <string name="icon_weibo">&#xe629;</string>
     <string name="mine">我的</string>
 
-    <string name="share_url_invite">http://stg2.v5time.net/baby/babyShare/invite.html?babyId=%1$d&amp;inviteCode=%2$d</string>
+    <string name="share_url_invite">http://stg2.v5time.net/baby/babyShare/invite.html?babyId=%1$d</string>
     <string name="share_url_time">http://stg2.v5time.net/baby/babyShare/groupPicture.html?timeId=%1$d</string>
     <string name="share_url_milestone">http://stg2.v5time.net/baby/babyShare/milestone.html?babyId=%1$d</string>
     <string name="share_url_generalmap">http://stg2.v5time.net/baby/babyShare/generalMap.html?timeId=%1$d</string>

@@ -43,6 +43,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.ChangeBabyActivity;
 import cn.timeface.circle.baby.activities.CloudAlbumActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MileStoneActivity;
@@ -329,7 +330,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_changebaby:
-                FragmentBridgeActivity.open(getActivity(), "ChangeBabyFragment");
+                ChangeBabyActivity.open(getActivity());
                 break;
             case R.id.iv_message:
                 FragmentBridgeActivity.open(getActivity(), "MessageFragment");
@@ -353,6 +354,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     ToastUtil.showToast("请填写评论内容");
                     return;
                 }
+                btnSend.setClickable(false);
                 Remember.putString("sendComment",s);
                 apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timeLineObj.getTimeId(), commentId)
                         .filter(new Func1<BaseResponse, Boolean>() {
@@ -374,6 +376,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                                     replaceList(replacePosition,listPos,timeLineObj);
                                 }
                             }
+                            if(btnSend!=null)
+                                btnSend.setClickable(false);
                         }, error -> {
                             Log.e(TAG, "comment");
                             error.printStackTrace();

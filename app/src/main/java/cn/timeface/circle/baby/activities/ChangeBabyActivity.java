@@ -1,19 +1,16 @@
-package cn.timeface.circle.baby.fragments;
+package cn.timeface.circle.baby.activities;
 
-
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,19 +20,16 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.CreateBabyActivity;
-import cn.timeface.circle.baby.activities.InviteCodeActivity;
-import cn.timeface.circle.baby.activities.TabMainActivity;
+import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
-import cn.timeface.circle.baby.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
-import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
-public class ChangeBabyFragment extends BaseFragment implements View.OnClickListener {
+public class ChangeBabyActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
 
     @Bind(R.id.toolbar)
@@ -48,38 +42,29 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
     RecyclerView contentRecyclerView;
     private ChangebabyAdapter adapter;
 
-
-    public ChangeBabyFragment() {
+    public static void open(Context context) {
+        Intent intent = new Intent(context, ChangeBabyActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_changebaby);
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_changebaby, container, false);
-        ButterKnife.bind(this, view);
-        setActionBar(toolbar);
-        ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
-            actionBar.setTitle("选择宝宝");
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        adapter = new ChangebabyAdapter(getActivity(), new ArrayList<>());
+        adapter = new ChangebabyAdapter(this, new ArrayList<>());
         adapter.setOnClickListener(this);
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         contentRecyclerView.setAdapter(adapter);
 
-        reqData();
+//        reqData();
 
         tvCreatebaby.setOnClickListener(this);
         tvFocusbaby.setOnClickListener(this);
 
-        return view;
     }
 
     @Override
@@ -111,8 +96,8 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    protected void onDestroy() {
+        super.onDestroy();
         ButterKnife.unbind(this);
     }
 
@@ -120,10 +105,10 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_createbaby:
-                CreateBabyActivity.open(getActivity(),false);
+                CreateBabyActivity.open(this,false);
                 break;
             case R.id.tv_focusbaby:
-                InviteCodeActivity.open(getActivity());
+                InviteCodeActivity.open(this);
                 break;
             case R.id.rl_baby:
                 UserObj info = (UserObj) v.getTag(R.string.tag_ex);
@@ -134,7 +119,8 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
                             if (response.success()) {
                                 Remember.putBoolean("showtimelinehead", true);
                                 EventBus.getDefault().post(new HomeRefreshEvent());
-                                getActivity().finish();
+                                EventBus.getDefault().post(new ConfirmRelationEvent());
+                                this.finish();
                             }
                         }, throwable -> {
                             Log.e(TAG, "updateLoginInfo:");
@@ -143,4 +129,8 @@ public class ChangeBabyFragment extends BaseFragment implements View.OnClickList
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }

@@ -30,7 +30,6 @@ import cn.timeface.circle.baby.fragments.AddBookListFragment;
 import cn.timeface.circle.baby.fragments.BabyInfoFragment;
 import cn.timeface.circle.baby.fragments.BookSizeListFragment;
 import cn.timeface.circle.baby.fragments.CardPreviewFragment;
-import cn.timeface.circle.baby.fragments.ChangeBabyFragment;
 import cn.timeface.circle.baby.fragments.ChangeInfoFragment;
 import cn.timeface.circle.baby.fragments.DiaryPreviewFragment;
 import cn.timeface.circle.baby.fragments.DiaryTextFragment;
@@ -265,9 +264,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "SystemMessageFragment":
                 return new SystemMessageFragment();
-
-            case "ChangeBabyFragment":
-                return new ChangeBabyFragment();
 
             case "BabyInfoFragment":
                 return new BabyInfoFragment();

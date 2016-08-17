@@ -68,9 +68,9 @@ public class App extends MultiDexApplication {
             handler = new MiPushMessageReceive.DemoHandler(getApplicationContext());
         }
 
-        if (BuildConfig.DEBUG) {
-            LeakCanary.install(this);
-        }
+//        if (BuildConfig.DEBUG) {
+//            LeakCanary.install(this);
+//        }
 
     }
 

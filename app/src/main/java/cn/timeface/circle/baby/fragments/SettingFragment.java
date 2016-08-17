@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.AboutActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
@@ -166,7 +167,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if(response.success()){
-                                FastData.setAccount("");
+                                if(FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL){
+                                    FastData.setAccount("");
+                                }else{
+                                    Remember.putString("platform","");
+                                }
                                 LoginActivity.open(getActivity());
                                 getActivity().finish();
                                 EventBus.getDefault().post(new LogoutEvent());

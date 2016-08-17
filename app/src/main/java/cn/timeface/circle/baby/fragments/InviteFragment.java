@@ -114,7 +114,8 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
         String content = "我在成长印记记录了" + FastData.getBabyName() + "的成长，快来一起关注" + FastData.getBabyName() + "的成长瞬间！";
         String url = "";
         if (inviteResponse!=null){
-            url = getActivity().getString(R.string.share_url_invite, FastData.getBabyId(), Integer.valueOf(inviteResponse.getInviteCode()));
+            String inviteCode = inviteResponse.getInviteCode();
+            url = getActivity().getString(R.string.share_url_invite, FastData.getBabyId()) + "&inviteCode=" + inviteCode;
         }
         switch (v.getId()) {
             case R.id.btn_wx:

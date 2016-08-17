@@ -55,6 +55,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
     private int seconds;
     private int j;
     private TFProgressDialog tfProgressDialog;
+    private MenuItem next;
 
 
     @Override
@@ -127,6 +128,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_next, menu);
+        next = menu.findItem(R.id.next);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -140,6 +142,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
                 ToastUtil.showToast("视频不能超过60秒");
                 return true;
             }
+            next.setEnabled(false);
             tvTag.setText("剪裁视频中…");
             tfProgressDialog.setMessage("剪裁视频中…");
             tfProgressDialog.show();
@@ -152,6 +155,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
                 tfProgressDialog.dismiss();
                 e.printStackTrace();
             }
+            next.setEnabled(true);
         }
         return super.onOptionsItemSelected(item);
     }
