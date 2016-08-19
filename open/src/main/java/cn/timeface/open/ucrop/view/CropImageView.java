@@ -461,6 +461,12 @@ public class CropImageView extends TransformImageView {
      * @param drawableHeight - image height
      */
     private void calculateImageScaleBounds(float drawableWidth, float drawableHeight) {
+        if (Math.abs(getCurrentAngle()) % 180 != 0) {
+            float temp = drawableWidth;
+            drawableWidth = drawableHeight;
+            drawableHeight = temp;
+        }
+
         float widthScale = mCropRect.width() / drawableWidth;
         float heightScale = mCropRect.height() / drawableHeight;
 
@@ -476,6 +482,12 @@ public class CropImageView extends TransformImageView {
      * @param drawableHeight - image height
      */
     private void setupInitialImagePosition(float drawableWidth, float drawableHeight) {
+        if (Math.abs(getCurrentAngle()) % 180 != 0) {
+            float temp = drawableWidth;
+            drawableWidth = drawableHeight;
+            drawableHeight = temp;
+        }
+
         float cropRectWidth = mCropRect.width();
         float cropRectHeight = mCropRect.height();
 

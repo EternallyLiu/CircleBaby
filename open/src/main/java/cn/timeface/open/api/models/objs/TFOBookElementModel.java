@@ -551,7 +551,14 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
         int rotation = this.image_content_expand.getImageRotation();
         rotation = (rotation + 360) % 360;
-        imgUrl += "@" + rect.left + "-" + rect.top + "-" + rect.width() + "-" + rect.height() + "a" + "_" + rotation + "r" + "_" + width + "w_1l_1o" + ".webp";
+        int w = rect.width();
+        int h = rect.height();
+        if (rotation == 90 || rotation == 270) {
+            int temp = w;
+            w = h;
+            h = temp;
+        }
+        imgUrl += "@" + rect.left + "-" + rect.top + "-" + w + "-" + h + "a" + "_" + rotation + "r" + "_" + width + "w_1l_1o" + ".webp";
         Log.i("open glide image url", "getCropImageUrl: " + imgUrl);
         return imgUrl;
     }

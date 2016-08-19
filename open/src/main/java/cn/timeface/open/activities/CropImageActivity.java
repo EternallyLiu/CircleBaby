@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -70,6 +71,9 @@ public class CropImageActivity extends BaseAppCompatActivity {
     public static final int ROTATE = 2;
     public static final int ALL = 3;
 
+    float aspectRatioX;
+    float aspectRatioY;
+
     private static final int REQUEST_SELECT_PICTURE = 0x01;
 
     @IntDef({NONE, SCALE, ROTATE, ALL})
@@ -119,6 +123,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
         this.ivRotation = (ImageView) findViewById(R.id.iv_rotation);
         this.ivOk = (ImageView) findViewById(R.id.iv_ok);
         mGestureCropImageView = mUCropView.getCropImageView();
+        mGestureCropImageView.setRotateEnabled(false);
         mOverlayView = mUCropView.getOverlayView();
         mGestureCropImageView.setTransformImageListener(mImageListener);
 
@@ -256,8 +261,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
         mOverlayView.setCropGridStrokeWidth(intent.getIntExtra(UCrop.Options.EXTRA_CROP_GRID_STROKE_WIDTH, getResources().getDimensionPixelSize(R.dimen.ucrop_default_crop_grid_stoke_width)));
 
         // Aspect ratio options
-        float aspectRatioX = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_X, 0);
-        float aspectRatioY = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_Y, 0);
+        aspectRatioX = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_X, 0);
+        aspectRatioY = intent.getFloatExtra(UCrop.EXTRA_ASPECT_RATIO_Y, 0);
 
         int aspectRationSelectedByDefault = intent.getIntExtra(UCrop.Options.EXTRA_ASPECT_RATIO_SELECTED_BY_DEFAULT, 0);
         ArrayList<AspectRatio> aspectRatioList = intent.getParcelableArrayListExtra(UCrop.Options.EXTRA_ASPECT_RATIO_OPTIONS);
@@ -303,6 +308,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
 
     private void rotateByAngle(int angle) {
         mGestureCropImageView.postRotate(angle);
+        mGestureCropImageView.setTargetAspectRatio(aspectRatioX / aspectRatioY);
         mGestureCropImageView.setImageToWrapCropBounds();
     }
 
@@ -331,24 +337,31 @@ public class CropImageActivity extends BaseAppCompatActivity {
         int height = Math.round(cropRect.height() / imageState.getCurrentScale());
 
         int rotation = Math.round(imageState.getCurrentAngle());
-        rotation += exifInfo.getExifDegrees();
         if (rotation < 0) {
             rotation = rotation % 360 + 360;
         }
-
-        if (rotation == 90 || rotation == 270) {
-            int temp = width;
-            width = height;
-            height = temp;
+        int totalRotation = (rotation + exifInfo.getExifDegrees()) % 360;
+        float finalImageW = newImageW;
+        float finalImageH = newImageH;
+        if (exifInfo.getExifDegrees() == 90 || exifInfo.getExifDegrees() == 270) {
+            //图片本身有旋转,则调换宽度和高度
+            finalImageW = newImageH;
+            finalImageH = newImageW;
         }
+
+//        if (totalRotation == 90 || totalRotation == 270) {
+//            int temp = width;
+//            width = height;
+//            height = temp;
+//        }
 
         {
             //旋转后,映射到原图位置
             float tempX;
-            switch (rotation) {
+            switch (totalRotation) {
                 case 90:
                     left += width;
-                    left = newImageH - left;
+                    left = finalImageH - left;
 
                     tempX = left;
                     left = top;
@@ -357,12 +370,12 @@ public class CropImageActivity extends BaseAppCompatActivity {
                 case 180:
                     left += width;
                     top += height;
-                    left = newImageW - left;
-                    top = newImageH - top;
+                    left = finalImageW - left;
+                    top = finalImageH - top;
                     break;
                 case 270:
                     top += height;
-                    top = newImageW - top;
+                    top = finalImageW - top;
 
                     tempX = left;
                     left = top;
@@ -381,7 +394,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
         elementModel.getImageContentExpand().setImageHeight(newImageH);
         elementModel.getImageContentExpand().setImageStartPointX(left * finalImageScale);
         elementModel.getImageContentExpand().setImageStartPointY(top * finalImageScale);
-        elementModel.getImageContentExpand().setImageRotation(rotation - exifInfo.getExifDegrees());
+        elementModel.getImageContentExpand().setImageRotation(rotation);
     }
 
 
