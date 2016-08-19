@@ -127,6 +127,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private List<MediaObj> mediaObjs;
     private VideoInfo videoInfo;
     private TFProgressDialog tfProgressDialog;
+    private String time_shot;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -189,7 +190,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             gvGridView.setVisibility(View.GONE);
             ivCard.setVisibility(View.VISIBLE);
             GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
-            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
+            time_shot = DateUtil.formatDate("yyyy.MM.dd", mediaObj.getPhotographTime());
+            tvTime.setText(time_shot);
         }
         if(mediaObjs!=null){
             type = 3;
@@ -201,7 +203,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
-            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
+            if(mediaObjs.get(0).getPhotographTime() == 0){
+                time_shot = DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis());
+            }else{
+                time_shot = DateUtil.formatDate("yyyy.MM.dd",mediaObjs.get(0).getPhotographTime());
+            }
+            tvTime.setText(time_shot);
         }
 
         adapter.setOnAddClickListener(new View.OnClickListener() {
@@ -226,7 +233,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position);
+                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position,false,false);
             }
         });
 
@@ -253,6 +260,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
                     photoRecodes.clear();
                     imageUrls.clear();
+                    titles.clear();
                     for (ImgObj item : selImages) {
                         imageUrls.add(item.getLocalPath());
                         String title = item.getDate();
@@ -292,6 +300,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             tvTime.setText(titles.get(0));
                         }
                     }
+                    time_shot = titles.get(0);
                     break;
                 case MILESTONE:
                     milestone = (Milestone) data.getParcelableExtra("milestone");
@@ -331,7 +340,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     layoutParams.width = width;
                     layoutParams.height = width;
                     ivVideo.setLayoutParams(layoutParams);
-                    tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate()));
+                    time_shot = DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate());
+                    tvTime.setText(time_shot);
                     tvVideotime.setText("时长：" + DateUtil.getTime4(videoInfo.getDuration() * 1000));
 
                     break;
@@ -355,7 +365,11 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
-                intent1.putExtra("time", tvTime.getText().toString());
+                if(TextUtils.isEmpty(time_shot)){
+                    time_shot = tvTime.getText().toString();
+                }
+                intent1.putExtra("time_shot",time_shot);
+                intent1.putExtra("time_now", tvTime.getText().toString());
                 startActivityForResult(intent1, TIME);
                 break;
         }

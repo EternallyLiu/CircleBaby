@@ -126,7 +126,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         adapter.setOnItemClickListener(mineBookObj -> {
             if (mineBookObj.getBookType() == 5) {
                 //照片书-跳转POD预览
-                MyPODActivity.open(MineBookActivity.this, mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null);
+                MyPODActivity.open(MineBookActivity.this, mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null,false);
             } else {
                 //日记书、识图卡片书，跳转本地预览
                 apiService.queryImageInfoList(mineBookObj.getBookId(), mineBookObj.getBookType())
@@ -140,7 +140,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                                     }
                                 }
                             }
-                            FragmentBridgeActivity.openBigimageFragment(MineBookActivity.this, urls, 0);
+                            FragmentBridgeActivity.openBigimageFragment(MineBookActivity.this, urls, 0,false,false);
                         }, error -> {
                             Log.e(TAG, "queryImageInfoList:");
                         });

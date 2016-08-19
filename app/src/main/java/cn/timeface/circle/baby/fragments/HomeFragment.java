@@ -293,11 +293,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         }
         tempList = lists;
-        if(lists.size()==0){
-            showNoDataView(true);
-        }else{
-            showNoDataView(false);
-        }
+//        if(lists.size()==0){
+//            showNoDataView(true);
+//        }else{
+//            showNoDataView(false);
+//        }
         if (currentPage == 1) {
             adapter.setListData(lists);
         } else {

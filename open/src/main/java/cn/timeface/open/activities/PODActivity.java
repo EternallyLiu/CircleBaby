@@ -74,9 +74,9 @@ public abstract class PODActivity extends BaseAppCompatActivity {
                                    Log.i(TAG, "call: 111111 reqPod + " + new Gson().toJson(podResponse));
                                    BookModelCache.getInstance().setBookModel(podResponse);
                                    setData(podResponse);
-                                   if (TextUtils.isEmpty(bookId)) {
+//                                   if (TextUtils.isEmpty(bookId)) {
                                        createBookInfo(podResponse);
-                                   }
+//                                   }
                                    setupSeekBar();
                                }
                            }

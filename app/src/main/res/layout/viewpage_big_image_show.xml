@@ -57,4 +57,17 @@
         android:paddingTop="@dimen/size_6"
         android:paddingBottom="@dimen/size_6"
         />
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="删除"
+        android:textColor="@drawable/selector_textcolor_white"
+        android:textSize="@dimen/text_medium"
+        android:background="@color/tran_30_black"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:paddingTop="@dimen/size_6"
+        android:paddingBottom="@dimen/size_6"
+        />
 </RelativeLayout>

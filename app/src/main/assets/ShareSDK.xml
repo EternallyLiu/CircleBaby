@@ -53,7 +53,7 @@
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <SinaWeibo AppKey="619467113" AppSecret="1b3700e44ae583c6012312af1b8eac7d" Enable="true" Id="6"
-        RedirectUrl="http://www.timeface.cn" ShareByAppClient="false" SortId="6" />
+        RedirectUrl="http://www.timeface.cn" ShareByAppClient="true" SortId="6" />
 
     <QZone AppId="1105142528" AppKey="0w6vIvKIJWLdSXNP" Enable="true" Id="3" SortId="3" />
 
@@ -88,7 +88,7 @@
         AppId="wx4868b35061f87885"
         Enable="true" /> -->
 
-    <QQ AppId="1105323622" AppKey="ExAt43F8f9CzE8Zo" Enable="true" Id="1" ShareByAppClient="false"
+    <QQ AppId="1105323622" AppKey="ExAt43F8f9CzE8Zo" Enable="true" Id="1" ShareByAppClient="true"
         SortId="1" />
 
     <!-- <Facebook

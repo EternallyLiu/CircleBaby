@@ -28,6 +28,7 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -44,7 +45,10 @@ import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.LogoutEvent;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.TimelineEditEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
@@ -54,7 +58,7 @@ import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
 
-public class TimeLineEditActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class TimeLineEditActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
     protected final int PHOTO_COUNT_MAX = 100;
 
@@ -93,8 +97,10 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     private List<MediaObj> mediaList;
     private int milestoneId;
     private String time;
-    private List<String> urls;
+    private List<String> urls = new ArrayList<>();
+    ;
     private ArrayList<ImgObj> imgObjs = new ArrayList<>();
+    private String time_shot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +117,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         timelimeobj = getIntent().getParcelableExtra("timelimeobj");
         mediaList = timelimeobj.getMediaList();
         milestoneId = timelimeobj.getMilestoneId();
-        time = DateUtil.getYear2(timelimeobj.getDate());
-
+        time = DateUtil.getYear2(timelimeobj.getDotime());
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
 
@@ -137,11 +142,14 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             llVideo.setVisibility(View.GONE);
             gvGridView.setVisibility(View.VISIBLE);
 
-            for (MediaObj media : mediaList) {
-                ImgObj imgObj = media.getImgObj();
-                selImages.add(imgObj);
-                imageUrls.add(media.getImgUrl());
+            if (mediaList.size() > 0) {
+                for (MediaObj media : mediaList) {
+                    ImgObj imgObj = media.getImgObj();
+                    selImages.add(imgObj);
+                    imageUrls.add(media.getImgUrl());
+                }
             }
+
             if (timelimeobj.getType() == 0) {
                 adapter = new PhotoGridAdapter(this);
                 adapter.getData().addAll(imageUrls);
@@ -155,7 +163,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, (ArrayList<String>) adapter.getData(), position);
+                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
                     }
                 });
             } else {
@@ -167,7 +175,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     }
 
     private void selectImages() {
-        SelectPhotoActivity.openForResult(this, imgObjs , PHOTO_COUNT_MAX, PICTURE);
+        SelectPhotoActivity.openForResult(this, imgObjs, PHOTO_COUNT_MAX, PICTURE);
     }
 
     @Override
@@ -177,7 +185,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             switch (requestCode) {
                 case PICTURE:
                     imgObjs = data.getParcelableArrayListExtra("result_select_image_list");
-                    urls = new ArrayList<>();
+                    urls.clear();
                     for (ImgObj item : imgObjs) {
                         urls.add(item.getLocalPath());
                     }
@@ -218,7 +226,12 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
-                intent1.putExtra("time", tvTime.getText().toString());
+                time_shot = DateUtil.formatDate("yyyy.MM.dd", timelimeobj.getDotime());
+                if (TextUtils.isEmpty(time_shot)) {
+                    time_shot = DateUtil.formatDate("yyyy.MM.dd", timelimeobj.getDate());
+                }
+                intent1.putExtra("time_shot", time_shot);
+                intent1.putExtra("time_now", tvTime.getText().toString());
                 startActivityForResult(intent1, TIME);
                 break;
         }
@@ -237,7 +250,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             }
         }
         String s = new Gson().toJson(mediaList);
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         apiService.editTime(URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, time, timelimeobj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -245,13 +258,16 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
                         finish();
-                        for (String url : urls) {
-                            uploadImage(url);
+                        if (urls != null && urls.size() > 0) {
+                            for (String url : urls) {
+                                uploadImage(url);
+                            }
                         }
                         EventBus.getDefault().post(new TimelineEditEvent());
                         EventBus.getDefault().post(new HomeRefreshEvent());
                     }
                 }, throwable -> {
+                    throwable.printStackTrace();
                     Log.e(TAG, "editTime:");
                 });
         finish();
@@ -272,7 +288,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             return data;
         }
 
-        public void setData(List<String> data){
+        public void setData(List<String> data) {
             this.data = data;
         }
 
@@ -303,11 +319,11 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             if (getItemViewType(position) == TYPE_HEADER) {
                 view = View.inflate(context, R.layout.item_timeline_add, null);
                 ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
-                ivAdd.setLayoutParams(new FrameLayout.LayoutParams(width,width));
+                ivAdd.setLayoutParams(new FrameLayout.LayoutParams(width, width));
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(listener!=null){
+                        if (listener != null) {
                             listener.onClick(v);
                         }
                     }
@@ -322,7 +338,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             return view;
         }
 
-        public void setOnAddClickListener(View.OnClickListener listener){
+        public void setOnAddClickListener(View.OnClickListener listener) {
             this.listener = listener;
         }
     }
@@ -406,7 +422,47 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        editTime();
+        if (item.getItemId() == R.id.complete) {
+            editTime();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void onEvent(TimeEditPhotoDeleteEvent event) {
+        boolean b = true;
+        int position = event.getPosition();
+        String url = event.getUrl();
+        List<String> data = adapter.getData();
+        data.remove(position);
+        adapter.setData(data);
+        adapter.notifyDataSetChanged();
+        if (b) {
+            for (MediaObj media : mediaList) {
+                if (url.equals(media.getImgUrl())) {
+                    mediaList.remove(media);
+                    b = false;
+                    break;
+                }
+            }
+        }
+        if(!b){
+            for(String s : imageUrls){
+                if(url.equals(s)){
+                    imageUrls.remove(s);
+                }
+            }
+        }
+        if(b){
+            for (ImgObj img : imgObjs) {
+                if (img.getLocalPath().equals(url)) {
+                    imgObjs.remove(img);
+                    b = false;
+                    break;
+                }
+            }
+        }
+
+
     }
 }

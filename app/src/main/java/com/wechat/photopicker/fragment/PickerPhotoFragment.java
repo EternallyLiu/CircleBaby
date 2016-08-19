@@ -201,7 +201,7 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
 //            BigImageShowIntent bigImageShowIntent = new BigImageShowIntent(getActivity());
 //            bigImageShowIntent.setPhotoPaths(mPhotoSelectorAdapter.getSelectedPhotoPaths());
 //            startActivity(bigImageShowIntent);
-            FragmentBridgeActivity.openBigimageFragment(v.getContext(), mPhotoSelectorAdapter.getSelectedPhotoPaths(), 0);
+            FragmentBridgeActivity.openBigimageFragment(v.getContext(), mPhotoSelectorAdapter.getSelectedPhotoPaths(), 0,false,false);
         }
     }
     public PhotoSelectorAdapter getPhotoSelectorAdapter(){

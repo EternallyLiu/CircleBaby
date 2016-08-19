@@ -100,7 +100,7 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         @Override
         public void onClick(View v) {
-            TimeLineDetailActivity.open(context,timeLineObj.getTimeId());
+            TimeLineDetailActivity.open(context,timeLineObj);
         }
     }
 }

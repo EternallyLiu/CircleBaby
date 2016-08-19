@@ -19,12 +19,15 @@ import android.widget.Toast;
 
 import com.wechat.photopicker.adapter.PhotoPagerAdapter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ToastUtil;
 
@@ -44,7 +47,10 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
     private int mCurrenItem;
     private ImageView ivBack;
     private TextView tvTitle;
+    private TextView tvDelete;
     private TextView tvDownload;
+    private boolean download;
+    private boolean delete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,8 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
         Intent intent = getActivity().getIntent();
         mPaths = intent.getStringArrayListExtra(KEY_PHOTO_PATHS);
         mCurrenItem = intent.getIntExtra(KEY_SELECTOR_POSITION, 0);
+        download = intent.getBooleanExtra("download", false);
+        delete = intent.getBooleanExtra("delete", false);
         setHasOptionsMenu(true);
     }
 
@@ -63,6 +71,7 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
         ivBack = (ImageView) view.findViewById(R.id.iv_back);
         tvTitle = (TextView) view.findViewById(R.id.tv_title);
         tvDownload = (TextView) view.findViewById(R.id.tv_download);
+        tvDelete = (TextView) view.findViewById(R.id.tv_delete);
         if (mPaths.size() > 0 && mPaths != null) {
             mPhotoPagerAdapter = new PhotoPagerAdapter(getActivity(), mPaths);
         }
@@ -76,6 +85,7 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
         tvTitle.setText(mCurrenItem+1 + "/" + mPaths.size());
         ivBack.setOnClickListener(this);
         tvDownload.setOnClickListener(this);
+        tvDelete.setOnClickListener(this);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -93,6 +103,17 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
 
             }
         });
+        if(download){
+            tvDownload.setVisibility(View.VISIBLE);
+        }else{
+            tvDownload.setVisibility(View.GONE);
+        }
+
+        if(delete){
+            tvDelete.setVisibility(View.VISIBLE);
+        }else{
+            tvDelete.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -119,6 +140,13 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
             case R.id.tv_download:
                 tvDownload.setEnabled(false);
                 saveImage();
+                break;
+            case R.id.tv_delete:
+                tvDelete.setEnabled(false);
+                int currentItem = mViewPager.getCurrentItem();
+                String path = mPaths.get(currentItem);
+                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem,path));
+                getActivity().finish();
                 break;
         }
     }

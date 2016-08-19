@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -35,6 +36,7 @@ import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.TFStateView;
 
 public class MessageFragment extends BaseFragment implements View.OnClickListener {
 
@@ -42,6 +44,10 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     private MessageAdapter adapter;
 
     public MessageFragment() {
@@ -68,7 +74,8 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         adapter.setOnClickListener(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         contentRecyclerView.setAdapter(adapter);
-
+        tfStateView.setOnRetryListener(() -> reqData());
+        tfStateView.loading();
         reqData();
 
         return view;
@@ -78,10 +85,12 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         apiService.queryMsgList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(msgListResponse -> {
+                    tfStateView.finish();
                     if(msgListResponse.success()){
                         setDataList(msgListResponse.getDataList());
                     }
                 }, error -> {
+                    tfStateView.showException(error);
                     Log.e(TAG, "queryMsgList:");
                     error.printStackTrace();
                 });
@@ -89,6 +98,11 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void setDataList(List<Msg> dataList) {
+        if(dataList.size()>0){
+            showNoDataView(false);
+        }else{
+            showNoDataView(true);
+        }
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
     }
@@ -177,6 +191,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                                 if (response.success()) {
                                     adapter.getListData().clear();
                                     adapter.notifyDataSetChanged();
+                                    EventBus.getDefault().post(new UnreadMsgEvent());
                                 }
                             }, error -> {
                                 Log.e(TAG, "delMsg:");
@@ -185,5 +200,10 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
             }).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showNoDataView(boolean showNoData) {
+        llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
+        contentRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
 }

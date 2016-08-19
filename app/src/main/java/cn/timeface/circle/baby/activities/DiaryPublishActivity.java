@@ -124,7 +124,15 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         monthOfYear = monthOfYear + 1;
-                        tvTime.setText(year + "." + monthOfYear + "." + dayOfMonth);
+                        String m = String.valueOf(monthOfYear);
+                        String d = String.valueOf(dayOfMonth);
+                        if(m.length()==1){
+                            m = "0"+m;
+                        }
+                        if(d.length()==1){
+                            d = "0"+d;
+                        }
+                        tvTime.setText(year + "." + m + "." + d);
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 dialog.show();

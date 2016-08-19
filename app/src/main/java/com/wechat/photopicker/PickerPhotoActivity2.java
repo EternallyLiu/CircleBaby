@@ -243,14 +243,14 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
             String s = new Gson().toJson(mPhotoSelectorAdapter.getDataList());
 
             if (bookType == 2) {
-                bookName = FastData.getBabyName() + "日记卡片书";
+                bookName = FastData.getBabyName() + "日记卡片";
                 createBook(s);
             } else if (bookType == 3) {
-                bookName = FastData.getBabyName() + "识图卡片书";
+                bookName = FastData.getBabyName() + "识图卡片";
                 createBook(s);
             } else if (bookType == 5) {
                 //跳转开放平台POD接口；
-                bookName = FastData.getBabyName() + "照片书";
+                /*bookName = FastData.getBabyName() + "时光书";
                 tfoResourceObjs = new ArrayList<TFOResourceObj>();
                 for (ImageInfoListObj obj : imageInfoList) {
                     for (MediaObj media : obj.getMediaList()) {
@@ -264,8 +264,8 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
                 TFOPublishObj tfoPublishObj = new TFOPublishObj("", tfoContentObjs1);
                 List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
                 tfoPublishObjs.add(tfoPublishObj);
-                MyPODActivity.open(this, openBookId, openBookType, tfoPublishObjs, s);
-                finish();
+                MyPODActivity.open(this, openBookId, openBookType, tfoPublishObjs,s,true);
+                finish();*/
             }
         }
         return super.onOptionsItemSelected(item);

@@ -40,6 +40,8 @@ public class MiPushMessageReceive extends PushMessageReceiver {
     public static int DETAIL = 2;
     private static String mToastInfo;
 
+
+
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
         mMessage = message.getContent();

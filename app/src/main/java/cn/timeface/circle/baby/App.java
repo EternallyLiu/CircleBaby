@@ -20,6 +20,7 @@ import cn.timeface.circle.baby.push.MiPushMessageReceive;
 import cn.timeface.circle.baby.utils.ChannelUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.MiPushUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.TimeFaceUtilInit;
@@ -58,7 +59,8 @@ public class App extends MultiDexApplication {
         //初始化util
         TimeFaceUtilInit.init(this);
 
-//        pushSetting();
+        pushSetting();
+//        MiPushUtil.init(this);
 
         UploadService.setRecorder(new SimpleUploadRecorder());
 

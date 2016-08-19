@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,6 +61,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     private List<ImgObj> selImages = new ArrayList<>();
     private int position;
     private PhotoRecode photoRecode;
+    private String time_shot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
 
         photoRecode =  getIntent().getParcelableExtra("photoRecode");
         position = getIntent().getIntExtra("position", 0);
-        selImages = this.photoRecode.getImgObjList();
+        selImages = photoRecode.getImgObjList();
         for (ImgObj item : selImages) {
             imageUrls.add(item.getLocalPath());
         }
@@ -84,17 +86,6 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
                 selectImages();
             }
         });
-        /*gvGridView.setOnItemClickListener((parent, v, position, id) -> {
-            if (position == 0) {
-                selectImages();
-
-            } else {
-//                int relPosition = position - 1;
-//                imageUrls.remove(adapter.getData().get(relPosition));
-//                adapter.getData().remove(relPosition);
-//                adapter.notifyDataSetChanged();
-            }
-        });*/
 
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
@@ -159,7 +150,12 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
-                intent1.putExtra("time", tvTime.getText().toString());
+                time_shot = photoRecode.getImgObjList().get(0).getDate();
+                if(TextUtils.isEmpty(time_shot)){
+                    time_shot = photoRecode.getTitle();
+                }
+                intent1.putExtra("time_shot", time_shot);
+                intent1.putExtra("time_now", tvTime.getText().toString());
                 startActivityForResult(intent1, TIME);
                 break;
         }

@@ -221,6 +221,7 @@ public class CardPreviewFragment extends BaseFragment{
                         tfProgressDialog.dismiss();
                         if (diaryComposeResponse.success()) {
                             MediaObj mediaObj = diaryComposeResponse.getMediaObj();
+                            mediaObj.setPhotographTime(createTime);
                             System.out.println("合成的识图卡片===============" + mediaObj.getImgUrl());
                             getActivity().finish();
                         } else {
