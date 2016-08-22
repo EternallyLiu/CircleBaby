@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.AboutActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
@@ -137,9 +138,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
 
             case R.id.rl_setting_share:
-                String baseUrl = "http://h5.stg1.v5time.net/hobbyDetail?";
-                String url = baseUrl + "userId=" + FastData.getUserId() + "&deviceId=" + new DeviceUuidFactory(
-                        TimeFaceUtilInit.getContext()).getDeviceId();
+                String url = "http://fir.im/timebabyandroid";
                 new ShareDialog(getActivity()).share("成长印记，印下美好成长时光", "一键汇聚宝宝的成长点滴，轻松愉快地为宝宝定制专属印刷品，和家人一起见证宝宝成长的每一步。",
                         ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
                         url);
@@ -166,7 +165,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if(response.success()){
-                                FastData.setAccount("");
+                                if(FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL){
+                                    FastData.setAccount("");
+                                }else{
+                                    Remember.putString("platform","");
+                                }
                                 LoginActivity.open(getActivity());
                                 getActivity().finish();
                                 EventBus.getDefault().post(new LogoutEvent());

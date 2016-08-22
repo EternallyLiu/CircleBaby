@@ -54,6 +54,5 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         videoview.requestFocus();
 
 
-
     }
 }

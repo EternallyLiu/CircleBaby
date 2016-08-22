@@ -20,6 +20,8 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -93,6 +95,10 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
                     ToastUtil.showToast("请输入里程碑");
                     return;
                 }
+                if(vd(milestoneName)){
+                    ToastUtil.showToast("请输入中文");
+                    return;
+                }
                 apiService.addMilestone(URLEncoder.encode(milestoneName))
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(milestoneResponse -> {
@@ -123,5 +129,22 @@ public class SelectMileStoneActivity extends BaseAppCompatActivity implements Vi
         adapter.getListData().clear();
         adapter.getListData().addAll(dataList);
         adapter.notifyDataSetChanged();
+    }
+
+    //判断是否为汉字
+    public boolean vd(String str){
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        char[] chars=str.toCharArray();
+        boolean isGB2312=false;
+        for(int i=0;i<chars.length;i++){
+            Matcher m = p.matcher(chars[i]+"");
+            if(m.matches()){
+                //是汉字
+            }else{
+                isGB2312 = true;
+                break;
+            }
+        }
+        return isGB2312;
     }
 }

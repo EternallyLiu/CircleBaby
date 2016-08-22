@@ -5,9 +5,21 @@
     android:background="@color/bg_color2"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/appbar_layout"
-        layout="@layout/layout_toolbar" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/bg_color1"
+        android:fitsSystemWindows="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="选择宝宝"
+            android:textColor="@color/text_color1"
+            android:textSize="@dimen/text_large" />
+    </android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.api.models.responses.FamilyListResponse;
 import cn.timeface.circle.baby.api.models.responses.ImageInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.InviteResponse;
 import cn.timeface.circle.baby.api.models.responses.LessResponse;
+import cn.timeface.circle.baby.api.models.responses.LoginResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneInfoResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneListResponse;
 import cn.timeface.circle.baby.api.models.responses.MilestoneResponse;
@@ -95,9 +96,9 @@ public interface ApiService {
 
     //登录
     @GET("auth/login")
-    Observable<UserLoginResponse> login(@Query("account") String account,
-                                        @Query("password") String password,
-                                        @Query("type") int type);
+    Observable<LoginResponse> login(@Query("account") String account,
+                                    @Query("password") String password,
+                                    @Query("type") int type);
 
     //退出登录
     @GET("auth/logout")
@@ -105,7 +106,7 @@ public interface ApiService {
 
     //三方登录
     @GET("auth/thirdPartyLogin")
-    Observable<UserLoginResponse> vendorLogin(@Query("accessToken") String accessToken,
+    Observable<LoginResponse> vendorLogin(@Query("accessToken") String accessToken,
                                               @Query("avatar") String avatar,
                                               @Query("expiry_in") long expiry_in,
                                               @Query("from") int from,

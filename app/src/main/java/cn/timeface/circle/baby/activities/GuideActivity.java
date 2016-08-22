@@ -14,18 +14,14 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.bigkoo.convenientbanner.view.CBLoopViewPager;
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.views.AbsoluteLayout.ImageLayout;
 
 /**
  * Created by lidonglin on 16/7/29.
@@ -35,10 +31,6 @@ public class GuideActivity extends BaseAppCompatActivity {
     @Bind(R.id.fl_guide)
     FrameLayout flGuide;
     private float dowm_x;
-
-    public static void open(Context context) {
-        context.startActivity(new Intent(context, GuideActivity.class));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,4 +138,9 @@ public class GuideActivity extends BaseAppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
 }

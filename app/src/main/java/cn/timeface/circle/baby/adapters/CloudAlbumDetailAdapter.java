@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.utils.DateUtil;
@@ -69,6 +70,15 @@ public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<MediaObj> {
             } else {
                 holder.editInput.setVisibility(View.GONE);
             }
+            holder.ivAlbumImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!TextUtils.isEmpty(detailObj.getVideoUrl())){
+                        System.out.println("detailObj.getVideoUrl() ============ "+detailObj.getVideoUrl());
+                        VideoPlayActivity.open(mContext,detailObj.getVideoUrl());
+                    }
+                }
+            });
         }
         long photographTime = detailObj.getPhotographTime();
         String formatDate = "";

@@ -103,6 +103,7 @@ public class DiaryPreviewFragment extends BaseFragment {
     private float degree = 0;
     private float mDegree = 0;
     private TFProgressDialog tfProgressDialog;
+    private long createTime;
 
     public DiaryPreviewFragment() {
     }
@@ -391,7 +392,6 @@ public class DiaryPreviewFragment extends BaseFragment {
             int bitmapWidth = touchImageView.getBitmapWidth();
             int bitmapHeight = touchImageView.getBitmapHeight();
             String content = tvContent.getText().toString();
-            String time = tvTime.getText().toString();
 
             List<String> contents = new ArrayList<>();
             contents.add(time);
@@ -414,7 +414,7 @@ public class DiaryPreviewFragment extends BaseFragment {
 //                        }, throwable -> {
 //                            Log.e(TAG, "diaryPublish:");
 //                        });
-            long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
+            createTime = DateUtil.getTime(time, "yyyy.MM.dd");
             while (TextUtils.isEmpty(objectKey)){
                 try {
                     Thread.sleep(100);
@@ -444,6 +444,9 @@ public class DiaryPreviewFragment extends BaseFragment {
                     .subscribe(diaryComposedResponse -> {
                         if(diaryComposedResponse.success()){
                             MediaObj mediaObj = diaryComposedResponse.getMediaObj();
+                            mediaObj.setPhotographTime(createTime);
+                            System.out.println("time===============" + time);
+                            System.out.println("createTime===============" + createTime);
                             System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
                             tfProgressDialog.dismiss();
                             PublishActivity.open(getContext(),mediaObj);

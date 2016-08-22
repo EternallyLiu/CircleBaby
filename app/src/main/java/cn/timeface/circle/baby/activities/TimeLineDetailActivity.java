@@ -203,6 +203,14 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             ivCover.setVisibility(View.VISIBLE);
             String url = timelineobj.getMediaList().get(0).getImgUrl();
             GlideUtil.displayImage(url, ivCover);
+            ivCover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ArrayList<String> strings = new ArrayList<>();
+                    strings.add(url);
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0,true,false);
+                }
+            });
         } else {
             rlSingle.setVisibility(View.GONE);
         }
@@ -372,7 +380,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                     ToastUtil.showToast("请填写评论内容");
                     return;
                 }
-
+                btnSend.setClickable(false);
                 apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timelineobj.getTimeId(), commmentId)
                         .filter(new Func1<BaseResponse, Boolean>() {
                             @Override
@@ -397,6 +405,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                     etCommment.setText("");
                                 }
                             }
+                            btnSend.setClickable(true);
                         }, error -> {
                             Log.e(TAG, "comment");
                             error.printStackTrace();
@@ -606,7 +615,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position);
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position,true,false);
                 }
             });
             return view;

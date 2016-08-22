@@ -84,19 +84,22 @@ public class PublishPhotoAdapter extends BaseRecyclerAdapter<PhotoRecode> {
             MyAdapter myAdapter = new MyAdapter(context, urls);
             holder.gv.setAdapter(myAdapter);
             ViewGroup.LayoutParams layoutParams = holder.gv.getLayoutParams();
-            layoutParams.height = Remember.getInt("width", 0);
+            int width = Remember.getInt("width", 0);
+            layoutParams.height = width;
             if (record.getImgObjList().size() == 2) {
-                layoutParams.height = Remember.getInt("width", 0) * 3 / 2;
+                layoutParams.height = width * 3 / 2;
             }
-            if (record.getImgObjList().size() > 3) {
-                layoutParams.height = Remember.getInt("width", 0) * 2;
+            if (record.getImgObjList().size() == 3) {
+                layoutParams.height = width;
             }
             if (record.getImgObjList().size() == 4) {
-                layoutParams.height = Remember.getInt("width", 0) * 3;
+                layoutParams.height = width * 3;
             }
-
+            if (record.getImgObjList().size() > 4) {
+                layoutParams.height = width * 2;
+            }
             if (record.getImgObjList().size() > 6) {
-                layoutParams.height = Remember.getInt("width", 0) * 3;
+                layoutParams.height = width * 3;
             }
             holder.gv.setLayoutParams(layoutParams);
 
@@ -106,6 +109,8 @@ public class PublishPhotoAdapter extends BaseRecyclerAdapter<PhotoRecode> {
 
         if (record.getImgObjList().size() == 2 || record.getImgObjList().size() == 4) {
             holder.gv.setNumColumns(2);
+        }else{
+            holder.gv.setNumColumns(3);
         }
 
         holder.llHabitDetail.setOnClickListener(new View.OnClickListener() {

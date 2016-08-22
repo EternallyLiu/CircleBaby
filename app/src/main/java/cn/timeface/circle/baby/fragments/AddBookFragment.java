@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
@@ -87,6 +88,13 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
         tvBooktitle.setText(bookTypeListObj.getCoverTitle());
         tvPrice.setText("¥"+bookTypeListObj.getPrice()+"元/套起");
         GlideUtil.displayImage(bookTypeListObj.getDetail().getImgUrl(),ivImage);
+        System.out.println("url ==================== "+bookTypeListObj.getDetail().getImgUrl());
+        int width = Remember.getInt("width", 0)*3;
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.width = width;
+        ivImage.setLayoutParams(layoutParams);
+        ivImage.setAdjustViewBounds(true);
+
         ivCreatbook.setOnClickListener(this);
 
         banner = new ConvenientBanner(getActivity(), true);

@@ -101,16 +101,18 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         } else {
             //上次登录为三方账号登录
             String platform = Remember.getString("platform", "");
-            Platform plat = ShareSDK.getPlatform(platform);
-            thirdLogin(plat.getDb().getToken(),
-                    plat.getDb().getUserIcon(),
-                    plat.getDb().getExpiresIn(),
-                    FastData.getUserFrom(),
-                    "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
-                    plat.getDb().getUserName(),
-                    "",
-                    plat.getDb().getUserId(),
-                    "", LoginActivity.this);
+            if(!TextUtils.isEmpty(platform)){
+                Platform plat = ShareSDK.getPlatform(platform);
+                thirdLogin(plat.getDb().getToken(),
+                        plat.getDb().getUserIcon(),
+                        plat.getDb().getExpiresIn(),
+                        FastData.getUserFrom(),
+                        "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
+                        plat.getDb().getUserName(),
+                        "",
+                        plat.getDb().getUserId(),
+                        "", LoginActivity.this);
+            }
         }
     }
 
@@ -176,14 +178,14 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         s = apiService.login(account, psw, type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(userLoginResponse -> {
-                    ToastUtil.showToast(userLoginResponse.getInfo());
-                    if (userLoginResponse.success()) {
-                        FastData.setUserInfo(userLoginResponse.getUserInfo());
+                .subscribe(loginResponse -> {
+                    ToastUtil.showToast(loginResponse.getInfo());
+                    if (loginResponse.success()) {
+                        FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
                         FastData.setAccount(account);
                         FastData.setPassword(psw);
-                        if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
+                        if (loginResponse.getBabycount() == 0) {
                             CreateBabyActivity.open(this,true);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
@@ -199,6 +201,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
 
     private void login(String platformName) {
+        FastData.setBabyId(0);
         LoginApi api = new LoginApi();
         //设置登陆的平台后执行登陆的方法
         api.setPlatform(platformName);
@@ -307,11 +310,11 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(userLoginResponse -> {
-                    if (userLoginResponse.success()) {
-                        FastData.setUserInfo(userLoginResponse.getUserInfo());
+                .subscribe(loginResponse -> {
+                    if (loginResponse.success()) {
+                        FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(from);
-                        if (userLoginResponse.getUserInfo().getBabyObj() == null || userLoginResponse.getUserInfo().getBabyObj().getBabyId() == 0) {
+                        if (loginResponse.getBabycount() == 0) {
                             CreateBabyActivity.open(this,true);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));

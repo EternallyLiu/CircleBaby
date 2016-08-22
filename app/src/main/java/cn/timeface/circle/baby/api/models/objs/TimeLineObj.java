@@ -15,7 +15,8 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     UserObj author;                 //作者
     int commentCount;               //评论个数
     List<CommentObj> commentList;   //评论列表
-    long date;                      //时间戳
+    long date;                      //创建时间
+    long dotime;                    //追溯时间
     int like;                       //是否已赞  0 否 1 是
     int likeCount;                  //赞的个数
     List<MediaObj> mediaList;       //图片列表
@@ -26,6 +27,13 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     int type;                       //0 照片 1 视频 2 日记 3 识图
     String content;                 //时光内容
 
+    public long getDotime() {
+        return dotime;
+    }
+
+    public void setDotime(long dotime) {
+        this.dotime = dotime;
+    }
 
     public UserObj getAuthor() {
         return author;
@@ -142,6 +150,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         dest.writeInt(this.commentCount);
         dest.writeTypedList(this.commentList);
         dest.writeLong(this.date);
+        dest.writeLong(this.dotime);
         dest.writeInt(this.like);
         dest.writeInt(this.likeCount);
         dest.writeTypedList(this.mediaList);
@@ -161,6 +170,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.commentCount = in.readInt();
         this.commentList = in.createTypedArrayList(CommentObj.CREATOR);
         this.date = in.readLong();
+        this.dotime = in.readLong();
         this.like = in.readInt();
         this.likeCount = in.readInt();
         this.mediaList = in.createTypedArrayList(MediaObj.CREATOR);

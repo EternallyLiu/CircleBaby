@@ -49,7 +49,7 @@ public class CloudAlbumListAdapter extends RecyclerView.Adapter<CloudAlbumListAd
                     .into(holder.ivAlbumCover);
         }
         holder.tvAlbumCount.setText(cloudAlbumObj.getContentInfo());
-        holder.tvAlbumTitle.setText(cloudAlbumObj.getTitle());
+        holder.tvAlbumTitle.setText(cloudAlbumObj.getDesc());
         holder.tvAlbumUpdateDate.setText(DateUtil.formatDate("yyyy.MM.dd", cloudAlbumObj.getTime()));
         holder.itemView.setTag(R.string.tag_obj, cloudAlbumObj);
 

@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.RelationshipAdapter;
 import cn.timeface.circle.baby.api.models.objs.Relationship;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class RelationshipActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -71,6 +72,7 @@ public class RelationshipActivity extends BaseAppCompatActivity implements View.
     }
 
     private void reqData() {
+        FastData.setBabyId(0);
         apiService.queryBabyFamilyTypeInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(relationshipResponse -> {

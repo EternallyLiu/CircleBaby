@@ -179,7 +179,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             String s = new Gson().toJson(dataList);
 
             //跳转开放平台POD接口；
-            bookName = FastData.getBabyName() + "照片书";
+            bookName = FastData.getBabyName() + "时光书";
             tfoResourceObjs = new ArrayList<TFOResourceObj>();
             for (ImageInfoListObj obj : dataList) {
                 for (MediaObj media : obj.getMediaList()) {
@@ -195,7 +195,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
             List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
             tfoPublishObjs.add(tfoPublishObj);
-            MyPODActivity.open(this, openBookId, openBookType, tfoPublishObjs, s);
+            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true);
             finish();
         }
         return super.onOptionsItemSelected(item);

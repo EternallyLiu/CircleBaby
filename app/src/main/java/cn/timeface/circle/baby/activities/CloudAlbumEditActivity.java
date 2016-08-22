@@ -29,6 +29,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,7 @@ import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.DeviceUtil;
@@ -486,6 +489,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                     if (baseResponse.success()) {
                         ToastUtil.showToast("添加成功");
                         albumDetailAdapter.notifyDataSetChanged();
+                        EventBus.getDefault().post(new HomeRefreshEvent());
                     }
 
                 }, throwable -> {

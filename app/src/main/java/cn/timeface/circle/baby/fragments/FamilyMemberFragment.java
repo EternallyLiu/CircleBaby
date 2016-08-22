@@ -179,7 +179,11 @@ public class FamilyMemberFragment extends BaseFragment {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentBridgeActivity.openInviteFragment(getActivity(), s);
+                if(s.equals("其他成员")){
+                    FragmentBridgeActivity.openInviteFragment(getActivity(), "");
+                }else{
+                    FragmentBridgeActivity.openInviteFragment(getActivity(), s);
+                }
             }
         });
         return view;

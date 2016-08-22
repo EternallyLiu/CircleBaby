@@ -42,18 +42,14 @@
             android:src="@drawable/mine_data_go" />
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/size_12"
-        android:background="@color/bg_color6" />
 
     <RelativeLayout
         android:id="@+id/rl_nickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/text_color1"
-        android:padding="@dimen/size_12">
+        android:padding="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_12">
 
         <TextView
             android:layout_width="wrap_content"
@@ -85,17 +81,14 @@
             android:src="@drawable/mine_data_go" />
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_color6" />
 
     <RelativeLayout
         android:id="@+id/rl_changepsw"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/text_color1"
-        android:padding="@dimen/size_12">
+        android:padding="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_2">
 
         <TextView
             android:layout_width="wrap_content"
@@ -114,10 +107,5 @@
             android:layout_marginRight="@dimen/size_12"
             android:src="@drawable/mine_data_go" />
     </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_color6" />
 
 </LinearLayout>
