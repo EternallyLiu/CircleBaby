@@ -16,6 +16,7 @@
     <string name="tag_index">传递下标</string>
     <string name="tag_obj">传递对象</string>
     <string name="tag_ex">传递扩展信息</string>
+    <string name="tag_global">全局tag</string>
     <string name="title_activity_pod">PODActivity</string>
     <string name="title_activity_edit">EditActivity</string>
     <string name="title_activity_edit_text">EditTextActivity</string>

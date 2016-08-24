@@ -119,15 +119,23 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
         EventBus.getDefault().post(new EventTabMainWake());
 
-        //初始化开放平台
-        TFOUserObj tfoUserObj = new TFOUserObj();
-        tfoUserObj.setAvatar(FastData.getAvatar());
-        tfoUserObj.setGender(FastData.getBabyGender());
-        tfoUserObj.setNick_name(FastData.getUserName());
-        tfoUserObj.setPhone(FastData.getAccount());
+        RxPermissions.getInstance(this)
+                .request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        if (aBoolean) {
+                            //初始化开放平台
+                            TFOUserObj tfoUserObj = new TFOUserObj();
+                            tfoUserObj.setAvatar(FastData.getAvatar());
+                            tfoUserObj.setGender(FastData.getBabyGender());
+                            tfoUserObj.setNick_name(FastData.getUserName());
+                            tfoUserObj.setPhone(FastData.getAccount());
 
-        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, new OpenUploadServices());
-    }
+                            GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, new OpenUploadServices());
+                        }
+                    }
+                });}
 
     public void clickTab(View view) {
 

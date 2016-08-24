@@ -48,13 +48,15 @@ public class StickerView extends FrameLayout {
     int marginLeft, marginTop;
     long clickTime;
     float clickRawX, clickRawY;
+    String globalTag;
 
     TFOBookElementModel elementModel;
 
-    public StickerView(Context context, String contentId, TFOBookElementModel elementModel) {
+    public StickerView(Context context, String contentId, TFOBookElementModel elementModel, String tag) {
         super(context);
         this.elementModel = elementModel;
         this.content_id = contentId;
+        this.globalTag = tag;
         init(context);
     }
 
@@ -85,6 +87,13 @@ public class StickerView extends FrameLayout {
         this.iv_beauty.setImageResource(R.drawable.icon_flip);
 
         this.setTag("DraggableViewGroup");
+
+        this.setTag(R.string.tag_global, globalTag);
+        this.iv_border.setTag(R.string.tag_global, globalTag);
+        this.iv_scale.setTag(R.string.tag_global, globalTag);
+        this.iv_delete.setTag(R.string.tag_global, globalTag);
+        this.iv_beauty.setTag(R.string.tag_global, globalTag);
+
         this.iv_border.setTag("iv_border");
         this.iv_scale.setTag("iv_scale");
         this.iv_delete.setTag("iv_delete");
@@ -123,16 +132,15 @@ public class StickerView extends FrameLayout {
         this.setTag(R.string.tag_ex, content_id);
         this.setTag(R.string.tag_obj, elementModel);
 
-        this.iv_delete.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (StickerView.this.getParent() != null) {
-                    ViewGroup rootView = ((ViewGroup) StickerView.this.getParent());
-                    rootView.removeView(StickerView.this);
-
-                }
-            }
-        });
+//        this.iv_delete.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (StickerView.this.getParent() != null) {
+//                    ViewGroup rootView = ((ViewGroup) StickerView.this.getParent());
+//                    rootView.removeView(StickerView.this);
+//                }
+//            }
+//        });
         this.iv_beauty.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -144,6 +152,12 @@ public class StickerView extends FrameLayout {
             }
         });
     }
+
+    public void setDeleteListener(OnClickListener listener) {
+        this.iv_delete.setOnClickListener(listener);
+    }
+
+
 
     private View getMainView() {
         if (elementModel != null) {

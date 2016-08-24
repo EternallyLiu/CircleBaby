@@ -1,10 +1,12 @@
 package cn.timeface.open.views;
 
 import android.content.Context;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.timeface.open.R;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookElementModel;
 import cn.timeface.open.utils.DeviceUtil;
@@ -52,7 +54,8 @@ public class EditDoubleContentView extends DoubleContentView {
                         new Action1<TFOBookElementModel>() {
                             @Override
                             public void call(TFOBookElementModel tfoBookElementModel) {
-                                StickerView stickerView = new StickerView(getContext(), tfoBookElementModel.isRight() ? rightContent.getContentId() : leftContent.getContentId(), tfoBookElementModel);
+                                String tag = "sticker" + System.nanoTime();
+                                StickerView stickerView = new StickerView(getContext(), tfoBookElementModel.isRight() ? rightContent.getContentId() : leftContent.getContentId(), tfoBookElementModel, tag);
                                 LayoutParams lp = new LayoutParams((int) (tfoBookElementModel.getElementWidth() + half_btn_size * 2), (int) (tfoBookElementModel.getElementHeight() + half_btn_size * 2));
                                 lp.leftMargin = (int) tfoBookElementModel.getElementLeft() - half_btn_size;
                                 lp.topMargin = (int) tfoBookElementModel.getElementTop() - half_btn_size;
@@ -60,6 +63,7 @@ public class EditDoubleContentView extends DoubleContentView {
                                     lp.leftMargin += bookWidth;
                                 }
                                 stickerView.setLayoutParams(lp);
+                                stickerView.setDeleteListener(delStickerListener);
                                 stickerView.showControlItems(false);
                                 if (cover) {
                                     stickerView.canMove(false);
@@ -79,4 +83,17 @@ public class EditDoubleContentView extends DoubleContentView {
     public List<StickerView> getStickerViews() {
         return stickerViews;
     }
+
+    public OnClickListener delStickerListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            for (StickerView sv : stickerViews) {
+                if (sv.getTag(R.string.tag_global).equals(v.getTag(R.string.tag_global))) {
+                    EditDoubleContentView.this.removeView(sv);
+                    stickerViews.remove(sv);
+                    return;
+                }
+            }
+        }
+    };
 }

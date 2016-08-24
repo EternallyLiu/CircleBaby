@@ -132,7 +132,7 @@ public class PageFragment extends BaseFragment {
                             @Override
                             public void call() {
                                 PageView pageView = new PageView(getActivity(), leftModel, rightModel, false);
-                                pageView.setBackgroundColor(Color.BLACK);
+                                pageView.setBackgroundColor(Color.GRAY);
                                 FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
                                 lp.gravity = Gravity.CENTER;
                                 mainFrameLayout.addView(pageView, lp);
