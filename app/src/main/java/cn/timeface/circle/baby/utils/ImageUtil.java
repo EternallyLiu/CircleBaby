@@ -559,6 +559,13 @@ public class ImageUtil {
                         listener);
     }
 
+    public static void scanMediaVideoFile(final Context context, final File file,
+                                         final MediaScannerConnection.OnScanCompletedListener listener) {
+        MediaScannerConnection
+                .scanFile(context, new String[]{file.getAbsolutePath()}, new String[]{"video/mo4"},
+                        listener);
+    }
+
     public static File getCameraPhotoFile() {
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!dir.exists()) {

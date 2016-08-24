@@ -40,6 +40,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     List<TFOPublishObj> publishObjs;
     String bookId;
     int curIndex = 0;
+    private boolean edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
             this.bookType = getIntent().getIntExtra("book_type", 23);
             this.bookId = getIntent().getStringExtra("book_id");
             this.publishObjs = getIntent().getParcelableArrayListExtra(Constant.PUBLISH_OBJS);
+            edit = getIntent().getBooleanExtra("edit", false);
         }
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
@@ -59,6 +61,9 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     }
 
     private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {
+        if(edit){
+            rebuild = 1;
+        }
         apiService
                 .getPOD(bookId, bookType, rebuild, contentList)
                 .map(new Func1<BaseResponse<TFOBookModel>, TFOBookModel>() {

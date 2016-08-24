@@ -44,6 +44,7 @@ public class MiPushMessageReceive extends PushMessageReceiver {
 
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
+        System.out.println("===== onReceivePassThroughMessage ====");
         mMessage = message.getContent();
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
@@ -54,6 +55,7 @@ public class MiPushMessageReceive extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
+        System.out.println("===== onNotificationMessageClicked ====");
         mMessage = message.getContent();
         mToastInfo = message.getDescription();
         if (!TextUtils.isEmpty(mMessage)) {
@@ -73,6 +75,7 @@ public class MiPushMessageReceive extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
+        System.out.println("===== onNotificationMessageArrived ====");
         mMessage = message.getContent();
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
@@ -83,6 +86,7 @@ public class MiPushMessageReceive extends PushMessageReceiver {
 
     @Override
     public void onCommandResult(Context context, MiPushCommandMessage message) {
+        System.out.println("===== onCommandResult ====");
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
@@ -117,6 +121,7 @@ public class MiPushMessageReceive extends PushMessageReceiver {
 
     @Override
     public void onReceiveRegisterResult(Context context, MiPushCommandMessage message) {
+        System.out.println("===== onReceiveRegisterResult ====");
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);

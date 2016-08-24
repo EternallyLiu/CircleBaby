@@ -4,6 +4,7 @@ package cn.timeface.circle.baby.utils;
 import android.os.Environment;
 import android.util.Log;
 
+import com.coremedia.iso.boxes.CompositionTimeToSample;
 import com.coremedia.iso.boxes.Container;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
@@ -84,7 +85,6 @@ public class ClipUtil {
                 timeCorrected = true;
             }
         }
-
         for (Track track : tracks) {
             long currentSample = 0;
             double currentTime = 0;
@@ -93,15 +93,14 @@ public class ClipUtil {
             long endSample1 = -1;
             // long startSample2 = -1;
             // long endSample2 = -1;
-
             for (int i = 0; i < track.getSampleDurations().length; i++) {
                 long delta = track.getSampleDurations()[i];
 
-                if (currentTime > lastTime && currentTime <= startTime1) {
+                if (currentTime <= startTime1) {
                     // current sample is still before the new starttime
                     startSample1 = currentSample;
                 }
-                if (currentTime > lastTime && currentTime <= endTime1) {
+                if (currentTime <= endTime1) {
                     // current sample is after the new start time and still
                     // before the new endtime
                     endSample1 = currentSample;

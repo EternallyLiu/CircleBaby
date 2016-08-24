@@ -23,7 +23,10 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -96,7 +99,7 @@ public class CardPreviewFragment extends BaseFragment{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("DiaryPreviewFragment.url === "+url);
+                System.out.println("CardPreviewFragment.url === "+url);
                 uploadImage();
             }
         }).run();
@@ -159,10 +162,10 @@ public class CardPreviewFragment extends BaseFragment{
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         objectKey = uploadFileObj.getObjectKey();
-                        File file = new File(url);
-                        if(file.exists()){
-                            file.delete();
-                        }
+//                        File file = new File(url);
+//                        if(file.exists()){
+//                            file.delete();
+//                        }
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
@@ -187,6 +190,10 @@ public class CardPreviewFragment extends BaseFragment{
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.next){
             String content = etTitle.getText().toString();
+            if(vd(content)){
+                ToastUtil.showToast("请输入中文");
+                return true;
+            }
             if (content.length() > 6) {
                 ToastUtil.showToast("标题字数不能大于6个");
                 return true;
@@ -214,8 +221,12 @@ public class CardPreviewFragment extends BaseFragment{
             TemplateImage templateImage = new TemplateImage(0, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
             String imageInfo = new Gson().toJson(templateImage);
 
-
-            apiService.cardComposed(URLEncoder.encode(content), imageInfo, URLEncoder.encode(etPinyin.getText().toString()))
+            String py = URLEncoder.encode(etPinyin.getText().toString());
+            System.out.println("py ======== "+py);
+            if(py.contains("%C4%AD")){
+                py = py.replace("%C4%AD","%C7%90");
+            }
+            apiService.cardComposed(URLEncoder.encode(content), imageInfo, py)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(diaryComposeResponse -> {
                         tfProgressDialog.dismiss();
@@ -233,6 +244,23 @@ public class CardPreviewFragment extends BaseFragment{
                     });
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //判断是否为汉字
+    public boolean vd(String str){
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        char[] chars=str.toCharArray();
+        boolean isGB2312=false;
+        for(int i=0;i<chars.length;i++){
+            Matcher m = p.matcher(chars[i]+"");
+            if(m.matches()){
+                //是汉字
+            }else{
+                isGB2312 = true;
+                break;
+            }
+        }
+        return isGB2312;
     }
 
 }

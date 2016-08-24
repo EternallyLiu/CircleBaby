@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -49,8 +50,8 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     public final int DIARYTEXT = 1;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.tv_time)
-    TextView tvTime;
+    @Bind(R.id.et_title)
+    EditText etTitle;
     @Bind(R.id.iv_diary)
     ImageView ivDiary;
     @Bind(R.id.tv_content)
@@ -73,7 +74,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        tvTime.setText(DateUtil.getYear2(System.currentTimeMillis()));
+        etTitle.setText(DateUtil.getYear2(System.currentTimeMillis()));
 
         int width = Remember.getInt("width", 0) * 3;
         ViewGroup.LayoutParams layoutParams = ivDiary.getLayoutParams();
@@ -82,7 +83,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         ivDiary.setLayoutParams(layoutParams);
 
 
-        tvTime.setOnClickListener(this);
         ivDiary.setOnClickListener(this);
         tvContent.setOnClickListener(this);
 
@@ -118,25 +118,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_time:
-                Calendar calendar = Calendar.getInstance();
-                DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        monthOfYear = monthOfYear + 1;
-                        String m = String.valueOf(monthOfYear);
-                        String d = String.valueOf(dayOfMonth);
-                        if(m.length()==1){
-                            m = "0"+m;
-                        }
-                        if(d.length()==1){
-                            d = "0"+d;
-                        }
-                        tvTime.setText(year + "." + m + "." + d);
-                    }
-                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-                dialog.show();
-                break;
             case R.id.iv_diary:
                 selectImages();
                 break;
@@ -163,7 +144,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
             onBackPressed();
         } else if (item.getItemId() == R.id.next) {
             content = tvContent.getText().toString();
-            String time = tvTime.getText().toString();
+            String title = etTitle.getText().toString();
             if (selImages.size() < 1) {
                 ToastUtil.showToast("请选择一张图片");
                 return true;
@@ -174,7 +155,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
 //            }
             //跳转到预览界面
             ImgObj imgObj = selImages.get(0);
-            FragmentBridgeActivity.openDiaryPreviewFragment(this, time, content, imgObj);
+            FragmentBridgeActivity.openDiaryPreviewFragment(this, title, content, imgObj);
         }
         return super.onOptionsItemSelected(item);
     }

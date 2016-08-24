@@ -203,14 +203,22 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             ivCover.setVisibility(View.VISIBLE);
             String url = timelineobj.getMediaList().get(0).getImgUrl();
             GlideUtil.displayImage(url, ivCover);
-            ivCover.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ArrayList<String> strings = new ArrayList<>();
-                    strings.add(url);
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0,true,false);
-                }
-            });
+            int width = Remember.getInt("width", 0)*3;
+            ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = width;
+            ivCover.setLayoutParams(layoutParams);
+            ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            if(timelineobj.getType() != 1){
+                ivCover.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ArrayList<String> strings = new ArrayList<>();
+                        strings.add(url);
+                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0,true,false);
+                    }
+                });
+            }
         } else {
             rlSingle.setVisibility(View.GONE);
         }
@@ -273,11 +281,11 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
         if (timelineobj.getType() == 1) {
             ivVideo.setVisibility(View.VISIBLE);
-//            int width = Remember.getInt("width", 0);
-//            ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
-//            layoutParams.width = width;
-//            layoutParams.height = width;
-//            ivCover.setLayoutParams(layoutParams);
+            int width = Remember.getInt("width", 0);
+            ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = (int) (width*0.5);
+            ivCover.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             rlSingle.setOnClickListener(this);
         }

@@ -450,32 +450,47 @@ public class ImageFactory {
         return returnValue;
     }
 
-    public static void saveVideo(String path) {
-
-        String fileName = System.currentTimeMillis() + ".mp4";
+    public static String saveVideo(String path) {
+        String fileName = path.substring(path.lastIndexOf("/"));
         File file = new File("/mnt/sdcard/baby");
         if (!file.exists()) {
             file.mkdirs();
         }
         File file1 = new File(file, fileName);
-        try {
-            URL url = new URL(path);
-            URLConnection conn = url.openConnection();
-            InputStream is = conn.getInputStream();
-            int contentLength = conn.getContentLength();
-            byte[] bytes = new byte[1024];
-            int len;
-            FileOutputStream fos = new FileOutputStream(file1);
-            while ((len = is.read(bytes)) != -1) {
-                fos.write(bytes, 0, len);
-            }
-            ToastUtil.showToast("已下载到baby文件夹下");
-            fos.close();
-            is.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(file1.exists()){
+//            ToastUtil.showToast("视频文件已存在baby文件夹下");
+            return file1.toString();
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(path);
+                    URLConnection conn = url.openConnection();
+                    InputStream is = conn.getInputStream();
+                    int contentLength = conn.getContentLength();
+                    byte[] bytes = new byte[1024];
+                    int len;
+                    FileOutputStream fos = new FileOutputStream(file1);
+                    while ((len = is.read(bytes)) != -1) {
+                        fos.write(bytes, 0, len);
+                    }
+                    fos.close();
+                    is.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        return file1.toString();
+    }
 
+    //过滤图片.jpg/.jpeg/.png
+    public static boolean photoFilter(String file){
+        if(file.toLowerCase().endsWith(".jpg")||file.toLowerCase().endsWith(".jpeg")||file.toLowerCase().endsWith(".png")){
+            return true;
+        }
+        return false;
     }
 
 }
