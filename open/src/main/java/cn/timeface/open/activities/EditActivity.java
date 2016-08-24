@@ -593,7 +593,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         TFOBookImageModel imageModel = (TFOBookImageModel) view.getTag(R.string.tag_obj);
         {
             //缩放imageModel,如果不做这一步,初始化的挂件会非常大,看起来不和谐
-            imageModel.setImageScale(imageModel.getImageWidth() / bookModel.getBookWidth() / 2);
+            imageModel.setImageScale(Math.min(bookModel.getBookWidth() / imageModel.getImageWidth()/2, bookModel.getBookHeight() / imageModel.getImageHeight()/2));
         }
         TFOBookElementModel elementModel = new TFOBookElementModel(imageModel);
         elementModel.setPageScale(pageScale);
