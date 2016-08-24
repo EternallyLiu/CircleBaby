@@ -11,8 +11,6 @@ import android.widget.SeekBar;
 
 import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,9 +69,6 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     }
 
     private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {
-        if(edit){
-            rebuild = 1;
-        }
         apiService
                 .getPOD(bookId, bookType, rebuild, contentList, params)
                 .map(new Func1<BaseResponse<TFOBookModel>, TFOBookModel>() {
@@ -89,9 +84,11 @@ public abstract class PODActivity extends BaseAppCompatActivity {
                                    Log.i(TAG, "call: 111111 reqPod + " + new Gson().toJson(podResponse));
                                    BookModelCache.getInstance().setBookModel(podResponse);
                                    setData(podResponse);
-//                                   if (TextUtils.isEmpty(bookId)) {
+                                   if (TextUtils.isEmpty(bookId)) {
                                        createBookInfo(podResponse);
-//                                   }
+                                   } else {
+                                       editBookInfo(podResponse);
+                                   }
                                    setupSeekBar();
                                }
                            }
@@ -176,8 +173,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 //                if (leftModel != null) leftModel.setPageScale(pageScale);
 //                if (rightModel != null) rightModel.setPageScale(pageScale);
 
-                String bookId = data.getStringExtra("book_id");
-
+                bookId = data.getStringExtra("book_id");
                 reqPod(bookId, bookType, 0, "");
                 break;
         }
@@ -196,6 +192,8 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     }
 
     public abstract void createBookInfo(TFOBookModel bookModel);
+
+    public abstract void editBookInfo(TFOBookModel bookModel);
 
     @Override
     protected void onPause() {

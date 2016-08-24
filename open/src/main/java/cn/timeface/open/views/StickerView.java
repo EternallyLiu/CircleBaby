@@ -131,16 +131,6 @@ public class StickerView extends FrameLayout {
 
         this.setTag(R.string.tag_ex, content_id);
         this.setTag(R.string.tag_obj, elementModel);
-
-//        this.iv_delete.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (StickerView.this.getParent() != null) {
-//                    ViewGroup rootView = ((ViewGroup) StickerView.this.getParent());
-//                    rootView.removeView(StickerView.this);
-//                }
-//            }
-//        });
         this.iv_beauty.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -151,6 +141,10 @@ public class StickerView extends FrameLayout {
                 requestLayout();
             }
         });
+
+        //处理element旋转角度
+        this.setRotation(elementModel.getElementRotation());
+
     }
 
     public void setDeleteListener(OnClickListener listener) {
@@ -161,7 +155,9 @@ public class StickerView extends FrameLayout {
 
     private View getMainView() {
         if (elementModel != null) {
-            return elementModel.getView(getContext());
+            View view = elementModel.getView(getContext());
+            view.setRotation(0);
+            return view;
         }
         return null;
     }
@@ -339,6 +335,7 @@ public class StickerView extends FrameLayout {
             iv_border.setVisibility(View.VISIBLE);
             if (!canMove) {
                 if (elementModel.getElementType() == TFOBookElementModel.TYPE_PENDANT) {
+                    //挂件在封面不能移动,不显示外面的红框
                     iv_border.setVisibility(INVISIBLE);
                 }
                 return;

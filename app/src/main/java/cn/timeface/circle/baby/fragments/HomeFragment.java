@@ -105,7 +105,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     ImageView ivCoverBg;
     @Bind(R.id.iv_dot)
     ImageView ivDot;
-//    @Bind(R.id.rlRecyclerView)
+    //    @Bind(R.id.rlRecyclerView)
 //    PullRefreshLoadRecyclerView rlRecyclerView;
     @Bind(R.id.tf_stateView)
     TFStateView tfStateView;
@@ -189,7 +189,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     if (unReadMsgResponse.success()) {
                         if (unReadMsgResponse.getUnreadMessageCount() > 0) {
                             ivDot.setVisibility(View.VISIBLE);
-                        }else{
+                        } else {
                             ivDot.setVisibility(View.GONE);
                         }
                     }
@@ -199,7 +199,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 });
     }
 
-//    @TargetApi(Build.VERSION_CODES.M)
+    //    @TargetApi(Build.VERSION_CODES.M)
     private void setupPTR() {
         animatorSet.setInterpolator(new DecelerateInterpolator());
         animatorSet.setDuration(400);
@@ -217,7 +217,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         animatorSet.playTogether(anim);
                         animatorSet.start();
                     }
-                } else if(dy < 0){
+                } else if (dy < 0) {
                     if (enableAnimation && !bottomMenuShow) {
                         bottomMenuShow = true;
                         Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
@@ -264,11 +264,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         apiService.timeline(page, 10)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
-                    tfStateView.finish();
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
                     tfptrListViewHelper.finishTFPTRRefresh();
 
                     if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
-                        if(!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())){
+                        if (!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())) {
                             adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
                         }
                     }
@@ -278,7 +280,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     tempList = timelineResponse.getDataList();
                     setDataList(timelineResponse.getDataList());
                 }, error -> {
-                    tfStateView.showException(error);
+                    if (tfStateView != null) {
+                        tfStateView.showException(error);
+                    }
                     Log.e(TAG, "timeline:");
                     tfptrListViewHelper.finishTFPTRRefresh();
                     error.printStackTrace();
@@ -298,7 +302,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 //        }else{
 //            showNoDataView(false);
 //        }
-        if(lists.size() == 0){
+        if (lists.size() == 0) {
             if (enableAnimation && !bottomMenuShow) {
                 bottomMenuShow = true;
                 Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
@@ -366,7 +370,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     return;
                 }
                 btnSend.setClickable(false);
-                Remember.putString("sendComment",s);
+                Remember.putString("sendComment", s);
                 apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timeLineObj.getTimeId(), commentId)
                         .filter(new Func1<BaseResponse, Boolean>() {
                             @Override
@@ -378,16 +382,16 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(timeDetailResponse -> {
                             if (timeDetailResponse.success()) {
-                                Remember.putString("sendComment","");
+                                Remember.putString("sendComment", "");
                                 dialog.dismiss();
                                 timeLineObj = timeDetailResponse.getTimeInfo();
                                 hideKeyboard();
                                 ToastUtil.showToast(timeDetailResponse.getInfo());
                                 if (replacePosition >= 0 && listPos >= 0) {
-                                    replaceList(replacePosition,listPos,timeLineObj);
+                                    replaceList(replacePosition, listPos, timeLineObj);
                                 }
                             }
-                            if(btnSend!=null)
+                            if (btnSend != null)
                                 btnSend.setClickable(false);
                         }, error -> {
                             Log.e(TAG, "comment");
@@ -509,13 +513,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private View initCommentEdit() {
-        View view = View.inflate(getActivity(),R.layout.view_send_comment, null);
+        View view = View.inflate(getActivity(), R.layout.view_send_comment, null);
         rlComment = (InputMethodRelative) view.findViewById(R.id.rl_comment);
         etCommment = (EditText) view.findViewById(R.id.et_commment);
         btnSend = (Button) view.findViewById(R.id.btn_send);
 
         String sendComment = Remember.getString("sendComment", "");
-        if(!TextUtils.isEmpty(sendComment)){
+        if (!TextUtils.isEmpty(sendComment)) {
             etCommment.setText(sendComment);
         }
         etCommment.addTextChangedListener(new TextWatcher() {
@@ -532,7 +536,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable s) {
                 String s1 = s.toString();
-                Remember.putString("sendComment",s1);
+                Remember.putString("sendComment", s1);
             }
         });
         btnSend.setOnClickListener(this);
@@ -545,7 +549,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         timeLineObj = event.getTimeLineObj();
         replacePosition = event.getReplacePosition();
         listPos = event.getListPos();
-        commentId =  comment.getCommentId();
+        commentId = comment.getCommentId();
         editComment();
         etCommment.requestFocus();
         etCommment.setHint("回复 " + comment.getUserInfo().getRelationName() + " ：");
