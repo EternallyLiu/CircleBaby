@@ -57,7 +57,7 @@ public class SplashActivity extends BaseAppCompatActivity {
     }
 
     private void openPod(final TFOBookModel tfoBookModel) {
-        apiService.getPOD(tfoBookModel.getBookId(), tfoBookModel.getBookType(), 0, "")
+        apiService.getPOD(tfoBookModel.getBookId(), tfoBookModel.getBookType(), 0, "", null)
                 .compose(SchedulersCompat.<BaseResponse<TFOBookModel>>applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<TFOBookModel>>() {
                     @Override
