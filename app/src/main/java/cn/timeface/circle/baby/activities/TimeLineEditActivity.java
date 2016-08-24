@@ -125,7 +125,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         tvMileStone.setText(timelimeobj.getMilestone());
         tvTime.setText(time);
 
-        if (timelimeobj.getType() == 1 || !TextUtils.isEmpty(timelimeobj.getMediaList().get(0).getVideoUrl())) {
+        if (timelimeobj.getType() == 1) {
             llVideo.setVisibility(View.VISIBLE);
             gvGridView.setVisibility(View.GONE);
 
@@ -239,8 +239,8 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     private void editTime() {
         String value = etContent.getText().toString();
-        if (value.length() < 1 && imageUrls.size() < 1) {
-            Toast.makeText(this, "发点文字或图片吧", Toast.LENGTH_SHORT).show();
+        if (imageUrls.size() < 1) {
+            Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
         if (imgObjs.size() > 0) {

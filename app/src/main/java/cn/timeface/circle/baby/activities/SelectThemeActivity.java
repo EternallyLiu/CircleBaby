@@ -163,7 +163,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
         TFOPublishObj tfoPublishObj = new TFOPublishObj("", tfoContentObjs1);
         List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
         tfoPublishObjs.add(tfoPublishObj);
-        MyPODActivity.open(this, "","", bookTheme, tfoPublishObjs, new Gson().toJson(dataList),false);
+        MyPODActivity.open(this, "","", bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true);
         finish();
     }
 }

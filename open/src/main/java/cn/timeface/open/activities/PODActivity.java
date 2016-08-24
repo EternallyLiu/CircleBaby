@@ -43,6 +43,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     Map<String, String> params = new HashMap<>();
     String bookId;
     int curIndex = 0;
+    private boolean edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
             this.bookType = getIntent().getIntExtra("book_type", 23);
             this.bookId = getIntent().getStringExtra("book_id");
             this.publishObjs = getIntent().getParcelableArrayListExtra(Constant.PUBLISH_OBJS);
+            edit = getIntent().getBooleanExtra("edit", false);
             List<String> paramKeys = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
             List<String> paramValues = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
             if (paramKeys != null && paramKeys.size() > 0) {
@@ -69,6 +71,9 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     }
 
     private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {
+        if(edit){
+            rebuild = 1;
+        }
         apiService
                 .getPOD(bookId, bookType, rebuild, contentList, params)
                 .map(new Func1<BaseResponse<TFOBookModel>, TFOBookModel>() {

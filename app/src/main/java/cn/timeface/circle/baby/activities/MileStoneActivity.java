@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
 import org.w3c.dom.Text;
 
 import java.util.List;
@@ -28,6 +29,10 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
 import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
+import cn.timeface.circle.baby.dialogs.MilestoneMenuDialog;
+import cn.timeface.circle.baby.events.LogoutEvent;
+import cn.timeface.circle.baby.events.MilestoneRefreshEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.FastData;
@@ -38,7 +43,7 @@ import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MileStoneActivity extends BaseAppCompatActivity {
+public class MileStoneActivity extends BaseAppCompatActivity implements IEventBus{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.appbar_layout)
@@ -180,9 +185,20 @@ public class MileStoneActivity extends BaseAppCompatActivity {
             @Override
             public void onClick(View v) {
                 MileStoneInfoActivity.open(MileStoneActivity.this, obj.getMilestone(), obj.getMilestoneId());
-                milestoneRead(obj.getMilestoneId());
+                if(obj.getIsRead()==0){
+                    milestoneRead(obj.getMilestoneId());
+                }
             }
         });
+        if(obj.getTimelineCount() == 0){
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    new MilestoneMenuDialog(MileStoneActivity.this).share(obj);
+                    return true;
+                }
+            });
+        }
         return view;
     }
 
@@ -208,9 +224,20 @@ public class MileStoneActivity extends BaseAppCompatActivity {
             @Override
             public void onClick(View v) {
                 MileStoneInfoActivity.open(MileStoneActivity.this, obj.getMilestone(), obj.getMilestoneId());
-                milestoneRead(obj.getMilestoneId());
+                if(obj.getIsRead()==0){
+                    milestoneRead(obj.getMilestoneId());
+                }
             }
         });
+        if(obj.getTimelineCount() == 0){
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    new MilestoneMenuDialog(MileStoneActivity.this).share(obj);
+                    return true;
+                }
+            });
+        }
         return view;
     }
 
@@ -271,4 +298,10 @@ public class MileStoneActivity extends BaseAppCompatActivity {
             reqData();
         }
     }
+
+    @Subscribe
+    public void onEvent(MilestoneRefreshEvent event) {
+        reqData();
+    }
+
 }

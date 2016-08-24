@@ -102,6 +102,36 @@ public class GuideActivity extends BaseAppCompatActivity {
                             return b;
                         }
                     });
+                }else if(position == 0){
+                    CBLoopViewPager viewPager = banner.getViewPager();
+                    viewPager.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            boolean b = false;
+                            switch (event.getAction()){
+                                case MotionEvent.ACTION_DOWN:
+                                    dowm_x = event.getX();
+                                    b = false;
+                                    System.out.println("down");
+                                    break;
+                                case MotionEvent.ACTION_MOVE:
+                                    float x1 = event.getX();
+                                    if(x1>dowm_x){
+                                        System.out.println("右滑");
+                                        b = true;
+                                    }else{
+                                        System.out.println("左滑");
+                                        b = false;
+                                    }
+                                    break;
+                                case MotionEvent.ACTION_UP:
+                                    b = false;
+                                    System.out.println("up");
+                                    break;
+                            }
+                            return b;
+                        }
+                    });
                 }else{
                     banner.setCanLoop(true);
                     CBLoopViewPager viewPager = banner.getViewPager();

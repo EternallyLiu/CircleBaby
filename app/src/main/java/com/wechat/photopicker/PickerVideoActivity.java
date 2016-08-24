@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
@@ -47,12 +48,13 @@ import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.ImageFactory;
+import cn.timeface.circle.baby.utils.ImageUtil;
 import cn.timeface.common.utils.StorageUtil;
 
 /**
  * 选择视频界面
  */
-public class PickerVideoActivity extends BaseAppCompatActivity implements IEventBus {
+public class PickerVideoActivity extends BaseAppCompatActivity implements IEventBus, MediaScannerConnection.OnScanCompletedListener {
 
     public final static String EXTRA_SHOW_CAMERA = "SHOW_CAMERA";
     public final static String EXTRA_SHOW_GIF = "SHOW_GIF";
@@ -64,8 +66,9 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
     private int optionalPhotoSize;
     private GridView gv;
     private ArrayList<VideoInfo> videos = new ArrayList<>();
-    private File mPhotoFile;
+    private File mVideoFile;
     private VideoInfo videoInfo;
+    private VideoAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +90,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 //        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
 //        mRecyclerView.setLayoutManager(layoutManager);
 //        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        VideoAdapter adapter = new VideoAdapter(videos);
+        adapter = new VideoAdapter(videos);
         gv.setAdapter(adapter);
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -95,12 +98,10 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                 position = position - 1;
                 if (position == -1) {
                     //跳转到录像
-                    if (null == mPhotoFile) {
-                        Intent takePictureIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                        mPhotoFile = StorageUtil.genSystemPhotoFile();
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
-                        startActivityForResult(takePictureIntent, 1);
-                    }
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    mVideoFile = StorageUtil.genSystemVideoFile();
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mVideoFile));
+                    startActivityForResult(takePictureIntent, 1);
                 } else {
                     //跳转到裁剪视频界面
                     videoInfo = videos.get(position);
@@ -108,16 +109,26 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                     videoInfo.setImgLocalUrl(s);
                     Intent intent = new Intent(PickerVideoActivity.this, VideoEditActivity.class);
                     intent.putExtra("path", videoInfo.getPath());
+                    intent.putExtra("duration", videoInfo.getDuration());
                     startActivity(intent);
                 }
             }
         });
 
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+            if (requestCode == 1 && resultCode == RESULT_OK) {
+                ImageUtil.scanMediaVideoFile(this, mVideoFile, this);
+            }
+        }
     }
 
     //获取手机中的视频
     private void initData() {
+        videos.clear();
         String progress[] = {
 
                 MediaStore.Video.Media.DISPLAY_NAME,//视频的名字
@@ -201,9 +212,21 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
     private void doNext(int requestCode, int[] grantResults) {
         if (requestCode == RECORD_CAMERA_REQUEST_CODE) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "您拒绝了选择照片的权限", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "您拒绝了选择视频的权限", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onScanCompleted(String path, Uri uri) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initData();
+                adapter = new VideoAdapter(videos);
+                gv.setAdapter(adapter);
+            }
+        });
     }
 
     class VideoAdapter extends BaseAdapter {

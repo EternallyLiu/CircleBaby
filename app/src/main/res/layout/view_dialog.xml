@@ -19,7 +19,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/text_color4"/>
+        android:background="@color/text_color_hint"/>
 
     <TextView
         android:id="@+id/tv_msg"
@@ -32,7 +32,8 @@
         />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_6">
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"

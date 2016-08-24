@@ -18,6 +18,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.api.models.objs.Msg;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,7 +59,7 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         holder.onClickListener = onClickListener;
         holder.info = info;
         GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar);
-        holder.tvRelation.setText(info.getUserInfo().getRelationName());
+        holder.tvRelation.setText(FastData.getBabyName() + info.getUserInfo().getRelationName());
         holder.tvTime.setText(DateUtil.getDisTime(info.getTime()));
         if (info.getTimeInfo().getMediaList() == null || info.getTimeInfo().getMediaList().size() < 1) {
             holder.ivContent.setVisibility(View.GONE);

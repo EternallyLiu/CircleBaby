@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.managers.listeners.OnClickListener;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
@@ -62,6 +65,8 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
     TFStateView tfStateView;
     private MineBookAdapter adapter;
     ArrayList<MineBookObj> bookList = new ArrayList<>();
+    private AlertDialog alertDialog;
+    private MineBookObj obj;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, MineBookActivity.class));
@@ -110,17 +115,9 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         adapter.delBook(new OnClickListener() {
             @Override
             public void click(Object o) {
-                String bookId = (String) o;
-                apiService.deleteBook(bookId)
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(response -> {
-                            ToastUtil.showToast(response.getInfo());
-                            if (response.success()) {
-                                EventBus.getDefault().post(new BookOptionEvent());
-                            }
-                        }, error -> {
-                            Log.e(TAG, "deleteBook:");
-                        });
+                obj = (MineBookObj) o;
+                alertDialog = new AlertDialog.Builder(MineBookActivity.this).setView(initDialogView()).show();
+                alertDialog.setCanceledOnTouchOutside(false);
             }
         });
         adapter.setOnItemClickListener(mineBookObj -> {
@@ -222,6 +219,22 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
             case R.id.error_retry:
                 FragmentBridgeActivity.open(this, "AddBookListFragment");
                 break;
+            case R.id.btn_ok:
+                alertDialog.dismiss();
+                apiService.deleteBook(obj.getBookId())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            ToastUtil.showToast(response.getInfo());
+                            if (response.success()) {
+                                EventBus.getDefault().post(new BookOptionEvent());
+                            }
+                        }, error -> {
+                            Log.e(TAG, "deleteBook:");
+                        });
+                break;
+            case R.id.btn_cancel:
+                alertDialog.dismiss();
+                break;
         }
     }
 
@@ -231,5 +244,17 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
             currentPage = 1;
             reqData(currentPage, true);
         }
+    }
+
+    private View initDialogView() {
+        View view = View.inflate(this,R.layout.view_dialog, null);
+        TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        TextView tvMsg = (TextView) view.findViewById(R.id.tv_msg);
+        Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        Button btnOk = (Button) view.findViewById(R.id.btn_ok);
+        tvMsg.setText("确定要删除《"+ obj.getBookName() + "》吗？");
+        btnCancel.setOnClickListener(this);
+        btnOk.setOnClickListener(this);
+        return view;
     }
 }

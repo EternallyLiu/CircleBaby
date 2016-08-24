@@ -12,6 +12,8 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -55,8 +57,9 @@ public class ScaleImageView extends ImageView {
         super(activity);
         this.imgObj = imgObj;
 //        gintama = BitmapFactory.decodeResource(getResources(), R.drawable.ic_login_qq);
-//        gintama = BitmapFactory.decodeFile(path);
+//        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
         gintama = comp(imgObj.getLocalPath());
+
 
         DisplayMetrics dm = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -75,6 +78,7 @@ public class ScaleImageView extends ImageView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         reset();
+        centerPic();
     }
 
     protected void onDraw(Canvas canvas) {
@@ -219,6 +223,52 @@ public class ScaleImageView extends ImageView {
         invalidate();
     }
 
+    //刚进入时图片不要放大太多
+    public void centerPic() {
+        float[] f = new float[9];
+        matrix1.getValues(f);
+        // 图片4个顶点的坐标
+        float x1 = f[0] * 0 + f[1] * 0 + f[2];
+        float y1 = f[3] * 0 + f[4] * 0 + f[5];
+        float x2 = f[0] * gintama.getWidth() + f[1] * 0 + f[2];
+        float y2 = f[3] * gintama.getWidth() + f[4] * 0 + f[5];
+        float x3 = f[0] * 0 + f[1] * gintama.getHeight() + f[2];
+        float y3 = f[3] * 0 + f[4] * gintama.getHeight() + f[5];
+        float x4 = f[0] * gintama.getWidth() + f[1] * gintama.getHeight() + f[2];
+        float y4 = f[3] * gintama.getWidth() + f[4] * gintama.getHeight() + f[5];
+
+        //边框宽高
+        int width = getWidth();
+        int height = getHeight();
+        //图片宽高
+        picWidth = x2 - x1;
+        picHeight = y3 - y1;
+        float w = width / picWidth;
+        float h = height / picHeight;
+        if (w < 0.8 && h < 0.8) {
+            float scale = w > h ? w : h;
+            matrix1.postScale(scale, scale, center.x, center.y);// 縮放
+        }
+        if (!(w < 1 && h < 1)) {
+            float scale = w > h ? w : h;
+            matrix1.postScale(scale, scale, center.x, center.y);// 縮放
+        }
+        if (x1 > 0) {
+            matrix1.postTranslate(-x1, 0);
+        }
+        if (y1 > 0) {
+            matrix1.postTranslate(0, -y1);
+        }
+        if (x2 < width) {
+            matrix1.postTranslate(width - x2, 0);
+        }
+        if (y3 < height) {
+            matrix1.postTranslate(0, height - y3);
+        }
+        matrix.set(matrix1);
+        invalidate();
+    }
+
 
     // 触碰两点间距离
     private float spacing(MotionEvent event) {
@@ -335,15 +385,18 @@ public class ScaleImageView extends ImageView {
         int scaleX = (int) (w / ww);
         int scaleY = (int) (h / hh);
         scale = scaleX > scaleY ? scaleX : scaleY;
+        if(scale<1){
+            scale = 1;
+        }
         options.inSampleSize = scale;
         options.inJustDecodeBounds = false;
-        Bitmap bitmap1 = BitmapFactory.decodeFile(path, options);
+        bitmap = BitmapFactory.decodeFile(path, options);
         if (scale!=1){
-            String url = ImageFactory.saveImage(bitmap1);
+            String url = ImageFactory.saveImage(bitmap);
             imgObj.setLocalPath(url);
             System.out.println("ScaleImageView.url ===== " + url);
         }
-        return bitmap1;
+        return bitmap;
     }
 
     //图片左上角在原图中的位置

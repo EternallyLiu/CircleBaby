@@ -66,6 +66,7 @@ public class MyPODActivity extends PODActivity {
     }
 
     private void createBook(String author, String dataList, String bookCover, String bookName, int type, int pageNum, String openBookId, int openBookType) {
+        System.out.println("bookId ======== " + bookId);
         ApiFactory.getApi().getApiService().createBook(URLEncoder.encode(author), FastData.getBabyId(), bookCover, bookId, URLEncoder.encode(bookName), "", type, dataList, URLEncoder.encode(bookName), Long.valueOf(openBookId), pageNum, openBookType)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {

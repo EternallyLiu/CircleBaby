@@ -62,10 +62,8 @@
                 android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/fl"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/size_36"
-                android:text="2016.05.20"
+                android:layout_above="@+id/tv_content"
+                android:layout_marginLeft="@dimen/size_24"
                 android:textColor="@color/text_color4"
                 android:textSize="@dimen/text_medium" />
 
@@ -73,14 +71,14 @@
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_time"
-                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/size_24"
                 android:layout_marginTop="@dimen/size_12"
-                android:gravity="center"
                 android:lineSpacingMultiplier="1.2"
                 android:text="[穿衣歌]\n小胳膊，穿袖子，穿上衣，扣扣子，\n小脚丫，穿裤子，穿上袜子穿鞋子。"
                 android:textColor="@color/text_color4"
-                android:textSize="@dimen/text_normal" />
+                android:textSize="@dimen/text_normal"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/size_6"/>
 
 
         </RelativeLayout>

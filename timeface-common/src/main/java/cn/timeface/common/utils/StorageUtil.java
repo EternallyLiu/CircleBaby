@@ -199,12 +199,29 @@ public class StorageUtil {
         return root;
     }
 
+    public static File getSystemVideoDir() {
+        File root = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MOVIES);
+        if (!root.exists()) {
+            root.mkdirs();
+        }
+        return root;
+    }
+
     public static File genSystemPhotoFile(String fileName) {
         return new File(getSystemPhotoDir(), fileName);
     }
 
     public static File genSystemPhotoFile() {
         return genSystemPhotoFile(getTFPhotoName());
+    }
+
+    public static File genSystemVideoFile(String fileName) {
+        return new File(getSystemVideoDir(), fileName);
+    }
+
+    public static File genSystemVideoFile() {
+        return genSystemVideoFile(getTFVideoName());
     }
 
     public static File getTFPhotoPath(String fileName) {
@@ -271,6 +288,13 @@ public class StorageUtil {
                 + System.currentTimeMillis()
                 + new Random().nextInt(256)
                 + ".jpg";
+    }
+
+    private static String getTFVideoName() {
+        return "TF"
+                + System.currentTimeMillis()
+                + new Random().nextInt(256)
+                + ".mp4";
     }
 
     public static String savePhotoToAlbum(Bitmap bitmap) {

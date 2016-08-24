@@ -30,13 +30,13 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/nodata" />
+            android:src="@drawable/cart_empty" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="55dp"
-            android:text="印刷车空空的，快去挑选印刷品吧"
+            android:text="印刷车还是空的哦，快去挑选吧"
             android:textAppearance="?android:attr/textAppearance"
             android:textColor="@color/text_color2" />
 
