@@ -13,7 +13,9 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.timeface.open.R;
 import cn.timeface.open.activities.base.BaseAppCompatActivity;
@@ -38,6 +40,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     final int EDIT_REQUEST_CODE = 100;
     private BookPodView bookPodView;
     List<TFOPublishObj> publishObjs;
+    Map<String, String> params = new HashMap<>();
     String bookId;
     int curIndex = 0;
 
@@ -49,6 +52,11 @@ public abstract class PODActivity extends BaseAppCompatActivity {
             this.bookType = getIntent().getIntExtra("book_type", 23);
             this.bookId = getIntent().getStringExtra("book_id");
             this.publishObjs = getIntent().getParcelableArrayListExtra(Constant.PUBLISH_OBJS);
+            List<String> paramKeys = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
+            List<String> paramValues = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
+            for (int i = 0; i < paramKeys.size(); i++) {
+                params.put(paramKeys.get(i), paramValues.get(i));
+            }
         }
         this.toolbar = (Toolbar) findViewById(R.id.toolbar);
         bookPodView = (BookPodView) findViewById(R.id.bookPodView);
@@ -60,7 +68,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {
         apiService
-                .getPOD(bookId, bookType, rebuild, contentList)
+                .getPOD(bookId, bookType, rebuild, contentList, params)
                 .map(new Func1<BaseResponse<TFOBookModel>, TFOBookModel>() {
                     @Override
                     public TFOBookModel call(BaseResponse<TFOBookModel> podResponse) {

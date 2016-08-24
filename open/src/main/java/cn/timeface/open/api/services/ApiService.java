@@ -1,6 +1,7 @@
 package cn.timeface.open.api.services;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFBookBackgroundModel;
@@ -17,6 +18,7 @@ import cn.timeface.open.api.models.response.EditText;
 import cn.timeface.open.api.models.response.SimplePageTemplate;
 import okhttp3.ResponseBody;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -73,7 +75,8 @@ public interface ApiService {
     Observable<BaseResponse<TFOBookModel>> getPOD(@Field("book_id") String book_id,
                                                   @Field("book_type") int book_type,
                                                   @Field("rebuild") int rebuild,
-                                                  @Field("content_list") String content_list);
+                                                  @Field("content_list") String content_list,
+                                                  @FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("pod/pod")

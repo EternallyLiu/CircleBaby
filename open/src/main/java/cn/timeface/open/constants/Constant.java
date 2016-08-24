@@ -12,4 +12,6 @@ public class Constant {
     public static String BOOK_MODEL = "book_model";
     public static String CONTENT_ID = "content_id";
     public static String PUBLISH_OBJS = "publish_objs";
+    public static String POD_KEYS = "pod_keys";
+    public static String POD_VALUES = "pod_values";
 }
