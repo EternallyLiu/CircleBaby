@@ -20,8 +20,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
     float image_width;// 图片尺寸－宽度
     float image_height;// 图片尺寸－高度
     float image_scale;// 图片显示在当前位置的缩放比(选填)
-    float image_start_pointX;// 图片显示区域起始点X 相对于 element_left
-    float image_start_pointY;// 图片显示区域起始点Y 相对于 element_top
+    float image_start_point_x;// 图片显示区域起始点X 相对于 element_left
+    float image_start_point_y;// 图片显示区域起始点Y 相对于 element_top
     String image_remark;// 图片图注，不超过14个汉字，超出部分会被截取
     String image_content;// 图片配文，不超过300个汉字，超出部分会被截取
     long image_date;// 图片日期
@@ -138,19 +138,19 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
     }
 
     public float getImageStartPointX() {
-        return image_start_pointX;
+        return image_start_point_x;
     }
 
     public void setImageStartPointX(float image_start_pointX) {
-        this.image_start_pointX = image_start_pointX;
+        this.image_start_point_x = image_start_pointX;
     }
 
     public float getImageStartPointY() {
-        return image_start_pointY;
+        return image_start_point_y;
     }
 
     public void setImageStartPointY(float image_start_pointY) {
-        this.image_start_pointY = image_start_pointY;
+        this.image_start_point_y = image_start_pointY;
     }
 
     public float getImagePaddingTop() {
@@ -209,8 +209,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         dest.writeFloat(this.image_width);
         dest.writeFloat(this.image_height);
         dest.writeFloat(this.image_scale);
-        dest.writeFloat(this.image_start_pointX);
-        dest.writeFloat(this.image_start_pointY);
+        dest.writeFloat(this.image_start_point_x);
+        dest.writeFloat(this.image_start_point_y);
         dest.writeString(this.image_remark);
         dest.writeString(this.image_content);
         dest.writeLong(this.image_date);
@@ -229,8 +229,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_width = in.readFloat();
         this.image_height = in.readFloat();
         this.image_scale = in.readFloat();
-        this.image_start_pointX = in.readFloat();
-        this.image_start_pointY = in.readFloat();
+        this.image_start_point_x = in.readFloat();
+        this.image_start_point_y = in.readFloat();
         this.image_remark = in.readString();
         this.image_content = in.readString();
         this.image_date = in.readLong();
@@ -258,8 +258,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
     //获取原图的裁剪区域
     public Rect getOrgCropRect(float w, float h) {
         Rect rect = new Rect();
-        float left = Math.abs(image_start_pointX / image_scale);
-        float top = Math.abs(image_start_pointY / image_scale);
+        float left = Math.abs(image_start_point_x / image_scale);
+        float top = Math.abs(image_start_point_y / image_scale);
         float right = left + w / image_scale;
         float bottom = top + h / image_scale;
         rect.set((int) left, (int) top, (int) right, (int) bottom);
