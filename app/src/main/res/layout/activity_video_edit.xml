@@ -57,8 +57,7 @@
 
                     <ImageView
                         android:layout_width="30dp"
-                        android:layout_height="50dp"
-                        android:src="@drawable/ic_login_qq" />
+                        android:layout_height="50dp" />
 
                 </LinearLayout>
 

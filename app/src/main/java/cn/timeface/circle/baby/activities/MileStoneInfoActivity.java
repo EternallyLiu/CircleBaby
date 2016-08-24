@@ -76,6 +76,7 @@ public class MileStoneInfoActivity extends BaseAppCompatActivity {
                     setDataList(milestoneInfoResponse.getDataList());
                 }, throwable -> {
                     Log.e(TAG, "milestone:");
+                    throwable.printStackTrace();
                 });
     }
 

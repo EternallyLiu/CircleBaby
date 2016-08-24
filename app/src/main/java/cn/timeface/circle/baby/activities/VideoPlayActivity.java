@@ -20,6 +20,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.RelationshipAdapter;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.utils.ImageFactory;
 
 public class VideoPlayActivity extends BaseAppCompatActivity {
 
@@ -47,12 +48,14 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         actionBar.setTitle("视频播放");
 
         String url = getIntent().getStringExtra("url");
+//        String path = ImageFactory.saveVideo(url);
         MediaController mc = new MediaController(this);
+//        System.out.println("url ======"+url);
+//        System.out.println("path ======"+path);
         videoview.setMediaController(mc);
         videoview.setVideoPath(url);
-        videoview.start();
         videoview.requestFocus();
-
+        videoview.start();
 
     }
 }

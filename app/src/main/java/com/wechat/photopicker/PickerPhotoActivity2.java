@@ -37,6 +37,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CardPublishActivity;
+import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
@@ -160,10 +162,10 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
             public void onClick(View v) {
                 if(bookType==2){
                     //日记卡片
-                    PublishActivity.open(PickerPhotoActivity2.this, PublishActivity.DIALY);
+                    DiaryPublishActivity.open(PickerPhotoActivity2.this);
                 }else if(bookType == 3){
                     //识图卡片
-                    PublishActivity.open(PickerPhotoActivity2.this, PublishActivity.CARD);
+                    CardPublishActivity.open(PickerPhotoActivity2.this);
                 }
             }
         });
@@ -289,6 +291,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
     @Subscribe
     public void onEvent(HomeRefreshEvent event) {
         System.out.println("PickerPhotoActivity2============HomeRefreshEvent");
+        llNoData.setVisibility(View.GONE);
         mPickerPhotoFragment.reqData();
     }
 

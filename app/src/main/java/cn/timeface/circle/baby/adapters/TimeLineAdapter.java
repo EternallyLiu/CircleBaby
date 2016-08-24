@@ -112,6 +112,12 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.gv.setVisibility(View.GONE);
             String url = item.getMediaList().get(0).getImgUrl();
             GlideUtil.displayImage(url, holder.ivCover);
+            int width = Remember.getInt("width", 0)*3;
+            ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = width;
+            holder.ivCover.setLayoutParams(layoutParams);
+            holder.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             holder.rlSingle.setVisibility(View.GONE);
         }
@@ -178,11 +184,11 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         if (item.getType() == 1) {
             holder.ivVideo.setVisibility(View.VISIBLE);
-//            int width = Remember.getInt("width", 0);
-//            ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
-//            layoutParams.width = width;
-//            layoutParams.height = width;
-//            holder.ivCover.setLayoutParams(layoutParams);
+            int width = Remember.getInt("width", 0)*3;
+            ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
+            layoutParams.width = width;
+            layoutParams.height = (int) (width*0.5);
+            holder.ivCover.setLayoutParams(layoutParams);
             holder.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.rlSingle.setOnClickListener(new View.OnClickListener() {
                 @Override

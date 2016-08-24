@@ -125,7 +125,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.github.promeg:tinypinyin:1.0.0'
-    compile files('libs/MiPush_SDK_Client_2_2_21.jar')
+    compile files('libs/MiPush_SDK_Client_3_0_3.jar')
     compile files('libs/libammsdk.jar')
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

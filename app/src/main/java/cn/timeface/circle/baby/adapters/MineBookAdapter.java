@@ -30,6 +30,8 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
+import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.managers.listeners.OnClickListener;
@@ -180,7 +182,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                             case R.id.del:
                                 //删除
                                 if (clickListener != null) {
-                                    clickListener.click(obj.getBookId());
+                                    clickListener.click(obj);
                                 }
                                 break;
                         }
@@ -254,9 +256,27 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(paramListResponse -> {
                         if (paramListResponse.success()) {
+                            List<PrintParamObj> valueList1 = new ArrayList<PrintParamObj>();
+                            List<PrintParamResponse> dataList = paramListResponse.getDataList();
+                            for (PrintParamResponse printParamResponse : dataList){
+                                if(printParamResponse.getKey().equals("size")){
+                                    List<PrintParamObj> valueList = printParamResponse.getValueList();
+                                    for(PrintParamObj printParamObj : valueList){
+                                        if(printParamObj.getValue().equals(obj.getBookSizeId()+"")){
+                                            valueList1.add(printParamObj);
+                                        }
+                                    }
+                                    if(valueList1.size()>0){
+                                        printParamResponse.setValueList(valueList1);
+                                    }
+                                }
+                            }
+
+
+
                             CartPrintPropertyDialog dialog = CartPrintPropertyDialog.getInstance(null,
                                     null,
-                                    paramListResponse.getDataList(),
+                                    dataList,
                                     obj.getBookId(),
                                     String.valueOf(obj.getBookType()),
                                     CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
@@ -270,6 +290,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                         }
                     }, error -> {
                         Log.e("MineBookAdapter", "queryParamList:");
+                        error.printStackTrace();
                     });
         }
 

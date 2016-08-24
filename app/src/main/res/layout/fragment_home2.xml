@@ -87,6 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:drawableLeft="@drawable/back"
+                        android:drawablePadding="@dimen/size_6"
                         android:text="选择宝宝"
                         android:textColor="@color/text_color1"
                         android:textSize="@dimen/text_medium" />
@@ -96,8 +97,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|right"
-                        android:layout_marginRight="@dimen/size_12"
-                        android:src="@drawable/msg" />
+                        android:src="@drawable/msg"
+                        android:paddingLeft="@dimen/size_12"
+                        android:paddingTop="@dimen/size_2"
+                        android:paddingRight="@dimen/size_12"
+                        android:paddingBottom="@dimen/size_2"/>
 
                     <ImageView
                         android:id="@+id/iv_dot"
@@ -127,7 +131,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:padding="@dimen/size_2">
+            android:padding="@dimen/size_6">
 
             <TextView
                 android:id="@+id/tv_album"
@@ -137,7 +141,6 @@
                 android:background="@drawable/cloud_bg"
                 android:gravity="center"
                 android:padding="@dimen/size_12"
-                android:text="云相册"
                 android:textColor="@color/white" />
 
             <View
@@ -153,7 +156,6 @@
                 android:background="@drawable/mile_bg"
                 android:gravity="center"
                 android:padding="@dimen/size_12"
-                android:text="成长里程碑"
                 android:textColor="@color/white" />
 
             <View
@@ -169,7 +171,6 @@
                 android:background="@drawable/family_bg"
                 android:gravity="center"
                 android:padding="@dimen/size_12"
-                android:text="亲友团"
                 android:textColor="@color/white" />
         </LinearLayout>
 

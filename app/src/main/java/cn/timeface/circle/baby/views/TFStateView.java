@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 
 import java.net.UnknownHostException;
 
+import cn.timeface.circle.baby.R;
 import retrofit2.adapter.rxjava.HttpException;
 
 /**
@@ -27,6 +28,7 @@ public class TFStateView extends StateView {
             } else {
                 setState(ErrorViewContent.getContentObj(HttpStatusCodes.NO_CONNECT));
             }
+            setImageResource(R.drawable.net_empty);
         }
     }
 

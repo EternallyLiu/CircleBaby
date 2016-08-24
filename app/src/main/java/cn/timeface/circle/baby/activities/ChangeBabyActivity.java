@@ -23,11 +23,16 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.api.services.OpenUploadServices;
+import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.open.GlobalSetting;
+import cn.timeface.open.api.models.objs.TFOUserObj;
 
 public class ChangeBabyActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
@@ -120,6 +125,8 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                                 Remember.putBoolean("showtimelinehead", true);
                                 EventBus.getDefault().post(new HomeRefreshEvent());
                                 EventBus.getDefault().post(new ConfirmRelationEvent());
+                                EventBus.getDefault().post(new UnreadMsgEvent());
+                                initOpen();
                                 this.finish();
                             }
                         }, throwable -> {
@@ -127,6 +134,15 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                         });
                 break;
         }
+    }
+
+    private void initOpen() {
+        TFOUserObj tfoUserObj = new TFOUserObj();
+        tfoUserObj.setAvatar(FastData.getAvatar());
+        tfoUserObj.setGender(FastData.getBabyGender());
+        tfoUserObj.setNick_name(FastData.getBabyName());
+        tfoUserObj.setPhone(FastData.getAccount());
+        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, new OpenUploadServices());
     }
 
     @Override

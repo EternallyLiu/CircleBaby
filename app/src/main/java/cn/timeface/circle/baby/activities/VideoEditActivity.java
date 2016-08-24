@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +17,9 @@ import android.widget.VideoView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +60,8 @@ public class VideoEditActivity extends BaseAppCompatActivity {
     private int j;
     private TFProgressDialog tfProgressDialog;
     private MenuItem next;
+    private long duration;
+    private boolean isClip;
 
 
     @Override
@@ -65,15 +71,18 @@ public class VideoEditActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        hs.setVisibility(View.GONE);
         tfProgressDialog = new TFProgressDialog(this);
         path = getIntent().getStringExtra("path");
+        duration = getIntent().getLongExtra("duration", 0);
         MediaController mc = new MediaController(this);
         videoview.setMediaController(mc);
         videoview.setVideoPath(path);
         videoview.start();
         videoview.requestFocus();
 
-        List<Bitmap> bitmaps = getBitmaps();
+        seconds = (int) (duration/1000);
+//        List<Bitmap> bitmaps = getBitmaps();
 
         RangeSeekBar<Integer> seekBar = new RangeSeekBar<Integer>(0, seconds, this);
         max = seconds;
@@ -97,15 +106,15 @@ public class VideoEditActivity extends BaseAppCompatActivity {
         retriever.setDataSource(path);
         String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
         seconds = Integer.valueOf(duration) / 1000;
-        if(seconds<15){
+        if (seconds < 15) {
             j = 1;
-        }else if(j<300){
-            j = 5 ;
-        }else{
-            j=10;
+        } else if (j < 300) {
+            j = 5;
+        } else {
+            j = 10;
         }
         llImage.removeAllViews();
-        for (int i = 1; i < seconds; i= i+j) {
+        for (int i = 1; i < seconds; i = i + j) {
             Bitmap bitmap = retriever.getFrameAtTime(i * 1000 * 1000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC);
             bitmaps.add(bitmap);
             ImageView imageView = initImageView(bitmap);
@@ -114,11 +123,11 @@ public class VideoEditActivity extends BaseAppCompatActivity {
         return bitmaps;
     }
 
-    public ImageView initImageView(Bitmap bitmap){
-        int w = Remember.getInt("width", 0)/5;
+    public ImageView initImageView(Bitmap bitmap) {
+        int w = Remember.getInt("width", 0) / 5;
         int h = (int) (w * 1.5);
         ImageView iv = new ImageView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w,h);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w, h);
         iv.setLayoutParams(params);
         iv.setImageBitmap(bitmap);
         return iv;
@@ -137,25 +146,32 @@ public class VideoEditActivity extends BaseAppCompatActivity {
         if (item.getItemId() == R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.next) {
-            int i = max - min;
-            if(i>60){
-                ToastUtil.showToast("视频不能超过60秒");
-                return true;
+            if(!isClip) {
+                isClip = true;
+                int i = max - min;
+                if (i > 60) {
+                    ToastUtil.showToast("视频不能超过60秒");
+                    return true;
+                }
+                ToastUtil.showToast("剪裁视频中…");
+                tvTag.setText("剪裁视频中…");
+                tfProgressDialog.setMessage("剪裁视频中…");
+                tfProgressDialog.show();
+                try {
+                    if (min == 0 && max == seconds) {
+                        EventBus.getDefault().post(new ClipVideoSuccessEvent(path, i));
+                    } else {
+                        String s = ClipUtil.clipVideo(path, min, max);
+                        EventBus.getDefault().post(new ClipVideoSuccessEvent(s, i));
+                    }
+                    tfProgressDialog.dismiss();
+                    finish();
+                } catch (IOException e) {
+                    tfProgressDialog.dismiss();
+                    e.printStackTrace();
+                }
+                isClip = false;
             }
-            next.setEnabled(false);
-            tvTag.setText("剪裁视频中…");
-            tfProgressDialog.setMessage("剪裁视频中…");
-            tfProgressDialog.show();
-            try {
-                String s = ClipUtil.clipVideo(path, min, max);
-                EventBus.getDefault().post(new ClipVideoSuccessEvent(s,i));
-                tfProgressDialog.dismiss();
-                finish();
-            } catch (IOException e) {
-                tfProgressDialog.dismiss();
-                e.printStackTrace();
-            }
-            next.setEnabled(true);
         }
         return super.onOptionsItemSelected(item);
     }

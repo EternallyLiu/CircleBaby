@@ -51,6 +51,7 @@ import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.PublishObj;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
@@ -60,6 +61,7 @@ import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.MD5;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
@@ -332,6 +334,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     s = s.length() == 13 ? s : s + "000";
                     date = Long.valueOf(s);
                     videoInfo = new VideoInfo(duration, imgObjectKey, path, date);
+                    String videoObjectKey = "baby/" + MD5.encode(new File(path)) + path.substring(path.lastIndexOf("."));
+                    videoInfo.setVideoObjectKey(videoObjectKey);
                     GlideUtil.displayImage("http://img1.timeface.cn/" + imgObjectKey, ivVideo);
                     rlVideo.setVisibility(View.VISIBLE);
                     gvGridView.setVisibility(View.GONE);
@@ -343,7 +347,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     time_shot = DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate());
                     tvTime.setText(time_shot);
                     tvVideotime.setText("时长：" + DateUtil.getTime4(videoInfo.getDuration() * 1000));
-
+                    mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
                     break;
             }
 
@@ -379,8 +383,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布识图卡片
     private void publishCard() {
         String content = etContent.getText().toString();
-        if (TextUtils.isEmpty(content) && mediaObjs.size() == 0) {
-            Toast.makeText(this, "发点文字或图片吧~", Toast.LENGTH_SHORT).show();
+        if (mediaObjs.size() == 0) {
+            Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
@@ -412,8 +416,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布日记
     private void publishDiary() {
         String content = etContent.getText().toString();
-        if (TextUtils.isEmpty(content) && mediaObj == null) {
-            Toast.makeText(this, "发点文字或图片吧~", Toast.LENGTH_SHORT).show();
+        if (mediaObj == null) {
+            Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
@@ -435,7 +439,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
                         if (type == 1) {
-                            new File(videoInfo.getPath()).delete();
+                            uploadVideo(videoInfo.getPath());
                         }
                         EventBus.getDefault().post(new HomeRefreshEvent());
                         finish();
@@ -452,8 +456,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private void postRecord() {
         String value = etContent.getText().toString();
         long time = 0;
-        if (value.length() < 1 && imageUrls.size() < 1) {
-            Toast.makeText(this, "发点文字或图片吧", Toast.LENGTH_SHORT).show();
+        if (imageUrls.size() < 1) {
+            Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -561,13 +565,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             //如果不存在则上传
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
-//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                         String objectKey = uploadFileObj.getObjectKey();
                         System.out.println("uploadImage  objectKey============ "+objectKey);
-//                        File file = new File(path);
-//                        if(file.exists()){
-//                            file.delete();
-//                        }
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
                     }
@@ -584,8 +583,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             ToastUtil.showToast("视频文件异常");
             return;
         }
-        tfProgressDialog.setMessage("上传视频中");
-        tfProgressDialog.show();
+//        tfProgressDialog.setMessage("上传视频中");
+//        tfProgressDialog.show();
         OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override
@@ -601,18 +600,15 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         String videoObjectKey = uploadFileObj.getObjectKey();
-                        videoInfo.setVideoObjectKey(videoObjectKey);
-//                        new File(path).delete();
-                        mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
-                        tfProgressDialog.dismiss();
-                        publishDiary();
-//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
+//                        File file = new File(path);
+//                        String substring = path.substring(path.lastIndexOf("/"));
+//                        if(file.exists()&&substring.startsWith("TF")){
+//                            file.delete();
+//                        }
                     } catch (ServiceException | ClientException e) {
-                        tfProgressDialog.dismiss();
                         e.printStackTrace();
                     }
                 } catch (Exception e) {
-                    tfProgressDialog.dismiss();
                     e.printStackTrace();
                 }
             }
@@ -658,8 +654,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     postRecord();
                     break;
                 case 1:
-                    uploadVideo(videoInfo.getPath());
-                    break;
                 case 2:
                     publishDiary();
                     break;

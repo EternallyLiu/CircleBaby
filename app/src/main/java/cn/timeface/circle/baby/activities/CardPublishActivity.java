@@ -67,6 +67,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvAdd.setOnClickListener(this);
+        tvAdd.setEnabled(false);
 //        reqData();
 //        selectImages();
     }
@@ -98,6 +99,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                     if (mViews.size() > 1) {
                         vp.setCurrentItem(mViews.size() - 1);
                     }
+                    tvAdd.setEnabled(true);
                 });
 
     }

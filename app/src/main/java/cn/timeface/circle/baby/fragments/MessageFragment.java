@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -30,10 +29,8 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.MessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.Msg;
-import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -66,7 +63,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setTitle("消息");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -85,12 +82,14 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         apiService.queryMsgList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(msgListResponse -> {
-                    tfStateView.finish();
-                    if(msgListResponse.success()){
+                    if (tfStateView != null)
+                        tfStateView.finish();
+                    if (msgListResponse.success()) {
                         setDataList(msgListResponse.getDataList());
                     }
                 }, error -> {
-                    tfStateView.showException(error);
+                    if (tfStateView != null)
+                        tfStateView.showException(error);
                     Log.e(TAG, "queryMsgList:");
                     error.printStackTrace();
                 });
@@ -98,9 +97,9 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void setDataList(List<Msg> dataList) {
-        if(dataList.size()>0){
+        if (dataList.size() > 0) {
             showNoDataView(false);
-        }else{
+        } else {
             showNoDataView(true);
         }
         adapter.setListData(dataList);
@@ -125,9 +124,9 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                     case 1://赞
                     case 2://发布动态
                     case 3://评论，跳转动态详情
-                        if(msg.getTimeInfo().getTimeId()==0){
+                        if (msg.getTimeInfo().getTimeId() == 0) {
                             ToastUtil.showToast("时光已删除");
-                        }else{
+                        } else {
                             TimeLineDetailActivity.open(getActivity(), msg.getTimeInfo());
                         }
                         break;
@@ -136,10 +135,10 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         break;
 
                 }
-                apiService.read(msg.getId(),0)
+                apiService.read(msg.getId(), 0)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            if(response.success()){
+                            if (response.success()) {
                                 reqData();
                                 EventBus.getDefault().post(new UnreadMsgEvent());
                             }
@@ -153,13 +152,13 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_msg,menu);
+        inflater.inflate(R.menu.menu_msg, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.read){
+        if (item.getItemId() == R.id.read) {
             apiService.read(0, 1)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
@@ -173,7 +172,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         Log.e(TAG, "read:");
                     });
 
-        }else if(item.getItemId() == R.id.del){
+        } else if (item.getItemId() == R.id.del) {
             new AlertDialog.Builder(getContext())
                     .setTitle("确定删除全部消息?")
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {

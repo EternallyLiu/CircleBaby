@@ -351,11 +351,10 @@ public class DiaryPreviewFragment extends BaseFragment {
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         objectKey = uploadFileObj.getObjectKey();
-                        File file = new File(url);
-                        if(file.exists()){
-                            file.delete();
-                        }
-//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
+//                        File file = new File(url);
+//                        if(file.exists()){
+//                            file.delete();
+//                        }
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
                     }
@@ -380,11 +379,6 @@ public class DiaryPreviewFragment extends BaseFragment {
             tfProgressDialog.setMessage("合成卡片中…");
             tfProgressDialog.show();
             //日记卡片合成
-//                BitmapDrawable bd = new BitmapDrawable(myShot(getActivity()));
-//                ivBg.setBackgroundDrawable(bd);
-//                ivBg.setImageBitmap(myShot(getActivity()));
-
-
             PointF leftTop = touchImageView.getLeftTop();
 //                float degree = touchImageView.getDegree();
             float cropWidth = touchImageView.getCropWidth();
@@ -445,8 +439,6 @@ public class DiaryPreviewFragment extends BaseFragment {
                         if(diaryComposedResponse.success()){
                             MediaObj mediaObj = diaryComposedResponse.getMediaObj();
                             mediaObj.setPhotographTime(createTime);
-                            System.out.println("time===============" + time);
-                            System.out.println("createTime===============" + createTime);
                             System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
                             tfProgressDialog.dismiss();
                             PublishActivity.open(getContext(),mediaObj);

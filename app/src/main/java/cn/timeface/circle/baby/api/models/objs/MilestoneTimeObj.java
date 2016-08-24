@@ -11,12 +11,21 @@ public class MilestoneTimeObj extends BaseObj {
     String milestone;
     int milestoneId;
     int isRead;
+    int timelineCount;
 
     public MilestoneTimeObj(long date, String imgUrl, String milestone, int milestoneId) {
         this.date = date;
         this.imgUrl = imgUrl;
         this.milestone = milestone;
         this.milestoneId = milestoneId;
+    }
+
+    public int getTimelineCount() {
+        return timelineCount;
+    }
+
+    public void setTimelineCount(int timelineCount) {
+        this.timelineCount = timelineCount;
     }
 
     public long getDate() {

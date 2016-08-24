@@ -62,7 +62,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
 
     public void share(TimeLineObj timelineobj){
         this.timelineobj = timelineobj;
-        if(timelineobj.getType()==1 || !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getVideoUrl())){
+        if(timelineobj.getType()==1){
             tvDownload.setVisibility(View.VISIBLE);
         }
         if(timelineobj.getAuthor().getUserId().equals(FastData.getUserId())){
@@ -122,6 +122,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
                                 }
                             }, error -> {
                                 Log.e("TimeLineMenuDialog", "delTime:");
+                                error.printStackTrace();
                             });
                 }
             }).show();
@@ -129,6 +130,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         tvDownload.setOnClickListener(v -> {
             dismiss();
             ImageFactory.saveVideo(timelineobj.getMediaList().get(0).getVideoUrl());
+            ToastUtil.showToast("下载视频到baby文件夹下…");
         });
         tvShare.setOnClickListener(v -> {
             dismiss();

@@ -16,6 +16,7 @@ import com.timeface.refreshload.PullRefreshLoadRecyclerView;
 import com.timeface.refreshload.headfoot.LoadMoreView;
 import com.timeface.refreshload.headfoot.RefreshView;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,12 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.OrderListAdapter;
+import cn.timeface.circle.baby.api.models.PrintCartItem;
+import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
 import cn.timeface.circle.baby.api.models.objs.OrderObj;
+import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.api.models.objs.PrintPropertyTypeObj;
+import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -94,7 +100,33 @@ public class OrderListActivity extends BaseAppCompatActivity implements View.OnC
     private void iniListener() {
         orderListAdapter.setOnItemClickListener(orderObj -> {
             Log.d(TAG, "setupView: " + orderObj.getOrderId());
-            OrderDetailActivity.open(OrderListActivity.this, orderObj.getOrderId());
+            if(TypeConstant.STATUS_NOT_CONFIRM == orderObj.getOrderStatus()){
+
+                List<PrintPropertyTypeObj> baseObjs = new ArrayList<>();
+                for (MyOrderBookItem bookItem : orderObj.getBookList()) {
+                    for (PrintPropertyPriceObj obj : bookItem.getPrintList()) {
+                            PrintPropertyTypeObj baseObj = new PrintPropertyTypeObj();
+                            baseObj.setBookId(bookItem.getBookId());
+                            baseObj.setBookType(bookItem.getBookType());
+                            baseObj.setPrintId(obj.getPrintId());
+                            baseObj.setSize(obj.getSize());
+                            baseObj.setPack(obj.getPack());
+                            baseObj.setPaper(obj.getPaper());
+                            baseObj.setNum(obj.getNum());
+                            baseObj.setColor(obj.getColor());
+//                            baseObj.setPageNum(item.getTotalPage());
+                            baseObj.setBookCover(bookItem.getCoverImage());
+                            baseObj.setAddressId(0);
+                            baseObj.setBookName(URLEncoder.encode(bookItem.getBookName()));
+                            baseObj.setCreateTime(Long.valueOf(bookItem.getLastdate()));
+                            baseObj.setExpressId(1);
+                            baseObjs.add(baseObj);
+                    }
+                }
+                MyOrderConfirmActivity.open(OrderListActivity.this, orderObj.getOrderId(),baseObjs);
+            }else{
+                OrderDetailActivity.open(OrderListActivity.this, orderObj.getOrderId());
+            }
         });
         errorRetry.setOnClickListener(this);
     }

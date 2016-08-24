@@ -41,11 +41,11 @@ public class OrderState {
             case TypeConstant.STATUS_TRANSACATION_CLOSED:
                 statusStr = "交易关闭";
                 break;
-//            // 未确认
-//            case Constant.STATUS_NOT_CONFIRM:
-//                statusStr = "未确认";
-//                break;
-            // 未支付
+
+            case TypeConstant.STATUS_NOT_CONFIRM:
+                statusStr = "未确认";
+                break;
+
             case TypeConstant.STATUS_NOT_PAY:
                 statusStr = "未支付";
                 break;

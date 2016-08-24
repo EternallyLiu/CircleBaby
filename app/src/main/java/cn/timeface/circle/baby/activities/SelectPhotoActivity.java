@@ -293,7 +293,23 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         addSubscription(s);
     }
 
-    private void setListData(List<PhotoGroupItem> data) {
+    private void setListData(List<PhotoGroupItem> datas) {
+        List<PhotoGroupItem> data = new ArrayList<>();
+        for(PhotoGroupItem item : datas){
+            String title = item.getTitle();
+            List<PhotoModel> imgList = item.getImgList();
+            List<PhotoModel> photoModels = new ArrayList<>();
+            for(PhotoModel photoModel : imgList){
+                if(ImageFactory.photoFilter(photoModel.getLocalPath())){
+                    photoModels.add(photoModel);
+                }
+            }
+            if(photoModels.size()>0){
+                data.add(new PhotoGroupItem(title,photoModels));
+            }
+
+        }
+
         if (adapter == null) {
             adapter = new SelectPhotosAdapter(this, data, maxCount);
             rvContent.setAdapter(adapter);
