@@ -1,20 +1,23 @@
 package cn.timeface.open.events;
 
+import cn.timeface.open.api.models.response.CoverColor;
+
 /**
  * Created by zhsheng on 2016/7/11.
  */
 public class SelectColorEvent {
-    public SelectColorEvent(String color) {
-        this.color = color;
+
+    private CoverColor coverColor;
+
+    public SelectColorEvent(CoverColor color) {
+        this.coverColor = color;
     }
 
-    private String color;
-
-    public String getColor() {
-        return color;
+    public CoverColor getCoverColor() {
+        return coverColor;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setCoverColor(CoverColor coverColor) {
+        this.coverColor = coverColor;
     }
 }

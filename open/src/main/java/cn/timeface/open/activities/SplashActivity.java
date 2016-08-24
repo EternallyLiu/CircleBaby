@@ -40,7 +40,7 @@ public class SplashActivity extends BaseAppCompatActivity {
                     public void call(BaseResponse<BookList> bookListBaseResponse) {
                         BookList data = bookListBaseResponse.getData();
                         Log.d(TAG, "call: " + data);
-                        List<TFOBookModel> book_list = data.getBook_list();
+                        List<TFOBookModel> book_list = data.getBookList();
                         TFOBookModel tfoBookModel = book_list.get(0);
 
                         openPod(tfoBookModel);

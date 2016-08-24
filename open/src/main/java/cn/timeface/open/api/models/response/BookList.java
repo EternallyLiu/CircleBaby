@@ -12,19 +12,19 @@ public class BookList {
     int total_page;
     List<TFOBookModel> book_list;
 
-    public int getTotal_page() {
+    public int getTotalPage() {
         return total_page;
     }
 
-    public void setTotal_page(int total_page) {
+    public void setTotalPage(int total_page) {
         this.total_page = total_page;
     }
 
-    public List<TFOBookModel> getBook_list() {
+    public List<TFOBookModel> getBookList() {
         return book_list;
     }
 
-    public void setBook_list(List<TFOBookModel> book_list) {
+    public void setBookList(List<TFOBookModel> book_list) {
         this.book_list = book_list;
     }
 }

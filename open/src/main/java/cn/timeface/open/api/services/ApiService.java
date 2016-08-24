@@ -12,6 +12,7 @@ import cn.timeface.open.api.models.objs.TFOBookType;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
 import cn.timeface.open.api.models.response.Authorize;
 import cn.timeface.open.api.models.response.BookList;
+import cn.timeface.open.api.models.response.CoverColor;
 import cn.timeface.open.api.models.response.CoverTemplateInfo;
 import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.api.models.response.EditText;
@@ -195,8 +196,8 @@ public interface ApiService {
                                                                            @Query("book_type") String book_type);
 
     @GET("api/attachlist?request_type=3")
-    Observable<BaseResponse<List<String>>> getAttachColorList(@Query("book_id") String book_id,
-                                                              @Query("book_type") String book_type);
+    Observable<BaseResponse<List<CoverColor>>> getAttachColorList(@Query("book_id") String book_id,
+                                                                  @Query("book_type") String book_type);
 
     /**
      * 创建一本时光书

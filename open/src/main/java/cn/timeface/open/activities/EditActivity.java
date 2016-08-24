@@ -36,6 +36,7 @@ import cn.timeface.open.api.models.objs.TFOBookElementModel;
 import cn.timeface.open.api.models.objs.TFOBookImageModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
+import cn.timeface.open.api.models.response.CoverColor;
 import cn.timeface.open.api.models.response.CoverTemplateInfo;
 import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.api.models.response.SimplePageTemplate;
@@ -376,10 +377,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             return;
         }
         Subscription subscribe = apiService.getAttachColorList(bookModel.getBookId(), String.valueOf(bookModel.getBookType()))
-                .compose(SchedulersCompat.<BaseResponse<List<String>>>applyIoSchedulers())
-                .subscribe(new Action1<BaseResponse<List<String>>>() {
+                .compose(SchedulersCompat.<BaseResponse<List<CoverColor>>>applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse<List<CoverColor>>>() {
                     @Override
-                    public void call(BaseResponse<List<String>> listBaseResponse) {
+                    public void call(BaseResponse<List<CoverColor>> listBaseResponse) {
                         colorAdapter = new CoverColorAdapter(EditActivity.this, listBaseResponse.getData());
                         rvSelection.setAdapter(colorAdapter);
                         showSelectRL(true);
@@ -651,9 +652,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Subscribe
     public void selectColorEvent(SelectColorEvent colorEvent) {
-        String color = colorEvent.getColor();
-        colorAdapter.setSelectedColor(color);
-        pageView.setPageColor(color);
+        CoverColor coverColor = colorEvent.getCoverColor();
+        colorAdapter.setSelectedColor(coverColor.getCoverBackgroundColor());
+        pageView.setPageColor(coverColor.getCoverBackgroundColor());
+        //// TODO: 8/24/16  textcolor 待完善
         showSelectRL(false);
     }
 

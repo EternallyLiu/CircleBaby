@@ -13,13 +13,14 @@ import java.util.List;
 
 import cn.timeface.open.R;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.open.api.models.response.CoverColor;
 import cn.timeface.open.events.SelectColorEvent;
 import cn.timeface.open.views.CircleImageView;
 
 /**
  * Created by wswd on 2015/5/28.
  */
-public class CoverColorAdapter extends BaseRecyclerAdapter<String> {
+public class CoverColorAdapter extends BaseRecyclerAdapter<CoverColor> {
 
 
     public void setSelectedColor(String selectedColor) {
@@ -29,7 +30,7 @@ public class CoverColorAdapter extends BaseRecyclerAdapter<String> {
     private String selectedColor = "#ffffff";
     private int focusPosition;
 
-    public CoverColorAdapter(Context mContext, List<String> listData) {
+    public CoverColorAdapter(Context mContext, List<CoverColor> listData) {
         super(mContext, listData);
     }
 
@@ -46,17 +47,17 @@ public class CoverColorAdapter extends BaseRecyclerAdapter<String> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        String color = listData.get(position);
+        CoverColor coverColor = listData.get(position);
         CircleImageView iv = (CircleImageView) holder.itemView;
-        if (selectedColor.equals(color)) {
+        if (selectedColor.equals(coverColor)) {
             iv.setBorderColor(Color.RED);
         } else {
             iv.setBorderColor(Color.WHITE);
         }
         GradientDrawable drawable = (GradientDrawable) getContext().getResources().getDrawable(R.drawable.cover_bg_color_boder);
-        drawable.setColor(Color.parseColor(color));
+        drawable.setColor(Color.parseColor(coverColor.getCoverBackgroundColor()));
         iv.setImageDrawable(drawable);
-        holder.itemView.setTag(R.string.tag_ex, color);
+        holder.itemView.setTag(R.string.tag_ex, coverColor);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -67,7 +68,7 @@ public class CoverColorAdapter extends BaseRecyclerAdapter<String> {
 
         @Override
         public void onClick(View v) {
-            String color = (String) v.getTag(R.string.tag_ex);
+            CoverColor color = (CoverColor) v.getTag(R.string.tag_ex);
             EventBus.getDefault().post(new SelectColorEvent(color));
         }
     }
