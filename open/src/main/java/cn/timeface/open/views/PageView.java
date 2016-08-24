@@ -204,8 +204,17 @@ public class PageView extends FrameLayout {
      * @param color
      */
     public void setPageColor(String color) {
-        setLeftPageBgPicture(color);
-        setRightPageBgPicture(color);
+        ImageView left = (ImageView) this.findViewById(R.id.left_page_id);
+        ImageView right = (ImageView) this.findViewById(R.id.right_page_id);
+        if (left != null) {
+            displayPageBg(color, left);
+            leftContent.setPageColor(color);
+        }
+
+        if (right != null) {
+            displayPageBg(color, right);
+            rightContent.setPageColor(color);
+        }
     }
 
     public void setLeftPageBgPicture(String bgPicture) {
