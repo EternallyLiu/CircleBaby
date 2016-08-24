@@ -338,6 +338,9 @@ public class StickerView extends FrameLayout {
         if (show) {
             iv_border.setVisibility(View.VISIBLE);
             if (!canMove) {
+                if (elementModel.getElementType() == TFOBookElementModel.TYPE_PENDANT) {
+                    iv_border.setVisibility(INVISIBLE);
+                }
                 return;
             }
 
