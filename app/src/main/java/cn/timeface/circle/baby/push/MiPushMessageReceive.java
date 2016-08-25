@@ -15,11 +15,15 @@ import com.xiaomi.mipush.sdk.MiPushCommandMessage;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.activities.LoginActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.utils.FastData;
 
 /**
@@ -76,6 +80,8 @@ public class MiPushMessageReceive extends PushMessageReceiver {
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
         System.out.println("===== onNotificationMessageArrived ====");
+        EventBus.getDefault().post(new HomeRefreshEvent());
+        EventBus.getDefault().post(new UnreadMsgEvent());
         mMessage = message.getContent();
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
@@ -149,7 +155,7 @@ public class MiPushMessageReceive extends PushMessageReceiver {
 //            } else if (msg.what == MESSAGE) {
             if (isAppForground(context)) {
                 System.out.println("在前台");
-                Toast.makeText(context, mToastInfo, Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, mToastInfo, Toast.LENGTH_LONG).show();
             } else {
                 System.out.println("不在前台");
                 if (!TextUtils.isEmpty(FastData.getUserId())) {
