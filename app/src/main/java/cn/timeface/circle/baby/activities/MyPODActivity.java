@@ -13,18 +13,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.api.ApiFactory;
+import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.events.BookOptionEvent;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.activities.PODActivity;
-import cn.timeface.open.api.OpenApiFactory;
-import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
-import cn.timeface.open.api.models.response.BookCoverInfo;
 import cn.timeface.open.constants.Constant;
-import rx.functions.Action1;
 
 public class MyPODActivity extends PODActivity {
 
@@ -47,7 +45,7 @@ public class MyPODActivity extends PODActivity {
         context.startActivity(intent);
     }
 
-    public static void open(Context context, String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values) {
+    public static void open(Context context,String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values,int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", openBookType);
         intent.putExtra("book_id", openBookId);
@@ -55,8 +53,9 @@ public class MyPODActivity extends PODActivity {
         intent.putExtra("edit", edit);
         intent.putExtra("bookId", bookId);
         intent.putExtra("babyId", babyId);
-        intent.putStringArrayListExtra(Constant.POD_KEYS, keys);
-        intent.putStringArrayListExtra(Constant.POD_VALUES, values);
+        intent.putStringArrayListExtra(Constant.POD_KEYS,keys);
+        intent.putStringArrayListExtra(Constant.POD_VALUES,values);
+        intent.putExtra(Constant.REBUILD_BOOK,rebuild);
         context.startActivity(intent);
     }
 
