@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,6 +46,7 @@ import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
+import cn.timeface.common.utils.StringUtil;
 import rx.Subscription;
 
 public class MineBookActivity extends BaseAppCompatActivity implements IEventBus, View.OnClickListener {
@@ -123,7 +125,13 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
         adapter.setOnItemClickListener(mineBookObj -> {
             if (mineBookObj.getBookType() == 5) {
                 //照片书-跳转POD预览
-                MyPODActivity.open(MineBookActivity.this, mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null,false);
+                ArrayList<String> keys = new ArrayList<>();
+                ArrayList<String> values = new ArrayList<>();
+                keys.add("book_author");
+                keys.add("book_title");
+                values.add(FastData.getUserName());
+                values.add(FastData.getBabyName()+"的照片书");
+                MyPODActivity.open(MineBookActivity.this, mineBookObj.getBabyId()+"" ,mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null,false,mineBookObj.getBabyId(),keys,values);
             } else {
                 //日记书、识图卡片书，跳转本地预览
                 apiService.queryImageInfoList(mineBookObj.getBookId(), mineBookObj.getBookType())

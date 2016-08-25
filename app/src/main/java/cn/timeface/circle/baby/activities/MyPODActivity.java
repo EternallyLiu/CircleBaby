@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.api.ApiFactory;
+import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
@@ -25,9 +26,11 @@ import cn.timeface.open.constants.Constant;
 public class MyPODActivity extends PODActivity {
 
     private String dataList;
+    private boolean edit;
     private String bookId;
+    private int babyId;
 
-    public static void open(Context context, String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit) {
+    public static void open(Context context, String bookId , String openBookId, int openBookType, List<TFOPublishObj> publishObjs, String dataList,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", openBookType);
         intent.putExtra("book_id", openBookId);
@@ -35,14 +38,22 @@ public class MyPODActivity extends PODActivity {
         intent.putExtra("dataList", dataList);
         intent.putExtra("edit", edit);
         intent.putExtra("bookId", bookId);
+        intent.putExtra("baby_id", babyId);
+        intent.putStringArrayListExtra(Constant.POD_KEYS, keys);
+        intent.putStringArrayListExtra(Constant.POD_VALUES, values);
         context.startActivity(intent);
     }
 
-    public static void open(Context context, String openBookId, int openBookType, List<TFOPublishObj> publishObjs, boolean edit) {
+    public static void open(Context context, String bookId,String openBookId, int openBookType, List<TFOPublishObj> publishObjs,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", openBookType);
         intent.putExtra("book_id", openBookId);
         intent.putParcelableArrayListExtra(Constant.PUBLISH_OBJS, (ArrayList<? extends Parcelable>) publishObjs);
+        intent.putExtra("edit", edit);
+        intent.putExtra("bookId", bookId);
+        intent.putExtra("baby_id", babyId);
+        intent.putStringArrayListExtra(Constant.POD_KEYS, keys);
+        intent.putStringArrayListExtra(Constant.POD_VALUES, values);
         context.startActivity(intent);
     }
 
@@ -50,23 +61,25 @@ public class MyPODActivity extends PODActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dataList = getIntent().getStringExtra("dataList");
+        edit = getIntent().getBooleanExtra("edit", false);
         bookId = getIntent().getStringExtra("bookId");
+        babyId = getIntent().getIntExtra("baby_id",FastData.getBabyId());
     }
 
     @Override
     public void createBookInfo(TFOBookModel bookModel) {
-        Log.d(TAG, "createBookInfo:");
-        createBook(bookModel.getBookAuthor(), dataList, bookModel.getBookCover(), bookModel.getBookTitle(), 5, bookModel.getBookTotalPage(), bookModel.getBookId(), bookType);
-    }
-
-    @Override
-    public void editBookInfo(TFOBookModel bookModel) {
-
+        Log.d(TAG,"createBookInfo:");
+        Log.d(TAG,"bookModel.getBookCover ================ "+bookModel.getBookCover());
+        Log.d(TAG,"bookModel.getBookTitle ================ "+bookModel.getBookTitle());
+        Log.d(TAG,"bookModel.getBookAuthor ================ "+bookModel.getBookAuthor());
+//        if(edit){
+            createBook(bookModel.getBookAuthor(), dataList, bookModel.getBookCover(), bookModel.getBookTitle(), 5, bookModel.getBookTotalPage(), bookModel.getBookId(), bookType);
+//        }
     }
 
     private void createBook(String author, String dataList, String bookCover, String bookName, int type, int pageNum, String openBookId, int openBookType) {
         System.out.println("bookId ======== " + bookId);
-        ApiFactory.getApi().getApiService().createBook(URLEncoder.encode(author), FastData.getBabyId(), bookCover, bookId, URLEncoder.encode(bookName), "", type, dataList, URLEncoder.encode(bookName), Long.valueOf(openBookId), pageNum, openBookType)
+        ApiFactory.getApi().getApiService().createBook(URLEncoder.encode(author), babyId, bookCover, bookId, URLEncoder.encode(bookName), "", type, dataList, URLEncoder.encode(bookName), Long.valueOf(openBookId), pageNum, openBookType)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
