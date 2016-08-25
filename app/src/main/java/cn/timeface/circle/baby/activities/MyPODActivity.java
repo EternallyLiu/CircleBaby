@@ -22,6 +22,7 @@ import cn.timeface.open.activities.PODActivity;
 import cn.timeface.open.api.OpenApiFactory;
 import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
+import cn.timeface.open.api.models.objs.TFOBookElementModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
 import cn.timeface.open.api.models.response.BookCoverInfo;
@@ -35,7 +36,7 @@ public class MyPODActivity extends PODActivity {
     private String bookId;
     private int babyId;
 
-    public static void open(Context context, String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values) {
+    public static void open(Context context, String bookId , String openBookId, int openBookType, List<TFOPublishObj> publishObjs, String dataList,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values,int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", openBookType);
         intent.putExtra("book_id", openBookId);
@@ -44,12 +45,13 @@ public class MyPODActivity extends PODActivity {
         intent.putExtra("edit", edit);
         intent.putExtra("bookId", bookId);
         intent.putExtra("babyId", babyId);
-        intent.putStringArrayListExtra(Constant.POD_KEYS, keys);
-        intent.putStringArrayListExtra(Constant.POD_VALUES, values);
+        intent.putStringArrayListExtra(Constant.POD_KEYS,keys);
+        intent.putStringArrayListExtra(Constant.POD_VALUES,values);
+        intent.putExtra(Constant.REBUILD_BOOK,rebuild);
         context.startActivity(intent);
     }
 
-    public static void open(Context context,String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values,int rebuild) {
+    public static void open(Context context,String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", openBookType);
         intent.putExtra("book_id", openBookId);
@@ -59,7 +61,6 @@ public class MyPODActivity extends PODActivity {
         intent.putExtra("babyId", babyId);
         intent.putStringArrayListExtra(Constant.POD_KEYS,keys);
         intent.putStringArrayListExtra(Constant.POD_VALUES,values);
-        intent.putExtra(Constant.REBUILD_BOOK,rebuild);
         context.startActivity(intent);
     }
 
@@ -74,8 +75,8 @@ public class MyPODActivity extends PODActivity {
 
     @Override
     public void createBookInfo(TFOBookModel bookModel) {
-        Log.d(TAG, "createBookInfo:");
-        if (edit) {
+        Log.d(TAG,"createBookInfo:");
+        if(edit){
             createBook(bookModel.getBookAuthor(), dataList, bookModel.getBookCover(), bookModel.getBookTitle(), 5, bookModel.getBookTotalPage(), bookModel.getBookId(), bookType);
         }
     }
@@ -119,7 +120,7 @@ public class MyPODActivity extends PODActivity {
     }
 
     //pod中跟换封面外的图片
-    private void editBook() {
+    private void editBook(){
 
     }
 

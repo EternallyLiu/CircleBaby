@@ -173,7 +173,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
         values.add(FastData.getUserName());
         values.add(FastData.getBabyName()+"的照片书");
 
-        MyPODActivity.open(this, "","", bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true, FastData.getBabyId(),keys,values);
+        MyPODActivity.open(this, "","", bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true, FastData.getBabyId(),keys,values,1);
         finish();
     }
 }

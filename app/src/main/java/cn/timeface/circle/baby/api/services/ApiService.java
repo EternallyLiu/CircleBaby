@@ -542,6 +542,18 @@ public interface ApiService {
                                               @Field("openBookType") int openBookType);
 
     /**
+     * 更换封面
+     */
+    @FormUrlEncoded
+    @POST("babyBook/createBook")
+    Observable<CreateBookResponse> editBookCover(@Field("author") String author,
+                                              @Field("babyId") int babyId,
+                                              @Field("bookCover") String bookCover,
+                                              @Field("bookId") String bookId,
+                                              @Field("bookName") String bookName,
+                                              @Field("description") String description);
+
+    /**
      * 作品列表
      */
     @POST("babyBook/getBookList")
