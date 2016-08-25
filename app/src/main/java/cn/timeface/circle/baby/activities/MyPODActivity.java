@@ -82,7 +82,7 @@ public class MyPODActivity extends PODActivity {
     }
 
     @Override
-    public void editCover(TFOBookContentModel left, TFOBookContentModel right) {
+    public void editCover(String openBookId) {
         OpenApiFactory.getOpenApi().getApiService().bookcover(openBookId)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<BookCoverInfo>>() {

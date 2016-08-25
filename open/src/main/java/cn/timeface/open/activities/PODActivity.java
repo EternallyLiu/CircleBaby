@@ -66,10 +66,10 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.seek_bar);
 
         setSupportActionBar(toolbar);
-        reqPod(openBookId, bookType, rebuild == -1 ? (TextUtils.isEmpty(openBookId) ? 1 : 0) : rebuild, new Gson().toJson(publishObjs));
+        reqPod(openBookId, bookType, rebuild == -1 ? (TextUtils.isEmpty(openBookId) ? 1 : 0) : rebuild, new Gson().toJson(publishObjs), -1);
     }
 
-    private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {
+    private void reqPod(final String bookId, int bookType, int rebuild, String contentList, final int requestType) {
         apiService
                 .getPOD(bookId, bookType, rebuild, contentList, params)
                 .map(new Func1<BaseResponse<TFOBookModel>, TFOBookModel>() {
@@ -87,6 +87,14 @@ public abstract class PODActivity extends BaseAppCompatActivity {
                                    setData(podResponse);
                                    if (TextUtils.isEmpty(bookId)) {
                                        createBookInfo(podResponse);
+                                   }
+
+                                   switch (requestType) {
+                                       case EDIT_COVER_REQUEST_CODE:
+                                           editCover(openBookId);
+                                           break;
+                                       case EDIT_CONTENT_REQUEST_CODE:
+                                           break;
                                    }
                                    setupSeekBar();
                                }
@@ -165,19 +173,6 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         TFOBookContentModel rightModel;
         switch (requestCode) {
             case EDIT_CONTENT_REQUEST_CODE:
-                if (resultCode != RESULT_OK) {
-                    return;
-                }
-
-                leftModel = data.getParcelableExtra("left_model");
-                rightModel = data.getParcelableExtra("right_model");
-//                if (leftModel != null) leftModel.setPageScale(pageScale);
-//                if (rightModel != null) rightModel.setPageScale(pageScale);
-
-                openBookId = data.getStringExtra("book_id");
-                editContent(leftModel, rightModel);
-                reqPod(openBookId, bookType, 0, "");
-                break;
             case EDIT_COVER_REQUEST_CODE:
                 if (resultCode != RESULT_OK) {
                     return;
@@ -189,8 +184,8 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 //                if (rightModel != null) rightModel.setPageScale(pageScale);
 
                 openBookId = data.getStringExtra("book_id");
-                editCover(leftModel, rightModel);
-                reqPod(openBookId, bookType, 0, "");
+                editContent(leftModel, rightModel);
+                reqPod(openBookId, bookType, 0, "", requestCode);
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -209,7 +204,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     public abstract void createBookInfo(TFOBookModel bookModel);
 
-    public abstract void editCover(TFOBookContentModel left, TFOBookContentModel right);
+    public abstract void editCover(String openBookId);
 
     public abstract void editContent(TFOBookContentModel left, TFOBookContentModel right);
 

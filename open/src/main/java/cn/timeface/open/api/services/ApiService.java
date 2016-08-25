@@ -165,10 +165,23 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("api/editbookcover")
-    Observable<BaseResponse<TFOBookContentModel>> editBookCover(@Field("template_id") String template_id,
-                                                                @Field("book_id") String book_id,
+    Observable<BaseResponse<TFOBookContentModel>> editBookCover(@Field("book_id") String book_id,
+                                                                @Field("template_id") String template_id,
                                                                 @Field("book_title") String book_title,
                                                                 @Field("book_auth") String book_auth,
+                                                                @Field("content_list") String content_list);
+
+    /**
+     *
+     * @param book_id
+     * @param book_title
+     * @param content_list
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/editbookcover")
+    Observable<BaseResponse<TFOBookContentModel>> editBookCover(@Field("book_id") String book_id,
+                                                                @Field("book_title") String book_title,
                                                                 @Field("content_list") String content_list);
 
     /**
