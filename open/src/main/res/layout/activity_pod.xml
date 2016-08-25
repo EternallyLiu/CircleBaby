@@ -89,7 +89,7 @@
         android:layout_gravity="left|top"
         android:onClick="clickPre"
         android:text="New Button"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/button2"
@@ -98,7 +98,7 @@
         android:layout_gravity="right|top"
         android:onClick="clickNext"
         android:text="New Button"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

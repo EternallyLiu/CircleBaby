@@ -131,7 +131,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                 keys.add("book_title");
                 values.add(FastData.getUserName());
                 values.add(FastData.getBabyName()+"的照片书");
-                MyPODActivity.open(MineBookActivity.this, mineBookObj.getBabyId()+"" ,mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null,false,mineBookObj.getBabyId(),keys,values);
+                MyPODActivity.open(MineBookActivity.this, mineBookObj.getBookId() ,mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null,false,mineBookObj.getBabyId(),keys,values);
             } else {
                 //日记书、识图卡片书，跳转本地预览
                 apiService.queryImageInfoList(mineBookObj.getBookId(), mineBookObj.getBookType())

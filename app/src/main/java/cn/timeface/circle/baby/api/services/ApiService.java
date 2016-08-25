@@ -15,6 +15,7 @@ import cn.timeface.circle.baby.api.models.responses.BookTypeListResponse;
 import cn.timeface.circle.baby.api.models.responses.CardBookSizeResponse;
 import cn.timeface.circle.baby.api.models.responses.CardListResponse;
 import cn.timeface.circle.baby.api.models.responses.CloudAlbumListResponse;
+import cn.timeface.circle.baby.api.models.responses.CreateBookResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryComposedResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.api.models.responses.DiaryTextResponse;
@@ -107,14 +108,14 @@ public interface ApiService {
     //三方登录
     @GET("auth/thirdPartyLogin")
     Observable<LoginResponse> vendorLogin(@Query("accessToken") String accessToken,
-                                              @Query("avatar") String avatar,
-                                              @Query("expiry_in") long expiry_in,
-                                              @Query("from") int from,
-                                              @Query("gender") int gender,
-                                              @Query("nickname") String nickName,
-                                              @Query("openid") String openid,
-                                              @Query("platId") String platId,
-                                              @Query("unionid") String unionid);
+                                          @Query("avatar") String avatar,
+                                          @Query("expiry_in") long expiry_in,
+                                          @Query("from") int from,
+                                          @Query("gender") int gender,
+                                          @Query("nickname") String nickName,
+                                          @Query("openid") String openid,
+                                          @Query("platId") String platId,
+                                          @Query("unionid") String unionid);
 
     //获取验证码
     @GET("auth/getVeriCode")
@@ -245,7 +246,7 @@ public interface ApiService {
     //标记消息为已读
     @GET("babyMsgInfo/read")
     Observable<BaseResponse> read(@Query("id") int id,
-                                    @Query("type") int type);
+                                  @Query("type") int type);
 
     //发布
     @FormUrlEncoded
@@ -433,7 +434,7 @@ public interface ApiService {
      */
     @POST("babyOrder/addOrder")
     Observable<LessResponse> addOrder(@Query("orderId") String orderId,
-                                         @Query("dataList") String dataList,
+                                      @Query("dataList") String dataList,
                                       @Query("appId") String appId);
 
     /**
@@ -527,18 +528,18 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("babyBook/createBook")
-    Observable<BaseResponse> createBook(@Field("author") String author,
-                                        @Field("babyId") int babyId,
-                                        @Field("bookCover") String bookCover,
-                                        @Field("bookId") String bookId,
-                                        @Field("bookName") String bookName,
-                                        @Field("bookSizeId") String bookSizeId,
-                                        @Field("bookType") int bookType,
-                                        @Field("dataList") String dataList,
-                                        @Field("description") String description,
-                                        @Field("openBookId") long openBookId,
-                                        @Field("pageNum") int pageNum,
-                                        @Field("openBookType") int openBookType);
+    Observable<CreateBookResponse> createBook(@Field("author") String author,
+                                              @Field("babyId") int babyId,
+                                              @Field("bookCover") String bookCover,
+                                              @Field("bookId") String bookId,
+                                              @Field("bookName") String bookName,
+                                              @Field("bookSizeId") String bookSizeId,
+                                              @Field("bookType") int bookType,
+                                              @Field("dataList") String dataList,
+                                              @Field("description") String description,
+                                              @Field("openBookId") long openBookId,
+                                              @Field("pageNum") int pageNum,
+                                              @Field("openBookType") int openBookType);
 
     /**
      * 作品列表
@@ -577,4 +578,12 @@ public interface ApiService {
     @POST("member/feedback")
     Observable<BaseResponse> feedback(@Query("content") String content,
                                       @Query("userId") String userId);
+
+    /**
+     * 意见反馈
+     */
+    @GET("babyBook/updateTimeInfoForOpenApi")
+    Observable<BaseResponse> updateTimeInfoForOpenApi(@Query("bookId") String bookId,
+                                                      @Query("mediaId") String mediaId,
+                                                      @Query("url") String url);
 }
