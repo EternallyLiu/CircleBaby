@@ -195,7 +195,15 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
             List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
             tfoPublishObjs.add(tfoPublishObj);
-            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true);
+
+            ArrayList<String> keys = new ArrayList<>();
+            ArrayList<String> values = new ArrayList<>();
+            keys.add("book_author");
+            keys.add("book_title");
+            values.add(FastData.getUserName());
+            values.add(FastData.getBabyName()+"的照片书");
+
+            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values);
             finish();
         }
         return super.onOptionsItemSelected(item);

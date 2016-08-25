@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter3;
 import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
@@ -163,7 +164,16 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
         TFOPublishObj tfoPublishObj = new TFOPublishObj("", tfoContentObjs1);
         List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
         tfoPublishObjs.add(tfoPublishObj);
-        MyPODActivity.open(this, "","", bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true);
+
+
+        ArrayList<String> keys = new ArrayList<>();
+        ArrayList<String> values = new ArrayList<>();
+        keys.add("book_author");
+        keys.add("book_title");
+        values.add(FastData.getUserName());
+        values.add(FastData.getBabyName()+"的照片书");
+
+        MyPODActivity.open(this, "","", bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true, FastData.getBabyId(),keys,values);
         finish();
     }
 }
