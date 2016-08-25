@@ -137,6 +137,22 @@ public interface ApiService {
                                                              @Query("book_id") String book_id);
 
     /**
+     * TemplateInfo 封面模板详情接口
+     * 获取修改封面颜色后的模板数据
+     *
+     * @param template_id      封面模板ID
+     * @param book_id          时光书ID
+     * @param content_list     封面模板和封底修改后的数据
+     * @param background_color 当前需要更改的背景色
+     * @return
+     */
+    @GET("api/templateinfo")
+    Observable<BaseResponse<CoverTemplateInfo>> templateInfo(@Query("template_id") String template_id,
+                                                             @Query("book_id") String book_id,
+                                                             @Query("content_list") String content_list,
+                                                             @Query("background_color") String background_color);
+
+    /**
      * 时光书创建成功后，获取完整封面数据用于编辑封面
      *
      * @param template_id  时光书封面模板ID

@@ -77,6 +77,11 @@ public class MyPODActivity extends PODActivity {
 //        }
     }
 
+    @Override
+    public void editBookInfo(TFOBookModel bookModel) {
+
+    }
+
     private void createBook(String author, String dataList, String bookCover, String bookName, int type, int pageNum, String openBookId, int openBookType) {
         System.out.println("bookId ======== " + bookId);
         ApiFactory.getApi().getApiService().createBook(URLEncoder.encode(author), babyId, bookCover, bookId, URLEncoder.encode(bookName), "", type, dataList, URLEncoder.encode(bookName), Long.valueOf(openBookId), pageNum, openBookType)
