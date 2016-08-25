@@ -208,9 +208,10 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     }
 
     public abstract void createBookInfo(TFOBookModel bookModel);
-    public abstract void editCover(TFOBookContentModel left, TFOBookContentModel right);
-    public abstract void editContent(TFOBookContentModel left, TFOBookContentModel right);
 
+    public abstract void editCover(TFOBookContentModel left, TFOBookContentModel right);
+
+    public abstract void editContent(TFOBookContentModel left, TFOBookContentModel right);
 
 
     @Override
