@@ -203,7 +203,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             values.add(FastData.getUserName());
             values.add(FastData.getBabyName()+"的照片书");
 
-            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values);
+            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
             finish();
         }
         return super.onOptionsItemSelected(item);
