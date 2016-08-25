@@ -19,6 +19,7 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.activities.PODActivity;
+import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
 import cn.timeface.open.constants.Constant;
@@ -75,8 +76,13 @@ public class MyPODActivity extends PODActivity {
     }
 
     @Override
-    public void editBookInfo(TFOBookModel bookModel) {
-        System.out.println("bookId ======== " + bookId);
+    public void editCover(TFOBookContentModel left, TFOBookContentModel right) {
+
+    }
+
+    @Override
+    public void editContent(TFOBookContentModel left, TFOBookContentModel right) {
+
     }
 
     private void createBook(String author, String dataList, String bookCover, String bookName, int type, int pageNum, String openBookId, int openBookType) {

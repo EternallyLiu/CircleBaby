@@ -35,7 +35,8 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     float pageScale = 1.f;
     public int bookType = 23;
 
-    final int EDIT_REQUEST_CODE = 100;
+    final int EDIT_COVER_REQUEST_CODE = 100;
+    final int EDIT_CONTENT_REQUEST_CODE = 101;
     private BookPodView bookPodView;
     List<TFOPublishObj> publishObjs;
     Map<String, String> params = new HashMap<>();
@@ -86,8 +87,6 @@ public abstract class PODActivity extends BaseAppCompatActivity {
                                    setData(podResponse);
                                    if (TextUtils.isEmpty(bookId)) {
                                        createBookInfo(podResponse);
-                                   } else {
-                                       editBookInfo(podResponse);
                                    }
                                    setupSeekBar();
                                }
@@ -152,28 +151,45 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         // 重置了页面的缩放比例
         //bookContentModel.resetPageScale(pageScale);
         if (currentPage.size() == 1) {
-            EditActivity.open4result(this, EDIT_REQUEST_CODE, bookContentModel, bookContentModel.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG1);
+            EditActivity.open4result(this, EDIT_CONTENT_REQUEST_CODE, bookContentModel, bookContentModel.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG1);
         } else {
             TFOBookContentModel rightModel = currentPage.get(1);
             // rightModel.resetPageScale(pageScale);
-            EditActivity.open4result(this, EDIT_REQUEST_CODE, bookContentModel, rightModel, bookPodView.currentPageIsCover());
+            EditActivity.open4result(this, bookPodView.currentPageIsCover() ? EDIT_COVER_REQUEST_CODE : EDIT_CONTENT_REQUEST_CODE, bookContentModel, rightModel, bookPodView.currentPageIsCover());
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        TFOBookContentModel leftModel;
+        TFOBookContentModel rightModel;
         switch (requestCode) {
-            case EDIT_REQUEST_CODE:
+            case EDIT_CONTENT_REQUEST_CODE:
                 if (resultCode != RESULT_OK) {
                     return;
                 }
 
-                TFOBookContentModel leftModel = data.getParcelableExtra("left_model");
-                TFOBookContentModel rightModel = data.getParcelableExtra("right_model");
+                leftModel = data.getParcelableExtra("left_model");
+                rightModel = data.getParcelableExtra("right_model");
 //                if (leftModel != null) leftModel.setPageScale(pageScale);
 //                if (rightModel != null) rightModel.setPageScale(pageScale);
 
                 bookId = data.getStringExtra("book_id");
+                editContent(leftModel, rightModel);
+                reqPod(bookId, bookType, 0, "");
+                break;
+            case EDIT_COVER_REQUEST_CODE:
+                if (resultCode != RESULT_OK) {
+                    return;
+                }
+
+                leftModel = data.getParcelableExtra("left_model");
+                rightModel = data.getParcelableExtra("right_model");
+//                if (leftModel != null) leftModel.setPageScale(pageScale);
+//                if (rightModel != null) rightModel.setPageScale(pageScale);
+
+                bookId = data.getStringExtra("book_id");
+                editCover(leftModel, rightModel);
                 reqPod(bookId, bookType, 0, "");
                 break;
         }
@@ -193,7 +209,10 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     public abstract void createBookInfo(TFOBookModel bookModel);
 
-    public abstract void editBookInfo(TFOBookModel bookModel);
+    public abstract void editCover(TFOBookContentModel left, TFOBookContentModel right);
+
+    public abstract void editContent(TFOBookContentModel left, TFOBookContentModel right);
+
 
     @Override
     protected void onPause() {
