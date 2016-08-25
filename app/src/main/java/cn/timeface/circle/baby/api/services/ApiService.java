@@ -580,7 +580,7 @@ public interface ApiService {
                                       @Query("userId") String userId);
 
     /**
-     * 意见反馈
+     * pod中更换除封底和封面的图片
      */
     @GET("babyBook/updateTimeInfoForOpenApi")
     Observable<BaseResponse> updateTimeInfoForOpenApi(@Query("mediaId") String mediaId,

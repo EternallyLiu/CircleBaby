@@ -45,7 +45,7 @@ public class MyPODActivity extends PODActivity {
         context.startActivity(intent);
     }
 
-    public static void open(Context context,String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values) {
+    public static void open(Context context,String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values,int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", openBookType);
         intent.putExtra("book_id", openBookId);
@@ -55,6 +55,7 @@ public class MyPODActivity extends PODActivity {
         intent.putExtra("babyId", babyId);
         intent.putStringArrayListExtra(Constant.POD_KEYS,keys);
         intent.putStringArrayListExtra(Constant.POD_VALUES,values);
+        intent.putExtra(Constant.REBUILD_BOOK,rebuild);
         context.startActivity(intent);
     }
 
