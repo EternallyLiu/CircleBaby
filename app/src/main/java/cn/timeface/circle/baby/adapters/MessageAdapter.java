@@ -59,7 +59,11 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         holder.onClickListener = onClickListener;
         holder.info = info;
         GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar);
-        holder.tvRelation.setText(FastData.getBabyName() + info.getUserInfo().getRelationName());
+        if(info.getType() == 0){
+            holder.tvRelation.setText("时光小秘书");
+        }else{
+            holder.tvRelation.setText(FastData.getBabyName() + info.getUserInfo().getRelationName());
+        }
         holder.tvTime.setText(DateUtil.getDisTime(info.getTime()));
         if (info.getTimeInfo().getMediaList() == null || info.getTimeInfo().getMediaList().size() < 1) {
             holder.ivContent.setVisibility(View.GONE);
@@ -72,24 +76,7 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         } else {
             holder.ivDot.setVisibility(View.GONE);
         }
-        switch (info.getType()) {
-            case 0:
-                break;
-            case 1:
-                holder.tvContent.setText("赞了一下");
-                break;
-            case 2:
-                holder.tvContent.setText("添加了" + info.getUserInfo().getBabyObj().getName() + "的新动态");
-                break;
-            case 3:
-                holder.tvContent.setText("评论：" + info.getContent());
-                break;
-            case 4:
-                holder.tvContent.setText("新加入宝宝时光，关注" + info.getUserInfo().getBabyObj().getName() + "的成长");
-                break;
-
-        }
-
+        holder.tvContent.setText(info.getContent());
     }
 
     @Override

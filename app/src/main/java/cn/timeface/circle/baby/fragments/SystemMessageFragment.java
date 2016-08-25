@@ -76,12 +76,23 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
                     setDataList(systemMsgListResponse.getDataList());
 
                 }, throwable -> {
-                    Log.e(TAG, "queryBabyFamilyList:");
+                    Log.e(TAG, "querySystemMsgList:");
+                    throwable.printStackTrace();
                 });
 
     }
 
     private void setDataList(List<SystemMsg> dataList) {
+        SystemMsg systemMsg = null;
+        for(SystemMsg msg : dataList){
+            if(msg.getMsgType() == 0){
+                systemMsg = msg;
+            }
+        }
+        if(systemMsg!=null){
+            dataList.remove(systemMsg);
+            dataList.add(0,systemMsg);
+        }
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
     }
