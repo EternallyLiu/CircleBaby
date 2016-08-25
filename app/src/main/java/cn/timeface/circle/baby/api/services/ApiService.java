@@ -583,7 +583,6 @@ public interface ApiService {
      * 意见反馈
      */
     @GET("babyBook/updateTimeInfoForOpenApi")
-    Observable<BaseResponse> updateTimeInfoForOpenApi(@Query("bookId") String bookId,
-                                                      @Query("mediaId") String mediaId,
+    Observable<BaseResponse> updateTimeInfoForOpenApi(@Query("mediaId") String mediaId,
                                                       @Query("url") String url);
 }
