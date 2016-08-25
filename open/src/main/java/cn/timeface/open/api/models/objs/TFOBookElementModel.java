@@ -18,6 +18,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 
@@ -337,8 +340,20 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             Glide.with(context)
                     .using(new TFOContentUrlLoader(context))
                     .load(this)
+                    .crossFade()
                     .error(R.drawable.tfo_empty_img)
                     .centerCrop()
+                    .listener(new RequestListener<TFOBookElementModel, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, TFOBookElementModel model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, TFOBookElementModel model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
                     .into(imageView);
         }
 
@@ -547,6 +562,14 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
     public String getCropImageUrl(int width) {
         String imgUrl = this.image_content_expand.getImageUrl();
+
+        {
+            //去除源地址的阿里云参数
+            if (imgUrl.contains("@")) {
+                imgUrl = imgUrl.substring(0, imgUrl.lastIndexOf("@"));
+            }
+        }
+
         Rect rect = this.image_content_expand.getOrgCropRect(getContentWidth(), getContentHeight());
 
         int rotation = this.image_content_expand.getImageRotation();
@@ -558,7 +581,13 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             w = h;
             h = temp;
         }
-        imgUrl += "@" + rect.left + "-" + rect.top + "-" + w + "-" + h + "a" + "_" + rotation + "r" + "_" + width + "w_1l_1o" + ".webp";
+        float scale = width / w;//因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
+        int left = (int) (rect.left * scale);
+        int top = (int) (rect.top * scale);
+        w = (int) (w * scale);
+        h = (int) (h * scale);
+
+        imgUrl += "@" + width + "w_" + left + "-" + top + "-" + w + "-" + h + "a" + "_" + rotation + "r" + "_1l_1o" + ".webp";
         Log.i("open glide image url", "getCropImageUrl: " + imgUrl);
         return imgUrl;
     }
