@@ -19,10 +19,14 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.activities.PODActivity;
+import cn.timeface.open.api.OpenApiFactory;
+import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOPublishObj;
+import cn.timeface.open.api.models.response.BookCoverInfo;
 import cn.timeface.open.constants.Constant;
+import rx.functions.Action1;
 
 public class MyPODActivity extends PODActivity {
 
