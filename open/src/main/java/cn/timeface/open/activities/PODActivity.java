@@ -41,17 +41,17 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     Map<String, String> params = new HashMap<>();
     String bookId;
     int curIndex = 0;
-    private boolean edit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pod);
+        int rebuild;
         {
             this.bookType = getIntent().getIntExtra("book_type", 23);
             this.bookId = getIntent().getStringExtra("book_id");
             this.publishObjs = getIntent().getParcelableArrayListExtra(Constant.PUBLISH_OBJS);
-            edit = getIntent().getBooleanExtra("edit", false);
+            rebuild = getIntent().getIntExtra(Constant.REBUILD_BOOK, -1);
             List<String> paramKeys = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
             List<String> paramValues = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
             if (paramKeys != null && paramKeys.size() > 0) {
@@ -65,7 +65,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.seek_bar);
 
         setSupportActionBar(toolbar);
-        reqPod(bookId, bookType, TextUtils.isEmpty(bookId) ? 1 : 0, new Gson().toJson(publishObjs));
+        reqPod(bookId, bookType, rebuild == -1 ? (TextUtils.isEmpty(bookId) ? 1 : 0) : rebuild, new Gson().toJson(publishObjs));
     }
 
     private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {

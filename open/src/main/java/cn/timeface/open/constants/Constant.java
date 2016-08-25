@@ -14,4 +14,5 @@ public class Constant {
     public static String PUBLISH_OBJS = "publish_objs";
     public static String POD_KEYS = "pod_keys";
     public static String POD_VALUES = "pod_values";
+    public static String REBUILD_BOOK = "rebuild_book";
 }
