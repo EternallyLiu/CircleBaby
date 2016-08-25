@@ -53,7 +53,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
             this.publishObjs = getIntent().getParcelableArrayListExtra(Constant.PUBLISH_OBJS);
             rebuild = getIntent().getIntExtra(Constant.REBUILD_BOOK, -1);
             List<String> paramKeys = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
-            List<String> paramValues = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
+            List<String> paramValues = getIntent().getStringArrayListExtra(Constant.POD_VALUES);
             if (paramKeys != null && paramKeys.size() > 0) {
                 for (int i = 0; i < paramKeys.size(); i++) {
                     params.put(paramKeys.get(i), paramValues.get(i));
