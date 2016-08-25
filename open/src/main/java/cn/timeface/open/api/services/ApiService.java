@@ -11,6 +11,7 @@ import cn.timeface.open.api.models.objs.TFOBookModel;
 import cn.timeface.open.api.models.objs.TFOBookType;
 import cn.timeface.open.api.models.objs.TFOSimpleTemplate;
 import cn.timeface.open.api.models.response.Authorize;
+import cn.timeface.open.api.models.response.BookCoverInfo;
 import cn.timeface.open.api.models.response.BookList;
 import cn.timeface.open.api.models.response.CoverColor;
 import cn.timeface.open.api.models.response.CoverTemplateInfo;
@@ -275,6 +276,16 @@ public interface ApiService {
     Observable<BaseResponse<List<SimplePageTemplate>>> pageTemplate(@Query("book_id") String book_id,
                                                                     @Query("content_ids") String content_ids);
 
+
+    /**
+     * 时光书创建成功后，获取完整封面数据用于编辑封面
+     *
+     * @param book_id 时光书ID
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("api/bookcover")
+    Observable<BaseResponse<BookCoverInfo>> bookcover(@Field("book_id") String book_id);
 
     @GET
     @Streaming

@@ -40,7 +40,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
     private BookPodView bookPodView;
     List<TFOPublishObj> publishObjs;
     Map<String, String> params = new HashMap<>();
-    String bookId;
+    protected String openBookId;
     int curIndex = 0;
 
     @Override
@@ -50,7 +50,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         int rebuild;
         {
             this.bookType = getIntent().getIntExtra("book_type", 23);
-            this.bookId = getIntent().getStringExtra("book_id");
+            this.openBookId = getIntent().getStringExtra("book_id");
             this.publishObjs = getIntent().getParcelableArrayListExtra(Constant.PUBLISH_OBJS);
             rebuild = getIntent().getIntExtra(Constant.REBUILD_BOOK, -1);
             List<String> paramKeys = getIntent().getStringArrayListExtra(Constant.POD_KEYS);
@@ -66,7 +66,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.seek_bar);
 
         setSupportActionBar(toolbar);
-        reqPod(bookId, bookType, rebuild == -1 ? (TextUtils.isEmpty(bookId) ? 1 : 0) : rebuild, new Gson().toJson(publishObjs));
+        reqPod(openBookId, bookType, rebuild == -1 ? (TextUtils.isEmpty(openBookId) ? 1 : 0) : rebuild, new Gson().toJson(publishObjs));
     }
 
     private void reqPod(final String bookId, int bookType, int rebuild, String contentList) {
@@ -174,9 +174,9 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 //                if (leftModel != null) leftModel.setPageScale(pageScale);
 //                if (rightModel != null) rightModel.setPageScale(pageScale);
 
-                bookId = data.getStringExtra("book_id");
+                openBookId = data.getStringExtra("book_id");
                 editContent(leftModel, rightModel);
-                reqPod(bookId, bookType, 0, "");
+                reqPod(openBookId, bookType, 0, "");
                 break;
             case EDIT_COVER_REQUEST_CODE:
                 if (resultCode != RESULT_OK) {
@@ -188,9 +188,9 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 //                if (leftModel != null) leftModel.setPageScale(pageScale);
 //                if (rightModel != null) rightModel.setPageScale(pageScale);
 
-                bookId = data.getStringExtra("book_id");
+                openBookId = data.getStringExtra("book_id");
                 editCover(leftModel, rightModel);
-                reqPod(bookId, bookType, 0, "");
+                reqPod(openBookId, bookType, 0, "");
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
