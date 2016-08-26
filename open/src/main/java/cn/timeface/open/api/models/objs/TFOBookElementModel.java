@@ -46,17 +46,28 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     public static final int TYPE_VIDEO = 4;
     public static final int TYPE_PENDANT = 5;
     public static final int TYPE_WEB = 6;
+    public static final int TYPE_PAGE_HEADER_FOOTER = 7;
+    public static final int TYPE_LOGO = 8;
+
+    public static final int ELEMENT_TYPE_DEFAULT = 0;
+    public static final int ELEMENT_TYPE_BOOK_TITLE = 1;
+    public static final int ELEMENT_TYPE_BOOK_AUTHOR = 2;
+    public static final int ELEMENT_TYPE_BOOK_PAGE_NUMBER = 3;
+    public static final int ELEMENT_TYPE_CUSTOM = 4;
 
     int element_id;
     String element_index;
+    int element_flag; //"元素标识 0默认不做特殊处理 1书名 2作者 3页码 4 自定义封面用户 状态下的封面图片"
     float element_top;// 元素尺寸－距版心顶部边距
     float element_left;// 元素尺寸－距版心左边距
     float element_width;// 元素尺寸－宽度
     float element_height;// 元素尺寸－高度
     int element_depth;// 元素层级关系0最底层
     int element_rotation;// 元素以自身中心点旋转角度，顺时针正值，逆时针负值
-    int element_type;// 元素类型 1 图片 2 文字
+    int element_type;//"元素类型 1 图片 2 文字 3 音频 4 视频 5 挂件 6 webview 7 页眉页脚 8 logo",
     String element_content;// 元素内容 文本或者图片URL
+    int element_deleted;//":"元素已删除 0正常 1已删除",
+    int element_assist;//"1 辅助元素 0 正常元素 当为1的时候仅供web端使用"
 
     String element_background;// 元素背景图片绝对路径或者十六进制色值
     float element_content_top;// 元素内容距元素顶部距离
@@ -250,6 +261,30 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
     public void setTextContentExpand(TFOBookTextContentExpandModel text_content_expand) {
         this.text_content_expand = text_content_expand;
+    }
+
+    public int getElementFlag() {
+        return element_flag;
+    }
+
+    public void setElementFlag(int element_flag) {
+        this.element_flag = element_flag;
+    }
+
+    public int getElementDeleted() {
+        return element_deleted;
+    }
+
+    public void setElementDeleted(int element_deleted) {
+        this.element_deleted = element_deleted;
+    }
+
+    public int getElementAssist() {
+        return element_assist;
+    }
+
+    public void setElementAssist(int element_assist) {
+        this.element_assist = element_assist;
     }
 
     public FrameLayout getView(Context context) {
@@ -484,74 +519,6 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         my_view_scale = 1.f;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(this.my_view_scale);
-        dest.writeByte(this.right ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.element_id);
-        dest.writeString(this.element_index);
-        dest.writeFloat(this.element_top);
-        dest.writeFloat(this.element_left);
-        dest.writeFloat(this.element_width);
-        dest.writeFloat(this.element_height);
-        dest.writeInt(this.element_depth);
-        dest.writeInt(this.element_rotation);
-        dest.writeInt(this.element_type);
-        dest.writeString(this.element_content);
-        dest.writeString(this.element_background);
-        dest.writeFloat(this.element_content_top);
-        dest.writeFloat(this.element_content_left);
-        dest.writeFloat(this.element_content_right);
-        dest.writeFloat(this.element_content_bottom);
-        dest.writeString(this.element_mask_image);
-        dest.writeString(this.element_front_mask_image);
-        dest.writeFloat(this.element_exceed_alpha);
-        dest.writeParcelable(this.image_content_expand, flags);
-        dest.writeParcelable(this.text_content_expand, flags);
-    }
-
-    protected TFOBookElementModel(Parcel in) {
-        this.my_view_scale = in.readFloat();
-        this.right = in.readByte() != 0;
-        this.element_id = in.readInt();
-        this.element_index = in.readString();
-        this.element_top = in.readFloat();
-        this.element_left = in.readFloat();
-        this.element_width = in.readFloat();
-        this.element_height = in.readFloat();
-        this.element_depth = in.readInt();
-        this.element_rotation = in.readInt();
-        this.element_type = in.readInt();
-        this.element_content = in.readString();
-        this.element_background = in.readString();
-        this.element_content_top = in.readFloat();
-        this.element_content_left = in.readFloat();
-        this.element_content_right = in.readFloat();
-        this.element_content_bottom = in.readFloat();
-        this.element_mask_image = in.readString();
-        this.element_front_mask_image = in.readString();
-        this.element_exceed_alpha = in.readFloat();
-        this.image_content_expand = in.readParcelable(TFOBookImageModel.class.getClassLoader());
-        this.text_content_expand = in.readParcelable(TFOBookTextContentExpandModel.class.getClassLoader());
-    }
-
-    public static final Creator<TFOBookElementModel> CREATOR = new Creator<TFOBookElementModel>() {
-        @Override
-        public TFOBookElementModel createFromParcel(Parcel source) {
-            return new TFOBookElementModel(source);
-        }
-
-        @Override
-        public TFOBookElementModel[] newArray(int size) {
-            return new TFOBookElementModel[size];
-        }
-    };
-
     public float getContentWidth() {
         return element_width - element_content_left - element_content_right;
     }
@@ -603,4 +570,78 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         File path = Glide.getPhotoCacheDir(context);
         return new File(path, element_mask_image.hashCode() + ".png");
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(this.my_view_scale);
+        dest.writeByte(this.right ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.element_id);
+        dest.writeString(this.element_index);
+        dest.writeInt(this.element_flag);
+        dest.writeFloat(this.element_top);
+        dest.writeFloat(this.element_left);
+        dest.writeFloat(this.element_width);
+        dest.writeFloat(this.element_height);
+        dest.writeInt(this.element_depth);
+        dest.writeInt(this.element_rotation);
+        dest.writeInt(this.element_type);
+        dest.writeString(this.element_content);
+        dest.writeInt(this.element_deleted);
+        dest.writeInt(this.element_assist);
+        dest.writeString(this.element_background);
+        dest.writeFloat(this.element_content_top);
+        dest.writeFloat(this.element_content_left);
+        dest.writeFloat(this.element_content_right);
+        dest.writeFloat(this.element_content_bottom);
+        dest.writeString(this.element_mask_image);
+        dest.writeString(this.element_front_mask_image);
+        dest.writeFloat(this.element_exceed_alpha);
+        dest.writeParcelable(this.image_content_expand, flags);
+        dest.writeParcelable(this.text_content_expand, flags);
+    }
+
+    protected TFOBookElementModel(Parcel in) {
+        this.my_view_scale = in.readFloat();
+        this.right = in.readByte() != 0;
+        this.element_id = in.readInt();
+        this.element_index = in.readString();
+        this.element_flag = in.readInt();
+        this.element_top = in.readFloat();
+        this.element_left = in.readFloat();
+        this.element_width = in.readFloat();
+        this.element_height = in.readFloat();
+        this.element_depth = in.readInt();
+        this.element_rotation = in.readInt();
+        this.element_type = in.readInt();
+        this.element_content = in.readString();
+        this.element_deleted = in.readInt();
+        this.element_assist = in.readInt();
+        this.element_background = in.readString();
+        this.element_content_top = in.readFloat();
+        this.element_content_left = in.readFloat();
+        this.element_content_right = in.readFloat();
+        this.element_content_bottom = in.readFloat();
+        this.element_mask_image = in.readString();
+        this.element_front_mask_image = in.readString();
+        this.element_exceed_alpha = in.readFloat();
+        this.image_content_expand = in.readParcelable(TFOBookImageModel.class.getClassLoader());
+        this.text_content_expand = in.readParcelable(TFOBookTextContentExpandModel.class.getClassLoader());
+    }
+
+    public static final Creator<TFOBookElementModel> CREATOR = new Creator<TFOBookElementModel>() {
+        @Override
+        public TFOBookElementModel createFromParcel(Parcel source) {
+            return new TFOBookElementModel(source);
+        }
+
+        @Override
+        public TFOBookElementModel[] newArray(int size) {
+            return new TFOBookElementModel[size];
+        }
+    };
 }

@@ -135,7 +135,7 @@ public interface ApiService {
      * @return
      */
     @GET("api/templateinfo")
-    Observable<BaseResponse<CoverTemplateInfo>> templateInfo(@Query("template_id") String template_id,
+    Observable<BaseResponse<CoverTemplateInfo>> templateInfo(@Query("template_id") int template_id,
                                                              @Query("book_id") String book_id);
 
     /**
@@ -167,20 +167,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("api/editbookcover")
     Observable<BaseResponse<EditBookCover>> editBookCover(@Field("book_id") String book_id,
-                                                          @Field("template_id") String template_id,
                                                           @Field("book_title") String book_title,
                                                           @Field("book_auth") String book_auth,
-                                                          @Field("content_list") String content_list);
-
-    /**
-     * @param book_id
-     * @param content_list
-     * @return
-     */
-    @FormUrlEncoded
-    @POST("api/editbookcover")
-    Observable<BaseResponse<EditBookCover>> editBookCover(@Field("book_id") String book_id,
-                                                          @Field("book_title") String book_title,
+                                                          @Field("template_id") int template_id,
                                                           @Field("content_list") String content_list);
 
     /**

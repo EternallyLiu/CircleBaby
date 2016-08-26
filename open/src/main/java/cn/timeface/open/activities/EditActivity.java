@@ -443,7 +443,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
         if (isCover) {
             //保存封面
-            apiService.editBookCover(bookModel.getBookId(), "111", new Gson().toJson(list))
+            apiService.editBookCover(bookModel.getBookId(), bookModel.getBookTitle(), bookModel.getBookAuthor(), bookModel.getTemplateId(), new Gson().toJson(list))
                     .compose(SchedulersCompat.<BaseResponse<EditBookCover>>applyIoSchedulers())
                     .subscribe(new Action1<BaseResponse<EditBookCover>>() {
                                    @Override
@@ -637,8 +637,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Subscribe
     public void selectTemplateEvent(final SelectTemplateEvent templateEvent) {
-        final String templateId = templateEvent.getTemplateId();
-        templateAdapter.setSelTemplateId(Integer.parseInt(templateId));
+        final int templateId = templateEvent.getTemplateId();
+        templateAdapter.setSelTemplateId(templateId);
         Subscription subscribe = apiService.templateInfo(templateId, bookModel.getBookId())
                 .compose(SchedulersCompat.<BaseResponse<CoverTemplateInfo>>applyIoSchedulers())
                 .doOnTerminate(new Action0() {
@@ -665,6 +665,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                         if (leftModel != null) leftModel.setPageScale(pageScale);
                         if (rightModel != null) rightModel.setPageScale(pageScale);
                         setupViews();
+                        bookModel.setTemplateId(templateId);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -707,6 +708,15 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 editedModel = data.getParcelableExtra(Constant.ELEMENT_MODEL);
                 editedContentId = data.getStringExtra(Constant.CONTENT_ID);
                 editedModel.setPageScale(pageScale);//先设置缩放比
+
+                switch (editedModel.getElementType()) {
+                    case TFOBookElementModel.ELEMENT_TYPE_BOOK_TITLE:
+                        this.bookModel.setBookTitle(editedModel.getElementContent());
+                        break;
+                    case TFOBookElementModel.ELEMENT_TYPE_BOOK_AUTHOR:
+                        this.bookModel.setBookAuthor(editedModel.getElementContent());
+                        break;
+                }
 
                 Log.i(TAG, "onActivityResult: 111111  modeljson = " + new Gson().toJson(editedModel));
 

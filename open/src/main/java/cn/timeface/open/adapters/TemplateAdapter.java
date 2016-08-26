@@ -55,7 +55,7 @@ public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
         } else {
             iv.setBackgroundColor(Color.TRANSPARENT);
         }
-        holder.itemView.setTag(R.string.tag_ex, template.getTemplateId() + "");
+        holder.itemView.setTag(R.string.tag_ex, template.getTemplateId());
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -66,7 +66,7 @@ public class TemplateAdapter extends BaseRecyclerAdapter<TFOSimpleTemplate> {
 
         @Override
         public void onClick(View v) {
-            String templateId = (String) v.getTag(R.string.tag_ex);
+            int templateId = (int) v.getTag(R.string.tag_ex);
             EventBus.getDefault().post(new SelectTemplateEvent(templateId));
         }
     }
