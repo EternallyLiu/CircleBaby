@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.TimeLineEditActivity;
@@ -32,9 +34,6 @@ import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
-import cn.timeface.common.utils.DeviceUuidFactory;
-import cn.timeface.common.utils.ShareSdkUtil;
-import cn.timeface.common.utils.TimeFaceUtilInit;
 
 /**
  * Created by lidonglin on 2016/6/25.
@@ -129,8 +128,27 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         });
         tvDownload.setOnClickListener(v -> {
             dismiss();
-            ImageFactory.saveVideo(timelineobj.getMediaList().get(0).getVideoUrl());
-            ToastUtil.showToast("下载视频到baby文件夹下…");
+//            ImageFactory.saveVideo(timelineobj.getMediaList().get(0).getVideoUrl());
+//            ToastUtil.showToast("下载视频到baby文件夹下…");
+            String path = timelineobj.getMediaList().get(0).getVideoUrl();
+            String fileName = path.substring(path.lastIndexOf("/"));
+            File file = new File("/mnt/sdcard/baby");
+            if(!file.exists()){
+                file.mkdirs();
+            }
+            File file1 = new File(file, fileName);
+            if(file1.exists()){
+                ToastUtil.showToast("已保存到baby文件夹下");
+                return;
+            }
+            ToastUtil.showToast("保存视频…");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ImageFactory.saveVideo(path,file1);
+                    return;
+                }
+            }).start();
         });
         tvShare.setOnClickListener(v -> {
             dismiss();

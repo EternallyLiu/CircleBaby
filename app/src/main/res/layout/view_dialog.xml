@@ -1,59 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/view_space_small"
-    android:layout_marginLeft="@dimen/view_space_small"
-    android:layout_marginRight="@dimen/view_space_small"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_dialog_corner_bg"
+    android:gravity="center"
     android:orientation="vertical"
-    android:background="@drawable/shape_adapter_bg"
-    android:padding="@dimen/size_6">
+    android:paddingBottom="24dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingTop="24dp">
 
     <TextView
         android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="提示"
         android:textColor="@color/bg_color1"
-        android:padding="@dimen/size_6"
-        />
+        android:textSize="@dimen/text_medium" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/text_color_hint"/>
+        android:layout_marginTop="16dp"
+        android:background="#e0e0e0" />
 
     <TextView
         android:id="@+id/tv_msg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/size_6"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/size_24"
+        android:layout_marginTop="@dimen/size_12"
         android:gravity="center"
-        android:textSize="@dimen/text_medium"
         android:lineSpacingMultiplier="1.5"
-        />
+        android:textSize="@dimen/text_normal" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_6">
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="12dp"
+            android:layout_weight="1.0"
+            android:background="@drawable/shape_button_corner_bg_gray"
             android:text="取消"
             android:textColor="@color/white"
-            android:background="@drawable/shape_grey_btn_bg"
-            android:layout_marginLeft="@dimen/size_12"
-            android:layout_marginRight="@dimen/size_12"/>
+            android:textSize="16sp" />
+
         <Button
             android:id="@+id/btn_ok"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="确认"
-            android:textColor="@color/white"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
             android:background="@drawable/selector_btn_login"
-            android:layout_marginLeft="@dimen/size_12"
-            android:layout_marginRight="@dimen/size_12"/>
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
     </LinearLayout>
 
 

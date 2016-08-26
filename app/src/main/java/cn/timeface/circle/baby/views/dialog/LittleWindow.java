@@ -19,7 +19,7 @@ import cn.timeface.circle.baby.api.models.objs.MineBookObj;
  */
 public class LittleWindow extends PopupWindow implements View.OnClickListener {
 
-    private final TextView tvShare;
+//    private final TextView tvShare;
     private final TextView tvDel;
     private final int[] mLocation = new int[2];
     private final View rootView;
@@ -36,8 +36,8 @@ public class LittleWindow extends PopupWindow implements View.OnClickListener {
         setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
         rootView = LayoutInflater.from(context).inflate(R.layout.layout_little_popu, null);
         setContentView(rootView);
-        tvShare = (TextView) rootView.findViewById(R.id.share);
-        tvShare.setOnClickListener(this);
+//        tvShare = (TextView) rootView.findViewById(R.id.share);
+//        tvShare.setOnClickListener(this);
         tvDel = (TextView) rootView.findViewById(R.id.del);
         tvDel.setOnClickListener(this);
     }

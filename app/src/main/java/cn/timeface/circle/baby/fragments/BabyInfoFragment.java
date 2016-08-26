@@ -188,7 +188,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         if (user.getIsCreator() == 1) {
             //删除宝宝
             new AlertDialog.Builder(getContext())
-                    .setTitle("确定删除本宝宝吗?")
+                    .setTitle("确定删除宝宝 " + babyObj.getName() + " 吗?")
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

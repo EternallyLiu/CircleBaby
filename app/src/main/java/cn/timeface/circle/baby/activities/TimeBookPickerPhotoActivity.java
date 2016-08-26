@@ -176,6 +176,10 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             onBackPressed();
         } else if (item.getItemId() == R.id.next) {
             pageNum = adapter.getSelImgs().size();
+            if(pageNum == 0){
+                ToastUtil.showToast("请选择至少一张照片");
+                return true;
+            }
             String s = new Gson().toJson(dataList);
 
             //跳转开放平台POD接口；
