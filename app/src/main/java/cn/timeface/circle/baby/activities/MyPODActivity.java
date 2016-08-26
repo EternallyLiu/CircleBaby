@@ -51,19 +51,6 @@ public class MyPODActivity extends PODActivity {
         context.startActivity(intent);
     }
 
-    public static void open(Context context,String bookId, String openBookId, int openBookType, List<TFOPublishObj> publishObjs,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values) {
-        Intent intent = new Intent(context, MyPODActivity.class);
-        intent.putExtra("book_type", openBookType);
-        intent.putExtra("book_id", openBookId);
-        intent.putParcelableArrayListExtra(Constant.PUBLISH_OBJS, (ArrayList<? extends Parcelable>) publishObjs);
-        intent.putExtra("edit", edit);
-        intent.putExtra("bookId", bookId);
-        intent.putExtra("babyId", babyId);
-        intent.putStringArrayListExtra(Constant.POD_KEYS,keys);
-        intent.putStringArrayListExtra(Constant.POD_VALUES,values);
-        context.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,6 +75,9 @@ public class MyPODActivity extends PODActivity {
                 .subscribe(new Action1<BaseResponse<BookCoverInfo>>() {
                                @Override
                                public void call(BaseResponse<BookCoverInfo> bookCoverInfoBaseResponse) {
+                                   BookCoverInfo data = bookCoverInfoBaseResponse.getData();
+                                   List<String> book_cover = data.getBook_cover();
+                                   Log.d(TAG,"book_cover ======= "+book_cover);
                                }
                            }
                         , new Action1<Throwable>() {
@@ -99,7 +89,15 @@ public class MyPODActivity extends PODActivity {
 
     @Override
     public void editContent(TFOBookContentModel left, TFOBookContentModel right) {
-
+        List<TFOBookElementModel> newList = new ArrayList<>();
+        List<TFOBookElementModel> elementList = left.getElementList();
+        elementList.addAll(right.getElementList());
+        for(TFOBookElementModel model : elementList){
+            if(model.getElementType() == TFOBookElementModel.TYPE_IMAGE){
+                newList.add(model);
+            }
+        }
+        editBook(newList);
     }
 
     private void createBook(String author, String dataList, String bookCover, String bookName, int type, int pageNum, String openBookId, int openBookType) {
@@ -119,8 +117,13 @@ public class MyPODActivity extends PODActivity {
                 });
     }
 
-    //pod中跟换封面外的图片
-    private void editBook(){
+    //pod中更换封面外的图片
+    private void editBook(List<TFOBookElementModel> newList){
+
+    }
+
+    //pod中更换封面
+    private void editCover(){
 
     }
 

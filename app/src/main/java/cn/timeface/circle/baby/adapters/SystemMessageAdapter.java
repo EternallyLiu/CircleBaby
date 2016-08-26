@@ -51,15 +51,10 @@ public class SystemMessageAdapter extends BaseRecyclerAdapter<SystemMsg> {
         holder.onClickListener = onClickListener;
         holder.info = info;
         GlideUtil.displayImage(info.getAvatar(), holder.ivAvatar);
-        holder.tvRelation.setText(info.getName());
+        holder.tvRelation.setVisibility(View.GONE);
         holder.tvTime.setText(DateUtil.getDisTime(info.getTime()));
         holder.tvContent.setText(info.getContent());
         holder.ivContent.setVisibility(View.GONE);
-        if(info.getIsRead()==0){
-            holder.ivDot.setVisibility(View.VISIBLE);
-        }else{
-            holder.ivDot.setVisibility(View.GONE);
-        }
 
     }
 

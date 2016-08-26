@@ -151,6 +151,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
                 int i = max - min;
                 if (i > 60) {
                     ToastUtil.showToast("视频不能超过60秒");
+                    isClip = false;
                     return true;
                 }
                 ToastUtil.showToast("剪裁视频中…");
@@ -167,6 +168,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
                     tfProgressDialog.dismiss();
                     finish();
                 } catch (IOException e) {
+                    isClip = false;
                     tfProgressDialog.dismiss();
                     e.printStackTrace();
                 }

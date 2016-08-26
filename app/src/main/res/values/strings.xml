@@ -153,7 +153,7 @@
     <string name="order">订单</string>
     <string name="order_null">还没有订单哇？快去申请印刷吧</string>
     <string name="payoff_at_once">马上支付</string>
-    <string name="show_order">晒单</string>
+    <string name="show_order">确认收货</string>
     <string name="logistics_co">物流公司:</string>
     <string name="logistics_detail">物流详情</string>
     <string name="receiver_name">收货人姓名</string>
