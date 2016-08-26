@@ -709,7 +709,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 editedContentId = data.getStringExtra(Constant.CONTENT_ID);
                 editedModel.setPageScale(pageScale);//先设置缩放比
 
-                switch (editedModel.getElementType()) {
+                switch (editedModel.getElementFlag()) {
                     case TFOBookElementModel.ELEMENT_TYPE_BOOK_TITLE:
                         this.bookModel.setBookTitle(editedModel.getElementContent());
                         break;
