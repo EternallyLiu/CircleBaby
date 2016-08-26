@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class TFOPublishObj implements Parcelable {
     String title;
+    String content_id;//"在第三方平台中的数据ID，可以为空，pod排版后会原样返回"
     List<TFOContentObj> content_list;
 
     public TFOPublishObj(String title, List<TFOContentObj> content_list) {
@@ -35,6 +36,17 @@ public class TFOPublishObj implements Parcelable {
         this.content_list = content_list;
     }
 
+    public String getContentId() {
+        return content_id;
+    }
+
+    public void setContentId(String content_id) {
+        this.content_id = content_id;
+    }
+
+    public TFOPublishObj() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -43,16 +55,14 @@ public class TFOPublishObj implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
-        dest.writeList(this.content_list);
-    }
-
-    public TFOPublishObj() {
+        dest.writeString(this.content_id);
+        dest.writeTypedList(this.content_list);
     }
 
     protected TFOPublishObj(Parcel in) {
         this.title = in.readString();
-        this.content_list = new ArrayList<TFOContentObj>();
-        in.readList(this.content_list, TFOContentObj.class.getClassLoader());
+        this.content_id = in.readString();
+        this.content_list = in.createTypedArrayList(TFOContentObj.CREATOR);
     }
 
     public static final Creator<TFOPublishObj> CREATOR = new Creator<TFOPublishObj>() {

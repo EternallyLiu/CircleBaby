@@ -440,12 +440,35 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         list.add(rightModel);
         list.add(0, leftModel);
 
+//        if (isCover) {
+//            //保存封面
+//            apiService.editBookCover(bookModel.getBookId(), "111", new Gson().toJson(list))
+//                    .compose(SchedulersCompat.<BaseResponse<EditBookCover>>applyIoSchedulers())
+//                    .subscribe(new Action1<BaseResponse<EditBookCover>>() {
+//                                   @Override
+//                                   public void call(BaseResponse<EditBookCover> response) {
+//                                       Log.i(TAG, "doSave: cover success");
+//                                       Intent data = new Intent();
+//                                       data.putExtra("left_model", leftModel);
+//                                       data.putExtra("right_model", rightModel);
+//                                       data.putExtra("book_id", response.getData().getBookId());
+//                                       setResult(RESULT_OK, data);
+//                                       finish();
+//                                   }
+//                               }
+//                            , new Action1<Throwable>() {
+//                                @Override
+//                                public void call(Throwable throwable) {
+//                                }
+//                            });
+//        } else {
+        //保存内页
         apiService.editPod(bookModel.getBookId(), new Gson().toJson(list))
                 .compose(SchedulersCompat.<BaseResponse<EditPod>>applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse<EditPod>>() {
                     @Override
                     public void call(BaseResponse<EditPod> response) {
-                        Log.i(TAG, "doSave: success");
+                        Log.i(TAG, "doSave: content success");
                         Intent data = new Intent();
                         data.putExtra("left_model", leftModel);
                         data.putExtra("right_model", rightModel);
@@ -459,6 +482,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
                     }
                 });
+//        }
     }
 
     @Subscribe
@@ -594,7 +618,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         TFOBookImageModel imageModel = (TFOBookImageModel) view.getTag(R.string.tag_obj);
         {
             //缩放imageModel,如果不做这一步,初始化的挂件会非常大,看起来不和谐
-            imageModel.setImageScale(Math.min(bookModel.getBookWidth() / imageModel.getImageWidth()/2, bookModel.getBookHeight() / imageModel.getImageHeight()/2));
+            imageModel.setImageScale(Math.min(bookModel.getBookWidth() / imageModel.getImageWidth() / 2, bookModel.getBookHeight() / imageModel.getImageHeight() / 2));
         }
         TFOBookElementModel elementModel = new TFOBookElementModel(imageModel);
         elementModel.setPageScale(pageScale);

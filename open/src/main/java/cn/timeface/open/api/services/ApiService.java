@@ -15,6 +15,7 @@ import cn.timeface.open.api.models.response.BookCoverInfo;
 import cn.timeface.open.api.models.response.BookList;
 import cn.timeface.open.api.models.response.CoverColor;
 import cn.timeface.open.api.models.response.CoverTemplateInfo;
+import cn.timeface.open.api.models.response.EditBookCover;
 import cn.timeface.open.api.models.response.EditPod;
 import cn.timeface.open.api.models.response.EditText;
 import cn.timeface.open.api.models.response.SimplePageTemplate;
@@ -165,24 +166,22 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("api/editbookcover")
-    Observable<BaseResponse<TFOBookContentModel>> editBookCover(@Field("book_id") String book_id,
-                                                                @Field("template_id") String template_id,
-                                                                @Field("book_title") String book_title,
-                                                                @Field("book_auth") String book_auth,
-                                                                @Field("content_list") String content_list);
+    Observable<BaseResponse<EditBookCover>> editBookCover(@Field("book_id") String book_id,
+                                                          @Field("template_id") String template_id,
+                                                          @Field("book_title") String book_title,
+                                                          @Field("book_auth") String book_auth,
+                                                          @Field("content_list") String content_list);
 
     /**
-     *
      * @param book_id
-     * @param book_title
      * @param content_list
      * @return
      */
     @FormUrlEncoded
     @POST("api/editbookcover")
-    Observable<BaseResponse<TFOBookContentModel>> editBookCover(@Field("book_id") String book_id,
-                                                                @Field("book_title") String book_title,
-                                                                @Field("content_list") String content_list);
+    Observable<BaseResponse<EditBookCover>> editBookCover(@Field("book_id") String book_id,
+                                                          @Field("book_title") String book_title,
+                                                          @Field("content_list") String content_list);
 
     /**
      * 开放平台提供多种版式模板以供选择，用户可以自主进行选择。列表接口返回当前接入方可以选择的版式列表

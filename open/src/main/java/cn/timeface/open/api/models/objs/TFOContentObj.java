@@ -3,7 +3,6 @@ package cn.timeface.open.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +10,9 @@ import java.util.List;
  * email : sy0725work@gmail.com
  */
 public class TFOContentObj implements Parcelable {
-    String subtitle;
+    String subtitle;//"副标题",
+    String content;//"正文内容",
+    String sub_content_id;//"在第三方平台中的数据ID，可以为空，pod排版后会原样返回",
     List<TFOResourceObj> resource_list;
 
     public TFOContentObj(String subtitle, List<TFOResourceObj> resource_list) {
@@ -35,6 +36,22 @@ public class TFOContentObj implements Parcelable {
         this.resource_list = resource_list;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getSubContentId() {
+        return sub_content_id;
+    }
+
+    public void setSubContentId(String sub_content_id) {
+        this.sub_content_id = sub_content_id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -43,13 +60,16 @@ public class TFOContentObj implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.subtitle);
-        dest.writeList(this.resource_list);
+        dest.writeString(this.content);
+        dest.writeString(this.sub_content_id);
+        dest.writeTypedList(this.resource_list);
     }
 
     protected TFOContentObj(Parcel in) {
         this.subtitle = in.readString();
-        this.resource_list = new ArrayList<TFOResourceObj>();
-        in.readList(this.resource_list, TFOResourceObj.class.getClassLoader());
+        this.content = in.readString();
+        this.sub_content_id = in.readString();
+        this.resource_list = in.createTypedArrayList(TFOResourceObj.CREATOR);
     }
 
     public static final Creator<TFOContentObj> CREATOR = new Creator<TFOContentObj>() {
