@@ -438,8 +438,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         if (leftModel != null) leftModel.resetPageScale();
 
         List<TFOBookContentModel> list = new ArrayList<>();
-        list.add(rightModel);
-        list.add(0, leftModel);
+        list.add(leftModel);
+        list.add(0, rightModel);
 
         if (isCover) {
             //保存封面
