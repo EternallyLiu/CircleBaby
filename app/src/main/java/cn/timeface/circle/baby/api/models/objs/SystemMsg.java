@@ -15,8 +15,6 @@ public class SystemMsg implements Parcelable {
     long dataId;        //数据id(订单uid)
     int msgType;       //0订单未支付 1成功提交订单申请 2订单审核未通过 3订单配送中 4印刷书已送达 5新活动上线
     int id;            //消息id
-    int isRead;
-    String url;
 
     public String getAvatar() {
         return avatar;
@@ -74,22 +72,6 @@ public class SystemMsg implements Parcelable {
         this.id = id;
     }
 
-    public int getIsRead() {
-        return isRead;
-    }
-
-    public void setIsRead(int isRead) {
-        this.isRead = isRead;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -104,8 +86,6 @@ public class SystemMsg implements Parcelable {
         dest.writeLong(this.dataId);
         dest.writeInt(this.msgType);
         dest.writeInt(this.id);
-        dest.writeInt(this.isRead);
-        dest.writeString(this.url);
     }
 
     protected SystemMsg(Parcel in) {
@@ -116,8 +96,6 @@ public class SystemMsg implements Parcelable {
         this.dataId = in.readLong();
         this.msgType = in.readInt();
         this.id = in.readInt();
-        this.isRead = in.readInt();
-        this.url = in.readString();
     }
 
     public static final Creator<SystemMsg> CREATOR = new Creator<SystemMsg>() {

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +30,16 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.MessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.Msg;
+import cn.timeface.circle.baby.events.CommentSubmit;
+import cn.timeface.circle.baby.events.DeleteSystenMsgEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.TFStateView;
 
-public class MessageFragment extends BaseFragment implements View.OnClickListener {
+public class MessageFragment extends BaseFragment implements View.OnClickListener,IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -101,6 +105,16 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
             showNoDataView(false);
         } else {
             showNoDataView(true);
+        }
+        Msg systemMsg = null;
+        for(Msg msg : dataList){
+            if(msg.getType() == 0){
+                systemMsg = msg;
+            }
+        }
+        if(systemMsg!=null){
+            dataList.remove(systemMsg);
+            dataList.add(0,systemMsg);
         }
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
@@ -205,4 +219,10 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
         contentRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
+
+    @Subscribe
+    public void onEvent(DeleteSystenMsgEvent commentSubmit) {
+        reqData();
+    }
+
 }
