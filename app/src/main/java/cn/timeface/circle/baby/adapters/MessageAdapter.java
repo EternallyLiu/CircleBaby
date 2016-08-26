@@ -60,7 +60,7 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         holder.info = info;
         GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar);
         if(info.getType() == 0){
-            holder.tvRelation.setText("时光小秘书");
+            holder.tvRelation.setText("系统消息");
         }else{
             holder.tvRelation.setText(FastData.getBabyName() + info.getUserInfo().getRelationName());
         }

@@ -4,6 +4,7 @@ package cn.timeface.circle.baby.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +30,11 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.OrderDetailActivity;
 import cn.timeface.circle.baby.adapters.SystemMessageAdapter;
 import cn.timeface.circle.baby.api.models.objs.SystemMsg;
+import cn.timeface.circle.baby.events.DeleteSystenMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.TFStateView;
 
 public class SystemMessageFragment extends BaseFragment implements View.OnClickListener {
 
@@ -36,6 +42,10 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     private SystemMessageAdapter adapter;
 
     public SystemMessageFragment() {
@@ -54,7 +64,7 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setTitle("系统消息");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -63,6 +73,8 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         contentRecyclerView.setAdapter(adapter);
 
+        tfStateView.setOnRetryListener(() -> reqData());
+        tfStateView.loading();
         reqData();
 
         return view;
@@ -72,10 +84,13 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
         apiService.querySystemMsgList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(systemMsgListResponse -> {
-
+                    if (tfStateView != null)
+                        tfStateView.finish();
                     setDataList(systemMsgListResponse.getDataList());
 
                 }, throwable -> {
+                    if (tfStateView != null)
+                        tfStateView.showException(throwable);
                     Log.e(TAG, "querySystemMsgList:");
                     throwable.printStackTrace();
                 });
@@ -83,16 +98,6 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
     }
 
     private void setDataList(List<SystemMsg> dataList) {
-        SystemMsg systemMsg = null;
-        for(SystemMsg msg : dataList){
-            if(msg.getMsgType() == 0){
-                systemMsg = msg;
-            }
-        }
-        if(systemMsg!=null){
-            dataList.remove(systemMsg);
-            dataList.add(0,systemMsg);
-        }
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
     }
@@ -108,9 +113,9 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
         switch (v.getId()) {
             case R.id.rl_message:
                 SystemMsg msg = (SystemMsg) v.getTag(R.string.tag_ex);
-                if (msg.getContent().contains("订单详情")) {
+                if (msg.getDataId()!=0) {
                     //跳转订单详情
-                    OrderDetailActivity.open(getContext(),msg.getDataId()+"");
+                    OrderDetailActivity.open(getContext(), msg.getDataId() + "");
                 }
                 break;
         }
@@ -118,25 +123,15 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_msg,menu);
+        inflater.inflate(R.menu.menu_msg, menu);
+        MenuItem read = menu.findItem(R.id.read);
+        read.setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.read){
-            apiService.read(0, 1)
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-                        ToastUtil.showToast(response.getInfo());
-                        if (response.success()) {
-                            adapter.notifyDataSetChanged();
-                        }
-                    }, error -> {
-                        Log.e(TAG, "read:");
-                    });
-
-        }else if(item.getItemId() == R.id.del){
+        if (item.getItemId() == R.id.del) {
             new AlertDialog.Builder(getContext())
                     .setTitle("确定删除全部系统消息?")
                     .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -152,8 +147,7 @@ public class SystemMessageFragment extends BaseFragment implements View.OnClickL
                             .subscribe(response -> {
                                 ToastUtil.showToast(response.getInfo());
                                 if (response.success()) {
-                                    adapter.getListData().clear();
-                                    adapter.notifyDataSetChanged();
+                                    EventBus.getDefault().post(new DeleteSystenMsgEvent());
                                 }
                             }, error -> {
                                 Log.e(TAG, "delMsg:");

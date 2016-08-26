@@ -137,10 +137,10 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                     // 配送中 || 已送达
                     if (listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
                         // 商家优惠码现场配送不显示运单号、物流信息
-                        if (listResponse.getOrderStatus() == 5) {
+//                        if (listResponse.getOrderStatus() == 5) {
                             orderActionBtn.setText(getResources().getString(R.string.show_order));
-                            orderActionBtn.setVisibility(View.INVISIBLE);//不显示晒单
-                        }
+                            orderActionBtn.setVisibility(View.VISIBLE);
+//                        }
                     }
                     // 待确认(未支付)
                     if (listResponse.getOrderStatus() == TypeConstant.STATUS_NOT_PAY) {
@@ -166,8 +166,21 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
     public void clickBtn(View view) {
         switch (view.getId()) {
             case R.id.order_action_btn:
-                //去支付
-                doPay();
+                if (listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
+                    //确认收货
+                    apiService.receipt(orderId)
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(response -> {
+                                if (response.success()) {
+                                    setupView();
+                                    reqOrderListData();
+                                }
+                            });
+
+                }else if(listResponse.getOrderStatus() == TypeConstant.STATUS_NOT_PAY){
+                    //去支付
+                    doPay();
+                }
                 break;
             case R.id.order_action_cancel_btn:
                 //取消订单
