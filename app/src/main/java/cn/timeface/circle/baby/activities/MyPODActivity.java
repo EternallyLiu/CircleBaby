@@ -69,23 +69,27 @@ public class MyPODActivity extends PODActivity {
     }
 
     @Override
-    public void editCover(String openBookId) {
-        OpenApiFactory.getOpenApi().getApiService().bookcover(openBookId)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(new Action1<BaseResponse<BookCoverInfo>>() {
-                               @Override
-                               public void call(BaseResponse<BookCoverInfo> bookCoverInfoBaseResponse) {
-                                   BookCoverInfo data = bookCoverInfoBaseResponse.getData();
-                                   List<String> book_cover = data.getBook_cover();
-                                   Log.d(TAG,"book_cover ======= "+book_cover);
-                               }
-                           }
-                        , new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                            }
-                        });
+    public void editCover(TFOBookModel bookModel) {
+        editCover(bookModel.getBookAuthor(),bookModel.getBookTitle(),bookModel.getBookTitle(),bookModel.getBookCover());
     }
+
+//    public void editCover(String openBookId) {
+//        OpenApiFactory.getOpenApi().getApiService().bookcover(openBookId)
+//                .compose(SchedulersCompat.applyIoSchedulers())
+//                .subscribe(new Action1<BaseResponse<BookCoverInfo>>() {
+//                               @Override
+//                               public void call(BaseResponse<BookCoverInfo> bookCoverInfoBaseResponse) {
+//                                   BookCoverInfo data = bookCoverInfoBaseResponse.getData();
+//                                   List<String> book_cover = data.getBook_cover();
+//                                   Log.d(TAG,"book_cover ======= "+book_cover);
+//                               }
+//                           }
+//                        , new Action1<Throwable>() {
+//                            @Override
+//                            public void call(Throwable throwable) {
+//                            }
+//                        });
+//    }
 
     @Override
     public void editContent(TFOBookContentModel left, TFOBookContentModel right) {
@@ -97,12 +101,14 @@ public class MyPODActivity extends PODActivity {
                 newList.add(model);
             }
         }
-        editBook(newList);
+        for(TFOBookElementModel model : newList){
+            editContent(model.getImageContentExpand().getImageId(),model.getImageContentExpand().getImageUrl());
+        }
     }
 
     private void createBook(String author, String dataList, String bookCover, String bookName, int type, int pageNum, String openBookId, int openBookType) {
-        System.out.println("bookId ======== " + bookId);
-        ApiFactory.getApi().getApiService().createBook(URLEncoder.encode(author), babyId, bookCover, bookId, URLEncoder.encode(bookName), "", type, dataList, URLEncoder.encode(bookName), Long.valueOf(openBookId), pageNum, openBookType)
+        Log.d("创建书","bookId ======== " + bookId);
+        ApiFactory.getApi().getApiService().createBook(author, babyId, bookCover, bookId, bookName, "", type, dataList, bookName, Long.valueOf(openBookId), pageNum, openBookType)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     bookId = response.getBookId();
@@ -118,13 +124,39 @@ public class MyPODActivity extends PODActivity {
     }
 
     //pod中更换封面外的图片
-    private void editBook(List<TFOBookElementModel> newList){
-
+    private void editContent(String imageId, String imageUrl) {
+        Log.d("pod中更换内容","mediaId ======= "+imageId);
+        Log.d("pod中更换内容","imageUrl ======= "+imageUrl);
+        ApiFactory.getApi().getApiService().updateTimeInfoForOpenApi(imageId,imageUrl)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        EventBus.getDefault().post(new BookOptionEvent());
+                    } else {
+                        ToastUtil.showToast(response.getInfo());
+                    }
+                }, error -> {
+                    Log.e(TAG, "editBookCover:");
+                    error.printStackTrace();
+                });
     }
 
     //pod中更换封面
-    private void editCover(){
-
+    private void editCover(String bookAuthor, String bookTitle, String title, String bookCover){
+        Log.d("pod中更换封面","bookCover ======= "+bookCover);
+        ApiFactory.getApi().getApiService().editBookCover(bookId, babyId, bookCover, bookAuthor, bookTitle, title)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    bookId = response.getBookId();
+                    if (response.success()) {
+                        EventBus.getDefault().post(new BookOptionEvent());
+                    } else {
+                        ToastUtil.showToast(response.getInfo());
+                    }
+                }, error -> {
+                    Log.e(TAG, "editBookCover:");
+                    error.printStackTrace();
+                });
     }
 
 }

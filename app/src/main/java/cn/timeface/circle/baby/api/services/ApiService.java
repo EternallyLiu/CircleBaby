@@ -546,12 +546,12 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("babyBook/createBook")
-    Observable<CreateBookResponse> editBookCover(@Field("author") String author,
-                                              @Field("babyId") int babyId,
-                                              @Field("bookCover") String bookCover,
-                                              @Field("bookId") String bookId,
-                                              @Field("bookName") String bookName,
-                                              @Field("description") String description);
+    Observable<CreateBookResponse> editBookCover(@Field("bookId") String bookId,
+                                                 @Field("babyId") int babyId,
+                                                 @Field("bookCover") String bookCover,
+                                                 @Field("author") String author,
+                                                 @Field("bookName") String bookName,
+                                                 @Field("description") String description);
 
     /**
      * 作品列表
