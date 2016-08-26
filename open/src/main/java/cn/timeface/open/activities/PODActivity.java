@@ -91,7 +91,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
                                    switch (requestType) {
                                        case EDIT_COVER_REQUEST_CODE:
-                                           editCover(openBookId);
+                                           editCover(podResponse);
                                            break;
                                        case EDIT_CONTENT_REQUEST_CODE:
                                            break;
@@ -169,22 +169,22 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
         TFOBookContentModel leftModel;
         TFOBookContentModel rightModel;
         switch (requestCode) {
             case EDIT_CONTENT_REQUEST_CODE:
             case EDIT_COVER_REQUEST_CODE:
-                if (resultCode != RESULT_OK) {
-                    return;
-                }
-
                 leftModel = data.getParcelableExtra("left_model");
                 rightModel = data.getParcelableExtra("right_model");
 //                if (leftModel != null) leftModel.setPageScale(pageScale);
 //                if (rightModel != null) rightModel.setPageScale(pageScale);
-
                 openBookId = data.getStringExtra("book_id");
-                editContent(leftModel, rightModel);
+                if (EDIT_CONTENT_REQUEST_CODE == requestCode) {
+                    editContent(leftModel, rightModel);
+                }
                 reqPod(openBookId, bookType, 0, "", requestCode);
                 break;
         }
@@ -204,7 +204,7 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     public abstract void createBookInfo(TFOBookModel bookModel);
 
-    public abstract void editCover(String openBookId);
+    public abstract void editCover(TFOBookModel bookModel);
 
     public abstract void editContent(TFOBookContentModel left, TFOBookContentModel right);
 

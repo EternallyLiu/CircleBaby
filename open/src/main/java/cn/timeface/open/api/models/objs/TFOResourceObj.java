@@ -8,7 +8,6 @@ import android.os.Parcelable;
  * email : sy0725work@gmail.com
  */
 public class TFOResourceObj implements Parcelable {
-
     String image_id;//":"图片ID，可以由第三方维护",
     String image_url;//":"图片绝对路径",
     int image_width;//":"图片尺寸－宽度",
