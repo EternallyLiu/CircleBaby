@@ -37,7 +37,6 @@ import cn.timeface.circle.baby.fragments.FamilyMemberFragment;
 import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
 import cn.timeface.circle.baby.fragments.InviteFragment;
 import cn.timeface.circle.baby.fragments.MessageFragment;
-import cn.timeface.circle.baby.fragments.MilestoneFragment;
 import cn.timeface.circle.baby.fragments.MineInfoFragment;
 import cn.timeface.circle.baby.fragments.SelectAddressFragment;
 import cn.timeface.circle.baby.fragments.SettingFragment;
@@ -52,12 +51,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
     public static final String FRAGMENT_NAME = "fragment_name";
     public static final String ACTION_BAR_TITLE = "action_bar_title";
-
-//    public static void openSinUpFragment(Context context, MyActivityListItemResponse activityObj) {
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("activityObj", activityObj);
-//        open(context, "SinUpActivityFragment", activityObj.getActivityInfo().getName(), bundle);
-//    }
 
     public static void openBigimageFragment(Context context, ArrayList<String> paths, int index ,boolean download , boolean delete) {
         Bundle bundle = new Bundle();
@@ -109,7 +102,7 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
     public static void openDiaryPreviewFragment(Context context, String time, String content, ImgObj imgObj) {
         Bundle bundle = new Bundle();
-        bundle.putString("time", time);
+        bundle.putString("title", time);
         bundle.putString("content", content);
         bundle.putParcelable("imgObj", imgObj);
         open(context, "DiaryPreviewFragment", bundle);
@@ -257,9 +250,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "FamilyMemberFragment":
                 return new FamilyMemberFragment();
-
-            case "MilestoneFragment":
-                return new MilestoneFragment();
 
             case "MessageFragment":
                 return new MessageFragment();

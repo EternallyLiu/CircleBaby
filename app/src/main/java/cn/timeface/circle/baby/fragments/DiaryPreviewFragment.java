@@ -85,7 +85,7 @@ public class DiaryPreviewFragment extends BaseFragment {
 
     private HorizontalListViewAdapter2 adapter;
     private DiaryPaperResponse diaryPaperResponse;
-    private String time;
+    private String title;
     private String content;
     private String url;
     private ScaleImageView touchImageView;
@@ -112,7 +112,7 @@ public class DiaryPreviewFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        time = getArguments().getString("time");
+        title = getArguments().getString("title");
         content = getArguments().getString("content");
         imgObj = getArguments().getParcelable("imgObj");
         date = imgObj.getDate();
@@ -127,10 +127,11 @@ public class DiaryPreviewFragment extends BaseFragment {
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
+            actionBar.setTitle("宝宝日记");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         tfProgressDialog = new TFProgressDialog(getActivity());
-        tvTime.setText(time);
+        tvTime.setText(title);
         tvContent.setText(content);
         touchImageView = new ScaleImageView(getActivity(), imgObj);
         url = imgObj.getLocalPath();
@@ -388,7 +389,6 @@ public class DiaryPreviewFragment extends BaseFragment {
             String content = tvContent.getText().toString();
 
             List<String> contents = new ArrayList<>();
-            contents.add(time);
             while (content.length() > 18) {
                 char c = content.charAt(17);
                 String[] split = content.split(String.valueOf(c));
@@ -397,18 +397,7 @@ public class DiaryPreviewFragment extends BaseFragment {
             }
             contents.add(content);
 
-//                DiaryImageInfo diaryImageInfo = new DiaryImageInfo(objectKey, bitmapWidth, bitmapHeight);
-//                Gson gson = new Gson();
-//                String imageInfo = gson.toJson(diaryImageInfo);
-
-//                apiService.diaryPublish(content, imageInfo, time, cropWidth, cropHeight, leftTop.x, leftTop.y, paperId, degree)
-//                        .compose(SchedulersCompat.applyIoSchedulers())
-//                        .subscribe(diaryComposeResponse -> {
-//                            ImgObj imgObj = diaryComposeResponse.getImgObj();
-//                        }, throwable -> {
-//                            Log.e(TAG, "diaryPublish:");
-//                        });
-            createTime = DateUtil.getTime(time, "yyyy.MM.dd");
+            createTime = System.currentTimeMillis();
             while (TextUtils.isEmpty(objectKey)){
                 try {
                     Thread.sleep(100);
@@ -423,16 +412,20 @@ public class DiaryPreviewFragment extends BaseFragment {
             List<TemplateAreaObj> templateList = templateObj.getTemplateList();
 
             for (TemplateAreaObj templateAreaObj : templateList) {
-                if (templateAreaObj.getType() == 3)
+                if (templateAreaObj.getType() == 3){
+                    //image
                     templateAreaObj.setTemplateImage(templateImage);
-                if (contents.size() > 0 && templateAreaObj.getType() == 2) {
+                }else if (templateAreaObj.getType() == 2 && templateAreaObj.getTextType() == 0) {
+                    //title
+                    templateAreaObj.setText(title);
+                }else if(templateAreaObj.getType() == 2 && templateAreaObj.getTextType() == 1 && contents.size()>0){
+                    //content
                     templateAreaObj.setText(contents.get(0));
                     contents.remove(0);
                 }
             }
             Gson gson = new Gson();
             String s = gson.toJson(templateObj);
-            System.out.println(s);
             apiService.diaryComposed(URLEncoder.encode(s))
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(diaryComposedResponse -> {

@@ -423,6 +423,33 @@ public class ImageFactory {
 
     }
 
+    public static String saveImage(Bitmap bitmap, String path) {
+        String fileName = path.substring(path.lastIndexOf("/"));
+        File file = new File("/mnt/sdcard/baby");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File outDir = new File(file, fileName);//将要保存图片的路径，android推荐这种写法，将目录名和文件名分开，不然容易报错。
+        if (outDir.exists()) {
+            return outDir.toString();
+        }
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(outDir);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return outDir.toString();
+
+    }
+
 
     public static String getPathFromContentUri(ContentResolver cr, Uri contentUri) {
         if (BuildConfig.DEBUG) {
@@ -457,8 +484,8 @@ public class ImageFactory {
             file.mkdirs();
         }
         File file1 = new File(file, fileName);
-        if(file1.exists()){
-//            ToastUtil.showToast("视频文件已存在baby文件夹下");
+        if (file1.exists()) {
+//            ToastUtil.showToast("视频已保存到baby文件夹下");
             return file1.toString();
         }
         new Thread(new Runnable() {
@@ -485,9 +512,29 @@ public class ImageFactory {
         return file1.toString();
     }
 
+    public static String saveVideo(String path, File file) {
+        try {
+            URL url = new URL(path);
+            URLConnection conn = url.openConnection();
+            InputStream is = conn.getInputStream();
+            int contentLength = conn.getContentLength();
+            byte[] bytes = new byte[1024];
+            int len;
+            FileOutputStream fos = new FileOutputStream(file);
+            while ((len = is.read(bytes)) != -1) {
+                fos.write(bytes, 0, len);
+            }
+            fos.close();
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file.toString();
+    }
+
     //过滤图片.jpg/.jpeg/.png
-    public static boolean photoFilter(String file){
-        if(file.toLowerCase().endsWith(".jpg")||file.toLowerCase().endsWith(".jpeg")||file.toLowerCase().endsWith(".png")){
+    public static boolean photoFilter(String file) {
+        if (file.toLowerCase().endsWith(".jpg") || file.toLowerCase().endsWith(".jpeg") || file.toLowerCase().endsWith(".png")) {
             return true;
         }
         return false;

@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,13 +23,17 @@ import com.wechat.photopicker.adapter.PhotoPagerAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
+import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ToastUtil;
 
@@ -37,20 +43,26 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 /**
  * Created by yellowstart on 15/12/15.
  */
-public class BigImageFragment extends Fragment implements View.OnClickListener {
+public class BigImageFragment extends BaseFragment{
 
-    private ViewPager mViewPager;
+    @Bind(R.id.tv_title)
+    TextView tvTitle;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.vp_big_image)
+    ViewPager mViewPager;
+    @Bind(R.id.tv_download)
+    TextView tvDownload;
+    @Bind(R.id.tv_delete)
+    TextView tvDelete;
     private List<String> mPaths;
 
     private Bundle mBundle;
     private PhotoPagerAdapter mPhotoPagerAdapter;
     private int mCurrenItem;
-    private ImageView ivBack;
-    private TextView tvTitle;
-    private TextView tvDelete;
-    private TextView tvDownload;
     private boolean download;
     private boolean delete;
+    private MenuItem save;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,11 +79,13 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.viewpage_big_image_show, container, false);
-        mViewPager = (ViewPager) view.findViewById(R.id.vp_big_image);
-        ivBack = (ImageView) view.findViewById(R.id.iv_back);
-        tvTitle = (TextView) view.findViewById(R.id.tv_title);
-        tvDownload = (TextView) view.findViewById(R.id.tv_download);
-        tvDelete = (TextView) view.findViewById(R.id.tv_delete);
+        ButterKnife.bind(this, view);
+        setActionBar(toolbar);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         if (mPaths.size() > 0 && mPaths != null) {
             mPhotoPagerAdapter = new PhotoPagerAdapter(getActivity(), mPaths);
         }
@@ -82,10 +96,9 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initListener() {
-        tvTitle.setText(mCurrenItem+1 + "/" + mPaths.size());
-        ivBack.setOnClickListener(this);
-        tvDownload.setOnClickListener(this);
-        tvDelete.setOnClickListener(this);
+        tvTitle.setText(mCurrenItem + 1 + "/" + mPaths.size());
+//        tvDownload.setOnClickListener(this);
+//        tvDelete.setOnClickListener(this);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -103,76 +116,91 @@ public class BigImageFragment extends Fragment implements View.OnClickListener {
 
             }
         });
-        if(download){
-            tvDownload.setVisibility(View.VISIBLE);
-        }else{
-            tvDownload.setVisibility(View.GONE);
-        }
-
-        if(delete){
-            tvDelete.setVisibility(View.VISIBLE);
-        }else{
-            tvDelete.setVisibility(View.GONE);
-        }
+        tvDownload.setVisibility(View.GONE);
+        tvDelete.setVisibility(View.GONE);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_bigimage, menu);
+        save = menu.findItem(R.id.save);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save) {
-            //保存图片到本地
-            saveImage();
+            if (download) {
+                //保存图片到本地
+                save.setEnabled(false);
+                saveImage();
+            } else {
+                //删除
+                save.setEnabled(false);
+                int currentItem = mViewPager.getCurrentItem();
+                String path = mPaths.get(currentItem);
+                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem, path));
+                getActivity().finish();
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
-                getActivity().onBackPressed();
-                break;
-            case R.id.tv_download:
-                tvDownload.setEnabled(false);
-                saveImage();
-                break;
-            case R.id.tv_delete:
-                tvDelete.setEnabled(false);
-                int currentItem = mViewPager.getCurrentItem();
-                String path = mPaths.get(currentItem);
-                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem,path));
-                getActivity().finish();
-                break;
-        }
-    }
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//            case R.id.tv_download:
+//                tvDownload.setEnabled(false);
+//                saveImage();
+//                break;
+//            case R.id.tv_delete:
+//                tvDelete.setEnabled(false);
+//                int currentItem = mViewPager.getCurrentItem();
+//                String path = mPaths.get(currentItem);
+//                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem, path));
+//                getActivity().finish();
+//                break;
+//        }
+//    }
 
-    public void saveImage(){
+    public void saveImage() {
         int currentItem = mViewPager.getCurrentItem();
         String path = mPaths.get(currentItem);
+
+        String fileName = path.substring(path.lastIndexOf("/"));
+        File file = new File("/mnt/sdcard/baby/" + fileName);
+        if (file.exists()) {
+            Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
+            save.setEnabled(true);
+            return;
+        }
+        ToastUtil.showToast("开始保存图片…");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     InputStream is = new URL(path).openStream();
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    ImageFactory.saveImage(bitmap);
+                    ImageFactory.saveImage(bitmap, path);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getContext(), "已下载到baby文件夹下", Toast.LENGTH_SHORT).show();
-                            tvDownload.setEnabled(true);
+                            Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
+                            save.setEnabled(true);
                         }
                     });
                 } catch (IOException e) {
-                    tvDownload.setEnabled(true);
+                    save.setEnabled(true);
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }

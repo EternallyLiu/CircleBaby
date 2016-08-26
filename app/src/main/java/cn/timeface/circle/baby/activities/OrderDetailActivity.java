@@ -140,6 +140,8 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
 //                        if (listResponse.getOrderStatus() == 5) {
                             orderActionBtn.setText(getResources().getString(R.string.show_order));
                             orderActionBtn.setVisibility(View.VISIBLE);
+                            orderActionCancelBtn.setVisibility(View.GONE);
+                            orderActionBtn.setBackgroundResource(R.color.bg_color1);
 //                        }
                     }
                     // 待确认(未支付)
@@ -247,8 +249,8 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
             public void cancelClick() {
                 dialog.dismiss();
                     /*OrderDetailCartActivity.open(MyOrderConfirmActivity.this, orderId, TypeConstant.STATUS_NOT_PAY);*/
-                OrderDetailActivity.open(OrderDetailActivity.this, orderId);
-                finish();
+//                OrderDetailActivity.open(OrderDetailActivity.this, orderId);
+//                finish();
             }
         });
         dialog.setCancelable(false);

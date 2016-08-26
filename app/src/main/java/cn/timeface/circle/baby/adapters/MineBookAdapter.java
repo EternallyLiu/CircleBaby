@@ -170,15 +170,15 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                     littleWindow.setContentData(obj);
                     littleWindow.setOnClickItemListener((id, bookObj) -> {
                         switch (id) {
-                            case R.id.share:
-                                //分享
-                                String baseUrl = "http://h5.stg1.v5time.net/hobbyDetail?";
-                                String url = baseUrl + "userId=" + FastData.getUserId() + "&deviceId=" + new DeviceUuidFactory(
-                                        TimeFaceUtilInit.getContext()).getDeviceId();
-                                new ShareDialog(context).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
-                                        ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
-                                        url);
-                                break;
+//                            case R.id.share:
+//                                //分享
+//                                String baseUrl = "http://h5.stg1.v5time.net/hobbyDetail?";
+//                                String url = baseUrl + "userId=" + FastData.getUserId() + "&deviceId=" + new DeviceUuidFactory(
+//                                        TimeFaceUtilInit.getContext()).getDeviceId();
+//                                new ShareDialog(context).share("宝宝时光，让家庭充满和谐，让教育充满温馨。", "宝宝时光，让家庭充满和谐，让教育充满温馨。",
+//                                        ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher),
+//                                        url);
+//                                break;
                             case R.id.del:
                                 //删除
                                 if (clickListener != null) {

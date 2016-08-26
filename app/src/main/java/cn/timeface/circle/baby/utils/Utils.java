@@ -31,8 +31,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-import com.github.promeg.pinyinhelper.Pinyin;
 import com.ta.utdid2.android.utils.StringUtils;
 
 import java.io.BufferedReader;
@@ -188,33 +186,6 @@ public class Utils {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
-    }
-
-    public static String getPinYin(String string) {
-        if (string == null)
-            return null;
-        if (string.length() < 1) {
-            //            return "*";
-            return "#";
-        }
-
-        if (CheckedUtil.isAlphabet(string.charAt(0))) {
-            return string.substring(0, 1).toUpperCase();
-        } else if (CheckedUtil.isNumeric(string.substring(0, 1))) {
-//            return string.substring(0, 1);
-            return "#";
-        } else if (CheckedUtil.isChineseLetter(string.charAt(0))) {
-            String[] pinyinArray = new String[]{Pinyin.toPinyin(string.charAt(0))};
-//                    PinyinHelper.toHanyuPinyinStringArray(string.charAt(0));
-            if (pinyinArray != null && pinyinArray.length > 0
-                    && !TextUtils.isEmpty(pinyinArray[0].trim())
-                    && pinyinArray[0].trim().length() > 0) {
-                return pinyinArray[0].trim().substring(0, 1).toUpperCase();
-            } else {
-                return "#";
-            }
-        }
-        return "#";
     }
 
     //汉字，全角字符算1个字，其他算半个字

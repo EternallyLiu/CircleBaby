@@ -2,11 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/more"
     android:background="@drawable/ic_pop_bg"
     android:orientation="vertical">
 
-    <TextView
+   <!-- <TextView
         android:id="@+id/share"
         style="?android:textAppearance"
         android:layout_width="match_parent"
@@ -20,13 +19,13 @@
         android:text="分享"
         android:textColor="@color/white"
         android:textSize="@dimen/text_small"
-        android:visibility="gone"/>
+        android:visibility="gone"/>-->
 
     <TextView
         android:id="@+id/del"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/view_space_medium"
         android:clickable="true"
         android:drawableLeft="@drawable/ic_popdel"
         android:gravity="center"
