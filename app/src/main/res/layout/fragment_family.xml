@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/ll_layout"
             android:scaleType="centerCrop"
-            android:src="@drawable/headbg" />
+            android:src="@drawable/familymember_bg" />
 
         <LinearLayout
             android:id="@+id/ll_layout"

@@ -44,7 +44,7 @@
             android:layout_marginRight="@dimen/size_12"
             android:layout_marginTop="@dimen/size_12"
             android:background="@drawable/shape_dash_bg"
-            android:hint="请输入文本内容（60字以内）"
+            android:hint="日记卡片配文"
             android:padding="@dimen/size_12" />
 
     </LinearLayout>

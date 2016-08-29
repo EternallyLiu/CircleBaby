@@ -65,7 +65,7 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("日记卡片配文");
         }
@@ -89,9 +89,9 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
 
     private void setDataList(List<String> dataList) {
         List<String> strings = new ArrayList<>();
-        while (strings.size()<3){
-            int v = (int) (Math.random() * (dataList.size()-1));
-            if(!strings.contains(dataList.get(v))){
+        while (strings.size() < 3) {
+            int v = (int) (Math.random() * (dataList.size() - 1));
+            if (!strings.contains(dataList.get(v))) {
                 strings.add(dataList.get(v));
             }
         }
@@ -113,7 +113,7 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
                 reqData();
                 break;
             case R.id.tv_change:
-                if(diaryTextResponse!=null){
+                if (diaryTextResponse != null) {
                     setDataList(diaryTextResponse.getDataList());
                 }
                 break;
@@ -158,7 +158,9 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView textView = new TextView(getActivity());
+            View view = View.inflate(getContext(), R.layout.item_diary_text, null);
+            TextView textView = (TextView) view.findViewById(R.id.tv_text);
+//            TextView textView = new TextView(getActivity());
             textView.setText(list.get(position));
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -175,20 +177,31 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_complete,menu);
+        inflater.inflate(R.menu.menu_complete, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.complete){
+        if (item.getItemId() == R.id.complete) {
             String content = etContent.getText().toString();
             if (TextUtils.isEmpty(content)) {
                 ToastUtil.showToast("记录宝宝今天的成长吧~");
                 return true;
             }
+            String[] split = content.split("\n");
+            if (split.length > 3) {
+                ToastUtil.showToast("行数不能大于三行哦~");
+                return true;
+            }
+            for(int i =0;i<split.length;i++){
+                if(split[i].length()>18){
+                    ToastUtil.showToast("单行最大字数为18字~");
+                    return true;
+                }
+            }
             if (content.length() > 54) {
-                ToastUtil.showToast("日记不能超过54个字哦~");
+                ToastUtil.showToast("不能超过54个字哦~");
                 return true;
             }
             System.out.println(etContent.getText());

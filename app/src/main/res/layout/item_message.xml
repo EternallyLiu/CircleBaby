@@ -5,22 +5,33 @@
     android:layout_height="wrap_content"
     android:background="@color/text_color1"
     android:orientation="vertical"
-    android:padding="@dimen/size_2">
+    android:paddingTop="@dimen/size_6"
+    android:paddingBottom="@dimen/size_12">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_avatar"
-        android:layout_width="@dimen/size_56"
-        android:layout_height="@dimen/size_56"
+        android:layout_width="@dimen/size_36"
+        android:layout_height="@dimen/size_36"
         android:layout_gravity="center"
         android:layout_margin="@dimen/size_12"
         android:src="@color/bg_color5" />
+
+    <ImageView
+        android:id="@+id/iv_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/shape_dot_red"
+        android:layout_alignRight="@+id/iv_avatar"
+        android:layout_alignTop="@+id/iv_avatar"
+        android:visibility="gone"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/iv_avatar"
-        android:layout_toLeftOf="@+id/iv_content"
+        android:layout_toLeftOf="@+id/rl_content"
         android:orientation="vertical">
 
         <TextView
@@ -34,6 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_small_12"
+            android:layout_marginTop="@dimen/size_6"
+            android:layout_marginBottom="@dimen/size_6"
             />
 
         <TextView
@@ -43,24 +56,31 @@
             android:textSize="@dimen/text_small_12" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/iv_content"
+
+    <RelativeLayout
+        android:id="@+id/rl_content"
         android:layout_width="@dimen/size_56"
         android:layout_height="@dimen/size_56"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/size_12"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12">
 
-        />
-    
-    <ImageView
-        android:id="@+id/iv_dot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/shape_dot_red"
-        android:layout_alignRight="@+id/iv_avatar"
-        android:layout_alignTop="@+id/iv_avatar"
-        android:visibility="gone"
-        />
+        <ImageView
+            android:id="@+id/iv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/iv_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/video"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
 
 </RelativeLayout>

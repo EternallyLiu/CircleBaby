@@ -98,6 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
+
     <RelativeLayout
         android:id="@+id/rl_setting_about"
         android:layout_width="match_parent"
@@ -127,6 +128,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
+
     <RelativeLayout
         android:id="@+id/rl_setting_score"
         android:layout_width="match_parent"
@@ -152,10 +154,6 @@
             android:src="@drawable/mine_data_go" />
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_color6" />
     <RelativeLayout
         android:id="@+id/rl_setting_clear"
         android:layout_width="match_parent"
@@ -179,7 +177,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_12"
-            android:textSize="@dimen/text_medium"/>
+            android:textSize="@dimen/text_medium" />
     </RelativeLayout>
 
     <View

@@ -4,9 +4,9 @@
     <item
         android:id="@+id/read"
         android:title="全部已读"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/del"
         android:title="全部删除"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 </menu>

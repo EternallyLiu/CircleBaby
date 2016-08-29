@@ -36,6 +36,7 @@ import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.Utils;
 
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_PHOTO_PATHS;
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SELECTOR_POSITION;
@@ -124,6 +125,13 @@ public class BigImageFragment extends BaseFragment{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_bigimage, menu);
         save = menu.findItem(R.id.save);
+        if(delete){
+            save.setTitle("删除");
+        }else{
+            if(!download){
+                save.setVisible(false);
+            }
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -174,6 +182,9 @@ public class BigImageFragment extends BaseFragment{
             Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
             save.setEnabled(true);
             return;
+        }
+        if(!Utils.isNetworkConnected(getContext())){
+            ToastUtil.showToast("网络异常");
         }
         ToastUtil.showToast("开始保存图片…");
         new Thread(new Runnable() {

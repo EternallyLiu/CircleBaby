@@ -281,7 +281,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
         if (timelineobj.getType() == 1) {
             ivVideo.setVisibility(View.VISIBLE);
-            int width = Remember.getInt("width", 0);
+            int width = Remember.getInt("width", 0)*3;
             ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
             layoutParams.width = width;
             layoutParams.height = (int) (width*0.5);

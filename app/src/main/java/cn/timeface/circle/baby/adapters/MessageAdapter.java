@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -27,7 +28,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
 
-    private ViewHolder holder;
     private View.OnClickListener onClickListener;
 
     public MessageAdapter(Context mContext, List<Msg> listData) {
@@ -35,8 +35,8 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
 
     }
 
-    public void setAllRead(){
-        for(Msg msg : listData){
+    public void setAllRead() {
+        for (Msg msg : listData) {
             msg.setIsRead(1);
         }
     }
@@ -54,29 +54,52 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        holder = (ViewHolder) viewHolder;
+        ViewHolder holder = (ViewHolder) viewHolder;
         Msg info = getItem(position);
         holder.onClickListener = onClickListener;
         holder.info = info;
         GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar);
-        if(info.getType() == 0){
+        if (info.getType() == 0) {
             holder.tvRelation.setText("系统消息");
-        }else{
+        } else {
             holder.tvRelation.setText(FastData.getBabyName() + info.getUserInfo().getRelationName());
         }
-        holder.tvTime.setText(DateUtil.getDisTime(info.getTime()));
+        holder.tvTime.setText(DateUtil.formatDate("yyyy-MM-dd kk:mm", info.getTime()));
         if (info.getTimeInfo().getMediaList() == null || info.getTimeInfo().getMediaList().size() < 1) {
-            holder.ivContent.setVisibility(View.GONE);
+            holder.rlContent.setVisibility(View.GONE);
         } else {
-            holder.ivContent.setVisibility(View.VISIBLE);
+            holder.rlContent.setVisibility(View.VISIBLE);
             GlideUtil.displayImage(info.getTimeInfo().getMediaList().get(0).getImgUrl(), holder.ivContent);
+            if (info.getTimeInfo().getType() == 1) {
+                holder.ivVideo.setVisibility(View.VISIBLE);
+            }else{
+                holder.ivVideo.setVisibility(View.GONE);
+            }
         }
         if (info.getIsRead() == 0) {
             holder.ivDot.setVisibility(View.VISIBLE);
         } else {
             holder.ivDot.setVisibility(View.GONE);
         }
-        holder.tvContent.setText(info.getContent());
+        String content = "";
+        switch (info.getType()) {
+            case 0:
+                content = info.getContent();
+                break;
+            case 1:
+                content = "赞了一下";
+                break;
+            case 2:
+                content = "发布了新动态";
+                break;
+            case 3:
+                content = info.getContent();
+                break;
+            case 4:
+                content = "加入了宝宝印记，关注" + FastData.getBabyName() + "成长";
+                break;
+        }
+        holder.tvContent.setText(content);
     }
 
     @Override
@@ -104,6 +127,10 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         RelativeLayout rlMessage;
         @Bind(R.id.iv_dot)
         ImageView ivDot;
+        @Bind(R.id.iv_video)
+        ImageView ivVideo;
+        @Bind(R.id.rl_content)
+        RelativeLayout rlContent;
 
         View.OnClickListener onClickListener = null;
         Msg info;

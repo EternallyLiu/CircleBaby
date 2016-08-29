@@ -133,12 +133,13 @@ public class DiaryPreviewFragment extends BaseFragment {
         tfProgressDialog = new TFProgressDialog(getActivity());
         tvTime.setText(title);
         tvContent.setText(content);
+
         touchImageView = new ScaleImageView(getActivity(), imgObj);
         url = imgObj.getLocalPath();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("DiaryPreviewFragment.url === "+url);
+                System.out.println("DiaryPreviewFragment.url === " + url);
                 uploadImage();
             }
         }).run();
@@ -389,16 +390,19 @@ public class DiaryPreviewFragment extends BaseFragment {
             String content = tvContent.getText().toString();
 
             List<String> contents = new ArrayList<>();
-            while (content.length() > 18) {
-                char c = content.charAt(17);
-                String[] split = content.split(String.valueOf(c));
-                contents.add(split[0]);
-                content = split[1];
+
+            String[] split = content.split("\r\n");
+            if(split[0].equals(content)){
+                split = content.split("\n");
             }
-            contents.add(content);
+            for(int i = 0;i<split.length;i++){
+                contents.add(split[i]);
+            }
+
+            System.out.println("contents ================= "+contents);
 
             createTime = System.currentTimeMillis();
-            while (TextUtils.isEmpty(objectKey)){
+            while (TextUtils.isEmpty(objectKey)) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -412,13 +416,13 @@ public class DiaryPreviewFragment extends BaseFragment {
             List<TemplateAreaObj> templateList = templateObj.getTemplateList();
 
             for (TemplateAreaObj templateAreaObj : templateList) {
-                if (templateAreaObj.getType() == 3){
+                if (templateAreaObj.getType() == 3) {
                     //image
                     templateAreaObj.setTemplateImage(templateImage);
-                }else if (templateAreaObj.getType() == 2 && templateAreaObj.getTextType() == 0) {
+                } else if (templateAreaObj.getType() == 2 && templateAreaObj.getTextType() == 0) {
                     //title
                     templateAreaObj.setText(title);
-                }else if(templateAreaObj.getType() == 2 && templateAreaObj.getTextType() == 1 && contents.size()>0){
+                } else if (templateAreaObj.getType() == 2 && templateAreaObj.getTextType() == 1 && contents.size() > 0) {
                     //content
                     templateAreaObj.setText(contents.get(0));
                     contents.remove(0);
@@ -429,16 +433,16 @@ public class DiaryPreviewFragment extends BaseFragment {
             apiService.diaryComposed(URLEncoder.encode(s))
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(diaryComposedResponse -> {
-                        if(diaryComposedResponse.success()){
+                        if (diaryComposedResponse.success()) {
                             MediaObj mediaObj = diaryComposedResponse.getMediaObj();
                             mediaObj.setPhotographTime(createTime);
                             System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
                             tfProgressDialog.dismiss();
-                            PublishActivity.open(getContext(),mediaObj);
+                            PublishActivity.open(getContext(), mediaObj);
                             getActivity().finish();
                             EventBus.getDefault().post(new DiaryPublishEvent());
 //                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
-                        }else{
+                        } else {
                             ToastUtil.showToast(diaryComposedResponse.getInfo());
                         }
                     }, throwable -> {

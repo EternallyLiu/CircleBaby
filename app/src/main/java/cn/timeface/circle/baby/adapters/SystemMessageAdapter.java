@@ -52,9 +52,9 @@ public class SystemMessageAdapter extends BaseRecyclerAdapter<SystemMsg> {
         holder.info = info;
         GlideUtil.displayImage(info.getAvatar(), holder.ivAvatar);
         holder.tvRelation.setVisibility(View.GONE);
-        holder.tvTime.setText(DateUtil.getDisTime(info.getTime()));
+        holder.tvTime.setText(DateUtil.formatDate("yyyy-MM-dd kk:mm",info.getTime()));
         holder.tvContent.setText(info.getContent());
-        holder.ivContent.setVisibility(View.GONE);
+        holder.rlContent.setVisibility(View.GONE);
 
     }
 
@@ -83,6 +83,10 @@ public class SystemMessageAdapter extends BaseRecyclerAdapter<SystemMsg> {
         RelativeLayout rlMessage;
         @Bind(R.id.iv_dot)
         ImageView ivDot;
+        @Bind(R.id.iv_video)
+        ImageView ivVideo;
+        @Bind(R.id.rl_content)
+        RelativeLayout rlContent;
 
         View.OnClickListener onClickListener = null;
         SystemMsg info;

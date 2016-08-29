@@ -75,6 +75,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         etTitle.setText(DateUtil.getYear2(System.currentTimeMillis()));
+        etTitle.clearFocus();
 
         int width = Remember.getInt("width", 0) * 3;
         ViewGroup.LayoutParams layoutParams = ivDiary.getLayoutParams();

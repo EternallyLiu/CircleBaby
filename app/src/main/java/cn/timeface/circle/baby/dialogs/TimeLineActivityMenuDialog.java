@@ -31,6 +31,7 @@ import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
@@ -140,6 +141,9 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
             if(file1.exists()){
                 ToastUtil.showToast("已保存到baby文件夹下");
                 return;
+            }
+            if(!Utils.isNetworkConnected(context)){
+                ToastUtil.showToast("网络异常");
             }
             ToastUtil.showToast("保存视频…");
             new Thread(new Runnable() {

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,6 +32,7 @@ import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.MiPushUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
@@ -102,7 +104,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         rlSettingMsg.setOnClickListener(this);
         rlSettingShare.setOnClickListener(this);
         rlSettingAbout.setOnClickListener(this);
-        rlSettingScore.setOnClickListener(this);
+        rlSettingScore.setVisibility(View.GONE);
         rlSettingClear.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
     }
@@ -131,9 +133,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 if (Remember.getInt("msg", 1) == 0) {
                     ivSwichMsg.setImageResource(R.drawable.swichon);
                     Remember.putInt("msg", 1);
+                    MiPushUtil.init(getContext());
                 } else {
                     ivSwichMsg.setImageResource(R.drawable.swichoff);
                     Remember.putInt("msg", 0);
+                    MiPushClient.unregisterPush(getContext());
                 }
                 break;
 
@@ -147,10 +151,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
             case R.id.rl_setting_about:
                 AboutActivity.open(getContext());
-                break;
-
-            case R.id.rl_setting_score:
-
                 break;
 
             case R.id.rl_setting_clear:
