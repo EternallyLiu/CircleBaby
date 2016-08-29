@@ -145,8 +145,4 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, new OpenUploadServices());
     }
 
-    @Override
-    public void onBackPressed() {
-
-    }
 }

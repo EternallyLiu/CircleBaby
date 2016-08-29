@@ -550,13 +550,22 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             w = h;
             h = temp;
         }
-        float scale = width / w;//因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
-        int left = (int) (rect.left * scale);
-        int top = (int) (rect.top * scale);
-        w = (int) (w * scale);
-        h = (int) (h * scale);
+        int left = rect.left;
+        int top = rect.top;
+        if (w < 4096 && h < 4096) {
+            //因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
+            imgUrl += "@" + left + "-" + top + "-" + w + "-" + h + "a_" + rotation + "r_" + width + "w_" + "1l_1o.webp";
+        } else {
+            //因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
+            float scale = width / w;
+            left *= scale;
+            top *= scale;
+            w *= scale;
+            h *= scale;
+            imgUrl += "@" + width + "w_" + left + "-" + top + "-" + w + "-" + h + "a" + "_" + rotation + "r" + "_1l_1o" + ".webp";
+        }
 
-        imgUrl += "@" + width + "w_" + left + "-" + top + "-" + w + "-" + h + "a" + "_" + rotation + "r" + "_1l_1o" + ".webp";
+
         Log.i("open glide image url", "getCropImageUrl: " + imgUrl);
         return imgUrl;
     }

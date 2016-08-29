@@ -391,8 +391,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
         elementModel.getImageContentExpand().setImageScale(finalImageScale);
         elementModel.getImageContentExpand().setImageWidth(newImageW);
         elementModel.getImageContentExpand().setImageHeight(newImageH);
-        elementModel.getImageContentExpand().setImageStartPointX(left * finalImageScale);
-        elementModel.getImageContentExpand().setImageStartPointY(top * finalImageScale);
+        elementModel.getImageContentExpand().setImageStartPointX(left);
+        elementModel.getImageContentExpand().setImageStartPointY(top);
         elementModel.getImageContentExpand().setImageRotation(rotation);
     }
 
