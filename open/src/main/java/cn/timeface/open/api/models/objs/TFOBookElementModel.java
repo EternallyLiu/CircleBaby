@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
 
 import java.io.File;
 
@@ -381,6 +382,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
                     .listener(new RequestListener<TFOBookElementModel, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, TFOBookElementModel model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            Log.e("image error", "onException: " + new Gson().toJson(model), e);
                             return false;
                         }
 
