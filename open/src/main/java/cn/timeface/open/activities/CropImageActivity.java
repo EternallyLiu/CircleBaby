@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -331,8 +330,8 @@ public class CropImageActivity extends BaseAppCompatActivity {
         RectF cropRect = imageState.getCropRect();
         RectF imageRect = imageState.getCurrentImageRect();
 
-        float top = Math.round((cropRect.top - imageRect.top) / imageState.getCurrentScale());
-        float left = Math.round((cropRect.left - imageRect.left) / imageState.getCurrentScale());
+        float top = Math.max(Math.round((cropRect.top - imageRect.top) / imageState.getCurrentScale()), 0);
+        float left = Math.max(Math.round((cropRect.left - imageRect.left) / imageState.getCurrentScale()), 0);
         int width = Math.round(cropRect.width() / imageState.getCurrentScale());
         int height = Math.round(cropRect.height() / imageState.getCurrentScale());
 
