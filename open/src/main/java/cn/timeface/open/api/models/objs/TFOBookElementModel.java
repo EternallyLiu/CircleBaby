@@ -56,6 +56,10 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     public static final int ELEMENT_TYPE_BOOK_PAGE_NUMBER = 3;
     public static final int ELEMENT_TYPE_CUSTOM = 4;
 
+    public static final int ELEMENT_ASSIST_DEFAULT = 0;
+    public static final int ELEMENT_ASSIST_WEB = 1;
+
+
     int element_id;
     String element_index;
     int element_flag; //"元素标识 0默认不做特殊处理 1书名 2作者 3页码 4 自定义封面用户 状态下的封面图片"

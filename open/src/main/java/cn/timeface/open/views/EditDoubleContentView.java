@@ -49,6 +49,18 @@ public class EditDoubleContentView extends DoubleContentView {
                         return Observable.from(tfoBookElementModels);
                     }
                 })
+                .filter(new Func1<TFOBookElementModel, Boolean>() {
+                    @Override
+                    public Boolean call(TFOBookElementModel tfoBookElementModel) {
+                        return tfoBookElementModel.getElementAssist() == TFOBookElementModel.ELEMENT_ASSIST_DEFAULT;
+                    }
+                })
+                .filter(new Func1<TFOBookElementModel, Boolean>() {
+                    @Override
+                    public Boolean call(TFOBookElementModel tfoBookElementModel) {
+                        return tfoBookElementModel.getElementDeleted() == 0;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<TFOBookElementModel>() {
