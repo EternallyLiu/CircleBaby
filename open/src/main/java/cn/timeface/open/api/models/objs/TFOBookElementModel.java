@@ -340,6 +340,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
                     .load(this.element_front_mask_image)
                     .centerCrop()
                     .into(frontMask);
+            frontMask.setClickable(false);
             elementFrameLayout.addView(frontMask);
         }
 
@@ -365,12 +366,26 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
                     .bitmapTransform(new Transformation<Bitmap>() {
                         @Override
                         public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
+                            Log.i("mask", "transform: " + resource.get().isRecycled());
                             return BitmapResource.obtain(Utils.fixBitmap(resource.get(), getMaskFile(context)), Glide.get(context).getBitmapPool());
                         }
 
                         @Override
                         public String getId() {
-                            return "mask image";
+                            return "mask image" + System.nanoTime();
+                        }
+                    })
+                    .listener(new RequestListener<TFOBookElementModel, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, TFOBookElementModel model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            Log.e("mask", "onException: ", e);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, TFOBookElementModel model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            Log.e("mask", "onResourceReady: ");
+                            return false;
                         }
                     })
                     .into(imageView);

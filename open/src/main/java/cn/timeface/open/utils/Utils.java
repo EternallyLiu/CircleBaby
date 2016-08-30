@@ -3,6 +3,7 @@ package cn.timeface.open.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,11 +54,12 @@ public class Utils {
         //生成前置图片添加蒙板后的bitmap:resultBitmap
         resultBitmap.setPixels(picPixels, 0, w, 0, 0, w, h);
 
-        if (!picBitmap.isRecycled()) {
-            picBitmap.recycle();
-            picBitmap = null;
-        }
-
+        // TODO: 8/30/16 不能回收该bitmap,这个bitmap会重新使用,可能会导致内存问题,待观察
+//        if (!picBitmap.isRecycled()) {
+//            picBitmap.recycle();
+//            picBitmap = null;
+//        }
+//
         if (!maskBitmap.isRecycled()) {
             maskBitmap.recycle();
             maskBitmap = null;
