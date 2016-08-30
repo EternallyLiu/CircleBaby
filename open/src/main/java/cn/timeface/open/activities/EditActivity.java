@@ -421,7 +421,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             Log.i(TAG, "onCreate: make change  left = " + (em.getElementLeft() + (em.isRight() ? screenInfo.x / 2 : 0)) + " top = " + em.getElementTop());
 
             if (em.isRight()) {
-                em.setElementLeft(em.getElementLeft() + screenInfo.x / 2);
+                em.setElementLeft(em.getElementLeft() + (float) Math.ceil((double) screenInfo.x / 2));
             }
 
             if (em.getElementLeft() > screenInfo.x / 2) {

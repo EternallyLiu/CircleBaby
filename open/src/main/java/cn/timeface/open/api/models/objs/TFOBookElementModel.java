@@ -378,7 +378,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
                     .listener(new RequestListener<TFOBookElementModel, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, TFOBookElementModel model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            Log.e("mask", "onException: ", e);
+                            Log.e("mask", "onException: " + new Gson().toJson(model), e);
                             return false;
                         }
 
