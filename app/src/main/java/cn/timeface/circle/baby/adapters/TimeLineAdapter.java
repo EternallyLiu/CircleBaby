@@ -98,7 +98,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder.timeLineObj = item;
         holder.tvContent.setText(item.getContent());
         holder.tvAuthor.setText(item.getAuthor().getRelationName());
-        holder.tvDate.setText(DateUtil.formatDate("MM-dd kk:mm",item.getDate()));
+        holder.tvDate.setText(DateUtil.formatDate("MM-dd kk:mm", item.getDate()));
         holder.iconLike.setSelected(item.getLike() == 1 ? true : false);
         holder.tvCommentcount.setText(item.getCommentList().size() + "");
         holder.tvLikecount.setText(item.getLikeList().size() + "");
@@ -112,7 +112,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.gv.setVisibility(View.GONE);
             String url = item.getMediaList().get(0).getImgUrl();
             GlideUtil.displayImage(url, holder.ivCover);
-            int width = Remember.getInt("width", 0)*3;
+            int width = Remember.getInt("width", 0) * 3;
             ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
             layoutParams.width = width;
             layoutParams.height = width;
@@ -133,10 +133,16 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.gv.setAdapter(myAdapter);
             ViewGroup.LayoutParams layoutParams = holder.gv.getLayoutParams();
             layoutParams.height = Remember.getInt("width", 0);
+            if (item.getMediaList().size() == 2) {
+                layoutParams.height = Remember.getInt("width", 0) * 3 / 2;
+                holder.gv.setNumColumns(2);
+            }
             if (item.getMediaList().size() > 3) {
+                holder.gv.setNumColumns(3);
                 layoutParams.height = Remember.getInt("width", 0) * 2;
             }
             if (item.getMediaList().size() > 6) {
+                holder.gv.setNumColumns(3);
                 layoutParams.height = Remember.getInt("width", 0) * 3;
             }
             holder.gv.setLayoutParams(layoutParams);
@@ -184,10 +190,10 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         if (item.getType() == 1) {
             holder.ivVideo.setVisibility(View.VISIBLE);
-            int width = Remember.getInt("width", 0)*3;
+            int width = Remember.getInt("width", 0) * 3;
             ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
             layoutParams.width = width;
-            layoutParams.height = (int) (width*0.5);
+            layoutParams.height = (int) (width * 0.5);
             holder.ivCover.setLayoutParams(layoutParams);
             holder.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             holder.rlSingle.setOnClickListener(new View.OnClickListener() {
@@ -428,7 +434,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                             });
                     break;
                 case R.id.icon_comment:
-                    EventBus.getDefault().post(new IconCommentClickEvent(allDetailsPosition,position,timeLineObj));
+                    EventBus.getDefault().post(new IconCommentClickEvent(allDetailsPosition, position, timeLineObj));
                     break;
                 case R.id.rl_action:
 
@@ -472,7 +478,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                         }).show();
                     } else {
                         //回复操作
-                        EventBus.getDefault().post( new ActionCallBackEvent(commment,allDetailsPosition,position,timeLineObj));
+                        EventBus.getDefault().post(new ActionCallBackEvent(commment, allDetailsPosition, position, timeLineObj));
                     }
                     break;
                 case R.id.rl_cancel:
@@ -483,7 +489,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         }
 
         private View initCommentItemView(CommentObj comment) {
-            View view = View.inflate(context,R.layout.view_comment, null);
+            View view = View.inflate(context, R.layout.view_comment, null);
             TextView tvComment = (TextView) view.findViewById(R.id.tv_comment);
             TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
             SpannableStringBuilder msb = new SpannableStringBuilder();
@@ -521,7 +527,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         }
 
         public View initCommentMenu(CommentObj comment) {
-            View view = View.inflate(context,R.layout.view_comment_menu, null);
+            View view = View.inflate(context, R.layout.view_comment_menu, null);
             LinearLayout backView = (LinearLayout) view.findViewById(R.id.ll_publish_menu);
             backView.setBackgroundColor(context.getResources().getColor(R.color.trans));
             RelativeLayout tvAction = (RelativeLayout) view.findViewById(R.id.rl_action);
@@ -569,6 +575,9 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                 tvCount.setText(urls.size() - 9 + "+");
             }
             int width = Remember.getInt("width", 0);
+            if (urls.size() == 2) {
+                width = Remember.getInt("width", 0) * 3 / 2;
+            }
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width);
             iv.setLayoutParams(params);
             tvCount.setLayoutParams(params);

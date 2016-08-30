@@ -202,7 +202,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     //    @TargetApi(Build.VERSION_CODES.M)
     private void setupPTR() {
         animatorSet.setInterpolator(new DecelerateInterpolator());
-        animatorSet.setDuration(400);
+        animatorSet.setDuration(10);
         contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

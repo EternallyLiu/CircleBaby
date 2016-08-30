@@ -31,6 +31,9 @@ public class GlideUtil {
             imageView.setImageResource(R.drawable.ic_launcher);
             return;
         }
+        if(url.startsWith("http") && url.endsWith("@.jpg")){
+            url = url.replace("@.jpg", "@600w_600h_1l_1o");
+        }
         Glide.with(context).load(url).into(imageView);
     }
 

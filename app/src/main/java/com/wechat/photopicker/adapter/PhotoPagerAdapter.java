@@ -34,17 +34,20 @@ public class PhotoPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View view = mLayoutInflater.inflate(R.layout.item_big_image, container, false);
         PhotoView imageView = (PhotoView) view.findViewById(R.id.iv_big_image);
-
-        if (mPaths.get(position).startsWith("http://")) {
+        String path = mPaths.get(position);
+        if (path.startsWith("http://")) {
+            if(path.endsWith("@.jpg")){
+                path = path.replace("@.jpg","@600w_600h_1l_1o");
+            }
             Glide.with(mContext)
-                    .load(mPaths.get(position))
+                    .load(path)
                     .error(R.mipmap.ic_broken_image_black_48dp)
                     .fitCenter()
                     .into(imageView);
             container.addView(view);
         } else {
             Glide.with(mContext)
-                    .load(new File(mPaths.get(position)))
+                    .load(new File(path))
                     .error(R.mipmap.ic_broken_image_black_48dp)
                     .fitCenter()
                     .into(imageView);

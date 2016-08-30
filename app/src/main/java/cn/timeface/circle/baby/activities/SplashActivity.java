@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.activities;
 
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -25,6 +27,8 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
@@ -32,11 +36,13 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.PushItem;
 import cn.timeface.circle.baby.api.models.responses.PushResponse;
 import cn.timeface.circle.baby.api.models.responses.UpdateResponse;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.managers.receivers.DownloadCompleteReceiver;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.NotificationUtil;
 import cn.timeface.circle.baby.utils.Once;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DeviceUtil;
@@ -365,8 +371,88 @@ public class SplashActivity extends BaseAppCompatActivity {
 //        } else {
 //            checkLimit();
 //        }
-        LoginActivity.open(this);
+        if(FastData.getUserFrom() == -1){
+            LoginActivity.open(this);
+        }else if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
+            //上次登录为手机号登录
+            String account = FastData.getAccount();
+            String password = FastData.getPassword();
+            if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
+                login(account, password, 0);
+            }
+        } else {
+            //上次登录为三方账号登录
+            String platform = cn.timeface.circle.baby.utils.Remember.getString("platform", "");
+            ShareSDK.initSDK(this);
+            if(!TextUtils.isEmpty(platform)){
+                Platform plat = ShareSDK.getPlatform(platform);
+                thirdLogin(plat.getDb().getToken(),
+                        plat.getDb().getUserIcon(),
+                        plat.getDb().getExpiresIn(),
+                        FastData.getUserFrom(),
+                        "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
+                        plat.getDb().getUserName(),
+                        "",
+                        plat.getDb().getUserId(),
+                        "", SplashActivity.this);
+            }
+        }
+
         finish();
+    }
+
+    private Subscription login(String account, String psw, int type) {
+        Subscription s;
+        s = apiService.login(account, psw, type)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(loginResponse -> {
+                    ToastUtil.showToast(loginResponse.getInfo());
+                    if (loginResponse.success()) {
+                        FastData.setUserInfo(loginResponse.getUserInfo());
+                        FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
+                        FastData.setAccount(account);
+                        FastData.setPassword(psw);
+                        if (loginResponse.getBabycount() == 0) {
+                            CreateBabyActivity.open(this,true);
+                        } else {
+                            startActivity(new Intent(this, TabMainActivity.class));
+                        }
+                    }
+
+                }, throwable -> {
+                    Log.e(TAG, "login:", throwable);
+                    throwable.printStackTrace();
+                });
+        return s;
+    }
+
+    public void thirdLogin(String accessToken,
+                           String avatar,
+                           long expiry_in,
+                           int from,
+                           int gender,
+                           String nickName,
+                           String openid,
+                           String platId,
+                           String unionid, Context context) {
+        apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(loginResponse -> {
+                    if (loginResponse.success()) {
+                        FastData.setUserInfo(loginResponse.getUserInfo());
+                        FastData.setUserFrom(from);
+                        if (loginResponse.getBabycount() == 0) {
+                            CreateBabyActivity.open(this,true);
+                        } else {
+                            startActivity(new Intent(this, TabMainActivity.class));
+                        }
+                    }
+                }, error -> {
+                    Log.e(TAG, "vendorLogin:", error);
+                    error.printStackTrace();
+                });
     }
 
     /*private void checkLimit() {
