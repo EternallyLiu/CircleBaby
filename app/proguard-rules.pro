@@ -315,6 +315,3 @@
 -keepclasseswithmembernames class * {
     @cn.timeface.mvp.annotation.* <fields>;
 }
-
-# pinyin4j
--keep net.sourceforge.pinyin4j{*;}

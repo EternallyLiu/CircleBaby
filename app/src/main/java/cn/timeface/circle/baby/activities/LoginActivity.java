@@ -10,27 +10,16 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
-
-import cn.timeface.circle.baby.api.models.objs.UserObj;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,18 +28,19 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
-import cn.sharesdk.tencent.qzone.QZone;
 import cn.sharesdk.wechat.friends.Wechat;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.login.LoginApi;
 import cn.timeface.circle.baby.utils.login.OnLoginListener;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.encode.AES;
-import cn.timeface.open.BuildConfig;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -163,7 +153,8 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 String account = etPhone.getText().toString().trim();
                 String psw = new AES().encrypt(etPassword.getText().toString().trim().getBytes());
                 if(TextUtils.isEmpty(account)||TextUtils.isEmpty(psw)){
-                    ToastUtil.showToast("请输入用户名和密码");
+                    Toast.makeText(this,"请输入用户名和密码",Toast.LENGTH_SHORT).show();
+//                    ToastUtil.showToast("请输入用户名和密码");
                     return;
                 }
                 s = login(account, psw, 0);
@@ -179,7 +170,8 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginResponse -> {
-                    ToastUtil.showToast(loginResponse.getInfo());
+                    Toast.makeText(this,loginResponse.getInfo(),Toast.LENGTH_SHORT).show();
+//                    ToastUtil.showToast(loginResponse.getInfo());
                     if (loginResponse.success()) {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);

@@ -159,8 +159,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         context.startActivity(intent);
     }
 
-    public static void openForResult(Activity context, String fragmentName, int requestId) {
+    public static void openForResult(Activity context, String fragmentName, int requestId,String content) {
         Intent intent = generateIntent(context, fragmentName);
+        intent.putExtra("diary_content",content);
         context.startActivityForResult(intent, requestId);
     }
 

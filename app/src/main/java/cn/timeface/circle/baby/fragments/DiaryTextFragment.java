@@ -48,6 +48,7 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
 
     private MyAdapter myAdapter;
     private DiaryTextResponse diaryTextResponse;
+    private String content;
 
     public DiaryTextFragment() {
     }
@@ -56,6 +57,10 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        content = getArguments().getString("diary_content");
+        if(content.contains("\r\n")){
+            content.replace("\r\n","\n");
+        }
     }
 
     @Override
@@ -69,6 +74,7 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("日记卡片配文");
         }
+        etContent.setText(content);
         tvChange.setOnClickListener(this);
         tvAuto.setOnClickListener(this);
 
@@ -189,22 +195,35 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
                 ToastUtil.showToast("记录宝宝今天的成长吧~");
                 return true;
             }
-            String[] split = content.split("\n");
-            if (split.length > 3) {
-                ToastUtil.showToast("行数不能大于三行哦~");
-                return true;
-            }
-            for(int i =0;i<split.length;i++){
-                if(split[i].length()>18){
-                    ToastUtil.showToast("单行最大字数为18字~");
-                    return true;
-                }
-            }
             if (content.length() > 54) {
                 ToastUtil.showToast("不能超过54个字哦~");
                 return true;
             }
-            System.out.println(etContent.getText());
+            String[] split = content.split("\n");
+            if (split.length > 3) {
+                content = "";
+                for(int i =0;i<split.length;i++){
+                    content +=split[i];
+                }
+                split = content.split("\n");
+            }
+            for(int i =0;i<split.length;i++){
+                String s = split[i];
+                if(split.length ==1 && s.length() > 18){
+                    String substring1 = s.substring(0, 18);
+                    if(s.length()>36){
+                        String substring2 = s.substring(18, 36);
+                        String substring3 = s.substring(36);
+                        content = substring1+"\n"+substring2+"\n"+substring3;
+                    }else{
+                        String substring2 = s.substring(18);
+                        content = substring1+"\n"+substring2;
+                    }
+                    System.out.println("content ============ "+content);
+                }
+
+            }
+
             Intent intent = new Intent();
             intent.putExtra("content", content);
             getActivity().setResult(Activity.RESULT_OK, intent);

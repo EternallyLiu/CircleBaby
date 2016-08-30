@@ -225,7 +225,7 @@ public class FastData extends Remember {
     }
 
     public static int getUserFrom() {
-        return getInt(USER_FROM, 0);
+        return getInt(USER_FROM, -1);
     }
 
     public static void setUserFrom(int userFrom) {

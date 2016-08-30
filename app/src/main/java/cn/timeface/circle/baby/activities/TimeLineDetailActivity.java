@@ -189,7 +189,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         listPos = getIntent().getIntExtra("listPos", -1);
         tvContent.setText(timelineobj.getContent());
         tvAuthor.setText(timelineobj.getAuthor().getRelationName());
-        tvDate.setText(DateUtil.formatDate("MM-dd kk:mm",timelineobj.getDate()));
+        tvDate.setText(DateUtil.formatDate("MM-dd kk:mm", timelineobj.getDate()));
         getSupportActionBar().setTitle(timelineobj.getAuthor().getBabyObj().getName());
         iconLike.setSelected(timelineobj.getLike() == 1 ? true : false);
 
@@ -203,19 +203,19 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             ivCover.setVisibility(View.VISIBLE);
             String url = timelineobj.getMediaList().get(0).getImgUrl();
             GlideUtil.displayImage(url, ivCover);
-            int width = Remember.getInt("width", 0)*3;
+            int width = Remember.getInt("width", 0) * 3;
             ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
             layoutParams.width = width;
             layoutParams.height = width;
             ivCover.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            if(timelineobj.getType() != 1){
+            if (timelineobj.getType() != 1) {
                 ivCover.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         ArrayList<String> strings = new ArrayList<>();
                         strings.add(url);
-                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0,true,false);
+                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0, true, false);
                     }
                 });
             }
@@ -234,10 +234,16 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             gv.setAdapter(myAdapter);
             ViewGroup.LayoutParams layoutParams = gv.getLayoutParams();
             layoutParams.height = Remember.getInt("width", 0);
+            if (timelineobj.getMediaList().size() == 2) {
+                gv.setNumColumns(2);
+                layoutParams.height = Remember.getInt("width", 0) * 3 / 2;
+            }
             if (timelineobj.getMediaList().size() > 3) {
+                gv.setNumColumns(3);
                 layoutParams.height = Remember.getInt("width", 0) * 2;
             }
             if (timelineobj.getMediaList().size() > 6) {
+                gv.setNumColumns(3);
                 layoutParams.height = Remember.getInt("width", 0) * 3;
             }
             gv.setLayoutParams(layoutParams);
@@ -281,10 +287,10 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
         if (timelineobj.getType() == 1) {
             ivVideo.setVisibility(View.VISIBLE);
-            int width = Remember.getInt("width", 0)*3;
+            int width = Remember.getInt("width", 0) * 3;
             ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
             layoutParams.width = width;
-            layoutParams.height = (int) (width*0.5);
+            layoutParams.height = (int) (width * 0.5);
             ivCover.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             rlSingle.setOnClickListener(this);
@@ -616,6 +622,9 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                 tvCount.setText(urls.size() - 9 + "+");
             }
             int width = Remember.getInt("width", 0);
+            if (urls.size() == 2) {
+                width = Remember.getInt("width", 0) * 3 / 2;
+            }
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width);
             iv.setLayoutParams(params);
             tvCount.setLayoutParams(params);
@@ -623,7 +632,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position,true,false);
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position, true, false);
                 }
             });
             return view;
