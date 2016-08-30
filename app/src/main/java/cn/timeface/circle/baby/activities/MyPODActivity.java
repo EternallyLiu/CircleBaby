@@ -133,7 +133,7 @@ public class MyPODActivity extends PODActivity {
                     if (response.success()) {
                         EventBus.getDefault().post(new BookOptionEvent());
                     } else {
-                        ToastUtil.showToast(response.getInfo());
+//                        ToastUtil.showToast(response.getInfo());
                     }
                 }, error -> {
                     Log.e(TAG, "editBookCover:");
