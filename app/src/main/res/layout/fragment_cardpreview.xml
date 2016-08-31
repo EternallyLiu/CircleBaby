@@ -34,6 +34,7 @@
             android:padding="@dimen/size_6"
             android:layout_gravity="center_horizontal"
             android:singleLine="true"
+            android:maxLength="4"
             />
 
 

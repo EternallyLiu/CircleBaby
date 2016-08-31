@@ -82,7 +82,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setTitle("设置");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -164,16 +164,10 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 apiService.logout()
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            if(response.success()){
-                                if(FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL){
-                                    FastData.setAccount("");
-                                }else{
-                                    Remember.putString("platform","");
-                                }
-                                LoginActivity.open(getActivity());
-                                getActivity().finish();
-                                EventBus.getDefault().post(new LogoutEvent());
-                            }
+                            FastData.setUserFrom(-1);
+                            LoginActivity.open(getActivity());
+                            getActivity().finish();
+                            EventBus.getDefault().post(new LogoutEvent());
                         }, throwable -> {
                             Log.e(TAG, "logout:");
                         });

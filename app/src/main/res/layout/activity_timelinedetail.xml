@@ -39,7 +39,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/text_medium"
-                        tools:text="今天去外婆家，宝宝不闹！" />
+                        android:padding="@dimen/size_6"
+                        android:lineSpacingMultiplier="1.2"
+                        android:textColor="@color/black"/>
 
 
                     <GridView
@@ -130,6 +132,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginRight="@dimen/size_2"
+                                android:padding="@dimen/size_6"
                                 android:src="@drawable/selector_timeline_like" />
 
                             <TextView
@@ -146,7 +149,8 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="@dimen/size_6"
                                 android:layout_marginRight="@dimen/size_2"
-                                android:src="@drawable/timeline_comment" />
+                                android:src="@drawable/timeline_comment"
+                                android:padding="@dimen/size_6"/>
 
                             <TextView
                                 android:id="@+id/tv_commentcount"

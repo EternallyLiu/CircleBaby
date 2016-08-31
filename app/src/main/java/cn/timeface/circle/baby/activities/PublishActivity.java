@@ -55,6 +55,7 @@ import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
+import cn.timeface.circle.baby.events.PickerPhototAddEvent;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
@@ -404,6 +405,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
                         EventBus.getDefault().post(new HomeRefreshEvent());
+                        EventBus.getDefault().post(new PickerPhototAddEvent());
                         finish();
                     }
                 }, throwable -> {
@@ -440,6 +442,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     if (response.success()) {
                         if (type == 1) {
                             uploadVideo(videoInfo.getPath());
+                        }else{
+                            EventBus.getDefault().post(new PickerPhototAddEvent());
                         }
                         EventBus.getDefault().post(new HomeRefreshEvent());
                         finish();

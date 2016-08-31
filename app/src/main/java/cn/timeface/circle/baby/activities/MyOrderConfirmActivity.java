@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
@@ -55,7 +56,6 @@ import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyTypeObj;
 import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.api.models.responses.PrintFullSiteCouponObj;
-import cn.timeface.circle.baby.constants.LogConstant;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.constants.URLConstant;
 import cn.timeface.circle.baby.dialogs.SelectPayWayDialog;

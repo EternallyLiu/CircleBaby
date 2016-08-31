@@ -7,7 +7,6 @@ import android.support.multidex.MultiDexApplication;
 import com.activeandroid.ActiveAndroid;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.squareup.leakcanary.LeakCanary;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
@@ -16,7 +15,7 @@ import java.util.List;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.managers.recorders.SimpleUploadRecorder;
 import cn.timeface.circle.baby.oss.uploadservice.UploadService;
-import cn.timeface.circle.baby.push.MiPushMessageReceive;
+import cn.timeface.circle.baby.push.MiPushMessageReceiver;
 import cn.timeface.circle.baby.utils.ChannelUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -31,7 +30,7 @@ import cn.timeface.common.utils.TimeFaceUtilInit;
  */
 public class App extends MultiDexApplication {
     private static App app = new App();
-    private static MiPushMessageReceive.DemoHandler handler = null;
+    private static MiPushMessageReceiver.DemoHandler handler = null;
 
     public static App getInstance() {
         if (app == null) {
@@ -67,7 +66,7 @@ public class App extends MultiDexApplication {
         GlideUtil.init(this);
 
         if (handler == null) {
-            handler = new MiPushMessageReceive.DemoHandler(getApplicationContext());
+            handler = new MiPushMessageReceiver.DemoHandler(getApplicationContext());
         }
 
 //        if (BuildConfig.DEBUG) {
@@ -106,7 +105,7 @@ public class App extends MultiDexApplication {
     }
 
 
-    public static MiPushMessageReceive.DemoHandler getHandler() {
+    public static MiPushMessageReceiver.DemoHandler getHandler() {
         return handler;
     }
 

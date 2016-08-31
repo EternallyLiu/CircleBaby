@@ -123,7 +123,8 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
                 selectImages();
                 break;
             case R.id.tv_content:
-                FragmentBridgeActivity.openForResult(this, "DiaryTextFragment", DIARYTEXT);
+                String s = tvContent.getText().toString();
+                FragmentBridgeActivity.openForResult(this, "DiaryTextFragment", DIARYTEXT,s);
                 break;
         }
     }

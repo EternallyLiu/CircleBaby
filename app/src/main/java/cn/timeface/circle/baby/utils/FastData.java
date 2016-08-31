@@ -185,7 +185,7 @@ public class FastData extends Remember {
     }
 
     public static String getAccount() {
-        return getString(ACCOUNT, "");
+        return getString(ACCOUNT, "123");
     }
 
     public static void setAccount(String account) {
@@ -225,7 +225,7 @@ public class FastData extends Remember {
     }
 
     public static int getUserFrom() {
-        return getInt(USER_FROM, 0);
+        return getInt(USER_FROM, -1);
     }
 
     public static void setUserFrom(int userFrom) {

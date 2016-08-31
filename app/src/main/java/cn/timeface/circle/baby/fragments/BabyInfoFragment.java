@@ -117,6 +117,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
         babyObj = user.getBabyObj();
         String s = babyObj.getAvatar();
         int baby = s.indexOf("baby");
+        if(baby > 0)
         objectKey = s.substring(baby);
         System.out.println("objectKey=========="+objectKey);
     }

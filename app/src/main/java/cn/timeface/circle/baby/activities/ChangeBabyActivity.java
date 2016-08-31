@@ -92,7 +92,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     private void setDataList(List<UserObj> dataList) {
         ArrayList<UserObj> userObjs = new ArrayList<>();
         for (UserObj user : dataList){
-            if(!TextUtils.isEmpty(user.getUserId())){
+            if(!TextUtils.isEmpty(user.getUserId()) && user.getBabyObj().getBabyId()!=0){
                 userObjs.add(user);
             }
         }
@@ -121,14 +121,12 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                 apiService.updateLoginInfo()
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            if (response.success()) {
                                 Remember.putBoolean("showtimelinehead", true);
                                 EventBus.getDefault().post(new HomeRefreshEvent());
                                 EventBus.getDefault().post(new ConfirmRelationEvent());
                                 EventBus.getDefault().post(new UnreadMsgEvent());
                                 initOpen();
                                 this.finish();
-                            }
                         }, throwable -> {
                             Log.e(TAG, "updateLoginInfo:");
                         });
@@ -145,4 +143,8 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, new OpenUploadServices());
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }
