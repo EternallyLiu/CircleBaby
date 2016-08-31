@@ -258,8 +258,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
     //获取原图的裁剪区域
     public Rect getOrgCropRect(float w, float h) {
         Rect rect = new Rect();
-        float left = Math.max(image_start_point_x, 0);
-        float top = Math.max(image_start_point_y, 0);
+        float left = Math.abs(image_start_point_x);
+        float top = Math.abs(image_start_point_y);
         float right = left + w / image_scale;
         float bottom = top + h / image_scale;
         rect.set((int) left, (int) top, (int) right, (int) bottom);

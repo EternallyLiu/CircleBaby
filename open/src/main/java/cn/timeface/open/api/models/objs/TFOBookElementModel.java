@@ -358,11 +358,16 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         imageView.setLayoutParams(lp);
         imageView.setPadding((int) this.element_content_left, (int) this.element_content_top, (int) this.element_content_right, (int) this.element_content_bottom);
 
+        if (this.getImageContentExpand().getImageUrl().contains("9e3fa4b31ac655cab7a327c604199c6f")) {
+            Log.i("image", "getImageView: got this");
+        }
+
+
         if (!TextUtils.isEmpty(this.element_mask_image)) {
             Glide.with(context)
                     .using(new TFOContentUrlLoader(context))
                     .load(this)
-                    .centerCrop()
+                    .fitCenter()
                     .bitmapTransform(new Transformation<Bitmap>() {
                         @Override
                         public Resource<Bitmap> transform(Resource<Bitmap> resource, int outWidth, int outHeight) {
@@ -397,7 +402,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
                     .load(this)
                     .crossFade()
                     .error(R.drawable.tfo_empty_img)
-                    .centerCrop()
+                    .fitCenter()
                     .listener(new RequestListener<TFOBookElementModel, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, TFOBookElementModel model, Target<GlideDrawable> target, boolean isFirstResource) {
