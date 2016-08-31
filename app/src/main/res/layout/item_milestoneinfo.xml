@@ -55,6 +55,8 @@
             android:background="@drawable/shape_milestone_count_bg"
             android:layout_marginRight="@dimen/size_6"
             android:layout_marginBottom="@dimen/size_6"
+            android:drawableLeft="@drawable/milestone_pic"
+            android:drawablePadding="@dimen/size_12"
             android:visibility="gone"
             />
 

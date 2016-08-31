@@ -43,7 +43,8 @@
                     android:layout_height="@dimen/size_56"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/size_12"
-                    android:src="@color/bg_color5" />
+                    android:src="@color/bg_color5"
+                    android:background="@drawable/head_bg"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -30,7 +30,7 @@ import cn.timeface.circle.baby.utils.FastData;
  * 小米推送的receiver
  * Created by lidonglin on 2016/6/28.
  */
-public class MiPushMessageReceive extends PushMessageReceiver {
+public class MiPushMessageReceiver extends PushMessageReceiver {
     private String mRegId;
     private long mResultCode = -1;
     private String mReason;

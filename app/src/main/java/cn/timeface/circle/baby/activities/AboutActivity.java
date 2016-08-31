@@ -35,7 +35,7 @@ public class AboutActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("关于时光印记");
+        getSupportActionBar().setTitle("关于成长印记");
         mTvVersion.setText(BuildConfig.VERSION_NAME);
     }
 

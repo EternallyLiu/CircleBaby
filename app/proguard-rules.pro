@@ -114,7 +114,7 @@
 -keepclasseswithmembers class * { @com.google.gson.annotations.Expose <fields>; }
 
 # 艹,由于gson解析需要,必须keeping所有序列化和反序列化的model
--keep class cn.timeface.api.models.** { *; }
+-keep class cn.timeface.circle.baby.api.models.** { *; }
 
 
 # Parcelable
@@ -194,7 +194,6 @@
      long producerNode;
      long consumerNode;
  }
--keep class cn.timeface.api.service.RxCache
 
 # LoganSquare
 -keep class com.bluelinelabs.logansquare.** { *; }
@@ -276,17 +275,19 @@
 }
 -dontwarn com.bumptech.glide.**
 -keepnames class com.bumptech.glide.Glide
--keep class cn.timeface.utils.glide.TFGlideModule
+-keep class cn.timeface.circle.baby.utils.glide.TFGlideModule
 # LeakCanary
 -keep class org.eclipse.mat.** { *; }
 -keep class com.squareup.leakcanary.** { *; }
 
 # MiPush
--keep class cn.timeface.managers.receivers.MiPushMessageReceiver {*;}
+-keep class cn.timeface.circle.baby.push.MiPushMessageReceiver {*;}
 
 #mp4 merge
--keep class com.coremedia.iso.** { *; }
+-keep class com.coremedia.** { *; }
 -keep class com.googlecode.mp4parser.** { *; }
+-keep class com.mp4parser.** { *; }
+-keep class cn.timeface.circle.baby.utils.ClipUtils
 # dbflow
 -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class com.raizlabs.android.dbflow.config.GeneratedDatabaseHolder
@@ -306,12 +307,3 @@
 -keep class com.alipay.sdk.app.PayTask{ public *;}
 -keep class com.alipay.sdk.app.AuthTask{ public *;}
 -keep class com.tencent.mm.sdk.** {*;}
-
-# Injection
--keep class cn.timeface.mvp** { *; }
--dontwarn cn.timeface.mvp.Presenter.**
--keep class **$$_Injection { *; }
-
--keepclasseswithmembernames class * {
-    @cn.timeface.mvp.annotation.* <fields>;
-}

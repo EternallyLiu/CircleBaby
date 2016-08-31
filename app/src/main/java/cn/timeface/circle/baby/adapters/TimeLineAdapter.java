@@ -35,6 +35,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
@@ -116,8 +117,21 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
             layoutParams.width = width;
             layoutParams.height = width;
+            if(item.getType() == 2){
+                layoutParams.height = (int) (width*1.4);
+            }
             holder.ivCover.setLayoutParams(layoutParams);
             holder.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            if (item.getType() != 1) {
+                holder.ivCover.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ArrayList<String> strings = new ArrayList<>();
+                        strings.add(url);
+                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0, true, false);
+                    }
+                });
+            }
         } else {
             holder.rlSingle.setVisibility(View.GONE);
         }
@@ -337,13 +351,14 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             llRecode.setOnClickListener(this);
             iconLike.setOnClickListener(this);
             iconComment.setOnClickListener(this);
-            gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    TimeLineDetailActivity.open(context, timeLineObj);
-                    TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
-                }
-            });
+            tvCommentcount.setOnClickListener(this);
+            tvLikecount.setOnClickListener(this);
+//            gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
+//                }
+//            });
         }
 
         public void setRecordObj(TimeLineObj timeLineObj) {
@@ -358,6 +373,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                     TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
                     break;
                 case R.id.icon_like:
+                case R.id.tv_likecount:
                     iconLike.setClickable(false);
                     int p = iconLike.isSelected() == true ? 0 : 1;
                     ApiFactory.getApi().getApiService().like(timeLineObj.getTimeId(), p)
@@ -434,6 +450,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                             });
                     break;
                 case R.id.icon_comment:
+                case R.id.tv_commentcount:
                     EventBus.getDefault().post(new IconCommentClickEvent(allDetailsPosition, position, timeLineObj));
                     break;
                 case R.id.rl_action:
@@ -582,12 +599,12 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             iv.setLayoutParams(params);
             tvCount.setLayoutParams(params);
             GlideUtil.displayImage(urls.get(position), iv);
-//            iv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position);
-//                }
-//            });
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position, true, false);
+                }
+            });
             return view;
         }
     }

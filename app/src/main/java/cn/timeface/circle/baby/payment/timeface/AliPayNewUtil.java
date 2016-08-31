@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 
-
 import org.greenrobot.eventbus.EventBus;
 
 import java.net.URLEncoder;
@@ -17,9 +16,7 @@ import java.util.HashMap;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.events.PayResultEvent;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

@@ -156,7 +156,7 @@
         android:orientation="horizontal"
         android:paddingBottom="@dimen/size_12"
         android:paddingLeft="@dimen/size_12"
-        android:paddingTop="@dimen/size_12">
+        android:paddingTop="@dimen/size_2">
 
         <ImageView
             android:layout_width="wrap_content"

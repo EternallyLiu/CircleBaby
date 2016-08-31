@@ -39,21 +39,16 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.activities.DiaryPublishActivity;
-import cn.timeface.circle.baby.activities.MyPODActivity;
-import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.ApiFactory;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.events.BookOptionEvent;
-import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.NewPickerAdapterEvent;
+import cn.timeface.circle.baby.events.PickerPhototAddEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.open.api.models.objs.TFOContentObj;
-import cn.timeface.open.api.models.objs.TFOPublishObj;
 import cn.timeface.open.api.models.objs.TFOResourceObj;
 
 /**
@@ -289,7 +284,7 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
     }
 
     @Subscribe
-    public void onEvent(HomeRefreshEvent event) {
+    public void onEvent(PickerPhototAddEvent event) {
         System.out.println("PickerPhotoActivity2============HomeRefreshEvent");
         llNoData.setVisibility(View.GONE);
         mPickerPhotoFragment.reqData();

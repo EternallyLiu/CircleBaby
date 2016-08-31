@@ -59,6 +59,7 @@ import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.events.ActionCallBackEvent;
 import cn.timeface.circle.baby.events.CommentSubmit;
+import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.IconCommentClickEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
@@ -178,8 +179,19 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         reqData(1);
 
         initMsg();
-
+        if(FastData.getBabyId()!=0){
+            updateLoginInfo();
+        }
         return view;
+    }
+
+    private void updateLoginInfo() {
+        apiService.updateLoginInfo()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                }, throwable -> {
+                    Log.e(TAG, "updateLoginInfo:");
+                });
     }
 
     private void initMsg() {

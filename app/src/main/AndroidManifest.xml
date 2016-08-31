@@ -142,7 +142,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".push.MiPushMessageReceive"
+            android:name=".push.MiPushMessageReceiver"
             android:exported="true">
 
             <!-- 这里com.xiaomi.mipushdemo.DemoMessageRreceiver改成app中定义的完整类名 -->
@@ -179,13 +179,15 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.base.BaseRecyclerViewActivity"
             android:label="@string/title_activity_base_recycler_view" />
         <activity
             android:name="cn.timeface.circle.baby.activities.LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
 
         </activity>
 
@@ -282,7 +284,8 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activities.TimeLineDetailActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.CloudAlbumActivity"
             android:label="@string/cloudAlbum"
@@ -349,7 +352,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AboutActivity"
-            android:label="关于时光宝宝"
+            android:label="关于成长印记"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.FeedbackActivity"

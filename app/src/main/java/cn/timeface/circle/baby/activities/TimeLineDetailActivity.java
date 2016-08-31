@@ -207,6 +207,9 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
             layoutParams.width = width;
             layoutParams.height = width;
+            if(timelineobj.getType() == 2){
+                layoutParams.height = (int) (width*1.4);
+            }
             ivCover.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             if (timelineobj.getType() != 1) {

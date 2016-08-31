@@ -318,7 +318,7 @@ public class ShareDialog extends BaseDialog {
             oks.setUrl(getFullUrl(url, "wechat"));
         }
         if (TextUtils.isEmpty(imgUrl)) {
-            imgUrl = ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher);
+            imgUrl = ShareSdkUtil.getImgStrByResource(context, R.drawable.ic_launcher);
         }
         if (!TextUtils.isEmpty(imgUrl)) {
             if (imgUrl.startsWith("http")) {
@@ -342,7 +342,7 @@ public class ShareDialog extends BaseDialog {
             oks.setTitleUrl(getFullUrl(url, "qq"));
         }
         if (TextUtils.isEmpty(imgUrl)) {
-            imgUrl = ShareSdkUtil.getImgStrByResource(context, R.mipmap.ic_launcher);
+            imgUrl = ShareSdkUtil.getImgStrByResource(context, R.drawable.ic_launcher);
         }
         if (!TextUtils.isEmpty(imgUrl)) {
             if (imgUrl.startsWith("http")) {

@@ -27,7 +27,9 @@
                 android:layout_gravity="center_vertical"
                 android:text="返回"
                 android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_medium"
+                android:drawableLeft="@drawable/back"
+                android:drawablePadding="@dimen/size_6"/>
 
             <TextView
                 android:id="@+id/tv_title"
@@ -77,7 +79,8 @@
         android:drawableLeft="@drawable/baby_name"
         android:drawablePadding="@dimen/size_12"
         android:hint="请输入宝宝的小名"
-        android:padding="@dimen/size_12" />
+        android:padding="@dimen/size_12"
+        android:maxLength="8"/>
 
     <View
         android:layout_width="match_parent"
