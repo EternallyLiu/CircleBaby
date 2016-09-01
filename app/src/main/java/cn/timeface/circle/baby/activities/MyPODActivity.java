@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -102,7 +103,11 @@ public class MyPODActivity extends PODActivity {
             }
         }
         for(TFOBookElementModel model : newList){
-            editContent(model.getImageContentExpand().getImageId(),model.getImageContentExpand().getImageUrl());
+            String imageId = model.getImageContentExpand().getImageId();
+            String imageUrl = model.getImageContentExpand().getImageUrl();
+            if(!TextUtils.isEmpty(imageId)&&!TextUtils.isEmpty(imageUrl)){
+                editContent(imageId,imageUrl);
+            }
         }
     }
 
