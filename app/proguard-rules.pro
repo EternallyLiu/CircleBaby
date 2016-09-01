@@ -115,6 +115,7 @@
 
 # 艹,由于gson解析需要,必须keeping所有序列化和反序列化的model
 -keep class cn.timeface.circle.baby.api.models.** { *; }
+-keep class cn.timeface.open.api.models.** { *; }
 
 
 # Parcelable
@@ -281,7 +282,9 @@
 -keep class com.squareup.leakcanary.** { *; }
 
 # MiPush
--keep class cn.timeface.circle.baby.push.MiPushMessageReceiver {*;}
+-keep class com.xiaomi.** { *; }
+-keep class com.google.protobuf.micro.** { *; }
+-keep class cn.timeface.circle.baby.push.MiPushMessageReceiver
 
 #mp4 merge
 -keep class com.coremedia.** { *; }

@@ -88,7 +88,9 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
             if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
                 login(account, password, 0);
             }
-        } else {
+        } else if(FastData.getUserFrom() == -1){
+
+        }else{
             //上次登录为三方账号登录
             String platform = Remember.getString("platform", "");
             if(!TextUtils.isEmpty(platform)){
