@@ -424,7 +424,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 em.setElementLeft((float) Math.ceil(em.getElementLeft() + (double) screenInfo.x / 2));
             }
 
-            if (em.getElementLeft() > screenInfo.x / 2) {
+            if (em.getElementLeft() >= screenInfo.x / 2) {
                 em.setElementLeft(em.getElementLeft() - screenInfo.x / 2);
                 rightModel.getElementList().add(em);
             } else {
