@@ -144,6 +144,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
             }
             if(!Utils.isNetworkConnected(context)){
                 ToastUtil.showToast("网络异常");
+                return;
             }
             ToastUtil.showToast("保存视频…");
             new Thread(new Runnable() {

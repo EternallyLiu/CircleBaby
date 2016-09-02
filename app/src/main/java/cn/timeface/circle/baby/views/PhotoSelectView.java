@@ -16,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import uk.co.senab.photoview.PhotoView;
+import cn.timeface.circle.baby.views.widget.photoview.PhotoView;
 
 /**
  * author: rayboot  Created on 16/3/15.

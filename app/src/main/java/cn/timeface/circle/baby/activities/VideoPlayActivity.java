@@ -9,11 +9,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -22,9 +26,12 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.RelationshipAdapter;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
+import cn.timeface.circle.baby.views.ShareDialog;
 
 public class VideoPlayActivity extends BaseAppCompatActivity {
 
@@ -33,6 +40,8 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
     Toolbar toolbar;
     @Bind(R.id.videoview)
     VideoView videoview;
+    private MenuItem save;
+    private String url;
 
     public static void open(Context context , String url) {
         Intent intent = new Intent(context, VideoPlayActivity.class);
@@ -78,12 +87,65 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
             return;
         }
 
-        String url = getIntent().getStringExtra("url");
+        url = getIntent().getStringExtra("url");
         MediaController mc = new MediaController(this);
         videoview.setMediaController(mc);
         videoview.setVideoPath(url);
         videoview.requestFocus();
         videoview.start();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_fragment_bigimage, menu);
+        save = menu.findItem(R.id.save);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.home) {
+            onBackPressed();
+        } else if (item.getItemId() == R.id.save) {
+            save.setEnabled(false);
+            saveVideo();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void saveVideo() {
+        String path = url;
+        String fileName = path.substring(path.lastIndexOf("/"));
+        File file = new File("/mnt/sdcard/baby");
+        if(!file.exists()){
+            file.mkdirs();
+        }
+        File file1 = new File(file, fileName);
+        if(file1.exists()){
+            ToastUtil.showToast("已保存到baby文件夹下");
+            save.setEnabled(true);
+            return;
+        }
+        if(!Utils.isNetworkConnected(VideoPlayActivity.this)){
+            ToastUtil.showToast("网络异常");
+            save.setEnabled(true);
+            return;
+        }
+        ToastUtil.showToast("保存视频…");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ImageFactory.saveVideo(path,file1);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.showToast("已保存到baby文件夹下");
+                        save.setEnabled(true);
+                    }
+                });
+                return;
+            }
+        }).start();
     }
 }
