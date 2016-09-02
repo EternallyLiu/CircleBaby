@@ -262,6 +262,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
             tvLong = (TextView) view.findViewById(R.id.tv_long);
             if (position == 0) {
                 ivPhoto.setImageResource(R.drawable.camera);
+                ivPhoto.setScaleType(ImageView.ScaleType.CENTER);
             } else {
                 ivPhoto.setImageBitmap(videos.get(position - 1).getThumbnail());
                 tvLong.setText(DateUtil.getTime4(videos.get(position - 1).getDuration()));

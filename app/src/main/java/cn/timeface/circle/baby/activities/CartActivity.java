@@ -235,6 +235,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                             mAdapter = new CartAdapter(CartActivity.this, dataList);
                             rlRecyclerView.setAdapter(mAdapter);
                         } else {
+                            mAdapter.setListData(dataList);
                             mAdapter.notifyDataSetChanged();
                         }
                         for (PrintCartItem item : dataList) {

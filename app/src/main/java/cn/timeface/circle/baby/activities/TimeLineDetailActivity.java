@@ -295,6 +295,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             layoutParams.width = width;
             layoutParams.height = (int) (width * 0.5);
             ivCover.setLayoutParams(layoutParams);
+            ivVideo.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
             rlSingle.setOnClickListener(this);
         }

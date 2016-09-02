@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -28,6 +29,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.AboutActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
+import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -133,7 +135,9 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 if (Remember.getInt("msg", 1) == 0) {
                     ivSwichMsg.setImageResource(R.drawable.swichon);
                     Remember.putInt("msg", 1);
-                    MiPushUtil.init(getContext());
+                    MiPushClient.registerPush(getContext(), MiPushUtil.APP_ID, MiPushUtil.APP_KEY);
+                    MiPushClient.setAlias(getContext(), new DeviceUuidFactory(TimeFaceUtilInit.getContext()).getDeviceId(), null);
+                    pushSetting(getContext());
                 } else {
                     ivSwichMsg.setImageResource(R.drawable.swichoff);
                     Remember.putInt("msg", 0);
@@ -226,4 +230,35 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     }
 
 
+    public static void pushSetting(Context context) {
+        if (!FastData.getBoolean(TypeConstant.PUSH_SETTING_ALL_TAG, true)) {
+            MiPushClient.unregisterPush(context);
+        } else {
+            boolean voice = FastData.getBoolean(TypeConstant.PUSH_SETTING_VOICE_TAG, true);
+            boolean vibrate = FastData.getBoolean(TypeConstant.PUSH_SETTING_VIBRATE_TAG, true);
+            if (voice && vibrate) {
+                MiPushClient.setLocalNotificationType(context, MiPushUtil.VOICE_SHAKE);
+            } else if (voice) {
+                MiPushClient.setLocalNotificationType(context, MiPushUtil.VOICE);
+            } else if (vibrate) {
+                MiPushClient.setLocalNotificationType(context, MiPushUtil.SHAKE);
+            } else {
+                MiPushClient.setLocalNotificationType(context, MiPushUtil.NULL);
+            }
+
+            // 密函 订阅或取消订阅
+            if (FastData.getBoolean(TypeConstant.PUSH_SETTING_PRIVATE_MSG_TAG, true)) {
+                MiPushClient.subscribe(context, MiPushUtil.SUBSCRIBE_TAG_PRIVATE_MSG, null);
+            } else {
+                MiPushClient.unsubscribe(context, MiPushUtil.SUBSCRIBE_TAG_PRIVATE_MSG, null);
+            }
+
+            // 系统通知 订阅或取消订阅
+            if (FastData.getBoolean(TypeConstant.PUSH_SETTING_NOTIFICATION_TAG, true)) {
+                MiPushClient.subscribe(context, MiPushUtil.SUBSCRIBE_TAG_SYSTEM_NOTICE, null);
+            } else {
+                MiPushClient.unsubscribe(context, MiPushUtil.SUBSCRIBE_TAG_SYSTEM_NOTICE, null);
+            }
+        }
+    }
 }
