@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -12,6 +14,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.utils.Remember;
 
 /**
  * @author shiyan
@@ -23,6 +26,8 @@ public class AboutActivity extends BaseAppCompatActivity {
     TextView mTvVersion;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.image)
+    ImageView image;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, AboutActivity.class));
@@ -37,6 +42,11 @@ public class AboutActivity extends BaseAppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("关于成长印记");
         mTvVersion.setText(BuildConfig.VERSION_NAME);
+        int width = Remember.getInt("width",0);
+        ViewGroup.LayoutParams layoutParams = image.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = width;
+        image.setLayoutParams(layoutParams);
     }
 
     /**
