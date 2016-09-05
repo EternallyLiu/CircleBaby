@@ -358,11 +358,6 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         imageView.setLayoutParams(lp);
         imageView.setPadding((int) this.element_content_left, (int) this.element_content_top, (int) this.element_content_right, (int) this.element_content_bottom);
 
-        if (this.getImageContentExpand().getImageUrl().contains("9e3fa4b31ac655cab7a327c604199c6f")) {
-            Log.i("image", "getImageView: got this");
-        }
-
-
         if (!TextUtils.isEmpty(this.element_mask_image)) {
             Glide.with(context)
                     .using(new TFOContentUrlLoader(context))
@@ -576,9 +571,15 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         }
         int left = rect.left;
         int top = rect.top;
+
+        String imgFormat = "webp";
+        if (imgUrl.contains("http://static.timeface.cn/")) {
+            imgFormat = imgUrl.substring(imgUrl.lastIndexOf(".") + 1);
+        }
+
         if (w < 4096 && h < 4096) {
             //因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
-            imgUrl += "@" + left + "-" + top + "-" + w + "-" + h + "a_" + rotation + "r_" + width + "w_" + "1l_1o.webp";
+            imgUrl += "@" + left + "-" + top + "-" + w + "-" + h + "a_" + rotation + "r_" + width + "w_" + "1l_1o." + imgFormat;
         } else {
             //因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
             float scale = width / w;
@@ -586,7 +587,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             top *= scale;
             w *= scale;
             h *= scale;
-            imgUrl += "@" + width + "w_" + left + "-" + top + "-" + w + "-" + h + "a" + "_" + rotation + "r" + "_1l_1o" + ".webp";
+            imgUrl += "@" + width + "w_" + left + "-" + top + "-" + w + "-" + h + "a" + "_" + rotation + "r" + "_1l_1o" + "." + imgFormat;
         }
 
 

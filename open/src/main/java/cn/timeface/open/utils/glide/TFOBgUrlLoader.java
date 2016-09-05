@@ -7,7 +7,6 @@ import android.util.Log;
 import com.bumptech.glide.load.model.stream.BaseGlideUrlLoader;
 
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
-import cn.timeface.open.api.models.objs.TFOBookElementModel;
 
 /**
  * author: shiyan  Created on 8/12/16.
@@ -24,7 +23,7 @@ public class TFOBgUrlLoader extends BaseGlideUrlLoader<TFOBookContentModel> {
             return null;
         }
 
-        Log.i("TFOBgUrlLoader", "getUrl: " + model.getPageImage() + "@" + width + "w.webp");
-        return model.getPageImage() + "@" + width + "w.webp";
+        Log.i("TFOBgUrlLoader", "getUrl: " + model.getPageImage() + "@" + width / 2 + "w.webp");
+        return model.getPageImage() + "@" + width / 2 + "w.webp";
     }
 }
