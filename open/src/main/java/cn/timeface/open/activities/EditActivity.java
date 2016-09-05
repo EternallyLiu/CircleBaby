@@ -66,6 +66,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     TFOBookContentModel rightModel;
     TFOBookContentModel leftModel;
     PageFrameLayout podFrameLayout;
+    View focusView;
     LinearLayout llEditController;
     Point screenInfo;
     PageView pageView;
@@ -203,15 +204,25 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
         lp.gravity = Gravity.CENTER;
         podFrameLayout.addView(pageView, lp);
+
+        focusView = new View(this);
+        focusView.setBackgroundResource(R.drawable.shape_focus);
+        lp = new FrameLayout.LayoutParams(bookModel.getBookHeight(), bookModel.getBookWidth());
+        lp.gravity = Gravity.CENTER_VERTICAL;
+        podFrameLayout.setFocusView(focusView, bookModel.getBookWidth());
+        podFrameLayout.addView(focusView, lp);
+        focusView.setVisibility(View.GONE);
     }
 
     public void clickEditType(View view) {
         int viewId = view.getId();
         if (view.isSelected() && rvSelection.getVisibility() == View.VISIBLE) {
             rvSelection.setVisibility(View.GONE);
+            focusView.setVisibility(View.GONE);
             return;
         }
         changeSelectTypeBg(view);
+        focusView.setVisibility(View.VISIBLE);
         if (viewId == R.id.tv_edit_layout) {
             //编辑布局
             reqContentLayout();
@@ -281,6 +292,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
 
     private void showSelectRL(boolean show) {
         rvSelection.setVisibility(show ? View.VISIBLE : View.GONE);
+        focusView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void reqBookPendantList() {

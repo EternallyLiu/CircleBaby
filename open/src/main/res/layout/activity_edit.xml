@@ -32,7 +32,8 @@
             android:id="@+id/pod"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/size_56" />
+            android:layout_marginLeft="@dimen/size_56">
+        </cn.timeface.open.views.PageFrameLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"

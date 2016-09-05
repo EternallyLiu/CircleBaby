@@ -3,7 +3,6 @@ package cn.timeface.open.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,8 +11,11 @@ import java.util.List;
  */
 public class TFOPublishObj implements Parcelable {
     String title;
+    String content;
     String content_id;//"在第三方平台中的数据ID，可以为空，pod排版后会原样返回"
     List<TFOContentObj> content_list;
+    List<TFOResourceObj> resource_list;
+    String custom_data;
 
     public TFOPublishObj(String title, List<TFOContentObj> content_list) {
         this.title = title;
@@ -26,6 +28,30 @@ public class TFOPublishObj implements Parcelable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public List<TFOResourceObj> getResourceList() {
+        return resource_list;
+    }
+
+    public void setResourceList(List<TFOResourceObj> resource_list) {
+        this.resource_list = resource_list;
+    }
+
+    public String getCustomData() {
+        return custom_data;
+    }
+
+    public void setCustomData(String custom_data) {
+        this.custom_data = custom_data;
     }
 
     public List<TFOContentObj> getContentList() {
@@ -55,14 +81,20 @@ public class TFOPublishObj implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
+        dest.writeString(this.content);
         dest.writeString(this.content_id);
         dest.writeTypedList(this.content_list);
+        dest.writeTypedList(this.resource_list);
+        dest.writeString(this.custom_data);
     }
 
     protected TFOPublishObj(Parcel in) {
         this.title = in.readString();
+        this.content = in.readString();
         this.content_id = in.readString();
         this.content_list = in.createTypedArrayList(TFOContentObj.CREATOR);
+        this.resource_list = in.createTypedArrayList(TFOResourceObj.CREATOR);
+        this.custom_data = in.readString();
     }
 
     public static final Creator<TFOPublishObj> CREATOR = new Creator<TFOPublishObj>() {
