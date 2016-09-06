@@ -45,7 +45,9 @@ import cn.timeface.open.constants.Constant;
 import cn.timeface.open.events.ChangeStickerStatusEvent;
 import cn.timeface.open.events.SelectColorEvent;
 import cn.timeface.open.events.SelectTemplateEvent;
+import cn.timeface.open.managers.interfaces.IChangeFocusPageListener;
 import cn.timeface.open.managers.interfaces.IEventBus;
+import cn.timeface.open.managers.interfaces.ISelectModel;
 import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.views.EditDoubleContentView;
@@ -57,7 +59,7 @@ import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 
-public class EditActivity extends BaseAppCompatActivity implements IEventBus {
+public class EditActivity extends BaseAppCompatActivity implements IEventBus, IChangeFocusPageListener {
     public static float SCALE = 1.0f;
     public static final int EDIT_TEXT = 109;
     public static final int EDIT_IMAGE = 110;
@@ -123,6 +125,8 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvSelection.setLayoutManager(layoutManager);
+
+        this.podFrameLayout.setChangeFocusPageListener(this);
 
         if (isCover) {
             tvEditLayout.setVisibility(View.GONE);
@@ -265,6 +269,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                     public void call(BaseResponse<List<SimplePageTemplate>> listBaseResponse) {
                         layoutAdapter = new LayoutAdapter(EditActivity.this, listBaseResponse.getData());
                         rvSelection.setAdapter(layoutAdapter);
+                        layoutAdapter.setSelectModel(getFocusModel());
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -354,7 +359,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     private void setupBgListData(List<TFBookBackgroundModel> data) {
         bgImageAdapter = new BgImageAdapter(this, data);
         rvSelection.setAdapter(bgImageAdapter);
-        bgImageAdapter.setSelBgImage(getFocusModel().getPageImage());
+        bgImageAdapter.setSelectModel(getFocusModel());
     }
 
     private void reqTemplateList() {
@@ -397,6 +402,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                     public void call(BaseResponse<List<CoverColor>> listBaseResponse) {
                         colorAdapter = new CoverColorAdapter(EditActivity.this, listBaseResponse.getData());
                         rvSelection.setAdapter(colorAdapter);
+//                        colorAdapter.setSelectModel(getFocusModel());
                         showSelectRL(true);
                     }
                 }, new Action1<Throwable>() {
@@ -617,7 +623,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     public void clickChangeBg(View view) {
 //        showSelectRL(false);
         TFBookBackgroundModel bookBgModel = (TFBookBackgroundModel) view.getTag(R.string.tag_obj);
-        bgImageAdapter.setSelBgImage(getFocusModel().getPageImage());
+        bgImageAdapter.setSelectModel(getFocusModel());
         int pageOrientation = podFrameLayout.getPageOrientation();
         pageView.setPageBgPicture(bookBgModel, pageOrientation);
     }
@@ -792,5 +798,16 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
             }
         }
         return false;
+    }
+
+    @Override
+    public void onChangeFocusPage(int focusPage) {
+        if (rvSelection.getVisibility() != View.VISIBLE) {
+            return;
+        }
+
+        if (rvSelection.getAdapter() instanceof ISelectModel) {
+            ((ISelectModel) rvSelection.getAdapter()).setSelectModel(getFocusModel());
+        }
     }
 }

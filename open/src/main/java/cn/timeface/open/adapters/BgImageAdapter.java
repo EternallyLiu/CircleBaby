@@ -16,14 +16,16 @@ import java.util.List;
 import cn.timeface.open.R;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.open.api.models.objs.TFBookBackgroundModel;
+import cn.timeface.open.api.models.objs.TFOBookContentModel;
+import cn.timeface.open.managers.interfaces.ISelectModel;
 
 /**
  * author: rayboot  Created on 16/7/4.
  * email : sy0725work@gmail.com
  */
-public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
+public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> implements ISelectModel {
 
-    private String selBgImage;
+    private TFOBookContentModel selModel;
 
     public BgImageAdapter(Context mContext, List<TFBookBackgroundModel> listData) {
         super(mContext, listData);
@@ -62,12 +64,18 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
         } else {
             viewHolder.ivBgRight.setVisibility(View.GONE);
         }
-        if (selBgImage != null && (selBgImage.equals(tfBookBackgroundModel.getBackgroundLeft()) || selBgImage.equals(tfBookBackgroundModel.getBackgroundRight()))) {
+        if (selModel != null && (selModel.getPageImage().equals(tfBookBackgroundModel.getBackgroundLeft()) || selModel.getPageImage().equals(tfBookBackgroundModel.getBackgroundRight()))) {
             holder.itemView.setBackgroundResource(R.drawable.shape_rect_border);
         } else {
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
         holder.itemView.setTag(R.string.tag_obj, tfBookBackgroundModel);
+    }
+
+    @Override
+    public void setSelectModel(TFOBookContentModel model) {
+        this.selModel = model;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -80,14 +88,5 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
             ivBgLeft = (ImageView) view.findViewById(R.id.iv_bg_left);
             ivBgRight = (ImageView) view.findViewById(R.id.iv_bg_right);
         }
-    }
-
-    public String getSelBgImage() {
-        return selBgImage;
-    }
-
-    public void setSelBgImage(String bgImageUrl) {
-        this.selBgImage = bgImageUrl;
-        notifyDataSetChanged();
     }
 }

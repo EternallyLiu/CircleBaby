@@ -13,15 +13,18 @@ import java.util.List;
 
 import cn.timeface.open.R;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.response.CoverColor;
 import cn.timeface.open.events.SelectColorEvent;
+import cn.timeface.open.managers.interfaces.ISelectModel;
 import cn.timeface.open.views.CircleImageView;
 
 /**
  * Created by wswd on 2015/5/28.
  */
-public class CoverColorAdapter extends BaseRecyclerAdapter<CoverColor> {
+public class CoverColorAdapter extends BaseRecyclerAdapter<CoverColor> implements ISelectModel {
 
+    private TFOBookContentModel selModel;
 
     public void setSelectedColor(String selectedColor) {
         this.selectedColor = selectedColor;
@@ -58,6 +61,12 @@ public class CoverColorAdapter extends BaseRecyclerAdapter<CoverColor> {
         drawable.setColor(Color.parseColor(coverColor.getCoverBackgroundColor()));
         iv.setImageDrawable(drawable);
         holder.itemView.setTag(R.string.tag_ex, coverColor);
+    }
+
+    @Override
+    public void setSelectModel(TFOBookContentModel model) {
+        this.selModel = model;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

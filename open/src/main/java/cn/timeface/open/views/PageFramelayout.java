@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import cn.timeface.open.managers.interfaces.IChangeFocusPageListener;
+
 /**
  * Created by zhsheng on 2016/7/14.
  */
@@ -16,6 +18,8 @@ public class PageFrameLayout extends FrameLayout {
     private int currentPage = 1;
     public static final int LEFT = 1;
     public static final int RIGHT = 2;
+
+    IChangeFocusPageListener changeFocusPageListener;
 
     View focusView;
     int marginLeft = 0;
@@ -54,6 +58,11 @@ public class PageFrameLayout extends FrameLayout {
             float evX = ev.getX();
             int measuredWidth = getMeasuredWidth();
 
+            if (changeFocusPageListener != null &&
+                    (evX > measuredWidth / 2 ? RIGHT : LEFT) != currentPage) {
+                changeFocusPageListener.onChangeFocusPage(evX > measuredWidth / 2 ? RIGHT : LEFT);
+            }
+
             if (evX > measuredWidth / 2) {
                 currentPage = RIGHT;
                 if (focusView != null) {
@@ -79,5 +88,9 @@ public class PageFrameLayout extends FrameLayout {
 
     public int getCurrentPage() {
         return currentPage;
+    }
+
+    public void setChangeFocusPageListener(IChangeFocusPageListener changeFocusPageListener) {
+        this.changeFocusPageListener = changeFocusPageListener;
     }
 }

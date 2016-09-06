@@ -1,6 +1,7 @@
 package cn.timeface.open.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +14,18 @@ import java.util.List;
 
 import cn.timeface.open.R;
 import cn.timeface.open.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.response.SimplePageTemplate;
+import cn.timeface.open.managers.interfaces.ISelectModel;
 
 /**
  * author: shiyan  Created on 8/10/16.
  * email : sy0725work@gmail.com
  */
-public class LayoutAdapter extends BaseRecyclerAdapter<SimplePageTemplate> {
+public class LayoutAdapter extends BaseRecyclerAdapter<SimplePageTemplate> implements ISelectModel {
+
+    private TFOBookContentModel selModel;
+
     public LayoutAdapter(Context context, List<SimplePageTemplate> listData) {
         super(context, listData);
     }
@@ -42,7 +48,18 @@ public class LayoutAdapter extends BaseRecyclerAdapter<SimplePageTemplate> {
                 .fitCenter()
                 .into(viewHolder.ivLayout);
 
+//        if (selModel != null && (selModel.().equals(tfBookBackgroundModel.getBackgroundLeft()) || selModel.getPageImage().equals(tfBookBackgroundModel.getBackgroundRight()))) {
+//            holder.itemView.setBackgroundResource(R.drawable.shape_rect_border);
+//        } else {
+//            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+//        }
         holder.itemView.setTag(R.string.tag_obj, template);
+    }
+
+    @Override
+    public void setSelectModel(TFOBookContentModel model) {
+        this.selModel = model;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
