@@ -145,6 +145,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                             }
                             dataList.addAll(obj.getMediaList());
                         }
+                        mediaObjHeader = null;
                         for (MediaObj mediaObj : dataList) {
                             if (mediaObj.getIsCover() == 1) {
                                 mediaObjHeader = mediaObj;

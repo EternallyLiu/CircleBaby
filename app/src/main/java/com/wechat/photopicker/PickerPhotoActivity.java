@@ -82,6 +82,13 @@ public class PickerPhotoActivity extends BaseAppCompatActivity {
                 mMenuDoneItem.setTitle(getString(R.string.done_selector_size, mPhotoSelectorAdapter.getSelectedItemCount(), optionalPhotoSize));
                 btPreview.setText(getString(R.string.preview_selector_paths, mPhotoSelectorAdapter.getSelectedItemCount(), optionalPhotoSize));
                 Log.d(TAG, mPhotoSelectorAdapter.getSelectedItemCount() + "");
+
+                if(mPhotoSelectorAdapter.getSelectedItemCount() == optionalPhotoSize){
+                    Intent intent = new Intent();
+                    intent.putStringArrayListExtra(KEY_SELECTED_PHOTOS, mPhotoSelectorAdapter.getSelectedPhotoPaths());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
                 return true;
             }
 
