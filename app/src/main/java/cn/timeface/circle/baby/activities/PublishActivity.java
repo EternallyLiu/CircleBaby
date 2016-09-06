@@ -57,6 +57,7 @@ import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.events.PickerPhototAddEvent;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -236,7 +237,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position,false,false);
+                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position,false,true);
             }
         });
 
@@ -541,6 +542,15 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
+        }else if(event instanceof TimeEditPhotoDeleteEvent){
+            int position = ((TimeEditPhotoDeleteEvent) event).getPosition();
+            List<String> data = adapter.getData();
+            if(data.size()>position){
+                data.remove(position);
+                selImages.remove(position);
+                adapter.setData(data);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 

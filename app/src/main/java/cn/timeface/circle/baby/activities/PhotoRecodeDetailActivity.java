@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -19,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,10 +34,12 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.PhotoRecode;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 
-public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements View.OnClickListener ,IEventBus{
 
     protected final int PHOTO_COUNT_MAX = 100;
 
@@ -94,6 +99,12 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         if (this.photoRecode.getMileStone() != null)
             tvMileStone.setText(this.photoRecode.getMileStone().getMilestone());
         tvTime.setText(this.photoRecode.getTitle());
+        gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FragmentBridgeActivity.openBigimageFragment(PhotoRecodeDetailActivity.this, (ArrayList<String>) adapter.getData(), position,false,true);
+            }
+        });
 
     }
 
@@ -167,8 +178,8 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
 
         photoRecode.setContent(value);
 
-        if (value.length() < 1 && imageUrls.size() < 1) {
-            Toast.makeText(this, "发点文字或图片吧", Toast.LENGTH_SHORT).show();
+        if (imageUrls.size() < 1) {
+            Toast.makeText(this, "至少添加一张照片", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -190,6 +201,10 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
 
         public PhotoGridAdapter(Context context) {
             this.context = context;
+        }
+
+        public void setData(List<String> data){
+            this.data = data;
         }
 
         public List<String> getData() {
@@ -260,5 +275,18 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
             postRecord();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Subscribe
+    public void onEvent(TimeEditPhotoDeleteEvent event) {
+        int position = ((TimeEditPhotoDeleteEvent) event).getPosition();
+        List<String> data = adapter.getData();
+        if(data.size()>position){
+            data.remove(position);
+            selImages.remove(position);
+            adapter.setData(data);
+            adapter.notifyDataSetChanged();
+        }
     }
 }
