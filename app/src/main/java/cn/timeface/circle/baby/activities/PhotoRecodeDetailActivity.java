@@ -178,8 +178,8 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
 
         photoRecode.setContent(value);
 
-        if (value.length() < 1 && imageUrls.size() < 1) {
-            Toast.makeText(this, "发点文字或图片吧", Toast.LENGTH_SHORT).show();
+        if (imageUrls.size() < 1) {
+            Toast.makeText(this, "至少添加一张照片", Toast.LENGTH_SHORT).show();
             return;
         }
 
