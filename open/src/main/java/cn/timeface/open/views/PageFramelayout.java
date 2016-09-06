@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 
 /**
@@ -16,6 +17,9 @@ public class PageFrameLayout extends FrameLayout {
     public static final int LEFT = 1;
     public static final int RIGHT = 2;
 
+    View focusView;
+    int marginLeft = 0;
+
     public PageFrameLayout(Context context) {
         super(context);
     }
@@ -26,6 +30,11 @@ public class PageFrameLayout extends FrameLayout {
 
     public PageFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setFocusView(View focusView, int marginLeft) {
+        this.marginLeft = marginLeft;
+        this.focusView = focusView;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -44,12 +53,18 @@ public class PageFrameLayout extends FrameLayout {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             float evX = ev.getX();
             int measuredWidth = getMeasuredWidth();
+
             if (evX > measuredWidth / 2) {
                 currentPage = RIGHT;
+                if (focusView != null) {
+                    focusView.setTranslationX(marginLeft);
+                }
             } else {
                 currentPage = LEFT;
+                if (focusView != null) {
+                    focusView.setTranslationX(0);
+                }
             }
-
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -60,5 +75,9 @@ public class PageFrameLayout extends FrameLayout {
 
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
     }
 }

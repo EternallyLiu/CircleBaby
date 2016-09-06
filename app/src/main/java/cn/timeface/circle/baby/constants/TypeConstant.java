@@ -9,8 +9,8 @@ public class TypeConstant {
     /**
      * 开放平台
      */
-    public static final String APP_ID = "123456789";
-    public static final String APP_SECRET = "987654321";
+    public static final String APP_ID = "423834183431";
+    public static final String APP_SECRET = "e50c15c592ff446b4e8db226b59c363a";
 
     /**
      * 图片质量

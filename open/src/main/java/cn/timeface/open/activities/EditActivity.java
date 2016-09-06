@@ -111,7 +111,6 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         this.isCover = getIntent().getBooleanExtra("is_cover", false);
         setContentView(R.layout.activity_edit);
 
-
         this.podFrameLayout = (PageFrameLayout) findViewById(R.id.pod);
         this.llEditController = (LinearLayout) findViewById(R.id.ll_edit_controller);
         this.tvEditTemplate = (DrawableTextView) findViewById(R.id.tv_edit_template);
@@ -204,6 +203,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
         lp.gravity = Gravity.CENTER;
         podFrameLayout.addView(pageView, lp);
+        podFrameLayout.setCurrentPage(PageFrameLayout.LEFT);
 
         focusView = new View(this);
         focusView.setBackgroundResource(R.drawable.shape_focus);
@@ -354,6 +354,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
     private void setupBgListData(List<TFBookBackgroundModel> data) {
         bgImageAdapter = new BgImageAdapter(this, data);
         rvSelection.setAdapter(bgImageAdapter);
+        bgImageAdapter.setSelBgImage(getFocusModel().getPageImage());
     }
 
     private void reqTemplateList() {
@@ -538,7 +539,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
      * @param view
      */
     public void clickEditLayout(View view) {
-        showSelectRL(false);
+//        showSelectRL(false);
         SimplePageTemplate templateModel = (SimplePageTemplate) view.getTag(R.string.tag_obj);
         reqNewPageLayout(templateModel);
     }
@@ -614,11 +615,20 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
      * @param view
      */
     public void clickChangeBg(View view) {
-        showSelectRL(false);
+//        showSelectRL(false);
         TFBookBackgroundModel bookBgModel = (TFBookBackgroundModel) view.getTag(R.string.tag_obj);
-        bgImageAdapter.setSelBgColor(bookBgModel);
+        bgImageAdapter.setSelBgImage(getFocusModel().getPageImage());
         int pageOrientation = podFrameLayout.getPageOrientation();
         pageView.setPageBgPicture(bookBgModel, pageOrientation);
+    }
+
+    public TFOBookContentModel getFocusModel() {
+        if (podFrameLayout.getCurrentPage() == PageFrameLayout.LEFT) {
+            return leftModel;
+        } else if (podFrameLayout.getCurrentPage() == PageFrameLayout.RIGHT) {
+            return rightModel;
+        }
+        return null;
     }
 
     /**
@@ -627,7 +637,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
      * @param view
      */
     public void clickPendant(View view) {
-        showSelectRL(false);
+//        showSelectRL(false);
         TFOBookImageModel imageModel = (TFOBookImageModel) view.getTag(R.string.tag_obj);
         {
             //缩放imageModel,如果不做这一步,初始化的挂件会非常大,看起来不和谐
@@ -656,7 +666,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
                 .doOnTerminate(new Action0() {
                     @Override
                     public void call() {
-                        showSelectRL(false);
+//                        showSelectRL(false);
                     }
                 })
                 .subscribe(new Action1<BaseResponse<CoverTemplateInfo>>() {
@@ -694,7 +704,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus {
         colorAdapter.setSelectedColor(coverColor.getCoverBackgroundColor());
         pageView.setPageColor(coverColor.getCoverBackgroundColor());
         //// TODO: 8/24/16  textcolor 待完善
-        showSelectRL(false);
+//        showSelectRL(false);
     }
 
     @Override

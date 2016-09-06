@@ -177,9 +177,9 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         if (scale != my_view_scale) {
             this.my_view_scale = scale;
 
-            this.image_padding_left *= scale;
-            this.image_padding_top *= scale;
-            this.image_scale *= scale;
+            this.image_padding_left *= my_view_scale;
+            this.image_padding_top *= my_view_scale;
+            this.image_scale *= my_view_scale;
         }
     }
 

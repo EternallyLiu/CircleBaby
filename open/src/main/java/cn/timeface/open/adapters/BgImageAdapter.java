@@ -23,7 +23,7 @@ import cn.timeface.open.api.models.objs.TFBookBackgroundModel;
  */
 public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
 
-    private TFBookBackgroundModel selBgColor;
+    private String selBgImage;
 
     public BgImageAdapter(Context mContext, List<TFBookBackgroundModel> listData) {
         super(mContext, listData);
@@ -38,12 +38,12 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        TFBookBackgroundModel template = listData.get(position);
+        TFBookBackgroundModel tfBookBackgroundModel = listData.get(position);
 
-        if (!TextUtils.isEmpty(template.getBackgroundLeft())) {
+        if (!TextUtils.isEmpty(tfBookBackgroundModel.getBackgroundLeft())) {
             viewHolder.ivBgLeft.setVisibility(View.VISIBLE);
             Glide.with(getContext())
-                    .load(template.getBackgroundLeft())
+                    .load(tfBookBackgroundModel.getBackgroundLeft())
                     .asBitmap()
                     .atMost()
                     .fitCenter()
@@ -51,10 +51,10 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
         } else {
             viewHolder.ivBgLeft.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(template.getBackgroundRight())) {
+        if (!TextUtils.isEmpty(tfBookBackgroundModel.getBackgroundRight())) {
             viewHolder.ivBgRight.setVisibility(View.VISIBLE);
             Glide.with(getContext())
-                    .load(template.getBackgroundRight())
+                    .load(tfBookBackgroundModel.getBackgroundRight())
                     .asBitmap()
                     .atMost()
                     .fitCenter()
@@ -62,12 +62,12 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
         } else {
             viewHolder.ivBgRight.setVisibility(View.GONE);
         }
-        if (selBgColor != null && selBgColor.equals(template)) {
+        if (selBgImage != null && (selBgImage.equals(tfBookBackgroundModel.getBackgroundLeft()) || selBgImage.equals(tfBookBackgroundModel.getBackgroundRight()))) {
             holder.itemView.setBackgroundResource(R.drawable.shape_rect_border);
         } else {
             holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
-        holder.itemView.setTag(R.string.tag_obj, template);
+        holder.itemView.setTag(R.string.tag_obj, tfBookBackgroundModel);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -82,12 +82,12 @@ public class BgImageAdapter extends BaseRecyclerAdapter<TFBookBackgroundModel> {
         }
     }
 
-    public TFBookBackgroundModel getSelBgColor() {
-        return selBgColor;
+    public String getSelBgImage() {
+        return selBgImage;
     }
 
-    public void setSelBgColor(TFBookBackgroundModel selTemplateId) {
-        this.selBgColor = selTemplateId;
+    public void setSelBgImage(String bgImageUrl) {
+        this.selBgImage = bgImageUrl;
         notifyDataSetChanged();
     }
 }

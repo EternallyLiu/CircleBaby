@@ -429,6 +429,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
                     .load(this)
                     .fitCenter()
                     .into(imageView);
+
             return imageView;
         }
 
