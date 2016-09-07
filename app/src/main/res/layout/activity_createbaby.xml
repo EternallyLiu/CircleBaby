@@ -79,8 +79,7 @@
         android:drawableLeft="@drawable/baby_name"
         android:drawablePadding="@dimen/size_12"
         android:hint="请输入宝宝的小名"
-        android:padding="@dimen/size_12"
-        android:maxLength="8"/>
+        android:padding="@dimen/size_12"/>
 
     <View
         android:layout_width="match_parent"

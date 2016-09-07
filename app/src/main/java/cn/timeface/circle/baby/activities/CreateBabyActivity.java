@@ -131,7 +131,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     Toast.makeText(this, "请填写宝宝小名", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(!vd(name)){
+                if(vd(name)){
                     if(name.length() > 12){
                         Toast.makeText(this, "宝宝小名不能超过12个字，请修改", Toast.LENGTH_SHORT).show();
                         return;
