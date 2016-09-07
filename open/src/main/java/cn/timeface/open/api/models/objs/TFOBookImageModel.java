@@ -194,7 +194,7 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
 
     @Override
     public void moveParams(float movedX, float movedY, int eleW, int eleH, float scale, float rotation) {
-
+        this.image_scale *= scale;
     }
 
     @Override
