@@ -266,20 +266,21 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 imageInfoListObjs.add(imageInfoListObj);
             }
         }
-        for (ImageInfoListObj obj : imageInfoListObjs) {
-            for (MediaObj media : obj.getMediaList()) {
-                Log.d(TAG, media.toString());
-            }
-        }
+//        for (ImageInfoListObj obj : imageInfoListObjs) {
+//            for (MediaObj media : obj.getMediaList()) {
+//                Log.d(TAG, media.toString());
+//            }
+//        }
 
-        String list = new Gson().toJson(imageInfoList);
+        String list = new Gson().toJson(imageInfoListObjs);
         Log.d(TAG, "clickFinishEdit: " + list);
-        Subscription subscribe = apiService.editCloudAlbum(albumId, Uri.encode(list))
+        Subscription subscribe = apiService.editCloudAlbum(albumId, list)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .doOnTerminate(() -> loadingDialog.dismiss())
                 .subscribe(baseResponse -> {
                     if (baseResponse.success()) {
                         ToastUtil.showToast("编辑成功");
+                        EventBus.getDefault().post(new HomeRefreshEvent());
                     } else {
                         ToastUtil.showToast(baseResponse.getInfo());
                     }
