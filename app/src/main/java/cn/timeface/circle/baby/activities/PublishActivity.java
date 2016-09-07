@@ -132,6 +132,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private VideoInfo videoInfo;
     private TFProgressDialog tfProgressDialog;
     private String time_shot;
+    private List<String> localUrls;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -471,6 +472,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             time =  DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         }
         //发布
+        localUrls = new ArrayList<>();
         List<PublishObj> datalist = new ArrayList<>();
         for (PhotoRecode photoRecode : photoRecodes) {
             if(photoRecodes.size()>1){
@@ -488,6 +490,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 int height = img.getHeight();
                 int width = img.getWidth();
                 System.out.println("img.getUrl ============ "+img.getUrl());
+                localUrls.add(img.getLocalPath());
                 MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
                 mediaObjs.add(mediaObj);
             }
@@ -505,8 +508,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
                         finish();
-                        for (ImgObj img : selImages) {
-                            uploadImage(img.getLocalPath());
+                        for (String localUrl : localUrls) {
+                            uploadImage(localUrl);
                         }
                         EventBus.getDefault().post(new HomeRefreshEvent());
                     }
@@ -550,6 +553,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 selImages.remove(position);
                 adapter.setData(data);
                 adapter.notifyDataSetChanged();
+                if(photoRecodes.size() == 1){
+                    List<ImgObj> imgObjList = photoRecodes.get(0).getImgObjList();
+                    if(imgObjList.size()>position){
+                        imgObjList.remove(position);
+                    }
+                }
             }
         }
     }
@@ -565,6 +574,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         if (TextUtils.isEmpty(path)) {
             return;
         }
+        System.out.println("img.getUrl ============ "+path);
         OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override
