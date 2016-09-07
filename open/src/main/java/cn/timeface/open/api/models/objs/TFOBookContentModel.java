@@ -42,6 +42,7 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
     String page_color;// 书页背景色
     String page_image;// 书页背景图片
     String web_content;//版芯html内容
+    String template_id;//模板id
     List<TFOBookElementModel> element_list = new ArrayList<>();// 书页版面元素列表
 
     public float getMyViewScale() {
@@ -124,6 +125,14 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
         this.web_content = web_content;
     }
 
+    public String getTemplateId() {
+        return template_id;
+    }
+
+    public void setTemplateId(String template_id) {
+        this.template_id = template_id;
+    }
+
     public TFOBookContentModel() {
     }
 
@@ -165,6 +174,12 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
         my_view_scale = 1.f;
     }
 
+    public void setRightPage(boolean right) {
+        for (TFOBookElementModel ele : element_list) {
+            ele.setRight(right);
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -181,6 +196,7 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
         dest.writeString(this.page_color);
         dest.writeString(this.page_image);
         dest.writeString(this.web_content);
+        dest.writeString(this.template_id);
         dest.writeTypedList(this.element_list);
     }
 
@@ -194,6 +210,7 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
         this.page_color = in.readString();
         this.page_image = in.readString();
         this.web_content = in.readString();
+        this.template_id = in.readString();
         this.element_list = in.createTypedArrayList(TFOBookElementModel.CREATOR);
     }
 
@@ -208,10 +225,4 @@ public class TFOBookContentModel implements Parcelable, IPageScale {
             return new TFOBookContentModel[size];
         }
     };
-
-    public void setRightPage(boolean right) {
-        for (TFOBookElementModel ele : element_list) {
-            ele.setRight(right);
-        }
-    }
 }

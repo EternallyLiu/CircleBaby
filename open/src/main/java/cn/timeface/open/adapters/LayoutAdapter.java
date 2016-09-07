@@ -48,11 +48,11 @@ public class LayoutAdapter extends BaseRecyclerAdapter<SimplePageTemplate> imple
                 .fitCenter()
                 .into(viewHolder.ivLayout);
 
-//        if (selModel != null && (selModel.().equals(tfBookBackgroundModel.getBackgroundLeft()) || selModel.getPageImage().equals(tfBookBackgroundModel.getBackgroundRight()))) {
-//            holder.itemView.setBackgroundResource(R.drawable.shape_rect_border);
-//        } else {
-//            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
-//        }
+        if (selModel != null && selModel.getTemplateId().equals(template.getTemplateId() + "")) {
+            holder.itemView.setBackgroundResource(R.drawable.shape_rect_border);
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
         holder.itemView.setTag(R.string.tag_obj, template);
     }
 

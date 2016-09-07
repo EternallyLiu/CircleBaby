@@ -325,7 +325,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
     public void makeModify(String newImageUrl) {
         ImageState imageState = mGestureCropImageView.getImageState();
         ExifInfo exifInfo = mGestureCropImageView.getExifInfo();
-        exifInfo.getExifDegrees();
+//        exifInfo.getExifDegrees();
         Log.i(TAG, "makeModify: imageState = " + imageState.toString());
         RectF cropRect = imageState.getCropRect();
         RectF imageRect = imageState.getCurrentImageRect();
@@ -335,18 +335,17 @@ public class CropImageActivity extends BaseAppCompatActivity {
         int width = Math.round(cropRect.width() / imageState.getCurrentScale());
         int height = Math.round(cropRect.height() / imageState.getCurrentScale());
 
-        int rotation = Math.round(imageState.getCurrentAngle());
+        int rotation = (Math.round(imageState.getCurrentAngle()) + exifInfo.getExifDegrees()) % 360;
         if (rotation < 0) {
             rotation = rotation % 360 + 360;
         }
-        int totalRotation = (rotation + exifInfo.getExifDegrees()) % 360;
-        float finalImageW = newImageW;
-        float finalImageH = newImageH;
-        if (exifInfo.getExifDegrees() == 90 || exifInfo.getExifDegrees() == 270) {
-            //图片本身有旋转,则调换宽度和高度
-            finalImageW = newImageH;
-            finalImageH = newImageW;
-        }
+//        float finalImageW = newImageW;
+//        float finalImageH = newImageH;
+//        if (exifInfo.getExifDegrees() == 90 || exifInfo.getExifDegrees() == 270) {
+//            //图片本身有旋转,则调换宽度和高度
+//            finalImageW = newImageH;
+//            finalImageH = newImageW;
+//        }
 
 //        if (totalRotation == 90 || totalRotation == 270) {
 //            int temp = width;
@@ -357,10 +356,10 @@ public class CropImageActivity extends BaseAppCompatActivity {
         {
             //旋转后,映射到原图位置
             float tempX;
-            switch (totalRotation) {
+            switch (rotation) {
                 case 90:
                     left += width;
-                    left = finalImageH - left;
+                    left = newImageH - left;
 
                     tempX = left;
                     left = top;
@@ -369,12 +368,12 @@ public class CropImageActivity extends BaseAppCompatActivity {
                 case 180:
                     left += width;
                     top += height;
-                    left = finalImageW - left;
-                    top = finalImageH - top;
+                    left = newImageW - left;
+                    top = newImageH - top;
                     break;
                 case 270:
                     top += height;
-                    top = finalImageW - top;
+                    top = newImageW - top;
 
                     tempX = left;
                     left = top;

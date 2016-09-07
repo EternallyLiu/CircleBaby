@@ -604,6 +604,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
                                        }
                                    }
                                    setupViews();
+                                   onChangeFocusPage(podFrameLayout.getCurrentPage());
                                }
                            }
                         , new Action1<Throwable>() {
