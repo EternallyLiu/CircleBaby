@@ -55,7 +55,7 @@
     <SinaWeibo AppKey="619467113" AppSecret="1b3700e44ae583c6012312af1b8eac7d" Enable="true" Id="6"
         RedirectUrl="http://www.timeface.cn" ShareByAppClient="true" SortId="6" />
 
-    <QZone AppId="1105142528" AppKey="0w6vIvKIJWLdSXNP" Enable="true" Id="3" SortId="3" />
+    <QZone AppId="1105323622" AppKey="ExAt43F8f9CzE8Zo" Enable="true" Id="3" SortId="3" />
 
     <!--
         Wechat微信和WechatMoments微信朋友圈的appid是一样的；
