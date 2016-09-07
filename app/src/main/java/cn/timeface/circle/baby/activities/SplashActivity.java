@@ -397,8 +397,6 @@ public class SplashActivity extends BaseAppCompatActivity {
                         "", SplashActivity.this);
             }
         }
-
-        finish();
     }
 
     private Subscription login(String account, String psw, int type) {
@@ -418,11 +416,15 @@ public class SplashActivity extends BaseAppCompatActivity {
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
+                    }else{
+                        LoginActivity.open(this);
                     }
-
+                    finish();
                 }, throwable -> {
                     Log.e(TAG, "login:", throwable);
                     throwable.printStackTrace();
+                    LoginActivity.open(this);
+                    finish();
                 });
         return s;
     }
@@ -448,10 +450,15 @@ public class SplashActivity extends BaseAppCompatActivity {
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
+                    }else{
+                        LoginActivity.open(this);
                     }
+                    finish();
                 }, error -> {
                     Log.e(TAG, "vendorLogin:", error);
                     error.printStackTrace();
+                    LoginActivity.open(this);
+                    finish();
                 });
     }
 
