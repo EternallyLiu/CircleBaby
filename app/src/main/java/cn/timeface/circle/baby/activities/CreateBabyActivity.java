@@ -26,6 +26,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -129,9 +131,16 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     Toast.makeText(this, "请填写宝宝小名", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (name.length() > 8) {
-                    Toast.makeText(this, "宝宝小名不能超过8个字，请修改", Toast.LENGTH_SHORT).show();
-                    return;
+                if(vd(name)){
+                    if(name.length() > 12){
+                        Toast.makeText(this, "宝宝小名不能超过12个字，请修改", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }else{
+                    if (name.length() > 6) {
+                        Toast.makeText(this, "宝宝小名不能超过6个汉字，请修改", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
                 if (TextUtils.isEmpty(birthday)) {
                     Toast.makeText(this, "请填写宝宝生日", Toast.LENGTH_SHORT).show();
@@ -265,5 +274,23 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     public void onEvent(ConfirmRelationEvent event) {
         TabMainActivity.open(this);
         finish();
+    }
+
+
+    //判断是否为汉字
+    public boolean vd(String str){
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        char[] chars=str.toCharArray();
+        boolean isGB2312=false;
+        for(int i=0;i<chars.length;i++){
+            Matcher m = p.matcher(chars[i]+"");
+            if(m.matches()){
+                //是汉字
+            }else{
+                isGB2312 = true;
+                break;
+            }
+        }
+        return isGB2312;
     }
 }

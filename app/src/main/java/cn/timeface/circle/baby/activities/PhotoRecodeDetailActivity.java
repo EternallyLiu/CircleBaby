@@ -280,13 +280,21 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
 
     @Subscribe
     public void onEvent(TimeEditPhotoDeleteEvent event) {
-        int position = ((TimeEditPhotoDeleteEvent) event).getPosition();
+        int position = event.getPosition();
+        String url = event.getUrl();
         List<String> data = adapter.getData();
         if(data.size()>position){
             data.remove(position);
-            selImages.remove(position);
+//            selImages.remove(position);
             adapter.setData(data);
             adapter.notifyDataSetChanged();
+
+            for(ImgObj img : selImages){
+                if(url.equals(img.getLocalPath())){
+                    selImages.remove(img);
+                }
+            }
+            photoRecode.setImgObjList(selImages);
         }
     }
 }
