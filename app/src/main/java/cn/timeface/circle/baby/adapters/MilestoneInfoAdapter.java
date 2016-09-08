@@ -63,7 +63,7 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             holder.ivVideo.setVisibility(View.VISIBLE);
         }else{
             holder.tvCount.setVisibility(View.VISIBLE);
-            holder.tvCount.setText(item.getMediaList().size()+"张");
+            holder.tvCount.setText(item.getMediaList().size()+"");
         }
 
     }
