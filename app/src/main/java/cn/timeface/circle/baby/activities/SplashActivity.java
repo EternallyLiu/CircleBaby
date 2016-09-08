@@ -373,8 +373,10 @@ public class SplashActivity extends BaseAppCompatActivity {
 //        }
         if(FastData.getUserFrom() == -1){
             LoginActivity.open(this);
+            finish();
         }else if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
             //上次登录为手机号登录
+            ShareSDK.initSDK(this);
             String account = FastData.getAccount();
             String password = FastData.getPassword();
             if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
