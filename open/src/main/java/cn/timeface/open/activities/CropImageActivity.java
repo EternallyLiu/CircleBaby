@@ -323,7 +323,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
     }
 
     public void makeModify(String newImageUrl) {
-        ImageState imageState = mGestureCropImageView.getImageState();
+        ImageState imageState = mGestureCropImageView.getImageState(newImageW, newImageH);
         ExifInfo exifInfo = mGestureCropImageView.getExifInfo();
 //        exifInfo.getExifDegrees();
         Log.i(TAG, "makeModify: imageState = " + imageState.toString());

@@ -631,9 +631,15 @@ public class CropImageView extends TransformImageView {
 
     }
 
-    public ImageState getImageState() {
+    public ImageState getImageState(float orgW, float orgH) {
+        //因为ucrop为了避免OOM,可能对bitmap进行压缩,而时光流影需要获取原图的位置,所以需要对scale进行二次变换
+        final Drawable drawable = getDrawable();
+        float scale = 1.f;
+        if (drawable != null) {
+            scale = Math.max(orgW, orgH) / Math.max(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        }
         return new ImageState(
                 mCropRect, RectUtils.trapToRect(mCurrentImageCorners),
-                getCurrentScale(), getCurrentAngle());
+                getCurrentScale() / scale, getCurrentAngle());
     }
 }
