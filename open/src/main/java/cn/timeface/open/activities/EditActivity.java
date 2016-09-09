@@ -215,7 +215,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
         lp.gravity = Gravity.CENTER_VERTICAL;
         podFrameLayout.setFocusView(focusView, bookModel.getBookWidth());
         podFrameLayout.addView(focusView, lp);
-        focusView.setVisibility(View.GONE);
+        focusView.setVisibility(rvSelection.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
     }
 
     public void clickEditType(View view) {

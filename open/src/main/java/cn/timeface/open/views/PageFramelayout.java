@@ -60,7 +60,8 @@ public class PageFrameLayout extends FrameLayout {
 
             if (changeFocusPageListener != null &&
                     (evX > measuredWidth / 2 ? RIGHT : LEFT) != currentPage) {
-                changeFocusPageListener.onChangeFocusPage(evX > measuredWidth / 2 ? RIGHT : LEFT);
+                currentPage = evX > measuredWidth / 2 ? RIGHT : LEFT;
+                changeFocusPageListener.onChangeFocusPage(currentPage);
             }
 
             if (evX > measuredWidth / 2) {
