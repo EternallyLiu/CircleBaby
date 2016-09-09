@@ -64,9 +64,7 @@ import cn.timeface.circle.baby.events.CartCouponCodeEvent;
 import cn.timeface.circle.baby.events.OrderCancelEvent;
 import cn.timeface.circle.baby.events.PayResultEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.payment.OrderInfoObj;
-import cn.timeface.circle.baby.payment.PrepareOrderException;
-import cn.timeface.circle.baby.payment.alipay.AlipayPayment;
+import cn.timeface.circle.baby.payment.alipay.AliPay;
 import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
 import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.Utils;
@@ -954,20 +952,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         addSubscription(s);
     }
 
-    private void startPayment() {
-        OrderInfoObj orderInfoObj = new OrderInfoObj();
-        orderInfoObj.setTradeNo(orderId);
-//        orderInfoObj.setPrice(orderPrice);
-        orderInfoObj.setPrice(0.01);
-        orderInfoObj.setSubject(getPayTitle());
-        orderInfoObj.setBody(getPayTitle());
-        try {
-            new AlipayPayment().requestPayment(this, orderInfoObj);
-        } catch (PrepareOrderException e) {
-            Log.e(TAG, "startPayment: ", e);
-        }
-    }
-
     /**
      * 支付
      */
@@ -993,7 +977,9 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //                            } else {
 //                                //2支付宝支付
                         System.out.println("2支付宝支付===========" + orderId);
-                        new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
+//                        new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
+                        Subscription subscription = new AliPay().payV2(orderId, MyOrderConfirmActivity.this);
+                        addSubscription((subscription));
 //                            }
                         break;
 

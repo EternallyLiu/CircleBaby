@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.SelectPayWayDialog;
 import cn.timeface.circle.baby.events.PayResultEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.payment.alipay.AliPay;
 import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.OrderDetailFootView;
@@ -225,7 +227,9 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
 //                            } else {
 //                                //2支付宝支付
                         System.out.println("2支付宝支付===========" + orderId);
-                        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
+//                        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
+                        Subscription subscription = new AliPay().payV2(orderId, OrderDetailActivity.this);
+                        addSubscription((subscription));
 //                            }
                         break;
 
@@ -318,5 +322,11 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
         }, 0, 2 * 1000);
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.home){
+            OrderListActivity.open(OrderDetailActivity.this);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
