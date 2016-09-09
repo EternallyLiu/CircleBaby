@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Result {
 
-    private static final Map<String, String> sResultStatus;
+    public static final Map<String, String> sResultStatus;
 
     static {
         sResultStatus = new HashMap<String, String>();
@@ -25,6 +25,7 @@ public class Result {
         sResultStatus.put("6000", "支付服务正在进行升级操作");
         sResultStatus.put("6001", "用户中途取消支付操作");
         sResultStatus.put("7001", "网页支付失败");
+        sResultStatus.put("6002", "网络连接异常");
     }
 
     String resultStatus = null;

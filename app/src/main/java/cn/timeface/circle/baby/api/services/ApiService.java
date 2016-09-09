@@ -9,6 +9,7 @@ import cn.timeface.circle.baby.api.models.responses.AddAddressResponse;
 import cn.timeface.circle.baby.api.models.responses.AddCartItemResponse;
 import cn.timeface.circle.baby.api.models.responses.AddressListResponse;
 import cn.timeface.circle.baby.api.models.responses.AlbumDetailResponse;
+import cn.timeface.circle.baby.api.models.responses.AliPayResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.api.models.responses.BookTypeListResponse;
@@ -597,4 +598,10 @@ public interface ApiService {
     @GET("babyBook/updateTimeInfoForOpenApi")
     Observable<BaseResponse> updateTimeInfoForOpenApi(@Query("mediaId") String mediaId,
                                                       @Query("url") String url);
+
+    /**
+     * 支付宝支付
+     */
+    @POST("babyOrder/alipay")
+    Observable<AliPayResponse> aliPay(@Query("orderId") String orderId);
 }

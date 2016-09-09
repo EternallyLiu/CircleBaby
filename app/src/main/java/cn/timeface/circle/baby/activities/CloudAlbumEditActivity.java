@@ -44,6 +44,7 @@ import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.oss.OSSManager;
@@ -98,6 +99,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private String albumId;
     private List<ImageInfoListObj> imageInfoList;
     private int type;
+    private int indexofHead;
 
     public static void open(Activity activity, String albumId, int type) {
         Intent intent = new Intent(activity, CloudAlbumEditActivity.class);
@@ -146,20 +148,24 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                             dataList.addAll(obj.getMediaList());
                         }
                         mediaObjHeader = null;
-                        for (MediaObj mediaObj : dataList) {
-                            if (mediaObj.getIsCover() == 1) {
+                        for(int i =0;i<dataList.size();i++){
+                            MediaObj mediaObj = dataList.get(i);
+                            if(mediaObj.getIsCover() == 1){
                                 mediaObjHeader = mediaObj;
+                                indexofHead = i;
                                 break;
                             }
                         }
                         if (mediaObjHeader == null) {//没有封面图片，使用第一个
                             dataList.get(0).setIsCover(1);
                             mediaObjHeader = dataList.get(0);
+                            indexofHead = 0;
                         }
                         setupHeaderView();
                         mediaObjs.clear();
                         dataList.remove(mediaObjHeader);
                         mediaObjs.addAll(dataList);
+                        System.out.println("reqCloudAlbumDetail   mediaObjs.size() =========== "+mediaObjs.size());
                         albumDetailAdapter.notifyDataSetChanged();
                     } else {
                         ToastUtil.showToast(albumDetailResponse.getInfo());
@@ -246,7 +252,15 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     }
 
     private void completeEdit() {
-        mediaObjs.add(mediaObjHeader);
+        System.out.println("completeEdit   mediaObjs.size() =========== "+mediaObjs.size());
+        System.out.println("completeEdit   indexofHead =========== "+indexofHead);
+        if(mediaObjs.size()>indexofHead){
+            mediaObjs.add(indexofHead,mediaObjHeader);
+        }else{
+            mediaObjs.add(mediaObjHeader);
+        }
+
+        System.out.println("completeEdit   mediaObjs.size() =========== "+mediaObjs.size());
 
         List<ImageInfoListObj> imageInfoListObjs = new ArrayList<>();
         for (int x = 0; x < mediaObjs.size(); x++) {
@@ -258,6 +272,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 for (int y = x; y < mediaObjs.size(); y++) {
                     if (timeId == mediaObjs.get(y).getTimeId()) {
                         mediaList.add(mediaObjs.get(y));
+                        Log.d(TAG, mediaObjs.get(y).toString());
                     }
                 }
                 imageInfoListObj.setMediaList(mediaList);
@@ -443,10 +458,12 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                         if (media.getImgUrl().equals(mediaObj.getImgUrl())) {
                             media.setIsCover(1);
                             GlideUtil.displayImage(mediaObj.getImgUrl(), ivHeader);
+                        }else{
+                            media.setIsCover(0);
                         }
                     }
                     mediaObjHeader.setIsCover(0);
-
+                    System.out.println("onActivityResult   mediaObjs.size() =========== "+mediaObjs.size());
                     break;
                 case REQ_SELECT_PHOTO:
                     ArrayList<ImgObj> imgObjs = data.getParcelableArrayListExtra("result_select_image_list");

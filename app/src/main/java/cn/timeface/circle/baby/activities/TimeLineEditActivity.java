@@ -239,7 +239,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     private void editTime() {
         String value = etContent.getText().toString();
-        if (imageUrls.size() < 1) {
+        if (imageUrls.size() < 1 && timelimeobj.getType()!=1) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }

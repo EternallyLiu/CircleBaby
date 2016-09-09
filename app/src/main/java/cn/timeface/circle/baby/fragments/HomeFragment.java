@@ -314,7 +314,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 //        }else{
 //            showNoDataView(false);
 //        }
-        if (lists.size() == 0) {
+        if (lists.size() < 3) {
             if (enableAnimation && !bottomMenuShow) {
                 bottomMenuShow = true;
                 Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),

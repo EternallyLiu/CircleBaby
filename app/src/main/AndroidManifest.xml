@@ -305,7 +305,8 @@
         <activity
             android:name=".activities.OrderListActivity"
             android:label="我的订单"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activities.OrderDetailActivity"
             android:label="订单详情"
