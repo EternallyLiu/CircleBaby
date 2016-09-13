@@ -285,8 +285,7 @@
                         <TextView
                             android:id="@+id/tv_pack_label"
                             style="@style/OrderTextLabel"
-                            android:textColor="@color/text_color2"
-                            android:visibility="visible"/>
+                            android:textColor="@color/bg27"/>
                     </LinearLayout>
 
 

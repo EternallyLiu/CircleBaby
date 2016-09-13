@@ -111,6 +111,12 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         mStateView.loading();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reqData(1, true);
+    }
+
     /**
      * click 去印刷
      *

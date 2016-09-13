@@ -219,6 +219,7 @@ public class CardPreviewFragment extends BaseFragment{
                 }
             }
             TemplateImage templateImage = new TemplateImage(0, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
+            System.out.println("templateImage.toString() ======== "+templateImage.toString());
             String imageInfo = new Gson().toJson(templateImage);
 
             String py = URLEncoder.encode(etPinyin.getText().toString());

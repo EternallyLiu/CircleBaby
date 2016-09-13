@@ -101,4 +101,19 @@ public class TemplateImage extends BaseObj{
     public void setCreationDate(long creationDate) {
         this.creationDate = creationDate;
     }
+
+    @Override
+    public String toString() {
+        return "TemplateImage{" +
+                "degree=" + degree +
+                ", h=" + h +
+                ", imageH=" + imageH +
+                ", imageW=" + imageW +
+                ", w=" + w +
+                ", x=" + x +
+                ", y=" + y +
+                ", yurl='" + yurl + '\'' +
+                ", creationDate=" + creationDate +
+                '}';
+    }
 }

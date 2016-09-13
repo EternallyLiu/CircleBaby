@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.fragments;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -55,6 +56,7 @@ import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -164,7 +166,7 @@ public class DiaryPreviewFragment extends BaseFragment {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float rotation = getRotate(event) - oldRotation;
-                        if (rotation > -15 && rotation < 15) {
+                        if (rotation > -5 && rotation < 5) {
                             degree = rotation;
                             fl.setRotation(rotation);
                             fl.invalidate();

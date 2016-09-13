@@ -73,12 +73,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/size_24"
                 android:layout_marginTop="@dimen/size_12"
-                android:lineSpacingMultiplier="1.2"
+                android:lineSpacingMultiplier="1.3"
                 android:text="[穿衣歌]\n小胳膊，穿袖子，穿上衣，扣扣子，\n小脚丫，穿裤子，穿上袜子穿鞋子。"
                 android:textColor="@color/text_color4"
                 android:textSize="@dimen/text_normal"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/size_6"/>
+                android:layout_marginBottom="@dimen/size_6" />
 
 
         </RelativeLayout>

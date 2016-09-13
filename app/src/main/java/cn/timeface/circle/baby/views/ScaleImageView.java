@@ -53,12 +53,13 @@ public class ScaleImageView extends ImageView {
     private float picWidth;
     private float picHeight;
     private ImgObj imgObj;
+    private boolean first;
+
     public ScaleImageView(Activity activity, ImgObj imgObj) {
         super(activity);
         this.imgObj = imgObj;
-//        gintama = BitmapFactory.decodeResource(getResources(), R.drawable.ic_login_qq);
-//        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
-        gintama = comp(imgObj.getLocalPath());
+        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
+//        gintama = comp(imgObj.getLocalPath());
 
 
         DisplayMetrics dm = new DisplayMetrics();
@@ -71,14 +72,17 @@ public class ScaleImageView extends ImageView {
         setScaleType(ImageView.ScaleType.CENTER_CROP);
         setImageBitmap(gintama);
 //        centerPoint(center);
-
+        first = true;
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         reset();
-        centerPic();
+        if(first){
+            centerPic();
+        }
+
     }
 
     protected void onDraw(Canvas canvas) {

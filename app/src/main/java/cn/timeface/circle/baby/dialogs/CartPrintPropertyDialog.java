@@ -243,6 +243,27 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         mTvPack.setVisibility(View.VISIBLE);
 //        }
 
+        for(PrintParamObj obj : packList){
+                if (pageNum >= 12 && pageNum <= 20) {
+                    mTvPack.setText("(照片书12-20页，只支持平装)");
+                    if(obj.getShow().equals("平装")){
+                        obj.setIsActive(true);
+                    }else{
+                        obj.setIsActive(false);
+                    }
+                } else if (pageNum > 20 && pageNum <= 60) {
+                    mTvPack.setText("");
+                    obj.setIsActive(true);
+                } else if (pageNum > 60) {
+                    mTvPack.setText("(照片书大于页，只支持平装)");
+                    if(obj.getShow().equals("平装")){
+                        obj.setIsActive(true);
+                    }else{
+                        obj.setIsActive(false);
+                    }
+                }
+        }
+
         dialog.setOnKeyListener((dialog1, keyCode, event) -> {
 
             if (keyCode == KeyEvent.KEYCODE_BACK) {

@@ -10,12 +10,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.timeface.refreshload.PullRefreshLoadRecyclerView;
 import com.timeface.refreshload.headfoot.LoadMoreView;
 import com.timeface.refreshload.headfoot.RefreshView;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumListAdapter;
 import cn.timeface.circle.baby.api.models.objs.CloudAlbumObj;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.ToastUtil;
@@ -39,7 +40,7 @@ import rx.Subscription;
 /**
  * Created by zhsheng on 2016/6/7.
  */
-public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventBus {
+public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventBus, View.OnClickListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -47,8 +48,15 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
     PullRefreshLoadRecyclerView prlRecyclerView;
     @Bind(R.id.stateView)
     TFStateView tfStateView;
+    @Bind(R.id.iv_icon)
+    ImageView ivIcon;
+    @Bind(R.id.ll_title)
+    LinearLayout llTitle;
+    @Bind(R.id.sv)
+    ScrollView sv;
     private List<CloudAlbumObj> dataList = new ArrayList<>(8);
     private CloudAlbumListAdapter albumListAdapter;
+    private boolean showGuide;
 
     public static void open(Activity activity) {
         activity.startActivity(new Intent(activity, CloudAlbumActivity.class));
@@ -65,6 +73,11 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
         tfStateView.setOnRetryListener(this::reqCloudAlbumImages);
         tfStateView.loading();
         reqCloudAlbumImages();
+        initListener();
+    }
+
+    private void initListener() {
+        llTitle.setOnClickListener(this);
     }
 
     private void setupAlbumView() {
@@ -138,11 +151,28 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
     public void clickCloudAlbum(View view) {
         CloudAlbumObj cloudAlbumObj = (CloudAlbumObj) view.getTag(R.string.tag_obj);
         String cloudAlbumObjId = cloudAlbumObj.getId();
-        CloudAlbumEditActivity.open(this, cloudAlbumObjId,cloudAlbumObj.getType());
+        CloudAlbumEditActivity.open(this, cloudAlbumObjId, cloudAlbumObj.getType());
     }
 
     @Subscribe
     public void onEvent(HomeRefreshEvent event) {
         reqCloudAlbumImages();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ll_title:
+                if (showGuide) {
+                    sv.setVisibility(View.GONE);
+                    showGuide = false;
+                    ivIcon.setImageResource(R.drawable.down);
+                }else{
+                    sv.setVisibility(View.VISIBLE);
+                    showGuide = true;
+                    ivIcon.setImageResource(R.drawable.up);
+                }
+                break;
+        }
     }
 }

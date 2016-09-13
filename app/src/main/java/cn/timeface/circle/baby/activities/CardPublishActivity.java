@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.github.rayboot.widget.ratioview.RatioImageView;
@@ -28,7 +30,6 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
@@ -47,12 +48,18 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     ViewPager vp;
     @Bind(R.id.tv_add)
     TextView tvAdd;
+    @Bind(R.id.iv_icon)
+    ImageView ivIcon;
+    @Bind(R.id.ll_title)
+    LinearLayout llTitle;
+    @Bind(R.id.sv)
+    ScrollView sv;
     private List<ImgObj> selImages = new ArrayList<>();
     private List<View> mViews;
     private List<MediaObj> dataList;
     private MyAdapter adapter;
     private List<View> newViews;
-
+    private boolean showGuide;
     public static void open(Context context) {
         Intent intent = new Intent(context, CardPublishActivity.class);
         context.startActivity(intent);
@@ -67,6 +74,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvAdd.setOnClickListener(this);
+        llTitle.setOnClickListener(this);
         tvAdd.setEnabled(false);
 //        reqData();
 //        selectImages();
@@ -133,24 +141,24 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 break;
             case R.id.iv_deletecard:
                 int currentItem = vp.getCurrentItem();
-                System.out.println("currentItem======="+currentItem);
+                System.out.println("currentItem=======" + currentItem);
                 newViews = new ArrayList<>();
-                for(int i=0;i<mViews.size();i++){
-                    if(i!=currentItem){
+                for (int i = 0; i < mViews.size(); i++) {
+                    if (i != currentItem) {
                         newViews.add(mViews.get(i));
                     }
                 }
 //                mViews.remove(currentItem);
-                if(newViews.size()==0){
+                if (newViews.size() == 0) {
                     newViews.add(getAddCard());
                 }
-                System.out.println("mViews.size()======="+mViews.size());
+                System.out.println("mViews.size()=======" + mViews.size());
                 vp.setAdapter(new MyAdapter(newViews));
                 mViews = newViews;
                 apiService.delCard(dataList.get(currentItem).getId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            if(response.success()){
+                            if (response.success()) {
                                 dataList.remove(currentItem);
                             }
                         }, throwable -> {
@@ -168,6 +176,17 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                     vp.setCurrentItem(mViews.size() - 1);
                 }
                 break;
+            case R.id.ll_title:
+                if (showGuide) {
+                    sv.setVisibility(View.GONE);
+                    showGuide = false;
+                    ivIcon.setImageResource(R.drawable.down);
+                }else{
+                    sv.setVisibility(View.VISIBLE);
+                    showGuide = true;
+                    ivIcon.setImageResource(R.drawable.up);
+                }
+                break;
 
         }
 
@@ -178,8 +197,8 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         RatioImageView ivCard = (RatioImageView) view.findViewById(R.id.iv_cover);
         ImageView ivDeletecard = (ImageView) view.findViewById(R.id.iv_deletecard);
         int measuredWidth = ivDeletecard.getMeasuredWidth();
-        ivDeletecard.setTranslationX(measuredWidth/2);
-        ivDeletecard.setTranslationY(-measuredWidth/2);
+        ivDeletecard.setTranslationX(measuredWidth / 2);
+        ivDeletecard.setTranslationY(-measuredWidth / 2);
         GlideUtil.displayImage(media.getImgUrl(), ivCard);
         ivDeletecard.setOnClickListener(this);
         return view;
@@ -194,7 +213,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
     public boolean isAddCard() {
         boolean b = false;
-        if (mViews!=null){
+        if (mViews != null) {
             b = mViews.size() > dataList.size();
         }
         return b;
@@ -205,7 +224,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
         public MyAdapter(List<View> list) {
             this.list = list;
-            System.out.println("MyAdapter.list.size========"+this.list.size());
+            System.out.println("MyAdapter.list.size========" + this.list.size());
         }
 
         @Override
@@ -221,7 +240,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
 //            super.destroyItem(container, position, object);
-            System.out.println("destroyItem.position========"+position);
+            System.out.println("destroyItem.position========" + position);
             container.removeView(list.get(position));
         }
 
@@ -248,12 +267,12 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         if (item.getItemId() == R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.complete) {
-            if(dataList.size() == 0){
+            if (dataList.size() == 0) {
                 ToastUtil.showToast("先制作一张识图卡片吧~");
                 return true;
             }
             EventBus.getDefault().post(new PublishRefreshEvent(dataList));
-            PublishActivity.open(this,dataList);
+            PublishActivity.open(this, dataList);
 //            EventBus.getDefault().post(new CardEvent(dataList));
             finish();
         }
