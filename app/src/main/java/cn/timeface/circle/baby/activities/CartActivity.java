@@ -43,6 +43,7 @@ import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.CartPropertyChangeEvent;
+import cn.timeface.circle.baby.events.PayResultEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
@@ -544,6 +545,11 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
         llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
         rlRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
         mFoot.setVisibility(showNoData ? View.GONE : View.VISIBLE);
+    }
+
+    @Subscribe
+    public void onEvent(PayResultEvent event) {
+        reqData(1, true);
     }
 
 }

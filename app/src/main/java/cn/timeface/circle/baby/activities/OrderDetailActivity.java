@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.constants.LogConstant;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.SelectPayWayDialog;
+import cn.timeface.circle.baby.events.OrderListRefreshEvent;
 import cn.timeface.circle.baby.events.PayResultEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.payment.alipay.AliPay;
@@ -138,7 +140,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
 
 
                     // 配送中 || 已送达
-                    if (listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
+                    if (listResponse.getOrderStatus() == 0 || listResponse.getOrderStatus() == 3) {
                         // 商家优惠码现场配送不显示运单号、物流信息
 //                        if (listResponse.getOrderStatus() == 5) {
                             orderActionBtn.setText(getResources().getString(R.string.show_order));
@@ -153,7 +155,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                         orderActionCancelBtn.setVisibility(View.VISIBLE);
                         orderActionBtn.setText(getResources().getString(R.string.payoff_at_once));
                         orderActionBtn.setBackgroundResource(R.drawable.selector_red_btn_bg);
-                    }else if(listResponse.getOrderStatus() == TypeConstant.STATUS_CLOSED){
+                    }else if(listResponse.getOrderStatus() == TypeConstant.STATUS_CLOSED || listResponse.getOrderStatus() == TypeConstant.STATUS_DELIVERY_SUCCESS){
                         //已关闭
                         orderActionBtn.setVisibility(View.GONE);
                         orderActionCancelBtn.setVisibility(View.GONE);
@@ -171,7 +173,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
     public void clickBtn(View view) {
         switch (view.getId()) {
             case R.id.order_action_btn:
-                if (listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
+                if (listResponse.getOrderStatus() == 0 || listResponse.getOrderStatus() == 3 || listResponse.getOrderStatus() == 5) {
                     //确认收货
                     apiService.receipt(orderId)
                             .compose(SchedulersCompat.applyIoSchedulers())
@@ -179,6 +181,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                                 if (response.success()) {
                                     setupView();
                                     reqOrderListData();
+                                    EventBus.getDefault().post(new OrderListRefreshEvent());
                                 }
                             });
 
@@ -195,6 +198,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                             if (response.success()) {
                                 setupView();
                                 reqOrderListData();
+                                EventBus.getDefault().post(new OrderListRefreshEvent());
                             }
                         }, throwable -> {
                         });

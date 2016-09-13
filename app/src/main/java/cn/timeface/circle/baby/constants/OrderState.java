@@ -11,7 +11,8 @@ public class OrderState {
         String statusStr = null;
         switch (status) {
             case TypeConstant.STATUS_CHECKING:
-                statusStr = "审核中";
+//                statusStr = "审核中";
+                statusStr = "待收货";
                 break;
 
             case TypeConstant.STATUS_CHECK_FAILED:

@@ -16,6 +16,8 @@ import com.timeface.refreshload.PullRefreshLoadRecyclerView;
 import com.timeface.refreshload.headfoot.LoadMoreView;
 import com.timeface.refreshload.headfoot.RefreshView;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +33,15 @@ import cn.timeface.circle.baby.api.models.objs.OrderObj;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.api.models.objs.PrintPropertyTypeObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.events.OrderListRefreshEvent;
+import cn.timeface.circle.baby.events.PayResultEvent;
+import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
 
-public class OrderListActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class OrderListActivity extends BaseAppCompatActivity implements View.OnClickListener ,IEventBus{
     public static final int START_PAGE = 1;
     public int currentPage = 1;
     @Bind(R.id.toolbar)
@@ -172,5 +177,15 @@ public class OrderListActivity extends BaseAppCompatActivity implements View.OnC
                 finish();
                 break;
         }
+    }
+
+    @Subscribe
+    public void onEvent(OrderListRefreshEvent event) {
+        reqData(1, true);
+    }
+
+    @Subscribe
+    public void onEvent(PayResultEvent event) {
+        reqData(1, true);
     }
 }

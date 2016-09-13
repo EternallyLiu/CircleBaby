@@ -133,6 +133,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private TFProgressDialog tfProgressDialog;
     private String time_shot;
     private List<String> localUrls;
+    private int count;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -508,6 +509,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
                         finish();
+                        count = 0;
                         for (String localUrl : localUrls) {
                             uploadImage(localUrl);
                         }
@@ -591,6 +593,11 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         }
                         String objectKey = uploadFileObj.getObjectKey();
                         System.out.println("uploadImage  objectKey============ "+objectKey);
+                        count++;
+                        if(count == localUrls.size()){
+                            EventBus.getDefault().post(new HomeRefreshEvent());
+                            count = 0;
+                        }
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
                     }
