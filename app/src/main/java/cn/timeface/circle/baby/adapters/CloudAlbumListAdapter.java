@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.objs.CloudAlbumObj;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.GlideUtil;
 
 /**
  * Created by zhsheng on 2016/6/7.
@@ -44,9 +46,7 @@ public class CloudAlbumListAdapter extends RecyclerView.Adapter<CloudAlbumListAd
         CloudAlbumObj cloudAlbumObj = dataList.get(position);
         String imgUrl = cloudAlbumObj.getImgUrl();
         if (!TextUtils.isEmpty(imgUrl)) {
-            Glide.with(context)
-                    .load(imgUrl)
-                    .into(holder.ivAlbumCover);
+            GlideUtil.displayImage(imgUrl,holder.ivAlbumCover);
         }
         holder.tvAlbumCount.setText(cloudAlbumObj.getContentInfo());
         holder.tvAlbumTitle.setText(cloudAlbumObj.getDesc());
@@ -62,7 +62,7 @@ public class CloudAlbumListAdapter extends RecyclerView.Adapter<CloudAlbumListAd
 
     class CloudAlbumViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_album_cover)
-        ImageView ivAlbumCover;
+        RatioImageView ivAlbumCover;
         @Bind(R.id.tv_album_title)
         TextView tvAlbumTitle;
         @Bind(R.id.tv_album_count)

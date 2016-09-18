@@ -38,6 +38,8 @@ public class PhotoPagerAdapter extends PagerAdapter {
         if (path.startsWith("http://")) {
             if(path.endsWith("@.jpg")){
                 path = path.replace("@.jpg","@600w_600h_1l_1o");
+            }else{
+                path = path + "@600w_600h_1l_1o";
             }
             Glide.with(mContext)
                     .load(path)

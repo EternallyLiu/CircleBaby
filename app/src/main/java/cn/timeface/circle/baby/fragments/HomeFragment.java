@@ -4,10 +4,12 @@ package cn.timeface.circle.baby.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rayboot.widget.ratioview.RatioImageView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -59,7 +62,6 @@ import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
 import cn.timeface.circle.baby.events.ActionCallBackEvent;
 import cn.timeface.circle.baby.events.CommentSubmit;
-import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.IconCommentClickEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
@@ -93,11 +95,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Bind(R.id.ll_mine_info)
     RelativeLayout llMineInfo;
     @Bind(R.id.tv_album)
-    TextView tvAlbum;
+    RatioImageView tvAlbum;
     @Bind(R.id.tv_milestone)
-    TextView tvMilestone;
+    RatioImageView tvMilestone;
     @Bind(R.id.tv_relative)
-    TextView tvRelative;
+    RatioImageView tvRelative;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
     @Bind(R.id.swipe_refresh_layout)
@@ -112,6 +114,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     TFStateView tfStateView;
     @Bind(R.id.ll_no_data)
     LinearLayout llNoData;
+    @Bind(R.id.appbar)
+    AppBarLayout appbar;
 
     private boolean rlCommentShow;
     private int currentPage = 1;
@@ -132,7 +136,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private InputMethodRelative rlComment;
     private EditText etCommment;
     private Button btnSend;
-    private android.app.AlertDialog dialog;
+    private AlertDialog dialog;
+    private ArrayList<TimeLineGroupObj> lists;
 
     public HomeFragment() {
     }
@@ -179,7 +184,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         reqData(1);
 
         initMsg();
-        if(FastData.getBabyId()!=0){
+        if (FastData.getBabyId() != 0) {
             updateLoginInfo();
         }
         return view;
@@ -220,6 +225,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
+                    appbar.setExpanded(false);
                     if (enableAnimation && bottomMenuShow) {
                         bottomMenuShow = false;
                         ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
@@ -230,6 +236,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         animatorSet.start();
                     }
                 } else if (dy < 0) {
+                    appbar.setExpanded(true);
                     if (enableAnimation && !bottomMenuShow) {
                         bottomMenuShow = true;
                         Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
@@ -302,7 +309,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
-        ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
+        lists = new ArrayList<>();
         for (TimeLineGroupObj obj : dataList) {
             if (obj.getTimeLineList().size() > 0) {
                 lists.add(obj);
@@ -510,7 +517,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void editComment() {
-        dialog = new android.app.AlertDialog.Builder(getActivity()).setView(initCommentEdit()).show();
+        dialog = new AlertDialog.Builder(getActivity()).setView(initCommentEdit()).show();
         dialog.setCanceledOnTouchOutside(true);
         Window window = dialog.getWindow();
         WindowManager m = window.getWindowManager();

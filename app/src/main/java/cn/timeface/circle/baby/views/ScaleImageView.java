@@ -58,8 +58,8 @@ public class ScaleImageView extends ImageView {
     public ScaleImageView(Activity activity, ImgObj imgObj) {
         super(activity);
         this.imgObj = imgObj;
-        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
-//        gintama = comp(imgObj.getLocalPath());
+//        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
+        gintama = comp(imgObj.getLocalPath());
 
 
         DisplayMetrics dm = new DisplayMetrics();
@@ -271,6 +271,7 @@ public class ScaleImageView extends ImageView {
         }
         matrix.set(matrix1);
         invalidate();
+        first = false;
     }
 
 

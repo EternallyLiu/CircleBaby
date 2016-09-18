@@ -24,6 +24,7 @@ import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.utils.DateUtil;
+import cn.timeface.circle.baby.utils.GlideUtil;
 
 /**
  * Created by zhsheng on 2016/6/8.
@@ -50,13 +51,16 @@ public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<MediaObj> {
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         AlbumDetailHolder holder = (AlbumDetailHolder) viewHolder;
         MediaObj detailObj = listData.get(position);
-        Glide.with(mContext)
-                .load(detailObj.getImgUrl())
-                .into(holder.ivAlbumImage);
+        GlideUtil.displayImage(detailObj.getImgUrl(),holder.ivAlbumImage);
         holder.editInput.setEnabled(editState);
         holder.editInput.setHint("点击填写文字");
         holder.editInput.setHintTextColor(mContext.getResources().getColor(R.color.text_color_hint));
         String content = detailObj.getContent();
+        if(TextUtils.isEmpty(detailObj.getVideoUrl())){
+            holder.ivVideo.setVisibility(View.GONE);
+        }else{
+            holder.ivVideo.setVisibility(View.VISIBLE);
+        }
         if (editState) {//编辑状态
             holder.editInput.setText(content);
             holder.editInput.setVisibility(View.VISIBLE);
@@ -109,6 +113,8 @@ public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<MediaObj> {
         ImageView ivAlbumImage;
         @Bind(R.id.iv_delete_img)
         ImageView ivDeleteImg;
+        @Bind(R.id.iv_video)
+        ImageView ivVideo;
         @Bind(R.id.et_inputText)
         EditText editInput;
         @Bind(R.id.tv_date)

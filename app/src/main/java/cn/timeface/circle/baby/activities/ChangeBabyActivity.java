@@ -30,6 +30,7 @@ import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.GlobalSetting;
 import cn.timeface.open.api.models.objs.TFOUserObj;
@@ -145,6 +146,6 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
 
     @Override
     public void onBackPressed() {
-
+        ToastUtil.showToast("请选择或创建关注宝宝");
     }
 }

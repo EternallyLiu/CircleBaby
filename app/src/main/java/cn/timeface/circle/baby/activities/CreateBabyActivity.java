@@ -132,13 +132,13 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     return;
                 }
                 if(vd(name)){
-                    if(name.length() > 12){
-                        Toast.makeText(this, "宝宝小名不能超过12个字，请修改", Toast.LENGTH_SHORT).show();
+                    if(name.length() > 16){
+                        Toast.makeText(this, "宝宝小名不能超过16个英文字母，请修改", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }else{
-                    if (name.length() > 6) {
-                        Toast.makeText(this, "宝宝小名不能超过6个汉字，请修改", Toast.LENGTH_SHORT).show();
+                    if (name.length() > 8) {
+                        Toast.makeText(this, "宝宝小名不能超过8个汉字，请修改", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }

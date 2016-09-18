@@ -70,8 +70,8 @@ public class TypeConstant {
     //印刷车printCode
     public static final int PRINT_CODE_NORMAL = 8800;//可印刷
     public static final int PRINT_CODE_LIMIT_SOFT_PACK = 8801;//可印刷，限软装（12-90页）
-    public static final int PRINT_CODE_LIMIT_LESS = 8802;//少于12页，不可印刷
-    public static final int PRINT_CODE_LIMIT_MORE = 8803;//超出200页，不可印刷
+    public static final int PRINT_CODE_LIMIT_LESS = 8802;//少于20页，不可印刷
+    public static final int PRINT_CODE_LIMIT_MORE = 8803;//超出60页，不可印刷
     public static final int PRINT_CODE_LIMIT_HAD_DELETE = 8804;//该时光书已被删除，不可印刷
     public static final int PRINT_CODE_LIMIT_MORE_SPLIT = 8805;//超出300页，可拆分印刷
     public static final int PRINT_CODE_LIMIT_8806 = 8806;//3寸日记卡片需18张

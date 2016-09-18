@@ -31,8 +31,12 @@ public class GlideUtil {
             imageView.setImageResource(R.drawable.ic_launcher);
             return;
         }
-        if(url.startsWith("http") && url.endsWith("@.jpg")){
-            url = url.replace("@.jpg", "@600w_600h_1l_1o");
+        if(url.startsWith("http")){
+            if(url.endsWith("@.jpg")){
+                url = url.replace("@.jpg","@600w_600h_1l_1o");
+            }else{
+                url = url + "@600w_600h_1l_1o";
+            }
         }
         Glide.with(context).load(url).into(imageView);
     }
@@ -80,6 +84,26 @@ public class GlideUtil {
         options.inJustDecodeBounds = false;
         Bitmap bitmap = BitmapFactory.decodeFile(path, options);
         imageView.setImageBitmap(bitmap);
+    }
+
+    public static void displayImagePick(String url, ImageView imageView) {
+        if (TextUtils.isEmpty(url) || imageView == null) {
+            imageView.setImageResource(R.drawable.ic_launcher);
+            return;
+        }
+        if(url.startsWith("http")){
+            if(url.endsWith("@.jpg")){
+                url = url.replace("@.jpg","@600w_600h_1l_1o");
+            }else{
+                url = url + "@600w_600h_1l_1o";
+            }
+        }
+        Glide.with(context)
+                .load(url)
+                .thumbnail(0.1f)
+                .centerCrop()
+                .into(imageView);
+//        Glide.with(context).load(url).into(imageView);
     }
 
 }

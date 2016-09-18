@@ -101,10 +101,11 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private int type;
     private int indexofHead;
 
-    public static void open(Activity activity, String albumId, int type) {
+    public static void open(Activity activity, String albumId, int type,String title) {
         Intent intent = new Intent(activity, CloudAlbumEditActivity.class);
         intent.putExtra("albumId", albumId);
         intent.putExtra("type", type);
+        intent.putExtra("title", title);
         activity.startActivity(intent);
     }
 
@@ -114,8 +115,10 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_album_edit);
         ButterKnife.bind(this);
+        String title =  getIntent().getStringExtra("title");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(title);
         //toolbar.setNavigationIcon(R.drawable.ic_back);
         albumId = getIntent().getStringExtra("albumId");
         type = getIntent().getIntExtra("type", 0);

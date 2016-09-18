@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.utils.GlideUtil;
 
 /**
  * author : YW.SUN Created on 2016/4/11
@@ -56,11 +57,12 @@ public class TimeBookPhotoSelectImageView extends RatioFrameLayout implements Ch
     }
 
     public void setContent(MediaObj img) {
-        Glide.with(getContext())
-                .load(img.getImgUrl())
-                .thumbnail(0.1f)
-                .centerCrop()
-                .into(ivPhoto);
+        GlideUtil.displayImagePick(img.getImgUrl(),ivPhoto);
+//        Glide.with(getContext())
+//                .load(img.getImgUrl())
+//                .thumbnail(0.1f)
+//                .centerCrop()
+//                .into(ivPhoto);
     }
 
     @Override

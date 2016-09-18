@@ -25,6 +25,7 @@ import java.util.List;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.utils.GlideUtil;
 
 /**
  * 选择图片adapter
@@ -130,13 +131,14 @@ public class PhotoSelectorAdapter2 extends RecyclerView.Adapter<PhotoSelectorAda
              * load（new File(photo.getPath())）比load(photo.getPath())所用内存更低，
              * 加载速度更快
              */
-            Glide.with(mContext)
-                    .load(photo.getImgUrl())
-                    .centerCrop()
-                    .thumbnail(0.1f)
-                    .placeholder(R.mipmap.ic_photo_black_48dp)
-                    .error(R.mipmap.ic_broken_image_black_48dp)
-                    .into(holder.mImageView);
+            GlideUtil.displayImagePick(photo.getImgUrl(),holder.mImageView);
+//            Glide.with(mContext)
+//                    .load(photo.getImgUrl())
+//                    .centerCrop()
+//                    .thumbnail(0.1f)
+//                    .placeholder(R.mipmap.ic_photo_black_48dp)
+//                    .error(R.mipmap.ic_broken_image_black_48dp)
+//                    .into(holder.mImageView);
             Log.d(TAG, photo.getImgUrl() + "----- position = " + position);
 //            holder.mImageView.setOnClickListener(new View.OnClickListener() {
 //                @Override

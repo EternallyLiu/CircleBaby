@@ -216,11 +216,11 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                                 int printCode = printStatusResponse.getPrintCode();
                                 switch (printCode) {
                                     case TypeConstant.PRINT_CODE_LIMIT_LESS:
-                                        notify = "少于12页，不可印刷";
+                                        notify = "少于20页，不可印刷";
                                         break;
-//                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
-//                                        notify = "照片书不能大于200页";
-//                                        break;
+                                    case TypeConstant.PRINT_CODE_LIMIT_MORE:
+                                        notify = "大于60页，不可印刷";
+                                        break;
                                     case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
                                         notify = "该时光书已被删除，不可印刷";
                                         break;

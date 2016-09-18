@@ -58,6 +58,6 @@
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/size_24"
-        android:text="识图卡片" />
+        android:text="卡片" />
 
 </RelativeLayout>

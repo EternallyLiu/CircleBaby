@@ -51,7 +51,6 @@ import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.PublishObj;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
@@ -143,7 +142,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
     public static void open(Context context, MediaObj mediaObj) {
         Intent intent = new Intent(context, PublishActivity.class);
-        intent.putExtra("mediaObj",mediaObj);
+        intent.putExtra("mediaObj", mediaObj);
         context.startActivity(intent);
     }
 
@@ -164,7 +163,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         tfProgressDialog = new TFProgressDialog(this);
 
         publishType = getIntent().getIntExtra("publish_type", NOMAL);
-        mediaObj =  getIntent().getParcelableExtra("mediaObj");
+        mediaObj = getIntent().getParcelableExtra("mediaObj");
         mediaObjs = getIntent().getParcelableArrayListExtra("mediaObjs");
 
         rlMileStone.setOnClickListener(this);
@@ -191,7 +190,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 break;
         }
 
-        if(mediaObj!=null){
+        if (mediaObj != null) {
             type = 2;
             gvGridView.setVisibility(View.GONE);
             ivCard.setVisibility(View.VISIBLE);
@@ -199,7 +198,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             time_shot = DateUtil.formatDate("yyyy.MM.dd", mediaObj.getPhotographTime());
             tvTime.setText(time_shot);
         }
-        if(mediaObjs!=null){
+        if (mediaObjs != null) {
             type = 3;
             gvGridView.setVisibility(View.VISIBLE);
             ivCard.setVisibility(View.GONE);
@@ -209,10 +208,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
-            if(mediaObjs.get(0).getPhotographTime() == 0){
-                time_shot = DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis());
-            }else{
-                time_shot = DateUtil.formatDate("yyyy.MM.dd",mediaObjs.get(0).getPhotographTime());
+            if (mediaObjs.get(0).getPhotographTime() == 0) {
+                time_shot = DateUtil.formatDate("yyyy.MM.dd", System.currentTimeMillis());
+            } else {
+                time_shot = DateUtil.formatDate("yyyy.MM.dd", mediaObjs.get(0).getPhotographTime());
             }
             tvTime.setText(time_shot);
         }
@@ -239,7 +238,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position,false,true);
+                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
             }
         });
 
@@ -316,7 +315,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     }
                     break;
                 case TIME:
-                    String time =  data.getStringExtra("time");
+                    String time = data.getStringExtra("time");
                     tvTime.setText(time);
                     break;
                 case PHOTO_RECORD_DETAIL:
@@ -373,10 +372,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
-                if(TextUtils.isEmpty(time_shot)){
+                if (TextUtils.isEmpty(time_shot)) {
                     time_shot = tvTime.getText().toString();
                 }
-                intent1.putExtra("time_shot",time_shot);
+                intent1.putExtra("time_shot", time_shot);
                 intent1.putExtra("time_now", tvTime.getText().toString());
                 startActivityForResult(intent1, TIME);
                 break;
@@ -391,7 +390,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
 
         List<PublishObj> datalist = new ArrayList<>();
@@ -425,7 +424,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         List<PublishObj> datalist = new ArrayList<>();
         List<MediaObj> mediaObjs = new ArrayList<>();
@@ -445,7 +444,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     if (response.success()) {
                         if (type == 1) {
                             uploadVideo(videoInfo.getPath());
-                        }else{
+                        } else {
                             EventBus.getDefault().post(new PickerPhototAddEvent());
                         }
                         EventBus.getDefault().post(new HomeRefreshEvent());
@@ -468,18 +467,18 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             return;
         }
 
-        if(photoRecodes.size() == 1){
-            String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
-            time =  DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+        if (photoRecodes.size() == 1) {
+            String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
+            time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         }
         //发布
         localUrls = new ArrayList<>();
         List<PublishObj> datalist = new ArrayList<>();
         for (PhotoRecode photoRecode : photoRecodes) {
-            if(photoRecodes.size()>1){
+            if (photoRecodes.size() > 1) {
                 String title = photoRecode.getTitle();
-                String t = title + DateUtil.formatDate(" kk:mm",System.currentTimeMillis());
-                time =  DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+                String t = title + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
+                time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
             }
             String content = photoRecode.getContent();
             Milestone mileStone = photoRecode.getMileStone();
@@ -490,7 +489,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 //                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
                 int height = img.getHeight();
                 int width = img.getWidth();
-                System.out.println("img.getUrl ============ "+img.getUrl());
+                System.out.println("img.getUrl ============ " + img.getUrl());
                 localUrls.add(img.getLocalPath());
                 MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
                 mediaObjs.add(mediaObj);
@@ -529,7 +528,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             gvGridView.setVisibility(View.GONE);
             mediaObj = ((MediaObjEvent) event).getMediaObj();
             GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
-            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
+            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", System.currentTimeMillis()));
         } else if (event instanceof CardEvent) {
             mediaObjs = ((CardEvent) event).getMediaObjs();
             List<String> list = new ArrayList<>();
@@ -538,8 +537,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
-            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",System.currentTimeMillis()));
-        }else if(event instanceof PublishRefreshEvent){
+            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", System.currentTimeMillis()));
+        } else if (event instanceof PublishRefreshEvent) {
             mediaObjs = ((PublishRefreshEvent) event).getDataList();
             List<String> list = new ArrayList<>();
             for (MediaObj media : mediaObjs) {
@@ -547,17 +546,17 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
-        }else if(event instanceof TimeEditPhotoDeleteEvent){
+        } else if (event instanceof TimeEditPhotoDeleteEvent) {
             int position = ((TimeEditPhotoDeleteEvent) event).getPosition();
             List<String> data = adapter.getData();
-            if(data.size()>position){
+            if (data.size() > position) {
                 data.remove(position);
                 selImages.remove(position);
                 adapter.setData(data);
                 adapter.notifyDataSetChanged();
-                if(photoRecodes.size() == 1){
+                if (photoRecodes.size() == 1) {
                     List<ImgObj> imgObjList = photoRecodes.get(0).getImgObjList();
-                    if(imgObjList.size()>position){
+                    if (imgObjList.size() > position) {
                         imgObjList.remove(position);
                     }
                 }
@@ -576,7 +575,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         if (TextUtils.isEmpty(path)) {
             return;
         }
-        System.out.println("img.getUrl ============ "+path);
+        System.out.println("img.getUrl ============ " + path);
         OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override
@@ -592,11 +591,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         String objectKey = uploadFileObj.getObjectKey();
-                        System.out.println("uploadImage  objectKey============ "+objectKey);
+                        System.out.println("uploadImage  objectKey============ " + objectKey);
                         count++;
-                        if(count == localUrls.size()){
+                        if (count % 2 == 0 || count == localUrls.size()) {
                             EventBus.getDefault().post(new HomeRefreshEvent());
-                            count = 0;
+                            if(count == localUrls.size()){
+                                count = 0;
+                            }
                         }
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();

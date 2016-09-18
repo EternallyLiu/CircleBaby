@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:scaledImg="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:onClick="clickCloudAlbum"
     android:orientation="horizontal">
 
-    <ImageView
+    <com.github.rayboot.widget.ratioview.RatioImageView
+        android:scaleType="fitXY"
         android:id="@+id/iv_album_cover"
         android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_margin="@dimen/view_space_normal" />
+        android:layout_height="wrap_content"
+        scaledImg:fixRatio="fixWidth"
+        scaledImg:heightRatio="1"
+        scaledImg:widthRatio="1"
+        android:layout_margin="@dimen/view_space_normal"/>
 
     <LinearLayout
         android:layout_width="0dp"

@@ -69,6 +69,7 @@ public class SplashActivity extends BaseAppCompatActivity {
     private String scheme, data;
     private boolean is_Scheme = false;
     private final MyHandler handler = new MyHandler(this);
+    private String adImgUrl;
 
     static class MyHandler extends Handler {
         // WeakReference to the outer class's instance.
@@ -348,9 +349,13 @@ public class SplashActivity extends BaseAppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     if (response.success() && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
-                        adUrl = response.getAdInfo().getAdUri();
+                        adUrl = response.getAdInfo().getAdImgUrl();
+                        adImgUrl = response.getAdInfo().getAdImgUrl();
+                        if(!adImgUrl.startsWith("http")){
+                            adImgUrl = adImgUrl.substring(adImgUrl.indexOf("http"));
+                        }
                         Glide.with(SplashActivity.this)
-                                .load(response.getAdInfo().getAdImgUrl())
+                                .load(adImgUrl)
                                 .into(image);
                     }
                 }, throwable -> {

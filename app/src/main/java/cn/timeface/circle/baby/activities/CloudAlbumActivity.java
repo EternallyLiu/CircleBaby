@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -112,9 +113,16 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
                     tfStateView.finish();
                     if (response.success()) {
                         dataList.clear();
-                        dataList.addAll(response.getDataList());
+                        List<CloudAlbumObj> dataList = response.getDataList();
+                        List<CloudAlbumObj> cloudAlbumObjs = new ArrayList<>();
+                        for(CloudAlbumObj obj : dataList){
+                            if(!TextUtils.isEmpty(obj.getContentInfo())){
+                                cloudAlbumObjs.add(obj);
+                            }
+                        }
+                        this.dataList.addAll(cloudAlbumObjs);
                         albumListAdapter.notifyDataSetChanged();
-                        if (dataList.size() == 0) {
+                        if (this.dataList.size() == 0) {
                             tfStateView.setImageResource(R.drawable.nodata);
                             tfStateView.setTitle("没有内容");
                             tfStateView.setVisibility(View.VISIBLE);
@@ -151,7 +159,8 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
     public void clickCloudAlbum(View view) {
         CloudAlbumObj cloudAlbumObj = (CloudAlbumObj) view.getTag(R.string.tag_obj);
         String cloudAlbumObjId = cloudAlbumObj.getId();
-        CloudAlbumEditActivity.open(this, cloudAlbumObjId, cloudAlbumObj.getType());
+        String title = cloudAlbumObj.getDesc();
+        CloudAlbumEditActivity.open(this, cloudAlbumObjId, cloudAlbumObj.getType(),title);
     }
 
     @Subscribe
