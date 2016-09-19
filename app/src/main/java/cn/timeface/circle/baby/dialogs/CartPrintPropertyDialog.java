@@ -240,10 +240,10 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 //        if(Integer.parseInt(bookType) == TypeConstant.BOOK_TYPE_CIRCLE){
 //            mTvPack.setVisibility(View.GONE);
 //        } else {
-        mTvPack.setVisibility(View.VISIBLE);
+//        mTvPack.setVisibility(View.VISIBLE);
 //        }
 
-        for(PrintParamObj obj : packList){
+        /*for(PrintParamObj obj : packList){
                 if (pageNum >= 12 && pageNum <= 20) {
                     mTvPack.setText("(照片书12-20页，只支持平装)");
                     if(obj.getShow().equals("平装")){
@@ -262,7 +262,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         obj.setIsActive(false);
                     }
                 }
-        }
+        }*/
 
         dialog.setOnKeyListener((dialog1, keyCode, event) -> {
 
