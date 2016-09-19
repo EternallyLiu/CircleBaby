@@ -235,7 +235,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         animatorSet.playTogether(anim);
                         animatorSet.start();
                     }
-                } else if (dy < 0) {
+                } else{
                     appbar.setExpanded(true);
                     if (enableAnimation && !bottomMenuShow) {
                         bottomMenuShow = true;

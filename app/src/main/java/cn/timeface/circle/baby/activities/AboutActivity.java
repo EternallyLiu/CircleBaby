@@ -19,7 +19,7 @@ import cn.timeface.circle.baby.utils.Remember;
 /**
  * @author shiyan
  * @from 2014-3-29上午12:38:01
- * @TODO 关于时光流影界面
+ * @TODO 关于成长印记界面
  */
 public class AboutActivity extends BaseAppCompatActivity {
     @Bind(R.id.tvVersion)

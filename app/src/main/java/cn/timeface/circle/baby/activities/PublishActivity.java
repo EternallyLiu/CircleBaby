@@ -411,8 +411,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         finish();
                     }
                 }, throwable -> {
-                    Log.e(TAG, "publish:");
-                    throwable.printStackTrace();
+                    Log.e(TAG, "publish:",throwable);
                 });
 
     }
@@ -436,7 +435,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
-        System.out.println("s============" + s);
+        Log.v(TAG,"s============" + s);
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
@@ -451,8 +450,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         finish();
                     }
                 }, throwable -> {
-                    Log.e(TAG, "publish:");
-                    throwable.printStackTrace();
+                    Log.e(TAG, "publish:",throwable);
                 });
 
     }
@@ -474,6 +472,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         //发布
         localUrls = new ArrayList<>();
         List<PublishObj> datalist = new ArrayList<>();
+        if(photoRecodes.size() == 1){
+            photoRecodes.get(0).setContent(value);
+        }
         for (PhotoRecode photoRecode : photoRecodes) {
             if (photoRecodes.size() > 1) {
                 String title = photoRecode.getTitle();
@@ -489,7 +490,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 //                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
                 int height = img.getHeight();
                 int width = img.getWidth();
-                System.out.println("img.getUrl ============ " + img.getUrl());
+                Log.v(TAG,"img.getUrl ============ " + img.getUrl());
                 localUrls.add(img.getLocalPath());
                 MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
                 mediaObjs.add(mediaObj);
@@ -500,7 +501,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
-        System.out.println(s);
+        Log.v(TAG,s);
 
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -515,8 +516,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         EventBus.getDefault().post(new HomeRefreshEvent());
                     }
                 }, throwable -> {
-                    Log.e(TAG, "publish:");
-                    throwable.printStackTrace();
+                    Log.e(TAG, "publish:",throwable);
                 });
 
 
@@ -575,7 +575,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         if (TextUtils.isEmpty(path)) {
             return;
         }
-        System.out.println("img.getUrl ============ " + path);
+        Log.v(TAG,"img.getUrl ============ " + path);
         OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override
@@ -591,7 +591,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         String objectKey = uploadFileObj.getObjectKey();
-                        System.out.println("uploadImage  objectKey============ " + objectKey);
+                        Log.v(TAG,"uploadImage  objectKey============ " + objectKey);
                         count++;
                         if (count % 2 == 0 || count == localUrls.size()) {
                             EventBus.getDefault().post(new HomeRefreshEvent());
@@ -600,7 +600,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             }
                         }
                     } catch (ServiceException | ClientException e) {
-                        e.printStackTrace();
+                        Log.e(TAG,"uploadImage",e);
                     }
                 } catch (Exception e) {
 
@@ -638,10 +638,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 //                            file.delete();
 //                        }
                     } catch (ServiceException | ClientException e) {
-                        e.printStackTrace();
+                        Log.e(TAG,"",e);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(TAG,"",e);
                 }
             }
         }.start();

@@ -43,6 +43,7 @@ import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.Pinyin4jUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ScaleImageView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
@@ -190,7 +191,7 @@ public class CardPreviewFragment extends BaseFragment{
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.next){
             String content = etTitle.getText().toString();
-            if(vd(content)){
+            if(Utils.isHz(content)){
                 ToastUtil.showToast("请输入中文");
                 return true;
             }
@@ -246,22 +247,4 @@ public class CardPreviewFragment extends BaseFragment{
         }
         return super.onOptionsItemSelected(item);
     }
-
-    //判断是否为汉字
-    public boolean vd(String str){
-        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
-        char[] chars=str.toCharArray();
-        boolean isGB2312=false;
-        for(int i=0;i<chars.length;i++){
-            Matcher m = p.matcher(chars[i]+"");
-            if(m.matches()){
-                //是汉字
-            }else{
-                isGB2312 = true;
-                break;
-            }
-        }
-        return isGB2312;
-    }
-
 }

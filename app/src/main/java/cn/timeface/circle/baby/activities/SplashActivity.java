@@ -348,7 +348,7 @@ public class SplashActivity extends BaseAppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    if (response.success() && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
+                    if (response.success() && response.getAdInfo()!=null && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
                         adUrl = response.getAdInfo().getAdImgUrl();
                         adImgUrl = response.getAdInfo().getAdImgUrl();
                         if(!adImgUrl.startsWith("http")){

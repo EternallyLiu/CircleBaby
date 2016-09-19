@@ -50,6 +50,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.objs.TemplateAreaObj;
@@ -805,6 +807,27 @@ public class Utils {
             netType = NETTYPE_WIFI;
         }
         return netType;
+    }
+
+    /**
+     * 判断是否为汉字
+     * @param str
+     * @return false 是
+     */
+    public static boolean isHz(String str) {
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        char[] chars = str.toCharArray();
+        boolean isGB2312 = false;
+        for (int i = 0; i < chars.length; i++) {
+            Matcher m = p.matcher(chars[i] + "");
+            if (m.matches()) {
+                //是汉字
+            } else {
+                isGB2312 = true;
+                break;
+            }
+        }
+        return isGB2312;
     }
 
 
