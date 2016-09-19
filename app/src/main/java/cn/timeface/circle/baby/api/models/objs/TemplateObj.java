@@ -7,7 +7,7 @@ import cn.timeface.circle.baby.api.models.base.BaseObj;
 /**
  * Created by lidonglin on 2016/5/27.
  */
-public class TemplateObj extends BaseObj{
+public class TemplateObj extends BaseObj {
     int paperHeight;
     int paperWidth;
     int paperId;
@@ -58,6 +58,10 @@ public class TemplateObj extends BaseObj{
 
     public String getPaperName() {
         return paperName;
+    }
+
+    public String getShortPaperName() {
+        return paperName.substring(paperName.lastIndexOf("-") + 1);
     }
 
     public void setPaperName(String paperName) {

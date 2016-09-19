@@ -1,41 +1,33 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PointF;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.FloatMath;
 import android.util.Log;
-import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
-import com.github.rayboot.widget.ratioview.RatioImageView;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -51,61 +43,41 @@ import cn.timeface.circle.baby.api.models.objs.TemplateImage;
 import cn.timeface.circle.baby.api.models.objs.TemplateObj;
 import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.events.DiaryPublishEvent;
-import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
-import cn.timeface.circle.baby.views.ScaleImageView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import uk.co.senab.photoview.PhotoView;
 
 public class DiaryPreviewFragment extends BaseFragment {
 
-    @Bind(R.id.tv_time)
-    TextView tvTime;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.iv_bg)
-    RatioImageView ivBg;
-    @Bind(R.id.rl_cover)
-    RelativeLayout rlCover;
-    @Bind(R.id.rldiary)
-    RelativeLayout rldiary;
-    @Bind(R.id.tv_content)
-    TextView tvContent;
+    @Bind(R.id.fl_container)
+    FrameLayout flContainer;
+    @Bind(R.id.fl_main)
+    FrameLayout flMain;
     @Bind(R.id.lv_horizontal)
     HorizontalListView lvHorizontal;
-    @Bind(R.id.iv_rotate)
-    ImageView ivRotate;
-    @Bind(R.id.fl)
-    FrameLayout fl;
-
     private HorizontalListViewAdapter2 adapter;
     private DiaryPaperResponse diaryPaperResponse;
     private String title;
     private String content;
-    private String url;
-    private ScaleImageView touchImageView;
-    private PointF center = new PointF();
-    private PointF mPreMovePointF = new PointF();
-    private PointF mCurMovePointF = new PointF();
-    private float oldRotation;
-    private int width;
-    private int hight;
-    private String objectKey = "";
-    private int paperId;
     private TemplateObj templateObj;
     private ImgObj imgObj;
-    private String date;
     private float degree = 0;
-    private float mDegree = 0;
     private TFProgressDialog tfProgressDialog;
-    private long createTime;
+    private int ROTATION_SIZE;
+    private List<String> contentList = new ArrayList<>(3);
+    private PhotoView photoView;
 
     public DiaryPreviewFragment() {
     }
@@ -114,11 +86,11 @@ public class DiaryPreviewFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        ROTATION_SIZE = getResources().getDimensionPixelSize(R.dimen.size_24);
         title = getArguments().getString("title");
         content = getArguments().getString("content");
         imgObj = getArguments().getParcelable("imgObj");
-        date = imgObj.getDate();
-
     }
 
     @Override
@@ -133,176 +105,24 @@ public class DiaryPreviewFragment extends BaseFragment {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         tfProgressDialog = new TFProgressDialog(getActivity());
-        tvTime.setText(title);
-        tvContent.setText(content);
 
-        touchImageView = new ScaleImageView(getActivity(), imgObj);
-        url = imgObj.getLocalPath();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("DiaryPreviewFragment.url === " + url);
-                uploadImage();
-            }
-        }).run();
-        rlCover.addView(touchImageView, 0);
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) touchImageView.getLayoutParams();
-        layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
-        layoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        touchImageView.setLayoutParams(layoutParams);
-
-        int left = rlCover.getLeft();
-        int right = rlCover.getRight();
-        int top = rlCover.getTop();
-        int bottom = rlCover.getBottom();
-        center.x = (left + right) / 2;
-        center.y = (top + bottom) / 2;
-        rldiary.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        oldRotation = getRotate(event);
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        float rotation = getRotate(event) - oldRotation;
-                        if (rotation > -5 && rotation < 5) {
-                            degree = rotation;
-                            fl.setRotation(rotation);
-                            fl.invalidate();
+        uploadImageObservable(imgObj.getLocalPath())
+                .subscribe(s -> {
                         }
-
-                        break;
-                    case MotionEvent.ACTION_UP:
-
-                        break;
-                }
-                return true;
-            }
-        });
-
-//        ivRotate.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        mPreMovePointF.set(event.getX(), event.getY());
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        mCurMovePointF.set(event.getX(), event.getY());
-//
-//                        // 角度
-//                        double a = distance4PointF(center, mPreMovePointF);
-//                        double b = distance4PointF(mPreMovePointF, mCurMovePointF);
-//                        double c = distance4PointF(center, mCurMovePointF);
-//
-//                        double cosb = (a * a + c * c - b * b) / (2 * a * c);
-//
-//                        if (cosb >= 1) {
-//                            cosb = 1f;
-//                        }
-//
-//                        double radian = Math.acos(cosb);
-//                        float newDegree = (float) radianToDegree(radian);
-//
-//                        //center -> proMove的向量， 我们使用PointF来实现
-//                        PointF centerToProMove = new PointF((mPreMovePointF.x - center.x), (mPreMovePointF.y - center.y));
-//
-//                        //center -> curMove 的向量
-//                        PointF centerToCurMove = new PointF((mCurMovePointF.x - centerToProMove.x), (mCurMovePointF.y - centerToProMove.y));
-//
-//                        //向量叉乘结果, 如果结果为负数， 表示为逆时针， 结果为正数表示顺时针
-//                        float result = centerToProMove.x * centerToCurMove.y - centerToProMove.y * centerToCurMove.x;
-//
-//                        if (result < 0) {
-//                            newDegree = -newDegree;
-//                        }
-//                        mDegree = mDegree + newDegree;
-//                        if (mDegree >= -15 && mDegree <= 15) {
-//                            degree = mDegree;
-//                            fl.setRotation(mDegree);
-//                            fl.invalidate();
-//                        }else if(mDegree<-15){
-//                            mDegree = -15;
-//                        }else if(mDegree>15){
-//                            mDegree = 15;
-//                        }
-//                        mPreMovePointF.set(mCurMovePointF);
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-
+                        , throwable -> {
+                        });
 
         reqPaperList();
         lvHorizontal.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                GlideUtil.displayImage(diaryPaperResponse.getDataList().get(position).getPaperUrl(), ivBg);
                 adapter.setSelectIndex(position);
                 adapter.notifyDataSetChanged();
-                paperId = diaryPaperResponse.getDataList().get(position).getPaperId();
-                templateObj = diaryPaperResponse.getDataList().get(position);
+                setViewData(diaryPaperResponse.getDataList().get(position));
             }
         });
         return view;
     }
-
-    private float distance4PointF(PointF pf1, PointF pf2) {
-        float disX = pf2.x - pf1.x;
-        float disY = pf2.y - pf1.y;
-        return (float) Math.sqrt(disX * disX + disY * disY);
-    }
-
-    /**
-     * 弧度换算成角度
-     */
-    public static double radianToDegree(double radian) {
-        return radian * 180 / Math.PI;
-    }
-
-    // 取旋转角度
-    private float getRotate(MotionEvent event) {
-        double delta_x = (event.getX() - center.x);
-        double delta_y = (event.getY() - center.y);
-        double radians = Math.atan2(delta_y, delta_x);
-        float degree = (float) Math.toDegrees(radians);
-//        if (degree < -15) {
-//            return -15;
-//        } else if (degree >= -15 && degree < 15) {
-//            return degree;
-//        } else {
-//            return 15;
-//        }
-        return degree;
-    }
-
-
-    public Bitmap myShot(Activity activity) {
-        // 获取windows中最顶层的view
-        View view = activity.getWindow().getDecorView();
-        view.buildDrawingCache();
-        // 获取状态栏高度
-        Rect rect = new Rect();
-        view.getWindowVisibleDisplayFrame(rect);
-        int statusBarHeights = rect.top;
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        // 获取屏幕宽和高
-        int widths = display.getWidth();
-        int heights = display.getHeight();
-        // 允许当前窗口保存缓存信息
-        view.setDrawingCacheEnabled(true);
-        // 去掉状态栏
-        Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache(), 0,
-                statusBarHeights, widths, heights - statusBarHeights);
-        // 销毁缓存信息
-        view.destroyDrawingCache();
-        return bmp;
-    }
-
 
     private void reqPaperList() {
         apiService.getPaperList()
@@ -316,13 +136,90 @@ public class DiaryPreviewFragment extends BaseFragment {
 
     }
 
+    private void setViewData(TemplateObj template) {
+
+        String[] split = content.split("\r\n");
+        if (split[0].equals(content)) {
+            split = content.split("\n");
+        }
+        contentList = new ArrayList(Arrays.asList(split));
+
+        templateObj = template;
+        flContainer.removeAllViews();
+        float scale = Math.min(((float) flMain.getHeight()) / template.getPaperHeight(), ((float) flMain.getWidth()) / template.getPaperWidth());
+
+        int containerW = (int) (template.getPaperWidth() * scale);
+        int containerH = (int) (template.getPaperHeight() * scale);
+
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(containerW, containerH);
+        lp.gravity = Gravity.CENTER;
+        flContainer.setLayoutParams(lp);
+
+        ImageView ivBg = new ImageView(getActivity());
+        lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ivBg.setLayoutParams(lp);
+
+        GlideUtil.displayImage(template.getPaperUrl(), ivBg);
+        flContainer.addView(ivBg);
+
+        Glide.with(getActivity())
+                .load(template.getPaperUrl())
+                .centerCrop()
+                .into(ivBg);
+
+        for (TemplateAreaObj areaObj : template.getTemplateList()) {
+            View view = areaObj.getView(getActivity(), scale);
+            if (view instanceof PhotoView) {
+                photoView = (PhotoView) view;
+                FrameLayout imageContainerFrameLayout = new FrameLayout(getActivity());
+                FrameLayout.LayoutParams imageLP = (FrameLayout.LayoutParams) view.getLayoutParams();
+                FrameLayout.LayoutParams imageContainerLP = new FrameLayout.LayoutParams(imageLP.width + ROTATION_SIZE, imageLP.height + ROTATION_SIZE);
+                imageContainerLP.leftMargin = imageLP.leftMargin - ROTATION_SIZE / 2;
+                imageContainerLP.topMargin = imageLP.topMargin - ROTATION_SIZE / 2;
+                imageLP.leftMargin = ROTATION_SIZE / 2;
+                imageLP.topMargin = ROTATION_SIZE / 2;
+                view.setLayoutParams(imageLP);
+
+                Glide.with(getActivity())
+                        .load(imgObj.getUri())
+                        .fitCenter()
+                        .into(((ImageView) view));
+
+
+                ImageView rotationView = new ImageView(getActivity());
+                FrameLayout.LayoutParams rotationLP = new FrameLayout.LayoutParams(ROTATION_SIZE, ROTATION_SIZE);
+                rotationLP.gravity = Gravity.BOTTOM | Gravity.END;
+                Glide.with(getActivity())
+                        .load(R.drawable.cardrotate)
+                        .fitCenter()
+                        .into(rotationView);
+                rotationView.setLayoutParams(rotationLP);
+
+                imageContainerFrameLayout.setLayoutParams(imageContainerLP);
+                imageContainerFrameLayout.addView(view);
+                imageContainerFrameLayout.addView(rotationView);
+                flContainer.addView(imageContainerFrameLayout);
+            } else if (view instanceof TextView) {
+                flContainer.addView(view);
+                if (areaObj.getTextType() == TemplateAreaObj.TEXT_TYPE_CONTENT) {
+                    if (contentList != null && contentList.size() > 0) {
+                        ((TextView) view).setText(contentList.get(0));
+                        contentList.remove(0);
+                    }
+                } else if (areaObj.getTextType() == TemplateAreaObj.TEXT_TYPE_TITLE) {
+                    ((TextView) view).setText(title);
+                }
+                areaObj.setText(((TextView) view).getText().toString());
+            }
+        }
+    }
+
     private void setDataList(List<TemplateObj> dataList) {
         if (adapter == null) {
             adapter = new HorizontalListViewAdapter2(getActivity(), dataList);
-            GlideUtil.displayImage(dataList.get(0).getPaperUrl(), ivBg);
+            setViewData(dataList.get(0));
+
             adapter.setSelectIndex(0);
-            paperId = dataList.get(0).getPaperId();
-            templateObj = dataList.get(0);
         } else {
             adapter.setList(dataList);
             adapter.notifyDataSetChanged();
@@ -330,23 +227,15 @@ public class DiaryPreviewFragment extends BaseFragment {
         lvHorizontal.setAdapter(adapter);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    private void uploadImage() {
-        if (TextUtils.isEmpty(url)) {
-            return;
-        }
-        OSSManager ossManager = OSSManager.getOSSManager(getContext());
-        new Thread() {
-            @Override
-            public void run() {
-                try {
+    private Observable<String> uploadImageObservable(String imgPath) {
+        return Observable.defer(() -> Observable.just(imgPath)
+                .filter(s -> !TextUtils.isEmpty(s))
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .map(path -> {
+                    OSSManager ossManager = OSSManager.getOSSManager(getContext());
                     //获取上传文件
-                    UploadFileObj uploadFileObj = new MyUploadFileObj(url);
+                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
                     //上传操作
                     try {
                         //判断服务器是否已存在该文件
@@ -354,22 +243,13 @@ public class DiaryPreviewFragment extends BaseFragment {
                             //如果不存在则上传
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
-                        objectKey = uploadFileObj.getObjectKey();
-//                        File file = new File(url);
-//                        if(file.exists()){
-//                            file.delete();
-//                        }
+                        return uploadFileObj.getObjectKey();
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
                     }
-                } catch (Exception e) {
-
-                }
-            }
-        }.start();
-
+                    return null;
+                }));
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -380,77 +260,58 @@ public class DiaryPreviewFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.complete) {
-            tfProgressDialog.setMessage("合成卡片中…");
-            tfProgressDialog.show();
-            //日记卡片合成
-            PointF leftTop = touchImageView.getLeftTop();
-//                float degree = touchImageView.getDegree();
-            float cropWidth = touchImageView.getCropWidth();
-            float cropHeight = touchImageView.getCropHeight();
-            int bitmapWidth = touchImageView.getBitmapWidth();
-            int bitmapHeight = touchImageView.getBitmapHeight();
-            String content = tvContent.getText().toString();
 
-            List<String> contents = new ArrayList<>();
+            uploadImageObservable(imgObj.getLocalPath())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .filter(objKey -> !TextUtils.isEmpty(objKey))
+                    .map(objKey -> {
+                        //日记卡片合成
+                        float imageScale = (float) imgObj.getWidth() / photoView.getDisplayRect().width();
+                        int cropLeft = ((int) (Math.abs(photoView.getDisplayRect().left) * imageScale));
+                        int cropTop = ((int) (Math.abs(photoView.getDisplayRect().top) * imageScale));
+                        int cropW = ((int) ((photoView.getWidth() - photoView.getPaddingLeft() - photoView.getPaddingRight()) * imageScale));
+                        int cropH = ((int) ((photoView.getHeight() - photoView.getPaddingTop() - photoView.getPaddingBottom()) * imageScale));
 
-            String[] split = content.split("\r\n");
-            if(split[0].equals(content)){
-                split = content.split("\n");
-            }
-            for(int i = 0;i<split.length;i++){
-                contents.add(split[i]);
-            }
-
-            System.out.println("contents ================= "+contents);
-
-            createTime = System.currentTimeMillis();
-            while (TextUtils.isEmpty(objectKey)) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            TemplateImage templateImage = new TemplateImage(degree, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
-
-            System.out.println("degree == " + degree + "\ncropHeight=" + cropHeight + "\nbitmapHeight=" + bitmapHeight + "\nbitmapWidth=" + bitmapWidth + "\ncropWidth=" + cropWidth + "\nleftTop.x" + leftTop.x + "\nleftTop.y" + leftTop.x + "\nobjectKey=" + objectKey + "\ncreateTime=" + createTime);
-
-            List<TemplateAreaObj> templateList = templateObj.getTemplateList();
-
-            for (TemplateAreaObj templateAreaObj : templateList) {
-                if (templateAreaObj.getType() == 3) {
-                    //image
-                    templateAreaObj.setTemplateImage(templateImage);
-                } else if (templateAreaObj.getType() == 2 && templateAreaObj.getTextType() == 0) {
-                    //title
-                    templateAreaObj.setText(title);
-                } else if (templateAreaObj.getType() == 2 && templateAreaObj.getTextType() == 1 && contents.size() > 0) {
-                    //content
-                    templateAreaObj.setText(contents.get(0));
-                    contents.remove(0);
-                }
-            }
-            Gson gson = new Gson();
-            String s = gson.toJson(templateObj);
-            apiService.diaryComposed(URLEncoder.encode(s))
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(diaryComposedResponse -> {
-                        if (diaryComposedResponse.success()) {
-                            MediaObj mediaObj = diaryComposedResponse.getMediaObj();
-                            mediaObj.setPhotographTime(createTime);
-                            System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
-                            tfProgressDialog.dismiss();
-                            PublishActivity.open(getContext(), mediaObj);
-                            getActivity().finish();
-                            EventBus.getDefault().post(new DiaryPublishEvent());
-//                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
-                        } else {
-                            ToastUtil.showToast(diaryComposedResponse.getInfo());
+                        TemplateImage templateImage = new TemplateImage(degree, cropH, imgObj.getHeight(), imgObj.getWidth(), cropW, cropLeft, cropTop, objKey, System.currentTimeMillis());
+                        for (TemplateAreaObj areaObj : templateObj.getTemplateList()) {
+                            if (areaObj.getType() == TemplateAreaObj.TYPE_IMAGE) {
+                                areaObj.setTemplateImage(templateImage);
+                                break;
+                            }
                         }
-                    }, throwable -> {
-                        Log.e(TAG, "diaryPublish:");
-                    });
+                        return templateObj;
+                    })
+                    .flatMap(templateObj1 -> apiService.diaryComposed(URLEncoder.encode(new Gson().toJson(templateObj1))))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(() -> {
+                        tfProgressDialog.setMessage("合成卡片中…");
+                        tfProgressDialog.show();
+                    })
+                    .doOnTerminate(() -> {
+                        if (tfProgressDialog != null && tfProgressDialog.isShowing()) {
+                            tfProgressDialog.dismiss();
+                        }
+                    })
+                    .subscribe(diaryComposedResponse -> {
+                                if (diaryComposedResponse.success()) {
+                                    MediaObj mediaObj = diaryComposedResponse.getMediaObj();
+                                    mediaObj.setPhotographTime(System.currentTimeMillis());
+                                    System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
+                                    tfProgressDialog.dismiss();
+                                    PublishActivity.open(getContext(), mediaObj);
+                                    getActivity().finish();
+                                    EventBus.getDefault().post(new DiaryPublishEvent());
+//                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
+                                } else {
+                                    ToastUtil.showToast(diaryComposedResponse.getInfo());
+                                }
+                            }
+                            , throwable -> {
+                                Log.e(TAG, "diaryPublish:");
+                            });
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

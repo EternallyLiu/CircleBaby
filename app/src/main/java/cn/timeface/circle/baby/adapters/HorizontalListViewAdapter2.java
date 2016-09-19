@@ -71,7 +71,7 @@ public class HorizontalListViewAdapter2 extends BaseAdapter {
             convertView.setSelected(false);
         }
 
-        holder.mTitle.setText(list.get(position).getPaperName());
+        holder.mTitle.setText(list.get(position).getShortPaperName());
         GlideUtil.displayImage(list.get(position).getPaperUrl(), holder.mImage);
 
         return convertView;

@@ -1,13 +1,33 @@
 package cn.timeface.circle.baby.api.models.objs;
 
-import java.util.List;
+import android.content.Context;
+import android.graphics.Color;
+import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
+import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.base.BaseObj;
+import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by lidonglin on 2016/5/27.
  */
-public class TemplateAreaObj extends BaseObj{
+public class TemplateAreaObj extends BaseObj {
+    public static final int TYPE_TEXT = 2;
+    public static final int TYPE_IMAGE = 3;
+    public static final int TEXT_TYPE_TITLE = 0;
+    public static final int TEXT_TYPE_CONTENT = 1;
+    public static final int TEXT_ALIGN_LEFT = 0;
+    public static final int TEXT_ALIGN_RIGHT = 1;
+    public static final int TEXT_ALIGN_CENTER = 2;
+
     String bgImage;
     String family;
     String text;
@@ -172,5 +192,55 @@ public class TemplateAreaObj extends BaseObj{
 
     public void setTemplateImage(TemplateImage templateImage) {
         this.templateImage = templateImage;
+    }
+
+    public View getView(Context context, float scale) {
+        switch (type) {
+            case TYPE_TEXT:
+                return getTextView(context, scale);
+            case TYPE_IMAGE:
+                return getImageView(context, scale);
+        }
+        return null;
+    }
+
+    public PhotoView getImageView(Context context, float scale) {
+        PhotoView imageView = new PhotoView(context);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(((int) (width * scale)), ((int) (height * scale)));
+        lp.topMargin = ((int) (top * scale));
+        lp.leftMargin = ((int) (left * scale));
+        imageView.setLayoutParams(lp);
+        imageView.setPadding(((int) (imgMargin * scale)), ((int) (imgMargin * scale)), ((int) (imgMargin * scale)), ((int) (imgMargin * scale)));
+        Glide.with(context)
+                .load(R.mipmap.ic_launcher)
+                .into(imageView);
+        return imageView;
+    }
+
+    public TextView getTextView(Context context, float scale) {
+        TextView textView = new TextView(context);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(((int) (width * scale)), ((int) (height * scale)));
+        lp.topMargin = ((int) (top * scale));
+        lp.leftMargin = ((int) (left * scale));
+        if (!TextUtils.isEmpty(textColor)) {
+            textView.setTextColor(Color.parseColor("#" + textColor));
+        } else {
+            textView.setTextColor(Color.BLACK);
+        }
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textFont * scale);
+        switch (textAlign) {
+            case TEXT_ALIGN_LEFT:
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+                break;
+            case TEXT_ALIGN_RIGHT:
+                textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
+                break;
+            case TEXT_ALIGN_CENTER:
+                textView.setGravity(Gravity.CENTER);
+                break;
+        }
+        textView.setLayoutParams(lp);
+        // TODO: 9/15/16  limitNum 和 lineNum 没有做限制
+        return textView;
     }
 }
