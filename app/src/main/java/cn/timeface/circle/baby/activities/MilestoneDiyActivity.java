@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class MilestoneDiyActivity extends BaseAppCompatActivity {
@@ -54,7 +55,7 @@ public class MilestoneDiyActivity extends BaseAppCompatActivity {
                     ToastUtil.showToast( "请输入里程碑");
                     return;
                 }
-                if(vd(milestoneName)){
+                if(Utils.isHz(milestoneName)){
                     ToastUtil.showToast("请输入中文");
                     return;
                 }
@@ -71,22 +72,5 @@ public class MilestoneDiyActivity extends BaseAppCompatActivity {
                         });
             }
         });
-    }
-
-    //判断是否为汉字
-    public boolean vd(String str){
-        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
-        char[] chars=str.toCharArray();
-        boolean isGB2312=false;
-        for(int i=0;i<chars.length;i++){
-            Matcher m = p.matcher(chars[i]+"");
-            if(m.matches()){
-                //是汉字
-            }else{
-                isGB2312 = true;
-                break;
-            }
-        }
-        return isGB2312;
     }
 }

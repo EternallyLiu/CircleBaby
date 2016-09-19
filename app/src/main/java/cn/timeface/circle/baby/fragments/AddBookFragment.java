@@ -88,7 +88,8 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
         tvBooktitle.setText(bookTypeListObj.getCoverTitle());
         tvPrice.setText("¥"+bookTypeListObj.getPrice()+"元/套起");
         GlideUtil.displayImage(bookTypeListObj.getDetail().getImgUrl(),ivImage,0);
-        System.out.println("url ==================== "+bookTypeListObj.getDetail().getImgUrl());
+        Log.v(TAG,"url ==================== "+bookTypeListObj.getDetail().getImgUrl());
+        //取出已储存的屏幕宽度
         int width = Remember.getInt("width", 0)*3;
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.width = width;

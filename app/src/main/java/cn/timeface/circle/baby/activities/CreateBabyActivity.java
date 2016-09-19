@@ -20,11 +20,11 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.wechat.photopicker.PickerPhotoActivity;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +34,6 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
-import cn.timeface.circle.baby.api.models.objs.Relationship;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
@@ -43,6 +42,7 @@ import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -131,12 +131,12 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     Toast.makeText(this, "请填写宝宝小名", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(vd(name)){
-                    if(name.length() > 16){
+                if (Utils.isHz(name)) {
+                    if (name.length() > 16) {
                         Toast.makeText(this, "宝宝小名不能超过16个英文字母，请修改", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                }else{
+                } else {
                     if (name.length() > 8) {
                         Toast.makeText(this, "宝宝小名不能超过8个汉字，请修改", Toast.LENGTH_SHORT).show();
                         return;
@@ -156,22 +156,28 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                 }
                 tvNext.setEnabled(false);
                 long time = DateUtil.getTime(birthday, "yyyy-MM-dd");
-                apiService.createBaby(time, gender, objectKey, URLEncoder.encode(name), relationId)
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(userLoginResponse -> {
-                            if(userLoginResponse.success()){
-                                if (showFocus) {
-                                    TabMainActivity.open(this);
+                String encode = null;
+                try {
+                    encode = URLEncoder.encode(name, Charset.defaultCharset().name());
+                    apiService.createBaby(time, gender, objectKey, encode, relationId)
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(userLoginResponse -> {
+                                if (userLoginResponse.success()) {
+                                    if (showFocus) {
+                                        TabMainActivity.open(this);
+                                    }
+                                    FastData.setUserInfo(userLoginResponse.getUserInfo());
+                                    finish();
+                                } else {
+                                    ToastUtil.showToast(userLoginResponse.getInfo());
                                 }
-                                FastData.setUserInfo(userLoginResponse.getUserInfo());
-                                finish();
-                            }else{
-                                ToastUtil.showToast(userLoginResponse.getInfo());
-                            }
-                            tvNext.setEnabled(true);
-                        }, throwable -> {
-                            Log.e(TAG, "createBaby:", throwable);
-                        });
+                                tvNext.setEnabled(true);
+                            }, throwable -> {
+                                Log.e(TAG, "createBaby:", throwable);
+                            });
+                } catch (UnsupportedEncodingException e) {
+                    Log.e(TAG, "createBaby", e);
+                }
                 break;
             case R.id.iv_avatar:
                 startPhotoPick();
@@ -274,23 +280,5 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     public void onEvent(ConfirmRelationEvent event) {
         TabMainActivity.open(this);
         finish();
-    }
-
-
-    //判断是否为汉字
-    public boolean vd(String str){
-        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
-        char[] chars=str.toCharArray();
-        boolean isGB2312=false;
-        for(int i=0;i<chars.length;i++){
-            Matcher m = p.matcher(chars[i]+"");
-            if(m.matches()){
-                //是汉字
-            }else{
-                isGB2312 = true;
-                break;
-            }
-        }
-        return isGB2312;
     }
 }
