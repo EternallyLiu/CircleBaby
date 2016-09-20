@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -78,6 +80,7 @@ public class DiaryPreviewFragment extends BaseFragment {
     private int ROTATION_SIZE;
     private List<String> contentList = new ArrayList<>(3);
     private PhotoView photoView;
+    private PointF center = new PointF();
 
     public DiaryPreviewFragment() {
     }
@@ -199,6 +202,39 @@ public class DiaryPreviewFragment extends BaseFragment {
                 imageContainerFrameLayout.addView(view);
                 imageContainerFrameLayout.addView(rotationView);
                 flContainer.addView(imageContainerFrameLayout);
+
+                int left = imageContainerFrameLayout.getLeft();
+                int right = imageContainerFrameLayout.getRight();
+                int top = imageContainerFrameLayout.getTop();
+                int bottom = imageContainerFrameLayout.getBottom();
+                center.x = (left + right) / 2;
+                center.y = (top + bottom) / 2;
+                flContainer.setOnTouchListener(new View.OnTouchListener() {
+
+                    private float oldRotation;
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                oldRotation = getRotate(event);
+                                break;
+                            case MotionEvent.ACTION_MOVE:
+                                float rotation = getRotate(event) - oldRotation;
+                                if (rotation > -5 && rotation < 5) {
+                                    degree = rotation;
+                                    imageContainerFrameLayout.setRotation(rotation);
+                                    imageContainerFrameLayout.invalidate();
+                                }
+
+                                break;
+                            case MotionEvent.ACTION_UP:
+
+                                break;
+                        }
+                        return true;
+                    }
+                });
             } else if (view instanceof TextView) {
                 flContainer.addView(view);
                 if (areaObj.getTextType() == TemplateAreaObj.TEXT_TYPE_CONTENT) {
@@ -312,6 +348,15 @@ public class DiaryPreviewFragment extends BaseFragment {
                             });
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // 取旋转角度
+    private float getRotate(MotionEvent event) {
+        double delta_x = (event.getX() - center.x);
+        double delta_y = (event.getY() - center.y);
+        double radians = Math.atan2(delta_y, delta_x);
+        float degree = (float) Math.toDegrees(radians);
+        return degree;
     }
 
 }

@@ -32,6 +32,7 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.GlobalSetting;
 import cn.timeface.open.api.models.objs.TFOUserObj;
 
@@ -46,6 +47,8 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     TextView tvFocusbaby;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     private ChangebabyAdapter adapter;
 
     public static void open(Context context) {
@@ -65,7 +68,8 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         adapter.setOnClickListener(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         contentRecyclerView.setAdapter(adapter);
-
+        tfStateView.setOnRetryListener(() -> reqData());
+        tfStateView.loading();
 //        reqData();
 
         tvCreatebaby.setOnClickListener(this);
@@ -83,8 +87,14 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         apiService.queryBabyInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(babyInfoListResponse -> {
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
                     setDataList(babyInfoListResponse.getDataList());
                 }, throwable -> {
+                    if (tfStateView != null) {
+                        tfStateView.showException(throwable);
+                    }
                     Log.e(TAG, "queryBabyInfoList:");
                 });
 

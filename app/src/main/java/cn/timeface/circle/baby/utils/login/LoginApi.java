@@ -12,6 +12,9 @@ import java.util.HashMap;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
+import cn.timeface.circle.baby.utils.ToastUtil;
+
+import static com.mob.tools.utils.R.getStringRes;
 
 public class LoginApi implements Callback {
     private static final int MSG_AUTH_CANCEL = 1;
@@ -97,7 +100,7 @@ public class LoginApi implements Callback {
         switch (msg.what) {
             case MSG_AUTH_CANCEL: {
                 // 取消
-                Toast.makeText(context, "canceled", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "canceled", Toast.LENGTH_SHORT).show();
                 if (loginListener != null) {
                     loginListener.onCancel();
                 }
@@ -105,10 +108,24 @@ public class LoginApi implements Callback {
             break;
             case MSG_AUTH_ERROR: {
                 // 失败
-                Throwable t = (Throwable) msg.obj;
+                String expName = msg.obj.getClass().getSimpleName();
+                if ("WechatClientNotExistException".equals(expName)
+                        || "WechatTimelineNotSupportedException".equals(expName)
+                        || "WechatFavoriteNotSupportedException".equals(expName)) {
+                    int resId = getStringRes(context, "wechat_client_inavailable");
+                    if (resId > 0) {
+                        showNotification(context.getString(resId));
+                    }
+                } else if ("GooglePlusClientNotExistException".equals(expName)) {
+                    int resId = getStringRes(context, "google_plus_client_inavailable");
+                    if (resId > 0) {
+                        showNotification(context.getString(resId));
+                    }
+                }
+                /*Throwable t = (Throwable) msg.obj;
                 String text = "caught error: " + t.getMessage();
                 Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
-                t.printStackTrace();
+                t.printStackTrace();*/
                 if (loginListener != null) {
                     loginListener.onError();
                 }
@@ -127,5 +144,10 @@ public class LoginApi implements Callback {
         }
         return false;
     }
+
+    private void showNotification(String text) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
+
 
 }

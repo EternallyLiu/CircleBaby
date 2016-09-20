@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.views;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -74,7 +75,7 @@ public class ShareDialog extends BaseDialog {
 
     public void share(String title, String content, String imgUrl, String url, CustomerLogo... logos) {
         share(title, content, imgUrl, imgUrl, url, logos);
-        System.out.println("share_url ========== "+url);
+        Log.v("ShareDialog","share_url ========== "+url);
     }
 
     public void share(String title, String content, String imgUrl, String imgSinaUrl, String url, CustomerLogo... logos) {

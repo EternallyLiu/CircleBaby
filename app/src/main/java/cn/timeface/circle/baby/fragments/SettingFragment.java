@@ -166,13 +166,14 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
 
             case R.id.btn_sign_out:
+                FastData.setUserFrom(-1);
+                LoginActivity.open(getActivity());
+                getActivity().finish();
+                EventBus.getDefault().post(new LogoutEvent());
                 apiService.logout()
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            FastData.setUserFrom(-1);
-                            LoginActivity.open(getActivity());
-                            getActivity().finish();
-                            EventBus.getDefault().post(new LogoutEvent());
+
                         }, throwable -> {
                             Log.e(TAG, "logout:");
                         });

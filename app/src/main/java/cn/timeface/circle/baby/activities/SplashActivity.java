@@ -344,12 +344,13 @@ public class SplashActivity extends BaseAppCompatActivity {
     }
 
     private void showAD() {
+        handler.sendEmptyMessageDelayed(1, 3000);
         Subscription s = apiService.getAD(DeviceUtil.getScreenWidth(this) + "X" + DeviceUtil.getScreenHeight(this))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                     if (response.success() && response.getAdInfo()!=null && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
-                        adUrl = response.getAdInfo().getAdImgUrl();
+                        adUrl = response.getAdInfo().getAdUri();
                         adImgUrl = response.getAdInfo().getAdImgUrl();
                         if(!adImgUrl.startsWith("http")){
                             adImgUrl = adImgUrl.substring(adImgUrl.indexOf("http"));
@@ -362,7 +363,6 @@ public class SplashActivity extends BaseAppCompatActivity {
                     Toast.makeText(SplashActivity.this, "服务器返回失败", Toast.LENGTH_SHORT).show();
                 });
         addSubscription(s);
-        handler.sendEmptyMessageDelayed(1, 3000);
     }
 
     private void doNext() {

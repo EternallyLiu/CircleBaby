@@ -57,12 +57,22 @@
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bg_color2"
-        android:scrollbars="none" />
+        android:layout_height="match_parent">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/content_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_color2"
+            android:scrollbars="none" />
+
+        <cn.timeface.circle.baby.views.TFStateView
+            android:id="@+id/tf_stateView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
 
 </LinearLayout>
