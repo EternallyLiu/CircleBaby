@@ -7,7 +7,10 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -58,8 +61,8 @@ public class ScaleImageView extends ImageView {
     public ScaleImageView(Activity activity, ImgObj imgObj) {
         super(activity);
         this.imgObj = imgObj;
-//        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
-        gintama = comp(imgObj.getLocalPath());
+        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
+//        gintama = comp(imgObj.getLocalPath());
 
 
         DisplayMetrics dm = new DisplayMetrics();
@@ -87,9 +90,13 @@ public class ScaleImageView extends ImageView {
 
     protected void onDraw(Canvas canvas) {
         canvas.save();
-        canvas.drawBitmap(gintama, matrix, null);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        canvas.drawPaint(paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OVER));
+        canvas.drawBitmap(gintama, matrix, paint);
         canvas.restore();
-
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -118,22 +125,22 @@ public class ScaleImageView extends ImageView {
                     float scale = newDist / oldDist;
                     matrix1.postScale(scale, scale, center.x, center.y);// 縮放
 //                    matrix1.postRotate(rotation, center.x, center.y);// 旋轉
-                    matrixCheck = matrixCheck();
-                    if (matrixCheck == false) {
+//                    matrixCheck = matrixCheck();
+//                    if (matrixCheck == false) {
                         matrix.set(matrix1);
                         invalidate();
-                    }
+//                    }
                 } else if (mode == DRAG) {
                     matrix1.set(savedMatrix);
                     float rotation = getRotate(event) - oldRotation;
 //                    matrix1.postRotate(rotation, center.x, center.y);// 旋轉
                     matrix1.postTranslate(event.getX() - x_down, event.getY()
                             - y_down);// 平移
-                    matrixCheck = matrixCheck();
-                    if (matrixCheck == false) {
+//                    matrixCheck = matrixCheck();
+//                    if (matrixCheck == false) {
                         matrix.set(matrix1);
                         invalidate();
-                    }
+//                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:

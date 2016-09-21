@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.fragments;
 
 
 import android.graphics.PointF;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -134,7 +135,7 @@ public class DiaryPreviewFragment extends BaseFragment {
                     this.diaryPaperResponse = diaryPaperResponse;
                     setDataList(diaryPaperResponse.getDataList());
                 }, throwable -> {
-                    Log.e(TAG, "getPaperList:");
+                    Log.e(TAG, "getPaperList:",throwable);
                 });
 
     }
@@ -167,7 +168,7 @@ public class DiaryPreviewFragment extends BaseFragment {
 
         Glide.with(getActivity())
                 .load(template.getPaperUrl())
-                .centerCrop()
+                .fitCenter()
                 .into(ivBg);
 
         for (TemplateAreaObj areaObj : template.getTemplateList()) {
@@ -187,7 +188,6 @@ public class DiaryPreviewFragment extends BaseFragment {
                         .load(imgObj.getUri())
                         .fitCenter()
                         .into(((ImageView) view));
-
 
                 ImageView rotationView = new ImageView(getActivity());
                 FrameLayout.LayoutParams rotationLP = new FrameLayout.LayoutParams(ROTATION_SIZE, ROTATION_SIZE);
@@ -261,6 +261,8 @@ public class DiaryPreviewFragment extends BaseFragment {
             adapter.notifyDataSetChanged();
         }
         lvHorizontal.setAdapter(adapter);
+        photoView.setScale(1.3f);
+        photoView.invalidate();
     }
 
     private Observable<String> uploadImageObservable(String imgPath) {
@@ -296,7 +298,6 @@ public class DiaryPreviewFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.complete) {
-
             uploadImageObservable(imgObj.getLocalPath())
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
@@ -333,7 +334,7 @@ public class DiaryPreviewFragment extends BaseFragment {
                                 if (diaryComposedResponse.success()) {
                                     MediaObj mediaObj = diaryComposedResponse.getMediaObj();
                                     mediaObj.setPhotographTime(System.currentTimeMillis());
-                                    System.out.println("合成的日记图片===============" + mediaObj.getImgUrl());
+                                    Log.v(TAG, "合成的日记图片===============" + mediaObj.getImgUrl());
                                     tfProgressDialog.dismiss();
                                     PublishActivity.open(getContext(), mediaObj);
                                     getActivity().finish();

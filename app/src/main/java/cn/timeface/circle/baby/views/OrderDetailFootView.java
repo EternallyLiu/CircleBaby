@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.views;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,12 +33,15 @@ public class OrderDetailFootView extends LinearLayout {
     TextView tvCoupon;
     @Bind(R.id.ll_coupon)
     LinearLayout llCoupon;
+    @Bind(R.id.tv_pv_title)
+    TextView tvPvTitle;
     @Bind(R.id.tv_pv_code)
     TextView tvPvCode;
     @Bind(R.id.ll_pv_code)
     LinearLayout llPvCode;
     @Bind(R.id.tv_express_fee)
     TextView tvExpressFee;
+
 
     public OrderDetailFootView(Context context) {
         super(context);
@@ -101,5 +105,12 @@ public class OrderDetailFootView extends LinearLayout {
         llPvCode.setVisibility(pvCodeEnable ? View.VISIBLE : View.GONE);
         tvPvCode.setText(String.format("—%s", getResources().getString(R.string.total_price, listResponse.getCoupon())));*/
         tvExpressFee.setText(getResources().getString(R.string.total_price, listResponse.getExpressPrice()));
+        float discountPrice = listResponse.getDiscountPrice();
+        String discountTitle = listResponse.getDiscountTitle();
+        if (!TextUtils.isEmpty(discountTitle) && discountPrice != 0) {
+            llPvCode.setVisibility(VISIBLE);
+            tvPvTitle.setText(discountTitle);
+            tvPvCode.setText(String.format(getResources().getString(R.string.full_site_coupon), discountPrice));
+        }
     }
 }

@@ -344,7 +344,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 
     private void setupData(MyOrderConfirmListResponse response) {
         fullSiteCouponObj = response.getFullSiteCoupon();
-        setupFullSiteCoupon(fullSiteCouponObj);
+        setupFullSiteCoupon(response);
 
 //        dispatchWay = response.getDispatch();
         dispatchList = response.getDispatchObject();
@@ -416,7 +416,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                 disableFullSiteCoupon(fullSiteCouponObj.getDisableDesc(false));
             } else {
                 llUseCoupons.setVisibility(View.GONE);
-                setupFullSiteCoupon(fullSiteCouponObj);
+                setupFullSiteCoupon(response);
             }
             updateTotalPrice();
         });
@@ -430,7 +430,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                 disableFullSiteCoupon(fullSiteCouponObj.getDisableDesc(true));
             } else {
                 llUseCouponCodes.setVisibility(View.GONE);
-                setupFullSiteCoupon(fullSiteCouponObj);
+                setupFullSiteCoupon(response);
             }
             updateTotalPrice();
         });
@@ -481,6 +481,20 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
             }
         } else {
             fullSiteCouponEnable = false;
+            mRlFullSiteCoupon.setVisibility(View.GONE);
+        }
+    }
+
+    // 设置全站优惠信息
+    private void setupFullSiteCoupon(MyOrderConfirmListResponse response) {
+        String discountTitle = response.getDiscountTitle();
+        float discountPrice = response.getDiscountPrice();
+        if (!TextUtils.isEmpty(discountTitle) && discountPrice != 0) {
+
+            mRlFullSiteCoupon.setVisibility(View.VISIBLE);
+            mTvFullSiteCoupon.setText(discountTitle);
+            mTvFullSiteCouponMoney.setText(String.format(getString(R.string.full_site_coupon), discountPrice));
+        } else {
             mRlFullSiteCoupon.setVisibility(View.GONE);
         }
     }

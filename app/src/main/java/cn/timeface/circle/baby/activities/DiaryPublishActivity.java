@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,7 +75,8 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         etTitle.setText(DateUtil.getYear2(System.currentTimeMillis()));
-        etTitle.clearFocus();
+        Editable text = etTitle.getText();
+        etTitle.setSelection(text.length());
 
         int width = Remember.getInt("width", 0) * 3;
         ViewGroup.LayoutParams layoutParams = ivDiary.getLayoutParams();

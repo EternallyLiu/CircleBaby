@@ -46,6 +46,24 @@ public class MyOrderConfirmListResponse extends BaseResponse {
 
     private int promotion;//是否有台历活动
     private float promotionFee;//台历活动减免金额
+    private String discountTitle;// 优惠名称
+    private float discountPrice; // 优惠价格
+
+    public String getDiscountTitle() {
+        return discountTitle;
+    }
+
+    public void setDiscountTitle(String discountTitle) {
+        this.discountTitle = discountTitle;
+    }
+
+    public float getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(float discountPrice) {
+        this.discountPrice = discountPrice;
+    }
 
     public int getFrom() {
         return from;

@@ -141,7 +141,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 break;
             case R.id.iv_deletecard:
                 int currentItem = vp.getCurrentItem();
-                System.out.println("currentItem=======" + currentItem);
                 newViews = new ArrayList<>();
                 for (int i = 0; i < mViews.size(); i++) {
                     if (i != currentItem) {
@@ -152,7 +151,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 if (newViews.size() == 0) {
                     newViews.add(getAddCard());
                 }
-                System.out.println("mViews.size()=======" + mViews.size());
                 vp.setAdapter(new MyAdapter(newViews));
                 mViews = newViews;
                 apiService.delCard(dataList.get(currentItem).getId())
@@ -224,7 +222,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
         public MyAdapter(List<View> list) {
             this.list = list;
-            System.out.println("MyAdapter.list.size========" + this.list.size());
         }
 
         @Override
@@ -240,7 +237,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
 //            super.destroyItem(container, position, object);
-            System.out.println("destroyItem.position========" + position);
             container.removeView(list.get(position));
         }
 

@@ -18,6 +18,7 @@ import cn.timeface.circle.baby.R;
 public class GlideUtil {
 
     private static Context context;
+
     GlideUtil() {
 
     }
@@ -31,17 +32,19 @@ public class GlideUtil {
             imageView.setImageResource(R.drawable.ic_launcher);
             return;
         }
-        if(url.startsWith("http")){
-            if(url.endsWith("@.jpg")){
-                url = url.replace("@.jpg","@600w_600h_1l_1o");
-            }else{
+        if (url.startsWith("http") || url.startsWith("www")) {
+            if (url.endsWith("@.jpg")) {
+                url = url.replace("@.jpg", "@600w_600h_1l_1o");
+            } else {
                 url = url + "@600w_600h_1l_1o";
             }
         }
-        Glide.with(context).load(url).into(imageView);
+        Glide.with(context)
+                .load(url)
+                .into(imageView);
     }
 
-    public static void displayImage(String url, ImageView imageView,int id) {
+    public static void displayImage(String url, ImageView imageView, int id) {
         if (TextUtils.isEmpty(url) || imageView == null) {
             imageView.setImageResource(id);
             return;
@@ -49,7 +52,7 @@ public class GlideUtil {
         Glide.with(context).load(url).into(imageView);
     }
 
-    public static void setImage(String url, ImageView imageView,int id) {
+    public static void setImage(String url, ImageView imageView, int id) {
         if (TextUtils.isEmpty(url) || imageView == null) {
             imageView.setImageResource(id);
             return;
@@ -91,10 +94,10 @@ public class GlideUtil {
             imageView.setImageResource(R.drawable.ic_launcher);
             return;
         }
-        if(url.startsWith("http")){
-            if(url.endsWith("@.jpg")){
-                url = url.replace("@.jpg","@600w_600h_1l_1o");
-            }else{
+        if (url.startsWith("http") || url.startsWith("www")) {
+            if (url.endsWith("@.jpg")) {
+                url = url.replace("@.jpg", "@600w_600h_1l_1o");
+            } else {
                 url = url + "@600w_600h_1l_1o";
             }
         }
