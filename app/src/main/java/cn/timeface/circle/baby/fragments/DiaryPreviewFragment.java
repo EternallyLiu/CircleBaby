@@ -261,8 +261,6 @@ public class DiaryPreviewFragment extends BaseFragment {
             adapter.notifyDataSetChanged();
         }
         lvHorizontal.setAdapter(adapter);
-        photoView.setScale(1.3f);
-        photoView.invalidate();
     }
 
     private Observable<String> uploadImageObservable(String imgPath) {
