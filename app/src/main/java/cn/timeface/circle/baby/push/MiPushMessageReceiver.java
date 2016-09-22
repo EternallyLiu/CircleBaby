@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.xiaomi.mipush.sdk.ErrorCode;
@@ -59,7 +60,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
-        System.out.println("===== onNotificationMessageClicked ====");
         mMessage = message.getContent();
         mToastInfo = message.getDescription();
         if (!TextUtils.isEmpty(mMessage)) {
@@ -79,7 +79,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
-        System.out.println("===== onNotificationMessageArrived ====");
         EventBus.getDefault().post(new HomeRefreshEvent());
         EventBus.getDefault().post(new UnreadMsgEvent());
         mMessage = message.getContent();
@@ -92,7 +91,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onCommandResult(Context context, MiPushCommandMessage message) {
-        System.out.println("===== onCommandResult ====");
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
@@ -127,7 +125,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onReceiveRegisterResult(Context context, MiPushCommandMessage message) {
-        System.out.println("===== onReceiveRegisterResult ====");
         String command = message.getCommand();
         List<String> arguments = message.getCommandArguments();
         String cmdArg1 = ((arguments != null && arguments.size() > 0) ? arguments.get(0) : null);
@@ -154,10 +151,10 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 //                DynamicDetailActivity.open(FireApp.getApp(), Intent.FLAG_ACTIVITY_NEW_TASK, s);
 //            } else if (msg.what == MESSAGE) {
             if (isAppForground(context)) {
-                System.out.println("在前台");
+                Log.v("MiPushMessageReceiver","在前台");
 //                Toast.makeText(context, mToastInfo, Toast.LENGTH_LONG).show();
             } else {
-                System.out.println("不在前台");
+                Log.v("MiPushMessageReceiver","不在前台");
                 if (!TextUtils.isEmpty(FastData.getUserId())) {
                     Intent intent = new Intent(context, TabMainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

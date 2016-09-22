@@ -207,7 +207,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            tvCache.setText(StorageUtil.FormatFileSize(cacheSize));
+            if (tvCache != null)
+                tvCache.setText(StorageUtil.FormatFileSize(cacheSize));
         }
     }
 
@@ -227,7 +228,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            tvCache.setText("0");
+            if (tvCache != null)
+                tvCache.setText("0");
         }
     }
 

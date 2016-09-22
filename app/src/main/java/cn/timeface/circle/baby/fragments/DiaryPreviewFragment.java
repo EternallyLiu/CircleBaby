@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -135,7 +136,7 @@ public class DiaryPreviewFragment extends BaseFragment {
                     this.diaryPaperResponse = diaryPaperResponse;
                     setDataList(diaryPaperResponse.getDataList());
                 }, throwable -> {
-                    Log.e(TAG, "getPaperList:",throwable);
+                    Log.e(TAG, "getPaperList:", throwable);
                 });
 
     }
@@ -175,6 +176,10 @@ public class DiaryPreviewFragment extends BaseFragment {
             View view = areaObj.getView(getActivity(), scale);
             if (view instanceof PhotoView) {
                 photoView = (PhotoView) view;
+                int width = imgObj.getWidth();
+                int height = imgObj.getHeight();
+                float s = width > height ? (float) width / height : (float) height / width;
+                photoView.setMinimumScale(s);
                 FrameLayout imageContainerFrameLayout = new FrameLayout(getActivity());
                 FrameLayout.LayoutParams imageLP = (FrameLayout.LayoutParams) view.getLayoutParams();
                 FrameLayout.LayoutParams imageContainerLP = new FrameLayout.LayoutParams(imageLP.width + ROTATION_SIZE, imageLP.height + ROTATION_SIZE);
@@ -261,6 +266,10 @@ public class DiaryPreviewFragment extends BaseFragment {
             adapter.notifyDataSetChanged();
         }
         lvHorizontal.setAdapter(adapter);
+    }
+
+    private void onRefresh() {
+        onCreate(null);
     }
 
     private Observable<String> uploadImageObservable(String imgPath) {

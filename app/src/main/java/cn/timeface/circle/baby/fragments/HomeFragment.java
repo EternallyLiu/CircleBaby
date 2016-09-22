@@ -224,7 +224,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
+                if (dy == 0) {
+                    return;
+                } else if (dy > 0) {
                     appbar.setExpanded(false);
                     if (enableAnimation && bottomMenuShow) {
                         bottomMenuShow = false;
@@ -235,7 +237,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                         animatorSet.playTogether(anim);
                         animatorSet.start();
                     }
-                } else if(dy < 0){
+                } else {
                     appbar.setExpanded(true);
                     if (enableAnimation && !bottomMenuShow) {
                         bottomMenuShow = true;
