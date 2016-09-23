@@ -50,10 +50,10 @@ public class TypeConstants {
     public static final int CARD = 3;
 
     //分享url
-    public static final String SHARE_URL_TIME = "http://stg2.v5time.net/baby/babyShare/groupPicture.html?timeId=%1$d";//照片组
-    public static final String SHARE_URL_MILESTONR = "http://stg2.v5time.net/baby/babyShare/milestone.html?timeId=%1$d";//里程碑
-    public static final String SHARE_URL_GENERALMAP = "http://stg2.v5time.net/baby/babyShare/generalMap.html?timeId=%1$d";//识图卡片
-    public static final String SHARE_URL_DIARY = "http://stg2.v5time.net/baby/babyShare/diary.html?timeId=%1$d";//日记卡片
-    public static final String SHARE_URL_VIDEO = "http://stg2.v5time.net/baby/babyShare/video.html?timeId=%1$d";//视频分享
-    public static final String SHARE_URL_INVITE = "http://stg2.v5time.net/baby/babyShare/invite.html?babyId=%1$d&inviteCode=%2$d";//邀请码分享
+    public static final String SHARE_URL_TIME = "http://www.timeface.cn/baby/babyShare/groupPicture.html?timeId=%1$d";//照片组
+    public static final String SHARE_URL_MILESTONR = "http://www.timeface.cn/baby/babyShare/milestone.html?timeId=%1$d";//里程碑
+    public static final String SHARE_URL_GENERALMAP = "http://www.timeface.cn/baby/babyShare/generalMap.html?timeId=%1$d";//识图卡片
+    public static final String SHARE_URL_DIARY = "http://www.timeface.cn/baby/babyShare/diary.html?timeId=%1$d";//日记卡片
+    public static final String SHARE_URL_VIDEO = "http://www.timeface.cn/baby/babyShare/video.html?timeId=%1$d";//视频分享
+    public static final String SHARE_URL_INVITE = "http://www.timeface.cn/baby/babyShare/invite.html?babyId=%1$d&inviteCode=%2$d";//邀请码分享
 }

@@ -89,7 +89,6 @@
                                 android:id="@+id/tv_milestone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
                                 android:layout_marginBottom="@dimen/size_6"
                                 android:background="@drawable/shape_milestone_bg"
                                 android:padding="@dimen/size_2"

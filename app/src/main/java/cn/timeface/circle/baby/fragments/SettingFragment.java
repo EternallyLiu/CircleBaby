@@ -147,7 +147,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
             case R.id.rl_setting_share:
 //                String url = "http://fir.im/timebabyandroid";
-                String url = "http://stg2.v5time.net/baby/babyShare/app.html";
+                String url = "http://www.timeface.cn/baby/babyShare/app.html";
                 new ShareDialog(getActivity()).share("成长印记，印下美好成长时光", "一键汇聚宝宝的成长点滴，轻松愉快地为宝宝定制专属印刷品，和家人一起见证宝宝成长的每一步。",
                         ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_launcher),
                         url);

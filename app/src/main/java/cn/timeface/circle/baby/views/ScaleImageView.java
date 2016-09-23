@@ -61,8 +61,8 @@ public class ScaleImageView extends ImageView {
     public ScaleImageView(Activity activity, ImgObj imgObj) {
         super(activity);
         this.imgObj = imgObj;
-        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
-//        gintama = comp(imgObj.getLocalPath());
+//        gintama = BitmapFactory.decodeFile(imgObj.getLocalPath());
+        gintama = comp(imgObj.getLocalPath());
 
 
         DisplayMetrics dm = new DisplayMetrics();

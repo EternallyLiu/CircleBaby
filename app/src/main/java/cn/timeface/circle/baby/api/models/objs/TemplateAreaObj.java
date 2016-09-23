@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.googlecode.mp4parser.util.Math;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.api.models.base.BaseObj;
@@ -227,7 +228,7 @@ public class TemplateAreaObj extends BaseObj {
         } else {
             textView.setTextColor(Color.BLACK);
         }
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textFont * scale);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, java.lang.Math.min(textFont * scale,height * scale));
         switch (textAlign) {
             case TEXT_ALIGN_LEFT:
                 textView.setGravity(Gravity.CENTER_VERTICAL);

@@ -145,16 +145,16 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         srlRefreshLayout.setEnabled(false);
         selImgs = getIntent().getParcelableArrayListExtra("sel_image_list");
         changeSelCount(0);
-        if (!SavePicInfoService.saveComplete) {
-            if (loadingDialog == null) {
-                loadingDialog = LoadingDialog.getInstance();
-            }
-            loadingDialog.setLoadingMsg("正在加载...");
-            loadingDialog.show(getSupportFragmentManager(), "");
-        } else {
+//        if (!SavePicInfoService.saveComplete) {
+//            if (loadingDialog == null) {
+//                loadingDialog = LoadingDialog.getInstance();
+//            }
+//            loadingDialog.setLoadingMsg("正在加载...");
+//            loadingDialog.show(getSupportFragmentManager(), "");
+//        } else {
             reqData();
             reqBucket();
-        }
+//        }
         setupGalleryView();
     }
 
@@ -353,6 +353,9 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     @Subscribe
     public void onEvent(PhotoSelectEvent event) {
         changeSelCount(event.count);
+        if(event.count == maxCount){
+            clickDone();
+        }
     }
 
     @Subscribe

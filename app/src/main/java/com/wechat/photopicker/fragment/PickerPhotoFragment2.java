@@ -147,9 +147,9 @@ public class PickerPhotoFragment2 extends Fragment implements View.OnClickListen
                 .subscribe(response -> {
                     if (response.success()) {
                         List<ImageInfoListObj> dataList = response.getDataList();
-                        List<ImageInfoListObj> dataList1 = mPhotoSelectorAdapter.getDataList();
-                        dataList1.add(0,dataList.get(0));
-                        mPhotoSelectorAdapter = new PhotoSelectorAdapter2(dataList1,getActivity(),bookPage);
+//                        List<ImageInfoListObj> dataList1 = mPhotoSelectorAdapter.getDataList();
+//                        dataList1.add(0,dataList.get(0));
+                        mPhotoSelectorAdapter = new PhotoSelectorAdapter2(dataList,getActivity(),bookPage);
                         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
                         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
                         mRecyclerView.setLayoutManager(layoutManager);

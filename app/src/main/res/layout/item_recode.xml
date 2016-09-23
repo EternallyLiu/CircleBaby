@@ -72,13 +72,13 @@
                     android:id="@+id/tv_milestone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="@dimen/size_6"
                     android:background="@drawable/shape_milestone_bg"
                     android:padding="@dimen/size_2"
                     android:text="第一次外出"
                     android:textColor="@color/bg_color1"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    />
 
                 <LinearLayout
                     android:layout_width="wrap_content"

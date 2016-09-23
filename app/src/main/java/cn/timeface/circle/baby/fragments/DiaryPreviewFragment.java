@@ -176,10 +176,6 @@ public class DiaryPreviewFragment extends BaseFragment {
             View view = areaObj.getView(getActivity(), scale);
             if (view instanceof PhotoView) {
                 photoView = (PhotoView) view;
-                int width = imgObj.getWidth();
-                int height = imgObj.getHeight();
-                float s = width > height ? (float) width / height : (float) height / width;
-                photoView.setMinimumScale(s);
                 FrameLayout imageContainerFrameLayout = new FrameLayout(getActivity());
                 FrameLayout.LayoutParams imageLP = (FrameLayout.LayoutParams) view.getLayoutParams();
                 FrameLayout.LayoutParams imageContainerLP = new FrameLayout.LayoutParams(imageLP.width + ROTATION_SIZE, imageLP.height + ROTATION_SIZE);
@@ -253,6 +249,7 @@ public class DiaryPreviewFragment extends BaseFragment {
                 areaObj.setText(((TextView) view).getText().toString());
             }
         }
+        photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
     private void setDataList(List<TemplateObj> dataList) {
