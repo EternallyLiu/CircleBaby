@@ -195,7 +195,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             for (UserObj u : item.getLikeList()) {
                 ImageView imageView = initPraiseItem();
                 holder.llGoodListUsersBar.addView(imageView);
-                GlideUtil.displayImage(u.getAvatar(), imageView);
+                GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
             }
         } else {
             holder.hsv.setVisibility(View.GONE);
@@ -406,7 +406,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
                                         ImageView imageView = initPraiseItem();
                                         llGoodListUsersBar.addView(imageView);
-                                        GlideUtil.displayImage(FastData.getAvatar(), imageView);
+                                        GlideUtil.displayImage(FastData.getAvatar(), imageView,R.drawable.ic_launcher);
                                     } else {
 
                                         listData.get(position).setLike(0);
@@ -439,7 +439,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                                 if (!u.getUserId().equals(FastData.getUserId())) {
                                                     llGoodListUsersBar.addView(imageView);
                                                 }
-                                                GlideUtil.displayImage(u.getAvatar(), imageView);
+                                                GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
                                             }
                                         }
                                     }

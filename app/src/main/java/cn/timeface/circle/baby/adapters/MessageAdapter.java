@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rayboot.widget.ratioview.RatioImageView;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -58,7 +60,7 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         Msg info = getItem(position);
         holder.onClickListener = onClickListener;
         holder.info = info;
-        GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar);
+        GlideUtil.displayImage(info.getUserInfo().getAvatar(), holder.ivAvatar,R.drawable.ic_launcher);
         if (info.getType() == 0) {
             holder.tvRelation.setText("系统消息");
         } else {
@@ -122,7 +124,7 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         @Bind(R.id.tv_time)
         TextView tvTime;
         @Bind(R.id.iv_content)
-        ImageView ivContent;
+        RatioImageView ivContent;
         @Bind(R.id.rl_message)
         RelativeLayout rlMessage;
         @Bind(R.id.iv_dot)

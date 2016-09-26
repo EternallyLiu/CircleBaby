@@ -109,7 +109,7 @@ public class OrderDetailFootView extends LinearLayout {
         String discountTitle = listResponse.getDiscountTitle();
         if (!TextUtils.isEmpty(discountTitle) && discountPrice != 0) {
             llPvCode.setVisibility(VISIBLE);
-            tvPvTitle.setText(discountTitle);
+            tvPvTitle.setText(discountTitle+":");
             tvPvCode.setText(String.format(getResources().getString(R.string.full_site_coupon), discountPrice));
         }
     }

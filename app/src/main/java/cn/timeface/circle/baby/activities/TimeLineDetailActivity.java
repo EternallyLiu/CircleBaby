@@ -264,7 +264,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             for (UserObj u : timelineobj.getLikeList()) {
                 ImageView imageView = initPraiseItem();
                 llGoodListUsersBar.addView(imageView);
-                GlideUtil.displayImage(u.getAvatar(), imageView);
+                GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
             }
         } else {
             llGoodListUsersBar.removeAllViews();
@@ -466,7 +466,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
                                     EventBus.getDefault().post(new CommentSubmit(replacePosition, listPos, timelineobj));
 
-                                    GlideUtil.displayImage(FastData.getAvatar(), imageView);
+                                    GlideUtil.displayImage(FastData.getAvatar(), imageView,R.drawable.ic_launcher);
                                 } else {//之前已点赞
 
                                     timelineobj.setLike(0);
@@ -502,7 +502,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                             if (!u.getUserId().equals(FastData.getUserId())) {
                                                 llGoodListUsersBar.addView(imageView);
                                             }
-                                            GlideUtil.displayImage(u.getAvatar(), imageView);
+                                            GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
                                         }
                                     }
                                 }

@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.rayboot.widget.ratioview.RatioImageView;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -78,7 +80,7 @@ public class SystemMessageAdapter extends BaseRecyclerAdapter<SystemMsg> {
         @Bind(R.id.tv_time)
         TextView tvTime;
         @Bind(R.id.iv_content)
-        ImageView ivContent;
+        RatioImageView ivContent;
         @Bind(R.id.rl_message)
         RelativeLayout rlMessage;
         @Bind(R.id.iv_dot)
