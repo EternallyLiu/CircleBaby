@@ -40,6 +40,7 @@ import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.common.utils.ShareSdkUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -62,6 +63,8 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
     ScrollView sv;
     @Bind(R.id.rl_layout)
     RelativeLayout rlLayout;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
 
     private int width;
     private int measuredHeight;
@@ -78,6 +81,8 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        tfStateView.setOnRetryListener(() -> reqData());
+        tfStateView.loading();
         initView();
         reqData();
 
@@ -96,6 +101,9 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
         apiService.milestone()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(milestoneTimeResponse -> {
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
                     this.milestoneTimeResponse = milestoneTimeResponse;
                     List<MilestoneTimeObj> dataList = milestoneTimeResponse.getDataList();
                     llLeft.removeAllViews();
@@ -114,7 +122,10 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
                     }
 
                 }, throwable -> {
-                    Log.e(TAG, "milestone:");
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
+                    Log.e(TAG, "milestone:",throwable);
                     throwable.printStackTrace();
                 });
     }

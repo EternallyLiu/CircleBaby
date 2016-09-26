@@ -146,7 +146,7 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
         Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
         Button btnOk = (Button) view.findViewById(R.id.btn_ok);
 
-        tvMsg.setText("确定删除 " + userObj.getRelationName() + " 吗");
+        tvMsg.setText("确定删除 " + userObj.getRelationName() + " 吗？");
         btnCancel.setOnClickListener(this);
         btnOk.setOnClickListener(this);
         return view;

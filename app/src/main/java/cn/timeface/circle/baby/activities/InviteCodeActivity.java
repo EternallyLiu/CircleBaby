@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.w3c.dom.Text;
 
@@ -80,6 +81,8 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
                                     Intent intent = new Intent(this,ConfirmRelationActivity.class);
                                     intent.putExtra("code",code);
                                     startActivity(intent);
+                                }else{
+                                    EventBus.getDefault().post(new ConfirmRelationEvent());
                                 }
                                 finish();
                             }else{

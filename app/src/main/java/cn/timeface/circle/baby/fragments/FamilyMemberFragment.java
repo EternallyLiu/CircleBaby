@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.common.utils.ShareSdkUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,6 +54,8 @@ public class FamilyMemberFragment extends BaseFragment {
     LinearLayout llFamilymember;
     @Bind(R.id.ll_familymember_none)
     LinearLayout llFamilymemberNone;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     public FamilyMemberInfo creator;
     public List<String> relationNames = new ArrayList<>();
 
@@ -70,6 +73,10 @@ public class FamilyMemberFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    private void initData() {
+        relationNames.clear();
         relationNames.add("爸爸");
         relationNames.add("妈妈");
         relationNames.add("爷爷");
@@ -77,7 +84,6 @@ public class FamilyMemberFragment extends BaseFragment {
         relationNames.add("外公");
         relationNames.add("外婆");
         relationNames.add("其他成员");
-
     }
 
     @Override
@@ -91,7 +97,8 @@ public class FamilyMemberFragment extends BaseFragment {
             actionBar.setTitle(FastData.getBabyName() + "一家");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        reqData();
+        tfStateView.setOnRetryListener(() -> reqData());
+        tfStateView.loading();
         return view;
     }
 
@@ -109,12 +116,19 @@ public class FamilyMemberFragment extends BaseFragment {
     }
 
     private void reqData() {
+        initData();
         apiService.queryBabyFamilyLoginInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(familyListResponse -> {
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
                     setDataList(familyListResponse.getDataList());
                 }, throwable -> {
-                    Log.e(TAG, "queryBabyFamilyList:");
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
+                    Log.e(TAG, "queryBabyFamilyList:",throwable);
                 });
 
     }

@@ -22,6 +22,7 @@ import com.wechat.photopicker.PickerPhotoActivity;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -34,6 +35,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
@@ -41,6 +43,7 @@ import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.MD5;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -232,6 +235,9 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     for (String path : data.getStringArrayListExtra(PickerPhotoActivity.KEY_SELECTED_PHOTOS)) {
                         imagePath = path;
                         GlideUtil.displayImage(imagePath, ivAvatar);
+                        tvNext.setText("上传中");
+                        tvNext.setEnabled(false);
+//                        objectKey = TypeConstants.UPLOAD_FOLDER + "/" + MD5.encode(new File(path)) + path.substring(path.lastIndexOf("."));
                         uploadImage();
                     }
                     break;
@@ -264,6 +270,13 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         objectKey = uploadFileObj.getObjectKey();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvNext.setText("下一步");
+                                tvNext.setEnabled(true);
+                            }
+                        });
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();

@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -61,7 +62,12 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
         TimeLineAdapter adapter = new TimeLineAdapter(context, timeLineList, position);
         holder.contentRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         holder.contentRecyclerView.setAdapter(adapter);
+        holder.llHead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
     }
 
     @Override
@@ -88,6 +94,8 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
         TextView tvAge;
         @Bind(R.id.content_recycler_view)
         RecyclerView contentRecyclerView;
+        @Bind(R.id.ll_head)
+        LinearLayout llHead;
 
         ViewHolder(View view) {
             super(view);
