@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.fragments;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +83,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar);
+        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar,R.drawable.ic_launcher);
         tvName.setText(FastData.getUserName());
     }
 

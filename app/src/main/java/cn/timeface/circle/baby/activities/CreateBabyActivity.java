@@ -20,6 +20,7 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.wechat.photopicker.PickerPhotoActivity;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
@@ -37,6 +38,8 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -44,6 +47,7 @@ import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.MD5;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -292,6 +296,13 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     @Subscribe
     public void onEvent(ConfirmRelationEvent event) {
         TabMainActivity.open(this);
+        apiService.updateLoginInfo()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+
+                }, throwable -> {
+                    Log.e(TAG, "updateLoginInfo:");
+                });
         finish();
     }
 }

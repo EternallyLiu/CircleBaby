@@ -133,6 +133,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private String time_shot;
     private List<String> localUrls;
     private int count;
+    private boolean isPublish;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -388,6 +389,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         String content = etContent.getText().toString();
         if (mediaObjs.size() == 0) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
+            isPublish = false;
             return;
         }
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
@@ -410,8 +412,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         EventBus.getDefault().post(new PickerPhototAddEvent());
                         finish();
                     }
+                    isPublish = false;
                 }, throwable -> {
                     Log.e(TAG, "publish:",throwable);
+                    isPublish = false;
                 });
 
     }
@@ -420,7 +424,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private void publishDiary() {
         String content = etContent.getText().toString();
         if (mediaObj == null) {
-            Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
+            if(type == 1){
+                Toast.makeText(this, "请选择视频~", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
+            }
+
+            isPublish = false;
             return;
         }
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
@@ -449,8 +459,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         EventBus.getDefault().post(new HomeRefreshEvent());
                         finish();
                     }
+                    isPublish = false;
                 }, throwable -> {
                     Log.e(TAG, "publish:",throwable);
+                    isPublish = false;
                 });
 
     }
@@ -462,6 +474,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         long time = 0;
         if (imageUrls.size() < 1) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
+            isPublish = false;
             return;
         }
 
@@ -509,6 +522,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
                         finish();
+                        isPublish = false;
                         count = 0;
                         for (String localUrl : localUrls) {
                             uploadImage(localUrl);
@@ -516,6 +530,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         EventBus.getDefault().post(new HomeRefreshEvent());
                     }
                 }, throwable -> {
+                    isPublish = false;
                     Log.e(TAG, "publish:",throwable);
                 });
 
@@ -680,19 +695,22 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 ToastUtil.showToast("请检查是否联网");
                 return true;
             }
-
-            switch (type) {
-                case 0:
-                    postRecord();
-                    break;
-                case 1:
-                case 2:
-                    publishDiary();
-                    break;
-                case 3:
-                    publishCard();
-                    break;
+            if(!isPublish){
+                isPublish = true;
+                switch (type) {
+                    case 0:
+                        postRecord();
+                        break;
+                    case 1:
+                    case 2:
+                        publishDiary();
+                        break;
+                    case 3:
+                        publishCard();
+                        break;
+                }
             }
+
         }
         return true;
     }

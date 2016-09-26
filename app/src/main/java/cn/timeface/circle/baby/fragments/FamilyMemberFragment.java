@@ -148,7 +148,7 @@ public class FamilyMemberFragment extends BaseFragment {
                 llFamilymember.addView(view);
             }
         }
-        GlideUtil.displayImage(creator.getUserInfo().getAvatar(), ivAvatar);
+        GlideUtil.displayImage(creator.getUserInfo().getAvatar(), ivAvatar,R.drawable.ic_launcher);
         tvRelation.setText(creator.getUserInfo().getRelationName());
         tvCount.setText("来过" + creator.getCount() + "次");
         tvTime.setText("最近：" + DateUtil.formatDate(creator.getTime()));
@@ -167,7 +167,7 @@ public class FamilyMemberFragment extends BaseFragment {
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
         TextView tvCount = (TextView) view.findViewById(R.id.tv_count);
         TextView tvTime = (TextView) view.findViewById(R.id.tv_time);
-        GlideUtil.displayImage(info.getUserInfo().getAvatar(), ivAvatar);
+        GlideUtil.displayImage(info.getUserInfo().getAvatar(), ivAvatar,R.drawable.ic_launcher);
         tvName.setText(info.getUserInfo().getRelationName());
         tvCount.setText("来过" + info.getCount() + "次");
         tvTime.setText("最近" + DateUtil.formatDate("MM-dd kk:mm", info.getTime()));

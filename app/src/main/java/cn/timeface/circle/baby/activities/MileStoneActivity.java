@@ -25,6 +25,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.sharesdk.framework.ShareSDK;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
@@ -85,7 +86,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
         tfStateView.loading();
         initView();
         reqData();
-
+        ShareSDK.initSDK(this);
     }
 
 
