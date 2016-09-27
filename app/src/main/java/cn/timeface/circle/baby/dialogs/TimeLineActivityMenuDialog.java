@@ -166,7 +166,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
                     url = context.getString(R.string.share_url_time,timelineobj.getTimeId());
                     break;
                 case TypeConstants.VIDEO:
-                    url = context.getString(R.string.share_url_time,timelineobj.getTimeId());
+                    url = context.getString(R.string.share_url_video,timelineobj.getTimeId());
                     break;
                 case TypeConstants.DIARY:
                     url = context.getString(R.string.share_url_diary,timelineobj.getTimeId());
