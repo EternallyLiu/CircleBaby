@@ -562,7 +562,7 @@ public class ImageUtil {
     public static void scanMediaVideoFile(final Context context, final File file,
                                          final MediaScannerConnection.OnScanCompletedListener listener) {
         MediaScannerConnection
-                .scanFile(context, new String[]{file.getAbsolutePath()}, new String[]{"video/mo4"},
+                .scanFile(context, new String[]{file.getAbsolutePath()}, new String[]{"video/mp4"},
                         listener);
     }
 

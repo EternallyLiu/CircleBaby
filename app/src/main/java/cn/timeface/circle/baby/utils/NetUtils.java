@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,13 +28,9 @@ public class NetUtils {
         headers.put("DEVICEID", new DeviceUuidFactory(App.getInstance()).getDeviceId());
         headers.put("TOKEN", FastData.getUserToken());
         headers.put("VERSION", BuildConfig.VERSION_CODE + "");
-        System.out.println("USERID======" + FastData.getUserId());
-        System.out.println("BABYID======" + FastData.getBabyId());
-        System.out.println("DEVICEID======" + new DeviceUuidFactory(App.getInstance()).getDeviceId());
-        System.out.println("TOKEN======" + FastData.getUserToken());
-        System.out.println("VERSION======" + BuildConfig.VERSION_CODE);
-        System.out.println("CHANNEL======" + ChannelUtil.getChannel(App.getInstance()));
-
+        Log.v("NetUtils","USERID======" + FastData.getUserId());
+        Log.v("NetUtils","BABYID======" + FastData.getBabyId());
+        Log.v("NetUtils","DEVICEID======" + new DeviceUuidFactory(App.getInstance()).getDeviceId());
         return headers;
     }
 

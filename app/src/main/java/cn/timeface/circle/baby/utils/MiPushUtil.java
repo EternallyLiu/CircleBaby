@@ -21,8 +21,8 @@ import cn.timeface.common.utils.TimeFaceUtilInit;
  */
 public class MiPushUtil {
 
-    public static final String APP_ID = "2882303761517467205";
-    public static final String APP_KEY = "5501746742205";
+    public static final String APP_ID = "2882303761517513154";
+    public static final String APP_KEY = "5641751317154";
     // 此TAG在adb logcat中检索自己所需要的信息，只需在命令行终端输入 adb logcat | grep com.xiaomi.mipushdemo
     public static final String TAG = "cn.timeface.circle.baby";
 

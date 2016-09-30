@@ -74,7 +74,7 @@
             android:value="http://oss-cn-hangzhou.aliyuncs.com" />
         <meta-data
             android:name="ALI_STS"
-            android:value="http://auth.timeface.cn/aliyun/sts" />
+            android:value="http://auth.timeface.org/aliyun/sts" />
         <meta-data
             android:name="ALI_BUCKET"
             android:value="timeface-image01" />

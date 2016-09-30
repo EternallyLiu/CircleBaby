@@ -414,7 +414,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     }
                     isPublish = false;
                 }, throwable -> {
-                    Log.e(TAG, "publish:",throwable);
+                    Log.e(TAG, "publish:", throwable);
                     isPublish = false;
                 });
 
@@ -424,9 +424,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private void publishDiary() {
         String content = etContent.getText().toString();
         if (mediaObj == null) {
-            if(type == 1){
+            if (type == 1) {
                 Toast.makeText(this, "请选择视频~", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             }
 
@@ -445,7 +445,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
-        Log.v(TAG,"s============" + s);
+        Log.v(TAG, "s============" + s);
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
@@ -461,7 +461,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     }
                     isPublish = false;
                 }, throwable -> {
-                    Log.e(TAG, "publish:",throwable);
+                    Log.e(TAG, "publish:", throwable);
                     isPublish = false;
                 });
 
@@ -485,7 +485,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         //发布
         localUrls = new ArrayList<>();
         List<PublishObj> datalist = new ArrayList<>();
-        if(photoRecodes.size() == 1){
+        if (photoRecodes.size() == 1) {
             photoRecodes.get(0).setContent(value);
         }
         for (PhotoRecode photoRecode : photoRecodes) {
@@ -503,7 +503,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 //                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
                 int height = img.getHeight();
                 int width = img.getWidth();
-                Log.v(TAG,"img.getUrl ============ " + img.getUrl());
+                Log.v(TAG, "img.getUrl ============ " + img.getUrl());
                 localUrls.add(img.getLocalPath());
                 MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
                 mediaObjs.add(mediaObj);
@@ -514,7 +514,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
-        Log.v(TAG,s);
+        Log.v(TAG, s);
 
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -531,7 +531,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     }
                 }, throwable -> {
                     isPublish = false;
-                    Log.e(TAG, "publish:",throwable);
+                    Log.e(TAG, "publish:", throwable);
                 });
 
 
@@ -590,7 +590,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         if (TextUtils.isEmpty(path)) {
             return;
         }
-        Log.v(TAG,"img.getUrl ============ " + path);
+        Log.v(TAG, "img.getUrl ============ " + path);
         OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override
@@ -606,16 +606,16 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         String objectKey = uploadFileObj.getObjectKey();
-                        Log.v(TAG,"uploadImage  objectKey============ " + objectKey);
+                        Log.v(TAG, "uploadImage  objectKey============ " + objectKey);
                         count++;
                         if (count % 2 == 0 || count == localUrls.size()) {
                             EventBus.getDefault().post(new HomeRefreshEvent());
-                            if(count == localUrls.size()){
+                            if (count == localUrls.size()) {
                                 count = 0;
                             }
                         }
                     } catch (ServiceException | ClientException e) {
-                        Log.e(TAG,"uploadImage",e);
+                        Log.e(TAG, "uploadImage", e);
                     }
                 } catch (Exception e) {
 
@@ -653,10 +653,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 //                            file.delete();
 //                        }
                     } catch (ServiceException | ClientException e) {
-                        Log.e(TAG,"",e);
+                        Log.e(TAG, "", e);
                     }
                 } catch (Exception e) {
-                    Log.e(TAG,"",e);
+                    Log.e(TAG, "", e);
                 }
             }
         }.start();
@@ -688,31 +688,36 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+                            publish();
                         }
                     }).show();
+                } else {
+                    publish();
                 }
             } else {
                 ToastUtil.showToast("请检查是否联网");
                 return true;
             }
-            if(!isPublish){
-                isPublish = true;
-                switch (type) {
-                    case 0:
-                        postRecord();
-                        break;
-                    case 1:
-                    case 2:
-                        publishDiary();
-                        break;
-                    case 3:
-                        publishCard();
-                        break;
-                }
-            }
-
         }
-        return true;
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void publish() {
+        if (!isPublish) {
+            isPublish = true;
+            switch (type) {
+                case 0:
+                    postRecord();
+                    break;
+                case 1:
+                case 2:
+                    publishDiary();
+                    break;
+                case 3:
+                    publishCard();
+                    break;
+            }
+        }
     }
 
     public void delMileStone() {
@@ -722,17 +727,17 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         finish();
-//                        if(milestone!=null){
-//                            apiService.delMilestone(milestone.getId())
-//                                    .compose(SchedulersCompat.applyIoSchedulers())
-//                                    .subscribe(response -> {
-//                                        if (!response.success()) {
-//                                            ToastUtil.showToast(response.getInfo());
-//                                        }
-//                                    }, throwable -> {
-//                                        Log.e(TAG, "delMilestone:");
-//                                    });
-//                        }
+                        /*if(milestone!=null){
+                            apiService.delMilestone(milestone.getId())
+                                    .compose(SchedulersCompat.applyIoSchedulers())
+                                    .subscribe(response -> {
+                                        if (!response.success()) {
+                                            ToastUtil.showToast(response.getInfo());
+                                        }
+                                    }, throwable -> {
+                                        Log.e(TAG, "delMilestone:");
+                                    });
+                        }*/
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
