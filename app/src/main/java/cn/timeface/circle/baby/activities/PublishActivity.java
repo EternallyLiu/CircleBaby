@@ -671,6 +671,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+            return true;
         } else if (item.getItemId() == R.id.complete) {
             //检测网络环境
             if (Utils.isNetworkConnected(this)) {

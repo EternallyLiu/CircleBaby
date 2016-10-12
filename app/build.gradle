@@ -10,8 +10,8 @@ android {
         applicationId "cn.timeface.circle.baby"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 20160926
-        versionName "1.0.1"
+        versionCode 20160930
+        versionName "1.0.2"
         multiDexEnabled true
     }
 

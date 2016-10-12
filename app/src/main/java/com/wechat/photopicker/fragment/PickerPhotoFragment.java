@@ -24,9 +24,7 @@ import com.wechat.photopicker.adapter.DirectoryListAdapter;
 import com.wechat.photopicker.adapter.PhotoSelectorAdapter;
 import com.wechat.photopicker.endity.Photo;
 import com.wechat.photopicker.endity.PhotoDirectory;
-import com.wechat.photopicker.event.OnPhotoClickListener;
 import com.wechat.photopicker.utils.ImageCaptureManager;
-import com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent;
 import com.wechat.photopicker.utils.MediaStoreHelper;
 
 import java.io.IOException;
@@ -43,7 +41,7 @@ import static com.wechat.photopicker.utils.MediaStoreHelper.INDEX_ALL_PHOTOS;
 /**
  * 选择图片Fragment
  */
-public class PickerPhotoFragment extends Fragment implements View.OnClickListener{
+public class PickerPhotoFragment extends Fragment implements View.OnClickListener {
     public static final String TAG = "PickerPhotoFragment";
     private ImageCaptureManager mImageCaptureManager;
     private PhotoSelectorAdapter mPhotoSelectorAdapter;
@@ -64,11 +62,11 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getActivity().getIntent();
-        mOptionalPhotoSize = MAX_SELECTOR_SIZE - intent.getIntExtra(MainActivity.KEY_SELECTED_PHOTO_SIZE,0);
+        mOptionalPhotoSize = MAX_SELECTOR_SIZE - intent.getIntExtra(MainActivity.KEY_SELECTED_PHOTO_SIZE, 0);
         mPhotoDirectories = new ArrayList<>();
         mImageCaptureManager = new ImageCaptureManager(getActivity());
         //初始化图片数据
-        mMediaStoreHelper.getPhotoDirs(getActivity(),savedInstanceState, new MediaStoreHelper.DirectoryResultCallback() {
+        mMediaStoreHelper.getPhotoDirs(getActivity(), savedInstanceState, new MediaStoreHelper.DirectoryResultCallback() {
             @Override
             public void onResultCallback(List<PhotoDirectory> directories) {
                 mPhotoDirectories.clear();
@@ -82,15 +80,15 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setRetainInstance(true);
-        rootView = inflater.inflate(R.layout.fragment_picker_photo,container,false);
+        rootView = inflater.inflate(R.layout.fragment_picker_photo, container, false);
 
         btSwitchPopupWindow = (Button) rootView.findViewById(R.id.bt_directory);
         btSwitchPopupWindow.setOnClickListener(this);
         btPreview = (Button) rootView.findViewById(R.id.bt_preview);
         btPreview.setOnClickListener(this);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_photos);
-        mDirectoryListAdapter = new DirectoryListAdapter(mPhotoDirectories,getActivity());
-        mPhotoSelectorAdapter = new PhotoSelectorAdapter(mPhotoDirectories,getActivity(),mOptionalPhotoSize);
+        mDirectoryListAdapter = new DirectoryListAdapter(mPhotoDirectories, getActivity());
+        mPhotoSelectorAdapter = new PhotoSelectorAdapter(mPhotoDirectories, getActivity(), mOptionalPhotoSize);
         //初始显示第一个文件夹内的图片（全图图片）
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
@@ -152,7 +150,7 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ImageCaptureManager.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK){
+        if (requestCode == ImageCaptureManager.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             mImageCaptureManager.galleryAddPic();
             if (mPhotoDirectories.size() > 0) {
                 String path = mImageCaptureManager.getCurrentPhotoPath();
@@ -170,7 +168,7 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
         if (i == R.id.bt_directory) {
             if (mListPopupWindow.isShowing()) {
                 mListPopupWindow.dismiss();
-            } else {
+            } else if (mPhotoDirectories.size() > 1) {
                 if (!getActivity().isFinishing()) {
                     mListPopupWindow.setHeight(Math.round(rootView.getHeight() * 0.8f));
                     mListPopupWindow.show();
@@ -201,10 +199,11 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
 //            BigImageShowIntent bigImageShowIntent = new BigImageShowIntent(getActivity());
 //            bigImageShowIntent.setPhotoPaths(mPhotoSelectorAdapter.getSelectedPhotoPaths());
 //            startActivity(bigImageShowIntent);
-            FragmentBridgeActivity.openBigimageFragment(v.getContext(), mPhotoSelectorAdapter.getSelectedPhotoPaths(), 0,false,false);
+            FragmentBridgeActivity.openBigimageFragment(v.getContext(), mPhotoSelectorAdapter.getSelectedPhotoPaths(), 0, false, false);
         }
     }
-    public PhotoSelectorAdapter getPhotoSelectorAdapter(){
+
+    public PhotoSelectorAdapter getPhotoSelectorAdapter() {
         return mPhotoSelectorAdapter;
     }
 }

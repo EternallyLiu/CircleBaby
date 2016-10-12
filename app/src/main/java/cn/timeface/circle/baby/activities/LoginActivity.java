@@ -88,12 +88,12 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
             if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
                 login(account, password, 0);
             }
-        } else if(FastData.getUserFrom() == -1){
+        } else if (FastData.getUserFrom() == -1) {
 
-        }else{
+        } else {
             //上次登录为三方账号登录
             String platform = Remember.getString("platform", "");
-            if(!TextUtils.isEmpty(platform)){
+            if (!TextUtils.isEmpty(platform)) {
                 Platform plat = ShareSDK.getPlatform(platform);
                 thirdLogin(plat.getDb().getToken(),
                         plat.getDb().getUserIcon(),
@@ -101,9 +101,9 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.getUserFrom(),
                         "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
                         plat.getDb().getUserName(),
-                        "",
+                        plat.getDb().get("openid"),
                         plat.getDb().getUserId(),
-                        "", LoginActivity.this);
+                        plat.getDb().get("unionid"), LoginActivity.this);
             }
         }
     }
@@ -154,8 +154,8 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
             case R.id.btn_sign_in:
                 String account = etPhone.getText().toString().trim();
                 String psw = new AES().encrypt(etPassword.getText().toString().trim().getBytes());
-                if(TextUtils.isEmpty(account)||TextUtils.isEmpty(psw)){
-                    Toast.makeText(this,"请输入用户名和密码",Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(account) || TextUtils.isEmpty(psw)) {
+                    Toast.makeText(this, "请输入用户名和密码", Toast.LENGTH_SHORT).show();
 //                    ToastUtil.showToast("请输入用户名和密码");
                     return;
                 }
@@ -172,7 +172,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginResponse -> {
-                    Toast.makeText(this,loginResponse.getInfo(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, loginResponse.getInfo(), Toast.LENGTH_SHORT).show();
 //                    ToastUtil.showToast(loginResponse.getInfo());
                     if (loginResponse.success()) {
                         FastData.setUserInfo(loginResponse.getUserInfo());
@@ -180,7 +180,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.setAccount(account);
                         FastData.setPassword(psw);
                         if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this,true);
+                            CreateBabyActivity.open(this, true);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
@@ -220,9 +220,9 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         from,
                         "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
                         plat.getDb().getUserName(),
-                        "",
+                        plat.getDb().get("openid"),
                         plat.getDb().getUserId(),
-                        "", LoginActivity.this);
+                        plat.getDb().get("unionid"), LoginActivity.this);
             }
 
             @Override
@@ -309,7 +309,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(from);
                         if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this,true);
+                            CreateBabyActivity.open(this, true);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }

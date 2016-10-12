@@ -125,7 +125,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         tfoUserObj.setGender(FastData.getBabyGender());
         tfoUserObj.setNick_name(FastData.getBabyName());
         tfoUserObj.setPhone(FastData.getAccount());
-
+        tfoUserObj.setUnionid(FastData.getUserId());
         GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, new OpenUploadServices());
     }
 
