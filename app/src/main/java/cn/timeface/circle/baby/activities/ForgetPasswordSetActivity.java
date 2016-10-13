@@ -10,10 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,29 +19,26 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.encode.AES;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.common.utils.encode.AES;
 import rx.Subscription;
 
-public class ConfirmPasswordActivity extends BaseAppCompatActivity {
+public class ForgetPasswordSetActivity extends BaseAppCompatActivity {
 
 
-    @Bind(R.id.tv_cancle)
-    TextView tvCancle;
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_password)
     EditText etPassword;
-    @Bind(R.id.et_nickname)
-    EditText etNickname;
+    @Bind(R.id.et_re_password)
+    EditText etRePassword;
     @Bind(R.id.btn_finish)
     Button btnFinish;
-    private String account;
+
+    String account;
 
     public static void open(Context context, String account) {
-        Intent intent = new Intent(context, ConfirmPasswordActivity.class);
+        Intent intent = new Intent(context, ForgetPasswordSetActivity.class);
         intent.putExtra("account", account);
         context.startActivity(intent);
     }
@@ -52,39 +46,34 @@ public class ConfirmPasswordActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_confirm_password);
+        setContentView(R.layout.activity_forget_password_set);
         ButterKnife.bind(this);
         account = getIntent().getStringExtra("account");
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
-    @OnClick({R.id.btn_finish, R.id.tv_cancle})
+    @OnClick({R.id.btn_finish})
     public void clickBtn(View view) {
         Subscription s = null;
         switch (view.getId()) {
             case R.id.btn_finish:
                 if (check()) {
-                    String pwd = etPassword.getText().toString().trim();
-                    String name = etNickname.getText().toString().trim();
-                    s = apiService.register(Uri.encode(account), Uri.encode(name), Uri.encode(new AES().encrypt(pwd.getBytes())))
+                    String psw = new AES().encrypt(etPassword.getText().toString().trim().getBytes());
+                    s = apiService.login(Uri.encode(account), Uri.encode(psw), 1)
                             .compose(SchedulersCompat.applyIoSchedulers())
-                            .subscribe(registerResponse -> {
-                                Toast.makeText(this, registerResponse.getInfo(), Toast.LENGTH_SHORT).show();
-                                if (registerResponse.success()) {
-                                    FastData.setUserInfo(registerResponse.getUserInfo());
-                                    CreateBabyActivity.open(ConfirmPasswordActivity.this, true);
+                            .subscribe(response -> {
+                                Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
+                                if (response.success()) {
+                                    FastData.setPassword(psw);
                                     finish();
+                                    return;
                                 }
-                                return;
-                            }, throwable -> {
-                                Log.e(TAG, "register:", throwable);
+                            }, error -> {
+                                Log.e(TAG, error.getMessage());
                             });
                 }
-                break;
-            case R.id.tv_cancle:
-                finish();
                 break;
         }
         addSubscription(s);
@@ -92,20 +81,23 @@ public class ConfirmPasswordActivity extends BaseAppCompatActivity {
 
     private boolean check() {
         String pwd = etPassword.getText().toString().trim();
-        String name = etNickname.getText().toString().trim();
+        String rePwd = etRePassword.getText().toString().trim();
         if (TextUtils.isEmpty(pwd)) {
             Toast.makeText(this, "请填写密码", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (TextUtils.isEmpty(name)) {
-            Toast.makeText(this, "请填写昵称", Toast.LENGTH_SHORT).show();
+        } else if (TextUtils.isEmpty(rePwd)) {
+            Toast.makeText(this, "请确认密码", Toast.LENGTH_SHORT).show();
             return false;
         } else if (pwd.length() < 6 || pwd.length() > 16) {
-            ToastUtil.showToast("请输入6-16位密码");
-            return false;
-        } else if (name.length() > 12) {
-            Toast.makeText(this, "请输入12个字符以内的昵称", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast("请输入6—16位的密码");
             return false;
         }
+
+        if (!pwd.equals(rePwd)) {
+            Toast.makeText(this, "两次输入密码不一致", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return true;
     }
 

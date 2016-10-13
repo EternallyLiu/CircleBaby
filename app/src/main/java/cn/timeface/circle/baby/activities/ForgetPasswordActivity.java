@@ -101,7 +101,7 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {
-                                SetPasswordActivity.open(ForgetPasswordActivity.this, mobile);
+                                ForgetPasswordSetActivity.open(ForgetPasswordActivity.this, mobile);
                                 finish();
                                 return;
                             }

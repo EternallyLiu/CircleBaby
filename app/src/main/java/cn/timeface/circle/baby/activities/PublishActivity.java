@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,10 @@ import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
+import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
+import com.alibaba.sdk.android.oss.model.PutObjectRequest;
+import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
@@ -56,7 +61,9 @@ import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.events.PickerPhototAddEvent;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
+import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
+import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -452,11 +459,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
                         if (type == 1) {
+                            EventBus.getDefault().post(new StartUploadEvent());
                             uploadVideo(videoInfo.getPath());
                         } else {
                             EventBus.getDefault().post(new PickerPhototAddEvent());
+                            EventBus.getDefault().post(new HomeRefreshEvent());
                         }
-                        EventBus.getDefault().post(new HomeRefreshEvent());
                         finish();
                     }
                     isPublish = false;
@@ -519,15 +527,14 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
-                    ToastUtil.showToast(response.getInfo());
                     if (response.success()) {
                         finish();
                         isPublish = false;
                         count = 0;
+                        EventBus.getDefault().post(new StartUploadEvent());
                         for (String localUrl : localUrls) {
                             uploadImage(localUrl);
                         }
-                        EventBus.getDefault().post(new HomeRefreshEvent());
                     }
                 }, throwable -> {
                     isPublish = false;
@@ -608,12 +615,19 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         String objectKey = uploadFileObj.getObjectKey();
                         Log.v(TAG, "uploadImage  objectKey============ " + objectKey);
                         count++;
-                        if (count % 2 == 0 || count == localUrls.size()) {
+                        int progress = count * 100 / localUrls.size();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                EventBus.getDefault().post(new UploadEvent(progress));
+                            }
+                        });
+                        /*if (count % 2 == 0 || count == localUrls.size()) {
                             EventBus.getDefault().post(new HomeRefreshEvent());
                             if (count == localUrls.size()) {
                                 count = 0;
                             }
-                        }
+                        }*/
                     } catch (ServiceException | ClientException e) {
                         Log.e(TAG, "uploadImage", e);
                     }
@@ -644,15 +658,31 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         //判断服务器是否已存在该文件
                         if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
                             //如果不存在则上传
-                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
+                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath(), new OSSProgressCallback<PutObjectRequest>() {
+                                @Override
+                                public void onProgress(PutObjectRequest putObjectRequest, long l, long l1) {
+                                    int progress = (int) (l * 100 / l1);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            EventBus.getDefault().post(new UploadEvent(progress));
+                                        }
+                                    });
+                                }
+                            }, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+                                @Override
+                                public void onSuccess(PutObjectRequest putObjectRequest, PutObjectResult putObjectResult) {
+
+                                }
+
+                                @Override
+                                public void onFailure(PutObjectRequest putObjectRequest, ClientException e, ServiceException e1) {
+
+                                }
+                            });
                         }
                         String videoObjectKey = uploadFileObj.getObjectKey();
-//                        File file = new File(path);
-//                        String substring = path.substring(path.lastIndexOf("/"));
-//                        if(file.exists()&&substring.startsWith("TF")){
-//                            file.delete();
-//                        }
-                    } catch (ServiceException | ClientException e) {
+                    } catch (Exception e) {
                         Log.e(TAG, "", e);
                     }
                 } catch (Exception e) {

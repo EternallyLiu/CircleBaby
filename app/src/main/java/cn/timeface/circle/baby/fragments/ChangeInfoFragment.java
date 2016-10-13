@@ -16,9 +16,10 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.views.ClearableEditText;
 
-public class ChangeInfoFragment extends BaseFragment{
+public class ChangeInfoFragment extends BaseFragment {
 
 
     @Bind(R.id.tv_title)
@@ -51,7 +52,7 @@ public class ChangeInfoFragment extends BaseFragment{
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         tvTitle.setText(title);
@@ -61,10 +62,14 @@ public class ChangeInfoFragment extends BaseFragment{
             @Override
             public void onClick(View v) {
                 String input = cet.getText().toString();
-                Intent intent = new Intent();
-                intent.putExtra("data",input);
-                getActivity().setResult(Activity.RESULT_OK,intent);
-                getActivity().finish();
+                if (input.length() > 12) {
+                    ToastUtil.showToast("请输入12个字符以内的昵称");
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra("data", input);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
+                    getActivity().finish();
+                }
             }
         });
         return view;

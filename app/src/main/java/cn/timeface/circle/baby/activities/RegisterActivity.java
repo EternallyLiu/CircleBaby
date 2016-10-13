@@ -127,7 +127,7 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
                     return;
                 }
                 if (!TextUtils.isEmpty(phone) && CheckedUtil.isMobileNum(phone)) {
-                    registerSMSReceiver();// 注册接收短信，获取的手机验证码并自动填充
+//                    registerSMSReceiver();// 注册接收短信，获取的手机验证码并自动填充
 
                     s = apiService.getVeriCode(phone,1)
                             .subscribeOn(Schedulers.io())

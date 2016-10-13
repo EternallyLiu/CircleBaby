@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.encode.AES;
@@ -29,6 +30,8 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.et_oldpsw)
+    EditText etOldpsw;
     @Bind(R.id.et_password)
     EditText etPassword;
     @Bind(R.id.et_re_password)
@@ -61,17 +64,13 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
         switch (view.getId()) {
             case R.id.btn_finish:
                 if (check()) {
-                    String trim = etPassword.getText().toString().trim();
-                    if (trim.length() < 6 || trim.length() > 16) {
-                        ToastUtil.showToast("请输入6—16位的密码");
-                        return;
-                    }
                     String psw = new AES().encrypt(etPassword.getText().toString().trim().getBytes());
                     s = apiService.login(Uri.encode(account), Uri.encode(psw), 1)
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
                                 if (response.success()) {
+                                    FastData.setPassword(psw);
                                     finish();
                                     return;
                                 }
@@ -85,16 +84,23 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
     }
 
     private boolean check() {
+        String oldpwd = etOldpsw.getText().toString().trim();
         String pwd = etPassword.getText().toString().trim();
         String rePwd = etRePassword.getText().toString().trim();
-        if (TextUtils.isEmpty(pwd)) {
+        if (TextUtils.isEmpty(oldpwd)) {
+            ToastUtil.showToast("请填写原密码");
+            return false;
+        } else if (TextUtils.isEmpty(pwd)) {
             Toast.makeText(this, "请填写密码", Toast.LENGTH_SHORT).show();
             return false;
         } else if (TextUtils.isEmpty(rePwd)) {
             Toast.makeText(this, "请确认密码", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (pwd.length() < 6) {
-            ToastUtil.showToast("密码不能少于六位数");
+        } else if (pwd.length() < 6 || pwd.length() > 16) {
+            ToastUtil.showToast("请输入6—16位的密码");
+            return false;
+        } else if (!FastData.getPassword().equals(new AES().encrypt(oldpwd.getBytes()))) {
+            ToastUtil.showToast("原密码错误");
             return false;
         }
 

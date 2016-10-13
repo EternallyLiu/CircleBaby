@@ -214,6 +214,10 @@
             android:label="设置密码"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activities.ForgetPasswordSetActivity"
+            android:label="设置密码"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.CreateBabyActivity"
             android:screenOrientation="portrait" />
         <activity

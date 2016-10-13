@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -64,7 +65,9 @@ import cn.timeface.circle.baby.events.ActionCallBackEvent;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.IconCommentClickEvent;
+import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
+import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -138,6 +141,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private Button btnSend;
     private AlertDialog dialog;
     private ArrayList<TimeLineGroupObj> lists;
+    private TextView tvProgress;
+    private AlertDialog progressDialog;
 
     public HomeFragment() {
     }
@@ -574,6 +579,48 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         editComment();
         etCommment.requestFocus();
         etCommment.setHint("回复 " + comment.getUserInfo().getRelationName() + " ：");
+    }
+
+    @Subscribe
+    public void onEvent(StartUploadEvent event) {
+        progressDialog();
+    }
+
+    @Subscribe
+    public void onEvent(UploadEvent event) {
+        int progress = event.getProgress();
+        if (tvProgress != null)
+            tvProgress.setText(progress + "%");
+        if (progress == 100) {
+            if (progressDialog != null)
+                progressDialog.dismiss();
+            reqData(1);
+            ToastUtil.showToast("发布成功");
+        }
+    }
+
+
+    private void progressDialog() {
+        progressDialog = new AlertDialog.Builder(getActivity()).setView(initProgress()).show();
+        progressDialog.setCanceledOnTouchOutside(false);
+        Window window = progressDialog.getWindow();
+//        WindowManager m = window.getWindowManager();
+//        Display d = m.getDefaultDisplay();
+//        WindowManager.LayoutParams p = window.getAttributes();
+
+//        p.width = d.getWidth();
+//        window.setAttributes(p);
+        window.setGravity(Gravity.CENTER);
+        window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+        window.setWindowAnimations(R.style.bottom_dialog_animation);
+    }
+
+    private View initProgress() {
+        View view = View.inflate(getActivity(), R.layout.view_upload_progress, null);
+        ImageView ivLoad = (ImageView) view.findViewById(R.id.pb_loading);
+        tvProgress = (TextView) view.findViewById(R.id.tv_progress);
+        ((Animatable) ivLoad.getDrawable()).start();
+        return view;
     }
 
     /**
