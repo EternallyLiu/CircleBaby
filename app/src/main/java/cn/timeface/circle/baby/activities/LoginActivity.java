@@ -156,7 +156,6 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 String psw = new AES().encrypt(etPassword.getText().toString().trim().getBytes());
                 if (TextUtils.isEmpty(account) || TextUtils.isEmpty(psw)) {
                     Toast.makeText(this, "请输入用户名和密码", Toast.LENGTH_SHORT).show();
-//                    ToastUtil.showToast("请输入用户名和密码");
                     return;
                 }
                 s = login(account, psw, 0);
@@ -168,7 +167,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
     private Subscription login(String account, String psw, int type) {
         Subscription s;
-        s = apiService.login(account, psw, type)
+        s = apiService.login(Uri.encode(account), Uri.encode(psw), type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginResponse -> {

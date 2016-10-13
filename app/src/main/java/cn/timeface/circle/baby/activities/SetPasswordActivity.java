@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
@@ -19,8 +20,8 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.encode.AES;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.common.utils.encode.AES;
 import rx.Subscription;
 
 public class SetPasswordActivity extends BaseAppCompatActivity {
@@ -60,8 +61,13 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
         switch (view.getId()) {
             case R.id.btn_finish:
                 if (check()) {
-                    String pwd = etPassword.getText().toString().trim();
-                    s = apiService.login(account, new AES().encrypt(pwd.getBytes()), 1)
+                    String trim = etPassword.getText().toString().trim();
+                    if (trim.length() < 6 || trim.length() > 16) {
+                        ToastUtil.showToast("请输入6—16位的密码");
+                        return;
+                    }
+                    String psw = new AES().encrypt(etPassword.getText().toString().trim().getBytes());
+                    s = apiService.login(Uri.encode(account), Uri.encode(psw), 1)
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
@@ -70,7 +76,7 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
                                     return;
                                 }
                             }, error -> {
-                                Log.e(TAG,error.getMessage());
+                                Log.e(TAG, error.getMessage());
                             });
                 }
                 break;
@@ -87,7 +93,7 @@ public class SetPasswordActivity extends BaseAppCompatActivity {
         } else if (TextUtils.isEmpty(rePwd)) {
             Toast.makeText(this, "请确认密码", Toast.LENGTH_SHORT).show();
             return false;
-        }else if(pwd.length()<6){
+        } else if (pwd.length() < 6) {
             ToastUtil.showToast("密码不能少于六位数");
             return false;
         }

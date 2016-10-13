@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -67,18 +68,18 @@ public class ConfirmPasswordActivity extends BaseAppCompatActivity {
                 if (check()) {
                     String pwd = etPassword.getText().toString().trim();
                     String name = etNickname.getText().toString().trim();
-                    s = apiService.register(account, URLEncoder.encode(name), new AES().encrypt(pwd.getBytes()))
+                    s = apiService.register(Uri.encode(account), Uri.encode(name), Uri.encode(new AES().encrypt(pwd.getBytes())))
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(registerResponse -> {
                                 Toast.makeText(this, registerResponse.getInfo(), Toast.LENGTH_SHORT).show();
-                                if(registerResponse.success()){
+                                if (registerResponse.success()) {
                                     FastData.setUserInfo(registerResponse.getUserInfo());
-                                    CreateBabyActivity.open(ConfirmPasswordActivity.this,true);
+                                    CreateBabyActivity.open(ConfirmPasswordActivity.this, true);
                                     finish();
                                 }
                                 return;
                             }, throwable -> {
-                                Log.e(TAG,"register:",throwable);
+                                Log.e(TAG, "register:", throwable);
                             });
                 }
                 break;
@@ -98,7 +99,7 @@ public class ConfirmPasswordActivity extends BaseAppCompatActivity {
         } else if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, "请填写昵称", Toast.LENGTH_SHORT).show();
             return false;
-        }else if(pwd.length()<6){
+        } else if (pwd.length() < 6 || pwd.length() > 16) {
             ToastUtil.showToast("密码不能少于6位数");
             return false;
         }
