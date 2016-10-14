@@ -139,8 +139,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private TFProgressDialog tfProgressDialog;
     private String time_shot;
     private List<String> localUrls;
-    private int count;
+    private int count = 0;
     private boolean isPublish;
+    private double oldProgress = 0;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -610,29 +611,77 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         //判断服务器是否已存在该文件
                         if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
                             //如果不存在则上传
-                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
+                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath(), new OSSProgressCallback<PutObjectRequest>() {
+                                @Override
+                                public void onProgress(PutObjectRequest putObjectRequest, long l, long l1) {
+                                    int sinpro = (int) (l * 100 / l1);
+                                    int i = count * 100 / localUrls.size();
+                                    double progress = i + sinpro / localUrls.size();
+                                    if (progress > oldProgress) {
+                                        oldProgress = progress;
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                EventBus.getDefault().post(new UploadEvent((int) progress));
+                                            }
+                                        });
+                                    }
+                                }
+                            }, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+                                @Override
+                                public void onSuccess(PutObjectRequest putObjectRequest, PutObjectResult putObjectResult) {
+                                    count++;
+                                    int i = count * 100 / localUrls.size();
+                                    if (i > oldProgress) {
+                                        oldProgress = i;
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                EventBus.getDefault().post(new UploadEvent(i));
+                                            }
+                                        });
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(PutObjectRequest putObjectRequest, ClientException e, ServiceException e1) {
+
+                                }
+                            });
+                        } else {
+                            count++;
+                            int i = count * 100 / localUrls.size();
+                            if (i > oldProgress) {
+                                oldProgress = i;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        EventBus.getDefault().post(new UploadEvent(i));
+                                    }
+                                });
+                            }
                         }
                         String objectKey = uploadFileObj.getObjectKey();
                         Log.v(TAG, "uploadImage  objectKey============ " + objectKey);
-                        count++;
-                        int progress = count * 100 / localUrls.size();
+//                        count++;
+                        /*int progress = count * 100 / localUrls.size();
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 EventBus.getDefault().post(new UploadEvent(progress));
                             }
-                        });
+                        });*/
                         /*if (count % 2 == 0 || count == localUrls.size()) {
                             EventBus.getDefault().post(new HomeRefreshEvent());
                             if (count == localUrls.size()) {
                                 count = 0;
                             }
                         }*/
-                    } catch (ServiceException | ClientException e) {
+                    } catch (Exception e) {
                         Log.e(TAG, "uploadImage", e);
                     }
                 } catch (Exception e) {
-
+                    Log.e(TAG, "uploadImage", e);
                 }
             }
         }.start();
@@ -680,13 +729,20 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
                                 }
                             });
+                        }else{
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    EventBus.getDefault().post(new UploadEvent(100));
+                                }
+                            });
                         }
                         String videoObjectKey = uploadFileObj.getObjectKey();
                     } catch (Exception e) {
-                        Log.e(TAG, "", e);
+                        Log.e(TAG, "uploadVideo", e);
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "", e);
+                    Log.e(TAG, "uploadVideo", e);
                 }
             }
         }.start();

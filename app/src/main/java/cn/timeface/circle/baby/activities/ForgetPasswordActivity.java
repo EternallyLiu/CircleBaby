@@ -80,6 +80,7 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
                                 Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
                                 if(response.getStatus()==1){
                                     timeRun();
+                                    etCode.requestFocus();
                                 }
                             }, error -> {
                                 Toast.makeText(this, "获取验证码失败", Toast.LENGTH_SHORT).show();

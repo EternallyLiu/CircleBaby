@@ -305,4 +305,15 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                 });
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+        if(showFocus){
+            FastData.setUserFrom(-1);
+            LoginActivity.open(this);
+            finish();
+        }else{
+            super.onBackPressed();
+        }
+    }
 }

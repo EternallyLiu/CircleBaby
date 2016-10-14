@@ -129,14 +129,15 @@ public class RegisterActivity extends BaseAppCompatActivity implements IEventBus
                 if (!TextUtils.isEmpty(phone) && CheckedUtil.isMobileNum(phone)) {
 //                    registerSMSReceiver();// 注册接收短信，获取的手机验证码并自动填充
 
-                    s = apiService.getVeriCode(phone,1)
+                    s = apiService.getVeriCode(phone, 1)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(response -> {
                                 Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
                                 if (response.success()) {
-                                    if(response.getStatus()==1){
+                                    if (response.getStatus() == 1) {
                                         timeRun();
+                                        etCode.requestFocus();
                                     }
                                 }
                             }, error -> {

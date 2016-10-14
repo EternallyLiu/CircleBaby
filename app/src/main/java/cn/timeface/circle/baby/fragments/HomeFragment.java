@@ -119,6 +119,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     LinearLayout llNoData;
     @Bind(R.id.appbar)
     AppBarLayout appbar;
+    @Bind(R.id.tv_progress)
+    TextView mTvprogress;
 
     private boolean rlCommentShow;
     private int currentPage = 1;
@@ -287,7 +289,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void reqData(int page) {
-        apiService.timeline(page, 10)
+        apiService.timeline(page, 30)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     if (tfStateView != null) {
@@ -584,14 +586,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Subscribe
     public void onEvent(StartUploadEvent event) {
         progressDialog();
+        mTvprogress.setVisibility(View.VISIBLE);
     }
 
     @Subscribe
     public void onEvent(UploadEvent event) {
         int progress = event.getProgress();
+        mTvprogress.setText("上传中 " + progress+"%");
         if (tvProgress != null)
             tvProgress.setText(progress + "%");
         if (progress == 100) {
+            mTvprogress.setVisibility(View.GONE);
             if (progressDialog != null)
                 progressDialog.dismiss();
             reqData(1);

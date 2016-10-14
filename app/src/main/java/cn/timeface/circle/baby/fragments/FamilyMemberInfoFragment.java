@@ -169,12 +169,11 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
                     tvNickname.setText(input);
                     break;
             }
+            edit();
         }
     }
 
-    @Override
-    public void onDestroyView() {
-
+    public void edit(){
         if (FastData.getUserInfo().getIsCreator() == 1) {
             String nickName = tvNickname.getText().toString();
             String relationName = tvRelation.getText().toString();
@@ -183,11 +182,15 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
             apiService.updateFamilyRelationshipInfo(nickName, relationName, userId)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
-
+                        ToastUtil.showToast(response.info);
                     }, throwable -> {
                         Log.e(TAG, "queryBabyInfo:");
                     });
         }
+    }
+
+    @Override
+    public void onDestroyView() {
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
