@@ -37,6 +37,7 @@ import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_PHOTO_PATHS;
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SELECTOR_POSITION;
@@ -64,6 +65,7 @@ public class BigImageFragment extends BaseFragment{
     private boolean download;
     private boolean delete;
     private MenuItem save;
+    private TFProgressDialog tfProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -187,6 +189,9 @@ public class BigImageFragment extends BaseFragment{
             ToastUtil.showToast("网络异常");
         }
         ToastUtil.showToast("开始保存图片…");
+        tfProgressDialog = new TFProgressDialog(getActivity());
+        tfProgressDialog.setMessage("保存图片中…");
+        tfProgressDialog.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -197,6 +202,7 @@ public class BigImageFragment extends BaseFragment{
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            tfProgressDialog.dismiss();
                             Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
                             save.setEnabled(true);
                         }

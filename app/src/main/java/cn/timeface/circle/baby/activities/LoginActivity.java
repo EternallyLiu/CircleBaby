@@ -171,8 +171,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginResponse -> {
-                    Toast.makeText(this, loginResponse.getInfo(), Toast.LENGTH_SHORT).show();
-//                    ToastUtil.showToast(loginResponse.getInfo());
+                    ToastUtil.showToast(loginResponse.getInfo());
                     if (loginResponse.success()) {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
@@ -188,6 +187,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 }, throwable -> {
                     Log.e(TAG, "login:", throwable);
                     throwable.printStackTrace();
+                    ToastUtil.showToast("服务器异常，请稍后重试");
                 });
         return s;
     }

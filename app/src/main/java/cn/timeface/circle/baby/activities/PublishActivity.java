@@ -424,6 +424,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 }, throwable -> {
                     Log.e(TAG, "publish:", throwable);
                     isPublish = false;
+                    ToastUtil.showToast("服务器异常，请稍后重试");
                 });
 
     }
@@ -472,6 +473,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 }, throwable -> {
                     Log.e(TAG, "publish:", throwable);
                     isPublish = false;
+                    ToastUtil.showToast("服务器异常，请稍后重试");
                 });
 
     }
@@ -533,13 +535,15 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         isPublish = false;
                         count = 0;
                         EventBus.getDefault().post(new StartUploadEvent());
-                        for (String localUrl : localUrls) {
-                            uploadImage(localUrl);
-                        }
+                        uploadImage(localUrls.get(count));
+//                        for (String localUrl : localUrls) {
+//                            uploadImage(localUrl);
+//                        }
                     }
                 }, throwable -> {
                     isPublish = false;
                     Log.e(TAG, "publish:", throwable);
+                    ToastUtil.showToast("服务器异常，请稍后重试");
                 });
 
 
@@ -598,6 +602,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         if (TextUtils.isEmpty(path)) {
             return;
         }
+        Log.v(TAG, "count ============ " + count);
         Log.v(TAG, "img.getUrl ============ " + path);
         OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
@@ -641,11 +646,16 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                                             }
                                         });
                                     }
+                                    if (count < localUrls.size()) {
+                                        uploadImage(localUrls.get(count));
+                                    }
                                 }
 
                                 @Override
                                 public void onFailure(PutObjectRequest putObjectRequest, ClientException e, ServiceException e1) {
-
+                                    if (count < localUrls.size()) {
+                                        uploadImage(localUrls.get(count));
+                                    }
                                 }
                             });
                         } else {
@@ -659,6 +669,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                                         EventBus.getDefault().post(new UploadEvent(i));
                                     }
                                 });
+                            }
+                            if (count < localUrls.size()) {
+                                uploadImage(localUrls.get(count));
                             }
                         }
                         String objectKey = uploadFileObj.getObjectKey();
@@ -729,7 +742,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
                                 }
                             });
-                        }else{
+                        } else {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

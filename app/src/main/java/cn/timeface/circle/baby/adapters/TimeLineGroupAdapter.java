@@ -66,7 +66,7 @@ public class TimeLineGroupAdapter extends BaseRecyclerAdapter<TimeLineGroupObj> 
         holder.llHead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                TimeLineDetailActivity.open(context, timeLineList.get(0), position, 0);
+                TimeLineDetailActivity.open(context, timeLineList.get(0), position, 0);
             }
         });
     }

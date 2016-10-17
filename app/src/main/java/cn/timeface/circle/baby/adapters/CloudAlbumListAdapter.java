@@ -46,7 +46,8 @@ public class CloudAlbumListAdapter extends RecyclerView.Adapter<CloudAlbumListAd
         CloudAlbumObj cloudAlbumObj = dataList.get(position);
         String imgUrl = cloudAlbumObj.getImgUrl();
         if (!TextUtils.isEmpty(imgUrl)) {
-            GlideUtil.displayImage(imgUrl,holder.ivAlbumCover);
+//            GlideUtil.displayImage(imgUrl,holder.ivAlbumCover);
+            Glide.with(context).load(imgUrl).thumbnail(0.1f).into(holder.ivAlbumCover);
         }
         holder.tvAlbumCount.setText(cloudAlbumObj.getContentInfo());
         holder.tvAlbumTitle.setText(cloudAlbumObj.getDesc());

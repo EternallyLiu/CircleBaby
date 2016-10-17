@@ -353,9 +353,9 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     @Subscribe
     public void onEvent(PhotoSelectEvent event) {
         changeSelCount(event.count);
-        if(event.count == maxCount){
-            clickDone();
-        }
+//        if(event.count == maxCount){
+//            clickDone();
+//        }
     }
 
     @Subscribe
@@ -461,9 +461,9 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
                         adapter.setSelImgs(selImgs);
                         adapter.notifyDataSetChanged();
                         changeSelCount(selImgs.size());
-                        if (selImgs.size() == maxCount) {
+                        /*if (selImgs.size() == maxCount) {
                             clickDone();
-                        }
+                        }*/
                     }
                 }
                 break;

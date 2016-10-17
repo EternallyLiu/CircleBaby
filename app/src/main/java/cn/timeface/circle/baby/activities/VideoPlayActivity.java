@@ -32,6 +32,7 @@ import cn.timeface.circle.baby.utils.ImageFactory;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class VideoPlayActivity extends BaseAppCompatActivity {
 
@@ -42,6 +43,7 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
     VideoView videoview;
     private MenuItem save;
     private String url;
+    private TFProgressDialog tfProgressDialog;
 
     public static void open(Context context , String url) {
         Intent intent = new Intent(context, VideoPlayActivity.class);
@@ -133,6 +135,9 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
             return;
         }
         ToastUtil.showToast("保存视频…");
+        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog.setMessage("保存视频中…");
+        tfProgressDialog.show();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -140,6 +145,7 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        tfProgressDialog.dismiss();
                         ToastUtil.showToast("已保存到baby文件夹下");
                         save.setEnabled(true);
                     }

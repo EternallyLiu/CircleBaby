@@ -79,7 +79,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageArrived(Context context, MiPushMessage message) {
-        EventBus.getDefault().post(new HomeRefreshEvent());
+//        EventBus.getDefault().post(new HomeRefreshEvent());
         EventBus.getDefault().post(new UnreadMsgEvent());
         mMessage = message.getContent();
         if (!TextUtils.isEmpty(message.getTopic())) {

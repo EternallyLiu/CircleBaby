@@ -12,6 +12,7 @@ import android.graphics.PointF;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
@@ -82,7 +83,7 @@ public class ScaleImageView extends ImageView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         reset();
-        if(first){
+        if (first) {
             centerPic();
         }
 
@@ -127,8 +128,8 @@ public class ScaleImageView extends ImageView {
 //                    matrix1.postRotate(rotation, center.x, center.y);// 旋轉
 //                    matrixCheck = matrixCheck();
 //                    if (matrixCheck == false) {
-                        matrix.set(matrix1);
-                        invalidate();
+                    matrix.set(matrix1);
+                    invalidate();
 //                    }
                 } else if (mode == DRAG) {
                     matrix1.set(savedMatrix);
@@ -138,8 +139,8 @@ public class ScaleImageView extends ImageView {
                             - y_down);// 平移
 //                    matrixCheck = matrixCheck();
 //                    if (matrixCheck == false) {
-                        matrix.set(matrix1);
-                        invalidate();
+                    matrix.set(matrix1);
+                    invalidate();
 //                    }
                 }
                 break;
@@ -391,19 +392,36 @@ public class ScaleImageView extends ImageView {
         Bitmap bitmap = BitmapFactory.decodeFile(path, options);
         int w = options.outWidth;
         int h = options.outHeight;
-        float hh = 1080f;
-        float ww = 720f;
+        Log.v("scaleImage ====== ", "w ===" + w);
+        Log.v("scaleImage ====== ", "h ===" + h);
+        float i = 0;
+        float ww = 0;
+        float hh = 0;
+        if (w > h) {
+            i = (float) w / h;
+            hh = 1000;
+            ww = 1000 * i;
+        } else {
+            i = (float) h / w;
+            ww = 1000;
+            hh = 1000 * i;
+        }
+//        Log.v("scaleImage ====== ", "i ===" + i);
+//        Log.v("scaleImage ====== ", "www ===" + www);
+//        Log.v("scaleImage ====== ", "hhh ===" + hhh);
+//        float hh = 1080f;
+//        float ww = 720f;
         int scale = 1;
         int scaleX = (int) (w / ww);
         int scaleY = (int) (h / hh);
         scale = scaleX > scaleY ? scaleX : scaleY;
-        if(scale<1){
+        if (scale < 1) {
             scale = 1;
         }
         options.inSampleSize = scale;
         options.inJustDecodeBounds = false;
         bitmap = BitmapFactory.decodeFile(path, options);
-        if (scale!=1){
+        if (scale != 1) {
             String url = ImageFactory.saveImage(bitmap);
             imgObj.setLocalPath(url);
             System.out.println("ScaleImageView.url ===== " + url);
