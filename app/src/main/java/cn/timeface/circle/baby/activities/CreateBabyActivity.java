@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.bumptech.glide.Glide;
 import com.wechat.photopicker.PickerPhotoActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,11 +85,13 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
 
 
     public static final String KEY_SELECTED_PHOTO_SIZE = "SELECTED_PHOTO_SIZE";
+    public static final int CROP_IMG_REQUEST_CODE = 1002;
     private final int PicutreSelcted = 10;
     private final int RELATIONSHIP = 1;
     private int gender;
+    File selImageFile;
+    File outFile;
 
-    private String imagePath = "";
     private String objectKey = "";
     private int relationId;
     private String relationName;
@@ -236,27 +240,40 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
             }
             switch (requestCode) {
                 case PicutreSelcted:
-                    for (String path : data.getStringArrayListExtra(PickerPhotoActivity.KEY_SELECTED_PHOTOS)) {
-                        imagePath = path;
-                        GlideUtil.displayImage(imagePath, ivAvatar);
-                        tvNext.setText("上传中");
-                        tvNext.setEnabled(false);
-//                        objectKey = TypeConstants.UPLOAD_FOLDER + "/" + MD5.encode(new File(path)) + path.substring(path.lastIndexOf("."));
-                        uploadImage();
-                    }
+                    String path = data.getStringArrayListExtra(PickerPhotoActivity.KEY_SELECTED_PHOTOS).get(0);
+                    selImageFile = new File(path);
+                    CropPicActivity.openForResult(this,
+                            path, 1, 1, 150, 150,
+                            CROP_IMG_REQUEST_CODE);
+//                    GlideUtil.displayImage(imagePath, ivAvatar);
+//                    tvNext.setText("上传中");
+//                    tvNext.setEnabled(false);
+//                    uploadImage();
                     break;
                 case RELATIONSHIP:
                     relationId = data.getIntExtra("relationId", 0);
                     relationName = data.getStringExtra("relationName");
                     etRelationship.setText(relationName);
                     break;
+                case CROP_IMG_REQUEST_CODE:
+                    String outPath = data.getStringExtra("crop_path");
+                    if (TextUtils.isEmpty(outPath)) {
+                        outFile = selImageFile;
+                    } else {
+                        outFile = new File(outPath);
+                    }
+                    Glide.with(this).load(outFile).into(ivAvatar);
+                    tvNext.setText("上传中");
+                    tvNext.setEnabled(false);
+                    uploadImage(outFile.getAbsolutePath());
+                    break;
             }
         }
 
     }
 
-    private void uploadImage() {
-        if (TextUtils.isEmpty(imagePath)) {
+    private void uploadImage(String path) {
+        if (TextUtils.isEmpty(path)) {
             return;
         }
         OSSManager ossManager = OSSManager.getOSSManager(this);
@@ -265,7 +282,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
             public void run() {
                 try {
                     //获取上传文件
-                    UploadFileObj uploadFileObj = new MyUploadFileObj(imagePath);
+                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
                     //上传操作
                     try {
                         //判断服务器是否已存在该文件
@@ -308,11 +325,11 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
 
     @Override
     public void onBackPressed() {
-        if(showFocus){
+        if (showFocus) {
             FastData.setUserFrom(-1);
             LoginActivity.open(this);
             finish();
-        }else{
+        } else {
             super.onBackPressed();
         }
     }

@@ -1,14 +1,12 @@
-package cn.timeface.circle.baby.fragments;
-
+package cn.timeface.circle.baby.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,29 +17,26 @@ import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.wechat.photopicker.PickerPhotoActivity;
 
+import java.io.File;
 import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.activities.LoginActivity;
-import cn.timeface.circle.baby.activities.SetPasswordActivity;
+import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
-import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MineInfoFragment extends BaseFragment implements View.OnClickListener {
-
-
+public class MineInfoActivity extends BaseAppCompatActivity implements View.OnClickListener {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.iv_avatar)
@@ -60,99 +55,101 @@ public class MineInfoFragment extends BaseFragment implements View.OnClickListen
     RelativeLayout rlChangepsw;
     private final int PicutreSelcted = 10;
     private String objectKey;
+    public static final int CROP_IMG_REQUEST_CODE = 1002;
+    File selImageFile;
+    File outFile;
 
-    public MineInfoFragment() {
+    public static void open(Context context) {
+        context.startActivity(new Intent(context, MineInfoActivity.class));
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_mineinfo);
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("我的资料");
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_mineinfo, container, false);
-        ButterKnife.bind(this, view);
-        setActionBar(toolbar);
-        ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
-            actionBar.setTitle("我的资料");
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
         initData();
         rlAvtar.setOnClickListener(this);
         rlNickname.setOnClickListener(this);
         rlChangepsw.setOnClickListener(this);
-        return view;
     }
 
     private void initData() {
-        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar,R.drawable.ic_launcher);
+        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar, R.drawable.ic_launcher);
         tvNickname.setText(FastData.getUserName());
-        if(FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL){
+        if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
             rlChangepsw.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rlChangepsw.setVisibility(View.GONE);
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_avtar:
                 startPhotoPick();
                 break;
             case R.id.rl_nickname:
-                FragmentBridgeActivity.openChangeInfoFragment(this,TypeConstants.EDIT_NICKNAME,tvNickname.getText().toString());
+                FragmentBridgeActivity.openChangeInfoFragment(this, TypeConstants.EDIT_NICKNAME, tvNickname.getText().toString());
                 break;
             case R.id.rl_changepsw:
-                SetPasswordActivity.open(getActivity(), FastData.getAccount());
+                SetPasswordActivity.open(this, FastData.getAccount());
                 break;
 
         }
     }
 
     private void startPhotoPick() {
-        Intent intent = new Intent(getActivity(), PickerPhotoActivity.class);
+        Intent intent = new Intent(this, PickerPhotoActivity.class);
         intent.putExtra("SELECTED_PHOTO_SIZE", 8);
         startActivityForResult(intent, PicutreSelcted);
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             String input = "";
             if (data.hasExtra("data")) {
                 input = data.getStringExtra("data");
             }
             switch (requestCode) {
                 case PicutreSelcted:
-                    for (String path : data.getStringArrayListExtra(PickerPhotoActivity.KEY_SELECTED_PHOTOS)) {
-                        GlideUtil.displayImage(path, ivAvatar);
-                        uploadImage(path);
-                    }
+                    String path = data.getStringArrayListExtra(PickerPhotoActivity.KEY_SELECTED_PHOTOS).get(0);
+                    selImageFile = new File(path);
+                    CropPicActivity.openForResult(this,
+                            path, 1, 1, 150, 150,
+                            CROP_IMG_REQUEST_CODE);
                     break;
                 case TypeConstants.EDIT_NICKNAME:
                     tvNickname.setText(input);
                     changeInfo();
                     break;
+                case CROP_IMG_REQUEST_CODE:
+                    String outPath = data.getStringExtra("crop_path");
+                    if (TextUtils.isEmpty(outPath)) {
+                        outFile = selImageFile;
+                    } else {
+                        outFile = new File(outPath);
+                    }
+                    GlideUtil.displayImage(outFile.getAbsolutePath(), ivAvatar);
+                    uploadImage(outFile.getAbsolutePath());
+                    break;
             }
         }
     }
+
     private void uploadImage(String path) {
         if (TextUtils.isEmpty(path)) {
             return;
         }
-        OSSManager ossManager = OSSManager.getOSSManager(getContext());
+        OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override
             public void run() {
@@ -177,20 +174,27 @@ public class MineInfoFragment extends BaseFragment implements View.OnClickListen
                 }
             }
         }.start();
-
     }
+
     public void changeInfo() {
         apiService.profile(URLEncoder.encode(tvNickname.getText().toString()), objectKey)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(userLoginResponse -> {
-                    if(userLoginResponse.success()){
+                    if (userLoginResponse.success()) {
                         FastData.setUserName(userLoginResponse.getUserInfo().getNickName());
                         FastData.setAvatar(userLoginResponse.getUserInfo().getAvatar());
-                    }else{
+                    } else {
                         ToastUtil.showToast(userLoginResponse.getInfo());
                     }
                 }, throwable -> {
                     Log.e(TAG, "profile:");
                 });
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 }

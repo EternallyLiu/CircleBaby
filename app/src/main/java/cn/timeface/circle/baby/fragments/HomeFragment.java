@@ -47,6 +47,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.BabyInfoActivity;
 import cn.timeface.circle.baby.activities.ChangeBabyActivity;
 import cn.timeface.circle.baby.activities.CloudAlbumActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
@@ -382,10 +383,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 FragmentBridgeActivity.open(getActivity(), "FamilyMemberFragment");
                 break;
             case R.id.iv_avatar:
-                FragmentBridgeActivity.openBabyInfoFragment(getActivity(), FastData.getUserInfo());
+                BabyInfoActivity.open(getActivity());
                 break;
             case R.id.tv_milestone:
-//                FragmentBridgeActivity.open(getActivity(), "MilestoneFragment");
                 MileStoneActivity.open(getActivity());
                 break;
             case R.id.tv_album:

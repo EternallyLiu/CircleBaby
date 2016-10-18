@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -48,8 +47,6 @@ import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.ImageFactory;
-import cn.timeface.circle.baby.utils.ImageUtil;
-import cn.timeface.common.utils.StorageUtil;
 
 /**
  * 选择视频界面
@@ -99,8 +96,9 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                 if (position == -1) {
                     //跳转到录像
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                    mVideoFile = StorageUtil.genSystemVideoFile();
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mVideoFile));
+//                    takePictureIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5);
+//                    mVideoFile = StorageUtil.genSystemVideoFile();
+//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mVideoFile));
                     startActivityForResult(takePictureIntent, 1);
                 } else {
                     //跳转到裁剪视频界面
@@ -119,11 +117,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (data != null) {
-            if (requestCode == 1 && resultCode == RESULT_OK) {
-                ImageUtil.scanMediaVideoFile(this, mVideoFile, this);
-            }
-        }
+        initData();
     }
 
     //获取手机中的视频

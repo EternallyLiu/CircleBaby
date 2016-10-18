@@ -27,7 +27,6 @@ import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.fragments.AddAddressFragment;
 import cn.timeface.circle.baby.fragments.AddBookFragment;
 import cn.timeface.circle.baby.fragments.AddBookListFragment;
-import cn.timeface.circle.baby.fragments.BabyInfoFragment;
 import cn.timeface.circle.baby.fragments.BookSizeListFragment;
 import cn.timeface.circle.baby.fragments.CardPreviewFragment;
 import cn.timeface.circle.baby.fragments.CardPreviewFragment2;
@@ -38,7 +37,6 @@ import cn.timeface.circle.baby.fragments.FamilyMemberFragment;
 import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
 import cn.timeface.circle.baby.fragments.InviteFragment;
 import cn.timeface.circle.baby.fragments.MessageFragment;
-import cn.timeface.circle.baby.fragments.MineInfoFragment;
 import cn.timeface.circle.baby.fragments.SelectAddressFragment;
 import cn.timeface.circle.baby.fragments.SettingFragment;
 import cn.timeface.circle.baby.fragments.SettingMsgFragment;
@@ -53,22 +51,37 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
     public static final String FRAGMENT_NAME = "fragment_name";
     public static final String ACTION_BAR_TITLE = "action_bar_title";
 
-    public static void openBigimageFragment(Context context, ArrayList<String> paths, int index ,boolean download , boolean delete) {
+    public static void openBigimageFragment(Context context, ArrayList<String> paths, int index, boolean download, boolean delete) {
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
         bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
-        bundle.putBoolean("download",download);
-        bundle.putBoolean("delete",delete);
+        bundle.putBoolean("download", download);
+        bundle.putBoolean("delete", delete);
         open(context, "BigImageFragment", "", bundle);
     }
 
-    public static void openBabyInfoFragment(Context context, UserObj user) {
+    public static void openChangeInfoFragment(Fragment context, int requestCode, String info) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("userObj",user);
-        open(context, "BabyInfoFragment", bundle);
+        bundle.putString("info", info);
+        String title = "名字";
+        switch (requestCode) {
+            case TypeConstants.EDIT_NAME:
+                title = "名字";
+                break;
+            case TypeConstants.EDIT_BLOOD:
+                title = "血型";
+                break;
+            case TypeConstants.EDIT_RELATIONNAME:
+                title = "与宝宝的关系";
+                break;
+            case TypeConstants.EDIT_NICKNAME:
+                title = "昵称";
+                break;
+        }
+        openForResult(context, "ChangeInfoFragment", title, bundle, requestCode);
     }
 
-    public static void openChangeInfoFragment(Fragment context, int requestCode, String info) {
+    public static void openChangeInfoFragment(Activity context, int requestCode, String info) {
         Bundle bundle = new Bundle();
         bundle.putString("info", info);
         String title = "名字";
@@ -115,25 +128,24 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         open(context, "CardPreviewFragment2", bundle);
     }
 
-    public static void openAddBookFragment(Context context,BookTypeListObj obj) {
+    public static void openAddBookFragment(Context context, BookTypeListObj obj) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("BookTypeListObj", obj);
         open(context, "AddBookFragment", bundle);
     }
 
-    public static void openBookSizeListFragment(Context context,List<ImageInfoListObj> dataList) {
+    public static void openBookSizeListFragment(Context context, List<ImageInfoListObj> dataList) {
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("dataList", (ArrayList<? extends Parcelable>) dataList);
         open(context, "BookSizeListFragment", bundle);
     }
 
-    public static void openWebViewFragment(Context context, String url,String title) {
+    public static void openWebViewFragment(Context context, String url, String title) {
         Bundle bundle = new Bundle();
-        bundle.putString("url",url);
-        bundle.putString("title",title);
+        bundle.putString("url", url);
+        bundle.putString("title", title);
         open(context, "WebViewFragment", title, bundle);
     }
-
 
 
     public static void open(Context context, String fragmentName) {
@@ -160,9 +172,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         context.startActivity(intent);
     }
 
-    public static void openForResult(Activity context, String fragmentName, int requestId,String content) {
+    public static void openForResult(Activity context, String fragmentName, int requestId, String content) {
         Intent intent = generateIntent(context, fragmentName);
-        intent.putExtra("diary_content",content);
+        intent.putExtra("diary_content", content);
         context.startActivityForResult(intent, requestId);
     }
 
@@ -259,9 +271,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
             case "SystemMessageFragment":
                 return new SystemMessageFragment();
 
-            case "BabyInfoFragment":
-                return new BabyInfoFragment();
-
             case "ChangeInfoFragment":
                 return new ChangeInfoFragment();
 
@@ -282,9 +291,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "CardPreviewFragment2":
                 return new CardPreviewFragment2();
-
-            case "MineInfoFragment":
-                return new MineInfoFragment();
 
             case "SettingFragment":
                 return new SettingFragment();

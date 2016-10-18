@@ -201,7 +201,8 @@ public class StorageUtil {
 
     public static File getSystemVideoDir() {
         File root = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MOVIES);
+                Environment.DIRECTORY_DCIM);
+        root = new File(root, "Camera");
         if (!root.exists()) {
             root.mkdirs();
         }
