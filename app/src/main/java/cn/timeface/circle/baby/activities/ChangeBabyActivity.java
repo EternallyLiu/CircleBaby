@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
 import cn.timeface.circle.baby.api.models.objs.UserObj;
+import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.api.services.OpenUploadServices;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
@@ -50,6 +51,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     @Bind(R.id.tf_stateView)
     TFStateView tfStateView;
     private ChangebabyAdapter adapter;
+    private BabyInfoListResponse babyInfoListResponse;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, ChangeBabyActivity.class);
@@ -90,6 +92,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                     if (tfStateView != null) {
                         tfStateView.finish();
                     }
+                    this.babyInfoListResponse = babyInfoListResponse;
                     setDataList(babyInfoListResponse.getDataList());
                 }, throwable -> {
                     if (tfStateView != null) {
@@ -128,21 +131,25 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                 break;
             case R.id.rl_baby:
                 UserObj info = (UserObj) v.getTag(R.string.tag_ex);
-                FastData.setUserInfo(info);
-                apiService.updateLoginInfo()
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(response -> {
-                                Remember.putBoolean("showtimelinehead", true);
-                                EventBus.getDefault().post(new HomeRefreshEvent());
-                                EventBus.getDefault().post(new ConfirmRelationEvent());
-                                EventBus.getDefault().post(new UnreadMsgEvent());
-                                initOpen();
-                                this.finish();
-                        }, throwable -> {
-                            Log.e(TAG, "updateLoginInfo:");
-                        });
+                changeBaby(info);
                 break;
         }
+    }
+
+    private void changeBaby(UserObj info) {
+        FastData.setUserInfo(info);
+        apiService.updateLoginInfo()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    Remember.putBoolean("showtimelinehead", true);
+                    EventBus.getDefault().post(new HomeRefreshEvent());
+                    EventBus.getDefault().post(new ConfirmRelationEvent());
+                    EventBus.getDefault().post(new UnreadMsgEvent());
+                    initOpen();
+                    this.finish();
+                }, throwable -> {
+                    Log.e(TAG, "updateLoginInfo:");
+                });
     }
 
     private void initOpen() {
@@ -157,6 +164,17 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
 
     @Override
     public void onBackPressed() {
-        ToastUtil.showToast("请选择或创建关注宝宝");
+        int babyId = FastData.getBabyId();
+        if(babyId == 0){
+            int size = babyInfoListResponse.getDataList().size();
+            if(size>0){
+                UserObj userObj = babyInfoListResponse.getDataList().get(0);
+                changeBaby(userObj);
+            }else{
+                ToastUtil.showToast("你还没有宝宝，请先创建或关注一个宝宝");
+            }
+        }else{
+            super.onBackPressed();
+        }
     }
 }

@@ -60,9 +60,9 @@ public class PickerPhotoActivity extends BaseAppCompatActivity {
         assert actionBar != null;
         actionBar.setTitle(R.string.picker_photo);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        if (savedInstanceState != null) {
-            optionalPhotoSize = (int) savedInstanceState.get(KEY_OPTIONAL_PICTURE_SIZE);
-        }
+//        if (savedInstanceState != null) {
+//            optionalPhotoSize = (int) savedInstanceState.get(KEY_OPTIONAL_PICTURE_SIZE);
+//        }
         mPickerPhotoFragment = (PickerPhotoFragment) getSupportFragmentManager().findFragmentById(R.id.pick_photo_fragment);
         mPhotoSelectorAdapter = mPickerPhotoFragment.getPhotoSelectorAdapter();
         btPreview = (Button) mPickerPhotoFragment.getView().findViewById(R.id.bt_preview);

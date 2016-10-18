@@ -423,30 +423,21 @@ public class ImageFactory {
 
     }
 
-    public static String saveImage(Bitmap bitmap, String path) {
-        String fileName = path.substring(path.lastIndexOf("/"));
-        File file = new File("/mnt/sdcard/baby");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        File outDir = new File(file, fileName);//将要保存图片的路径，android推荐这种写法，将目录名和文件名分开，不然容易报错。
-        if (outDir.exists()) {
-            return outDir.toString();
-        }
-        FileOutputStream out = null;
+    public static String saveImage(String path, File file) {
         try {
-            out = new FileOutputStream(outDir);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-        } catch (IOException e) {
+            InputStream is = new URL(path).openStream();
+            byte[] bytes = new byte[1024];
+            int len;
+            FileOutputStream fos = new FileOutputStream(file);
+            while ((len = is.read(bytes)) != -1) {
+                fos.write(bytes, 0, len);
+            }
+            fos.flush();
+            is.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return outDir.toString();
+        return file.toString();
 
     }
 

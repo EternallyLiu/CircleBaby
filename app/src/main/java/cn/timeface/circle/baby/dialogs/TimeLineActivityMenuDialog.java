@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -60,12 +61,12 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         init();
     }
 
-    public void share(TimeLineObj timelineobj){
+    public void share(TimeLineObj timelineobj) {
         this.timelineobj = timelineobj;
-        if(timelineobj.getType()==1){
+        if (timelineobj.getType() == 1) {
             tvDownload.setVisibility(View.VISIBLE);
         }
-        if(timelineobj.getAuthor().getUserId().equals(FastData.getUserId())){
+        if (timelineobj.getAuthor().getUserId().equals(FastData.getUserId())) {
             tvEdit.setVisibility(View.VISIBLE);
             tvDlete.setVisibility(View.VISIBLE);
         }
@@ -96,7 +97,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
     private void initListener() {
         tvEdit.setOnClickListener(v -> {
             dismiss();
-            context.startActivity(new Intent(context,TimeLineEditActivity.class).putExtra("timelimeobj",timelineobj));
+            context.startActivity(new Intent(context, TimeLineEditActivity.class).putExtra("timelimeobj", timelineobj));
         });
         tvDlete.setOnClickListener(v -> {
             dismiss();
@@ -117,7 +118,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
                                 if (response.success()) {
                                     EventBus.getDefault().post(new DeleteTimeLineEvent());
                                     EventBus.getDefault().post(new HomeRefreshEvent());
-                                }else{
+                                } else {
                                     ToastUtil.showToast(response.getInfo());
                                 }
                             }, error -> {
@@ -129,20 +130,19 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         });
         tvDownload.setOnClickListener(v -> {
             dismiss();
-//            ImageFactory.saveVideo(timelineobj.getMediaList().get(0).getVideoUrl());
-//            ToastUtil.showToast("下载视频到baby文件夹下…");
             String path = timelineobj.getMediaList().get(0).getVideoUrl();
             String fileName = path.substring(path.lastIndexOf("/"));
-            File file = new File("/mnt/sdcard/baby");
-            if(!file.exists()){
+            String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            File file = new File(absolutePath + "/baby");
+            if (!file.exists()) {
                 file.mkdirs();
             }
             File file1 = new File(file, fileName);
-            if(file1.exists()){
+            if (file1.exists()) {
                 ToastUtil.showToast("已保存到baby文件夹下");
                 return;
             }
-            if(!Utils.isNetworkConnected(context)){
+            if (!Utils.isNetworkConnected(context)) {
                 ToastUtil.showToast("网络异常");
                 return;
             }
@@ -150,7 +150,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    ImageFactory.saveVideo(path,file1);
+                    ImageFactory.saveVideo(path, file1);
                     return;
                 }
             }).start();
@@ -160,28 +160,28 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
             String imgUrl = "";
             String title = FastData.getBabyName() + "长大了";
             String content = FastData.getBabyName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyName() + "的新变化";
-            String url = context.getString(R.string.share_url_time,timelineobj.getTimeId());
-            switch (timelineobj.getType()){
+            String url = context.getString(R.string.share_url_time, timelineobj.getTimeId());
+            switch (timelineobj.getType()) {
                 case TypeConstants.PHOTO:
-                    url = context.getString(R.string.share_url_time,timelineobj.getTimeId());
+                    url = context.getString(R.string.share_url_time, timelineobj.getTimeId());
                     break;
                 case TypeConstants.VIDEO:
-                    url = context.getString(R.string.share_url_video,timelineobj.getTimeId());
+                    url = context.getString(R.string.share_url_video, timelineobj.getTimeId());
                     break;
                 case TypeConstants.DIARY:
-                    url = context.getString(R.string.share_url_diary,timelineobj.getTimeId());
+                    url = context.getString(R.string.share_url_diary, timelineobj.getTimeId());
                     break;
                 case TypeConstants.CARD:
-                    url = context.getString(R.string.share_url_generalmap,timelineobj.getTimeId());
+                    url = context.getString(R.string.share_url_generalmap, timelineobj.getTimeId());
                     break;
 
             }
-            if(timelineobj.getMediaList().size()>0 && !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getImgUrl())){
+            if (timelineobj.getMediaList().size() > 0 && !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getImgUrl())) {
                 imgUrl = timelineobj.getMediaList().get(0).getImgUrl();
-            }else{
+            } else {
                 imgUrl = FastData.getBabyAvatar();
             }
-            new ShareDialog(context).share(title, content, imgUrl,url);
+            new ShareDialog(context).share(title, content, imgUrl, url);
         });
         tvCancel.setOnClickListener(v -> {
             dismiss();

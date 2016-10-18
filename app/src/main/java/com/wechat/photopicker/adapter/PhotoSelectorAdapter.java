@@ -28,7 +28,7 @@ import cn.timeface.circle.baby.R;
 /**
  * 选择图片adapter
  */
-public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdapter.ViewHolder> implements Selectable,SingeSelectable {
+public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdapter.ViewHolder> implements Selectable, SingeSelectable {
     public static final String TAG = "PhotoSelectorAdapter";
     private List<Photo> mPhotos;
     private List<PhotoDirectory> mDirectoryList;
@@ -42,19 +42,20 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
     public static final int ITEM_TYPE_PHOTO = 0;
     public static final int ITEM_TYPE_CAMERA = 1;
 
-    private OnItemCheckListener onItemCheckListener    = null;
-    private OnPhotoClickListener onPhotoClickListener  = null;
+    private OnItemCheckListener onItemCheckListener = null;
+    private OnPhotoClickListener onPhotoClickListener = null;
     private View.OnClickListener onCameraClickListener = null;
     private ArrayList<String> paths = new ArrayList<>(PickerPhotoActivity.MAX_SELECTOR_SIZE);
-    public PhotoSelectorAdapter(List<PhotoDirectory> directoryList, Context context, int optionalPhotoSize){
+
+    public PhotoSelectorAdapter(List<PhotoDirectory> directoryList, Context context, int optionalPhotoSize) {
         mDirectoryList = directoryList;
         mContext = context;
         mOptionalPhotoSize = optionalPhotoSize;
     }
 
-    public class ViewHolder extends  RecyclerView.ViewHolder{
-        public  ImageView mImageView;
-        public  View mSelector;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView mImageView;
+        public View mSelector;
         private View layout;
 
         public ViewHolder(View itemView) {
@@ -74,6 +75,7 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
     /**
      * 返回itemType，position==0的时候返回1（ITEM_TYPE_CAMERA），其他返回0（ITEM_TYPE_PHOTO）；
      * 不采用三元运算符的原因：方便以后扩展功能时，减少所要写的代码量
+     *
      * @param position
      * @return
      */
@@ -81,7 +83,7 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
     public int getItemViewType(int position) {
         int itemType;
 
-        if ( isShowCamera() == true && position == 0 ){
+        if (isShowCamera() == true && position == 0) {
             itemType = ITEM_TYPE_CAMERA;
         } else {
             itemType = ITEM_TYPE_PHOTO;
@@ -92,7 +94,7 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_photo, parent, false);
+                .inflate(R.layout.item_photo, parent, false);
 
         return new ViewHolder(view);
     }
@@ -101,12 +103,15 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
     public void onBindViewHolder(ViewHolder holder, final int position) {
         mDirectory = mDirectoryList.get(mSelectorDirIndex);
         mPhotos = mDirectory.getPhotos();
-        final  Photo photo;
+        Log.v("PhotoSelectorAdapter", "position ========= " + position);
+        Log.v("PhotoSelectorAdapter", "mSelectorDirIndex ========= " + mSelectorDirIndex);
+        Log.v("PhotoSelectorAdapter", "mPhotos ========= " + mPhotos.size());
+        final Photo photo;
 
         int itemType = getItemViewType(position);
 
-        if (itemType == ITEM_TYPE_PHOTO){
-            if (mSelectorDirIndex == MediaStoreHelper.INDEX_ALL_PHOTOS){
+        if (itemType == ITEM_TYPE_PHOTO) {
+            if (mSelectorDirIndex == MediaStoreHelper.INDEX_ALL_PHOTOS) {
                 photo = mPhotos.get(position - 1);
             } else {
                 photo = mPhotos.get(position);
@@ -125,7 +130,7 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
                     .placeholder(R.mipmap.ic_photo_black_48dp)
                     .error(R.mipmap.ic_broken_image_black_48dp)
                     .into(holder.mImageView);
-            Log.d(TAG,photo.getPath()+"----- position = " + position);
+            Log.d(TAG, photo.getPath() + "----- position = " + position);
 //            holder.mImageView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
@@ -135,58 +140,58 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
             holder.mSelector.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG,"------CLICK SELECTOR");
+                    Log.d(TAG, "------CLICK SELECTOR");
                     int selectedPhotosSize = mSelectorPhotos.size();
                     if (mSelectorPhotos.contains(photo)) {
-                        Log.d(TAG,"remove photo");
+                        Log.d(TAG, "remove photo");
                         mSelectorPhotos.remove(photo);
                         notifyItemChanged(position);
-                    } else if (selectedPhotosSize != mOptionalPhotoSize){
-                        Log.d(TAG,"add photo");
+                    } else if (selectedPhotosSize != mOptionalPhotoSize) {
+                        Log.d(TAG, "add photo");
                         mSelectorPhotos.add(photo);
                         notifyItemChanged(position);
                     } else {
-                        Toast.makeText(mContext,"你最多只能选择"+mOptionalPhotoSize+"张照片",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "你最多只能选择" + mOptionalPhotoSize + "张照片", Toast.LENGTH_SHORT).show();
                     }
 
-                    if (onItemCheckListener !=null){
-                        onItemCheckListener.OnItemCheck(position,photo,isSelector,mSelectorPhotos.size());
+                    if (onItemCheckListener != null) {
+                        onItemCheckListener.OnItemCheck(position, photo, isSelector, mSelectorPhotos.size());
                     }
                 }
             });
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG,"------CLICK SELECTOR");
+                    Log.d(TAG, "------CLICK SELECTOR");
                     int selectedPhotosSize = mSelectorPhotos.size();
                     if (mSelectorPhotos.contains(photo)) {
-                        Log.d(TAG,"remove photo");
+                        Log.d(TAG, "remove photo");
                         mSelectorPhotos.remove(photo);
                         notifyItemChanged(position);
-                    } else if (selectedPhotosSize != mOptionalPhotoSize){
-                        Log.d(TAG,"add photo");
+                    } else if (selectedPhotosSize != mOptionalPhotoSize) {
+                        Log.d(TAG, "add photo");
                         mSelectorPhotos.add(photo);
                         notifyItemChanged(position);
                     } else {
-                        Toast.makeText(mContext,"你最多只能选择"+mOptionalPhotoSize+"张照片",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "你最多只能选择" + mOptionalPhotoSize + "张照片", Toast.LENGTH_SHORT).show();
                     }
 
-                    if (onItemCheckListener !=null){
-                        onItemCheckListener.OnItemCheck(position,photo,isSelector,mSelectorPhotos.size());
+                    if (onItemCheckListener != null) {
+                        onItemCheckListener.OnItemCheck(position, photo, isSelector, mSelectorPhotos.size());
                     }
 
                 }
             });
-        } else if (itemType == ITEM_TYPE_CAMERA){
+        } else if (itemType == ITEM_TYPE_CAMERA) {
             holder.mImageView.setImageResource(R.drawable.camera);
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER);
             holder.mSelector.setVisibility(View.GONE);
-            if (isShowCamera()){
+            if (isShowCamera()) {
                 holder.mImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (onCameraClickListener != null) {
-                            Log.d(TAG,"------CLICK CAMERA------");
+                            Log.d(TAG, "------CLICK CAMERA------");
                             onCameraClickListener.onClick(v);
                         }
                     }
@@ -198,7 +203,15 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
     @Override
     public int getItemCount() {
         int count;
+        if(mDirectoryList.size() == 0){
+            PhotoDirectory photoDirectory = new PhotoDirectory();
+            photoDirectory.setName("全部图片");
+            mDirectoryList.add(photoDirectory);
+        }
         count = mDirectoryList.size() == 0 ? 0 : mDirectoryList.get(mSelectorDirIndex).getPhotos().size();
+        if (isShowCamera()) {
+            count++;
+        }
         return count;
     }
 
@@ -209,9 +222,9 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
 
     @Override
     public void toggleSelection(Photo photo) {
-        if (mSelectorPhotos.contains(photo)){
+        if (mSelectorPhotos.contains(photo)) {
             mSelectorPhotos.remove(photo);
-        }else {
+        } else {
             mSelectorPhotos.add(photo);
         }
     }
@@ -240,8 +253,9 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
         }
         return paths;
     }
-    public boolean isShowCamera(){
-        return (hasCamera && mSelectorDirIndex == MediaStoreHelper.INDEX_ALL_PHOTOS)?true:false;
+
+    public boolean isShowCamera() {
+        return (hasCamera && mSelectorDirIndex == MediaStoreHelper.INDEX_ALL_PHOTOS) ? true : false;
     }
 
     public void setOnItemCheckListener(OnItemCheckListener onItemCheckListener) {
@@ -256,7 +270,7 @@ public class PhotoSelectorAdapter extends RecyclerView.Adapter<PhotoSelectorAdap
         this.onCameraClickListener = onCameraClickListener;
     }
 
-    public ArrayList<String> getCurrentDirPhotoPaths(){
+    public ArrayList<String> getCurrentDirPhotoPaths() {
         return mDirectory.getPhotoPaths();
     }
 }

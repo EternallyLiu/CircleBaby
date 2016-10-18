@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,9 +46,9 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
     private String url;
     private TFProgressDialog tfProgressDialog;
 
-    public static void open(Context context , String url) {
+    public static void open(Context context, String url) {
         Intent intent = new Intent(context, VideoPlayActivity.class);
-        intent.putExtra("url",url);
+        intent.putExtra("url", url);
         context.startActivity(intent);
     }
 
@@ -62,7 +63,7 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("视频播放");
 
-        if(!Utils.isNetworkConnected(this)){
+        if (!Utils.isNetworkConnected(this)) {
             ToastUtil.showToast("网络异常");
         }
 
@@ -119,17 +120,18 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
     private void saveVideo() {
         String path = url;
         String fileName = path.substring(path.lastIndexOf("/"));
-        File file = new File("/mnt/sdcard/baby");
-        if(!file.exists()){
+        String absolutePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(absolutePath + "/baby");
+        if (!file.exists()) {
             file.mkdirs();
         }
         File file1 = new File(file, fileName);
-        if(file1.exists()){
+        if (file1.exists()) {
             ToastUtil.showToast("已保存到baby文件夹下");
             save.setEnabled(true);
             return;
         }
-        if(!Utils.isNetworkConnected(VideoPlayActivity.this)){
+        if (!Utils.isNetworkConnected(VideoPlayActivity.this)) {
             ToastUtil.showToast("网络异常");
             save.setEnabled(true);
             return;
@@ -141,7 +143,7 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ImageFactory.saveVideo(path,file1);
+                ImageFactory.saveVideo(path, file1);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

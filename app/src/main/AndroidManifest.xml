@@ -53,6 +53,7 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".App"
@@ -297,7 +298,8 @@
         <activity
             android:name=".activities.SelectPhotoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:exported="true"/>
         <activity
             android:name=".activities.PhotoViewerActivity"
             android:screenOrientation="portrait" />

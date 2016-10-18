@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -45,7 +46,7 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 /**
  * Created by yellowstart on 15/12/15.
  */
-public class BigImageFragment extends BaseFragment{
+public class BigImageFragment extends BaseFragment {
 
     @Bind(R.id.tv_title)
     TextView tvTitle;
@@ -127,10 +128,10 @@ public class BigImageFragment extends BaseFragment{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_fragment_bigimage, menu);
         save = menu.findItem(R.id.save);
-        if(delete){
+        if (delete) {
             save.setTitle("删除");
-        }else{
-            if(!download){
+        } else {
+            if (!download) {
                 save.setVisible(false);
             }
         }
@@ -179,14 +180,20 @@ public class BigImageFragment extends BaseFragment{
         String path = mPaths.get(currentItem);
 
         String fileName = path.substring(path.lastIndexOf("/"));
-        File file = new File("/mnt/sdcard/baby/" + fileName);
-        if (file.exists()) {
+        String s = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(s + "/baby");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File file1 = new File(file, fileName);
+        if (file1.exists()) {
             Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
             save.setEnabled(true);
             return;
         }
-        if(!Utils.isNetworkConnected(getContext())){
+        if (!Utils.isNetworkConnected(getContext())) {
             ToastUtil.showToast("网络异常");
+            return;
         }
         ToastUtil.showToast("开始保存图片…");
         tfProgressDialog = new TFProgressDialog(getActivity());
@@ -195,22 +202,15 @@ public class BigImageFragment extends BaseFragment{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    InputStream is = new URL(path).openStream();
-                    Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    ImageFactory.saveImage(bitmap, path);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tfProgressDialog.dismiss();
-                            Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
-                            save.setEnabled(true);
-                        }
-                    });
-                } catch (IOException e) {
-                    save.setEnabled(true);
-                    e.printStackTrace();
-                }
+                ImageFactory.saveImage(path,file1);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tfProgressDialog.dismiss();
+                        Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
+                        save.setEnabled(true);
+                    }
+                });
             }
         }).start();
     }

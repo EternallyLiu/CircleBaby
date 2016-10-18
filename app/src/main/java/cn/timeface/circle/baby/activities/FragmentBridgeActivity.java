@@ -30,6 +30,7 @@ import cn.timeface.circle.baby.fragments.AddBookListFragment;
 import cn.timeface.circle.baby.fragments.BabyInfoFragment;
 import cn.timeface.circle.baby.fragments.BookSizeListFragment;
 import cn.timeface.circle.baby.fragments.CardPreviewFragment;
+import cn.timeface.circle.baby.fragments.CardPreviewFragment2;
 import cn.timeface.circle.baby.fragments.ChangeInfoFragment;
 import cn.timeface.circle.baby.fragments.DiaryPreviewFragment;
 import cn.timeface.circle.baby.fragments.DiaryTextFragment;
@@ -111,7 +112,7 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
     public static void openCardPreviewFragment(Context context, ImgObj imgObj) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("imgObj", imgObj);
-        open(context, "CardPreviewFragment", bundle);
+        open(context, "CardPreviewFragment2", bundle);
     }
 
     public static void openAddBookFragment(Context context,BookTypeListObj obj) {
@@ -278,6 +279,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "CardPreviewFragment":
                 return new CardPreviewFragment();
+
+            case "CardPreviewFragment2":
+                return new CardPreviewFragment2();
 
             case "MineInfoFragment":
                 return new MineInfoFragment();

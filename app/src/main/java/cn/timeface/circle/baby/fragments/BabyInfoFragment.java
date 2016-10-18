@@ -202,6 +202,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 if (response.success()) {
+                                    FastData.setBabyId(0);
                                     ChangeBabyActivity.open(getActivity());
                                     getActivity().finish();
                                 }else{
@@ -318,6 +319,7 @@ public class BabyInfoFragment extends BaseFragment implements View.OnClickListen
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {
+                                FastData.setBabyId(0);
                                 ChangeBabyActivity.open(getActivity());
                                 getActivity().finish();
                             }else{
