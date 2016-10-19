@@ -91,6 +91,10 @@ public class SplashActivity extends BaseAppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         //初始化sharesdk
@@ -399,9 +403,9 @@ public class SplashActivity extends BaseAppCompatActivity {
                         FastData.getUserFrom(),
                         "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
                         plat.getDb().getUserName(),
-                        "",
+                        plat.getDb().get("openid"),
                         plat.getDb().getUserId(),
-                        "", SplashActivity.this);
+                        plat.getDb().get("unionid"), SplashActivity.this);
             }
         }
     }

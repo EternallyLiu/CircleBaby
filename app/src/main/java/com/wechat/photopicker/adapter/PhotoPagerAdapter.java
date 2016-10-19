@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
 import java.util.List;
 
+import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.views.widget.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoView;
 
 
 /**
@@ -23,6 +23,7 @@ public class PhotoPagerAdapter extends PagerAdapter {
     private Context mContext;
     private LayoutInflater mLayoutInflater;
     private List<String> mPaths;
+    private PhotoView imgView;
 
     public PhotoPagerAdapter(Context context, List<String> paths) {
         mContext = context;
@@ -32,29 +33,14 @@ public class PhotoPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = mLayoutInflater.inflate(R.layout.item_big_image, container, false);
-        PhotoView imageView = (PhotoView) view.findViewById(R.id.iv_big_image);
-        String path = mPaths.get(position);
+        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_big_image, null);
+        imgView = ButterKnife.findById(view, R.id.iv_big_image);
         Glide.with(mContext)
-                .load(path)
+                .load(mPaths.get(position))
                 .thumbnail(0.1f)
-                .error(R.mipmap.ic_broken_image_black_48dp)
                 .fitCenter()
-                .into(imageView);
-        container.addView(view);
-
-//        imageView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
-//            @Override
-//            public void onPhotoTap(View view, float x, float y) {
-//                finish();
-//            }
-//        });
-//        imageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
-//            @Override
-//            public void onViewTap(View view, float x, float y) {
-//                finish();
-//            }
-//        });
+                .into(imgView);
+        container.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         return view;
     }
 

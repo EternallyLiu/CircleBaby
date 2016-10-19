@@ -137,9 +137,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@null"
-            android:src="@drawable/ic_login_sina"
-            android:visibility="gone"/>
+            android:background="@drawable/selector_thridlogin_bg"
+            android:src="@drawable/ic_login_sina"/>
     </LinearLayout>
 
 </LinearLayout>

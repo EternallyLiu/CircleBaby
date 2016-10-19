@@ -170,7 +170,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home2, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         setupPTR();
@@ -227,7 +227,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     //    @TargetApi(Build.VERSION_CODES.M)
     private void setupPTR() {
         animatorSet.setInterpolator(new DecelerateInterpolator());
-        animatorSet.setDuration(10);
+        animatorSet.setDuration(400);
         contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
