@@ -32,7 +32,6 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     Toolbar toolbar;
     SeekBar seekBar;
-    float pageScale = 1.f;
     public int bookType = 23;
 
     final int EDIT_COVER_REQUEST_CODE = 100;
@@ -83,10 +82,10 @@ public abstract class PODActivity extends BaseAppCompatActivity {
                                @Override
                                public void call(TFOBookModel podResponse) {
                                    Log.i(TAG, "call: 111111 reqPod + " + new Gson().toJson(podResponse));
-                                   BookModelCache.getInstance().setBookModel(podResponse);
+                                   //获取数据之后一定要把podResponse设置到缓存中
                                    setData(podResponse);
 //                                   if (TextUtils.isEmpty(bookId)) {
-                                       createBookInfo(podResponse);
+                                   createBookInfo(podResponse);
 //                                   }
 
                                    switch (requestType) {
@@ -109,7 +108,6 @@ public abstract class PODActivity extends BaseAppCompatActivity {
 
     private void setData(TFOBookModel data) {
         bookPodView.setupPodData(getSupportFragmentManager(), data);
-        pageScale = bookPodView.getPageScale();
         bookPodView.setCurrentIndex(curIndex);
     }
 
@@ -157,12 +155,10 @@ public abstract class PODActivity extends BaseAppCompatActivity {
         List<TFOBookContentModel> currentPage = bookPodView.getCurrentPageData();
         TFOBookContentModel bookContentModel = currentPage.get(0);
         // 重置了页面的缩放比例
-        //bookContentModel.resetPageScale(pageScale);
         if (currentPage.size() == 1) {
             EditActivity.open4result(this, EDIT_CONTENT_REQUEST_CODE, bookContentModel, bookContentModel.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG1);
         } else {
             TFOBookContentModel rightModel = currentPage.get(1);
-            // rightModel.resetPageScale(pageScale);
             EditActivity.open4result(this, bookPodView.currentPageIsCover() ? EDIT_COVER_REQUEST_CODE : EDIT_CONTENT_REQUEST_CODE, bookContentModel, rightModel, bookPodView.currentPageIsCover());
         }
     }
@@ -179,8 +175,6 @@ public abstract class PODActivity extends BaseAppCompatActivity {
             case EDIT_COVER_REQUEST_CODE:
                 leftModel = data.getParcelableExtra("left_model");
                 rightModel = data.getParcelableExtra("right_model");
-//                if (leftModel != null) leftModel.setPageScale(pageScale);
-//                if (rightModel != null) rightModel.setPageScale(pageScale);
                 openBookId = data.getStringExtra("book_id");
                 if (EDIT_CONTENT_REQUEST_CODE == requestCode) {
                     editContent(leftModel, rightModel);

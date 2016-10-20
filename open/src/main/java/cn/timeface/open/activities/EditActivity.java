@@ -202,12 +202,12 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
     }
 
     private void setupViews() {
+        int pageSide = podFrameLayout.getCurrentPageSide();
         podFrameLayout.removeAllViews();
         pageView = new PageView(this, true, leftModel, rightModel, isCover);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) pageView.getLayoutParams();
         lp.gravity = Gravity.CENTER;
         podFrameLayout.addView(pageView, lp);
-        podFrameLayout.setCurrentPage(PageFrameLayout.LEFT);
 
         focusView = new View(this);
         focusView.setBackgroundResource(R.drawable.shape_focus);
@@ -216,6 +216,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
         podFrameLayout.setFocusView(focusView, bookModel.getBookWidth());
         podFrameLayout.addView(focusView, lp);
         focusView.setVisibility(rvSelection.getVisibility() == View.VISIBLE ? View.VISIBLE : View.GONE);
+        podFrameLayout.setCurrentPageSide(pageSide);
     }
 
     public void clickEditType(View view) {
@@ -553,10 +554,10 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
     private void reqNewPageLayout(SimplePageTemplate template) {
         List<TFOBookContentModel> contentList = new ArrayList<>(2);
         if (template.single()) {
-            if (podFrameLayout.getPageOrientation() == PageFrameLayout.LEFT) {
+            if (podFrameLayout.getCurrentPageSide() == PageFrameLayout.LEFT) {
                 leftModel.resetPageScale();
                 contentList.add(leftModel);
-            } else if (podFrameLayout.getPageOrientation() == PageFrameLayout.RIGHT) {
+            } else if (podFrameLayout.getCurrentPageSide() == PageFrameLayout.RIGHT) {
                 rightModel.resetPageScale();
                 contentList.add(rightModel);
             }
@@ -591,7 +592,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
                                        leftModel.setPageScale(pageScale);
                                        rightModel.setPageScale(pageScale);
                                    } else if (listBaseResponse.getData().size() == 1) {
-                                       switch (podFrameLayout.getPageOrientation()) {
+                                       switch (podFrameLayout.getCurrentPageSide()) {
                                            case PageFrameLayout.LEFT:
                                                leftModel = listBaseResponse.getData().get(0);
                                                leftModel.setPageScale(pageScale);
@@ -604,7 +605,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
                                        }
                                    }
                                    setupViews();
-                                   onChangeFocusPage(podFrameLayout.getCurrentPage());
+                                   onChangeFocusPage(podFrameLayout.getCurrentPageSide());
                                }
                            }
                         , new Action1<Throwable>() {
@@ -625,14 +626,13 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
 //        showSelectRL(false);
         TFBookBackgroundModel bookBgModel = (TFBookBackgroundModel) view.getTag(R.string.tag_obj);
         bgImageAdapter.setSelectModel(getFocusModel());
-        int pageOrientation = podFrameLayout.getPageOrientation();
-        pageView.setPageBgPicture(bookBgModel, pageOrientation);
+        pageView.setPageBgPicture(bookBgModel, podFrameLayout.getCurrentPageSide());
     }
 
     public TFOBookContentModel getFocusModel() {
-        if (podFrameLayout.getCurrentPage() == PageFrameLayout.LEFT) {
+        if (podFrameLayout.getCurrentPageSide() == PageFrameLayout.LEFT) {
             return leftModel;
-        } else if (podFrameLayout.getCurrentPage() == PageFrameLayout.RIGHT) {
+        } else if (podFrameLayout.getCurrentPageSide() == PageFrameLayout.RIGHT) {
             return rightModel;
         }
         return null;
@@ -652,7 +652,7 @@ public class EditActivity extends BaseAppCompatActivity implements IEventBus, IC
         }
         TFOBookElementModel elementModel = new TFOBookElementModel(imageModel);
         elementModel.setPageScale(pageScale);
-        switch (podFrameLayout.getPageOrientation()) {
+        switch (podFrameLayout.getCurrentPageSide()) {
             case PageFrameLayout.LEFT:
                 leftModel.getElementList().add(elementModel);
                 break;

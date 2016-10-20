@@ -15,9 +15,9 @@ import cn.timeface.open.managers.interfaces.IChangeFocusPageListener;
  */
 public class PageFrameLayout extends FrameLayout {
 
-    private int currentPage = 1;
     public static final int LEFT = 1;
     public static final int RIGHT = 2;
+    private int currentPageSide = LEFT;
 
     IChangeFocusPageListener changeFocusPageListener;
 
@@ -59,18 +59,18 @@ public class PageFrameLayout extends FrameLayout {
             int measuredWidth = getMeasuredWidth();
 
             if (changeFocusPageListener != null &&
-                    (evX > measuredWidth / 2 ? RIGHT : LEFT) != currentPage) {
-                currentPage = evX > measuredWidth / 2 ? RIGHT : LEFT;
-                changeFocusPageListener.onChangeFocusPage(currentPage);
+                    (evX > measuredWidth / 2 ? RIGHT : LEFT) != currentPageSide) {
+                currentPageSide = evX > measuredWidth / 2 ? RIGHT : LEFT;
+                changeFocusPageListener.onChangeFocusPage(currentPageSide);
             }
 
             if (evX > measuredWidth / 2) {
-                currentPage = RIGHT;
+                currentPageSide = RIGHT;
                 if (focusView != null) {
                     focusView.setTranslationX(marginLeft);
                 }
             } else {
-                currentPage = LEFT;
+                currentPageSide = LEFT;
                 if (focusView != null) {
                     focusView.setTranslationX(0);
                 }
@@ -79,16 +79,17 @@ public class PageFrameLayout extends FrameLayout {
         return super.dispatchTouchEvent(ev);
     }
 
-    public int getPageOrientation() {
-        return currentPage;
+    public void setCurrentPageSide(int currentPageSide) {
+        this.currentPageSide = currentPageSide;
+        if (currentPageSide == RIGHT && focusView != null) {
+            focusView.setTranslationX(marginLeft);
+        } else if (currentPageSide == LEFT && focusView != null) {
+            focusView.setTranslationX(0);
+        }
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
+    public int getCurrentPageSide() {
+        return currentPageSide;
     }
 
     public void setChangeFocusPageListener(IChangeFocusPageListener changeFocusPageListener) {

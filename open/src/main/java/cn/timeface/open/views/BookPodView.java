@@ -18,6 +18,7 @@ import cn.timeface.open.adapters.PODViewPagerAdapter;
 import cn.timeface.open.api.models.objs.TFOBookContentModel;
 import cn.timeface.open.api.models.objs.TFOBookElementModel;
 import cn.timeface.open.api.models.objs.TFOBookModel;
+import cn.timeface.open.utils.BookModelCache;
 import cn.timeface.open.views.viewpager.transforms.StackTransformer;
 
 /**
@@ -80,6 +81,7 @@ public class BookPodView extends FrameLayout {
     }
 
     public void setupPodData(FragmentManager supportFragmentManager, TFOBookModel tfoBookModel) {
+        BookModelCache.getInstance().setBookModel(tfoBookModel);
         this.tfoBookModel = tfoBookModel;
         tfoBookModel.setPageScale(getPageScale());
         for (TFOBookContentModel cm : tfoBookModel.getContentList()) {
