@@ -118,6 +118,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         initData();
+        adapter.notifyDataSetChanged();
     }
 
     //获取手机中的视频

@@ -60,6 +60,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     private MyAdapter adapter;
     private List<View> newViews;
     private boolean showGuide;
+
     public static void open(Context context) {
         Intent intent = new Intent(context, CardPublishActivity.class);
         context.startActivity(intent);
@@ -172,6 +173,8 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                     mViews.add(addCard);
                     vp.setAdapter(new MyAdapter(mViews));
                     vp.setCurrentItem(mViews.size() - 1);
+                } else {
+                    vp.setCurrentItem(mViews.size() - 1);
                 }
                 break;
             case R.id.ll_title:
@@ -179,7 +182,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                     sv.setVisibility(View.GONE);
                     showGuide = false;
                     ivIcon.setImageResource(R.drawable.down);
-                }else{
+                } else {
                     sv.setVisibility(View.VISIBLE);
                     showGuide = true;
                     ivIcon.setImageResource(R.drawable.up);
