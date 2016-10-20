@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.login.LoginApi;
 import cn.timeface.circle.baby.utils.login.OnLoginListener;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.encode.AES;
 import rx.Subscription;
@@ -65,6 +66,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
     @Bind(R.id.tv_forget)
     TextView tvForget;
     private MyHandler handler = new MyHandler(this);
+    private TFProgressDialog tfProgressDialog;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
@@ -80,8 +82,9 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         setSupportActionBar(toolBar);
         ShareSDK.initSDK(this);
         Remember.putBoolean("showtimelinehead", true);
+        tfProgressDialog = new TFProgressDialog(this);
 
-        if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
+        /*if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
             //上次登录为手机号登录
             String account = FastData.getAccount();
             String password = FastData.getPassword();
@@ -105,7 +108,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         plat.getDb().getUserId(),
                         plat.getDb().get("unionid"), LoginActivity.this);
             }
-        }
+        }*/
     }
 
     private ShareSdkUtil.LoginCallback loginCallback = new ShareSdkUtil.LoginCallback() {
@@ -166,11 +169,14 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
 
     private Subscription login(String account, String psw, int type) {
+        tfProgressDialog.setMessage("登录中…");
+        tfProgressDialog.show();
         Subscription s;
         s = apiService.login(Uri.encode(account), Uri.encode(psw), type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginResponse -> {
+                    tfProgressDialog.dismiss();
                     ToastUtil.showToast(loginResponse.getInfo());
                     if (loginResponse.success()) {
                         FastData.setUserInfo(loginResponse.getUserInfo());
@@ -185,6 +191,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                     }
 
                 }, throwable -> {
+                    tfProgressDialog.dismiss();
                     Log.e(TAG, "login:", throwable);
                     throwable.printStackTrace();
                     ToastUtil.showToast("服务器异常，请稍后重试");
@@ -300,10 +307,13 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                            String openid,
                            String platId,
                            String unionid, Context context) {
+        tfProgressDialog.setMessage("登录中…");
+        tfProgressDialog.show();
         apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginResponse -> {
+                    tfProgressDialog.dismiss();
                     if (loginResponse.success()) {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(from);
@@ -314,6 +324,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         }
                     }
                 }, error -> {
+                    tfProgressDialog.dismiss();
                     Log.e(TAG, "vendorLogin:", error);
                     error.printStackTrace();
                 });

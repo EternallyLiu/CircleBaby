@@ -228,7 +228,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private void setupPTR() {
         animatorSet.setInterpolator(new DecelerateInterpolator());
         animatorSet.setDuration(400);
-        contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        /*contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -258,7 +258,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     }
                 }
             }
-        });
+        });*/
 
 
         ptrListener = new IPTRRecyclerListener() {
@@ -275,10 +275,30 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
             @Override
             public void onScrollUp(int firstVisibleItem) {
+                appbar.setExpanded(false);
+                if (enableAnimation && bottomMenuShow) {
+                    bottomMenuShow = false;
+                    ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
+                            "translationY",
+                            0,
+                            ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
+                    animatorSet.playTogether(anim);
+                    animatorSet.start();
+                }
             }
 
             @Override
             public void onScrollDown(int firstVisibleItem) {
+                appbar.setExpanded(true);
+                if (enableAnimation && !bottomMenuShow) {
+                    bottomMenuShow = true;
+                    Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
+                            "translationY",
+                            ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
+                            0);
+                    animatorSet.playTogether(anim3);
+                    animatorSet.start();
+                }
             }
         };
 

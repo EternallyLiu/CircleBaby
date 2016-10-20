@@ -416,7 +416,6 @@ public class SplashActivity extends BaseAppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginResponse -> {
-                    ToastUtil.showToast(loginResponse.getInfo());
                     if (loginResponse.success()) {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
