@@ -1,9 +1,13 @@
 package com.wechat.photopicker.fragment;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.OrientationHelper;
@@ -47,6 +51,7 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
     private PhotoSelectorAdapter mPhotoSelectorAdapter;
     private RecyclerView mRecyclerView;
     private MediaStoreHelper mMediaStoreHelper;
+    private static final int CAMERA_REQUEST_CODE = 51;
 
     private DirectoryListAdapter mDirectoryListAdapter;
     private List<PhotoDirectory> mPhotoDirectories;
@@ -124,8 +129,14 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
             public void onClick(View v) {
                 Log.d(TAG, "------CLICK CAMERA------");
                 try {
-                    Intent intent = mImageCaptureManager.dispatchTakePictureIntent();
-                    startActivityForResult(intent, ImageCaptureManager.REQUEST_TAKE_PHOTO);
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA},
+                                CAMERA_REQUEST_CODE);
+                    }else{
+                        Intent intent = mImageCaptureManager.dispatchTakePictureIntent();
+                        startActivityForResult(intent, ImageCaptureManager.REQUEST_TAKE_PHOTO);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -206,4 +217,5 @@ public class PickerPhotoFragment extends Fragment implements View.OnClickListene
     public PhotoSelectorAdapter getPhotoSelectorAdapter() {
         return mPhotoSelectorAdapter;
     }
+
 }

@@ -58,6 +58,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
     public final static String KEY_SELECTED_PHOTOS = "SELECTED_PHOTOS";
     public final static String KEY_OPTIONAL_PICTURE_SIZE = "OPTIONAL_PICTURE_SIZE";
     private static final int RECORD_CAMERA_REQUEST_CODE = 50;
+    private static final int CAMERA_REQUEST_CODE = 51;
     public static final String TAG = "PickerPhotoActivity";
     //可选图片大小
     private int optionalPhotoSize;
@@ -94,12 +95,18 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 position = position - 1;
                 if (position == -1) {
-                    //跳转到录像
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    if (ContextCompat.checkSelfPermission(PickerVideoActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(PickerVideoActivity.this, new String[]{Manifest.permission.CAMERA},
+                                CAMERA_REQUEST_CODE);
+                    }else{
+                        //跳转到录像
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 //                    takePictureIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5);
 //                    mVideoFile = StorageUtil.genSystemVideoFile();
 //                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mVideoFile));
-                    startActivityForResult(takePictureIntent, 1);
+                        startActivityForResult(takePictureIntent, 1);
+                    }
                 } else {
                     //跳转到裁剪视频界面
                     videoInfo = videos.get(position);
@@ -192,7 +199,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA},
                         RECORD_CAMERA_REQUEST_CODE);
             }
         }

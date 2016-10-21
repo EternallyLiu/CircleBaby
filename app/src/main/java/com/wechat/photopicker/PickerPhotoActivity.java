@@ -36,6 +36,7 @@ public class PickerPhotoActivity extends BaseAppCompatActivity {
     public final static String KEY_SELECTED_PHOTOS = "SELECTED_PHOTOS";
     public final static String KEY_OPTIONAL_PICTURE_SIZE = "OPTIONAL_PICTURE_SIZE";
     private static final int RECORD_CAMERA_REQUEST_CODE = 50;
+    private static final int CAMERA_REQUEST_CODE = 51;
     protected PickerPhotoFragment mPickerPhotoFragment;
     private PhotoSelectorAdapter mPhotoSelectorAdapter;
     public static final int MAX_SELECTOR_SIZE = 9;
@@ -51,6 +52,7 @@ public class PickerPhotoActivity extends BaseAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         checkPermission();
+        checkCameraPermission();
         Intent intent = getIntent();
         optionalPhotoSize = MAX_SELECTOR_SIZE - intent.getIntExtra(MainActivity.KEY_SELECTED_PHOTO_SIZE, 0);
         Log.d(TAG, "optionalPhotoSize---" + optionalPhotoSize);
@@ -107,6 +109,14 @@ public class PickerPhotoActivity extends BaseAppCompatActivity {
         }
     }
 
+    private void checkCameraPermission() {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                        CAMERA_REQUEST_CODE);
+            }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -117,6 +127,10 @@ public class PickerPhotoActivity extends BaseAppCompatActivity {
         if (requestCode == RECORD_CAMERA_REQUEST_CODE) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "您拒绝了选择照片的权限", Toast.LENGTH_SHORT).show();
+            }
+        }else if(requestCode == CAMERA_REQUEST_CODE){
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "您拒绝了使用相机的权限", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -1,8 +1,10 @@
 package cn.timeface.circle.baby.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,6 +66,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     public static final int NO_MAX = Integer.MAX_VALUE;
     public static final int PHOTO_SELECT_CAMERA_REQUEST_CODE = 1002;
     final int PHOTO_SELECT_PHOTO_VIEWER_REQUEST_CODE = 102;
+    private static final int CAMERA_REQUEST_CODE = 51;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.rv_content)
@@ -133,6 +137,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_photo);
+        checkCameraPermission();
         ButterKnife.bind(this);
         forResult = getIntent().getBooleanExtra("forResult", false);
         this.maxCount = getIntent().getIntExtra("max_count", NO_MAX);
@@ -485,10 +490,16 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     }
 
     public void clickCamera(View view) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        mPhotoFile = StorageUtil.genSystemPhotoFile();
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
-        startActivityForResult(takePictureIntent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    CAMERA_REQUEST_CODE);
+        }else{
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            mPhotoFile = StorageUtil.genSystemPhotoFile();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
+            startActivityForResult(takePictureIntent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
+        }
     }
 
 
@@ -499,6 +510,15 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             SavePicInfoService.open(this);
             reqData();
             reqBucket();
+        }
+    }
+
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    CAMERA_REQUEST_CODE);
+            return;
         }
     }
 }
