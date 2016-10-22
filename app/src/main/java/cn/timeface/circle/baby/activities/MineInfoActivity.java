@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MineInfoActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -58,6 +59,7 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
     public static final int CROP_IMG_REQUEST_CODE = 1002;
     File selImageFile;
     File outFile;
+    private TFProgressDialog tfProgressDialog;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, MineInfoActivity.class));
@@ -71,7 +73,7 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("我的资料");
-
+        tfProgressDialog = new TFProgressDialog(this);
         initData();
         rlAvtar.setOnClickListener(this);
         rlNickname.setOnClickListener(this);
@@ -129,6 +131,8 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     break;
                 case TypeConstants.EDIT_NICKNAME:
                     tvNickname.setText(input);
+                    tfProgressDialog.setMessage("加载中…");
+                    tfProgressDialog.show();
                     changeInfo();
                     break;
                 case CROP_IMG_REQUEST_CODE:
@@ -138,6 +142,8 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     } else {
                         outFile = new File(outPath);
                     }
+                    tfProgressDialog.setMessage("加载中…");
+                    tfProgressDialog.show();
                     GlideUtil.displayImage(outFile.getAbsolutePath(), ivAvatar);
                     uploadImage(outFile.getAbsolutePath());
                     break;
@@ -180,6 +186,7 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
         apiService.profile(URLEncoder.encode(tvNickname.getText().toString()), objectKey)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(userLoginResponse -> {
+                    tfProgressDialog.dismiss();
                     if (userLoginResponse.success()) {
                         FastData.setUserName(userLoginResponse.getUserInfo().getNickName());
                         FastData.setAvatar(userLoginResponse.getUserInfo().getAvatar());
@@ -187,6 +194,7 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
                         ToastUtil.showToast(userLoginResponse.getInfo());
                     }
                 }, throwable -> {
+                    tfProgressDialog.dismiss();
                     Log.e(TAG, "profile:");
                 });
     }

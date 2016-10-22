@@ -521,6 +521,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             }
             msb.append("：").append(comment.getContent());
             tvComment.setText(msb);
+            tvComment.setLines(2);
+            tvComment.setEllipsize(TextUtils.TruncateAt.END);
             tvTime.setText(DateUtil.formatDate("MM-dd kk:mm", comment.getCommentDate()));
 
             view.setOnClickListener(new View.OnClickListener() {

@@ -400,6 +400,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             isPublish = false;
             return;
         }
+        tfProgressDialog.setMessage("发布中");
+        tfProgressDialog.show();
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
 
@@ -414,14 +416,17 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
-                    ToastUtil.showToast(response.getInfo());
+                    tfProgressDialog.dismiss();
                     if (response.success()) {
                         EventBus.getDefault().post(new HomeRefreshEvent());
                         EventBus.getDefault().post(new PickerPhototAddEvent());
                         finish();
+                    }else{
+                        ToastUtil.showToast(response.getInfo());
                     }
                     isPublish = false;
                 }, throwable -> {
+                    tfProgressDialog.dismiss();
                     Log.e(TAG, "publish:", throwable);
                     isPublish = false;
                     ToastUtil.showToast("服务器异常，请稍后重试");
@@ -442,6 +447,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             isPublish = false;
             return;
         }
+        tfProgressDialog.setMessage("发布中");
+        tfProgressDialog.show();
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         List<PublishObj> datalist = new ArrayList<>();
@@ -458,7 +465,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
-                    ToastUtil.showToast(response.getInfo());
+                    tfProgressDialog.dismiss();
                     if (response.success()) {
                         if (type == 1) {
                             EventBus.getDefault().post(new StartUploadEvent());
@@ -468,9 +475,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             EventBus.getDefault().post(new HomeRefreshEvent());
                         }
                         finish();
+                    }else {
+                        ToastUtil.showToast(response.getInfo());
                     }
                     isPublish = false;
                 }, throwable -> {
+                    tfProgressDialog.dismiss();
                     Log.e(TAG, "publish:", throwable);
                     isPublish = false;
                     ToastUtil.showToast("服务器异常，请稍后重试");
@@ -493,6 +503,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
             time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         }
+        tfProgressDialog.setMessage("发布中");
+        tfProgressDialog.show();
         //发布
         localUrls = new ArrayList<>();
         List<PublishObj> datalist = new ArrayList<>();
@@ -530,17 +542,18 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
+                    tfProgressDialog.dismiss();
                     if (response.success()) {
                         finish();
                         isPublish = false;
                         count = 0;
                         EventBus.getDefault().post(new StartUploadEvent());
                         uploadImage(localUrls.get(count));
-//                        for (String localUrl : localUrls) {
-//                            uploadImage(localUrl);
-//                        }
+                    }else{
+                        ToastUtil.showToast(response.getInfo());
                     }
                 }, throwable -> {
+                    tfProgressDialog.dismiss();
                     isPublish = false;
                     Log.e(TAG, "publish:", throwable);
                     ToastUtil.showToast("服务器异常，请稍后重试");

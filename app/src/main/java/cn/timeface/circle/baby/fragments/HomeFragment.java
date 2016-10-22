@@ -606,6 +606,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Subscribe
     public void onEvent(StartUploadEvent event) {
         progressDialog();
+        mTvprogress.setText("上传中");
         mTvprogress.setVisibility(View.VISIBLE);
     }
 

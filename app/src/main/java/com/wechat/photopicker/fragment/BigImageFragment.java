@@ -195,7 +195,7 @@ public class BigImageFragment extends BaseFragment {
             ToastUtil.showToast("网络异常");
             return;
         }
-        ToastUtil.showToast("开始保存图片…");
+//        ToastUtil.showToast("开始保存图片…");
         tfProgressDialog = new TFProgressDialog(getActivity());
         tfProgressDialog.setMessage("保存图片中…");
         tfProgressDialog.show();

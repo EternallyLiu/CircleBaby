@@ -96,11 +96,11 @@ public class ConfirmPasswordActivity extends BaseAppCompatActivity {
         if (TextUtils.isEmpty(pwd)) {
             Toast.makeText(this, "请填写密码", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (TextUtils.isEmpty(name)) {
-            Toast.makeText(this, "请填写昵称", Toast.LENGTH_SHORT).show();
-            return false;
         } else if (pwd.length() < 6 || pwd.length() > 16) {
             ToastUtil.showToast("请输入6-16位密码");
+            return false;
+        } else if (TextUtils.isEmpty(name)) {
+            Toast.makeText(this, "请填写昵称", Toast.LENGTH_SHORT).show();
             return false;
         } else if (name.length() > 12) {
             Toast.makeText(this, "请输入12个字符以内的昵称", Toast.LENGTH_SHORT).show();

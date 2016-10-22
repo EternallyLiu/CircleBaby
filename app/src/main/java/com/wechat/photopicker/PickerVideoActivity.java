@@ -47,6 +47,7 @@ import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.ImageFactory;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 /**
  * 选择视频界面
@@ -67,6 +68,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
     private File mVideoFile;
     private VideoInfo videoInfo;
     private VideoAdapter adapter;
+    private TFProgressDialog tfProgressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,6 +82,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
         assert actionBar != null;
         actionBar.setTitle(R.string.picker_video);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        tfProgressDialog = new TFProgressDialog(this);
 //        if (savedInstanceState != null) {
 //            optionalPhotoSize = (int) savedInstanceState.get(KEY_OPTIONAL_PICTURE_SIZE);
 //        }
@@ -278,6 +281,8 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
     @Subscribe
     public void onEvent(ClipVideoSuccessEvent event) {
+        tfProgressDialog.setMessage("剪裁视频中，请稍候…");
+        tfProgressDialog.show();
         String clipVideoPath = event.getClipVideoPath();
         int duration = event.getDuration();
         videoInfo.setPath(clipVideoPath);
