@@ -580,7 +580,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
         if (w < 4096 && h < 4096) {
             //因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
-            imgUrl += "@" + left + "-" + top + "-" + w + "-" + h + "a_" + rotation + "r_" + width + "w_" + "1l." + imgFormat;
+            imgUrl += "@" + left + "-" + top + "-" + w + "-" + h + "a_" + rotation + "r_" + width / 2 + "w_" + "1l." + imgFormat;
         } else {
             //因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
             float scale = width / w;
