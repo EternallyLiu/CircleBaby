@@ -65,7 +65,6 @@ import cn.timeface.circle.baby.events.OrderCancelEvent;
 import cn.timeface.circle.baby.events.PayResultEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.payment.alipay.AliPay;
-import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
 import cn.timeface.circle.baby.utils.DeviceUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -314,6 +313,14 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                         response -> {
                             mStateView.finish();
                             if (response.success()) {
+                                List<PrintParamObj> valueList = response.getDispatchObject().getValueList();
+                                for (int i = 0; i < valueList.size(); i++) {
+                                    if (valueList.get(i).getValue().equals(response.getDispatch())) {
+                                        dispatchPosition = i;
+                                        break;
+                                    }
+                                }
+                                mRvDispatch.scrollToPosition(dispatchPosition);
                                 setupData(response);
                                 List<MyOrderBookItem> items = response.getBookList();
                                 if (items != null && items.size() > 0) {

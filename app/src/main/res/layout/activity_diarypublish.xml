@@ -63,6 +63,7 @@
             android:layout_marginRight="@dimen/size_12"
             android:background="@drawable/shape_dash_bg"
             android:hint="标题"
+            android:singleLine="true"
             android:padding="@dimen/size_12" />
 
 
