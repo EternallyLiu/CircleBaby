@@ -145,10 +145,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
             case R.id.iv_deletecard:
                 Integer position = (Integer) v.getTag(R.string.tag_ex);
                 MediaObj mediaObj = dataList.get(position);
-                Log.v(TAG, "position ========= " + position);
-                Log.v(TAG, "dataList.size1111 ========= " + dataList.size());
                 dataList.remove(mediaObj);
-                Log.v(TAG, "dataList.size2222 ========= " + dataList.size());
                 adapter = null;
                 adapter = new MyAdapter(dataList);
                 adapter.setOnClickListener(this);
