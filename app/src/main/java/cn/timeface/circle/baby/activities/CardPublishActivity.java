@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.TFStateView;
 
 public class CardPublishActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
@@ -54,11 +55,11 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     LinearLayout llTitle;
     @Bind(R.id.sv)
     ScrollView sv;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     private List<ImgObj> selImages = new ArrayList<>();
-    private List<View> mViews;
     private List<MediaObj> dataList;
     private MyAdapter adapter;
-    private List<View> newViews;
     private boolean showGuide;
 
     public static void open(Context context) {
@@ -73,12 +74,11 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        tfStateView.setOnRetryListener(() -> reqData());
 
         tvAdd.setOnClickListener(this);
         llTitle.setOnClickListener(this);
         tvAdd.setEnabled(false);
-//        reqData();
-//        selectImages();
     }
 
     @Override
@@ -88,27 +88,24 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     }
 
     private void reqData() {
+        tfStateView.loading();
         apiService.getComposedCardList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(cardListResponse -> {
+                    if (tfStateView != null)
+                        tfStateView.finish();
                     dataList = cardListResponse.getDataList();
-                    mViews = new ArrayList<>();
-                    if (dataList.size() > 0) {
-                        for (MediaObj media : dataList) {
-                            View card = getCard(media);
-                            mViews.add(card);
-                        }
-                    } else {
-                        if (!isAddCard()) {
-                            View addCard = getAddCard();
-                            mViews.add(addCard);
-                        }
-                    }
-                    vp.setAdapter(new MyAdapter(mViews));
-                    if (mViews.size() > 1) {
-                        vp.setCurrentItem(mViews.size() - 1);
+                    adapter = null;
+                    adapter = new MyAdapter(dataList);
+                    adapter.setOnClickListener(this);
+                    vp.setAdapter(adapter);
+                    if (dataList.size() > 1) {
+                        vp.setCurrentItem(dataList.size() - 1);
                     }
                     tvAdd.setEnabled(true);
+                }, throwable -> {
+                    tfStateView.showException(throwable);
+                    Log.e(TAG, "getComposedCardList:", throwable);
                 });
 
     }
@@ -140,42 +137,37 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
             case R.id.tv_back:
                 finish();
                 break;
+            case R.id.tv_add:
+                if (dataList.size() > 0) {
+                    vp.setCurrentItem(dataList.size());
+                }
+                break;
             case R.id.iv_deletecard:
-                int currentItem = vp.getCurrentItem();
-                newViews = new ArrayList<>();
-                for (int i = 0; i < mViews.size(); i++) {
-                    if (i != currentItem) {
-                        newViews.add(mViews.get(i));
+                Integer position = (Integer) v.getTag(R.string.tag_ex);
+                MediaObj mediaObj = dataList.get(position);
+                Log.v(TAG, "position ========= " + position);
+                Log.v(TAG, "dataList.size1111 ========= " + dataList.size());
+                dataList.remove(mediaObj);
+                Log.v(TAG, "dataList.size2222 ========= " + dataList.size());
+                adapter = null;
+                adapter = new MyAdapter(dataList);
+                adapter.setOnClickListener(this);
+                vp.setAdapter(adapter);
+                if (position < dataList.size()) {
+                    vp.setCurrentItem(position);
+                } else {
+                    if (dataList.size() > 1) {
+                        vp.setCurrentItem(dataList.size() - 1);
+                    } else {
+                        vp.setCurrentItem(0);
                     }
                 }
-//                mViews.remove(currentItem);
-                if (newViews.size() == 0) {
-                    newViews.add(getAddCard());
-                }
-                vp.setAdapter(new MyAdapter(newViews));
-                mViews = newViews;
-                apiService.delCard(dataList.get(currentItem).getId())
+                apiService.delCard(mediaObj.getId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            if (response.success()) {
-                                dataList.remove(currentItem);
-                            }
                         }, throwable -> {
                             Log.e(TAG, "delCard:");
                         });
-                break;
-            case R.id.iv_add:
-                selectImages();
-                break;
-            case R.id.tv_add:
-                if (!isAddCard()) {
-                    View addCard = getAddCard();
-                    mViews.add(addCard);
-                    vp.setAdapter(new MyAdapter(mViews));
-                    vp.setCurrentItem(mViews.size() - 1);
-                } else {
-                    vp.setCurrentItem(mViews.size() - 1);
-                }
                 break;
             case R.id.ll_title:
                 if (showGuide) {
@@ -193,43 +185,21 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
     }
 
-    public View getCard(MediaObj media) {
-        View view = getLayoutInflater().inflate(R.layout.view_card, null);
-        RatioImageView ivCard = (RatioImageView) view.findViewById(R.id.iv_cover);
-        ImageView ivDeletecard = (ImageView) view.findViewById(R.id.iv_deletecard);
-        int measuredWidth = ivDeletecard.getMeasuredWidth();
-        ivDeletecard.setTranslationX(measuredWidth / 2);
-        ivDeletecard.setTranslationY(-measuredWidth / 2);
-        GlideUtil.displayImage(media.getImgUrl(), ivCard);
-        ivDeletecard.setOnClickListener(this);
-        return view;
-    }
+    public class MyAdapter extends PagerAdapter implements View.OnClickListener {
+        List<MediaObj> list;
+        View.OnClickListener listener;
 
-    public View getAddCard() {
-        View view = getLayoutInflater().inflate(R.layout.view_addcard, null);
-        ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
-        ivAdd.setOnClickListener(this);
-        return view;
-    }
-
-    public boolean isAddCard() {
-        boolean b = false;
-        if (mViews != null) {
-            b = mViews.size() > dataList.size();
-        }
-        return b;
-    }
-
-    public class MyAdapter extends PagerAdapter {
-        List<View> list;
-
-        public MyAdapter(List<View> list) {
+        public MyAdapter(List<MediaObj> list) {
             this.list = list;
+        }
+
+        public void setOnClickListener(View.OnClickListener listener) {
+            this.listener = listener;
         }
 
         @Override
         public int getCount() {
-            return list.size();
+            return list.size() + 1;
         }
 
         @Override
@@ -239,18 +209,45 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-//            super.destroyItem(container, position, object);
-            container.removeView(list.get(position));
+            container.removeView((View) object);
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(list.get(position), 0);
-            return list.get(position);
+            View view = null;
+            if (position < list.size()) {
+                view = getLayoutInflater().inflate(R.layout.view_card, null);
+                RatioImageView ivCard = (RatioImageView) view.findViewById(R.id.iv_cover);
+                ImageView ivDeletecard = (ImageView) view.findViewById(R.id.iv_deletecard);
+                int measuredWidth = ivDeletecard.getMeasuredWidth();
+                ivDeletecard.setTranslationX(measuredWidth / 2);
+                ivDeletecard.setTranslationY(-measuredWidth / 2);
+                GlideUtil.displayImage(list.get(position).getImgUrl(), ivCard);
+                ivDeletecard.setTag(R.string.tag_ex, position);
+                ivDeletecard.setOnClickListener(this);
+            } else {
+                view = getLayoutInflater().inflate(R.layout.view_addcard, null);
+                ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
+                ivAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        selectImages();
+                    }
+                });
+            }
+            container.addView(view);
+            return view;
         }
 
-        public void setDataList(List<View> list) {
+        public void setDataList(List<MediaObj> list) {
             this.list = list;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (listener != null) {
+                listener.onClick(v);
+            }
         }
     }
 

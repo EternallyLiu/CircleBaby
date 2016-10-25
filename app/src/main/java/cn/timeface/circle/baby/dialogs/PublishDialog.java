@@ -1,10 +1,6 @@
 package cn.timeface.circle.baby.dialogs;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,26 +11,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
-import cn.timeface.circle.baby.activities.TimeLineEditActivity;
-import cn.timeface.circle.baby.api.ApiFactory;
-import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
-import cn.timeface.circle.baby.api.services.ApiService;
-import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ImageFactory;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
-import cn.timeface.common.utils.DeviceUuidFactory;
-import cn.timeface.common.utils.ShareSdkUtil;
-import cn.timeface.common.utils.TimeFaceUtilInit;
 
 /**
  * Created by lidonglin on 2016/6/25.

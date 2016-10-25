@@ -1,7 +1,7 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.graphics.PointF;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -16,27 +16,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
-import java.io.File;
-import java.net.URL;
 import java.net.URLEncoder;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.TemplateImage;
-import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
@@ -45,10 +41,10 @@ import cn.timeface.circle.baby.utils.Pinyin4jUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.ScaleImageView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import uk.co.senab.photoview.PhotoView;
 
-public class CardPreviewFragment extends BaseFragment{
+public class CardPreviewFragment extends BaseFragment {
 
 
     @Bind(R.id.toolbar)
@@ -59,18 +55,12 @@ public class CardPreviewFragment extends BaseFragment{
     EditText etPinyin;
     @Bind(R.id.rl_diary)
     RelativeLayout rlDiary;
-    private HorizontalListViewAdapter2 adapter;
-    private DiaryPaperResponse diaryPaperResponse;
     private String url;
-    private ScaleImageView touchImageView;
-    PointF center = new PointF();
-    private float oldRotation;
-    private int width;
-    private int hight;
     private String objectKey = "";
     private ImgObj imgObj;
     private String date;
     private TFProgressDialog tfProgressDialog;
+    private PhotoView photoView;
 
     public CardPreviewFragment() {
     }
@@ -90,28 +80,21 @@ public class CardPreviewFragment extends BaseFragment{
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setTitle("识图卡片");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         tfProgressDialog = new TFProgressDialog(getActivity());
-        touchImageView = new ScaleImageView(getActivity(), imgObj);
         url = imgObj.getLocalPath();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("CardPreviewFragment.url === "+url);
                 uploadImage();
             }
         }).run();
-        rlDiary.addView(touchImageView);
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) touchImageView.getLayoutParams();
-        layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
-        layoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-        touchImageView.setLayoutParams(layoutParams);
-
-//        GlideUtil.displayImage(url, scaleImageView);
-
+        photoView = getImageView(getContext());
+        rlDiary.addView(photoView);
+        photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         etTitle.requestFocus();
         etTitle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -163,11 +146,6 @@ public class CardPreviewFragment extends BaseFragment{
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
                         }
                         objectKey = uploadFileObj.getObjectKey();
-//                        File file = new File(url);
-//                        if(file.exists()){
-//                            file.delete();
-//                        }
-//                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
                         e.printStackTrace();
                     }
@@ -189,44 +167,41 @@ public class CardPreviewFragment extends BaseFragment{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.next){
+        if (item.getItemId() == R.id.next) {
             String content = etTitle.getText().toString();
-            if(Utils.isHz(content)){
+            if (Utils.isHz(content)) {
                 ToastUtil.showToast("请输入中文");
                 return true;
             }
-            if (content.length() > 6) {
-                ToastUtil.showToast("标题字数不能大于6个");
+            if (content.length() > 4) {
+                ToastUtil.showToast("标题字数不能大于4个");
                 return true;
-            }else if(TextUtils.isEmpty(content)){
+            } else if (TextUtils.isEmpty(content)) {
                 ToastUtil.showToast("识图卡片标题不能为空");
                 return true;
             }
             tfProgressDialog.setMessage("合成图片中…");
             tfProgressDialog.show();
-            PointF leftTop = touchImageView.getLeftTop();
-//                float degree = touchImageView.getDegree();
-            float cropWidth = touchImageView.getCropWidth();
-            float cropHeight = touchImageView.getCropHeight();
-            int bitmapWidth = touchImageView.getBitmapWidth();
-            int bitmapHeight = touchImageView.getBitmapHeight();
+            float imageScale = (float) imgObj.getWidth() / photoView.getDisplayRect().width();
+            int cropLeft = ((int) (Math.abs(photoView.getDisplayRect().left) * imageScale));
+            int cropTop = ((int) (Math.abs(photoView.getDisplayRect().top) * imageScale));
+            int cropW = ((int) ((photoView.getWidth() - photoView.getPaddingLeft() - photoView.getPaddingRight()) * imageScale));
+            int cropH = ((int) ((photoView.getHeight() - photoView.getPaddingTop() - photoView.getPaddingBottom()) * imageScale));
             long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
 
-            while (TextUtils.isEmpty(objectKey)){
+            while (TextUtils.isEmpty(objectKey)) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            TemplateImage templateImage = new TemplateImage(0, cropHeight, bitmapHeight, bitmapWidth, cropWidth, leftTop.x, leftTop.y, objectKey, createTime);
-            System.out.println("templateImage.toString() ======== "+templateImage.toString());
+            TemplateImage templateImage = new TemplateImage(0, cropH, imgObj.getHeight(), imgObj.getWidth(), cropW, cropLeft, cropTop, objectKey, createTime);
             String imageInfo = new Gson().toJson(templateImage);
 
             String py = URLEncoder.encode(etPinyin.getText().toString());
-            System.out.println("py ======== "+py);
-            if(py.contains("%C4%AD")){
-                py = py.replace("%C4%AD","%C7%90");
+            if (py.contains("%C4%AD")) {
+                py = py.replace("%C4%AD", "%C7%90");
             }
             apiService.cardComposed(URLEncoder.encode(content), imageInfo, py)
                     .compose(SchedulersCompat.applyIoSchedulers())
@@ -235,7 +210,6 @@ public class CardPreviewFragment extends BaseFragment{
                         if (diaryComposeResponse.success()) {
                             MediaObj mediaObj = diaryComposeResponse.getMediaObj();
                             mediaObj.setPhotographTime(createTime);
-                            System.out.println("合成的识图卡片===============" + mediaObj.getImgUrl());
                             getActivity().finish();
                         } else {
                             ToastUtil.showToast(diaryComposeResponse.getInfo());
@@ -246,5 +220,15 @@ public class CardPreviewFragment extends BaseFragment{
                     });
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public PhotoView getImageView(Context context) {
+        PhotoView imageView = new PhotoView(context);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        imageView.setLayoutParams(lp);
+        Glide.with(context)
+                .load(imgObj.getLocalPath())
+                .into(imageView);
+        return imageView;
     }
 }

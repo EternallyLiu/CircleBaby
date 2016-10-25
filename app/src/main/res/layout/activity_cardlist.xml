@@ -11,27 +11,28 @@
         android:background="@color/colorAccent"
         android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:theme="@style/ToolbarColor" >
+        app:theme="@style/ToolbarColor">
+
         <LinearLayout
             android:id="@+id/ll_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:text="识图卡片"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_large"
-                android:layout_gravity="center_horizontal"
-                />
+                android:textSize="@dimen/text_large" />
+
             <ImageView
                 android:id="@+id/iv_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/down"
                 android:layout_gravity="center_horizontal"
-                />
+                android:src="@drawable/down" />
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
@@ -39,14 +40,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_color8"
-        android:layout_below="@id/toolbar">
+        android:layout_below="@id/toolbar"
+        android:background="@color/bg_color8">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/tv_add"/>
+            android:layout_above="@+id/tv_add" />
 
         <TextView
             android:id="@+id/tv_add"
@@ -68,19 +69,29 @@
         android:layout_below="@id/toolbar"
         android:background="@color/bg_color8"
         android:visibility="gone">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/card_guide1"/>
+                android:src="@drawable/card_guide1" />
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/card_gudie2"/>
+                android:src="@drawable/card_gudie2" />
         </LinearLayout>
     </ScrollView>
+
+    <cn.timeface.circle.baby.views.TFStateView
+        android:id="@+id/tf_stateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:background="@color/white" />
 
 </RelativeLayout>

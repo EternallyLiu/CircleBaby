@@ -165,7 +165,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     @Override
     public void onBackPressed() {
         int babyId = FastData.getBabyId();
-        if(babyId == 0){
+        if(babyId == 0 && babyInfoListResponse != null){
             int size = babyInfoListResponse.getDataList().size();
             if(size>0){
                 UserObj userObj = babyInfoListResponse.getDataList().get(0);
