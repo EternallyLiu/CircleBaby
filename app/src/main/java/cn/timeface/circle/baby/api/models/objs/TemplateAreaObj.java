@@ -207,11 +207,12 @@ public class TemplateAreaObj extends BaseObj {
 
     public PhotoView getImageView(Context context, float scale) {
         PhotoView imageView = new PhotoView(context);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(((int) (width * scale)), ((int) (height * scale)));
-        lp.topMargin = ((int) (top * scale));
-        lp.leftMargin = ((int) (left * scale));
+        imageView.setBackgroundColor(Color.WHITE);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(((int) (width * scale)) + 10, ((int) (height * scale)) + 10);
+        lp.topMargin = ((int) (top * scale)) - 5;
+        lp.leftMargin = ((int) (left * scale)) - 5;
         imageView.setLayoutParams(lp);
-        imageView.setPadding(((int) (imgMargin * scale)), ((int) (imgMargin * scale)), ((int) (imgMargin * scale)), ((int) (imgMargin * scale)));
+        imageView.setPadding(((int) (imgMargin * scale)) + 5, ((int) (imgMargin * scale)) + 5, ((int) (imgMargin * scale)) + 5, ((int) (imgMargin * scale)) + 5);
         Glide.with(context)
                 .load(R.mipmap.ic_launcher)
                 .into(imageView);
@@ -228,7 +229,7 @@ public class TemplateAreaObj extends BaseObj {
         } else {
             textView.setTextColor(Color.BLACK);
         }
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, java.lang.Math.min(textFont * scale,height * scale));
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, java.lang.Math.min(textFont * scale, height * scale));
         switch (textAlign) {
             case TEXT_ALIGN_LEFT:
                 textView.setGravity(Gravity.CENTER_VERTICAL);

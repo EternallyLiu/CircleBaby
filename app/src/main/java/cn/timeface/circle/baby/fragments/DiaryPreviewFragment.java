@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
