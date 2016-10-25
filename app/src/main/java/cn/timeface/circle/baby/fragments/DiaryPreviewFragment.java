@@ -187,7 +187,7 @@ public class DiaryPreviewFragment extends BaseFragment {
                 view.setLayoutParams(imageLP);
 
                 Glide.with(getActivity())
-                        .load(imgObj.getUri())
+                        .load(imgObj.getLocalPath())
                         .fitCenter()
                         .into(((ImageView) view));
 

@@ -239,7 +239,8 @@
         <activity
             android:name=".activities.DiaryPublishActivity"
             android:label="宝宝日记"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".activities.CardPublishActivity"
             android:label="识图卡片"
