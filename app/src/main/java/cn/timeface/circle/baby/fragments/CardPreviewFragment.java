@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.bumptech.glide.Glide;
+import com.github.rayboot.widget.ratioview.RatioRelativeLayout;
 import com.google.gson.Gson;
 
 import java.net.URLEncoder;
@@ -54,7 +55,7 @@ public class CardPreviewFragment extends BaseFragment {
     @Bind(R.id.et_pinyin)
     EditText etPinyin;
     @Bind(R.id.rl_diary)
-    RelativeLayout rlDiary;
+    RatioRelativeLayout rlDiary;
     private String url;
     private String objectKey = "";
     private ImgObj imgObj;

@@ -271,4 +271,12 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onDestroy() {
+        adapter = null;
+        selImages = null;
+        dataList = null;
+        super.onDestroy();
+    }
 }
