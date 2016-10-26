@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -362,6 +363,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             Glide.with(context)
                     .using(new TFOContentUrlLoader(context))
                     .load(this)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .fitCenter()
                     .bitmapTransform(new Transformation<Bitmap>() {
                         @Override
@@ -397,6 +399,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
                     .load(this)
                     .crossFade()
                     .error(R.drawable.tfo_empty_img)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .fitCenter()
                     .listener(new RequestListener<TFOBookElementModel, GlideDrawable>() {
                         @Override
