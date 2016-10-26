@@ -545,11 +545,19 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     }
 
     public float getContentWidth() {
-        return element_width - element_content_left - element_content_right;
+        float result = element_width - element_content_left - element_content_right;
+        if (image_content_expand != null) {
+            result = result - image_content_expand.getImagePaddingLeft() - image_content_expand.getImagePaddingRight();
+        }
+        return result;
     }
 
     public float getContentHeight() {
-        return element_height - element_content_top - element_content_bottom;
+        float result = element_height - element_content_top - element_content_bottom;
+        if (image_content_expand != null) {
+            result = result - image_content_expand.getImagePaddingTop() - image_content_expand.getImagePaddingBottom();
+        }
+        return result;
     }
 
     public String getCropImageUrl(int width) {

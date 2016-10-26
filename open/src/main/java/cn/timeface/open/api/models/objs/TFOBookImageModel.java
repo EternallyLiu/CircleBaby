@@ -29,6 +29,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
     String image_url;// 图片绝对路径
     float image_padding_top;
     float image_padding_left;
+    float image_padding_right;
+    float image_padding_bottom;
     int image_flip_horizontal;//图片是否水平翻转
     int image_flip_vertical;//图片是否垂直翻转
     int image_rotation;
@@ -169,6 +171,22 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_padding_left = image_padding_left;
     }
 
+    public float getImagePaddingRight() {
+        return image_padding_right;
+    }
+
+    public void setImagePaddingRight(float image_padding_right) {
+        this.image_padding_right = image_padding_right;
+    }
+
+    public float getImagePaddingBottom() {
+        return image_padding_bottom;
+    }
+
+    public void setImagePaddingBottom(float image_padding_bottom) {
+        this.image_padding_bottom = image_padding_bottom;
+    }
+
     public TFOBookImageModel() {
     }
 
@@ -197,6 +215,16 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_scale *= scale;
     }
 
+    //获取原图的裁剪区域
+    public Rect getOrgCropRect(float w, float h) {
+        float left = Math.abs(image_start_point_x / image_scale * my_view_scale);
+        float top = Math.abs(image_start_point_y / image_scale * my_view_scale);
+        float right = left + w / image_scale;
+        float bottom = top + h / image_scale;
+        return new Rect((int) left, (int) top, (int) right, (int) bottom);
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -218,6 +246,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         dest.writeString(this.image_url);
         dest.writeFloat(this.image_padding_top);
         dest.writeFloat(this.image_padding_left);
+        dest.writeFloat(this.image_padding_right);
+        dest.writeFloat(this.image_padding_bottom);
         dest.writeInt(this.image_flip_horizontal);
         dest.writeInt(this.image_flip_vertical);
         dest.writeInt(this.image_rotation);
@@ -238,6 +268,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_url = in.readString();
         this.image_padding_top = in.readFloat();
         this.image_padding_left = in.readFloat();
+        this.image_padding_right = in.readFloat();
+        this.image_padding_bottom = in.readFloat();
         this.image_flip_horizontal = in.readInt();
         this.image_flip_vertical = in.readInt();
         this.image_rotation = in.readInt();
@@ -254,15 +286,4 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
             return new TFOBookImageModel[size];
         }
     };
-
-    //获取原图的裁剪区域
-    public Rect getOrgCropRect(float w, float h) {
-        Rect rect = new Rect();
-        float left = Math.abs(image_start_point_x / image_scale);
-        float top = Math.abs(image_start_point_y / image_scale);
-        float right = left + w / image_scale;
-        float bottom = top + h / image_scale;
-        rect.set((int) left, (int) top, (int) right, (int) bottom);
-        return rect;
-    }
 }
