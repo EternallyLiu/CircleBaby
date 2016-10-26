@@ -88,10 +88,10 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
         if (isCreator) {
             //创建者
             ivRelation.setVisibility(View.VISIBLE);
-            ivNickname.setVisibility(View.VISIBLE);
+            ivNickname.setVisibility(View.INVISIBLE);
             btnDelete.setVisibility(View.VISIBLE);
             rlRelation.setOnClickListener(this);
-            rlNickname.setOnClickListener(this);
+//            rlNickname.setOnClickListener(this);
             btnDelete.setOnClickListener(this);
 
         } else {
@@ -109,10 +109,10 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
                 String relation = tvRelation.getText().toString();
                 FragmentBridgeActivity.openChangeInfoFragment(this, TypeConstants.EDIT_RELATIONNAME, relation);
                 break;
-            case R.id.rl_nickname:
-                String nickname = tvNickname.getText().toString();
-                FragmentBridgeActivity.openChangeInfoFragment(this, TypeConstants.EDIT_NICKNAME, nickname);
-                break;
+//            case R.id.rl_nickname:
+//                String nickname = tvNickname.getText().toString();
+//                FragmentBridgeActivity.openChangeInfoFragment(this, TypeConstants.EDIT_NICKNAME, nickname);
+//                break;
             case R.id.btn_delete:
                 dialog = new AlertDialog.Builder(getContext()).setView(initDeleteView()).show();
                 dialog.setCanceledOnTouchOutside(false);

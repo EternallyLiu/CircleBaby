@@ -365,4 +365,10 @@ public class DiaryPreviewFragment extends BaseFragment {
         return degree;
     }
 
+    @Override
+    public void onDestroy() {
+        adapter = null;
+        contentList = null;
+        super.onDestroy();
+    }
 }

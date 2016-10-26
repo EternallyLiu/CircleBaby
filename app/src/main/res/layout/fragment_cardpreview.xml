@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:scaledImg="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -39,16 +40,19 @@
             />
 
 
-        <RelativeLayout
+        <com.github.rayboot.widget.ratioview.RatioRelativeLayout
             android:id="@+id/rl_diary"
             android:layout_width="@dimen/size_260"
-            android:layout_height="@dimen/size_260"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:background="@drawable/diarybg"
+            android:background="@color/bg_color8"
             android:layout_gravity="center_horizontal"
+            scaledImg:fixRatio="fixWidth"
+            scaledImg:widthRatio="10"
+            scaledImg:heightRatio="9"
             >
 
-        </RelativeLayout>
+        </com.github.rayboot.widget.ratioview.RatioRelativeLayout>
 
 
     </LinearLayout>
