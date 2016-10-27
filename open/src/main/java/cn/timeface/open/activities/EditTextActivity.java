@@ -69,6 +69,7 @@ public class EditTextActivity extends BaseAppCompatActivity {
 
         tvTip.setText(String.format("此处最多支持%s字", maxTextCount));
         etContent.setText(elementModel.getElementContent());
+        etContent.setSelection(etContent.getText().length());
         setCount();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

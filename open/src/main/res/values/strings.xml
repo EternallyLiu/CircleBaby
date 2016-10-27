@@ -22,4 +22,6 @@
     <string name="title_activity_edit_text">EditTextActivity</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_crop_image">CropImageActivity</string>
+
+    <string name="please_input_test">请输入文字</string>
 </resources>

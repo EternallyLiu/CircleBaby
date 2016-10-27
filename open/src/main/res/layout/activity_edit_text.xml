@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/view_space_normal"
-                    android:text="Small Text"
+                    android:text=""
                     android:textAppearance="?android:attr/textAppearanceSmall" />
             </LinearLayout>
 
@@ -61,8 +61,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/view_space_medium"
-                android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:hint="@string/please_input_test"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#000000"
+                android:textColorHint="#ededed" />
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -72,7 +74,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:tint="#ffffff"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_media_play" />
+        android:src="@drawable/ic_ok" />
 
 </android.support.design.widget.CoordinatorLayout>

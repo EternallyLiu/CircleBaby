@@ -12,10 +12,10 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField "String", "API_URL", '"http://open.timeface.cn/openpod/"'
+            buildConfigField "String", "API_URL", '"http://open.v5time.net/openpod/"'
         }
         release {
-            buildConfigField "String", "API_URL", '"http://open.timeface.cn/openpod/"'
+            buildConfigField "String", "API_URL", '"http://open.v5time.net/openpod/"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
