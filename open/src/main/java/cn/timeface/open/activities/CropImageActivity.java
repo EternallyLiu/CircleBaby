@@ -181,9 +181,11 @@ public class CropImageActivity extends BaseAppCompatActivity {
 
         if (inputUri != null && outputUri != null) {
             try {
+                showProgressDialog("正在处理图片...");
                 mGestureCropImageView.setImageUri(inputUri, outputUri);
             } catch (Exception e) {
                 setResultError(e);
+                dismissProgressDialog();
                 finish();
             }
         } else {
@@ -207,11 +209,13 @@ public class CropImageActivity extends BaseAppCompatActivity {
         @Override
         public void onLoadComplete() {
             mUCropView.animate().alpha(1).setDuration(300).setInterpolator(new AccelerateInterpolator());
+            dismissProgressDialog();
         }
 
         @Override
         public void onLoadFailure(@NonNull Exception e) {
             setResultError(e);
+            dismissProgressDialog();
             finish();
         }
 
@@ -339,48 +343,38 @@ public class CropImageActivity extends BaseAppCompatActivity {
         if (rotation < 0) {
             rotation = rotation % 360 + 360;
         }
-//        float finalImageW = newImageW;
-//        float finalImageH = newImageH;
-//        if (exifInfo.getExifDegrees() == 90 || exifInfo.getExifDegrees() == 270) {
-//            //图片本身有旋转,则调换宽度和高度
-//            finalImageW = newImageH;
-//            finalImageH = newImageW;
-//        }
 
-//        if (totalRotation == 90 || totalRotation == 270) {
-//            int temp = width;
-//            width = height;
-//            height = temp;
-//        }
+        /**
+         *
+         {
+         //旋转后,映射到原图位置
+         float tempX;
+         switch (rotation) {
+         case 90:
+         left += width;
+         left = newImageH - left;
 
-        {
-            //旋转后,映射到原图位置
-            float tempX;
-            switch (rotation) {
-                case 90:
-                    left += width;
-                    left = newImageH - left;
+         tempX = left;
+         left = top;
+         top = tempX;
+         break;
+         case 180:
+         left += width;
+         top += height;
+         left = newImageW - left;
+         top = newImageH - top;
+         break;
+         case 270:
+         top += height;
+         top = newImageW - top;
 
-                    tempX = left;
-                    left = top;
-                    top = tempX;
-                    break;
-                case 180:
-                    left += width;
-                    top += height;
-                    left = newImageW - left;
-                    top = newImageH - top;
-                    break;
-                case 270:
-                    top += height;
-                    top = newImageW - top;
-
-                    tempX = left;
-                    left = top;
-                    top = tempX;
-                    break;
-            }
-        }
+         tempX = left;
+         left = top;
+         top = tempX;
+         break;
+         }
+         }
+         */
 
         // TODO: 8/10/16 旋转角度是否对该参数有影像??
         float scale = cropRect.width() / elementModel.getContentWidth();
@@ -391,7 +385,7 @@ public class CropImageActivity extends BaseAppCompatActivity {
         elementModel.getImageContentExpand().setImageWidth(newImageW);
         elementModel.getImageContentExpand().setImageHeight(newImageH);
         elementModel.getImageContentExpand().setImageStartPointX(left <= 0 ? left * finalImageScale / elementModel.getMyViewScale() : left * -1 * finalImageScale / elementModel.getMyViewScale());
-        elementModel.getImageContentExpand().setImageStartPointY(top <= 0 ? top * finalImageScale  / elementModel.getMyViewScale(): top * -1 * finalImageScale / elementModel.getMyViewScale());
+        elementModel.getImageContentExpand().setImageStartPointY(top <= 0 ? top * finalImageScale / elementModel.getMyViewScale() : top * -1 * finalImageScale / elementModel.getMyViewScale());
         elementModel.getImageContentExpand().setImageRotation(rotation);
     }
 

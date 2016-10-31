@@ -69,7 +69,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
     float element_width;// 元素尺寸－宽度
     float element_height;// 元素尺寸－高度
     int element_depth;// 元素层级关系0最底层
-    int element_rotation;// 元素以自身中心点旋转角度，顺时针正值，逆时针负值
+    float element_rotation;// 元素以自身中心点旋转角度，顺时针正值，逆时针负值
     int element_type;//"元素类型 1 图片 2 文字 3 音频 4 视频 5 挂件 6 webview 7 页眉页脚 8 logo",
     String element_content;// 元素内容 文本或者图片URL
     int element_deleted;//":"元素已删除 0正常 1已删除",
@@ -173,11 +173,11 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         this.element_depth = element_depth;
     }
 
-    public int getElementRotation() {
+    public float getElementRotation() {
         return element_rotation;
     }
 
-    public void setElementRotation(int element_rotation) {
+    public void setElementRotation(float element_rotation) {
         this.element_rotation = element_rotation;
     }
 
@@ -486,8 +486,8 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
     @Override
     public void moveParams(float movedX, float movedY, int eleW, int eleH, float scale, float rotation) {
-        float contentW = element_width - element_content_left - element_content_right;
-        float contentH = element_height - element_content_top - element_content_bottom;
+        float contentW = getContentWidth();
+        float contentH = getContentHeight();
 
         setElementLeft((int) (element_left + movedX + (element_width - eleW) / 2));
         setElementTop((int) (element_top + movedY + (element_height - eleH) / 2));
@@ -572,7 +572,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
         Rect rect = this.image_content_expand.getOrgCropRect(getContentWidth(), getContentHeight());
 
-        int rotation = this.image_content_expand.getImageRotation();
+        int rotation = this.image_content_expand.getRotation();
         rotation = (rotation + 360) % 360;
         int w = rect.width();
         int h = rect.height();
@@ -591,7 +591,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
 
         if (w < 4096 && h < 4096) {
             //因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
-            imgUrl += "@" + left + "-" + top + "-" + w + "-" + h + "a_" + rotation + "r_" + width / 2 + "w_" + "1l." + imgFormat;
+            imgUrl += "@" + rotation + "r_" + left + "-" + top + "-" + w + "-" + h + "a_" + width / 4 + "w_" + "1l." + imgFormat;
         } else {
             //因为原图可能存在长宽大于4096的情况,长款大于4096阿里云处理不了
             float scale = width / w;
@@ -599,7 +599,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             top *= scale;
             w *= scale;
             h *= scale;
-            imgUrl += "@" + width + "w_" + left + "-" + top + "-" + w + "-" + h + "a" + "_" + rotation + "r" + "_1l" + "." + imgFormat;
+            imgUrl += "@" + width + "w_" + rotation + "r" + left + "-" + top + "-" + w + "-" + h + "a_" + "_1l" + "." + imgFormat;
         }
 
 
@@ -636,7 +636,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         dest.writeFloat(this.element_width);
         dest.writeFloat(this.element_height);
         dest.writeInt(this.element_depth);
-        dest.writeInt(this.element_rotation);
+        dest.writeFloat(this.element_rotation);
         dest.writeInt(this.element_type);
         dest.writeString(this.element_content);
         dest.writeInt(this.element_deleted);
@@ -664,7 +664,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
         this.element_width = in.readFloat();
         this.element_height = in.readFloat();
         this.element_depth = in.readInt();
-        this.element_rotation = in.readInt();
+        this.element_rotation = in.readFloat();
         this.element_type = in.readInt();
         this.element_content = in.readString();
         this.element_deleted = in.readInt();

@@ -3,6 +3,7 @@ package cn.timeface.open.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.util.Log;
 
 import java.io.File;
@@ -123,5 +124,18 @@ public class Utils {
 
         }
 
+    }
+
+    static public int getOrientationRotation(int orientation) {
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return 180;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return 90;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return 270;
+            default:
+                return 0;
+        }
     }
 }

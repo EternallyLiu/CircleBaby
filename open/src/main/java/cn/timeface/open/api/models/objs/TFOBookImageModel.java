@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import cn.timeface.open.managers.interfaces.IMoveParams;
 import cn.timeface.open.managers.interfaces.IPageScale;
+import cn.timeface.open.utils.Utils;
 
 /**
  * @author liuxz:
@@ -34,6 +35,7 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
     int image_flip_horizontal;//图片是否水平翻转
     int image_flip_vertical;//图片是否垂直翻转
     int image_rotation;
+    int image_orientation;//1368
 
     public float getMyViewScale() {
         return my_view_scale;
@@ -59,8 +61,12 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_flip_vertical = image_flip_vertical;
     }
 
-    public int getImageRotation() {
+    private int getImageRotation() {
         return image_rotation;
+    }
+
+    public int getRotation() {
+        return image_rotation + Utils.getOrientationRotation(image_orientation);
     }
 
     public void setImageRotation(int image_rotation) {
@@ -187,6 +193,14 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_padding_bottom = image_padding_bottom;
     }
 
+    public int getImageOrientation() {
+        return image_orientation;
+    }
+
+    public void setImageOrientation(int image_orientation) {
+        this.image_orientation = image_orientation;
+    }
+
     public TFOBookImageModel() {
     }
 
@@ -251,6 +265,7 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         dest.writeInt(this.image_flip_horizontal);
         dest.writeInt(this.image_flip_vertical);
         dest.writeInt(this.image_rotation);
+        dest.writeInt(this.image_orientation);
     }
 
     protected TFOBookImageModel(Parcel in) {
@@ -273,6 +288,7 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_flip_horizontal = in.readInt();
         this.image_flip_vertical = in.readInt();
         this.image_rotation = in.readInt();
+        this.image_orientation = in.readInt();
     }
 
     public static final Creator<TFOBookImageModel> CREATOR = new Creator<TFOBookImageModel>() {
