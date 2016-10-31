@@ -19,13 +19,12 @@ public class TFOResourceObj implements Parcelable {
     long image_date;//":130000,
     String image_primary_color;//":"图片主色值",
 
-    public TFOResourceObj(String image_id,String image_url, int image_width, int image_height,int image_orientation, String image_remark) {
+    public TFOResourceObj(String image_id,String image_url, int image_width, int image_height, String image_remark) {
         this.image_id = image_id;
         this.image_url = image_url;
         this.image_width = image_width;
         this.image_height = image_height;
         this.image_remark = image_remark;
-        this.image_orientation = image_orientation;
     }
 
     public String getImageId() {
