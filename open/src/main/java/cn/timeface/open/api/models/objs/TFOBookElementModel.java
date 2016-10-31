@@ -425,8 +425,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             ImageView imageView = new ImageView(context);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
             imageView.setLayoutParams(lp);
-//            imageView.setPadding((int) (this.element_content_left + this.image_content_expand.getImagePaddingLeft()), (int) (this.element_content_top + this.image_content_expand.getImagePaddingTop()), (int) this.element_content_right, (int) this.element_content_bottom);
-            imageView.setPadding((int) (this.element_content_left), (int) (this.element_content_top), (int) this.element_content_right, (int) this.element_content_bottom);
+            imageView.setPadding((int) (this.element_content_left + this.image_content_expand.getImagePaddingLeft()), (int) (this.element_content_top + this.image_content_expand.getImagePaddingTop()), (int) (this.element_content_right + this.image_content_expand.getImagePaddingRight()), (int) (this.element_content_bottom + this.image_content_expand.getImagePaddingBottom()));
             Glide.with(context)
                     .using(new TFOContentUrlLoader(context))
                     .load(this)
@@ -599,7 +598,7 @@ public class TFOBookElementModel implements Parcelable, IPageScale, IMoveParams 
             top *= scale;
             w *= scale;
             h *= scale;
-            imgUrl += "@" + width + "w_" + rotation + "r" + left + "-" + top + "-" + w + "-" + h + "a_" + "_1l" + "." + imgFormat;
+            imgUrl += "@" + width + "w_" + rotation + "r_" + left + "-" + top + "-" + w + "-" + h + "a_" + "_1l" + "." + imgFormat;
         }
 
 

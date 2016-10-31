@@ -24,6 +24,9 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
     String text_color;// 字体颜色
     float text_line_height;// 行高
     int max_text_count;
+    String text_content = "";// 换行后文本内容
+    float real_font_size;//实际字号
+
 
     public float getMyViewScale() {
         return my_view_scale;
@@ -87,6 +90,22 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
 
     public void setTextLineHeight(float text_line_height) {
         this.text_line_height = text_line_height;
+    }
+
+    public String getTextContent() {
+        return text_content;
+    }
+
+    public void setTextContent(String text_content) {
+        this.text_content = text_content;
+    }
+
+    public float getRealFontSize() {
+        return real_font_size;
+    }
+
+    public void setRealFontSize(float real_font_size) {
+        this.real_font_size = real_font_size;
     }
 
     public void setTextExpandInfo(TextView textView) {
@@ -154,6 +173,8 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
         dest.writeString(this.text_color);
         dest.writeFloat(this.text_line_height);
         dest.writeInt(this.max_text_count);
+        dest.writeString(this.text_content);
+        dest.writeFloat(this.real_font_size);
     }
 
     protected TFOBookTextContentExpandModel(Parcel in) {
@@ -167,6 +188,8 @@ public class TFOBookTextContentExpandModel implements Parcelable, IPageScale, IM
         this.text_color = in.readString();
         this.text_line_height = in.readFloat();
         this.max_text_count = in.readInt();
+        this.text_content = in.readString();
+        this.real_font_size = in.readFloat();
     }
 
     public static final Creator<TFOBookTextContentExpandModel> CREATOR = new Creator<TFOBookTextContentExpandModel>() {

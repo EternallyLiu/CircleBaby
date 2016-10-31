@@ -15,15 +15,17 @@ public class TFOResourceObj implements Parcelable {
     float image_scale;//":"图片显示在当前位置的缩放比",
     String image_remark;//":"图片图注，不超过14个汉字，超出部分会被截取",
     String image_content;//":"图片配文，不超过300个汉字，超出部分会被截取",
+    int image_orientation;//图片源数据旋转方向
     long image_date;//":130000,
     String image_primary_color;//":"图片主色值",
 
-    public TFOResourceObj(String image_id,String image_url, int image_width, int image_height, String image_remark) {
+    public TFOResourceObj(String image_id,String image_url, int image_width, int image_height,int image_orientation, String image_remark) {
         this.image_id = image_id;
         this.image_url = image_url;
         this.image_width = image_width;
         this.image_height = image_height;
         this.image_remark = image_remark;
+        this.image_orientation = image_orientation;
     }
 
     public String getImageId() {
@@ -98,6 +100,14 @@ public class TFOResourceObj implements Parcelable {
         this.image_primary_color = image_primary_color;
     }
 
+    public int getImageOrientation() {
+        return image_orientation;
+    }
+
+    public void setImageOrientation(int image_orientation) {
+        this.image_orientation = image_orientation;
+    }
+
     public TFOResourceObj() {
     }
 
@@ -115,6 +125,7 @@ public class TFOResourceObj implements Parcelable {
         dest.writeFloat(this.image_scale);
         dest.writeString(this.image_remark);
         dest.writeString(this.image_content);
+        dest.writeInt(this.image_orientation);
         dest.writeLong(this.image_date);
         dest.writeString(this.image_primary_color);
     }
@@ -127,6 +138,7 @@ public class TFOResourceObj implements Parcelable {
         this.image_scale = in.readFloat();
         this.image_remark = in.readString();
         this.image_content = in.readString();
+        this.image_orientation = in.readInt();
         this.image_date = in.readLong();
         this.image_primary_color = in.readString();
     }
