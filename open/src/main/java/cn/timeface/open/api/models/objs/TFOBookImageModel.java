@@ -61,7 +61,7 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_flip_vertical = image_flip_vertical;
     }
 
-    private int getImageRotation() {
+    public int getImageRotation() {
         return image_rotation;
     }
 
@@ -212,6 +212,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
             this.image_padding_left *= my_view_scale;
             this.image_padding_top *= my_view_scale;
             this.image_scale *= my_view_scale;
+            this.image_start_point_x *= my_view_scale;
+            this.image_start_point_y *= my_view_scale;
         }
     }
 
@@ -220,6 +222,8 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
         this.image_padding_left /= my_view_scale;
         this.image_padding_top /= my_view_scale;
         this.image_scale /= my_view_scale;
+        this.image_start_point_x /= my_view_scale;
+        this.image_start_point_y /= my_view_scale;
 
         my_view_scale = 1.f;
     }
@@ -231,10 +235,19 @@ public class TFOBookImageModel implements Parcelable, IPageScale, IMoveParams {
 
     //获取原图的裁剪区域
     public Rect getOrgCropRect(float w, float h) {
-        float left = Math.abs(image_start_point_x / image_scale * my_view_scale);
-        float top = Math.abs(image_start_point_y / image_scale * my_view_scale);
+        float left = Math.abs(image_start_point_x / image_scale );
+        float top = Math.abs(image_start_point_y / image_scale );
         float right = left + w / image_scale;
         float bottom = top + h / image_scale;
+        return new Rect((int) left, (int) top, (int) right, (int) bottom);
+    }
+
+    //获取缩略后的裁剪区域
+    public Rect getCropRect(float w, float h) {
+        float left = Math.abs(image_start_point_x / my_view_scale);
+        float top = Math.abs(image_start_point_y / my_view_scale);
+        float right = left + w / image_scale * my_view_scale;
+        float bottom = top + h / image_scale * my_view_scale;
         return new Rect((int) left, (int) top, (int) right, (int) bottom);
     }
 

@@ -328,18 +328,18 @@ public class CropImageActivity extends BaseAppCompatActivity {
 
     public void makeModify(String newImageUrl) {
         ImageState imageState = mGestureCropImageView.getImageState(newImageW, newImageH);
-        ExifInfo exifInfo = mGestureCropImageView.getExifInfo();
+//        ExifInfo exifInfo = mGestureCropImageView.getExifInfo();
 //        exifInfo.getExifDegrees();
         Log.i(TAG, "makeModify: imageState = " + imageState.toString());
         RectF cropRect = imageState.getCropRect();
         RectF imageRect = imageState.getCurrentImageRect();
 
-        float top = Math.max(Math.round((cropRect.top - imageRect.top) / imageState.getCurrentScale()), 0);
-        float left = Math.max(Math.round((cropRect.left - imageRect.left) / imageState.getCurrentScale()), 0);
-        int width = Math.round(cropRect.width() / imageState.getCurrentScale());
-        int height = Math.round(cropRect.height() / imageState.getCurrentScale());
+        float top = Math.max(Math.round((cropRect.top - imageRect.top)), 0);
+        float left = Math.max(Math.round((cropRect.left - imageRect.left)), 0);
+        int width = Math.round(cropRect.width());
+        int height = Math.round(cropRect.height());
 
-        int rotation = (Math.round(imageState.getCurrentAngle()) + exifInfo.getExifDegrees()) % 360;
+        int rotation = Math.round(imageState.getCurrentAngle()) % 360;
         if (rotation < 0) {
             rotation = rotation % 360 + 360;
         }
@@ -381,11 +381,11 @@ public class CropImageActivity extends BaseAppCompatActivity {
         float finalImageScale = imageState.getCurrentScale() / scale;
         elementModel.setElementContent(newImageUrl);
         elementModel.getImageContentExpand().setImageUrl(newImageUrl);
-        elementModel.getImageContentExpand().setImageScale(finalImageScale);
+        elementModel.getImageContentExpand().setImageScale(finalImageScale * elementModel.getMyViewScale());
         elementModel.getImageContentExpand().setImageWidth(newImageW);
         elementModel.getImageContentExpand().setImageHeight(newImageH);
-        elementModel.getImageContentExpand().setImageStartPointX(left <= 0 ? left * finalImageScale / elementModel.getMyViewScale() : left * -1 * finalImageScale / elementModel.getMyViewScale());
-        elementModel.getImageContentExpand().setImageStartPointY(top <= 0 ? top * finalImageScale / elementModel.getMyViewScale() : top * -1 * finalImageScale / elementModel.getMyViewScale());
+        elementModel.getImageContentExpand().setImageStartPointX(left <= 0 ? left / finalImageScale  : left * -1 / finalImageScale );
+        elementModel.getImageContentExpand().setImageStartPointY(top <= 0 ? top / finalImageScale  : top * -1 / finalImageScale );
         elementModel.getImageContentExpand().setImageRotation(rotation);
     }
 
