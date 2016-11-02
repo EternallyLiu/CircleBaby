@@ -81,6 +81,7 @@
         <!-- ************************ALI END*************** -->
         <service android:name=".managers.services.SavePicInfoService" />
         <service android:name=".managers.services.UploadAllPicService" />
+        <service android:name=".managers.services.UploadService" />
 
         <activity
             android:name="com.mob.tools.MobUIShell"
