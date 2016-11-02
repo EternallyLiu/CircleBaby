@@ -132,7 +132,7 @@ public class BigImageFragment extends BaseFragment {
             save.setTitle("删除");
         } else {
             if (!download) {
-                save.setVisible(false);
+                save.setTitle("");
             }
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -141,17 +141,17 @@ public class BigImageFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save) {
-            if (download) {
-                //保存图片到本地
-                save.setEnabled(false);
-                saveImage();
-            } else {
+            if (delete) {
                 //删除
                 save.setEnabled(false);
                 int currentItem = mViewPager.getCurrentItem();
                 String path = mPaths.get(currentItem);
                 EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem, path));
                 getActivity().finish();
+            } else if(download){
+                //保存图片到本地
+                save.setEnabled(false);
+                saveImage();
             }
 
         }

@@ -65,6 +65,7 @@ import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.managers.services.UploadService;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
@@ -548,7 +549,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         isPublish = false;
                         count = 0;
                         EventBus.getDefault().post(new StartUploadEvent());
-                        uploadImage(localUrls.get(count));
+                        UploadService.start(PublishActivity.this,localUrls);
                     }else{
                         ToastUtil.showToast(response.getInfo());
                     }
@@ -609,110 +610,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         super.onDestroy();
         ButterKnife.unbind(this);
     }
-
-
-    private void uploadImage(String path) {
-        if (TextUtils.isEmpty(path)) {
-            return;
-        }
-        Log.v(TAG, "count ============ " + count);
-        Log.v(TAG, "img.getUrl ============ " + path);
-        OSSManager ossManager = OSSManager.getOSSManager(this);
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    //获取上传文件
-                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
-                    //上传操作
-                    try {
-                        //判断服务器是否已存在该文件
-                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
-                            //如果不存在则上传
-                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath(), new OSSProgressCallback<PutObjectRequest>() {
-                                @Override
-                                public void onProgress(PutObjectRequest putObjectRequest, long l, long l1) {
-                                    int sinpro = (int) (l * 100 / l1);
-                                    int i = count * 100 / localUrls.size();
-                                    double progress = i + sinpro / localUrls.size();
-                                    if (progress > oldProgress) {
-                                        oldProgress = progress;
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                EventBus.getDefault().post(new UploadEvent((int) progress));
-                                            }
-                                        });
-                                    }
-                                }
-                            }, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
-                                @Override
-                                public void onSuccess(PutObjectRequest putObjectRequest, PutObjectResult putObjectResult) {
-                                    count++;
-                                    int i = count * 100 / localUrls.size();
-                                    if (i > oldProgress) {
-                                        oldProgress = i;
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                EventBus.getDefault().post(new UploadEvent(i));
-                                            }
-                                        });
-                                    }
-                                    if (count < localUrls.size()) {
-                                        uploadImage(localUrls.get(count));
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(PutObjectRequest putObjectRequest, ClientException e, ServiceException e1) {
-                                    if (count < localUrls.size()) {
-                                        uploadImage(localUrls.get(count));
-                                    }
-                                }
-                            });
-                        } else {
-                            count++;
-                            int i = count * 100 / localUrls.size();
-                            if (i > oldProgress) {
-                                oldProgress = i;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        EventBus.getDefault().post(new UploadEvent(i));
-                                    }
-                                });
-                            }
-                            if (count < localUrls.size()) {
-                                uploadImage(localUrls.get(count));
-                            }
-                        }
-                        String objectKey = uploadFileObj.getObjectKey();
-                        Log.v(TAG, "uploadImage  objectKey============ " + objectKey);
-//                        count++;
-                        /*int progress = count * 100 / localUrls.size();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                EventBus.getDefault().post(new UploadEvent(progress));
-                            }
-                        });*/
-                        /*if (count % 2 == 0 || count == localUrls.size()) {
-                            EventBus.getDefault().post(new HomeRefreshEvent());
-                            if (count == localUrls.size()) {
-                                count = 0;
-                            }
-                        }*/
-                    } catch (Exception e) {
-                        Log.e(TAG, "uploadImage", e);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "uploadImage", e);
-                }
-            }
-        }.start();
-    }
-
 
     private void uploadVideo(String path) {
         if (TextUtils.isEmpty(path)) {
@@ -840,17 +737,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         finish();
-                        /*if(milestone!=null){
-                            apiService.delMilestone(milestone.getId())
-                                    .compose(SchedulersCompat.applyIoSchedulers())
-                                    .subscribe(response -> {
-                                        if (!response.success()) {
-                                            ToastUtil.showToast(response.getInfo());
-                                        }
-                                    }, throwable -> {
-                                        Log.e(TAG, "delMilestone:");
-                                    });
-                        }*/
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {

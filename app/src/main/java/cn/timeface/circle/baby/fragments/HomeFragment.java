@@ -70,6 +70,7 @@ import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.managers.services.UploadService;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.Remember;
@@ -605,24 +606,36 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Subscribe
     public void onEvent(StartUploadEvent event) {
-        progressDialog();
-        mTvprogress.setText("上传中");
-        mTvprogress.setVisibility(View.VISIBLE);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog();
+                mTvprogress.setText("上传中");
+                mTvprogress.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Subscribe
     public void onEvent(UploadEvent event) {
-        int progress = event.getProgress();
-        mTvprogress.setText("上传中 " + progress+"%");
-        if (tvProgress != null)
-            tvProgress.setText(progress + "%");
-        if (progress == 100) {
-            mTvprogress.setVisibility(View.GONE);
-            if (progressDialog != null)
-                progressDialog.dismiss();
-            reqData(1);
-            ToastUtil.showToast("发布成功");
-        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                int progress = event.getProgress();
+                mTvprogress.setText("上传中 " + progress+"%");
+                if (tvProgress != null)
+                    tvProgress.setText(progress + "%");
+                if (progress == 100) {
+                    mTvprogress.setVisibility(View.GONE);
+                    if (progressDialog != null)
+                        progressDialog.dismiss();
+                    reqData(1);
+                    ToastUtil.showToast("发布成功");
+                    UploadService.stop(getContext());
+                }
+            }
+        });
+
     }
 
 

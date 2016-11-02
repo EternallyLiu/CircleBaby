@@ -98,7 +98,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                     if (tfStateView != null) {
                         tfStateView.showException(throwable);
                     }
-                    Log.e(TAG, "queryBabyInfoList:");
+                    Log.e(TAG, "queryBabyInfoList:",throwable);
                 });
 
     }
