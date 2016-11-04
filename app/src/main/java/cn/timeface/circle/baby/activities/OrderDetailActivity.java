@@ -231,7 +231,6 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
 //                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
 //                            } else {
 //                                //2支付宝支付
-                        System.out.println("2支付宝支付===========" + orderId);
 //                        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
                         Subscription subscription = new AliPay().payV2(orderId, OrderDetailActivity.this);
                         addSubscription((subscription));
@@ -312,7 +311,6 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("确认订单支付结果===========" + orderId);
                 Subscription s = apiService.findOrderDetail(orderId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {

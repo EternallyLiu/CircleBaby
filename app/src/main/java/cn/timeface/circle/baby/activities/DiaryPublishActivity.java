@@ -27,7 +27,6 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.events.DiaryPublishEvent;
-import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.GlideUtil;
@@ -139,11 +138,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
                 }
                 break;
         }
-    }
-
-    @Subscribe
-    public void onEvent(MediaObjEvent event) {
-        finish();
     }
 
     @Override

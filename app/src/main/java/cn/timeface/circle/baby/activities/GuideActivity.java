@@ -82,21 +82,17 @@ public class GuideActivity extends BaseAppCompatActivity {
                                 case MotionEvent.ACTION_DOWN:
                                     dowm_x = event.getX();
                                     b = false;
-                                    System.out.println("down");
                                     break;
                                 case MotionEvent.ACTION_MOVE:
                                     float x1 = event.getX();
                                     if(x1>dowm_x){
-                                        System.out.println("右滑");
                                         b = false;
                                     }else{
-                                        System.out.println("左滑");
                                         b = true;
                                     }
                                     break;
                                 case MotionEvent.ACTION_UP:
                                     b = false;
-                                    System.out.println("up");
                                     break;
                             }
                             return b;
@@ -112,21 +108,17 @@ public class GuideActivity extends BaseAppCompatActivity {
                                 case MotionEvent.ACTION_DOWN:
                                     dowm_x = event.getX();
                                     b = false;
-                                    System.out.println("down");
                                     break;
                                 case MotionEvent.ACTION_MOVE:
                                     float x1 = event.getX();
                                     if(x1>dowm_x){
-                                        System.out.println("右滑");
                                         b = true;
                                     }else{
-                                        System.out.println("左滑");
                                         b = false;
                                     }
                                     break;
                                 case MotionEvent.ACTION_UP:
                                     b = false;
-                                    System.out.println("up");
                                     break;
                             }
                             return b;

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,9 +55,7 @@ import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.Milestone;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.api.models.objs.PublishObj;
-import cn.timeface.circle.baby.events.CardEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
-import cn.timeface.circle.baby.events.MediaObjEvent;
 import cn.timeface.circle.baby.events.PickerPhototAddEvent;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.events.StartUploadEvent;
@@ -251,7 +248,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
             }
         });
-
     }
 
     private void selectImages() {
@@ -422,7 +418,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         EventBus.getDefault().post(new HomeRefreshEvent());
                         EventBus.getDefault().post(new PickerPhototAddEvent());
                         finish();
-                    }else{
+                    } else {
                         ToastUtil.showToast(response.getInfo());
                     }
                     isPublish = false;
@@ -476,7 +472,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             EventBus.getDefault().post(new HomeRefreshEvent());
                         }
                         finish();
-                    }else {
+                    } else {
                         ToastUtil.showToast(response.getInfo());
                     }
                     isPublish = false;
@@ -549,8 +545,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         isPublish = false;
                         count = 0;
                         EventBus.getDefault().post(new StartUploadEvent());
-                        UploadService.start(PublishActivity.this,localUrls);
-                    }else{
+                        UploadService.start(PublishActivity.this, localUrls);
+                    } else {
                         ToastUtil.showToast(response.getInfo());
                     }
                 }, throwable -> {
@@ -565,21 +561,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Subscribe
     public void onEvent(Object event) {
-        if (event instanceof MediaObjEvent) {
-            gvGridView.setVisibility(View.GONE);
-            mediaObj = ((MediaObjEvent) event).getMediaObj();
-            GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
-            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", System.currentTimeMillis()));
-        } else if (event instanceof CardEvent) {
-            mediaObjs = ((CardEvent) event).getMediaObjs();
-            List<String> list = new ArrayList<>();
-            for (MediaObj media : mediaObjs) {
-                list.add(media.getImgUrl());
-            }
-            adapter.setData(list);
-            adapter.notifyDataSetChanged();
-            tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", System.currentTimeMillis()));
-        } else if (event instanceof PublishRefreshEvent) {
+        if (event instanceof PublishRefreshEvent) {
             mediaObjs = ((PublishRefreshEvent) event).getDataList();
             List<String> list = new ArrayList<>();
             for (MediaObj media : mediaObjs) {
@@ -616,8 +598,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             ToastUtil.showToast("视频文件异常");
             return;
         }
-//        tfProgressDialog.setMessage("上传视频中");
-//        tfProgressDialog.show();
         OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override

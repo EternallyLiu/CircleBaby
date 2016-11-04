@@ -168,7 +168,6 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                         mediaObjs.clear();
                         dataList.remove(mediaObjHeader);
                         mediaObjs.addAll(dataList);
-                        System.out.println("reqCloudAlbumDetail   mediaObjs.size() =========== "+mediaObjs.size());
                         albumDetailAdapter.notifyDataSetChanged();
                     } else {
                         ToastUtil.showToast(albumDetailResponse.getInfo());
@@ -255,15 +254,11 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     }
 
     private void completeEdit() {
-        System.out.println("completeEdit   mediaObjs.size() =========== "+mediaObjs.size());
-        System.out.println("completeEdit   indexofHead =========== "+indexofHead);
         if(mediaObjs.size()>indexofHead){
             mediaObjs.add(indexofHead,mediaObjHeader);
         }else{
             mediaObjs.add(mediaObjHeader);
         }
-
-        System.out.println("completeEdit   mediaObjs.size() =========== "+mediaObjs.size());
 
         List<ImageInfoListObj> imageInfoListObjs = new ArrayList<>();
         for (int x = 0; x < mediaObjs.size(); x++) {
@@ -466,7 +461,6 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                         }
                     }
                     mediaObjHeader.setIsCover(0);
-                    System.out.println("onActivityResult   mediaObjs.size() =========== "+mediaObjs.size());
                     break;
                 case REQ_SELECT_PHOTO:
                     ArrayList<ImgObj> imgObjs = data.getParcelableArrayListExtra("result_select_image_list");

@@ -219,7 +219,6 @@ public class DiaryTextFragment extends BaseFragment implements View.OnClickListe
                         String substring2 = s.substring(18);
                         content = substring1+"\n"+substring2;
                     }
-                    System.out.println("content ============ "+content);
                 }
 
             }

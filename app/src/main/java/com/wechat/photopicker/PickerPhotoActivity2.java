@@ -285,7 +285,6 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
 
     @Subscribe
     public void onEvent(PickerPhototAddEvent event) {
-        System.out.println("PickerPhotoActivity2============HomeRefreshEvent");
         llNoData.setVisibility(View.GONE);
         mPickerPhotoFragment.reqData();
     }

@@ -141,7 +141,6 @@ public class PickerPhotoFragment2 extends Fragment implements View.OnClickListen
     }
 
     public void reqData() {
-        System.out.println("PickerPhotoFragment2============HomeRefreshEvent");
         ApiFactory.getApi().getApiService().queryImageInfoList("", bookType)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {

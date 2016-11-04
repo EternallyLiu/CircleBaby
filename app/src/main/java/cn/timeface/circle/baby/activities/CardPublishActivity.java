@@ -266,7 +266,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
             }
             EventBus.getDefault().post(new PublishRefreshEvent(dataList));
             PublishActivity.open(this, dataList);
-//            EventBus.getDefault().post(new CardEvent(dataList));
             finish();
         }
         return super.onOptionsItemSelected(item);

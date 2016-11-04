@@ -41,8 +41,10 @@ import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.Pinyin4jUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
 
 public class CardPreviewFragment extends BaseFragment {
@@ -57,11 +59,13 @@ public class CardPreviewFragment extends BaseFragment {
     @Bind(R.id.rl_diary)
     RatioRelativeLayout rlDiary;
     private String url;
-    private String objectKey = "";
     private ImgObj imgObj;
     private String date;
     private TFProgressDialog tfProgressDialog;
     private PhotoView photoView;
+    private long createTime;
+    private String py;
+    private String content;
 
     public CardPreviewFragment() {
     }
@@ -87,12 +91,13 @@ public class CardPreviewFragment extends BaseFragment {
         }
         tfProgressDialog = new TFProgressDialog(getActivity());
         url = imgObj.getLocalPath();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                uploadImage();
-            }
-        }).run();
+
+        uploadImageObservable(imgObj.getLocalPath())
+                .subscribe(s -> {
+                        }
+                        , throwable -> {
+                        });
+
         photoView = getImageView(getContext());
         rlDiary.addView(photoView);
         photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -128,36 +133,6 @@ public class CardPreviewFragment extends BaseFragment {
         ButterKnife.unbind(this);
     }
 
-    private void uploadImage() {
-        if (TextUtils.isEmpty(url)) {
-            return;
-        }
-        OSSManager ossManager = OSSManager.getOSSManager(getContext());
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    //获取上传文件
-                    UploadFileObj uploadFileObj = new MyUploadFileObj(url);
-                    //上传操作
-                    try {
-                        //判断服务器是否已存在该文件
-                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
-                            //如果不存在则上传
-                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
-                        }
-                        objectKey = uploadFileObj.getObjectKey();
-                    } catch (ServiceException | ClientException e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-
-                }
-            }
-        }.start();
-
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_next, menu);
@@ -169,7 +144,7 @@ public class CardPreviewFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.next) {
-            String content = etTitle.getText().toString();
+            content = etTitle.getText().toString();
             if (Utils.isHz(content)) {
                 ToastUtil.showToast("请输入中文");
                 return true;
@@ -181,31 +156,37 @@ public class CardPreviewFragment extends BaseFragment {
                 ToastUtil.showToast("识图卡片标题不能为空");
                 return true;
             }
-            tfProgressDialog.setMessage("合成图片中…");
-            tfProgressDialog.show();
-            float imageScale = (float) imgObj.getWidth() / photoView.getDisplayRect().width();
-            int cropLeft = ((int) (Math.abs(photoView.getDisplayRect().left) * imageScale));
-            int cropTop = ((int) (Math.abs(photoView.getDisplayRect().top) * imageScale));
-            int cropW = ((int) ((photoView.getWidth() - photoView.getPaddingLeft() - photoView.getPaddingRight()) * imageScale));
-            int cropH = ((int) ((photoView.getHeight() - photoView.getPaddingTop() - photoView.getPaddingBottom()) * imageScale));
-            long createTime = DateUtil.getTime(date, "yyyy.MM.dd");
-
-            while (TextUtils.isEmpty(objectKey)) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            TemplateImage templateImage = new TemplateImage(0, cropH, imgObj.getHeight(), imgObj.getWidth(), cropW, cropLeft, cropTop, objectKey, createTime);
-            String imageInfo = new Gson().toJson(templateImage);
-
-            String py = URLEncoder.encode(etPinyin.getText().toString());
+            py = URLEncoder.encode(etPinyin.getText().toString());
             if (py.contains("%C4%AD")) {
                 py = py.replace("%C4%AD", "%C7%90");
             }
-            apiService.cardComposed(URLEncoder.encode(content), imageInfo, py)
-                    .compose(SchedulersCompat.applyIoSchedulers())
+            uploadImageObservable(url)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .filter(objKey -> !TextUtils.isEmpty(objKey))
+                    .map(objKey -> {
+                        //日记卡片合成
+                        float imageScale = (float) imgObj.getWidth() / photoView.getDisplayRect().width();
+                        int cropLeft = ((int) (Math.abs(photoView.getDisplayRect().left) * imageScale));
+                        int cropTop = ((int) (Math.abs(photoView.getDisplayRect().top) * imageScale));
+                        int cropW = ((int) ((photoView.getWidth() - photoView.getPaddingLeft() - photoView.getPaddingRight()) * imageScale));
+                        int cropH = ((int) ((photoView.getHeight() - photoView.getPaddingTop() - photoView.getPaddingBottom()) * imageScale));
+                        createTime = DateUtil.getTime(date, "yyyy.MM.dd");
+                        TemplateImage templateImage = new TemplateImage(0, cropH, imgObj.getHeight(), imgObj.getWidth(), cropW, cropLeft, cropTop, objKey, createTime);
+                        String imageInfo = new Gson().toJson(templateImage);
+                        return imageInfo;
+                    })
+                    .flatMap(imageInfo -> apiService.cardComposed(URLEncoder.encode(content), imageInfo, py))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(() -> {
+                        tfProgressDialog.setMessage("合成卡片中…");
+                        tfProgressDialog.show();
+                    })
+                    .doOnTerminate(() -> {
+                        if (tfProgressDialog != null && tfProgressDialog.isShowing()) {
+                            tfProgressDialog.dismiss();
+                        }
+                    })
                     .subscribe(diaryComposeResponse -> {
                         tfProgressDialog.dismiss();
                         if (diaryComposeResponse.success()) {
@@ -215,7 +196,6 @@ public class CardPreviewFragment extends BaseFragment {
                         } else {
                             ToastUtil.showToast(diaryComposeResponse.getInfo());
                         }
-
                     }, throwable -> {
                         Log.e(TAG, "diaryPublish:");
                     });
@@ -232,4 +212,30 @@ public class CardPreviewFragment extends BaseFragment {
                 .into(imageView);
         return imageView;
     }
+
+    private Observable<String> uploadImageObservable(String imgPath) {
+        return Observable.defer(() -> Observable.just(imgPath)
+                .filter(s -> !TextUtils.isEmpty(s))
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .map(path -> {
+                    OSSManager ossManager = OSSManager.getOSSManager(getContext());
+                    //获取上传文件
+                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
+                    //上传操作
+                    try {
+                        //判断服务器是否已存在该文件
+                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
+                            //如果不存在则上传
+                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
+                        }
+                        return uploadFileObj.getObjectKey();
+                    } catch (ServiceException | ClientException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }));
+    }
+
+
 }

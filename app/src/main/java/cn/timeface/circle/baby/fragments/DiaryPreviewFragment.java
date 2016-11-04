@@ -1,10 +1,7 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -339,12 +336,10 @@ public class DiaryPreviewFragment extends BaseFragment {
                                 if (diaryComposedResponse.success()) {
                                     MediaObj mediaObj = diaryComposedResponse.getMediaObj();
                                     mediaObj.setPhotographTime(System.currentTimeMillis());
-                                    Log.v(TAG, "合成的日记图片===============" + mediaObj.getImgUrl());
                                     tfProgressDialog.dismiss();
                                     PublishActivity.open(getContext(), mediaObj);
                                     getActivity().finish();
                                     EventBus.getDefault().post(new DiaryPublishEvent());
-//                            EventBus.getDefault().post(new MediaObjEvent(mediaObj));
                                 } else {
                                     ToastUtil.showToast(diaryComposedResponse.getInfo());
                                 }

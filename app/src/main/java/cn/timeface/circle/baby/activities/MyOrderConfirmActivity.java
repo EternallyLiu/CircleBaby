@@ -181,9 +181,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                     finish();
                     break;
                 case 2:
-                    System.out.println("orderStatus===================" + orderStatus);
                     if (orderStatus == TypeConstant.STATUS_CHECKING) {
-                        System.out.println("PaySuccessActivity===================PaySuccessActivity");
                         timer.cancel();
                         progressDialog.dismiss();
                         PaySuccessActivity.open(MyOrderConfirmActivity.this, orderId,
@@ -997,7 +995,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
 //                            } else {
 //                                //2支付宝支付
-                        System.out.println("2支付宝支付===========" + orderId);
 //                        new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
                         Subscription subscription = new AliPay().payV2(orderId, MyOrderConfirmActivity.this);
                         addSubscription((subscription));
@@ -1072,7 +1069,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("确认订单支付结果===========" + orderId);
                 Subscription s = apiService.findOrderDetail(orderId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
