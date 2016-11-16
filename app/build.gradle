@@ -3,13 +3,13 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
 
     defaultConfig {
         applicationId "cn.timeface.circle.baby"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 20161022
         versionName "1.0.3"
         multiDexEnabled true
@@ -83,7 +83,6 @@ def dbflow_version = "3.1.1"
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile(name: 'library-0.9.9', ext: 'aar')
-    compile(name: 'rxpermissions-0.5.2', ext: 'aar')
     compile(name: 'open-release', ext: 'aar')
     testCompile 'junit:junit:4.12'
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
@@ -91,33 +90,42 @@ dependencies {
     compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
     compile project(':timeface-common')
     compile project(':refreshload')
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:cardview-v7:23.4.0'
-    compile 'com.android.support:palette-v7:23.4.0'
-    compile 'com.squareup.retrofit2:retrofit:2.0.2'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
-    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+
+    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:cardview-v7:24.2.1'
+    compile 'com.android.support:palette-v7:24.2.1'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.2.2'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.8.2@aar'
+    compile 'com.squareup.okhttp3:okhttp:3.4.2'
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.4.2'
+    compile 'com.squareup.okio:okio:1.11.0'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.facebook.fresco:fresco:0.14.1'
+    // 仅支持 WebP 静态图，需要添加
+    compile 'com.facebook.fresco:webpsupport:0.14.1'
+    // your project's other dependencies
+    compile 'com.facebook.fresco:imagepipeline-okhttp3:0.14.1'
+
+
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'io.reactivex:rxandroid:1.2.0'
-    compile 'io.reactivex:rxjava:1.1.5'
-    compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.umeng.analytics:analytics:6.0.1'
-    compile 'com.squareup.okhttp3:okhttp:3.3.1'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.3.1'
-    compile 'com.squareup.okio:okio:1.8.0'
-    compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.github.rayboot.widget:ratioview:1.0.1'
     compile 'com.bigkoo:convenientbanner:2.0.4'
     compile 'com.yqritc:recyclerview-flexibledivider:1.2.6'
     compile 'com.aliyun.dpa:oss-android-sdk:2.0.3'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'fr.baloomba:viewpagerindicator:2.4.2'
-    compile 'com.android.support:multidex:1.0.1'
     compile 'com.bluelinelabs:logansquare-compiler:1.3.6'
     compile 'com.bluelinelabs:logansquare:1.3.6'
     compile 'com.commit451:PhotoView:1.2.5'
