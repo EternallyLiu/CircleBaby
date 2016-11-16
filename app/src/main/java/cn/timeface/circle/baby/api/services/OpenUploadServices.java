@@ -10,8 +10,8 @@ import java.io.File;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.oss.OSSManager;
+import cn.timeface.circle.baby.utils.FileUtils;
 import cn.timeface.open.managers.interfaces.IUploadServices;
-import cn.timeface.open.ucrop.util.FileUtils;
 
 /**
  * author: rayboot  Created on 16/8/2.
