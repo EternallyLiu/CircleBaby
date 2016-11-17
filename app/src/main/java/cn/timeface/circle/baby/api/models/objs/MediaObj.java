@@ -24,6 +24,7 @@ public class MediaObj extends BaseObj
     private int isCover;
     int timeId;
     long date;
+    int imageOrientation;  //图片旋转属性
 
     //图片
     public MediaObj(String content, String imgUrl, int w, int h, long photographTime) {
@@ -53,6 +54,14 @@ public class MediaObj extends BaseObj
         this.localPath = localPath;
         this.photographTime = photographTime;
         this.videoUrl = videoUrl;
+    }
+
+    public int getImageOrientation() {
+        return imageOrientation;
+    }
+
+    public void setImageOrientation(int imageOrientation) {
+        this.imageOrientation = imageOrientation;
     }
 
     public long getDate() {
@@ -215,7 +224,7 @@ public class MediaObj extends BaseObj
     };
 
     public TFOResourceObj toTFOResourceObj() {
-        return new TFOResourceObj(id+"",imgUrl, w, h, "");
+        return new TFOResourceObj(id + "", imgUrl, w, h, imageOrientation, "");
     }
 
     @Override
