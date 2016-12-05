@@ -435,7 +435,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                                 dialog.dismiss();
                                 timeLineObj = timeDetailResponse.getTimeInfo();
                                 hideKeyboard();
-                                ToastUtil.showToast(timeDetailResponse.getInfo());
+//                                ToastUtil.showToast(timeDetailResponse.getInfo());
                                 if (replacePosition >= 0 && listPos >= 0) {
                                     replaceList(replacePosition, listPos, timeLineObj);
                                 }
