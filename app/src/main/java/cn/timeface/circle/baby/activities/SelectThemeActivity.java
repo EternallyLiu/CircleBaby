@@ -32,6 +32,7 @@ import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
+import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.api.models.base.BaseResponse;
 import cn.timeface.open.api.models.objs.TFOBookType;
 import cn.timeface.open.api.models.objs.TFOContentObj;
@@ -48,6 +49,8 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
     RatioImageView ivTheme;
     @Bind(R.id.lv_horizontal)
     HorizontalListView lvHorizontal;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     private HorizontalListViewAdapter3 adapter;
     private int bookTheme;
     private String templateName;
@@ -73,6 +76,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
         Intent intent = getIntent();
         dataList = intent.getParcelableArrayListExtra("dataList");
         cloudAlbum = intent.getIntExtra("cloudAlbum", 0);
+        tfStateView.setOnRetryListener(() -> reqData());
         reqData();
 
         lvHorizontal.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -87,12 +91,15 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
     }
 
     private void reqData() {
+        tfStateView.loading();
         ApiFactory.getOpenApi().getApiService().bookTypeList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(listBaseResponse -> {
+                    tfStateView.finish();
                     this.listBaseResponse = listBaseResponse;
                     setDataList(listBaseResponse.getData());
                 }, throwable -> {
+                    tfStateView.showException(throwable);
                     Log.e(TAG, "getRelationshipList:", throwable);
                 });
     }

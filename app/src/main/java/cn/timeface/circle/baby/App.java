@@ -2,9 +2,11 @@ package cn.timeface.circle.baby;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.activeandroid.ActiveAndroid;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.umeng.analytics.MobclickAgent;
@@ -73,6 +75,7 @@ public class App extends MultiDexApplication {
 //            LeakCanary.install(this);
 //        }
 
+        Fresco.initialize(this);
     }
 
     /**

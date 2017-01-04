@@ -26,6 +26,7 @@ import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.TFStateView;
 
 public class AddBookListFragment extends BaseFragment {
 
@@ -33,7 +34,8 @@ public class AddBookListFragment extends BaseFragment {
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
-
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
 
     public AddBookListFragment() {
     }
@@ -55,6 +57,8 @@ public class AddBookListFragment extends BaseFragment {
             actionBar.setTitle("为" + FastData.getBabyName() + "定制");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        tfStateView.setOnRetryListener(() -> reqData());
+        tfStateView.loading();
         reqData();
         return view;
     }
@@ -63,10 +67,12 @@ public class AddBookListFragment extends BaseFragment {
         apiService.getBabyBookWorksTypeList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(bookTypeListResponse -> {
+                    tfStateView.finish();
                     if (bookTypeListResponse.success()) {
                         setDataList(bookTypeListResponse.getDataList());
                     }
                 }, error -> {
+                    tfStateView.showException(error);
                     Log.e(TAG, "getBabyBookWorksTypeList:");
                 });
 

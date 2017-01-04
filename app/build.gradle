@@ -144,6 +144,7 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     compile files('libs/alipaySdk-20160812.jar')
+    compile 'com.jakewharton.timber:timber:4.3.1'
 }
 
 

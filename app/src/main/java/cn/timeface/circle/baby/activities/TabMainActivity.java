@@ -29,6 +29,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.DistrictModel;
@@ -55,7 +56,7 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener ,IEventBus{
+public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
     @Bind(R.id.menu_home_tv)
     TextView menuHomeTv;
     @Bind(R.id.menu_mime_tv)
@@ -96,7 +97,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         int width = wm.getDefaultDisplay().getWidth() / 3;
         Remember.putInt("width", width);
 
-        RxPermissions.getInstance(this).request(Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA)
+        RxPermissions.getInstance(this).request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                 .subscribe(new Action1<Boolean>() {
                     @Override
                     public void call(Boolean aBoolean) {
@@ -113,7 +114,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
         if (TextUtils.isEmpty(FastData.getRelationName())) {
             rlToensurerelation.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rlToensurerelation.setVisibility(View.GONE);
         }
 
@@ -126,7 +127,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         tfoUserObj.setNick_name(FastData.getBabyName());
         tfoUserObj.setPhone(FastData.getAccount());
         tfoUserObj.setUserId(FastData.getUserId());
-        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj);
+        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);
         GlobalSetting.getInstance().setUploadServices(new OpenUploadServices());
     }
 
@@ -287,7 +288,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         return footMenu;
     }
 
-//    @SuppressWarnings("unused")
+    //    @SuppressWarnings("unused")
     @Subscribe
     public void onEvent(LogoutEvent event) {
         finish();
@@ -295,9 +296,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Subscribe
     public void onEvent(ConfirmRelationEvent event) {
-        if(TextUtils.isEmpty(FastData.getRelationName())){
+        if (TextUtils.isEmpty(FastData.getRelationName())) {
             rlToensurerelation.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rlToensurerelation.setVisibility(View.GONE);
         }
     }

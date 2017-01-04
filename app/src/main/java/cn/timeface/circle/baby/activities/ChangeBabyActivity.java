@@ -19,6 +19,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
@@ -159,7 +160,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         tfoUserObj.setNick_name(FastData.getBabyName());
         tfoUserObj.setPhone(FastData.getAccount());
         tfoUserObj.setUserId(FastData.getUserId());
-        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj);
+        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);
         GlobalSetting.getInstance().setUploadServices(new OpenUploadServices());
     }
 

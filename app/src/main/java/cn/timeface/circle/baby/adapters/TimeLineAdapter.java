@@ -380,7 +380,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                     ApiFactory.getApi().getApiService().like(timeLineObj.getTimeId(), p)
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
-                                ToastUtil.showToast(response.getInfo());
+//                                ToastUtil.showToast(response.getInfo());
                                 if (response.success()) {
                                     boolean isContains = false;
                                     if (p == 1) {//之前没有点赞

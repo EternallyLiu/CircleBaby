@@ -31,6 +31,7 @@ import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.TFStateView;
 
 public class BookSizeListFragment extends BaseFragment {
 
@@ -38,6 +39,8 @@ public class BookSizeListFragment extends BaseFragment {
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
+    @Bind(R.id.tf_stateView)
+    TFStateView tfStateView;
     private List<ImageInfoListObj> dataList;
     private String bookSizeId;
     private int bookPage;
@@ -65,6 +68,8 @@ public class BookSizeListFragment extends BaseFragment {
             actionBar.setTitle("选择尺寸");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        tfStateView.setOnRetryListener(() -> reqData());
+        tfStateView.loading();
         reqData();
         return view;
     }
@@ -73,10 +78,12 @@ public class BookSizeListFragment extends BaseFragment {
         apiService.getSubBabyBookWorksTypeList(2)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(cardBookSizeResponse -> {
+                    tfStateView.finish();
                     if (cardBookSizeResponse.success()) {
                         setDataList(cardBookSizeResponse.getDataList());
                     }
                 }, error -> {
+                    tfStateView.showException(error);
                     Log.e(TAG, "getBabyBookWorksTypeList:");
                     error.printStackTrace();
                 });
