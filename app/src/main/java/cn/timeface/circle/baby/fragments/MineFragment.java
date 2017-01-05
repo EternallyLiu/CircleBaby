@@ -3,7 +3,6 @@ package cn.timeface.circle.baby.fragments;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import cn.timeface.circle.baby.activities.OrderListActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener {
@@ -41,7 +39,6 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Bind(R.id.ll_mine_car)
     RelativeLayout llMineCar;
 
-    private String mParam1;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.ll_set)
@@ -62,7 +59,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam1 = getArguments().getString(ARG_PARAM1);
         }
     }
 

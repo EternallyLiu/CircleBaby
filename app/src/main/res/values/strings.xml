@@ -188,7 +188,7 @@
     <string name="no_more_data">没有数据\n赶快添加一个吧</string>
     <string name="get_all_message">亲爱的，你已经没有内容喽</string>
     <string name="no_message">没有消息呢</string>
-    <string name="loading">正在加载...</string>
+    <string name="loading">正在加载…</string>
     <string name="no_connect">当前无网络连接，请重新连接</string>
     <string name="finish">完成</string>
     <string name="edit">编辑</string>
@@ -267,7 +267,7 @@
     <string name="integral">积分</string>
     <string name="integral_label">积分:</string>
     <string name="order_action_cancel">取消订单</string>
-    <string name="order_action_cancel_begin">取消订单中...</string>
+    <string name="order_action_cancel_begin">取消订单中…</string>
 
     <string name="book_null">还没有作品？快去制作吧</string>
 
@@ -295,9 +295,9 @@
     <string name="select_your_interest_field">选择您感兴趣的领域</string>
     <string name="begin_time_travel">开启时光之旅</string>
     <string name="recommend_attention_note">我们会根据所选的兴趣为你推荐精选的用户和内容</string>
-    <string name="apply_sale_status_up_begin">申请上架中...</string>
+    <string name="apply_sale_status_up_begin">申请上架中…</string>
     <string name="apply_sale_status_down">申请下架</string>
-    <string name="apply_sale_status_down_begin">申请下架中...</string>
+    <string name="apply_sale_status_down_begin">申请下架中…</string>
     <string name="review_begin">审核中</string>
     <string name="please_after_complete_summary_apply">请完善简介后再申请</string>
     <string name="please_after_select_category_apply">请选择分类后再申请</string>
@@ -454,7 +454,7 @@
     <string name="FALSE_COLOR">FALSE_COLOR</string>
     <string name="COLOR_BALANCE">COLOR_BALANCE</string>
     <string name="LEVELS_FILTER_MIN">LEVELS_FILTER_MIN</string>
-    <string name="detecting_faces">人脸识别...</string>
+    <string name="detecting_faces">人脸识别…</string>
 
     <!-- transition names -->
     <string name="avater_item">avater_item</string>
@@ -468,7 +468,7 @@
     <string name="skip">跳过</string>
     <string name="photo_caption">图注</string>
     <string name="album_all">所有照片</string>
-    <string name="tf_loading_desc">不是我太慢,是时间太快了...</string>
+    <string name="tf_loading_desc">不是我太慢,是时间太快了…</string>
     <string name="title_activity_scan">ScanActivity</string>
 
     <string name="title_activity_cart">印刷车</string>

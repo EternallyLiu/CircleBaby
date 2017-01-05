@@ -2,7 +2,6 @@ package cn.timeface.circle.baby.adapters;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +16,13 @@ import cn.timeface.circle.baby.api.models.objs.TemplateObj;
 import cn.timeface.circle.baby.utils.GlideUtil;
 
 public class HorizontalListViewAdapter2 extends BaseAdapter {
-    private Context mContext;
     private LayoutInflater mInflater;
-    Bitmap iconBitmap;
     private int selectIndex = -1;
     private List<TemplateObj> list;
 
     public HorizontalListViewAdapter2(Context context, List<TemplateObj> list) {
-        this.mContext = context;
         this.list = list;
-        mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);//LayoutInflater.from(mContext);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);//LayoutInflater.from(mContext);
     }
 
     public void setList(List<TemplateObj> list) {

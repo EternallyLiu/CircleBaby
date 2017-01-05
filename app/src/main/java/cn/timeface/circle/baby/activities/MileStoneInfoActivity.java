@@ -33,7 +33,6 @@ public class MileStoneInfoActivity extends BaseAppCompatActivity {
     RecyclerView contentRecyclerView;
     @Bind(R.id.ll_no_data)
     LinearLayout llNoData;
-    private int width;
     private int milestoneId;
     private MilestoneInfoAdapter adapter;
 
@@ -57,7 +56,6 @@ public class MileStoneInfoActivity extends BaseAppCompatActivity {
     }
 
     private void initView() {
-        width = Remember.getInt("width", 0);
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
         milestoneId = intent.getIntExtra("milestoneId", 0);

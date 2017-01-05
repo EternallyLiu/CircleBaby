@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 import com.wechat.photopicker.PickerPhotoActivity2;
 
@@ -28,7 +27,6 @@ import cn.timeface.circle.baby.activities.TimeBookPickerPhotoActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
 import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
@@ -37,22 +35,16 @@ import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.managers.listeners.OnClickListener;
 import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.FastData;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.dialog.LittleWindow;
-import cn.timeface.common.utils.DeviceUuidFactory;
-import cn.timeface.common.utils.ShareSdkUtil;
-import cn.timeface.common.utils.TimeFaceUtilInit;
 
 /**
  * Created by lidonglin on 2016/6/15.
  */
 public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
-    private ViewHolder holder;
     private View.OnClickListener onClickListener;
     private FragmentManager supportFragmentManager;
     private static OnClickListener clickListener;
@@ -76,7 +68,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        holder = (ViewHolder) viewHolder;
+        ViewHolder holder = (ViewHolder) viewHolder;
         MineBookObj obj = getItem(position);
         holder.onClickListener = onClickListener;
         holder.obj = obj;

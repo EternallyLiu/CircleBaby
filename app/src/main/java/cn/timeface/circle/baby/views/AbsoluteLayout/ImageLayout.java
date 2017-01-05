@@ -90,8 +90,6 @@ public class ImageLayout extends ViewGroup {
     private ImageFitter fitter;
     private int fitMode = DEFAULT_FIT_MODE;
     private int gravity = -1;
-    private int effectiveWidth;
-    private int effectiveHeight;
 
     public ImageLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -266,8 +264,8 @@ public class ImageLayout extends ViewGroup {
         oldW =width;
         oldHeight =height;
         setMeasuredDimension(width, height);
-        effectiveWidth = width - getPaddingLeft() - getPaddingRight();
-        effectiveHeight = height - getPaddingTop() - getPaddingBottom();
+        int effectiveWidth = width - getPaddingLeft() - getPaddingRight();
+        int effectiveHeight = height - getPaddingTop() - getPaddingBottom();
         bitmapDestRect = fitter.fit(bitmap, effectiveWidth, effectiveHeight);
         adjustBitmapRectForPadding();
 

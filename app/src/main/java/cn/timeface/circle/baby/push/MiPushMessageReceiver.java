@@ -39,7 +39,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
     private String mMessage;
     private static String mTopic;
     private String mAlias;
-    private String mStartTime;
     private String mEndTime;
     public static int MESSAGE = 1;
     public static int DETAIL = 2;
@@ -117,7 +116,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
             }
         } else if (MiPushClient.COMMAND_SET_ACCEPT_TIME.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
-                mStartTime = cmdArg1;
                 mEndTime = cmdArg2;
             }
         }

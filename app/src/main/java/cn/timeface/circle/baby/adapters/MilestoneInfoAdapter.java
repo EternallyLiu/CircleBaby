@@ -26,7 +26,6 @@ import cn.timeface.circle.baby.utils.Remember;
  */
 public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
-    private ViewHolder holder;
     private View.OnClickListener onClickListener;
 
     public MilestoneInfoAdapter(Context mContext, List<TimeLineObj> listData) {
@@ -47,7 +46,7 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        holder = (ViewHolder) viewHolder;
+        ViewHolder holder = (ViewHolder) viewHolder;
         TimeLineObj item = getItem(position);
         holder.timeLineObj = item;
         holder.context = mContext;

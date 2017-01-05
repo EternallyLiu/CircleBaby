@@ -2,32 +2,26 @@ package cn.timeface.circle.baby.adapters;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.TemplateObj;
 import cn.timeface.circle.baby.utils.GlideUtil;
 import cn.timeface.open.api.models.objs.TFOBookType;
 
 public class HorizontalListViewAdapter3 extends BaseAdapter {
-    private Context mContext;
     private LayoutInflater mInflater;
     private int selectIndex = -1;
     private List<TFOBookType> list;
-    private int bookType;
 
     public HorizontalListViewAdapter3(Context context, List<TFOBookType> list) {
-        this.mContext = context;
         this.list = list;
-        mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);//LayoutInflater.from(mContext);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);//LayoutInflater.from(mContext);
     }
 
     public void setList(List<TFOBookType> list) {

@@ -128,7 +128,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private int currentPage = 1;
     private TimeLineGroupAdapter adapter;
     public BabyInfoResponse babyInfoResponse;
-    private IPTRRecyclerListener ptrListener;
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
     private boolean enableAnimation = true;
     private boolean bottomMenuShow = true;
@@ -139,11 +138,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private int replacePosition;
     private int listPos;
     private TimeLineObj timeLineObj;
-    private InputMethodRelative rlComment;
     private EditText etCommment;
     private Button btnSend;
     private AlertDialog dialog;
-    private ArrayList<TimeLineGroupObj> lists;
     private TextView tvProgress;
     private AlertDialog progressDialog;
 
@@ -261,7 +258,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         });*/
 
 
-        ptrListener = new IPTRRecyclerListener() {
+        IPTRRecyclerListener ptrListener = new IPTRRecyclerListener() {
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
                 currentPage = 1;
@@ -339,7 +336,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
-        lists = new ArrayList<>();
+        ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
         for (TimeLineGroupObj obj : dataList) {
             if (obj.getTimeLineList().size() > 0) {
                 lists.add(obj);
@@ -562,7 +559,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     private View initCommentEdit() {
         View view = View.inflate(getActivity(), R.layout.view_send_comment, null);
-        rlComment = (InputMethodRelative) view.findViewById(R.id.rl_comment);
+        InputMethodRelative rlComment = (InputMethodRelative) view.findViewById(R.id.rl_comment);
         etCommment = (EditText) view.findViewById(R.id.et_commment);
         btnSend = (Button) view.findViewById(R.id.btn_send);
 
