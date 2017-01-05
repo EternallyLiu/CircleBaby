@@ -59,7 +59,7 @@ public class RegionAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = infalter.inflate(R.layout.item_region, null);
+            convertView = infalter.inflate(R.layout.item_region, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {

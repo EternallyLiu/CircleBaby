@@ -213,7 +213,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         public Object instantiateItem(ViewGroup container, int position) {
             View view = null;
             if (position < list.size()) {
-                view = getLayoutInflater().inflate(R.layout.view_card, null);
+                view = getLayoutInflater().inflate(R.layout.view_card, container, false);
                 RatioImageView ivCard = (RatioImageView) view.findViewById(R.id.iv_cover);
                 ImageView ivDeletecard = (ImageView) view.findViewById(R.id.iv_deletecard);
                 int measuredWidth = ivDeletecard.getMeasuredWidth();
@@ -223,7 +223,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 ivDeletecard.setTag(R.string.tag_ex, position);
                 ivDeletecard.setOnClickListener(this);
             } else {
-                view = getLayoutInflater().inflate(R.layout.view_addcard, null);
+                view = getLayoutInflater().inflate(R.layout.view_addcard, container, false);
                 ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
                 ivAdd.setOnClickListener(new View.OnClickListener() {
                     @Override

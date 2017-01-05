@@ -57,7 +57,7 @@ public class VideoEditAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.item_videobitmap, null);
+            convertView = mInflater.inflate(R.layout.item_videobitmap, parent, false);
             holder.mImage = (ImageView) convertView.findViewById(R.id.iv_videobitmap);
             convertView.setTag(holder);
         } else {

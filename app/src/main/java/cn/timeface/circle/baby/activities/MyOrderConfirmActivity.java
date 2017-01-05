@@ -551,7 +551,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
                         convertView = LayoutInflater.from(MyOrderConfirmActivity.this)
-                                .inflate(R.layout.item_spinner_dropdown_print_coupon, null);
+                                .inflate(R.layout.item_spinner_dropdown_print_coupon, parent, false);
                         ((TextView) convertView).setText(list.get(position));
                         return convertView;
                     }

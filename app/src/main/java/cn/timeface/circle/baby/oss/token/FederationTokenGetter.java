@@ -19,10 +19,8 @@ import okhttp3.Response;
  */
 public class FederationTokenGetter {
 
-    private static OSSFederationToken token;
-
     public static OSSFederationToken getToken(String stsUrl) {
-        token = getTokenFromServer(stsUrl);
+        OSSFederationToken token = getTokenFromServer(stsUrl);
         return token;
     }
 

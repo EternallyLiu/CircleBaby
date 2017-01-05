@@ -35,7 +35,7 @@ public class CartPrintPropertyGvAdapter extends BaseListAdapter<PrintParamObj>{
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.item_print_cart_property_gv, null);
+            convertView = mLayoutInflater.inflate(R.layout.item_print_cart_property_gv, parent, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {

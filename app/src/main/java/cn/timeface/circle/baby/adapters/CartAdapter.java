@@ -62,7 +62,7 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
 
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_print_cart, null);
+        View view = mLayoutInflater.inflate(R.layout.item_print_cart, viewGroup, false);
         return new ViewHolder(view);
     }
 

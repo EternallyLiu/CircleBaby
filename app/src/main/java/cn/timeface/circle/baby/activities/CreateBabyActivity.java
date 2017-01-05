@@ -21,35 +21,25 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.bumptech.glide.Glide;
 import com.wechat.photopicker.PickerPhotoActivity;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
-import cn.timeface.circle.baby.events.HomeRefreshEvent;
-import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.oss.OSSManager;
 import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.utils.DateUtil;
 import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.MD5;
-import cn.timeface.circle.baby.utils.Remember;
 import cn.timeface.circle.baby.utils.ToastUtil;
 import cn.timeface.circle.baby.utils.Utils;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
@@ -94,7 +84,6 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
 
     private String objectKey = "";
     private int relationId;
-    private String relationName;
     private boolean showFocus;
 
     public static void open(Context context, boolean showFocus) {
@@ -252,7 +241,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                     break;
                 case RELATIONSHIP:
                     relationId = data.getIntExtra("relationId", 0);
-                    relationName = data.getStringExtra("relationName");
+                    String relationName = data.getStringExtra("relationName");
                     etRelationship.setText(relationName);
                     break;
                 case CROP_IMG_REQUEST_CODE:

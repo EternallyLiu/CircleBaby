@@ -24,7 +24,6 @@ import cn.timeface.circle.baby.utils.Remember;
  */
 public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
 
-    private ViewHolder holder;
     private View.OnClickListener onClickListener;
     private OnItemClickListener<Integer> onItemClickListener;
 
@@ -46,7 +45,7 @@ public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        holder = (ViewHolder) viewHolder;
+        ViewHolder holder = (ViewHolder) viewHolder;
         CardBookSizeObj obj = getItem(position);
         holder.onClickListener = onClickListener;
         holder.obj = obj;

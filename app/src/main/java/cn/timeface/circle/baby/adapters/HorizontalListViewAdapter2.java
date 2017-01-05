@@ -58,7 +58,7 @@ public class HorizontalListViewAdapter2 extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.item_horizontal_listview, null);
+            convertView = mInflater.inflate(R.layout.item_horizontal_listview, parent, false);
             holder.mImage = (ImageView) convertView.findViewById(R.id.img_list_item);
             holder.mTitle = (TextView) convertView.findViewById(R.id.text_list_item);
             convertView.setTag(holder);

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IdRes;
@@ -31,7 +30,6 @@ import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +42,6 @@ import cn.timeface.circle.baby.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.oss.OSSManager;
@@ -90,7 +87,6 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     @Bind(R.id.main_content)
     CoordinatorLayout mainContent;
     private LoadingDialog loadingDialog;
-    private LinearLayoutManager layoutManager;
     private CloudAlbumDetailAdapter albumDetailAdapter;
     List<MediaObj> mediaObjs = new ArrayList<>(8);
     private MenuItem menu;
@@ -129,7 +125,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     }
 
     private void setupRecyclerView() {
-        layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         albumDetailAdapter = new CloudAlbumDetailAdapter(this, mediaObjs);
         recyclerView.setAdapter(albumDetailAdapter);

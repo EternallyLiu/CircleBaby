@@ -59,7 +59,7 @@ public class HorizontalListViewAdapter3 extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.item_selecttheme, null);
+            convertView = mInflater.inflate(R.layout.item_selecttheme, parent, false);
             holder.mImage = (ImageView) convertView.findViewById(R.id.img_list_item);
             holder.ivSelect = (ImageView) convertView.findViewById(R.id.iv_select);
             convertView.setTag(holder);

@@ -27,7 +27,7 @@ public class SelectAddressAdapter extends BaseListAdapter<AddressItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.item_select_address, null);
+            convertView = mLayoutInflater.inflate(R.layout.item_select_address, parent, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {

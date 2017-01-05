@@ -38,7 +38,7 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.item_my_order_print_item, null);
+            convertView = mLayoutInflater.inflate(R.layout.item_my_order_print_item, parent, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {

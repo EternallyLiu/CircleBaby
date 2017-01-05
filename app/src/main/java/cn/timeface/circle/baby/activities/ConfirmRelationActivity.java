@@ -46,8 +46,6 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
     private RelationshipAdapter adapter;
-    private List<Relationship> dataList;
-    private String code;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, ConfirmRelationActivity.class);
@@ -62,8 +60,6 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        code = getIntent().getStringExtra("code");
 
         tvCreate.setOnClickListener(this);
         adapter = new RelationshipAdapter(this, new ArrayList<>());
@@ -122,7 +118,6 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
     }
 
     public void setDataList(List<Relationship> dataList) {
-        this.dataList = dataList;
         adapter.getListData().clear();
         adapter.getListData().addAll(dataList);
         adapter.notifyDataSetChanged();

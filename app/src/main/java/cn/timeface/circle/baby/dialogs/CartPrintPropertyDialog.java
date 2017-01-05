@@ -180,6 +180,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         return dialog;
     }
 
+    public CartPrintPropertyDialog() {}
+
     public CartPrintPropertyDialog(Context context) {
         this.context = context;
     }

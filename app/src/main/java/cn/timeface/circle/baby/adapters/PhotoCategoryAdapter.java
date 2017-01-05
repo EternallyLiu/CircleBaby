@@ -35,7 +35,7 @@ public class PhotoCategoryAdapter extends BaseRecyclerAdapter<MediaStoreBucket> 
 
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_photo_category, null);
+        View view = mLayoutInflater.inflate(R.layout.item_photo_category, viewGroup, false);
         return new ViewHolder(view);
     }
 

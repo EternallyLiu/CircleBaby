@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author rayboot
@@ -217,7 +218,7 @@ public class DateUtil {
     }
 
     public static long getTime(String time, String format) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
         long time1 = 0;
         try {
             time1 = simpleDateFormat.parse(time).getTime();

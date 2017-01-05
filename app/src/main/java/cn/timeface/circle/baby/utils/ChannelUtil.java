@@ -106,7 +106,7 @@ public class ChannelUtil {
 		Editor editor = sp.edit();
 		editor.putString(CHANNEL_KEY, channel);
 		editor.putInt(CHANNEL_VERSION_KEY, getVersionCode(context));
-		editor.commit();
+		editor.apply();
 	}
 	/**
 	 * 从sp中获取channel

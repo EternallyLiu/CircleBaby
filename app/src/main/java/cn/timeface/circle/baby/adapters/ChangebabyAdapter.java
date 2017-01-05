@@ -24,7 +24,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ChangebabyAdapter extends BaseRecyclerAdapter<UserObj> {
 
-    private ViewHolder holder;
     private View.OnClickListener onClickListener;
 
     public ChangebabyAdapter(Context mContext, List<UserObj> listData) {
@@ -45,7 +44,7 @@ public class ChangebabyAdapter extends BaseRecyclerAdapter<UserObj> {
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        holder = (ViewHolder) viewHolder;
+        ViewHolder holder = (ViewHolder) viewHolder;
         UserObj info = getItem(position);
         holder.onClickListener = onClickListener;
         holder.info = info;

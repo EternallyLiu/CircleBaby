@@ -1,2 +1,1 @@
-include ':app', ':timeface-common', ':refreshload'
-project(':timeface-common').projectDir = new File('timeface-common')
+include ':app'

@@ -33,7 +33,7 @@ public class PhotoPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_big_image, null);
+        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_big_image, container, false);
         imgView = ButterKnife.findById(view, R.id.iv_big_image);
         Glide.with(mContext)
                 .load(mPaths.get(position))

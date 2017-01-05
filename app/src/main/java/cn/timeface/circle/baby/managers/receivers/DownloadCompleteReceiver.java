@@ -27,8 +27,6 @@ import cn.timeface.common.utils.PackageUtils;
 public class DownloadCompleteReceiver extends BroadcastReceiver {
     public static final String ACTION_NOTIFICATION_CLICKED = "cn.timeface.intent.action.upgrade";
     File downloadFile = null;
-    private DownloadManager downloadManager;
-    private long completeDownloadId = -1;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -37,9 +35,9 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
 
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
             // 处理下载后的文件
-            downloadManager = (DownloadManager) context.getSystemService(
+            DownloadManager downloadManager = (DownloadManager) context.getSystemService(
                     Context.DOWNLOAD_SERVICE);
-            completeDownloadId =
+            long completeDownloadId =
                     intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             DownloadManager.Query myDownloadQuery = new DownloadManager.Query();
             myDownloadQuery.setFilterById(completeDownloadId);

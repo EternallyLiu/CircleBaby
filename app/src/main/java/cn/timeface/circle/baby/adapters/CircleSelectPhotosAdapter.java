@@ -42,7 +42,6 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
     //用于存储所有选中的图片
     List<ImgObj> selImgs = new ArrayList<>(10);
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
-    private TitleViewHolder holder;
 
     public CircleSelectPhotosAdapter(Context mContext, List<PhotoGroupItem> listData, int maxCount) {
         super(mContext, listData);
@@ -96,7 +95,7 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
         int dataPosition = getDataPosition(position);
         PhotoGroupItem item = getItem(dataPosition);
         if (viewType == TYPE_TITLE) {
-            holder = ((TitleViewHolder) viewHolder);
+            TitleViewHolder holder = ((TitleViewHolder) viewHolder);
             holder.tvTitle.setText(item.getTitle());
             holder.cbAllSel.setTag(R.string.tag_index, position);
 

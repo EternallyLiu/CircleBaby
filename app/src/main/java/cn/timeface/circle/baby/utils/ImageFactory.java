@@ -401,7 +401,8 @@ public class ImageFactory {
     public static String saveImage(Bitmap bitmap) {
 
         String fileName = System.currentTimeMillis() + ".jpg";
-        File file = new File("/mnt/sdcard/baby");
+//        File file = new File("/mnt/sdcard/baby");
+        File file = new File(Environment.getExternalStorageDirectory().getPath() + "/baby");
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -470,7 +471,8 @@ public class ImageFactory {
 
     public static String saveVideo(String path) {
         String fileName = path.substring(path.lastIndexOf("/"));
-        File file = new File("/mnt/sdcard/baby");
+//        File file = new File("/mnt/sdcard/baby");
+        File file = new File(Environment.getExternalStorageDirectory() + "/baby");
         if (!file.exists()) {
             file.mkdirs();
         }

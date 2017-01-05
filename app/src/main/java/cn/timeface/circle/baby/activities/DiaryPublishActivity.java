@@ -57,7 +57,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     @Bind(R.id.sv)
     ScrollView sv;
     private List<ImgObj> selImages = new ArrayList<>();
-    private String content = "";
     private boolean showGuide;
 
     public static void open(Context context) {
@@ -151,7 +150,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         if (item.getItemId() == R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.next) {
-            content = tvContent.getText().toString();
+            String content = tvContent.getText().toString();
             String title = etTitle.getText().toString();
             if (selImages.size() < 1) {
                 ToastUtil.showToast("请选择一张图片");

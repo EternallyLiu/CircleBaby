@@ -126,7 +126,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     private boolean rlCommentShow;
     private int currentPage = 1;
-    private String mParam1;
     private TimeLineGroupAdapter adapter;
     public BabyInfoResponse babyInfoResponse;
     private IPTRRecyclerListener ptrListener;
@@ -163,7 +162,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam1 = getArguments().getString(ARG_PARAM1);
         }
         EventBus.getDefault().register(this);
     }

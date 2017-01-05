@@ -14,30 +14,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.alibaba.sdk.android.oss.ClientException;
-import com.alibaba.sdk.android.oss.ServiceException;
-import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
-import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
-import com.alibaba.sdk.android.oss.model.PutObjectRequest;
-import com.alibaba.sdk.android.oss.model.PutObjectResult;
-import com.bumptech.glide.Glide;
-
-import java.io.File;
 import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.SelectRegionActivity;
 import cn.timeface.circle.baby.api.models.DistrictModel;
-import cn.timeface.circle.baby.api.models.objs.BookObj;
-import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
 
 public class AddAddressFragment extends BaseFragment implements View.OnClickListener {
@@ -58,8 +44,6 @@ public class AddAddressFragment extends BaseFragment implements View.OnClickList
     RelativeLayout rlAddress;
     @Bind(R.id.et_adress)
     EditText etAdress;
-    private BookObj bookObj;
-    private MineBookObj mineBookObj;
     private String cityId;
     private String districtId;
     private String provId;
@@ -70,8 +54,6 @@ public class AddAddressFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bookObj = getArguments().getParcelable("BookObj");
-        mineBookObj = getArguments().getParcelable("MineBookObj");
 
     }
 

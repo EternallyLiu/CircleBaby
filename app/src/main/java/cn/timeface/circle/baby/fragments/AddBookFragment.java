@@ -57,7 +57,6 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
     ImageView ivCreatbook;
     private BookTypeListObj bookTypeListObj;
     private List<MediaObj> imgList;
-    private ConvenientBanner banner;
 
     public AddBookFragment() {
     }
@@ -98,7 +97,7 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
 
         ivCreatbook.setOnClickListener(this);
 
-        banner = new ConvenientBanner(getActivity(), true);
+        ConvenientBanner banner = new ConvenientBanner(getActivity(), true);
         banner.startTurning(3000);
         banner.setMinimumHeight((int) (Remember.getInt("width", 0)*1.8));
         flAd.addView(banner);

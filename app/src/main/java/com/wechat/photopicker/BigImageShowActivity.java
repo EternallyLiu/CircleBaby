@@ -19,7 +19,6 @@ public class BigImageShowActivity extends BaseAppCompatActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    private BigImageFragment mBigimageFragment;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,7 +27,5 @@ public class BigImageShowActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mBigimageFragment = (BigImageFragment) getSupportFragmentManager().findFragmentById(R.id.big_image_fragment);
-
     }
 }
