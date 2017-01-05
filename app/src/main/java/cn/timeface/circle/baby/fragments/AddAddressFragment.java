@@ -21,10 +21,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.SelectRegionActivity;
-import cn.timeface.circle.baby.api.models.DistrictModel;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 
 public class AddAddressFragment extends BaseFragment implements View.OnClickListener {
     public static final int SELECT_REGION_REQUEST_CODE = 101;

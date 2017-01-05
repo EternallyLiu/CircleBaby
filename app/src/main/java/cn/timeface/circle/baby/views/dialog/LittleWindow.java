@@ -12,7 +12,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.support.api.models.objs.MineBookObj;
 
 /**
  * Created by zhsheng on 2016/5/13.

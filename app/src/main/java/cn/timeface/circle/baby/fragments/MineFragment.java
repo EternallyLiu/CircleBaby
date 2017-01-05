@@ -18,8 +18,8 @@ import cn.timeface.circle.baby.activities.MineBookActivity;
 import cn.timeface.circle.baby.activities.MineInfoActivity;
 import cn.timeface.circle.baby.activities.OrderListActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener {

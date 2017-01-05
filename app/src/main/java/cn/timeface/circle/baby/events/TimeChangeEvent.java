@@ -3,7 +3,7 @@ package cn.timeface.circle.baby.events;
 import java.io.File;
 import java.util.List;
 
-import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
 
 
 /**

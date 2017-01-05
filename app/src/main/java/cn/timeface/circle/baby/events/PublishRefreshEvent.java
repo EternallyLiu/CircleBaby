@@ -2,7 +2,7 @@ package cn.timeface.circle.baby.events;
 
 import java.util.List;
 
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 /**
  * Created by lidonglin on 2016/6/22.

@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.utils.BitmapUtil;
+import cn.timeface.circle.baby.support.utils.BitmapUtil;
 
 public class HorizontalListViewAdapter extends BaseAdapter {
     private int[] mIconIDs;

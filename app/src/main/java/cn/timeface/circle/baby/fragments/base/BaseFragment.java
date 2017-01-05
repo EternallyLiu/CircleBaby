@@ -1,6 +1,5 @@
 package cn.timeface.circle.baby.fragments.base;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -9,10 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import org.greenrobot.eventbus.EventBus;
 
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.services.ApiService;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
 
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.api.services.ApiService;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 

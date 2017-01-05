@@ -17,8 +17,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.AddressItem;
 import cn.timeface.circle.baby.events.AddressEvent;
+import cn.timeface.circle.baby.support.api.models.AddressItem;
 
 /**
  * Created by lidonglin on 2016/6/15.

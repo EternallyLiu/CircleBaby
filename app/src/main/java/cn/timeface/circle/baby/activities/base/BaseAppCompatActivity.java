@@ -1,18 +1,16 @@
 package cn.timeface.circle.baby.activities.base;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
-import cn.timeface.circle.baby.api.ApiFactory;
-import cn.timeface.circle.baby.api.services.ApiService;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.services.ApiService;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 

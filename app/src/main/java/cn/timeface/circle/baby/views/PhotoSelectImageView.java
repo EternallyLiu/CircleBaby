@@ -15,7 +15,7 @@ import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 
 /**
  * author : YW.SUN Created on 2016/4/11

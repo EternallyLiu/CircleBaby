@@ -1,7 +1,6 @@
 package cn.timeface.circle.baby.events;
 
-
-import cn.timeface.circle.baby.api.models.objs.BasePrintProperty;
+import cn.timeface.circle.baby.support.api.models.base.BasePrintProperty;
 
 /**
  * @author YW.SUN

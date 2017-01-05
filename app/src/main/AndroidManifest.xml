@@ -64,7 +64,7 @@
         android:theme="@style/AppTheme">
 
         <meta-data
-            android:name="cn.timeface.circle.baby.utils.glide.TFGlideModule"
+            android:name="cn.timeface.circle.baby.support.utils.glide.TFGlideModule"
             android:value="GlideModule" />
 
         <!-- ************************ALI START*************** -->
@@ -79,9 +79,9 @@
             android:name="ALI_BUCKET"
             android:value="timeface-image01" />
         <!-- ************************ALI END*************** -->
-        <service android:name=".managers.services.SavePicInfoService" />
-        <service android:name=".managers.services.UploadAllPicService" />
-        <service android:name=".managers.services.UploadService" />
+        <service android:name=".support.managers.services.SavePicInfoService" />
+        <service android:name=".support.managers.services.UploadAllPicService" />
+        <service android:name=".support.managers.services.UploadService" />
 
         <activity
             android:name="com.mob.tools.MobUIShell"
@@ -143,7 +143,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".push.MiPushMessageReceiver"
+            android:name=".support.push.MiPushMessageReceiver"
             android:exported="true">
 
             <!-- 这里com.xiaomi.mipushdemo.DemoMessageRreceiver改成app中定义的完整类名 -->
@@ -159,7 +159,7 @@
         </receiver>
         <!-- 小米推送end -->
 
-        <receiver android:name=".managers.receivers.DownloadCompleteReceiver">
+        <receiver android:name=".support.managers.receivers.DownloadCompleteReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>

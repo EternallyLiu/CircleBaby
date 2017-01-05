@@ -13,8 +13,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseListAdapter;
-import cn.timeface.circle.baby.api.models.AddressItem;
-import cn.timeface.circle.baby.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.api.models.AddressItem;
+import cn.timeface.circle.baby.support.api.models.DistrictModel;
 
 public class SelectAddressAdapter extends BaseListAdapter<AddressItem> {
     private String addressId;

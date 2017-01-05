@@ -276,7 +276,7 @@
 }
 -dontwarn com.bumptech.glide.**
 -keepnames class com.bumptech.glide.Glide
--keep class cn.timeface.circle.baby.utils.glide.TFGlideModule
+-keep class TFGlideModule
 # LeakCanary
 -keep class org.eclipse.mat.** { *; }
 -keep class com.squareup.leakcanary.** { *; }
@@ -284,7 +284,7 @@
 # MiPush
 -keep class com.xiaomi.** { *; }
 -keep class com.google.protobuf.micro.** { *; }
--keep class cn.timeface.circle.baby.push.MiPushMessageReceiver
+-keep class MiPushMessageReceiver
 
 #mp4 merge
 -keep class com.coremedia.** { *; }

@@ -17,9 +17,6 @@ import android.widget.VideoView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +26,9 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.ClipVideoSuccessEvent;
-import cn.timeface.circle.baby.utils.ClipUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.ClipUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.views.RangeSeekBar;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 

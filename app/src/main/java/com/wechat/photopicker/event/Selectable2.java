@@ -4,8 +4,7 @@ import com.wechat.photopicker.endity.Photo;
 
 import java.util.List;
 
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 /**
  * 类描述：选中事件

@@ -33,17 +33,16 @@ import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.PushItem;
-import cn.timeface.circle.baby.api.models.responses.PushResponse;
-import cn.timeface.circle.baby.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.TFDialog;
-import cn.timeface.circle.baby.managers.receivers.DownloadCompleteReceiver;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.NotificationUtil;
-import cn.timeface.circle.baby.utils.Once;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.Utils;
+import cn.timeface.circle.baby.support.managers.receivers.DownloadCompleteReceiver;
+import cn.timeface.circle.baby.support.api.models.PushItem;
+import cn.timeface.circle.baby.support.api.models.responses.PushResponse;
+import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.NotificationUtil;
+import cn.timeface.circle.baby.support.utils.Once;
+import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DeviceUtil;
 import cn.timeface.common.utils.NetworkUtil;
@@ -393,7 +392,7 @@ public class SplashActivity extends BaseAppCompatActivity {
             }
         } else {
             //上次登录为三方账号登录
-            String platform = cn.timeface.circle.baby.utils.Remember.getString("platform", "");
+            String platform = cn.timeface.circle.baby.support.utils.Remember.getString("platform", "");
             ShareSDK.initSDK(this);
             if(!TextUtils.isEmpty(platform)){
                 Platform plat = ShareSDK.getPlatform(platform);

@@ -21,8 +21,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.PrintCartItem;
 import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.support.api.models.PrintCartItem;
 
 /**
  * Created by YW.SUN on 2015/5/17.

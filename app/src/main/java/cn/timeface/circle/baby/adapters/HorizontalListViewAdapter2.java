@@ -12,8 +12,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.TemplateObj;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.api.models.objs.TemplateObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 
 public class HorizontalListViewAdapter2 extends BaseAdapter {
     private LayoutInflater mInflater;

@@ -14,10 +14,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.CardBookSizeObj;
-import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.support.managers.listeners.OnItemClickListener;
+import cn.timeface.circle.baby.support.api.models.objs.CardBookSizeObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
 
 /**
  * Created by lidonglin on 2016/7/7.

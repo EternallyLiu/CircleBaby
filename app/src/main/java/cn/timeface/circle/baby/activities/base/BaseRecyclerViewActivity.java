@@ -9,8 +9,8 @@ import android.support.v7.widget.Toolbar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
+import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
+import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 
 public class BaseRecyclerViewActivity extends AppCompatActivity {
 

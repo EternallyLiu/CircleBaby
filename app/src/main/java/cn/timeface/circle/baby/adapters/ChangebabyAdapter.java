@@ -14,9 +14,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.BabyObj;
-import cn.timeface.circle.baby.api.models.objs.UserObj;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**

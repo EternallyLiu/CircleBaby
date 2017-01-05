@@ -13,9 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioFrameLayout;
-import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.util.List;
 
@@ -23,10 +21,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.PrintCartItem;
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.api.models.PrintCartItem;
+import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 
 /**
  * @author YW.SUN

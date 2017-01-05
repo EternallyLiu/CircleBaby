@@ -2,7 +2,6 @@ package cn.timeface.circle.baby;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.activeandroid.ActiveAndroid;
@@ -15,14 +14,14 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 import java.util.List;
 
 import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.managers.recorders.SimpleUploadRecorder;
-import cn.timeface.circle.baby.oss.uploadservice.UploadService;
-import cn.timeface.circle.baby.push.MiPushMessageReceiver;
-import cn.timeface.circle.baby.utils.ChannelUtil;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.MiPushUtil;
-import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.support.managers.recorders.SimpleUploadRecorder;
+import cn.timeface.circle.baby.support.oss.uploadservice.UploadService;
+import cn.timeface.circle.baby.support.push.MiPushMessageReceiver;
+import cn.timeface.circle.baby.support.utils.ChannelUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.MiPushUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.TimeFaceUtilInit;
 

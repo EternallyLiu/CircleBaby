@@ -1,6 +1,6 @@
 package cn.timeface.circle.baby.events;
 
-import cn.timeface.circle.baby.api.models.AddressItem;
+import cn.timeface.circle.baby.support.api.models.AddressItem;
 
 /**
  * Created by lidonglin on 2016/6/22.

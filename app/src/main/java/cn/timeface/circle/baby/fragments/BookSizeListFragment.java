@@ -21,16 +21,12 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.adapters.AddBookListAdapter;
 import cn.timeface.circle.baby.adapters.BookSizeListAdapter;
-import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
-import cn.timeface.circle.baby.api.models.objs.CardBookSizeObj;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.managers.listeners.OnItemClickListener;
+import cn.timeface.circle.baby.support.api.models.objs.CardBookSizeObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.TFStateView;
 
 public class BookSizeListFragment extends BaseFragment {

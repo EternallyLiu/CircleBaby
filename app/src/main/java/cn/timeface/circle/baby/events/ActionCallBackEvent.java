@@ -1,8 +1,7 @@
 package cn.timeface.circle.baby.events;
 
-
-import cn.timeface.circle.baby.api.models.objs.CommentObj;
-import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 
 /**
  * Created by lidonglin on 2016/6/22.

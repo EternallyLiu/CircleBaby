@@ -1,7 +1,6 @@
 package com.wechat.photopicker.event;
 
-
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 /**
  * 类描述：

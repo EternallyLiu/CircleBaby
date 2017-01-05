@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.support.utils.Remember;
 
 /**
  * @author shiyan
