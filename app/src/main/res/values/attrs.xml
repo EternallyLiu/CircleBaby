@@ -37,5 +37,8 @@
         <attr name="ev_retryButtonTextColor" format="color" />
     </declare-styleable>
 
-
+    <declare-styleable name="IconText">
+        <attr name="preText" format="string"/>
+        <attr name="subText" format="string"/>
+    </declare-styleable>
 </resources>

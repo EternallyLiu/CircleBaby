@@ -49,7 +49,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.open.api.models.objs.TFOResourceObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
  * 新建识图卡片书和日记卡片书

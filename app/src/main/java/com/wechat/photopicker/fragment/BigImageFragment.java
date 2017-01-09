@@ -189,9 +189,9 @@ public class BigImageFragment extends BaseFragment {
             return;
         }
 //        ToastUtil.showToast("开始保存图片…");
-        tfProgressDialog = new TFProgressDialog(getActivity());
-        tfProgressDialog.setMessage("保存图片中…");
-        tfProgressDialog.show();
+        tfProgressDialog = TFProgressDialog.getInstance("");
+        tfProgressDialog.setTvMessage("保存图片中…");
+        tfProgressDialog.show(getChildFragmentManager(), "");
         new Thread(new Runnable() {
             @Override
             public void run() {

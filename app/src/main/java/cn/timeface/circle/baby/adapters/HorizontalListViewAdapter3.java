@@ -12,7 +12,7 @@ import java.util.List;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
-import cn.timeface.open.api.models.objs.TFOBookType;
+import cn.timeface.open.api.bean.obj.TFOBookType;
 
 public class HorizontalListViewAdapter3 extends BaseAdapter {
     private LayoutInflater mInflater;

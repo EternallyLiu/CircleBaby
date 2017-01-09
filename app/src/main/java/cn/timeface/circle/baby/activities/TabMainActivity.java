@@ -38,17 +38,17 @@ import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.support.api.models.DistrictModel;
 import cn.timeface.circle.baby.support.api.models.responses.DistrictListResponse;
-import cn.timeface.circle.baby.support.api.services.OpenUploadServices;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.CommonUtil;
-import cn.timeface.open.GlobalSetting;
-import cn.timeface.open.api.models.objs.TFOUserObj;
+import cn.timeface.open.TFOpen;
+import cn.timeface.open.TFOpenConfig;
+import cn.timeface.open.api.bean.obj.TFOUserObj;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -96,12 +96,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         Remember.putInt("width", width);
 
         RxPermissions.getInstance(this).request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        if (aBoolean) {
-                            SavePicInfoService.open(getApplicationContext());
-                        }
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {
+                        SavePicInfoService.open(getApplicationContext());
                     }
                 });
 
@@ -125,8 +122,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         tfoUserObj.setNick_name(FastData.getBabyName());
         tfoUserObj.setPhone(FastData.getAccount());
         tfoUserObj.setUserId(FastData.getUserId());
-        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);
-        GlobalSetting.getInstance().setUploadServices(new OpenUploadServices());
+        TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
+                .debug(BuildConfig.DEBUG).build()
+        );
     }
 
     public void clickTab(View view) {
@@ -255,26 +253,20 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                         return Observable.from(list);
                     }
                 })
-                .map(new Func1<DistrictModel, Byte>() {
-                    @Override
-                    public Byte call(DistrictModel districtModel) {
-                        byte error;
-                        try {
-                            districtModel.save();
-                        } finally {
-                            error = 1;
-                        }
-                        return error;
+                .map(districtModel -> {
+                    byte error;
+                    try {
+                        districtModel.save();
+                    } finally {
+                        error = 1;
                     }
+                    return error;
                 })
                 .last()
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(new Action1<Byte>() {
-                    @Override
-                    public void call(Byte error) {
-                        if (error == 1) {
-                            FastData.setRegionDBUpdateTime(System.currentTimeMillis());
-                        }
+                .subscribe(error -> {
+                    if (error == 1) {
+                        FastData.setRegionDBUpdateTime(System.currentTimeMillis());
                     }
                 }, throwable -> {
                     Log.e(TAG, "error", throwable);

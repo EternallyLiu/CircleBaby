@@ -167,7 +167,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
 
         publishType = getIntent().getIntExtra("publish_type", NOMAL);
         mediaObj = getIntent().getParcelableExtra("mediaObj");
@@ -397,8 +397,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             isPublish = false;
             return;
         }
-        tfProgressDialog.setMessage("发布中");
-        tfProgressDialog.show();
+        tfProgressDialog.setTvMessage("发布中");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
 
@@ -444,8 +444,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             isPublish = false;
             return;
         }
-        tfProgressDialog.setMessage("发布中");
-        tfProgressDialog.show();
+        tfProgressDialog.setTvMessage("发布中");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         List<PublishObj> datalist = new ArrayList<>();
@@ -500,8 +500,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
             time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         }
-        tfProgressDialog.setMessage("发布中");
-        tfProgressDialog.show();
+        tfProgressDialog.setTvMessage("发布中");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         //发布
         localUrls = new ArrayList<>();
         List<PublishObj> datalist = new ArrayList<>();

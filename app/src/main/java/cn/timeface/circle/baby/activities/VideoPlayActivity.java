@@ -126,9 +126,9 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
             return;
         }
         ToastUtil.showToast("保存视频…");
-        tfProgressDialog = new TFProgressDialog(this);
-        tfProgressDialog.setMessage("保存视频中…");
-        tfProgressDialog.show();
+        tfProgressDialog = TFProgressDialog.getInstance("");
+        tfProgressDialog.setTvMessage("保存视频中…");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         new Thread(new Runnable() {
             @Override
             public void run() {

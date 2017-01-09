@@ -230,10 +230,9 @@ public class SplashActivity extends BaseAppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     smileDialog.dismiss();
-                    progressDialog =
-                            new TFProgressDialog(SplashActivity.this);
-                    progressDialog.setMessage("正在下载...");
-                    progressDialog.show();
+                    progressDialog = TFProgressDialog.getInstance("");
+                    progressDialog.setTvMessage("正在下载...");
+                    progressDialog.show(getSupportFragmentManager(), "");
                     try {
                         downloadManager.enqueue(req);
                     } catch (Exception e) {
@@ -259,10 +258,9 @@ public class SplashActivity extends BaseAppCompatActivity {
             });
             smileDialog.show(getSupportFragmentManager(), "");
         } else {
-            progressDialog =
-                    new TFProgressDialog(SplashActivity.this);
-            progressDialog.setMessage("正在下载...");
-            progressDialog.show();
+            progressDialog = TFProgressDialog.getInstance("");
+            progressDialog.setTvMessage("正在下载...");
+            progressDialog.show(getSupportFragmentManager(), "");
             try {
                 downloadManager.enqueue(req);
             } catch (Exception e) {

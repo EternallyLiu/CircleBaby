@@ -107,7 +107,7 @@ public class DiaryPreviewFragment extends BaseFragment {
             actionBar.setTitle("宝宝日记");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        tfProgressDialog = new TFProgressDialog(getActivity());
+        tfProgressDialog = TFProgressDialog.getInstance("");
 
         uploadImageObservable(imgObj.getLocalPath())
                 .subscribe(s -> {
@@ -324,11 +324,11 @@ public class DiaryPreviewFragment extends BaseFragment {
                     .flatMap(templateObj1 -> apiService.diaryComposed(URLEncoder.encode(new Gson().toJson(templateObj1))))
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(() -> {
-                        tfProgressDialog.setMessage("合成卡片中…");
-                        tfProgressDialog.show();
+                        tfProgressDialog.setTvMessage("合成卡片中…");
+                        tfProgressDialog.show(getChildFragmentManager(), "");
                     })
                     .doOnTerminate(() -> {
-                        if (tfProgressDialog != null && tfProgressDialog.isShowing()) {
+                        if (tfProgressDialog != null && tfProgressDialog.isVisible()) {
                             tfProgressDialog.dismiss();
                         }
                     })

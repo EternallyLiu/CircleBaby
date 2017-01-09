@@ -70,7 +70,7 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("我的资料");
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
         initData();
         rlAvtar.setOnClickListener(this);
         rlNickname.setOnClickListener(this);
@@ -128,8 +128,8 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     break;
                 case TypeConstants.EDIT_NICKNAME:
                     tvNickname.setText(input);
-                    tfProgressDialog.setMessage("加载中…");
-                    tfProgressDialog.show();
+                    tfProgressDialog.setTvMessage("加载中…");
+                    tfProgressDialog.show(getSupportFragmentManager(), "");
                     changeInfo();
                     break;
                 case CROP_IMG_REQUEST_CODE:
@@ -139,8 +139,8 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     } else {
                         outFile = new File(outPath);
                     }
-                    tfProgressDialog.setMessage("加载中…");
-                    tfProgressDialog.show();
+                    tfProgressDialog.setTvMessage("加载中…");
+                    tfProgressDialog.show(getSupportFragmentManager(), "");
                     GlideUtil.displayImage(outFile.getAbsolutePath(), ivAvatar);
                     uploadImage(outFile.getAbsolutePath());
                     break;

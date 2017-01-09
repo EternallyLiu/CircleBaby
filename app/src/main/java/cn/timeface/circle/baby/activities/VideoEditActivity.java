@@ -69,7 +69,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         hs.setVisibility(View.GONE);
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
         path = getIntent().getStringExtra("path");
         duration = getIntent().getLongExtra("duration", 0);
         MediaController mc = new MediaController(this);
@@ -153,8 +153,8 @@ public class VideoEditActivity extends BaseAppCompatActivity {
                 }
                 ToastUtil.showToast("剪裁视频中…");
                 tvTag.setText("剪裁视频中…");
-                tfProgressDialog.setMessage("剪裁视频中…");
-                tfProgressDialog.show();
+                tfProgressDialog.setTvMessage("剪裁视频中…");
+                tfProgressDialog.show(getSupportFragmentManager(), "");
                 try {
                     if (min == 0 && max == seconds) {
                         EventBus.getDefault().post(new ClipVideoSuccessEvent(path, i));

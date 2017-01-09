@@ -9,6 +9,8 @@
     <color name="white">#ffffff</color>
     <color name="trans">#00000000</color>
 
+    <color name="text">#333333</color>
+
     <color name="tran_50_white">#DDffffff</color>
     <color name="tran_30_black">#4C000000</color>
 
@@ -84,6 +86,7 @@
     <color name="text_color25">#945700</color>
     <color name="text_color26">#f0f0f0</color>
     <color name="text_color27">#c9c9c9</color>
+    <color name="text_color28">#818181</color>
 
     <color name="text_color_hint">#ffA8A8A8</color>
 

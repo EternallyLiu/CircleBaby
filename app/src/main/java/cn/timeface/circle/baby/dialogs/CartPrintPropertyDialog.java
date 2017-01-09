@@ -206,7 +206,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        tfProgressDialog = new TFProgressDialog(getActivity());
+        tfProgressDialog = TFProgressDialog.getInstance("");
         cartItem = (PrintCartItem) getArguments().getSerializable("cart_item");
         propertyObj = (PrintPropertyPriceObj) getArguments().getSerializable("print_property");
         bookId = getArguments().getString("book_id");
@@ -549,9 +549,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     }
 
     private void addToCart() {
-        tfProgressDialog.show();
+        tfProgressDialog.show(getChildFragmentManager(), "");
         HashMap<String, String> params = getParams(0);
-        tfProgressDialog.show();
+        tfProgressDialog.show(getChildFragmentManager(), "");
 
         Subscription s = BaseAppCompatActivity.apiService.addCartItem(params)
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -641,7 +641,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         baseObj.setExpressId(1);
         baseObjs.add(baseObj);
 
-        tfProgressDialog.show();
+        tfProgressDialog.show(getChildFragmentManager(), "");
 
         btnOk.setBackgroundResource(R.drawable.shape_grey_btn_bg);
         btnOk.setClickable(false);

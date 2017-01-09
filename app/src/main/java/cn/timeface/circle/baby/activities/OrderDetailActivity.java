@@ -111,7 +111,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
     }
 
     private void setupView() {
-        progressDialog = new TFProgressDialog(this);
+        progressDialog = TFProgressDialog.getInstance("");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -209,7 +209,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
      */
     private void doPay() {
         orderPrice = listResponse.getOrderPrice();
-        progressDialog.setMessage(R.string.begin_payoff);
+        progressDialog.setTvMessage(getString(R.string.begin_payoff));
         Log.i("------->", "orderPrice:" + orderPrice + "-->getPayTitle:" + getPayTitle());
 //        if (orderPrice == 0) {//积分支付
 //            reqPayByPoint();
@@ -219,7 +219,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
             @Override
             public void okClick(int payType) {
                 dialog.dismiss();
-                progressDialog.show();
+                progressDialog.show(getSupportFragmentManager(), "");
                 switch (payType) {
                     // 支付宝
                     case 1:
@@ -303,8 +303,8 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
      * 确认订单支付结果
      */
     private void reqConfirmOrder() {
-        progressDialog.setMessage(getString(R.string.pay_result_confirm_begin));
-        progressDialog.show();
+        progressDialog.setTvMessage(getString(R.string.pay_result_confirm_begin));
+        progressDialog.show(getSupportFragmentManager(), "");
 
         timer.schedule(new TimerTask() {
             @Override

@@ -52,7 +52,7 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
 
             //强制更新
             if (FastData.getIsEnforceUpgrade() == 1) {
-                if (SplashActivity.progressDialog != null && SplashActivity.progressDialog.isShowing()) {
+                if (SplashActivity.progressDialog != null && SplashActivity.progressDialog.isVisible()) {
                     SplashActivity.progressDialog.dismiss();
                 }
                 PackageUtils.install(context, downloadFile.getAbsolutePath());

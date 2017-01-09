@@ -34,9 +34,9 @@ import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
-import cn.timeface.open.api.models.objs.TFOContentObj;
-import cn.timeface.open.api.models.objs.TFOPublishObj;
-import cn.timeface.open.api.models.objs.TFOResourceObj;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
  * 新建照片书

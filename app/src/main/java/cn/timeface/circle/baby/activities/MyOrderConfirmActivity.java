@@ -237,7 +237,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         original = getIntent().getIntExtra("original", 0);
         baseObjs = (List<PrintPropertyTypeObj>) getIntent().getSerializableExtra("baseObjs");
         Log.i("-------->", "orderId:" + orderId);
-        progressDialog = new TFProgressDialog(this);
+        progressDialog = TFProgressDialog.getInstance("");
 
         setupHeaderAndFooter();
 
@@ -680,8 +680,8 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 
     private void reqExpressFee() {
         if (!TextUtils.isEmpty(addressId) && dataList != null) {
-            progressDialog.setMessage(getString(R.string.loading));
-            progressDialog.show();
+            progressDialog.setTvMessage(getString(R.string.loading));
+            progressDialog.show(getSupportFragmentManager(), "");
 
             Subscription s = apiService.queryDispatchList(orderId, addressId)
                     .compose(SchedulersCompat.applyIoSchedulers())
@@ -946,8 +946,8 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //        }
         expressId = Integer.valueOf(mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue());
 
-        progressDialog.setMessage(getString(R.string.apply_order));
-        progressDialog.show();
+        progressDialog.setTvMessage(getString(R.string.apply_order));
+        progressDialog.show(getSupportFragmentManager(), "");
 
 //        for(PrintPropertyTypeObj baseObj : baseObjs){
 //            baseObj.setAddressId(Integer.valueOf(addressId));
@@ -975,7 +975,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
      * 支付
      */
     private void doPay() {
-        progressDialog.setMessage(R.string.begin_payoff);
+        progressDialog.setTvMessage(getString(R.string.begin_payoff));
         Log.i("------->", "orderPrice:" + orderPrice + "-->getPayTitle:" + getPayTitle());
 //        if (orderPrice == 0) {//积分支付
 //            reqPayByPoint();
@@ -985,7 +985,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
             @Override
             public void okClick(int payType) {
                 dialog.dismiss();
-                progressDialog.show();
+                progressDialog.show(getSupportFragmentManager(), "");
                 switch (payType) {
                     // 支付宝
                     case 1:
@@ -1063,8 +1063,8 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
      * 确认订单支付结果
      */
     private void reqConfirmOrder() {
-        progressDialog.setMessage(getString(R.string.pay_result_confirm_begin));
-        progressDialog.show();
+        progressDialog.setTvMessage(getString(R.string.pay_result_confirm_begin));
+        progressDialog.show(getSupportFragmentManager(), "");
 
         timer.schedule(new TimerTask() {
             @Override

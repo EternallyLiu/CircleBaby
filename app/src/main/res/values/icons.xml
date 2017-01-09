@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ic_password">&#xe60c;</string>
+    <string name="ic_verification_code">&#xe63a;</string>
+    <string name="ic_phone">&#xe625;</string>
+    <string name="ic_image">&#xe601;</string>
+    <string name="ic_iTV">&#xe602;</string>
+    <string name="ic_rocket">&#xe603;</string>
+    <string name="ic_share">&#xe604;</string>
+    <string name="ic_account">&#xe607;</string>
+    <string name="ic_notify">&#xe606;</string>
+    <string name="ic_about">&#xe608;</string>
+    <string name="ic_scan">&#xe605;</string>
+    <string name="ic_exit">&#xe600;</string>
+    <string name="ic_back">&#xe609;</string>
+    <string name="ic_check_update">&#xe60a;</string>
+    <string name="ic_location">&#xe60d;</string>
+    <string name="ic_empty_file">&#xe60e;</string>
+    <string name="ic_copy">&#xe60f;</string>
+    <string name="ic_plus">&#xe610;</string>
+    <string name="ic_delete">&#xe614;</string>
+</resources>

@@ -79,7 +79,7 @@ public class AddressAddActivity extends BaseAppCompatActivity {
         this.type = getIntent().getIntExtra("type", AddAddressFinishEvent.TYPE_ADD);
         this.module = (AddressItem) getIntent().getSerializableExtra("address");
 
-        progressDialog = new TFProgressDialog(this);
+        progressDialog = TFProgressDialog.getInstance("");
 
         switch (type) {
             case AddAddressFinishEvent.TYPE_ADD:
@@ -197,7 +197,7 @@ public class AddressAddActivity extends BaseAppCompatActivity {
             if (!TextUtils.isEmpty(cityId)) params.put("city", cityId);
             if (!TextUtils.isEmpty(districtId)) params.put("area", districtId);
         }
-        progressDialog.show();
+        progressDialog.show(getSupportFragmentManager(), "");
 
 
         Subscription s = apiService.changeAdd(params)

@@ -82,7 +82,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
         assert actionBar != null;
         actionBar.setTitle(R.string.picker_video);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
 //        if (savedInstanceState != null) {
 //            optionalPhotoSize = (int) savedInstanceState.get(KEY_OPTIONAL_PICTURE_SIZE);
 //        }
@@ -281,8 +281,8 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
     @Subscribe
     public void onEvent(ClipVideoSuccessEvent event) {
-        tfProgressDialog.setMessage("剪裁视频中，请稍候…");
-        tfProgressDialog.show();
+        tfProgressDialog.setTvMessage("剪裁视频中，请稍候…");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         String clipVideoPath = event.getClipVideoPath();
         int duration = event.getDuration();
         videoInfo.setPath(clipVideoPath);

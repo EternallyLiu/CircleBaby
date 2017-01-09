@@ -82,7 +82,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         setSupportActionBar(toolBar);
         ShareSDK.initSDK(this);
         Remember.putBoolean("showtimelinehead", true);
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
 
         /*if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
             //上次登录为手机号登录
@@ -169,8 +169,8 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
 
     private Subscription login(String account, String psw, int type) {
-        tfProgressDialog.setMessage("登录中…");
-        tfProgressDialog.show();
+        tfProgressDialog.setTvMessage("登录中…");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         Subscription s;
         s = apiService.login(Uri.encode(account), Uri.encode(psw), type)
                 .subscribeOn(Schedulers.io())
@@ -307,8 +307,8 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                            String openid,
                            String platId,
                            String unionid, Context context) {
-        tfProgressDialog.setMessage("登录中…");
-        tfProgressDialog.show();
+        tfProgressDialog.setTvMessage("登录中…");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

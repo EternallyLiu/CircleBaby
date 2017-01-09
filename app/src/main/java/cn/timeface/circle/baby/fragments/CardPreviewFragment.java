@@ -89,7 +89,7 @@ public class CardPreviewFragment extends BaseFragment {
             actionBar.setTitle("识图卡片");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        tfProgressDialog = new TFProgressDialog(getActivity());
+        tfProgressDialog =TFProgressDialog.getInstance("");
         url = imgObj.getLocalPath();
 
         uploadImageObservable(imgObj.getLocalPath())
@@ -179,11 +179,11 @@ public class CardPreviewFragment extends BaseFragment {
                     .flatMap(imageInfo -> apiService.cardComposed(URLEncoder.encode(content), imageInfo, py))
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(() -> {
-                        tfProgressDialog.setMessage("合成卡片中…");
-                        tfProgressDialog.show();
+                        tfProgressDialog.setTvMessage("合成卡片中…");
+                        tfProgressDialog.show(getChildFragmentManager(), "");
                     })
                     .doOnTerminate(() -> {
-                        if (tfProgressDialog != null && tfProgressDialog.isShowing()) {
+                        if (tfProgressDialog != null && tfProgressDialog.isVisible()) {
                             tfProgressDialog.dismiss();
                         }
                     })

@@ -25,6 +25,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter3;
 import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -32,11 +33,12 @@ import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.circle.baby.views.TFStateView;
-import cn.timeface.open.api.models.base.BaseResponse;
-import cn.timeface.open.api.models.objs.TFOBookType;
-import cn.timeface.open.api.models.objs.TFOContentObj;
-import cn.timeface.open.api.models.objs.TFOPublishObj;
-import cn.timeface.open.api.models.objs.TFOResourceObj;
+import cn.timeface.open.TFOpen;
+import cn.timeface.open.api.bean.base.TFOBaseResponse;
+import cn.timeface.open.api.bean.obj.TFOBookType;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 public class SelectThemeActivity extends BaseAppCompatActivity {
 
@@ -54,7 +56,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
     private int bookTheme;
     private String templateName;
     private ArrayList<ImageInfoListObj> dataList;
-    private BaseResponse<List<TFOBookType>> listBaseResponse;
+    private TFOBaseResponse<List<TFOBookType>> listBaseResponse;
     private int cloudAlbum;
 
     public static void open(Context context) {
@@ -71,7 +73,6 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
-
         Intent intent = getIntent();
         dataList = intent.getParcelableArrayListExtra("dataList");
         cloudAlbum = intent.getIntExtra("cloudAlbum", 0);
@@ -91,16 +92,17 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
 
     private void reqData() {
         tfStateView.loading();
-        ApiFactory.getOpenApi().getApiService().bookTypeList()
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(listBaseResponse -> {
-                    tfStateView.finish();
-                    this.listBaseResponse = listBaseResponse;
-                    setDataList(listBaseResponse.getData());
-                }, throwable -> {
-                    tfStateView.showException(throwable);
-                    Log.e(TAG, "getRelationshipList:", throwable);
-                });
+        // FIXME: 2017/1/9 开放平台api
+//        ApiFactory.getOpenApi().getApiService().bookTypeList()
+//                .compose(SchedulersCompat.applyIoSchedulers())
+//                .subscribe(listBaseResponse -> {
+//                    tfStateView.finish();
+//                    this.listBaseResponse = listBaseResponse;
+//                    setDataList(listBaseResponse.getData());
+//                }, throwable -> {
+//                    tfStateView.showException(throwable);
+//                    Log.e(TAG, "getRelationshipList:", throwable);
+//                });
     }
 
 

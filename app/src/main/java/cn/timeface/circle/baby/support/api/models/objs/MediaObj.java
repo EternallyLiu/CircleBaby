@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
-import cn.timeface.open.api.models.objs.TFOResourceObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
  * Created by lidonglin on 2016/5/9.

@@ -34,8 +34,9 @@ import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.TFStateView;
-import cn.timeface.open.GlobalSetting;
-import cn.timeface.open.api.models.objs.TFOUserObj;
+import cn.timeface.open.TFOpen;
+import cn.timeface.open.TFOpenConfig;
+import cn.timeface.open.api.bean.obj.TFOUserObj;
 
 public class ChangeBabyActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
@@ -159,8 +160,11 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         tfoUserObj.setNick_name(FastData.getBabyName());
         tfoUserObj.setPhone(FastData.getAccount());
         tfoUserObj.setUserId(FastData.getUserId());
-        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);
-        GlobalSetting.getInstance().setUploadServices(new OpenUploadServices());
+//        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);
+//        GlobalSetting.getInstance().setUploadServices(new OpenUploadServices());
+        TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
+                .debug(BuildConfig.DEBUG).build()
+        );
     }
 
     @Override

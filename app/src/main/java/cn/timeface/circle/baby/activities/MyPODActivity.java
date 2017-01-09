@@ -16,12 +16,12 @@ import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.open.activities.PODActivity;
-import cn.timeface.open.api.models.objs.TFOBookContentModel;
-import cn.timeface.open.api.models.objs.TFOBookElementModel;
-import cn.timeface.open.api.models.objs.TFOBookModel;
-import cn.timeface.open.api.models.objs.TFOPublishObj;
-import cn.timeface.open.constants.Constant;
+import cn.timeface.open.api.bean.obj.TFOBookContentModel;
+import cn.timeface.open.api.bean.obj.TFOBookElementModel;
+import cn.timeface.open.api.bean.obj.TFOBookModel;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.constant.TFOConstant;
+import cn.timeface.open.ui.PODActivity;
 
 public class MyPODActivity extends PODActivity {
 
@@ -30,19 +30,18 @@ public class MyPODActivity extends PODActivity {
     private String bookId;
     private int babyId;
 
-    public static void open(Context context, String bookId , String openBookId, int openBookType, List<TFOPublishObj> publishObjs, String dataList,boolean edit,int babyId,ArrayList<String> keys,ArrayList<String> values,int rebuild) {
+    public static void open(Context context, String bookId , String openBookId, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values, int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
         intent.putExtra("book_type", openBookType);
         intent.putExtra("book_id", openBookId);
-        intent.putParcelableArrayListExtra(Constant.PUBLISH_OBJS, (ArrayList<? extends Parcelable>) publishObjs);
+        intent.putParcelableArrayListExtra(TFOConstant.PUBLISH_OBJS, (ArrayList<? extends Parcelable>) publishObjs);
         intent.putExtra("dataList", dataList);
         intent.putExtra("edit", edit);
         intent.putExtra("bookId", bookId);
         intent.putExtra("babyId", babyId);
-        intent.putStringArrayListExtra(Constant.POD_KEYS,keys);
-        intent.putStringArrayListExtra(Constant.POD_VALUES,values);
-        intent.putExtra(Constant.REBUILD_BOOK,rebuild);
-        intent.putExtra(Constant.CUSTOM_DATA,"");
+        intent.putStringArrayListExtra(TFOConstant.POD_KEYS,keys);
+        intent.putStringArrayListExtra(TFOConstant.POD_VALUES,values);
+        intent.putExtra(TFOConstant.REBUILD_BOOK,rebuild);
         context.startActivity(intent);
     }
 
