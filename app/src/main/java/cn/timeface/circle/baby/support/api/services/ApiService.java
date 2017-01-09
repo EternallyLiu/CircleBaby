@@ -48,6 +48,7 @@ import cn.timeface.circle.baby.support.api.models.responses.TimelineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UnReadMsgResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UserLoginResponse;
+import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -604,4 +605,14 @@ public interface ApiService {
      */
     @POST("babyOrder/alipay")
     Observable<AliPayResponse> aliPay(@Query("orderId") String orderId);
+
+    /**
+     * 获取时间内容列表
+     * @param userId
+     * @return
+     */
+    @GET("timeAxis/list")
+    Observable<TimeAxixResponse> getTimeAxisList(@Query("userId") String userId);
+    @GET("timeAxis/list")
+    Observable<TimeAxixResponse> getTimeAxisList();
 }

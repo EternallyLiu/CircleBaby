@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import cn.timeface.circle.baby.R;
+
 /**
  * Created by wangshuai on 2017/1/7.
  */
