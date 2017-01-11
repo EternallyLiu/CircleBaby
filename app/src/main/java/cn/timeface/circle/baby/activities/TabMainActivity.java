@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,9 +50,13 @@ import cn.timeface.open.TFOpenConfig;
 import cn.timeface.open.api.bean.obj.TFOUserObj;
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
+/**
+ * 首页activity
+ * author : YW.SUN Created on 2017/1/11
+ * email : sunyw10@gmail.com
+ */
 public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
     @Bind(R.id.menu_home_tv)
     TextView menuHomeTv;
@@ -75,7 +78,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Bind(R.id.container)
     FrameLayout container;
     private BaseFragment currentFragment = null;
-    private PopupWindow popupWindow;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, TabMainActivity.class));
@@ -84,11 +86,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_tab_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         updateRegionDB();
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -238,12 +238,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     private void reqData() {
         Subscription s = apiService.getLocationList()
-                .doOnNext(new Action1<DistrictListResponse>() {
-                    @Override
-                    public void call(DistrictListResponse response) {
-                        if (response != null && response.success()) {
-                            DistrictModel.deleteAll();
-                        }
+                .doOnNext(response -> {
+                    if (response != null && response.success()) {
+                        DistrictModel.deleteAll();
                     }
                 })
                 .flatMap(new Func1<DistrictListResponse, Observable<DistrictModel>>() {
