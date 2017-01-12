@@ -24,4 +24,7 @@
 
     <dimen name="toolbar_padding_top">0dp</dimen>
     <dimen name="toolbar_padding_top2">25dp</dimen>
+    <dimen name="size_60">60dp</dimen>
+    <dimen name="size_17">17dp</dimen>
+    <dimen name="size_18">18dp</dimen>
 </resources>

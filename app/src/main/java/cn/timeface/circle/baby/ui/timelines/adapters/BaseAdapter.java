@@ -1,8 +1,207 @@
 package cn.timeface.circle.baby.ui.timelines.adapters;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+
 /**
  * Created by wangshuai on 2017/1/9.
  */
 
-public class BaseAdapter {
+public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> implements ViewHolderInterface, View.OnClickListener {
+
+    /**
+     * 给数据源中间添加数据
+     */
+    private static final int UPDATE_DATA_ADD_LIST_CENTER = 1101;
+
+    private static final int DELETE_ALL = -100001;
+
+    /**
+     * 删除数据
+     */
+    private static final int UPDATE_DATA_DELETE_DATA = -1001;
+    /**
+     * 修改数据
+     */
+    private static final int UPDATE_DATA_UPDATE_DATA = 1002;
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            handleMsg(msg);
+        }
+    };
+
+    private void handleMsg(Message msg) {
+        Log.i("test", "handleMsg:" + msg.what + "--" + msg.arg1 + "--" + msg.arg2);
+        switch (msg.what) {
+            case DELETE_ALL:
+                if (list != null && list.size() > 0) {
+                    list.clear();
+                    notifyDataSetChanged();
+                }
+                break;
+            case UPDATE_DATA_ADD_LIST_CENTER:
+                if (msg.obj != null) {
+                    if (msg.arg1 >= 0 && msg.arg1 <= getItemCount() && msg.arg2 > 0) {
+                        if (msg.arg2 == 1) list.add(msg.arg1, msg.obj);
+                        else list.addAll(msg.arg1, (Collection<BaseObj>) msg.obj);
+                        notifyItemRangeInserted(msg.arg1, msg.arg2);
+                    }
+                }
+                break;
+            case UPDATE_DATA_DELETE_DATA:
+                if (msg.arg1 >= 0 && msg.arg1 < getItemCount()) {
+                    for (int i = 0; i < msg.arg2; i++) {
+                        list.remove(msg.arg1);
+                        notifyItemRemoved(msg.arg1);
+                    }
+                }
+                if (msg.arg1 != getItemCount())
+                    notifyItemRangeChanged(msg.arg1, getItemCount() - msg.arg1);
+                break;
+            case UPDATE_DATA_UPDATE_DATA:
+                if (msg.obj != null) {
+                    list.remove(msg.arg1);
+                    list.add(msg.arg1, (BaseObj) msg.obj);
+                }
+                notifyItemChanged(msg.arg1);
+                if (msg.arg1 != getItemCount())
+                    notifyItemRangeChanged(msg.arg1, getItemCount() - msg.arg1);
+                break;
+        }
+    }
+
+    /**
+     * 更新item
+     *
+     * @param itemId
+     * @param object
+     */
+    public void updateItem(int itemId, BaseObj object) {
+        if (itemId < 0)
+            itemId = 0;
+        if (itemId >= getItemCount())
+            itemId = getItemCount() - 1;
+        handler.sendMessage(handler.obtainMessage(UPDATE_DATA_UPDATE_DATA, itemId, 0, object));
+    }
+
+    public void clearAll() {
+        handler.sendMessage(handler.obtainMessage(DELETE_ALL));
+    }
+
+    public void addList(int position, List list) {
+        if (list == null || list.size() <= 0) return;
+        if (position < 0)
+            position = 0;
+        if (list.size() == 1)
+            handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, position, list.size(), list.get(0)));
+        else
+            handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, position, list.size(), list));
+    }
+
+    public void addList(boolean isClear, List list) {
+        if (isClear) clearAll();
+        addList(getItemCount(), list);
+    }
+
+    public void addList(List list) {
+        addList(false, list);
+    }
+
+    public void addListToBegin(List list) {
+        addList(0, list);
+    }
+
+    public void deleteItem(int itemId) {
+        deleteItem(itemId, 1);
+    }
+
+    public void deleteItem(int itemId, int count) {
+        if (itemId < 0)
+            itemId = 0;
+        if (itemId >= getItemCount())
+            itemId = getItemCount() - 1;
+        if (count + itemId > 0 && count + itemId <= getItemCount())
+            handler.sendMessage(handler.obtainMessage(UPDATE_DATA_DELETE_DATA, itemId, count, null));
+    }
+
+    private ArrayList list = new ArrayList<>(0);
+
+    protected LayoutInflater inflater = null;
+    protected Context activity;
+
+    public BaseAdapter(Context activity) {
+        this.activity = activity;
+        this.inflater = LayoutInflater.from(activity);
+    }
+
+    public abstract int getViewLayoutID(int viewType);
+
+    public abstract int getItemViewType(int position);
+
+    @Override
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new BaseViewHolder(inflater.inflate(getViewLayoutID(viewType),
+                parent, false), this);
+    }
+
+    @Override
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        if (holder != null && holder.getListener() != null) {
+            holder.getRootView().setTag(R.id.recycler_item_click_tag, position);
+            holder.getRootView().setOnClickListener(this);
+            holder.getListener().initView(holder.getRootView(), position);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return list == null ? 0 : list.size();
+    }
+
+    public <T extends BaseObj> T getItem(int position) {
+        if (position >= 0 && position < getItemCount())
+            return (T) list.get(position);
+        return null;
+    }
+
+    private OnItemClickLister itemClickLister;
+
+    public OnItemClickLister getItemClickLister() {
+        return itemClickLister;
+    }
+
+    public void setItemClickLister(OnItemClickLister itemClickLister) {
+        this.itemClickLister = itemClickLister;
+    }
+
+    public interface OnItemClickLister {
+        public void onItemClick(View view, int position);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int tag = (int) v.getTag(R.id.recycler_item_click_tag);
+        if (getItemClickLister() != null) {
+            getItemClickLister().onItemClick(v, tag);
+        }
+    }
+
+    @Override
+    public abstract void initView(View contentView, int position);
 }

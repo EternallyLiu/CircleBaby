@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:timeLine="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/size_6"
+    android:paddingRight="@dimen/size_6">
 
-</LinearLayout>
+    <cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker
+        android:id="@+id/line"
+        android:padding="@dimen/size_12"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        timeLine:beginLine="@color/sea_buckthorn"
+        timeLine:endLine="@color/sea_buckthorn"
+        timeLine:lineSize="@dimen/size_2"
+        timeLine:marker="@drawable/time_line_marker"
+        timeLine:markerSize="@dimen/size_18" />
+
+    <TextView
+        android:id="@+id/year"
+        android:textColor="@color/sea_buckthorn"
+        android:textSize="@dimen/text_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_toRightOf="@+id/line"
+        android:gravity="center_vertical"
+        android:text="@string/time_line_select_year" />
+
+    <TextView
+        android:id="@+id/operation_tip"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/size_12"
+        android:gravity="center_vertical"
+        android:text="@string/time_line_select_year" />
+
+</RelativeLayout>

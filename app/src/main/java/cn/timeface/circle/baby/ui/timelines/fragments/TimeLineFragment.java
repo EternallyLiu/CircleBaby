@@ -1,5 +1,7 @@
 package cn.timeface.circle.baby.ui.timelines.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,14 +15,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineSelectAdapter;
-import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.ui.timelines.beans.MonthRecord;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxisObj;
 import rx.Subscription;
@@ -90,6 +95,8 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
         addSubscription(ss);
     }
 
+
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -109,7 +116,9 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
                 adapter.addList(position + 1, time.getMonthRecords());
         } else if (item instanceof MonthRecord) {
             MonthRecord mon = (MonthRecord) item;
-            Log.i("test", mon.toString());
+            Bundle bundle=new Bundle();
+            bundle.putParcelable("data",mon);
+            FragmentBridgeActivity.open(getContext(),"TimeLineDayFragment","",bundle);
         }
     }
 }

@@ -97,4 +97,15 @@ public class MonthRecord extends BaseObj implements Parcelable {
             return new MonthRecord[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "MonthRecord{" +
+                "babyAge='" + babyAge + '\'' +
+                ", year=" + year +
+                ", recordcount=" + recordcount +
+                ", moth=" + moth +
+                ", medias=" + medias +
+                '}';
+    }
 }

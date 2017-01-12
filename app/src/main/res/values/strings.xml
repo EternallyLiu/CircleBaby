@@ -672,5 +672,10 @@
     <string name="feed_back">反馈</string>
     <string name="terms_of_service">服务条款</string>
     <string name="timeface_copyright">时光流影   版权所有\nCopyright© 2014 TimeFace. All Rights Reserved.</string>
+    <string name="time_line_select_year">年份</string>
+    <string name="time_line_select_title">成长记录</string>
+    <string name="time_line_select_baby_age">宝宝10个月</string>
+    <string name="time_line_select_month">10月</string>
+    <string name="time_line_select_pic_count">共s%张</string>
 
 </resources>

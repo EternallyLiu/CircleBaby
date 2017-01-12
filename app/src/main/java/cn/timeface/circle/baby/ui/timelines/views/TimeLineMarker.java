@@ -22,10 +22,30 @@ public class TimeLineMarker extends View {
     private Drawable mEndLine;
     private Drawable mMarkerDrawable;
 
+    private boolean isDrawBegin;
+
+    public boolean isDrawBegin() {
+        return isDrawBegin;
+    }
+
+    public void setDrawBegin(boolean drawBegin) {
+        isDrawBegin = drawBegin;
+    }
+
+    public boolean isDrawEnd() {
+        return isDrawEnd;
+    }
+
+    public void setDrawEnd(boolean drawEnd) {
+        isDrawEnd = drawEnd;
+    }
+
+    private boolean isDrawEnd;
+
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mBeginLine != null) mBeginLine.draw(canvas);
-        if (mEndLine != null) mEndLine.draw(canvas);
+        if (mBeginLine != null && isDrawBegin()) mBeginLine.draw(canvas);
+        if (mEndLine != null && isDrawEnd()) mEndLine.draw(canvas);
         if (mMarkerDrawable != null) mMarkerDrawable.draw(canvas);
         super.onDraw(canvas);
     }

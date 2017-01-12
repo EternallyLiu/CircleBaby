@@ -294,6 +294,12 @@ public interface ApiService {
     @GET("babyTime/timeline")
     Observable<TimelineResponse> timeline(@Query("currentPage") int currentPage,
                                           @Query("pageSize") int pageSize);
+    @GET("babyTime/timeline")
+    Observable<TimelineResponse> timeline(
+            @Query("month") int month,
+            @Query("year") int year,
+            @Query("currentPage") int currentPage,
+                                          @Query("pageSize") int pageSize);
 
     //首页-时光详情
     @GET("babyTime/queryBabyTimeDetail")

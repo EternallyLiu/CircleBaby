@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.activities.base;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.umeng.analytics.MobclickAgent;
@@ -43,6 +44,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+        Log.d("text",getClass().getName());
     }
 
     @Override
