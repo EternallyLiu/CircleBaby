@@ -677,5 +677,7 @@
     <string name="time_line_select_baby_age">宝宝10个月</string>
     <string name="time_line_select_month">10月</string>
     <string name="time_line_select_pic_count">共s%张</string>
+    <string name="time_line_select_up">收起</string>
+    <string name="time_line_select_down">展开</string>
 
 </resources>

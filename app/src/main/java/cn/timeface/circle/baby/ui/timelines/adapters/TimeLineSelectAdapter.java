@@ -17,6 +17,7 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MonthRecord;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxisObj;
+import cn.timeface.circle.baby.ui.timelines.views.SelectImageView;
 import cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker;
 
 /**
@@ -74,9 +75,16 @@ public class TimeLineSelectAdapter extends BaseAdapter {
 
     private void doYearView(View view, TimeAxisObj item, int position) {
         TimeLineMarker marker = ViewHolder.getView(view, R.id.line);
+        TextView operationTip=ViewHolder.getView(view,R.id.operation_tip);
+        SelectImageView selectImageView=ViewHolder.getView(view,R.id.open);
+        selectImageView.setChecked(item.isSelected());
         if (item.isSelected()) {
+            operationTip.setText(R.string.time_line_select_up);
             marker.setMarkerDrawable(getSelectDrawable());
-        } else marker.setMarkerDrawable(getNoSelectDrawable());
+        } else {
+            marker.setMarkerDrawable(getNoSelectDrawable());
+            operationTip.setText(R.string.time_line_select_down);
+        }
 
         TextView year = ViewHolder.getView(view, R.id.year);
         year.setText(item.getYear() + "年");

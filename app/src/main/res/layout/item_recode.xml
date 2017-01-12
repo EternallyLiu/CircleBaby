@@ -165,6 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/view_space_small"
+            android:visibility="gone"
             android:layout_marginTop="@dimen/view_space_small">
 
             <LinearLayout

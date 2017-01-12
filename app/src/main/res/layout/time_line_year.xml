@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/size_6"
+    android:background="@color/alabaster"
     android:paddingRight="@dimen/size_6">
 
     <cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker
         android:id="@+id/line"
-        android:padding="@dimen/size_12"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
+        android:padding="@dimen/size_12"
         timeLine:beginLine="@color/sea_buckthorn"
         timeLine:endLine="@color/sea_buckthorn"
         timeLine:lineSize="@dimen/size_2"
@@ -20,26 +21,37 @@
 
     <TextView
         android:id="@+id/year"
-        android:textColor="@color/sea_buckthorn"
-        android:textSize="@dimen/text_normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/size_12"
         android:layout_toRightOf="@+id/line"
         android:gravity="center_vertical"
-        android:text="@string/time_line_select_year" />
+        android:text="@string/time_line_select_year"
+        android:textColor="@color/sea_buckthorn"
+        android:textSize="@dimen/text_normal" />
 
     <TextView
         android:id="@+id/operation_tip"
-        android:textColor="@color/aluminum"
-        android:textSize="@dimen/text_normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_6"
+        android:layout_toLeftOf="@+id/open"
         android:gravity="center_vertical"
-        android:text="@string/time_line_select_year" />
+        android:text="@string/time_line_select_year"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_normal" />
+
+    <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
+        android:id="@+id/open"
+        android:layout_width="@dimen/size_20"
+        android:layout_height="@dimen/size_15"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:scaleType="fitCenter"
+        timeLine:isSelected="false"
+        timeLine:selectDrawable="@drawable/time_line_select_up"
+        timeLine:unselectDrawable="@drawable/time_line_select_down"/>
 
 </RelativeLayout>
