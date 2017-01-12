@@ -391,8 +391,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_changebaby:
-                FragmentBridgeActivity.open(getContext(),"TimeLineFragment");
-//                ChangeBabyActivity.open(getActivity());
+                ChangeBabyActivity.open(getActivity());
                 break;
             case R.id.iv_message:
                 FragmentBridgeActivity.open(getActivity(), "MessageFragment");

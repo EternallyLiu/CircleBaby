@@ -17,6 +17,9 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -48,8 +51,8 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
     private TimeLineSelectAdapter adapter = null;
 
     @OnClick(R.id.back)
-    public void click(View view){
-        switch (view.getId()){
+    public void click(View view) {
+        switch (view.getId()) {
             case R.id.back:
                 getActivity().finish();
                 break;
@@ -86,7 +89,7 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
                     if (timeAxixResponse.success()) {
                         if (timeAxixResponse.getDataList() != null && timeAxixResponse.getDataList().size() > 0) {
                             Log.d("test", "datalistSize==" + timeAxixResponse.getDataList().size());
-                            adapter.addList(true, timeAxixResponse.getDataList());
+                            setDataList(timeAxixResponse.getDataList());
                         }
                     }
                 }, error -> {
@@ -95,6 +98,17 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
         addSubscription(ss);
     }
 
+
+    private void setDataList(List<TimeAxisObj> lisr) {
+        if (lisr != null && lisr.size() > 0) {
+            ArrayList rlist=new ArrayList();
+            TimeAxisObj time = lisr.get(0);
+            time.setSelected(true);
+            rlist.addAll(lisr);
+            rlist.addAll(1, time.getMonthRecords());
+            adapter.addList(true,rlist);
+        }
+    }
 
 
     @Override
@@ -116,9 +130,9 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
                 adapter.addList(position + 1, time.getMonthRecords());
         } else if (item instanceof MonthRecord) {
             MonthRecord mon = (MonthRecord) item;
-            Bundle bundle=new Bundle();
-            bundle.putParcelable("data",mon);
-            FragmentBridgeActivity.open(getContext(),"TimeLineDayFragment","",bundle);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("data", mon);
+            FragmentBridgeActivity.open(getContext(), "TimeLineDayFragment", "", bundle);
         }
     }
 }
