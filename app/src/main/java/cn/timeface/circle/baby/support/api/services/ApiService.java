@@ -3,6 +3,11 @@ package cn.timeface.circle.baby.support.api.services;
 import java.util.Map;
 
 import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
+import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ADResponse;
@@ -48,6 +53,7 @@ import cn.timeface.circle.baby.support.api.models.responses.TimelineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UnReadMsgResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UserLoginResponse;
+import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -286,9 +292,9 @@ public interface ApiService {
 
     //识图卡片-合成
     @GET("babyTime/cardComposed")
-    Observable<DiaryComposedResponse> cardComposed(@Query("content") String content,
-                                                   @Query("imageInfo") String imageInfo,
-                                                   @Query("pinyin") String pinyin);
+    Observable<KnowledgeComposedResponse> cardComposed(@Query("content") String content,
+                                                       @Query("imageInfo") String imageInfo,
+                                                       @Query("pinyin") String pinyin);
 
     //首页-宝宝时光
     @GET("babyTime/timeline")
@@ -615,4 +621,35 @@ public interface ApiService {
     Observable<TimeAxixResponse> getTimeAxisList(@Query("userId") String userId);
     @GET("timeAxis/list")
     Observable<TimeAxixResponse> getTimeAxisList();
+
+    /**
+     * 获取印成长首页数据
+     * @return print growth data
+     */
+    @GET("printGrowth/index")
+    Observable<PrintGrowthHomeResponse> printGrowthHome();
+
+    /**
+     * 获取书的列表数据
+     * @return book list response
+     */
+    @GET("printGrowth/getBookListByBookType")
+    Observable<BookListResponse> bookList(int bookType);
+
+    /**
+     * 获取识图卡片列表
+     * @return recognize card list response
+     */
+    @GET("printGrowth/knowCardList")
+    Observable<KnowledgeCardListResponse> recognizeCardList();
+
+    /**
+     * 获取日记卡片列表
+     * @return diary card list response
+     */
+    @GET("printGrowth/diaryCardList")
+    Observable<DiaryCardListResponse> diaryCardList();
+
+
+
 }

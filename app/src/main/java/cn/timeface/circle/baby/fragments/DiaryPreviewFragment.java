@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
 import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.objs.DiaryCardObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
@@ -334,10 +335,10 @@ public class DiaryPreviewFragment extends BaseFragment {
                     })
                     .subscribe(diaryComposedResponse -> {
                                 if (diaryComposedResponse.success()) {
-                                    MediaObj mediaObj = diaryComposedResponse.getMediaObj();
-                                    mediaObj.setPhotographTime(System.currentTimeMillis());
+                                    DiaryCardObj diaryCardObj = diaryComposedResponse.getDiaryCardObj();
+                                    diaryCardObj.getMedia().setPhotographTime(System.currentTimeMillis());
                                     tfProgressDialog.dismiss();
-                                    PublishActivity.open(getContext(), mediaObj);
+                                    PublishActivity.open(getContext(), diaryCardObj);
                                     getActivity().finish();
                                     EventBus.getDefault().post(new DiaryPublishEvent());
                                 } else {

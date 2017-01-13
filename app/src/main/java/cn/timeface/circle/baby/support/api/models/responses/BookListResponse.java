@@ -5,22 +5,22 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
-import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 
 /**
- * card list
+ * book list response
  * author : YW.SUN Created on 2017/1/12
  * email : sunyw10@gmail.com
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class CardListResponse extends BaseResponse {
-    List<CardObj> dataList;
+public class BookListResponse extends BaseResponse {
+    private List<BookObj> dataList;
 
-    public List<CardObj> getDataList() {
+    public List<BookObj> getDataList() {
         return dataList;
     }
 
-    public void setDataList(List<CardObj> dataList) {
+    public void setDataList(List<BookObj> dataList) {
         this.dataList = dataList;
     }
 }

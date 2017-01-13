@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import cn.timeface.circle.baby.support.api.models.TFUploadFile;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.support.mvp.BasePresenter;
+import cn.timeface.circle.baby.support.mvp.bases.BasePresenter;
 import cn.timeface.circle.baby.support.mvp.model.NotebookModel;
 import cn.timeface.circle.baby.support.mvp.presentations.NotebookPresentation;
 import cn.timeface.circle.baby.support.oss.OSSManager;

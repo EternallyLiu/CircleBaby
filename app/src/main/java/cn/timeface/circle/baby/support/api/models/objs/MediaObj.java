@@ -3,28 +3,42 @@ package cn.timeface.circle.baby.support.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
- * Created by lidonglin on 2016/5/9.
+ * media obj
+ * author : YW.SUN Created on 2017/1/12
+ * email : sunyw10@gmail.com
  */
-public class MediaObj extends BaseObj
-        implements Parcelable {
-    String content;         //图片描述
-    int h;                  //长度
-    int w;                  //宽度
-    int id;
-    String imgUrl;          //如果是视频则是视频某一帧图片
-    long length;             //视频长度
-    String localPath;       //图片本地路径
-    long photographTime;     //照片or视频的拍摄时间
-    String videoUrl;        //视频url
-    int selected;           //成书的时候图片选中状态 1-选中 默认是0-不选中
-    private int isCover;
-    int timeId;
-    long date;
-    int imageOrientation;  //图片旋转属性
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
+public class MediaObj extends BaseObj implements Parcelable {
+    private String content;//图片描述
+    private int h;//长度
+    private int w;//宽度
+    private int id;
+    private String imgUrl;//如果是视频则是视频某一帧图片
+    private long length;//视频长度
+    private String localPath;//图片本地路径
+    private long photographTime;//照片or视频的拍摄时间
+    private String videoUrl;//视频url
+    private int selected;//成书的时候图片选中状态 1-选中 默认是0-不选中
+    private int isCover;//是否是封面
+    private int timeId;//时光id
+    private long date;//时间戳
+    private int imageOrientation;//图片旋转属性
+    private int favoritecount;
+    private int isFavorite;
+    private String localIdentifier;
+    private LocationObj location;
+    private List<MediaTipObj> tips;
+
+    public MediaObj() {}
 
     //图片
     public MediaObj(String content, String imgUrl, int w, int h, long photographTime) {
@@ -54,6 +68,46 @@ public class MediaObj extends BaseObj
         this.localPath = localPath;
         this.photographTime = photographTime;
         this.videoUrl = videoUrl;
+    }
+
+    public int getFavoritecount() {
+        return favoritecount;
+    }
+
+    public void setFavoritecount(int favoritecount) {
+        this.favoritecount = favoritecount;
+    }
+
+    public int getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(int isFavorite) {
+        this.isFavorite = isFavorite;
+    }
+
+    public String getLocalIdentifier() {
+        return localIdentifier;
+    }
+
+    public void setLocalIdentifier(String localIdentifier) {
+        this.localIdentifier = localIdentifier;
+    }
+
+    public LocationObj getLocation() {
+        return location;
+    }
+
+    public void setLocation(LocationObj location) {
+        this.location = location;
+    }
+
+    public List<MediaTipObj> getTips() {
+        return tips;
+    }
+
+    public void setTips(List<MediaTipObj> tips) {
+        this.tips = tips;
     }
 
     public int getImageOrientation() {
@@ -175,54 +229,6 @@ public class MediaObj extends BaseObj
         this.isCover = isCover;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.content);
-        dest.writeInt(this.h);
-        dest.writeInt(this.w);
-        dest.writeInt(this.id);
-        dest.writeString(this.imgUrl);
-        dest.writeLong(this.length);
-        dest.writeString(this.localPath);
-        dest.writeLong(this.photographTime);
-        dest.writeString(this.videoUrl);
-        dest.writeInt(this.selected);
-        dest.writeInt(this.isCover);
-        dest.writeInt(this.timeId);
-    }
-
-    protected MediaObj(Parcel in) {
-        this.content = in.readString();
-        this.h = in.readInt();
-        this.w = in.readInt();
-        this.id = in.readInt();
-        this.imgUrl = in.readString();
-        this.length = in.readLong();
-        this.localPath = in.readString();
-        this.photographTime = in.readLong();
-        this.videoUrl = in.readString();
-        this.selected = in.readInt();
-        this.isCover = in.readInt();
-        this.timeId = in.readInt();
-    }
-
-    public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {
-        @Override
-        public MediaObj createFromParcel(Parcel source) {
-            return new MediaObj(source);
-        }
-
-        @Override
-        public MediaObj[] newArray(int size) {
-            return new MediaObj[size];
-        }
-    };
-
     public TFOResourceObj toTFOResourceObj() {
         return new TFOResourceObj(id + "", imgUrl, w, h, imageOrientation, "");
     }
@@ -245,4 +251,67 @@ public class MediaObj extends BaseObj
                 ", date=" + date +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.content);
+        dest.writeInt(this.h);
+        dest.writeInt(this.w);
+        dest.writeInt(this.id);
+        dest.writeString(this.imgUrl);
+        dest.writeLong(this.length);
+        dest.writeString(this.localPath);
+        dest.writeLong(this.photographTime);
+        dest.writeString(this.videoUrl);
+        dest.writeInt(this.selected);
+        dest.writeInt(this.isCover);
+        dest.writeInt(this.timeId);
+        dest.writeLong(this.date);
+        dest.writeInt(this.imageOrientation);
+        dest.writeInt(this.favoritecount);
+        dest.writeInt(this.isFavorite);
+        dest.writeString(this.localIdentifier);
+        dest.writeParcelable(location, flags);
+        dest.writeList(this.tips);
+    }
+
+    protected MediaObj(Parcel in) {
+        this.content = in.readString();
+        this.h = in.readInt();
+        this.w = in.readInt();
+        this.id = in.readInt();
+        this.imgUrl = in.readString();
+        this.length = in.readLong();
+        this.localPath = in.readString();
+        this.photographTime = in.readLong();
+        this.videoUrl = in.readString();
+        this.selected = in.readInt();
+        this.isCover = in.readInt();
+        this.timeId = in.readInt();
+        this.date = in.readLong();
+        this.imageOrientation = in.readInt();
+        this.favoritecount = in.readInt();
+        this.isFavorite = in.readInt();
+        this.localIdentifier = in.readString();
+        this.location = in.readParcelable(LocationObj.class.getClassLoader());
+        this.tips = new ArrayList<MediaTipObj>();
+        in.readList(this.tips, MediaTipObj.class.getClassLoader());
+    }
+
+    public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {
+        @Override
+        public MediaObj createFromParcel(Parcel source) {
+            return new MediaObj(source);
+        }
+
+        @Override
+        public MediaObj[] newArray(int size) {
+            return new MediaObj[size];
+        }
+    };
 }

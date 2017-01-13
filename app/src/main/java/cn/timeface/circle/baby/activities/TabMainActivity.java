@@ -44,6 +44,7 @@ import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
 import cn.timeface.common.utils.CommonUtil;
 import cn.timeface.open.TFOpen;
 import cn.timeface.open.TFOpenConfig;
@@ -62,6 +63,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     TextView menuHomeTv;
     @Bind(R.id.menu_mime_tv)
     TextView menuMimeTv;
+    @Bind(R.id.menu_growth_up_tv)
+    TextView menuGrowthTv;
     @Bind(R.id.iv_publish)
     ImageView ivPublish;
     @Bind(R.id.toolbar)
@@ -73,8 +76,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Bind(R.id.foot_menu_ll)
     View footMenu;
     private long lastPressedTime = 0;
-    private static final int TAB1 = 0;
-    private static final int TAB2 = 1;
+    private static final int TAB1 = 0;//时光轴
+    private static final int TAB2 = 1;//我的
+    private static final int TAB3 = 2;//印成长
     @Bind(R.id.container)
     FrameLayout container;
     private BaseFragment currentFragment = null;
@@ -130,15 +134,26 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     public void clickTab(View view) {
 
         switch (view.getId()) {
+            //时光轴
             case R.id.menu_home_tv:
                 menuHomeTv.setSelected(true);
                 menuMimeTv.setSelected(false);
+                menuGrowthTv.setSelected(false);
                 showContent(TAB1);
                 break;
+            //我的
             case R.id.menu_mime_tv:
                 menuHomeTv.setSelected(false);
                 menuMimeTv.setSelected(true);
+                menuGrowthTv.setSelected(false);
                 showContent(TAB2);
+                break;
+            //印成长
+            case R.id.menu_growth_up_tv:
+                menuHomeTv.setSelected(false);
+                menuMimeTv.setSelected(false);
+                menuGrowthTv.setSelected(true);
+                showContent(TAB3);
                 break;
         }
     }
@@ -149,6 +164,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 return HomeFragment.newInstance("首页");
             case TAB2:
                 return MineFragment.newInstance("我的");
+            case TAB3:
+                return PrintGrowthHomeFragment.newInstance("印成长");
+
         }
         return null;
     }

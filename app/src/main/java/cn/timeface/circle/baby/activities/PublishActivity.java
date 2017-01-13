@@ -54,6 +54,7 @@ import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
+import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.api.models.PhotoRecode;
@@ -131,8 +132,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private List<ImgObj>[] imagelLists;
     private PublishPhotoAdapter publishPhotoAdapter;
     private int type;
-    private MediaObj mediaObj;
-    private List<MediaObj> mediaObjs;
+    private CardObj cardObj;
+    private List<CardObj> cardObjs;
     private VideoInfo videoInfo;
     private TFProgressDialog tfProgressDialog;
     private String time_shot;
@@ -147,13 +148,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         context.startActivity(intent);
     }
 
-    public static void open(Context context, MediaObj mediaObj) {
+    public static void open(Context context, CardObj cardObj) {
         Intent intent = new Intent(context, PublishActivity.class);
-        intent.putExtra("mediaObj", mediaObj);
+        intent.putExtra("mediaObj", cardObj);
         context.startActivity(intent);
     }
 
-    public static void open(Context context, List<MediaObj> mediaObjs) {
+    public static void open(Context context, List<CardObj> mediaObjs) {
         Intent intent = new Intent(context, PublishActivity.class);
         intent.putParcelableArrayListExtra("mediaObjs", (ArrayList<? extends Parcelable>) mediaObjs);
         context.startActivity(intent);
@@ -170,8 +171,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         tfProgressDialog = TFProgressDialog.getInstance("");
 
         publishType = getIntent().getIntExtra("publish_type", NOMAL);
-        mediaObj = getIntent().getParcelableExtra("mediaObj");
-        mediaObjs = getIntent().getParcelableArrayListExtra("mediaObjs");
+        cardObj = getIntent().getParcelableExtra("mediaObj");
+        cardObjs = getIntent().getParcelableArrayListExtra("mediaObjs");
 
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
@@ -197,28 +198,28 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 break;
         }
 
-        if (mediaObj != null) {
+        if (cardObj != null) {
             type = 2;
             gvGridView.setVisibility(View.GONE);
             ivCard.setVisibility(View.VISIBLE);
-            GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
-            time_shot = DateUtil.formatDate("yyyy.MM.dd", mediaObj.getPhotographTime());
+            GlideUtil.displayImage(cardObj.getMedia().getImgUrl(), ivCard);
+            time_shot = DateUtil.formatDate("yyyy.MM.dd", cardObj.getMedia().getPhotographTime());
             tvTime.setText(time_shot);
         }
-        if (mediaObjs != null) {
+        if (cardObjs != null) {
             type = 3;
             gvGridView.setVisibility(View.VISIBLE);
             ivCard.setVisibility(View.GONE);
             List<String> list = new ArrayList<>();
-            for (MediaObj media : mediaObjs) {
-                list.add(media.getImgUrl());
+            for (CardObj cardObj : cardObjs) {
+                list.add(cardObj.getMedia().getImgUrl());
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
-            if (mediaObjs.get(0).getPhotographTime() == 0) {
+            if (cardObjs.get(0).getMedia().getPhotographTime() == 0) {
                 time_shot = DateUtil.formatDate("yyyy.MM.dd", System.currentTimeMillis());
             } else {
-                time_shot = DateUtil.formatDate("yyyy.MM.dd", mediaObjs.get(0).getPhotographTime());
+                time_shot = DateUtil.formatDate("yyyy.MM.dd", cardObjs.get(0).getMedia().getPhotographTime());
             }
             tvTime.setText(time_shot);
         }
@@ -356,7 +357,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     time_shot = DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate());
                     tvTime.setText(time_shot);
                     tvVideotime.setText("时长：" + DateUtil.getTime4(videoInfo.getDuration() * 1000));
-                    mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
+                    MediaObj mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
+                    cardObj.setMedia(mediaObj);
                     break;
             }
 
@@ -392,7 +394,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布识图卡片
     private void publishCard() {
         String content = etContent.getText().toString();
-        if (mediaObjs.size() == 0) {
+        if (cardObjs.size() == 0) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             isPublish = false;
             return;
@@ -404,7 +406,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
         List<PublishObj> datalist = new ArrayList<>();
 
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
+        PublishObj publishObj = new PublishObj(content, cardObjs, milestone == null ? 0 : milestone.getId(), time);
         datalist.add(publishObj);
 
         Gson gson = new Gson();
@@ -434,7 +436,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布日记
     private void publishDiary() {
         String content = etContent.getText().toString();
-        if (mediaObj == null) {
+        if (cardObj == null) {
             if (type == 1) {
                 Toast.makeText(this, "请选择视频~", Toast.LENGTH_SHORT).show();
             } else {
@@ -449,10 +451,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         List<PublishObj> datalist = new ArrayList<>();
-        List<MediaObj> mediaObjs = new ArrayList<>();
-        mediaObjs.add(mediaObj);
+        List<CardObj> cardObjs = new ArrayList<>();
+        cardObjs.add(cardObj);
 
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
+        PublishObj publishObj = new PublishObj(content, cardObjs, milestone == null ? 0 : milestone.getId(), time);
         datalist.add(publishObj);
 
         Gson gson = new Gson();
@@ -518,17 +520,19 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             Milestone mileStone = photoRecode.getMileStone();
             int mileStoneId = mileStone == null ? 0 : mileStone.getId();
             List<ImgObj> imgObjList = photoRecode.getImgObjList();
-            List<MediaObj> mediaObjs = new ArrayList<>();
+            List<CardObj> cardObjs = new ArrayList<>();
             for (ImgObj img : imgObjList) {
 //                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
+                CardObj cardObj = new CardObj();
                 int height = img.getHeight();
                 int width = img.getWidth();
                 Log.v(TAG, "img.getUrl ============ " + img.getUrl());
                 localUrls.add(img.getLocalPath());
                 MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
-                mediaObjs.add(mediaObj);
+                cardObj.setMedia(mediaObj);
+                cardObjs.add(cardObj);
             }
-            PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, time);
+            PublishObj publishObj = new PublishObj(content, cardObjs, mileStoneId, time);
             datalist.add(publishObj);
         }
         Gson gson = new Gson();
@@ -562,10 +566,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     @Subscribe
     public void onEvent(Object event) {
         if (event instanceof PublishRefreshEvent) {
-            mediaObjs = ((PublishRefreshEvent) event).getDataList();
+            cardObjs = ((PublishRefreshEvent) event).getDataList();
             List<String> list = new ArrayList<>();
-            for (MediaObj media : mediaObjs) {
-                list.add(media.getImgUrl());
+            for (CardObj cardObj : cardObjs) {
+                list.add(cardObj.getMedia().getImgUrl());
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();

@@ -11,13 +11,13 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  * email : sy0725work@gmail.com
  */
 public class AddressObj extends BaseObj implements Parcelable {
-    String address;
-    String area;
-    String city;
-    String contacts;
-    String contactsPhone;
-    String id;
-    String prov;
+    private String address;
+    private String area;
+    private String city;
+    private String contacts;
+    private String contactsPhone;
+    private String id;
+    private String prov;
 
 
     public String getAddress() {
