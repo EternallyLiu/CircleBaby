@@ -418,7 +418,9 @@
             android:name=".activities.BabyInfoActivity"
             android:label="宝宝信息"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".ui.babyInfo.activity.BigNameActivity"
+            android:label="@string/baby_real_name_title"
+            android:screenOrientation="portrait"/>
 
     </application>
 

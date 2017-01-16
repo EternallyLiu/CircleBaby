@@ -41,7 +41,9 @@ import cn.timeface.circle.baby.support.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
-import cn.timeface.circle.baby.ui.timelines.beans.MonthRecord;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
 import cn.timeface.circle.baby.ui.timelines.fragments.TimeLineDayFragment;
 import cn.timeface.circle.baby.ui.timelines.fragments.TimeLineFragment;
 
@@ -319,6 +321,14 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
             case "TimeLineDayFragment":
 
                 return TimeLineDayFragment.newInstance();
+            case "IconHistoryFragment":
+
+                return new IconHistoryFragment();
+            case "NotifyPwdFragment":
+                return new NotifyPwdFragment();
+            case "BindPhoneFragment":
+
+                return new BindPhoneFragment();
             default:
                 return null;
         }

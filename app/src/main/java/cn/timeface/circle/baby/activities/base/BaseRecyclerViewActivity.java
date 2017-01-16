@@ -11,6 +11,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 public class BaseRecyclerViewActivity extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class BaseRecyclerViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtil.showLog(getClass().getName());
         setContentView(cn.timeface.circle.baby.R.layout.activity_base_recycler_view);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);

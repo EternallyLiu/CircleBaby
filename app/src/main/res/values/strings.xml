@@ -679,5 +679,35 @@
     <string name="time_line_select_pic_count">共s%张</string>
     <string name="time_line_select_up">收起</string>
     <string name="time_line_select_down">展开</string>
+    <string name="baby_name_input_tip">请输入宝宝的大名</string>
+    <string name="baby_name_appear_tip">显示大名</string>
+    <string name="baby_info_tv_big_name">宝宝大名</string>
+    <string name="baby_real_name_submit_null">对不起！您输入的大名不能为空！如果不需要他设置宝宝的大名，请直接点击左上角返回按钮</string>
+    <string name="baby_real_name_title">宝宝大名</string>
+    <string name="baby_real_name_save">保存</string>
+    <string name="baby_info_icons">用过的头像</string>
+    <string name="baby_icon_his_title">用过的头像</string>
 
+    <string name="bind_phone_hint">手机号</string>
+    <string name="bind_phone_hint_code">验证码</string>
+    <string name="bind_phone_hint_get_code">获取验证码</string>
+    <string name="bind_phone_skip">暂不绑定</string>
+    <string name="bind_phone_title">绑定手机号</string>
+    <string name="bind_phone_back">返回</string>
+    <string name="bind_phone_tip_note">成长印记需要您【验证手机号】才能进行下一步哦~验证成功还可获得积分奖励。</string>
+    <string name="bind_phone_tip_rule">手机号验证后，可获得100个积分奖励哦~</string>
+
+    <string name="settings_notify_password">修改密碼</string>
+    <string name="submit">确定</string>
+    <string name="bind_current_phone_tip">当前绑定的手机号：</string>
+    <string name="notify_pwd_new_again">请再次输入新密码</string>
+    <string name="notify_pwd_new">请输入您的新密码</string>
+    <string name="notify_pwd_old">请输入原密码</string>
+    <string name="pwd_input_tip">• 6~16位数的数字和字母组合</string>
+    <string name="pwd_input_old_null">• 输入的原密码不能为空！</string>
+    <string name="pwd_input_new_no">• 新密码输入框不能为空!</string>
+    <string name="notify_password">修改密码</string>
+    <string name="check_new_password_error">对不起！您两次输入的新密码不一致</string>
+    <string name="request_operation">正在请求操作……</string>
+    <string name="phone">手机号</string>
 </resources>

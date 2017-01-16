@@ -26,6 +26,7 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.wechat.photopicker.PickerPhotoActivity;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -47,6 +48,8 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.activity.BigNameActivity;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnClickListener {
@@ -64,6 +67,12 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     ImageView ivName;
     @Bind(R.id.rl_name)
     RelativeLayout rlName;
+    @Bind(R.id.tv_real_name)
+    TextView tvRealName;
+    @Bind(R.id.iv_real_name)
+    ImageView ivRealName;
+    @Bind(R.id.rl_real_name)
+    RelativeLayout rlRealName;
     @Bind(R.id.tv_brithday)
     TextView tvBrithday;
     @Bind(R.id.iv_brithday)
@@ -82,6 +91,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     ImageView ivBlood;
     @Bind(R.id.rl_blood)
     RelativeLayout rlBlood;
+    @Bind(R.id.rl_icon_his)
+    RelativeLayout rlIconHis;
     public int gender;
     private BabyObj babyObj;
     public static final String KEY_SELECTED_PHOTO_SIZE = "SELECTED_PHOTO_SIZE";
@@ -93,15 +104,12 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     File outFile;
     private UserObj userInfo;
 
-    public static void open(Context context) {
-        context.startActivity(new Intent(context, BabyInfoActivity.class));
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_babyinfo);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("宝宝信息");
@@ -109,6 +117,12 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         userInfo = FastData.getUserInfo();
         babyObj = userInfo.getBabyObj();
 
+        initBaby();
+
+        initView(userInfo.getIsCreator() == 1);
+    }
+
+    private void initBaby() {
         String s = babyObj.getAvatar();
         int baby = s.indexOf("baby");
         if (baby > 0)
@@ -116,13 +130,23 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
 
         GlideUtil.displayImage(this.babyObj.getAvatar(), ivAvatar);
         tvName.setText(this.babyObj.getName());
+        tvRealName.setText(this.babyObj.getRealName());
         tvAge.setText(this.babyObj.getAge());
         tvBrithday.setText(DateUtil.getYear(this.babyObj.getBithday()));
         tvBlood.setText(TextUtils.isEmpty(this.babyObj.getBlood()) ? "未填写" : this.babyObj.getBlood());
         rbGirl.setChecked(this.babyObj.getGender() == 0);
         rbBoy.setChecked(this.babyObj.getGender() == 1);
+    }
 
-        initView(userInfo.getIsCreator() == 1);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
+    }
+
+    public static void open(Context context) {
+        context.startActivity(new Intent(context, BabyInfoActivity.class));
     }
 
     public void initView(boolean isCreator) {
@@ -131,6 +155,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
             ivName.setVisibility(View.VISIBLE);
             ivBrithday.setVisibility(View.VISIBLE);
             ivBlood.setVisibility(View.VISIBLE);
+            ivRealName.setVisibility(View.VISIBLE);
             btnSave.setVisibility(View.VISIBLE);
 
             rlName.setOnClickListener(this);
@@ -140,15 +165,18 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
             rbBoy.setOnClickListener(this);
             ivAvatar.setOnClickListener(this);
             btnSave.setOnClickListener(this);
+            rlRealName.setOnClickListener(this);
 
         } else {
             //关注者
+            ivRealName.setVisibility(View.INVISIBLE);
             ivName.setVisibility(View.INVISIBLE);
             ivBrithday.setVisibility(View.INVISIBLE);
             rlBlood.setVisibility(View.GONE);
             rbBoy.setClickable(false);
             rbGirl.setClickable(false);
         }
+        rlIconHis.setOnClickListener(this);
     }
 
 
@@ -233,14 +261,14 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_icon_his:
+                FragmentBridgeActivity.open(this, IconHistoryFragment.class.getSimpleName());
+                break;
+            case R.id.rl_real_name:
+                BigNameActivity.open(this, this.babyObj);
+                break;
             case R.id.rl_name:
                 String name = tvName.getText().toString();
                 FragmentBridgeActivity.openChangeInfoFragment(this, TypeConstants.EDIT_NAME, name);
@@ -384,6 +412,12 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void onEvent(BabyObj event) {
+        this.babyObj = event;
+        initBaby();
     }
 
     private View initUnFocusView() {

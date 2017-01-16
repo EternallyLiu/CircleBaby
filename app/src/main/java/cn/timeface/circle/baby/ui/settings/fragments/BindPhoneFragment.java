@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,6 +33,8 @@ import cn.timeface.circle.baby.support.managers.receivers.SmsReceiver;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.common.utils.CheckedUtil;
 import rx.Subscription;
 
@@ -65,9 +69,14 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
     private TimerTask task;
     private Subscription s;
 
+    private int type = 1;//标记跳转来源 0、登录页面；1、设置页面点击进入
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.containsKey("type"))
+            type = bundle.getInt("type", 1);
     }
 
     @Nullable
@@ -76,17 +85,23 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
         View view = inflater.inflate(R.layout.fragment_bind_phone, container, false);
 
         ButterKnife.bind(this, view);
+        if (type==0)
+            phoneNumber=null;
         phoneNumber = FastData.getUserInfo().getPhoneNumber();
         currentPhone.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
-        right.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
+        right.setVisibility(!TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         title.setText(TextUtils.isEmpty(phoneNumber) ? "绑定手机号" : "修改手机号");
-        currentPhone.setText(getString(R.string.bind_current_phone_tip) + phoneNumber);
-        codeTip.setVisibility(TextUtils.isEmpty(phoneNumber)?View.VISIBLE:View.GONE);
-        codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber)?View.VISIBLE:View.GONE);
+        if (!TextUtils.isEmpty(phoneNumber)){
+            String replace=phoneNumber.substring(3,7);
+            currentPhone.setText(getString(R.string.bind_current_phone_tip) + phoneNumber.replace(replace,"****"));
+        }
+        codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
+        codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
 
         right.setOnClickListener(this);
+        right.setText("暂不绑定");
         back.setOnClickListener(this);
         tvGetCode.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
@@ -97,7 +112,10 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
     private void next() {
         if (FastData.getBabyCount() == 0) {
             CreateBabyActivity.open(getActivity(), true);
+        }else if (type==0){
+            startActivity(new Intent(getActivity(),TabMainActivity.class));
         }
+        EventBus.getDefault().post(new UpdatePhone());
         getActivity().finish();
     }
 
@@ -202,6 +220,9 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.back:
+                getActivity().finish();
+                break;
             case R.id.right:
                 next();
                 break;

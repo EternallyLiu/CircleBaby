@@ -37,11 +37,13 @@ android {
         debug {
 //            buildConfigField "String", "API_URL", '"http://www.timeface.cn/baby/"'
             buildConfigField "String", "API_URL", '"http://stg2.v5time.net/baby/"'
+            buildConfigField "boolean", "SHOW_LOG", 'true'
 //            buildConfigField "String", "API_URL", '"http://dev1.v5time.net/baby/"'
             signingConfig signingConfigs.signingConfig
         }
         release {
             buildConfigField "String", "API_URL", '"http://www.timeface.cn/baby/"'
+            buildConfigField "boolean", "SHOW_LOG", 'false'
 //            buildConfigField "String", "API_URL", '"http://stg2.v5time.net/baby/"'
 //            buildConfigField "String", "API_URL", '"http://dev1.v5time.net/baby/"'
             minifyEnabled true

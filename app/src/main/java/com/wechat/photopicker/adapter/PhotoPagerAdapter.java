@@ -12,6 +12,8 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import uk.co.senab.photoview.PhotoView;
 
 

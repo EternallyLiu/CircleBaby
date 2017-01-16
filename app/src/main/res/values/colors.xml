@@ -120,7 +120,8 @@
     <color name="comment_relation">#ff727272</color>
     <color name="comment_content">#ff333333</color>
 
+    <color name="lust">#F31B25</color>
     <color name="sea_buckthorn">#F59650</color>
-    <color name="aluminum">#9A9A9A</color>
+    <color name="aluminum">#999999</color>
     <color name="alabaster">#FAFAFA</color>
 </resources>

@@ -61,6 +61,8 @@ public class NotifyPwdFragment extends BaseFragment implements View.OnFocusChang
     Button btnSubmit;
     private ForegroundColorSpan colorSpan;
     private TFProgressDialog tfProgressDialog=null;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,16 +80,16 @@ public class NotifyPwdFragment extends BaseFragment implements View.OnFocusChang
         return view;
     }
 
-    private boolean checkInputNull(EditText editText) {
-        if (editText.getText() == null || TextUtils.isEmpty(editText.getText().toString()))
-            return true;
-        else return false;
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    private boolean checkInputNull(EditText editText) {
+        if (editText.getText() == null || TextUtils.isEmpty(editText.getText().toString()))
+            return true;
+        else return false;
     }
 
     @Override

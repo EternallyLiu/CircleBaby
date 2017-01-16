@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.ui.babyInfo.views.CircleTransform;
 
 
 /**
@@ -39,6 +40,28 @@ public class GlideUtil {
                 url = url + "@600w_600h_1l_1o";
             }
         }
+        Glide.with(context)
+                .load(url)
+                .into(imageView);
+    }
+
+    public static void displayImageCircle(String url, ImageView imageView) {
+        if (TextUtils.isEmpty(url) || imageView == null) {
+            imageView.setImageResource(R.drawable.ic_launcher);
+            return;
+        }
+        if (url.startsWith("http") || url.startsWith("www")) {
+            if (url.endsWith("@.jpg")) {
+                url = url.replace("@.jpg", "@600w_600h_1l_1o");
+            } else {
+                url = url + "@600w_600h_1l_1o";
+            }
+        }
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .transform(new CircleTransform(context))
+                .into(imageView);
         Glide.with(context)
                 .load(url)
                 .into(imageView);
