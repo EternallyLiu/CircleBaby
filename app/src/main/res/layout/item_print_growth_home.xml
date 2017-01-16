@@ -21,12 +21,12 @@
 
         <com.github.rayboot.widget.ratioview.RatioImageView
             android:id="@+id/iv_book"
-            android:layout_width="70dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:src="@drawable/bg_default_holder_img"
             app:fixRatio="fixWidth"
-            app:heightRatio="5"
-            app:widthRatio="4" />
+            app:heightRatio="10"
+            app:widthRatio="9" />
 
         <LinearLayout
             android:layout_width="match_parent"
