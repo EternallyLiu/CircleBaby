@@ -175,54 +175,6 @@ public class MediaObj extends BaseObj
         this.isCover = isCover;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.content);
-        dest.writeInt(this.h);
-        dest.writeInt(this.w);
-        dest.writeInt(this.id);
-        dest.writeString(this.imgUrl);
-        dest.writeLong(this.length);
-        dest.writeString(this.localPath);
-        dest.writeLong(this.photographTime);
-        dest.writeString(this.videoUrl);
-        dest.writeInt(this.selected);
-        dest.writeInt(this.isCover);
-        dest.writeInt(this.timeId);
-    }
-
-    protected MediaObj(Parcel in) {
-        this.content = in.readString();
-        this.h = in.readInt();
-        this.w = in.readInt();
-        this.id = in.readInt();
-        this.imgUrl = in.readString();
-        this.length = in.readLong();
-        this.localPath = in.readString();
-        this.photographTime = in.readLong();
-        this.videoUrl = in.readString();
-        this.selected = in.readInt();
-        this.isCover = in.readInt();
-        this.timeId = in.readInt();
-    }
-
-    public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {
-        @Override
-        public MediaObj createFromParcel(Parcel source) {
-            return new MediaObj(source);
-        }
-
-        @Override
-        public MediaObj[] newArray(int size) {
-            return new MediaObj[size];
-        }
-    };
-
     public TFOResourceObj toTFOResourceObj() {
         return new TFOResourceObj(id + "", imgUrl, w, h, imageOrientation, "");
     }
@@ -245,4 +197,56 @@ public class MediaObj extends BaseObj
                 ", date=" + date +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.content);
+        dest.writeInt(this.h);
+        dest.writeInt(this.w);
+        dest.writeInt(this.id);
+        dest.writeString(this.imgUrl);
+        dest.writeLong(this.length);
+        dest.writeString(this.localPath);
+        dest.writeLong(this.photographTime);
+        dest.writeString(this.videoUrl);
+        dest.writeInt(this.selected);
+        dest.writeInt(this.isCover);
+        dest.writeInt(this.timeId);
+        dest.writeLong(this.date);
+        dest.writeInt(this.imageOrientation);
+    }
+
+    protected MediaObj(Parcel in) {
+        this.content = in.readString();
+        this.h = in.readInt();
+        this.w = in.readInt();
+        this.id = in.readInt();
+        this.imgUrl = in.readString();
+        this.length = in.readLong();
+        this.localPath = in.readString();
+        this.photographTime = in.readLong();
+        this.videoUrl = in.readString();
+        this.selected = in.readInt();
+        this.isCover = in.readInt();
+        this.timeId = in.readInt();
+        this.date = in.readLong();
+        this.imageOrientation = in.readInt();
+    }
+
+    public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {
+        @Override
+        public MediaObj createFromParcel(Parcel source) {
+            return new MediaObj(source);
+        }
+
+        @Override
+        public MediaObj[] newArray(int size) {
+            return new MediaObj[size];
+        }
+    };
 }

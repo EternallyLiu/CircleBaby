@@ -49,6 +49,8 @@ import cn.timeface.circle.baby.support.api.models.responses.UnReadMsgResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UserLoginResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
+import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
+import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -642,8 +644,6 @@ public interface ApiService {
     @POST("auth/binding")
     Observable<BaseResponse> bindPhone(@Query("phoneNum") String phoneNum,
                                        @Query("verifycode") String verifycode);
-
-
     /**
      *
      * @param newPwd
@@ -654,4 +654,28 @@ public interface ApiService {
     Observable<BaseResponse> modifyPassword
             (@Query("newPwd") String newPwd,
              @Query("oldPwd") String oldPwd);
+
+
+    /**
+     * 获取他图片标签列表
+     * @param lat
+     * @param log
+     * @return
+     */
+    @POST("label/list")
+    Observable<TipResponse> getTips(@Query("lat") String lat,
+                                    @Query("log") String log);
+
+    /**
+     * 添加标签到图片中
+     * @param mediaId
+     * @param tips
+     * @return
+     */
+    @POST("label/addLabel")
+    Observable<AddTagResponse> addLabel(@Query("mediaId") String mediaId,
+                                        @Query("tips") String tips);
+
+
+
 }

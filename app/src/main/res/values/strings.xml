@@ -710,4 +710,11 @@
     <string name="check_new_password_error">对不起！您两次输入的新密码不一致</string>
     <string name="request_operation">正在请求操作……</string>
     <string name="phone">手机号</string>
+    <string name="tag">标签</string>
+    <string name="tag_input_hint">请输入事件、地点或人物</string>
+    <string name="tag_history">历史标签</string>
+    <string name="tag_give_tip">推荐标签</string>
+    <string name="save_tip">保存</string>
+    <string name="tag_add_title">加标签</string>
+    <string name="tag_save_null_tip">对不起！选择标签之后再提交此操作1</string>
 </resources>

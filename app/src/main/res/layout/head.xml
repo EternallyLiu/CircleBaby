@@ -8,14 +8,15 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:gravity="center"
         android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/back"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/size_12"
+            android:layout_height="@dimen/size_19"
             android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:scaleType="fitCenter"
             android:src="@drawable/back" />
 
@@ -23,21 +24,20 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
             android:gravity="center"
             android:text="@string/time_line_select_title"
             android:textColor="@color/text_color1"
             android:textSize="@dimen/text_large" />
 
         <TextView
-            android:layout_centerVertical="true"
             android:id="@+id/right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/size_6"
-            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_2"
+            android:gravity="right"
             android:text="120条"
             android:textColor="@color/text_color1"
             android:textSize="@dimen/text_large" />

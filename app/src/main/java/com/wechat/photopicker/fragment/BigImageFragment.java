@@ -21,16 +21,23 @@ import com.wechat.photopicker.adapter.PhotoPagerAdapter;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.images.TagAddFragment;
+import cn.timeface.circle.baby.ui.images.beans.TipObj;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_PHOTO_PATHS;
@@ -53,6 +60,7 @@ public class BigImageFragment extends BaseFragment {
     TextView tvDelete;
     private List<String> mPaths;
 
+    private ArrayList<MediaObj> mMedias;
     private Bundle mBundle;
     private PhotoPagerAdapter mPhotoPagerAdapter;
     private int mCurrenItem;
@@ -66,6 +74,8 @@ public class BigImageFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         Intent intent = getActivity().getIntent();
         mPaths = intent.getStringArrayListExtra(KEY_PHOTO_PATHS);
+        mMedias = intent.getParcelableArrayListExtra("mediaList");
+        LogUtil.showLog(mMedias == null ? "null" : mMedias.size() + "");
         mCurrenItem = intent.getIntExtra(KEY_SELECTOR_POSITION, 0);
         download = intent.getBooleanExtra("download", false);
         delete = intent.getBooleanExtra("delete", false);
@@ -90,6 +100,12 @@ public class BigImageFragment extends BaseFragment {
         mViewPager.setCurrentItem(mCurrenItem);
         initListener();
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     private void initListener() {
@@ -141,14 +157,25 @@ public class BigImageFragment extends BaseFragment {
                 String path = mPaths.get(currentItem);
                 EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem, path));
                 getActivity().finish();
-            } else if(download){
+            } else if (download) {
                 //保存图片到本地
-                save.setEnabled(false);
-                saveImage();
+//                save.setEnabled(false);
+//                saveImage();
+
+                addTag();
             }
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void addTag(){
+        int currentPosition=mViewPager.getCurrentItem();
+        MediaObj mediaObj=mMedias.get(currentPosition);
+
+        Bundle bundle=new Bundle();
+        bundle.putLong("mediaId",mediaObj.getId());
+        FragmentBridgeActivity.open(getActivity(),TagAddFragment.class.getSimpleName(),bundle);
     }
 
 //    @Override
@@ -195,7 +222,7 @@ public class BigImageFragment extends BaseFragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ImageFactory.saveImage(path,file1);
+                ImageFactory.saveImage(path, file1);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -208,9 +235,18 @@ public class BigImageFragment extends BaseFragment {
         }).start();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
+    private List<TipObj> tips;
+
+    private void reqData() {
+        addSubscription(apiService.getTips("", "")
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+
+                    if (response.success()) {
+                    }
+
+                }, throwable -> {
+                }));
     }
+
 }

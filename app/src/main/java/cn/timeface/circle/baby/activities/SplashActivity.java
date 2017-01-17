@@ -43,6 +43,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.NotificationUtil;
 import cn.timeface.circle.baby.support.utils.Once;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DeviceUtil;
 import cn.timeface.common.utils.NetworkUtil;
@@ -94,6 +95,7 @@ public class SplashActivity extends BaseAppCompatActivity {
             finish();
             return;
         }
+//        FragmentBridgeActivity.open(this, TagAddFragment.class.getSimpleName());
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         //初始化sharesdk
@@ -103,6 +105,12 @@ public class SplashActivity extends BaseAppCompatActivity {
         showGuide();
 //        requestCheckUpdate();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        handler.removeMessages(1);
+        super.onDestroy();
     }
 
     private void firstRun() {
@@ -526,12 +534,6 @@ public class SplashActivity extends BaseAppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onDestroy() {
-        handler.removeMessages(1);
-        super.onDestroy();
     }
 
     private void fullScreen(boolean enable) {
