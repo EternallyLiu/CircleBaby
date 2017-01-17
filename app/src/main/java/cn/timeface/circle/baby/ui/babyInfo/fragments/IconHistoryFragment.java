@@ -19,6 +19,7 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.ui.babyInfo.adapters.IconHisAdapter;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -60,10 +61,11 @@ public class IconHistoryFragment extends BaseFragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
                    if (response.success()){
+                       LogUtil.showLog(response.getDataList().size()+"");
                        adapter.addList(true,response.getDataList());
                    }
                 }, error -> {
-                    Log.d("test", "error:" + error.getMessage());
+                    LogUtil.showLog("error:"+error.getMessage());
                 });
         addSubscription(ss);
     }

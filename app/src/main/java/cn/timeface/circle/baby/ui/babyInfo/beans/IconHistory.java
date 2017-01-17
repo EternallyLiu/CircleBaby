@@ -2,7 +2,9 @@ package cn.timeface.circle.baby.ui.babyInfo.beans;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 
 /**
@@ -11,28 +13,31 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 
 public class IconHistory extends BaseObj implements Parcelable {
 
-    private int age;
+
+    private String age;
     private String avatar;
 
     public IconHistory() {
     }
 
-    public IconHistory(int age, String avatar) {
+    public IconHistory(String age, String avatar) {
 
         this.age = age;
         this.avatar = avatar;
     }
 
-    public int getAge() {
+    public String getAge() {
 
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
     public String getAvatar() {
+        if (!TextUtils.isEmpty(avatar) && !avatar.startsWith("http"))
+            avatar = BuildConfig.API_URL + avatar;
         return avatar;
     }
 
@@ -47,12 +52,12 @@ public class IconHistory extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.age);
+        dest.writeString(this.age);
         dest.writeString(this.avatar);
     }
 
     protected IconHistory(Parcel in) {
-        this.age = in.readInt();
+        this.age = in.readString();
         this.avatar = in.readString();
     }
 
