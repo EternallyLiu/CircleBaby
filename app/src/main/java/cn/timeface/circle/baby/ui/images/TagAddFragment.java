@@ -231,7 +231,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     @Override
     public void afterTextChanged(Editable s) {
         String tag = s.toString();
-        if (!TextUtils.isEmpty(tag) && (tag.endsWith(" ") || Utils.getByteSize(tag) >= 24)) {
+        if (!TextUtils.isEmpty(tag) && (tag.endsWith("\n") || Utils.getByteSize(tag) >= 24)) {
             addView(s.toString());
             input.setText("");
         }

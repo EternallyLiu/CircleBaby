@@ -16,6 +16,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
@@ -31,8 +32,8 @@
         android:id="@+id/vp_big_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
-        android:layout_below="@+id/toolbar">
+        android:layout_below="@+id/toolbar"
+        android:background="@color/black">
 
     </android.support.v4.view.ViewPager>
 
@@ -40,26 +41,69 @@
         android:id="@+id/tv_download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="下载"
-        android:textColor="@drawable/selector_textcolor_white"
-        android:textSize="@dimen/text_medium"
+        android:layout_alignParentBottom="true"
         android:background="@color/tran_30_black"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:paddingTop="@dimen/size_6"
         android:paddingBottom="@dimen/size_6"
-        />
+        android:paddingTop="@dimen/size_6"
+        android:text="下载"
+        android:textColor="@drawable/selector_textcolor_white"
+        android:textSize="@dimen/text_medium" />
+
     <TextView
         android:id="@+id/tv_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="删除"
-        android:textColor="@drawable/selector_textcolor_white"
-        android:textSize="@dimen/text_medium"
+        android:layout_alignParentBottom="true"
         android:background="@color/tran_30_black"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:paddingTop="@dimen/size_6"
         android:paddingBottom="@dimen/size_6"
-        />
+        android:paddingTop="@dimen/size_6"
+        android:text="删除"
+        android:textColor="@drawable/selector_textcolor_white"
+        android:textSize="@dimen/text_medium" />
+
+    <LinearLayout
+        android:id="@+id/ll_botton"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_48"
+        android:layout_alignParentBottom="true"
+        android:background="#DEF4F3F1"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/tag"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="加标签"
+                android:textColor="@color/main_blue"
+                android:textSize="@dimen/text_normal" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/love"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="0"
+                android:textColor="@color/main_blue"
+                android:textSize="@dimen/text_normal" />
+        </RelativeLayout>
+
+    </LinearLayout>
 </RelativeLayout>

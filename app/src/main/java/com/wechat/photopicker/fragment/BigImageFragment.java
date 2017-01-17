@@ -13,12 +13,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wechat.photopicker.adapter.PhotoPagerAdapter;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,7 +28,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
@@ -38,7 +37,6 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.images.beans.TipObj;
 import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
-import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_PHOTO_PATHS;
@@ -47,7 +45,7 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 /**
  * Created by yellowstart on 15/12/15.
  */
-public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack {
+public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack ,View.OnClickListener{
 
     @Bind(R.id.tv_title)
     TextView tvTitle;
@@ -59,6 +57,12 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     TextView tvDownload;
     @Bind(R.id.tv_delete)
     TextView tvDelete;
+    @Bind(R.id.tag)
+    RelativeLayout tag;
+    @Bind(R.id.love)
+    RelativeLayout love;
+    @Bind(R.id.ll_botton)
+    LinearLayout llBotton;
     private List<String> mPaths;
 
     private ArrayList<MediaObj> mMedias;
@@ -98,6 +102,12 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         }
         mViewPager.setAdapter(mPhotoPagerAdapter);
         mViewPager.setCurrentItem(mCurrenItem);
+        if (mMedias != null && mMedias.size() > 0)
+            llBotton.setVisibility(View.VISIBLE);
+        else llBotton.setVisibility(View.GONE);
+
+        tag.setOnClickListener(this);
+        love.setOnClickListener(this);
         initListener();
         return view;
     }
@@ -267,12 +277,25 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @Override
     public void click(View view, int type) {
-        switch (type){
+        switch (type) {
             case 2:
 
                 break;
             case 3:
                 saveImage();
+//                addTag();
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.tag:
+                addTag();
+                break;
+            case R.id.love:
+
                 break;
         }
     }
