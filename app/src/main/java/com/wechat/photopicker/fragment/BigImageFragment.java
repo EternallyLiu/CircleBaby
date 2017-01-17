@@ -37,6 +37,7 @@ import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.images.beans.TipObj;
+import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
@@ -46,7 +47,7 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 /**
  * Created by yellowstart on 15/12/15.
  */
-public class BigImageFragment extends BaseFragment {
+public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack {
 
     @Bind(R.id.tv_title)
     TextView tvTitle;
@@ -75,7 +76,6 @@ public class BigImageFragment extends BaseFragment {
         Intent intent = getActivity().getIntent();
         mPaths = intent.getStringArrayListExtra(KEY_PHOTO_PATHS);
         mMedias = intent.getParcelableArrayListExtra("mediaList");
-        LogUtil.showLog(mMedias == null ? "null" : mMedias.size() + "");
         mCurrenItem = intent.getIntExtra(KEY_SELECTOR_POSITION, 0);
         download = intent.getBooleanExtra("download", false);
         delete = intent.getBooleanExtra("delete", false);
@@ -135,47 +135,63 @@ public class BigImageFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_fragment_bigimage, menu);
-        save = menu.findItem(R.id.save);
-        if (delete) {
-            save.setTitle("删除");
-        } else {
-            if (!download) {
-                save.setTitle("");
-            }
-        }
+        inflater.inflate(R.menu.menu_timeline_detail, menu);
+//        save = menu.findItem(R.id.save);
+//        if (delete) {
+//            save.setTitle("删除");
+//        } else {
+//            if (!download) {
+//                save.setTitle("");
+//            }
+//        }
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private ImageActionDialog dialog = null;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.save) {
-            if (delete) {
-                //删除
-                save.setEnabled(false);
-                int currentItem = mViewPager.getCurrentItem();
-                String path = mPaths.get(currentItem);
-                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem, path));
-                getActivity().finish();
-            } else if (download) {
-                //保存图片到本地
+//        if (item.getItemId() == R.id.save) {
+//            if (delete) {
+//                //删除
 //                save.setEnabled(false);
-//                saveImage();
-
-                addTag();
-            }
-
+//                int currentItem = mViewPager.getCurrentItem();
+//                String path = mPaths.get(currentItem);
+//                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem, path));
+//                getActivity().finish();
+//            } else if (download) {
+//                //保存图片到本地
+////                save.setEnabled(false);
+////                saveImage();
+//
+//                addTag();
+//            }
+//
+//        }
+        switch (item.getItemId()) {
+            case R.id.action_more:
+                if (dialog == null) {
+                    dialog = new ImageActionDialog(getActivity());
+                    dialog.setClickListener(this);
+                    dialog.isShared(false);
+                    dialog.isDownload(download);
+                    dialog.isDelete(delete);
+                    dialog.isEdit(false);
+                }
+                dialog.show();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void addTag(){
-        int currentPosition=mViewPager.getCurrentItem();
-        MediaObj mediaObj=mMedias.get(currentPosition);
+    private void addTag() {
+        int currentPosition = mViewPager.getCurrentItem();
+        MediaObj mediaObj = mMedias.get(currentPosition);
 
-        Bundle bundle=new Bundle();
-        bundle.putLong("mediaId",mediaObj.getId());
-        FragmentBridgeActivity.open(getActivity(),TagAddFragment.class.getSimpleName(),bundle);
+        Bundle bundle = new Bundle();
+        bundle.putLong("mediaId", mediaObj.getId());
+        FragmentBridgeActivity.open(getActivity(), TagAddFragment.class.getSimpleName(), bundle);
     }
 
 //    @Override
@@ -208,7 +224,7 @@ public class BigImageFragment extends BaseFragment {
         File file1 = new File(file, fileName);
         if (file1.exists()) {
             Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
-            save.setEnabled(true);
+//            save.setEnabled(true);
             return;
         }
         if (!Utils.isNetworkConnected(getContext())) {
@@ -228,7 +244,7 @@ public class BigImageFragment extends BaseFragment {
                     public void run() {
                         tfProgressDialog.dismiss();
                         Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
-                        save.setEnabled(true);
+//                        save.setEnabled(true);
                     }
                 });
             }
@@ -249,4 +265,15 @@ public class BigImageFragment extends BaseFragment {
                 }));
     }
 
+    @Override
+    public void click(View view, int type) {
+        switch (type){
+            case 2:
+
+                break;
+            case 3:
+                saveImage();
+                break;
+        }
+    }
 }
