@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
 
 /**
  * author : wangshuai Created on 2017/1/17
@@ -13,21 +14,20 @@ import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
  */
 public class AddTagResponse extends BaseResponse implements Parcelable {
 
-    private List<TipObj> tips;
+    private List<MediaTipObj> tips;
 
     public AddTagResponse() {
     }
 
-    public AddTagResponse(List<TipObj> tips) {
-
-        this.tips = tips;
-    }
-
-    public List<TipObj> getTips() {
+    public List<MediaTipObj> getTips() {
         return tips;
     }
 
-    public void setTips(List<TipObj> tips) {
+    public void setTips(List<MediaTipObj> tips) {
+        this.tips = tips;
+    }
+
+    public AddTagResponse(List<MediaTipObj> tips) {
         this.tips = tips;
     }
 
@@ -42,10 +42,10 @@ public class AddTagResponse extends BaseResponse implements Parcelable {
     }
 
     protected AddTagResponse(Parcel in) {
-        this.tips = in.createTypedArrayList(TipObj.CREATOR);
+        this.tips = in.createTypedArrayList(MediaTipObj.CREATOR);
     }
 
-    public static final Parcelable.Creator<AddTagResponse> CREATOR = new Parcelable.Creator<AddTagResponse>() {
+    public static final Creator<AddTagResponse> CREATOR = new Creator<AddTagResponse>() {
         @Override
         public AddTagResponse createFromParcel(Parcel source) {
             return new AddTagResponse(source);

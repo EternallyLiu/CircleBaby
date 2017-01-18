@@ -30,12 +30,12 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
-import cn.timeface.circle.baby.ui.images.beans.TipObj;
 import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
@@ -261,7 +261,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         }).start();
     }
 
-    private List<TipObj> tips;
+    private List<MediaTipObj> tips;
 
     private void reqData() {
         addSubscription(apiService.getTips("", "")

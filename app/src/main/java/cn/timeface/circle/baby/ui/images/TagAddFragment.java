@@ -26,10 +26,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.images.beans.TipObj;
 import cn.timeface.circle.baby.ui.images.views.FlowLayout;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
@@ -58,10 +58,10 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     FlowLayout tagSuggest;
 
 
-    private List<TipObj> hisList = null;
-    private List<TipObj> recommentList = null;
+    private List<MediaTipObj> hisList = null;
+    private List<MediaTipObj> recommentList = null;
     private LayoutInflater inflater = null;
-    private List<TipObj> selectList = new ArrayList<>();
+    private List<MediaTipObj> selectList = new ArrayList<>();
 
     private long mediaId = 0;
 
@@ -165,7 +165,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
      * @param tip
      * @return
      */
-    private View addTips(TipObj tip) {
+    private View addTips(MediaTipObj tip) {
         String tag = tip.getTipName();
         if (TextUtils.isEmpty(tag))
             return null;
@@ -193,7 +193,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
 
     private void addView(String tag) {
         tag = Utils.getLengthString(24, tag);
-        addView(new TipObj(tag));
+        addView(new MediaTipObj(tag));
     }
 
     /**
@@ -201,7 +201,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
      *
      * @param tag
      */
-    private void addView(TipObj tag) {
+    private void addView(MediaTipObj tag) {
         if (selectList.contains(tag))
             return;
         View tageView = addTips(tag);
@@ -244,7 +244,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
         }
         String json = null;
         try {
-            json = LoganSquare.serialize(selectList, TipObj.class);
+            json = LoganSquare.serialize(selectList, MediaTipObj.class);
             LogUtil.showLog("json:" + json);
         } catch (IOException e) {
             LogUtil.showLog("异常!");
@@ -266,7 +266,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     @Override
     public void onClick(View v) {
         View parent = ((View) v.getParent());
-        TipObj tipObj = (TipObj) parent.getTag(R.id.tag_add);
+        MediaTipObj tipObj = (MediaTipObj) parent.getTag(R.id.tag_add);
         switch (v.getId()) {
             case R.id.tag_name:
                 if (!selectList.contains(tipObj))

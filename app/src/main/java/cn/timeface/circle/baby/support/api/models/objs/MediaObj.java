@@ -276,7 +276,7 @@ public class MediaObj extends BaseObj implements Parcelable {
         dest.writeInt(this.favoritecount);
         dest.writeInt(this.isFavorite);
         dest.writeString(this.localIdentifier);
-        dest.writeParcelable(location, flags);
+        dest.writeParcelable(this.location, flags);
         dest.writeList(this.tips);
     }
 
