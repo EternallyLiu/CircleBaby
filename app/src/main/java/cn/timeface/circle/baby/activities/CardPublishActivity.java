@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
+import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
@@ -58,7 +59,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     @Bind(R.id.tf_stateView)
     TFStateView tfStateView;
     private List<ImgObj> selImages = new ArrayList<>();
-    private List<MediaObj> dataList;
+    private List<CardObj> dataList;
     private MyAdapter adapter;
     private boolean showGuide;
 
@@ -144,8 +145,8 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 break;
             case R.id.iv_deletecard:
                 Integer position = (Integer) v.getTag(R.string.tag_ex);
-                MediaObj mediaObj = dataList.get(position);
-                dataList.remove(mediaObj);
+                CardObj cardObj = dataList.get(position);
+                dataList.remove(cardObj);
                 adapter = null;
                 adapter = new MyAdapter(dataList);
                 adapter.setOnClickListener(this);
@@ -159,7 +160,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                         vp.setCurrentItem(0);
                     }
                 }
-                apiService.delCard(mediaObj.getId())
+                apiService.delCard((int) cardObj.getCartdId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                         }, throwable -> {
@@ -183,10 +184,10 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     }
 
     public class MyAdapter extends PagerAdapter implements View.OnClickListener {
-        List<MediaObj> list;
+        List<CardObj> list;
         View.OnClickListener listener;
 
-        public MyAdapter(List<MediaObj> list) {
+        public MyAdapter(List<CardObj> list) {
             this.list = list;
         }
 
@@ -219,7 +220,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 int measuredWidth = ivDeletecard.getMeasuredWidth();
                 ivDeletecard.setTranslationX(measuredWidth / 2);
                 ivDeletecard.setTranslationY(-measuredWidth / 2);
-                GlideUtil.displayImage(list.get(position).getImgUrl(), ivCard);
+                GlideUtil.displayImage(list.get(position).getMedia().getImgUrl(), ivCard);
                 ivDeletecard.setTag(R.string.tag_ex, position);
                 ivDeletecard.setOnClickListener(this);
             } else {
@@ -236,7 +237,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
             return view;
         }
 
-        public void setDataList(List<MediaObj> list) {
+        public void setDataList(List<CardObj> list) {
             this.list = list;
         }
 

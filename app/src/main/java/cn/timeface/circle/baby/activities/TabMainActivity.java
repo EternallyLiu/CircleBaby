@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,20 +44,27 @@ import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
 import cn.timeface.common.utils.CommonUtil;
 import cn.timeface.open.TFOpen;
 import cn.timeface.open.TFOpenConfig;
 import cn.timeface.open.api.bean.obj.TFOUserObj;
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
+/**
+ * 首页activity
+ * author : YW.SUN Created on 2017/1/11
+ * email : sunyw10@gmail.com
+ */
 public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
     @Bind(R.id.menu_home_tv)
     TextView menuHomeTv;
     @Bind(R.id.menu_mime_tv)
     TextView menuMimeTv;
+    @Bind(R.id.menu_growth_up_tv)
+    TextView menuGrowthTv;
     @Bind(R.id.iv_publish)
     ImageView ivPublish;
     @Bind(R.id.toolbar)
@@ -70,12 +76,12 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Bind(R.id.foot_menu_ll)
     View footMenu;
     private long lastPressedTime = 0;
-    private static final int TAB1 = 0;
-    private static final int TAB2 = 1;
+    private static final int TAB1 = 0;//时光轴
+    private static final int TAB2 = 1;//我的
+    private static final int TAB3 = 2;//印成长
     @Bind(R.id.container)
     FrameLayout container;
     private BaseFragment currentFragment = null;
-    private PopupWindow popupWindow;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, TabMainActivity.class));
@@ -84,11 +90,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_tab_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         updateRegionDB();
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -130,15 +134,26 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     public void clickTab(View view) {
 
         switch (view.getId()) {
+            //时光轴
             case R.id.menu_home_tv:
                 menuHomeTv.setSelected(true);
                 menuMimeTv.setSelected(false);
+                menuGrowthTv.setSelected(false);
                 showContent(TAB1);
                 break;
+            //我的
             case R.id.menu_mime_tv:
                 menuHomeTv.setSelected(false);
                 menuMimeTv.setSelected(true);
+                menuGrowthTv.setSelected(false);
                 showContent(TAB2);
+                break;
+            //印成长
+            case R.id.menu_growth_up_tv:
+                menuHomeTv.setSelected(false);
+                menuMimeTv.setSelected(false);
+                menuGrowthTv.setSelected(true);
+                showContent(TAB3);
                 break;
         }
     }
@@ -149,6 +164,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 return HomeFragment.newInstance("首页");
             case TAB2:
                 return MineFragment.newInstance("我的");
+            case TAB3:
+                return PrintGrowthHomeFragment.newInstance("印成长");
+
         }
         return null;
     }
@@ -238,12 +256,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     private void reqData() {
         Subscription s = apiService.getLocationList()
-                .doOnNext(new Action1<DistrictListResponse>() {
-                    @Override
-                    public void call(DistrictListResponse response) {
-                        if (response != null && response.success()) {
-                            DistrictModel.deleteAll();
-                        }
+                .doOnNext(response -> {
+                    if (response != null && response.success()) {
+                        DistrictModel.deleteAll();
                     }
                 })
                 .flatMap(new Func1<DistrictListResponse, Observable<DistrictModel>>() {

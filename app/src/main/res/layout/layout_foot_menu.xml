@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_56"
     android:background="@color/bg18"
@@ -29,11 +28,26 @@
             android:onClick="clickTab"
             android:padding="@dimen/view_space_normal"
             android:tag="0"
-            android:text="宝宝时光"
+            android:text="时光轴"
+            android:drawablePadding="@dimen/size_2"
+            android:textColor="@drawable/selector_home_mine_textcolor"/>
+
+        <TextView
+            android:id="@+id/menu_growth_up_tv"
+            style="@style/FooterNavText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:drawableTop="@drawable/selector_home_growth"
+            android:onClick="clickTab"
+            android:padding="@dimen/view_space_normal"
+            android:tag="0"
+            android:text="印成长"
             android:drawablePadding="@dimen/size_2"
             android:textColor="@drawable/selector_home_mine_textcolor"/>
 
         <FrameLayout
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.0"

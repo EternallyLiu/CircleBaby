@@ -9,6 +9,8 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  * Created by lidonglin on 2016/4/28.
  */
 public class BabyObj extends BaseObj implements Parcelable {
+    private String realName;//大名
+    private int showRealName;//是否展示真实姓名
     String age;
     String avatar;
     int babyId;
@@ -30,6 +32,22 @@ public class BabyObj extends BaseObj implements Parcelable {
         this.constellation = constellation;
         this.gender = gender;
         this.name = name;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public int getShowRealName() {
+        return showRealName;
+    }
+
+    public void setShowRealName(int showRealName) {
+        this.showRealName = showRealName;
     }
 
     public String getAge() {
@@ -117,6 +135,8 @@ public class BabyObj extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.realName);
+        dest.writeInt(this.showRealName);
         dest.writeString(this.age);
         dest.writeString(this.avatar);
         dest.writeInt(this.babyId);
@@ -128,6 +148,8 @@ public class BabyObj extends BaseObj implements Parcelable {
     }
 
     protected BabyObj(Parcel in) {
+        this.realName = in.readString();
+        this.showRealName = in.readInt();
         this.age = in.readString();
         this.avatar = in.readString();
         this.babyId = in.readInt();
@@ -138,7 +160,7 @@ public class BabyObj extends BaseObj implements Parcelable {
         this.name = in.readString();
     }
 
-    public static final Parcelable.Creator<BabyObj> CREATOR = new Parcelable.Creator<BabyObj>() {
+    public static final Creator<BabyObj> CREATOR = new Creator<BabyObj>() {
         @Override
         public BabyObj createFromParcel(Parcel source) {
             return new BabyObj(source);

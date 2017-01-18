@@ -1,4 +1,4 @@
-package cn.timeface.circle.baby.support.mvp;
+package cn.timeface.circle.baby.support.mvp.bases;
 
 import cn.timeface.circle.baby.support.api.Api;
 import cn.timeface.circle.baby.support.api.ApiFactory;
@@ -10,11 +10,11 @@ import cn.timeface.circle.baby.support.api.services.ApiService;
 
 public abstract class BasePresenterModel {
 
-    protected ApiService apiServiceV2;
+    protected ApiService apiService;
 
     protected BasePresenterModel() {
 
         Api api = ApiFactory.getApi();
-        apiServiceV2 = api.getApiService();
+        apiService = api.getApiService();
     }
 }

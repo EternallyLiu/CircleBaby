@@ -35,6 +35,7 @@ import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.api.models.objs.TemplateImage;
+import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
@@ -44,6 +45,7 @@ import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
 
@@ -187,14 +189,14 @@ public class CardPreviewFragment extends BaseFragment {
                             tfProgressDialog.dismiss();
                         }
                     })
-                    .subscribe(diaryComposeResponse -> {
+                    .subscribe(knowledgeComposedResponse -> {
                         tfProgressDialog.dismiss();
-                        if (diaryComposeResponse.success()) {
-                            MediaObj mediaObj = diaryComposeResponse.getMediaObj();
+                        if (knowledgeComposedResponse.success()) {
+                            MediaObj mediaObj = knowledgeComposedResponse.getKnowledgeCardObj().getMedia();
                             mediaObj.setPhotographTime(createTime);
-                            getActivity().finish();
+                            CardPreviewFragment.this.getActivity().finish();
                         } else {
-                            ToastUtil.showToast(diaryComposeResponse.getInfo());
+                            ToastUtil.showToast(knowledgeComposedResponse.getInfo());
                         }
                     }, throwable -> {
                         Log.e(TAG, "diaryPublish:");

@@ -11,14 +11,14 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 //@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class PublishObj extends BaseObj {
     String content;
-    List<MediaObj> mediaList;
+    List<CardObj> mediaList;
     int milestone;
     long time;                 //时间戳
 
     public PublishObj() {
     }
 
-    public PublishObj(String content, List<MediaObj> mediaList, int milestone, long time) {
+    public PublishObj(String content, List<CardObj> mediaList, int milestone, long time) {
         this.content = content;
         this.mediaList = mediaList;
         this.milestone = milestone;
@@ -33,11 +33,11 @@ public class PublishObj extends BaseObj {
         this.content = content;
     }
 
-    public List<MediaObj> getMediaList() {
+    public List<CardObj> getMediaList() {
         return mediaList;
     }
 
-    public void setMediaList(List<MediaObj> mediaList) {
+    public void setMediaList(List<CardObj> mediaList) {
         this.mediaList = mediaList;
     }
 
