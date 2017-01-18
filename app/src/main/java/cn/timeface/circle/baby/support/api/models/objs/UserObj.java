@@ -3,6 +3,8 @@ package cn.timeface.circle.baby.support.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 
 /**
@@ -18,7 +20,8 @@ public class UserObj extends BaseObj implements Parcelable {
     int isCreator;
     String phoneNumber;
     String uniId;
-
+    int babycount;
+    List<BabyObj> babies;
 
     public UserObj() {
     }
@@ -32,6 +35,22 @@ public class UserObj extends BaseObj implements Parcelable {
         this.isCreator = isCreator;
         this.phoneNumber = phoneNumber;
         this.uniId = uniId;
+    }
+
+    public int getBabycount() {
+        return babycount;
+    }
+
+    public void setBabycount(int babycount) {
+        this.babycount = babycount;
+    }
+
+    public List<BabyObj> getBabies() {
+        return babies;
+    }
+
+    public void setBabies(List<BabyObj> babies) {
+        this.babies = babies;
     }
 
     public String getPhoneNumber() {

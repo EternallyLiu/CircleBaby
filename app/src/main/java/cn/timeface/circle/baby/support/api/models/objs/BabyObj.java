@@ -19,24 +19,6 @@ public class BabyObj extends BaseObj implements Parcelable {
     String constellation;
     int gender;
     String name;
-    String realName;
-    int showRealName;
-
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
-    }
-
-    public int getShowRealName() {
-        return showRealName;
-    }
-
-    public void setShowRealName(int showRealName) {
-        this.showRealName = showRealName;
-    }
 
     public BabyObj() {
     }
