@@ -19,6 +19,24 @@ public class BabyObj extends BaseObj implements Parcelable {
     String constellation;
     int gender;
     String name;
+    String realName;
+    int showRealName;
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public int getShowRealName() {
+        return showRealName;
+    }
+
+    public void setShowRealName(int showRealName) {
+        this.showRealName = showRealName;
+    }
 
     public BabyObj() {
     }
@@ -145,6 +163,8 @@ public class BabyObj extends BaseObj implements Parcelable {
         dest.writeString(this.constellation);
         dest.writeInt(this.gender);
         dest.writeString(this.name);
+        dest.writeString(this.realName);
+        dest.writeInt(this.showRealName);
     }
 
     protected BabyObj(Parcel in) {
@@ -158,6 +178,8 @@ public class BabyObj extends BaseObj implements Parcelable {
         this.constellation = in.readString();
         this.gender = in.readInt();
         this.name = in.readString();
+        this.realName = in.readString();
+        this.showRealName = in.readInt();
     }
 
     public static final Creator<BabyObj> CREATOR = new Creator<BabyObj>() {

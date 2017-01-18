@@ -136,6 +136,29 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     public static Activity activity;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_timelinedetail);
+
+        activity = this;
+
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        normalColor = getResources().getColor(R.color.gray_normal);
+        etCommment.clearFocus();
+        initView();
+        changeInputMethodSize();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
     public static void open(Context context, TimeLineObj item, int replacePos, int position) {
         Intent intent = new Intent(context, TimeLineDetailActivity.class);
         intent.putExtra("timelineobj", item);
@@ -163,23 +186,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                     Log.e("TimeLineDetailActivity", "queryBabyTimeDetail:");
                     error.printStackTrace();
                 });
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timelinedetail);
-
-        activity = this;
-
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        normalColor = getResources().getColor(R.color.gray_normal);
-        etCommment.clearFocus();
-        initView();
-        changeInputMethodSize();
 
     }
 
@@ -380,12 +386,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             new TimeLineActivityMenuDialog(this).share(timelineobj);
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     @Override

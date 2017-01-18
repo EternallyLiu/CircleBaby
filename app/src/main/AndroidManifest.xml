@@ -62,6 +62,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <meta-data
             android:name="cn.timeface.circle.baby.support.utils.glide.TFGlideModule"
             android:value="GlideModule" />
@@ -408,6 +409,9 @@
             android:name=".activities.BabyInfoActivity"
             android:label="宝宝信息"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.babyInfo.activity.BigNameActivity"
+            android:label="@string/baby_real_name_title"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.growth.activities.ProductionListActivity"
             android:label="@string/title_activity_book_list"
@@ -420,8 +424,6 @@
         <activity android:name=".ui.growth.activities.RecognizeCardListActivity"/>
 
         <activity android:name=".ui.growth.activities.CardListActivity"/>
-
-
     </application>
 
 </manifest>

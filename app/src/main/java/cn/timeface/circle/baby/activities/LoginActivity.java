@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.login.LoginApi;
 import cn.timeface.circle.baby.support.utils.login.OnLoginListener;
+import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.encode.AES;
@@ -317,10 +318,16 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                     if (loginResponse.success()) {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(from);
-                        if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this, true);
+                        if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("type", 0);
+                            FragmentBridgeActivity.open(this, BindPhoneFragment.class.getSimpleName(), bundle);
                         } else {
-                            startActivity(new Intent(this, TabMainActivity.class));
+                            if (loginResponse.getBabycount() == 0) {
+                                CreateBabyActivity.open(this, true);
+                            } else {
+                                startActivity(new Intent(this, TabMainActivity.class));
+                            }
                         }
                     }
                 }, error -> {

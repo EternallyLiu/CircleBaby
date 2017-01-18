@@ -43,6 +43,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.NotificationUtil;
 import cn.timeface.circle.baby.support.utils.Once;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DeviceUtil;
 import cn.timeface.common.utils.NetworkUtil;
@@ -94,6 +95,7 @@ public class SplashActivity extends BaseAppCompatActivity {
             finish();
             return;
         }
+//        FragmentBridgeActivity.open(this, TagAddFragment.class.getSimpleName());
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         //初始化sharesdk
@@ -103,6 +105,12 @@ public class SplashActivity extends BaseAppCompatActivity {
         showGuide();
 //        requestCheckUpdate();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        handler.removeMessages(1);
+        super.onDestroy();
     }
 
     private void firstRun() {
@@ -350,10 +358,10 @@ public class SplashActivity extends BaseAppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    if (response.success() && response.getAdInfo()!=null && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
+                    if (response.success() && response.getAdInfo() != null && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
                         adUrl = response.getAdInfo().getAdUri();
                         adImgUrl = response.getAdInfo().getAdImgUrl();
-                        if(!adImgUrl.startsWith("http")){
+                        if (!adImgUrl.startsWith("http")) {
                             adImgUrl = adImgUrl.substring(adImgUrl.indexOf("http"));
                         }
                         Glide.with(SplashActivity.this)
@@ -377,10 +385,10 @@ public class SplashActivity extends BaseAppCompatActivity {
 //        } else {
 //            checkLimit();
 //        }
-        if(FastData.getUserFrom() == -1){
+        if (FastData.getUserFrom() == -1) {
             LoginActivity.open(this);
             finish();
-        }else if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
+        } else if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
             //上次登录为手机号登录
             ShareSDK.initSDK(this);
             String account = FastData.getAccount();
@@ -392,7 +400,7 @@ public class SplashActivity extends BaseAppCompatActivity {
             //上次登录为三方账号登录
             String platform = cn.timeface.circle.baby.support.utils.Remember.getString("platform", "");
             ShareSDK.initSDK(this);
-            if(!TextUtils.isEmpty(platform)){
+            if (!TextUtils.isEmpty(platform)) {
                 Platform plat = ShareSDK.getPlatform(platform);
                 thirdLogin(plat.getDb().getToken(),
                         plat.getDb().getUserIcon(),
@@ -418,12 +426,14 @@ public class SplashActivity extends BaseAppCompatActivity {
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
                         FastData.setAccount(account);
                         FastData.setPassword(psw);
+                        FastData.setBabyCount(loginResponse.getBabycount());
                         if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this,true);
+//                            CreateBabyActivity.open(this,true);
+                            LoginActivity.open(this);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
-                    }else{
+                    } else {
                         LoginActivity.open(this);
                     }
                     finish();
@@ -453,11 +463,12 @@ public class SplashActivity extends BaseAppCompatActivity {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(from);
                         if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this,true);
+//                            CreateBabyActivity.open(this,true);
+                            LoginActivity.open(this);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
-                    }else{
+                    } else {
                         LoginActivity.open(this);
                     }
                     finish();
@@ -523,12 +534,6 @@ public class SplashActivity extends BaseAppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onDestroy() {
-        handler.removeMessages(1);
-        super.onDestroy();
     }
 
     private void fullScreen(boolean enable) {

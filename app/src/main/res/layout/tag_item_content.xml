@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cn.timeface.circle.baby.ui.images.views.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flow_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/size_6"
+    android:background="@drawable/tag_input"
+    android:minHeight="@dimen/size_48">
+
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/size_6"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@null"
+        android:gravity="bottom|left"
+        android:hint="@string/tag_input_hint"
+        android:padding="@dimen/size_10"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_normal" />
+</cn.timeface.circle.baby.ui.images.views.FlowLayout>

@@ -27,7 +27,7 @@
     <color name="bg_color11">#43C668</color>
     <color name="bg_color12">#F0F0F0</color>
     <color name="bg_color13">#F2F3F5</color>
-
+    <color name="bg_tag_color">#EEEEEE</color>
 
     <color name="bg0">#41b7f0</color>
     <color name="bg1">#a282f3</color>
@@ -120,5 +120,8 @@
     <color name="comment_relation">#ff727272</color>
     <color name="comment_content">#ff333333</color>
 
-
+    <color name="lust">#F31B25</color>
+    <color name="sea_buckthorn">#F59650</color>
+    <color name="aluminum">#999999</color>
+    <color name="alabaster">#FAFAFA</color>
 </resources>

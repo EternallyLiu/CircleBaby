@@ -21,6 +21,19 @@ public class TimeAxisObj extends BaseObj implements Parcelable {
         return monthRecords;
     }
 
+    /**
+     * 这个属性是为了做一个标记，在时间选择的时候判断是否被展开
+     */
+    private boolean isSelected=false;
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
     public void setMonthRecords(List<MonthRecord> monthRecords) {
         this.monthRecords = monthRecords;
     }
@@ -33,6 +46,9 @@ public class TimeAxisObj extends BaseObj implements Parcelable {
         this.year = year;
     }
 
+    public TimeAxisObj() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -40,20 +56,18 @@ public class TimeAxisObj extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.monthRecords);
+        dest.writeTypedList(this.monthRecords);
         dest.writeInt(this.year);
-    }
-
-    public TimeAxisObj() {
+        dest.writeByte(this.isSelected ? (byte) 1 : (byte) 0);
     }
 
     protected TimeAxisObj(Parcel in) {
-        this.monthRecords = new ArrayList<MonthRecord>();
-        in.readList(this.monthRecords, MonthRecord.class.getClassLoader());
+        this.monthRecords = in.createTypedArrayList(MonthRecord.CREATOR);
         this.year = in.readInt();
+        this.isSelected = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<TimeAxisObj> CREATOR = new Parcelable.Creator<TimeAxisObj>() {
+    public static final Creator<TimeAxisObj> CREATOR = new Creator<TimeAxisObj>() {
         @Override
         public TimeAxisObj createFromParcel(Parcel source) {
             return new TimeAxisObj(source);

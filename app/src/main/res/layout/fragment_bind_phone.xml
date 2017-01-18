@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/head" />
+
+    <TextView
+        android:id="@+id/current_phone"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:text="当前手机号码："
+        android:layout_margin="@dimen/size_12"
+        android:textSize="@dimen/text_small_12"
+        android:textColor="@color/aluminum"/>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/size_12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:background="@color/text_color1"
+            android:hint="@string/bind_phone_hint"
+            android:inputType="number"
+            android:padding="@dimen/size_12" />
+
+        <TextView
+            android:id="@+id/tv_get_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/size_12"
+            android:layout_weight="1"
+            android:background="@drawable/selector_btn_login"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/bind_phone_hint_get_code"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_small" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color3" />
+
+    <EditText
+        android:id="@+id/et_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/text_color1"
+        android:hint="@string/bind_phone_hint_code"
+        android:inputType="number"
+        android:padding="@dimen/size_12" />
+
+
+    <TextView
+        android:id="@+id/code_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_24"
+        android:gravity="center_vertical|left"
+        android:padding="@dimen/size_12"
+        android:text="@string/bind_phone_tip_note"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_small_12" />
+
+    <TextView
+        android:id="@+id/code_tip_red"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_24"
+        android:gravity="center|left"
+        android:padding="@dimen/size_12"
+        android:text="@string/bind_phone_tip_rule"
+        android:textColor="@color/lust"
+        android:textSize="@dimen/text_normal" />
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_36"
+        android:background="@drawable/selector_btn_login"
+        android:text="@string/submit"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_medium" />
+
+</LinearLayout>

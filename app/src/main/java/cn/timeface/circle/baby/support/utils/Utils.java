@@ -781,11 +781,13 @@ public class Utils {
 
     /**
      * 获取当前网络类型
+     *
      * @return 0：没有网络   1：WIFI网络   2：WAP网络    3：NET网络
      */
     public static final int NETTYPE_WIFI = 1;
     public static final int NETTYPE_CMWAP = 2;
     public static final int NETTYPE_CMNET = 3;
+
     public static int getNetworkType(Context context) {
         int netType = 0;
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -796,7 +798,7 @@ public class Utils {
         int nType = networkInfo.getType();
         if (nType == ConnectivityManager.TYPE_MOBILE) {
             String extraInfo = networkInfo.getExtraInfo();
-            if(!StringUtils.isEmpty(extraInfo)){
+            if (!StringUtils.isEmpty(extraInfo)) {
                 if (extraInfo.toLowerCase().equals("cmnet")) {
                     netType = NETTYPE_CMNET;
                 } else {
@@ -811,6 +813,7 @@ public class Utils {
 
     /**
      * 判断是否为汉字
+     *
      * @param str
      * @return false 是
      */
@@ -830,5 +833,66 @@ public class Utils {
         return isGB2312;
     }
 
+    // 验证汉字
+    private static final String REGEX_CHZ = "^[\\u4e00-\\u9fa5]+$";
+
+    public static String getLengthString(int size, String text) {
+        StringBuilder builder = new StringBuilder();
+        int count = 0;
+        char[] c = text.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            if (isMatch(REGEX_CHZ, c[i] + "")) {
+                count += 2;
+                if (count <= size - 1)
+                    builder.append(c[i]);
+                else return builder.toString();
+            } else {
+                count++;
+                if (count <= size)
+                    builder.append(c[i]);
+                else return builder.toString();
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 计算字符串大小  一个字符长度为1  汉子长度为2
+     *
+     * @param text
+     * @return
+     */
+    public static int getByteSize(String text) {
+        int count = 0;
+        char[] c = text.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            if (isMatch(REGEX_CHZ, c[i] + ""))
+                count += 2;
+            else count++;
+        }
+        return count;
+    }
+
+    /**
+     * @param string 待验证文本
+     * @return 是否符合汉字
+     */
+    public static boolean isChz(String string) {
+        char[] c = string.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            if (isMatch(REGEX_CHZ, c[i] + ""))
+                return true;
+        }
+        return isMatch(REGEX_CHZ, string);
+    }
+
+    /**
+     * @param regex  正则表达式字符串
+     * @param string 要匹配的字符串
+     * @return 如果str 符合 regex的正则表达式格式,返回true, 否则返回 false;
+     */
+    public static boolean isMatch(String regex, String string) {
+        return !TextUtils.isEmpty(string) && Pattern.matches(regex, string);
+    }
 
 }

@@ -54,6 +54,9 @@ import cn.timeface.circle.baby.support.api.models.responses.UnReadMsgResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UserLoginResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
+import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
+import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
+import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -222,6 +225,15 @@ public interface ApiService {
                                           @Query("name") String name,
                                           @Query("objectKey") String objectKey);
 
+    @GET("baby/editBabyInfo")
+    Observable<BaseResponse> editBabyInfo(@Query("birthday") long birthday,
+                                          @Query("blood") String blood,
+                                          @Query("gender") int gender,
+                                          @Query("name") String name,
+                                          @Query("realName") String realName,
+                                          @Query("showRealName") String showRealName,
+                                          @Query("objectKey") String objectKey);
+
     //删除宝宝
     @GET("baby/delBabyInfo")
     Observable<BaseResponse> delBabyInfo(@Query("babyId") int babyId);
@@ -300,6 +312,13 @@ public interface ApiService {
     @GET("babyTime/timeline")
     Observable<TimelineResponse> timeline(@Query("currentPage") int currentPage,
                                           @Query("pageSize") int pageSize);
+
+    @GET("babyTime/timeline")
+    Observable<TimelineResponse> timeline(
+            @Query("month") int month,
+            @Query("year") int year,
+            @Query("currentPage") int currentPage,
+            @Query("pageSize") int pageSize);
 
     //首页-时光详情
     @GET("babyTime/queryBabyTimeDetail")
@@ -614,13 +633,54 @@ public interface ApiService {
 
     /**
      * 获取时间内容列表
+     *
      * @param userId
      * @return
      */
     @GET("timeAxis/list")
     Observable<TimeAxixResponse> getTimeAxisList(@Query("userId") String userId);
+
     @GET("timeAxis/list")
     Observable<TimeAxixResponse> getTimeAxisList();
+
+
+    @POST("baby/getAvatarJson")
+    Observable<IconHisResponse> getIconHistory();
+
+    @POST("auth/binding")
+    Observable<BaseResponse> bindPhone(@Query("phoneNum") String phoneNum,
+                                       @Query("verifycode") String verifycode);
+    /**
+     *
+     * @param newPwd
+     * @param oldPwd
+     * @return
+     */
+    @POST("auth/modifyPassword\n")
+    Observable<BaseResponse> modifyPassword
+            (@Query("newPwd") String newPwd,
+             @Query("oldPwd") String oldPwd);
+
+
+    /**
+     * 获取他图片标签列表
+     * @param lat
+     * @param log
+     * @return
+     */
+    @POST("label/list")
+    Observable<TipResponse> getTips(@Query("lat") String lat,
+                                    @Query("log") String log);
+
+    /**
+     * 添加标签到图片中
+     * @param mediaId
+     * @param tips
+     * @return
+     */
+    @POST("label/addLabel")
+    Observable<AddTagResponse> addLabel(@Query("mediaId") String mediaId,
+                                        @Query("tips") String tips);
 
     /**
      * 获取印成长首页数据
@@ -649,7 +709,6 @@ public interface ApiService {
      */
     @GET("printGrowth/diaryCardList")
     Observable<DiaryCardListResponse> diaryCardList();
-
 
 
 }

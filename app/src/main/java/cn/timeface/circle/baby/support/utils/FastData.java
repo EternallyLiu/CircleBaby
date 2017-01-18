@@ -104,6 +104,9 @@ public class FastData extends Remember {
      */
     public static final String BABY_Blood = "BabyBlood";
 
+    public static final String BABY_RealName = "BabyRealName";
+    public static final String BABY_ShowRealName = "babyShowRealName";
+
     /**
      * BABY_Constellation星座
      */
@@ -204,6 +207,15 @@ public class FastData extends Remember {
         return getString(PASSWORD, "");
     }
 
+    public static String BABY_COUNT="baby_count";
+
+    public static int getBabyCount(){
+        return getInt(BABY_COUNT,0);
+    }
+    public static void setBabyCount(int count){
+        putInt(BABY_COUNT,count);
+    }
+
     public static void setPassword(String password) {
         putString(PASSWORD, password);
     }
@@ -219,7 +231,7 @@ public class FastData extends Remember {
      * 存储用户ID
      */
     public static void setUserId(String userId) {
-        if(!TextUtils.isEmpty(userId)){
+        if (!TextUtils.isEmpty(userId)) {
             putString(USER_ID, userId);
         }
     }
@@ -345,6 +357,8 @@ public class FastData extends Remember {
             setBabyConstellation(babyObj.getConstellation());
             setBabyGender(babyObj.getGender());
             setBabyName(babyObj.getName());
+            setBabyRealName(babyObj.getRealName());
+            setShowRealName(babyObj.getShowRealName());
         }
     }
 
@@ -358,17 +372,37 @@ public class FastData extends Remember {
         int babyGender = getBabyGender();
         String babyName = getBabyName();
         BabyObj babyObj = new BabyObj(babyAge, babyAvatar, babyId, babyBithday, babyBlood, babyConstellation, babyGender, babyName);
+        babyObj.setRealName(getBabyRealName());
+        babyObj.setShowRealName(getShowRealName());
         return babyObj;
     }
 
     public static void setBabyName(String name) {
-        if(!TextUtils.isEmpty(name)){
+        if (!TextUtils.isEmpty(name)) {
             putString(BABY_Name, name);
         }
     }
 
     public static String getBabyName() {
         return getString(BABY_Name, "");
+    }
+
+    public static void setBabyRealName(String name) {
+        if (!TextUtils.isEmpty(name)) {
+            putString(BABY_RealName, name);
+        }
+    }
+
+    public static String getBabyRealName() {
+        return getString(BABY_RealName, "");
+    }
+
+    public static void setShowRealName(int code) {
+        putInt(BABY_ShowRealName, code);
+    }
+
+    public static int getShowRealName() {
+        return getInt(BABY_ShowRealName, 0);
     }
 
     public static void setBabyGender(int gender) {
@@ -380,7 +414,7 @@ public class FastData extends Remember {
     }
 
     public static void setBabyConstellation(String constellation) {
-        if(!TextUtils.isEmpty(constellation)){
+        if (!TextUtils.isEmpty(constellation)) {
             putString(BABY_Constellation, constellation);
         }
     }
@@ -390,7 +424,7 @@ public class FastData extends Remember {
     }
 
     public static void setBabyBlood(String blood) {
-        if(!TextUtils.isEmpty(blood)){
+        if (!TextUtils.isEmpty(blood)) {
             putString(BABY_Blood, blood);
         }
     }
@@ -400,7 +434,7 @@ public class FastData extends Remember {
     }
 
     public static void setBabyBithday(long bithday) {
-        if(bithday!=0){
+        if (bithday != 0) {
             putLong(BABY_Bithday, bithday);
         }
     }
@@ -410,7 +444,7 @@ public class FastData extends Remember {
     }
 
     public static void setBabyId(int babyId) {
-            putInt(BABY_ID, babyId);
+        putInt(BABY_ID, babyId);
     }
 
     public static int getBabyId() {

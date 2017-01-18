@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.activities;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -105,7 +106,6 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         } else {
             rlFocus.setVisibility(View.GONE);
         }
-
         tvBack.setOnClickListener(this);
         tvNext.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);

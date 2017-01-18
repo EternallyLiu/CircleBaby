@@ -4,8 +4,10 @@ package cn.timeface.circle.baby.fragments;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
@@ -27,6 +30,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.AboutActivity;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.events.LogoutEvent;
@@ -35,6 +39,9 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.MiPushUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
+import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.ShareSdkUtil;
@@ -65,14 +72,20 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     RelativeLayout rlWifi;
     @Bind(R.id.iv_swich_msg)
     ImageView ivSwichMsg;
-
-    public SettingFragment() {
-    }
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.rl_setting_pwd)
+    RelativeLayout rlSettingPwd;
+    @Bind(R.id.tv_phone_number)
+    TextView tvPhoneNumber;
+    @Bind(R.id.rl_setting_phone)
+    RelativeLayout rlSettingPhone;
+    private String phoneNumber;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -90,7 +103,38 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void onEvent(UpdatePhone event) {
+        showPhone();
+
+    }
+
+    public SettingFragment() {
+    }
+
+    private void showPhone() {
+        phoneNumber = FastData.getUserInfo().getPhoneNumber();
+        String replace = phoneNumber.substring(3, 7);
+
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            tvPhoneNumber.setText(phoneNumber.replace(replace,"****"));
+        }
+    }
+
     private void initData() {
+
         if (Remember.getInt("wifidownload", 1) == 0) {
             ivSwichWifi.setImageResource(R.drawable.swichoff);
         }
@@ -99,7 +143,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         }
         new CacheSizeTask().execute();
 
-
+        showPhone();
         rlWifi.setOnClickListener(this);
         rlSettingMsg.setOnClickListener(this);
         rlSettingShare.setOnClickListener(this);
@@ -107,17 +151,20 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         rlSettingScore.setVisibility(View.GONE);
         rlSettingClear.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
+        rlSettingPwd.setOnClickListener(this);
+        rlSettingPhone.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_setting_phone:
+
+                FragmentBridgeActivity.open(getActivity(), BindPhoneFragment.class.getSimpleName());
+                break;
+            case R.id.rl_setting_pwd:
+                FragmentBridgeActivity.open(getActivity(), NotifyPwdFragment.class.getSimpleName());
+                break;
             case R.id.rl_wifi:
                 if (Remember.getInt("wifidownload", 1) == 0) {
                     ivSwichWifi.setImageResource(R.drawable.swichon);
@@ -194,8 +241,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 if (StorageUtil.getExternalCacheDir().exists()) {
                     cacheSize += StorageUtil.getFolderSize(StorageUtil.getExternalCacheDir());
                 }
-                System.out.println("cacheSize:" + cacheSize);
-                System.out.println(StorageUtil.FormatFileSize(cacheSize));
             } catch (Exception e) {
                 e.printStackTrace();
             }

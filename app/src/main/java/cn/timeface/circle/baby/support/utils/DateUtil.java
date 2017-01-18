@@ -35,6 +35,14 @@ public class DateUtil {
         return formatDate(format, timeInMillis);
     }
 
+    public static String getDateYear(long date){
+        String format = "yyyy-MM-dd";
+        String s = formatDate(format, date);
+        String[] split = s.split("-");
+        String year = split[0];
+        return year;
+    }
+
     public static String getYear2(long timeInMillis) {
         String format = "yyyy.MM.dd";
 

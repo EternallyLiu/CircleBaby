@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.activities.base;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.umeng.analytics.MobclickAgent;
@@ -11,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -43,6 +45,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+        LogUtil.showLog(getClass().getName());
     }
 
     @Override

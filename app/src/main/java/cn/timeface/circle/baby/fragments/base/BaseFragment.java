@@ -12,6 +12,7 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -26,6 +27,7 @@ public class BaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtil.showLog(getClass().getName());
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
         }

@@ -40,7 +40,14 @@ import cn.timeface.circle.baby.fragments.WebViewFragment;
 import cn.timeface.circle.baby.support.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
+import cn.timeface.circle.baby.ui.images.TagAddFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeLineDayFragment;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeLineFragment;
 
 /**
  * Created by JieGuo on 1/22/16.
@@ -52,6 +59,16 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
     public static void openBigimageFragment(Context context, ArrayList<String> paths, int index, boolean download, boolean delete) {
         Bundle bundle = new Bundle();
+        bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
+        bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
+        bundle.putBoolean("download", download);
+        bundle.putBoolean("delete", delete);
+        open(context, "BigImageFragment", "", bundle);
+    }
+
+    public static void openBigimageFragment(Context context, ArrayList<MediaObj> list, ArrayList<String> paths, int index, boolean download, boolean delete) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("mediaList",list);
         bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
         bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
         bundle.putBoolean("download", download);
@@ -311,8 +328,22 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "WebViewFragment":
                 return WebViewFragment.newInstance();
+            case "TimeLineFragment":
+                return TimeLineFragment.newInstance();
+            case "TimeLineDayFragment":
 
+                return TimeLineDayFragment.newInstance();
+            case "IconHistoryFragment":
 
+                return new IconHistoryFragment();
+            case "NotifyPwdFragment":
+                return new NotifyPwdFragment();
+            case "BindPhoneFragment":
+
+                return new BindPhoneFragment();
+            case "TagAddFragment":
+
+                return new TagAddFragment();
             default:
                 return null;
         }
