@@ -29,6 +29,7 @@
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
         android:padding="@dimen/size_12"
+        android:lineSpacingExtra="@dimen/size_6"
         android:text="提示信息"
         android:textColor="@color/black"
         android:textSize="@dimen/text_medium" />

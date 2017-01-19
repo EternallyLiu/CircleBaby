@@ -6,9 +6,16 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,15 +57,19 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.babyInfo.activity.BigNameActivity;
 import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnClickListener, DeleteDialog.SubmitListener {
+
     @Bind(R.id.btn_save)
     Button btnSave;
+    @Bind(R.id.title)
+    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.iv_avatar)
-    CircleImageView ivAvatar;
+    ImageView ivAvatar;
     @Bind(R.id.tv_age)
     TextView tvAge;
     @Bind(R.id.tv_name)
@@ -93,6 +104,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     RelativeLayout rlBlood;
     @Bind(R.id.rl_icon_his)
     RelativeLayout rlIconHis;
+
     public int gender;
     private BabyObj babyObj;
     public static final String KEY_SELECTED_PHOTO_SIZE = "SELECTED_PHOTO_SIZE";
@@ -103,6 +115,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     File selImageFile;
     File outFile;
     private UserObj userInfo;
+    private DeleteDialog deleteDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +125,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         EventBus.getDefault().register(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("宝宝信息");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        title.setText("宝宝信息");
 
         userInfo = FastData.getUserInfo();
         babyObj = userInfo.getBabyObj();
@@ -128,10 +142,16 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         if (baby > 0)
             objectKey = s.substring(baby);
 
-        GlideUtil.displayImage(this.babyObj.getAvatar(), ivAvatar);
+        GlideUtil.displayImageCircle(this.babyObj.getAvatar(), ivAvatar);
         tvName.setText(this.babyObj.getName());
         tvRealName.setText(this.babyObj.getRealName());
-        tvAge.setText(this.babyObj.getAge());
+
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(this.babyObj.getNickName()).append("\n").append(this.babyObj.getAge());
+        AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));
+        builder.setSpan(sizeSpan, 0, this.babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        tvAge.setText(builder);
+//        tvAge.setText(this.babyObj.getNickName() + "\n" + this.babyObj.getAge());
         tvBrithday.setText(DateUtil.getYear(this.babyObj.getBithday()));
         tvBlood.setText(TextUtils.isEmpty(this.babyObj.getBlood()) ? "未填写" : this.babyObj.getBlood());
         rbGirl.setChecked(this.babyObj.getGender() == 0);
@@ -318,7 +338,10 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                 long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
                 String b = tvBlood.getText().toString();
                 btnSave.setEnabled(false);
-                apiService.editBabyInfo(time, URLEncoder.encode(b), gender, URLEncoder.encode(n), objectKey)
+                apiService.editBabyInfo(time, URLEncoder.encode(b), gender, URLEncoder.encode(n),
+                        URLEncoder.encode(this.babyObj.getRealName()),
+                        URLEncoder.encode(this.babyObj.getShowRealName() + ""),
+                        objectKey)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {
@@ -381,37 +404,57 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         if (item.getItemId() == R.id.complete) {
             if (userInfo.getIsCreator() == 1) {
                 //删除宝宝
-                new AlertDialog.Builder(this)
-                        .setTitle("确定删除宝宝 " + babyObj.getName() + " 吗?")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        apiService.delBabyInfo(babyObj.getBabyId())
-                                .compose(SchedulersCompat.applyIoSchedulers())
-                                .subscribe(response -> {
-                                    if (response.success()) {
-                                        FastData.setBabyId(0);
-                                        ChangeBabyActivity.open(BabyInfoActivity.this);
-                                        finish();
-                                    } else {
-                                        ToastUtil.showToast(response.getInfo());
-                                    }
-                                }, throwable -> {
-                                    Log.e(TAG, "delBabyInfo:", throwable);
-                                });
-                    }
-                }).show();
+                if (deleteDialog == null) {
+                    deleteDialog = new DeleteDialog(this);
+                    deleteDialog.setTitle("提示");
+                    String contentMessage = "你确定要删除宝宝";
+
+
+                    SpannableStringBuilder builder = new SpannableStringBuilder(contentMessage);
+                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.RED);
+                    builder.append(" ").append(this.babyObj.getNickName()).append(" ");
+                    builder.append("吗？").append("\n");
+                    int largeLength = builder.length();
+                    builder.append("这会导致你不能继续查看宝宝相关").append("\n").append("的内容。");
+                    AbsoluteSizeSpan span = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));
+                    //标红宝宝名字
+                    builder.setSpan(colorSpan, contentMessage.length() + 1, contentMessage.length() + 1 + this.babyObj.getNickName().length() + 1,
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    //设置宝宝名字为大字体
+                    builder.setSpan(span, contentMessage.length() + 1, contentMessage.length() + 1 + this.babyObj.getNickName().length() + 1,
+                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+                    //关键提示语加粗
+                    StyleSpan styleSpan=new StyleSpan(Typeface.BOLD);
+                    builder.setSpan(styleSpan, 0, largeLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+
+                    deleteDialog.setMessage(builder);
+                    deleteDialog.setSubmitListener(this);
+                }
+                deleteDialog.show();
             } else {
                 alertDialog = new AlertDialog.Builder(this).setView(initUnFocusView()).show();
                 alertDialog.setCanceledOnTouchOutside(false);
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteBaby() {
+        apiService.delBabyInfo(babyObj.getBabyId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        FastData.setBabyId(0);
+                        ChangeBabyActivity.open(BabyInfoActivity.this);
+                        finish();
+                    } else {
+                        ToastUtil.showToast(response.getInfo());
+                    }
+                }, throwable -> {
+                    Log.e(TAG, "delBabyInfo:", throwable);
+                });
     }
 
     @Subscribe
@@ -431,5 +474,12 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         btnCancel.setOnClickListener(this);
         btnOk.setOnClickListener(this);
         return view;
+    }
+
+    @Override
+    public void submit() {
+        deleteBaby();
+        if (deleteDialog != null && deleteDialog.isShowing())
+            deleteDialog.dismiss();
     }
 }

@@ -71,6 +71,7 @@ public class TimeLineDayAdapter extends BaseAdapter {
         String day = DateUtil.getDay(item.getDate());
         String year = DateUtil.getDateYear(item.getDate());
         Log.i("test","year:"+year+"\nmonth:"+month+"\n day:"+day);
+
         //设置日历日期
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(day).append("\n").append(year).append(",").append(month);

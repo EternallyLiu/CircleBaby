@@ -40,12 +40,12 @@ public class DeleteDialog extends BaseDialog implements View.OnClickListener {
         init();
     }
 
-    public void setMessage(String message) {
+    public void setMessage(CharSequence message) {
         if (this.message != null && !TextUtils.isEmpty(message))
             this.message.setText(message);
     }
 
-    public void setTitle(String title) {
+    public void setTitle(CharSequence title) {
         if (this.title != null && !TextUtils.isEmpty(title)) {
             this.title.setVisibility(View.VISIBLE);
             this.title.setText(title);

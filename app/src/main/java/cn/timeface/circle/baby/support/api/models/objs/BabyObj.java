@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 
@@ -112,6 +113,49 @@ public class BabyObj extends BaseObj implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNickName() {
+        if (getShowRealName() == 0)
+            return TextUtils.isEmpty(getRealName()) ? getName() : getRealName();
+        else return getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BabyObj babyObj = (BabyObj) o;
+
+        if (showRealName != babyObj.showRealName) return false;
+        if (babyId != babyObj.babyId) return false;
+        if (bithday != babyObj.bithday) return false;
+        if (gender != babyObj.gender) return false;
+        if (realName != null ? !realName.equals(babyObj.realName) : babyObj.realName != null)
+            return false;
+        if (age != null ? !age.equals(babyObj.age) : babyObj.age != null) return false;
+        if (avatar != null ? !avatar.equals(babyObj.avatar) : babyObj.avatar != null) return false;
+        if (blood != null ? !blood.equals(babyObj.blood) : babyObj.blood != null) return false;
+        if (constellation != null ? !constellation.equals(babyObj.constellation) : babyObj.constellation != null)
+            return false;
+        return name != null ? name.equals(babyObj.name) : babyObj.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = realName != null ? realName.hashCode() : 0;
+        result = 31 * result + showRealName;
+        result = 31 * result + (age != null ? age.hashCode() : 0);
+        result = 31 * result + (avatar != null ? avatar.hashCode() : 0);
+        result = 31 * result + babyId;
+        result = 31 * result + (int) (bithday ^ (bithday >>> 32));
+        result = 31 * result + (blood != null ? blood.hashCode() : 0);
+        result = 31 * result + (constellation != null ? constellation.hashCode() : 0);
+        result = 31 * result + gender;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     @Override

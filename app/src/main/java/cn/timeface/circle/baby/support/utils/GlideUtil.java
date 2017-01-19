@@ -62,9 +62,9 @@ public class GlideUtil {
                 .asBitmap()
                 .transform(new CircleTransform(context))
                 .into(imageView);
-        Glide.with(context)
-                .load(url)
-                .into(imageView);
+//        Glide.with(context)
+//                .load(url)
+//                .into(imageView);
     }
 
     public static void displayImage(String url, ImageView imageView, int id) {
