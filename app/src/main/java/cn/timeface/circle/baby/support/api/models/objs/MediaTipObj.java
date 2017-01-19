@@ -48,6 +48,33 @@ public class MediaTipObj extends BaseObj implements Parcelable {
     public MediaTipObj() {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MediaTipObj tipObj = (MediaTipObj) o;
+
+        if (tipId != tipObj.tipId) return false;
+        return tipName != null ? tipName.equals(tipObj.tipName) : tipObj.tipName == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (tipId ^ (tipId >>> 32));
+        result = 31 * result + (tipName != null ? tipName.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "MediaTipObj{" +
+                "tipId=" + tipId +
+                ", tipName='" + tipName + '\'' +
+                '}';
+    }
+
     protected MediaTipObj(Parcel in) {
         this.tipId = in.readLong();
         this.tipName = in.readString();

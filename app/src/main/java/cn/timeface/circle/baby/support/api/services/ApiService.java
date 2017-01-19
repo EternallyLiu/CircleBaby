@@ -56,6 +56,7 @@ import cn.timeface.circle.baby.support.api.models.responses.UserLoginResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
+import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import retrofit2.http.Field;
@@ -673,6 +674,16 @@ public interface ApiService {
                                     @Query("log") String log);
 
     /**
+     * 添加图片为喜欢
+     * @param favore
+     * @param mediaId
+     * @return  喜欢的数量
+     */
+    @POST("label/addLike")
+    Observable<LikeResponse> addLabelLike(@Query("favore") String favore,
+                                     @Query("mediaId") String mediaId);
+
+    /**
      * 添加标签到图片中
      * @param mediaId
      * @param tips
@@ -681,6 +692,16 @@ public interface ApiService {
     @POST("label/addLabel")
     Observable<AddTagResponse> addLabel(@Query("mediaId") String mediaId,
                                         @Query("tips") String tips);
+
+    /**
+     * 删除标签
+     * @param mediaId
+     * @param tips
+     * @return
+     */
+    @POST("label/delLabel")
+    Observable<BaseResponse> deleteLabel(@Query("mediaId") String mediaId,
+                                        @Query("tipId") String tips);
 
     /**
      * 获取印成长首页数据

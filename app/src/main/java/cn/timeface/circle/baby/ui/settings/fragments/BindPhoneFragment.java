@@ -6,9 +6,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -40,12 +44,8 @@ import rx.Subscription;
 
 public class BindPhoneFragment extends BaseFragment implements View.OnClickListener {
 
-    @Bind(R.id.back)
-    ImageView back;
     @Bind(R.id.title)
     TextView title;
-    @Bind(R.id.right)
-    TextView right;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.current_phone)
@@ -74,6 +74,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey("type"))
             type = bundle.getInt("type", 1);
@@ -85,35 +86,56 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
         View view = inflater.inflate(R.layout.fragment_bind_phone, container, false);
 
         ButterKnife.bind(this, view);
-        if (type==0)
-            phoneNumber=null;
+        setActionBar(toolbar);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        if (type == 0)
+            phoneNumber = null;
         phoneNumber = FastData.getUserInfo().getPhoneNumber();
         currentPhone.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
-        right.setVisibility(!TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         title.setText(TextUtils.isEmpty(phoneNumber) ? "绑定手机号" : "修改手机号");
-        if (!TextUtils.isEmpty(phoneNumber)){
-            String replace=phoneNumber.substring(3,7);
-            currentPhone.setText(getString(R.string.bind_current_phone_tip) + phoneNumber.replace(replace,"****"));
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            String replace = phoneNumber.substring(3, 7);
+            currentPhone.setText(getString(R.string.bind_current_phone_tip) + phoneNumber.replace(replace, "****"));
         }
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
         codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
 
-        right.setOnClickListener(this);
-        right.setText("暂不绑定");
-        back.setOnClickListener(this);
         tvGetCode.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         return view;
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (type == 0) {
+            inflater.inflate(R.menu.menu_fragment_bigimage, menu);
+            menu.findItem(R.id.save).setTitle("暂不绑定");
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.save:
+                next();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void next() {
         if (FastData.getBabyCount() == 0) {
             CreateBabyActivity.open(getActivity(), true);
-        }else if (type==0){
-            startActivity(new Intent(getActivity(),TabMainActivity.class));
+        } else if (type == 0) {
+            startActivity(new Intent(getActivity(), TabMainActivity.class));
         }
         EventBus.getDefault().post(new UpdatePhone());
         getActivity().finish();

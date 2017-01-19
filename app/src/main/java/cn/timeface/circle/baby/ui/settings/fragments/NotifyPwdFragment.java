@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -39,12 +40,8 @@ import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
  */
 public class NotifyPwdFragment extends BaseFragment implements View.OnFocusChangeListener, View.OnClickListener {
 
-    @Bind(R.id.back)
-    ImageView back;
     @Bind(R.id.title)
     TextView title;
-    @Bind(R.id.right)
-    TextView right;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_old_password)
@@ -70,15 +67,20 @@ public class NotifyPwdFragment extends BaseFragment implements View.OnFocusChang
 
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
         etNewPassword.setOnFocusChangeListener(this);
         etNewPasswordAgain.setOnFocusChangeListener(this);
         title.setText(R.string.notify_password);
-        back.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
-        right.setVisibility(View.INVISIBLE);
         tfProgressDialog=TFProgressDialog.getInstance("");
         return view;
     }
+
+
 
     @Override
     public void onDestroyView() {
@@ -163,9 +165,6 @@ public class NotifyPwdFragment extends BaseFragment implements View.OnFocusChang
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back:
-                getActivity().finish();
-                break;
             case R.id.btn_submit:
                 LogUtil.showLog("submit is clicked");
                 String old = etOldPassword.getText().toString();

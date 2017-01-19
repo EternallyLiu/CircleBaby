@@ -1,15 +1,21 @@
 package cn.timeface.circle.baby.ui.images;
 
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -17,6 +23,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +34,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
@@ -40,12 +49,8 @@ import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 public class TagAddFragment extends BaseFragment implements TextWatcher, View.OnClickListener {
 
 
-    @Bind(R.id.back)
-    ImageView back;
     @Bind(R.id.title)
     TextView title;
-    @Bind(R.id.right)
-    TextView right;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.input)
@@ -63,14 +68,17 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     private LayoutInflater inflater = null;
     private List<MediaTipObj> selectList = new ArrayList<>();
 
-    private long mediaId = 0;
+//    private long mediaId = 0;
+
+    private MediaObj currentMediaObj = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         Bundle bundle = getArguments();
-        if (bundle != null && bundle.containsKey("mediaId"))
-            mediaId = bundle.getLong("mediaId");
+        if (bundle != null && bundle.containsKey("media"))
+            currentMediaObj = bundle.getParcelable("media");
     }
 
     @Nullable
@@ -79,15 +87,23 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
         View view = inflater.inflate(R.layout.fragment_tag_add, container, false);
 
         ButterKnife.bind(this, view);
+        setActionBar(toolbar);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
         input.addTextChangedListener(this);
-        right.setText(R.string.save_tip);
-        right.setOnClickListener(this);
-        back.setOnClickListener(this);
         title.setText(R.string.tag_add_title);
         reqData();
-        if (mediaId <= 0) {
+        if (currentMediaObj == null) {
             ToastUtil.showToast("对不起！图片信息不能为空");
             getActivity().finish();
+        } else {
+            if (currentMediaObj.getTips() != null && currentMediaObj.getTips().size() > 0)
+                for (MediaTipObj tipObj : currentMediaObj.getTips()) {
+                    addView(tipObj);
+                }
         }
         return view;
     }
@@ -96,6 +112,25 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_activity_edit_complete, menu);
+        MenuItem item = menu.findItem(R.id.edit_complete);
+        item.setTitle("保存");
+        LogUtil.showLog("执行=====" + item.isEnabled() + "--" + item.isVisible());
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.edit_complete:
+                save();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void reqData() {
@@ -192,7 +227,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     }
 
     private void addView(String tag) {
-        tag = Utils.getLengthString(24, tag);
+        tag = Utils.getLengthString(24, tag.trim());
         addView(new MediaTipObj(tag));
     }
 
@@ -250,17 +285,19 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
             LogUtil.showLog("异常!");
             e.printStackTrace();
         }
-//        if (TextUtils.isEmpty(json))
-//            return;
-//        addSubscription(apiService.addLabel(mediaId + "", "")
-//                .compose(SchedulersCompat.applyIoSchedulers())
-//                .subscribe(response -> {
-//                    if (response.success()) {
-//                        getActivity().finish();
-//                    }
-//
-//                }, throwable -> {
-//                }));
+        if (TextUtils.isEmpty(json))
+            return;
+        addSubscription(apiService.addLabel(currentMediaObj.getId() + "", Uri.encode(json))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        currentMediaObj.setTips(response.getTips());
+                        EventBus.getDefault().post(currentMediaObj);
+                        getActivity().finish();
+                    }
+
+                }, throwable -> {
+                }));
     }
 
     @Override
@@ -284,9 +321,6 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
                 break;
             case R.id.back:
                 getActivity().finish();
-                break;
-            case R.id.right:
-                save();
                 break;
         }
     }

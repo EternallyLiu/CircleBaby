@@ -253,6 +253,65 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MediaObj mediaObj = (MediaObj) o;
+
+        if (h != mediaObj.h) return false;
+        if (w != mediaObj.w) return false;
+        if (id != mediaObj.id) return false;
+        if (length != mediaObj.length) return false;
+        if (photographTime != mediaObj.photographTime) return false;
+        if (selected != mediaObj.selected) return false;
+        if (isCover != mediaObj.isCover) return false;
+        if (timeId != mediaObj.timeId) return false;
+        if (date != mediaObj.date) return false;
+        if (imageOrientation != mediaObj.imageOrientation) return false;
+        if (favoritecount != mediaObj.favoritecount) return false;
+        if (isFavorite != mediaObj.isFavorite) return false;
+        if (content != null ? !content.equals(mediaObj.content) : mediaObj.content != null)
+            return false;
+        if (imgUrl != null ? !imgUrl.equals(mediaObj.imgUrl) : mediaObj.imgUrl != null)
+            return false;
+        if (localPath != null ? !localPath.equals(mediaObj.localPath) : mediaObj.localPath != null)
+            return false;
+        if (videoUrl != null ? !videoUrl.equals(mediaObj.videoUrl) : mediaObj.videoUrl != null)
+            return false;
+        if (localIdentifier != null ? !localIdentifier.equals(mediaObj.localIdentifier) : mediaObj.localIdentifier != null)
+            return false;
+        if (location != null ? !location.equals(mediaObj.location) : mediaObj.location != null)
+            return false;
+        return tips != null ? tips.equals(mediaObj.tips) : mediaObj.tips == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = content != null ? content.hashCode() : 0;
+        result = 31 * result + h;
+        result = 31 * result + w;
+        result = 31 * result + id;
+        result = 31 * result + (imgUrl != null ? imgUrl.hashCode() : 0);
+        result = 31 * result + (int) (length ^ (length >>> 32));
+        result = 31 * result + (localPath != null ? localPath.hashCode() : 0);
+        result = 31 * result + (int) (photographTime ^ (photographTime >>> 32));
+        result = 31 * result + (videoUrl != null ? videoUrl.hashCode() : 0);
+        result = 31 * result + selected;
+        result = 31 * result + isCover;
+        result = 31 * result + timeId;
+        result = 31 * result + (int) (date ^ (date >>> 32));
+        result = 31 * result + imageOrientation;
+        result = 31 * result + favoritecount;
+        result = 31 * result + isFavorite;
+        result = 31 * result + (localIdentifier != null ? localIdentifier.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (tips != null ? tips.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

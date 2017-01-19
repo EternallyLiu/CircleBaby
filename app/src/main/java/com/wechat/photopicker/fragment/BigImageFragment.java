@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import com.wechat.photopicker.adapter.PhotoPagerAdapter;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,8 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
+import cn.timeface.circle.baby.ui.images.views.FlipImageView;
 import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
@@ -45,7 +50,7 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 /**
  * Created by yellowstart on 15/12/15.
  */
-public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack ,View.OnClickListener{
+public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack, View.OnClickListener, DeleteDialog.SubmitListener {
 
     @Bind(R.id.tv_title)
     TextView tvTitle;
@@ -58,11 +63,21 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     @Bind(R.id.tv_delete)
     TextView tvDelete;
     @Bind(R.id.tag)
-    RelativeLayout tag;
+    LinearLayout tag;
     @Bind(R.id.love)
-    RelativeLayout love;
+    LinearLayout love;
     @Bind(R.id.ll_botton)
     LinearLayout llBotton;
+    @Bind(R.id.ll_tag_list)
+    LinearLayout llTagList;
+    @Bind(R.id.tv_tag_add)
+    TextView tvTagAdd;
+    @Bind(R.id.tv_like_count)
+    TextView tvLikeCount;
+    @Bind(R.id.iv_tag_add)
+    FlipImageView ivTagAdd;
+    @Bind(R.id.iv_image_like)
+    FlipImageView ivImageLike;
     private List<String> mPaths;
 
     private ArrayList<MediaObj> mMedias;
@@ -84,6 +99,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         download = intent.getBooleanExtra("download", false);
         delete = intent.getBooleanExtra("delete", false);
         setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
@@ -102,6 +118,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         }
         mViewPager.setAdapter(mPhotoPagerAdapter);
         mViewPager.setCurrentItem(mCurrenItem);
+        initTips();
+        initLikeCount();
         if (mMedias != null && mMedias.size() > 0)
             llBotton.setVisibility(View.VISIBLE);
         else llBotton.setVisibility(View.GONE);
@@ -118,6 +136,105 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         ButterKnife.unbind(this);
     }
 
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void onEvent(MediaObj mediaObj) {
+        int currentPosition = mViewPager.getCurrentItem();
+        mMedias.remove(currentPosition);
+        mMedias.add(currentPosition, mediaObj);
+        initTips();
+    }
+
+    private LayoutInflater inflate = null;
+
+    private void initTips() {
+        if (llTagList.getChildCount() > 0)
+            llTagList.removeAllViews();
+        int currentPosition = mViewPager.getCurrentItem();
+        MediaObj media = null;
+        if (mMedias != null && mMedias.size() > currentPosition)
+            media = mMedias.get(currentPosition);
+        if (media != null && media.getTips() != null && media.getTips().size() > 0) {
+            llTagList.setVisibility(View.VISIBLE);
+            ivTagAdd.changeStatus(R.drawable.tag_click_added);
+            if (inflate == null) {
+                inflate = LayoutInflater.from(getActivity());
+            }
+            for (MediaTipObj tip : media.getTips()) {
+                View view = inflate.inflate(R.layout.tag_list_item, llTagList, false);
+                TextView tipName = (TextView) view.findViewById(R.id.name);
+                view.setTag(R.id.tag_list_item, tip);
+                view.setTag(R.id.tag_delete, currentPosition);
+                tipName.setText(tip.getTipName());
+                view.setOnLongClickListener(longClick);
+                view.setLongClickable(true);
+                llTagList.addView(view);
+            }
+        } else {
+            ivTagAdd.changeStatus(R.drawable.tag_clicl_add);
+            llTagList.setVisibility(View.GONE);
+        }
+    }
+
+    private int deletePostion = -1;
+    private MediaTipObj currentTip = null;
+
+    private void deleteTip() {
+        if (deletePostion < 0 || currentTip == null) {
+            return;
+        }
+        MediaObj mediaObj = mMedias.get(deletePostion);
+        if (!mediaObj.getTips().contains(currentTip))
+            return;
+        addSubscription(apiService.deleteLabel(mediaObj.getId() + "", currentTip.getTipId() + "")
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        if (mediaObj.getTips().contains(currentTip))
+                            mediaObj.getTips().remove(currentTip);
+                        mMedias.remove(deletePostion);
+                        mMedias.add(deletePostion, mediaObj);
+                        initTips();
+                        deletePostion = -1;
+                        currentTip = null;
+                    }
+
+                }, throwable -> {
+                }));
+    }
+
+    private DeleteDialog deleteDialog = null;
+
+    private void showDeleteDialog() {
+        if (deleteDialog == null)
+            deleteDialog = new DeleteDialog(getActivity());
+        deleteDialog.setTitle("提示");
+        deleteDialog.setMessage("您确定删除该标签么？");
+        deleteDialog.setSubmitListener(this);
+        deleteDialog.show();
+    }
+
+    private View.OnLongClickListener longClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            switch (v.getId()) {
+                case R.id.tag_list_item:
+                    currentTip = (MediaTipObj) v.getTag(R.id.tag_list_item);
+                    deletePostion = (int) v.getTag(R.id.tag_delete);
+                    if (currentTip != null)
+                        showDeleteDialog();
+                    break;
+            }
+            return false;
+        }
+    };
+
     private void initListener() {
         tvTitle.setText(mCurrenItem + 1 + "/" + mPaths.size());
 //        tvDownload.setOnClickListener(this);
@@ -132,6 +249,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             public void onPageSelected(int position) {
                 position = position + 1;
                 tvTitle.setText(position + "/" + mPaths.size());
+                initTips();
+                initLikeCount();
             }
 
             @Override
@@ -200,7 +319,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         MediaObj mediaObj = mMedias.get(currentPosition);
 
         Bundle bundle = new Bundle();
-        bundle.putLong("mediaId", mediaObj.getId());
+        bundle.putParcelable("media", mediaObj);
         FragmentBridgeActivity.open(getActivity(), TagAddFragment.class.getSimpleName(), bundle);
     }
 
@@ -288,15 +407,53 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         }
     }
 
+
+    private void initLikeCount() {
+        int currentPosition = mViewPager.getCurrentItem();
+        MediaObj mediaObj = mMedias.get(currentPosition);
+        tvLikeCount.setText("+ " + mediaObj.getFavoritecount());
+        ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
+    }
+
+    private void addLike() {
+        int currentPosition = mViewPager.getCurrentItem();
+        MediaObj mediaObj = mMedias.get(currentPosition);
+        if (mediaObj != null) {
+            addSubscription(apiService.addLabelLike(mediaObj.getIsFavorite() == 1 ? "0" : "1", mediaObj.getId() + "")
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+
+                        if (response.success()) {
+                            mediaObj.setFavoritecount(response.getFavoritecount());
+                            mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
+                            mMedias.remove(currentPosition);
+                            mMedias.add(currentPosition, mediaObj);
+                            tvLikeCount.setText("+ " + response.getFavoritecount());
+                            ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
+                        }
+
+                    }, throwable -> {
+                    }));
+        }
+    }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tag:
                 addTag();
                 break;
             case R.id.love:
-
+                addLike();
                 break;
+        }
+    }
+
+    @Override
+    public void submit() {
+        deleteTip();
+        if (deleteDialog != null && deleteDialog.isShowing()) {
+            deleteDialog.dismiss();
         }
     }
 }
