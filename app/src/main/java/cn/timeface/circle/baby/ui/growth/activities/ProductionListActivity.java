@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,6 +27,8 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
     LinearLayout llEmpty;
     @Bind(R.id.content_book_list)
     RelativeLayout contentBookList;
+    @Bind(R.id.tv_tip)
+    TextView tvTip;
 
     private int bookType;
 

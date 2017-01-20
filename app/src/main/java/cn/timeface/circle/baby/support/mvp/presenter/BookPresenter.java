@@ -9,7 +9,7 @@ import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
  */
 public class BookPresenter implements BookPresentation.Presenter {
     @Override
-        public void create() {
+    public void create() {
 
     }
 

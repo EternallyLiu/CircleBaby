@@ -10,10 +10,21 @@
     tools:context="cn.timeface.circle.baby.ui.growth.activities.ProductionListActivity"
     tools:showIn="@layout/activity_production_list">
 
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/view_space_medium"
+        android:layout_marginTop="@dimen/view_space_normal"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/text"
+        tools:text="每套选择8张（也可以是8的倍数）" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_books"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_tip" />
 
     <LinearLayout
         android:id="@+id/ll_empty"

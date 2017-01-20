@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.growth.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 /**
  * 书作品列表
@@ -20,5 +21,6 @@ public class BookListActivity extends ProductionListActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tvTip.setVisibility(View.GONE);
     }
 }
