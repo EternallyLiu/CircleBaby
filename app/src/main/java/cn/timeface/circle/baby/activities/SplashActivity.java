@@ -428,7 +428,6 @@ public class SplashActivity extends BaseAppCompatActivity {
                         FastData.setPassword(psw);
                         FastData.setBabyCount(loginResponse.getBabycount());
                         if (loginResponse.getBabycount() == 0) {
-//                            CreateBabyActivity.open(this,true);
                             LoginActivity.open(this);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
@@ -463,7 +462,6 @@ public class SplashActivity extends BaseAppCompatActivity {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(from);
                         if (loginResponse.getBabycount() == 0) {
-//                            CreateBabyActivity.open(this,true);
                             LoginActivity.open(this);
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));

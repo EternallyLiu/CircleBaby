@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,10 +25,12 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.adapters.KithsAdapter;
+import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.views.SuperSwipeRefreshLayout;
 
 /**
@@ -35,7 +38,7 @@ import cn.timeface.circle.baby.ui.timelines.views.SuperSwipeRefreshLayout;
  * author : wangshuai Created on 2017/1/19
  * email : wangs1992321@gmail.com
  */
-public class KithFragment extends BaseFragment {
+public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister {
 
     @Bind(R.id.title)
     TextView title;
@@ -67,6 +70,7 @@ public class KithFragment extends BaseFragment {
         }
         title.setText("亲友团");
         adapter = new KithsAdapter(getActivity());
+        adapter.setItemClickLister(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -112,16 +116,25 @@ public class KithFragment extends BaseFragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_invite, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.invite){
+        if (item.getItemId() == R.id.invite) {
             FragmentBridgeActivity.openInviteFragment(getActivity(), "");
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        FamilyMemberInfo item = adapter.getItem(position);
+        if (item.getUserInfo() != null && !TextUtils.isEmpty(item.getUserInfo().getUserId()))
+            FragmentBridgeActivity.openFamilyMemberInfoFragment(getActivity(), item.getUserInfo());
     }
 }

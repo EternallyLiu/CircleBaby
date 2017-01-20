@@ -57,10 +57,10 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.babyInfo.activity.BigNameActivity;
 import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
+import cn.timeface.circle.baby.ui.babyInfo.views.GenderDialog;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
-import de.hdodenhof.circleimageview.CircleImageView;
 
-public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnClickListener, DeleteDialog.SubmitListener {
+public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnClickListener, DeleteDialog.SubmitListener, GenderDialog.GenderSelectedListener {
 
     @Bind(R.id.btn_save)
     Button btnSave;
@@ -104,8 +104,13 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     RelativeLayout rlBlood;
     @Bind(R.id.rl_icon_his)
     RelativeLayout rlIconHis;
+    private GenderDialog genderDialog;
 
     public int gender;
+    @Bind(R.id.tv_gender)
+    TextView tvGender;
+    @Bind(R.id.iv_gender)
+    ImageView ivGender;
     private BabyObj babyObj;
     public static final String KEY_SELECTED_PHOTO_SIZE = "SELECTED_PHOTO_SIZE";
     private final int PicutreSelcted = 10;
@@ -130,7 +135,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
 
         userInfo = FastData.getUserInfo();
         babyObj = userInfo.getBabyObj();
-
+        gender = this.babyObj.getGender();
         initBaby();
 
         initView(userInfo.getIsCreator() == 1);
@@ -149,13 +154,17 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(this.babyObj.getNickName()).append("\n").append(this.babyObj.getAge());
         AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));
+        StyleSpan styleSpan=new StyleSpan(Typeface.BOLD);
+
         builder.setSpan(sizeSpan, 0, this.babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        builder.setSpan(styleSpan, 0, this.babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         tvAge.setText(builder);
 //        tvAge.setText(this.babyObj.getNickName() + "\n" + this.babyObj.getAge());
         tvBrithday.setText(DateUtil.getYear(this.babyObj.getBithday()));
         tvBlood.setText(TextUtils.isEmpty(this.babyObj.getBlood()) ? "未填写" : this.babyObj.getBlood());
-        rbGirl.setChecked(this.babyObj.getGender() == 0);
-        rbBoy.setChecked(this.babyObj.getGender() == 1);
+//        rbGirl.setChecked(this.babyObj.getGender() == 0);
+//        rbBoy.setChecked(this.babyObj.getGender() == 1);
+        tvGender.setText(gender == 0 ? "女" : gender == 1 ? "男" : "龙凤胎");
     }
 
     @Override
@@ -177,6 +186,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
             ivBlood.setVisibility(View.VISIBLE);
             ivRealName.setVisibility(View.VISIBLE);
             btnSave.setVisibility(View.VISIBLE);
+            ivGender.setVisibility(View.VISIBLE);
 
             rlName.setOnClickListener(this);
             rlBrithday.setOnClickListener(this);
@@ -186,8 +196,9 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
             ivAvatar.setOnClickListener(this);
             btnSave.setOnClickListener(this);
             rlRealName.setOnClickListener(this);
-
+            rlGender.setOnClickListener(this);
         } else {
+            ivGender.setVisibility(View.GONE);
             //关注者
             ivRealName.setVisibility(View.INVISIBLE);
             ivName.setVisibility(View.INVISIBLE);
@@ -283,6 +294,13 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_gender:
+                if (genderDialog == null) {
+                    genderDialog = new GenderDialog(this);
+                    genderDialog.setgenderSelectedListener(this);
+                }
+                genderDialog.show();
+                break;
             case R.id.rl_icon_his:
                 FragmentBridgeActivity.open(this, IconHistoryFragment.class.getSimpleName());
                 break;
@@ -333,35 +351,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                 startPhotoPick();
                 break;
             case R.id.btn_save:
-                String n = tvName.getText().toString();
-                String brithday = tvBrithday.getText().toString();
-                long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
-                String b = tvBlood.getText().toString();
-                btnSave.setEnabled(false);
-                apiService.editBabyInfo(time, URLEncoder.encode(b), gender, URLEncoder.encode(n),
-                        URLEncoder.encode(this.babyObj.getRealName()),
-                        URLEncoder.encode(this.babyObj.getShowRealName() + ""),
-                        objectKey)
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(response -> {
-                            if (response.success()) {
-                                apiService.queryBabyInfoDetail(babyObj.getBabyId())
-                                        .compose(SchedulersCompat.applyIoSchedulers())
-                                        .subscribe(babyInfoResponse -> {
-                                            if (babyInfoResponse.success()) {
-                                                babyObj = babyInfoResponse.getBabyInfo();
-                                                FastData.setBabyObj(babyObj);
-                                                EventBus.getDefault().post(new HomeRefreshEvent());
-                                                finish();
-                                            }
-                                        }, throwable -> {
-                                            Log.e(TAG, "queryBabyInfoDetail:", throwable);
-                                        });
-                            }
-                            btnSave.setEnabled(true);
-                        }, throwable -> {
-                            Log.e(TAG, "editBabyInfo:", throwable);
-                        });
+
+                updateBabyInfo(true);
                 break;
             case R.id.btn_cancel:
                 alertDialog.dismiss();
@@ -384,6 +375,40 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                         });
                 break;
         }
+    }
+
+    private void updateBabyInfo(boolean isFinish) {
+        String n = tvName.getText().toString();
+        String brithday = tvBrithday.getText().toString();
+        long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
+        String b = tvBlood.getText().toString();
+        btnSave.setEnabled(false);
+        apiService.editBabyInfo(time, URLEncoder.encode(b), gender, URLEncoder.encode(n),
+                URLEncoder.encode(this.babyObj.getRealName()),
+                URLEncoder.encode(this.babyObj.getShowRealName() + ""),
+                objectKey)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        apiService.queryBabyInfoDetail(babyObj.getBabyId())
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .subscribe(babyInfoResponse -> {
+                                    if (babyInfoResponse.success()) {
+                                        babyObj = babyInfoResponse.getBabyInfo();
+                                        initBaby();
+                                        FastData.setBabyObj(babyObj);
+                                        EventBus.getDefault().post(new HomeRefreshEvent());
+                                        if (isFinish)
+                                            finish();
+                                    }
+                                }, throwable -> {
+                                    Log.e(TAG, "queryBabyInfoDetail:", throwable);
+                                });
+                    }
+                    btnSave.setEnabled(true);
+                }, throwable -> {
+                    Log.e(TAG, "editBabyInfo:", throwable);
+                });
     }
 
     @Override
@@ -425,7 +450,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                             Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
                     //关键提示语加粗
-                    StyleSpan styleSpan=new StyleSpan(Typeface.BOLD);
+                    StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
                     builder.setSpan(styleSpan, 0, largeLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
 
@@ -481,5 +506,11 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         deleteBaby();
         if (deleteDialog != null && deleteDialog.isShowing())
             deleteDialog.dismiss();
+    }
+
+    @Override
+    public void genderSelected(int gender) {
+        this.gender = gender;
+        updateBabyInfo(false);
     }
 }

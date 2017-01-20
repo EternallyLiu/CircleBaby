@@ -33,6 +33,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.TFOpen;
 import cn.timeface.open.TFOpenConfig;
@@ -125,7 +126,8 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_createbaby:
-                CreateBabyActivity.open(this,false);
+//                CreateBabyActivity.open(this,false);
+                FragmentBridgeActivity.open(this, CreateBabyFragment.class.getSimpleName());
                 break;
             case R.id.tv_focusbaby:
                 InviteCodeActivity.open(this);

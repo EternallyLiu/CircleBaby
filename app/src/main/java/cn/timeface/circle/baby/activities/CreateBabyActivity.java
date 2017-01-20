@@ -44,6 +44,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreateBabyActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
@@ -96,6 +97,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FragmentBridgeActivity.open(this, CreateBabyFragment.class.getSimpleName());
         setContentView(R.layout.activity_createbaby);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);

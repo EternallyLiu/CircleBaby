@@ -42,6 +42,7 @@ import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
@@ -348,6 +349,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
             case "KithFragment":
 
                 return new KithFragment();
+            case "CreateBabyFragment":
+
+                return new CreateBabyFragment();
             default:
                 return null;
         }

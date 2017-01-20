@@ -30,13 +30,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.CreateBabyActivity;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.managers.receivers.SmsReceiver;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.common.utils.CheckedUtil;
@@ -133,7 +134,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
 
     private void next() {
         if (FastData.getBabyCount() == 0) {
-            CreateBabyActivity.open(getActivity(), true);
+            FragmentBridgeActivity.open(getActivity(), CreateBabyFragment.class.getSimpleName());
         } else if (type == 0) {
             startActivity(new Intent(getActivity(), TabMainActivity.class));
         }

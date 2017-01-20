@@ -87,6 +87,10 @@ public class TFProgressDialog extends DialogFragment {
 
     @Override
     public void dismiss() {
-        super.dismissAllowingStateLoss();
+        try{
+            super.dismiss();;
+            super.dismissAllowingStateLoss();
+        }catch (Exception e){
+        }
     }
 }
