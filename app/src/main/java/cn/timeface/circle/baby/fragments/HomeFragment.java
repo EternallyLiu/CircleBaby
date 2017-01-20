@@ -78,6 +78,7 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import cn.timeface.circle.baby.views.TFStateView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -397,7 +398,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 FragmentBridgeActivity.open(getActivity(), "MessageFragment");
                 break;
             case R.id.tv_relative:
-                FragmentBridgeActivity.open(getActivity(), "FamilyMemberFragment");
+                FragmentBridgeActivity.open(getActivity(), KithFragment.class.getSimpleName());
                 break;
             case R.id.iv_avatar:
                 BabyInfoActivity.open(getActivity());

@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.support.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.DrawableRes;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -45,9 +46,19 @@ public class GlideUtil {
                 .into(imageView);
     }
 
+
     public static void displayImageCircle(String url, ImageView imageView) {
-        if (TextUtils.isEmpty(url) || imageView == null) {
-            imageView.setImageResource(R.drawable.ic_launcher);
+        displayImageCircle(url, R.drawable.ic_launcher, imageView);
+    }
+    public static void displayImageCircle(@DrawableRes int resurceId, ImageView imageView) {
+        displayImageCircle(null, resurceId, imageView);
+    }
+
+    public static void displayImageCircle(String url, @DrawableRes int rid, ImageView imageView) {
+        if (imageView == null) return;
+        if (TextUtils.isEmpty(url)) {
+            Glide.with(context).load(rid).asBitmap().transform(new CircleTransform(context))
+                    .into(imageView);
             return;
         }
         if (url.startsWith("http") || url.startsWith("www")) {

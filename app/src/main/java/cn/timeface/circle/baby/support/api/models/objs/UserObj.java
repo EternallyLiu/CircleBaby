@@ -37,6 +37,10 @@ public class UserObj extends BaseObj implements Parcelable {
         this.uniId = uniId;
     }
 
+    public UserObj(String relationName) {
+        this.relationName = relationName;
+    }
+
     public int getBabycount() {
         return babycount;
     }
