@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.List;
+
+import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.mvp.presentations.CardPresentation;
 import cn.timeface.circle.baby.ui.growth.adapters.CardListAdapter;
 
 /**
@@ -12,7 +16,7 @@ import cn.timeface.circle.baby.ui.growth.adapters.CardListAdapter;
  * author : YW.SUN Created on 2017/1/12
  * email : sunyw10@gmail.com
  */
-public class CardListActivity extends ProductionListActivity {
+public class CardListActivity extends ProductionListActivity implements CardPresentation.View {
     CardListAdapter cardListAdapter;
 
     public static void open(Context context, int bookType) {
@@ -24,6 +28,21 @@ public class CardListActivity extends ProductionListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tvTip.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setStateView(boolean loading) {
+
+    }
+
+    @Override
+    public void setCardData(List<CardObj> cardObjs) {
+
+    }
+
+    @Override
+    public void showError(String errMsg) {
+
     }
 }
 
