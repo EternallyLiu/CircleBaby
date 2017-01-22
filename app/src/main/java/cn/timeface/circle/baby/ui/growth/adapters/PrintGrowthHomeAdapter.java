@@ -47,7 +47,6 @@ public class PrintGrowthHomeAdapter extends BaseRecyclerAdapter<PrintGrowthHomeO
         Glide.with(mContext)
                 .load(printGrowthHomeObj.getUrl())
                 .placeholder(R.drawable.bg_default_holder_img)
-                .centerCrop()
                 .into(holder.ivBook);
         holder.tvDesc.setText(printGrowthHomeObj.getDesc());
         holder.tvSize.setText(printGrowthHomeObj.getSize());

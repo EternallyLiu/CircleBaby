@@ -46,7 +46,7 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
                 .load(bookObj.getBookCover())
                 .into(holder.ivBookCover);
         holder.tvTitle.setText(bookObj.getBookName());
-        holder.tvPagenum.setText(bookObj.getPageNum());
+        holder.tvPagenum.setText(String.valueOf(bookObj.getPageNum()));
         holder.tvCreattime.setText(DateUtil.getYear2(bookObj.getCreateTime()));
 
     }

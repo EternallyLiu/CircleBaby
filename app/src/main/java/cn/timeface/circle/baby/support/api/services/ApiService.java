@@ -694,7 +694,7 @@ public interface ApiService {
      * @return book list response
      */
     @GET("printGrowth/getBookListByBookType")
-    Observable<BookListResponse> bookList(int bookType);
+    Observable<BookListResponse> bookList(@Query("bookType") int bookType);
 
     /**
      * 获取识图卡片列表

@@ -20,6 +20,8 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.BookListActivity;
+import cn.timeface.circle.baby.ui.growth.activities.ProductionListActivityDelegate;
 import cn.timeface.circle.baby.ui.growth.adapters.PrintGrowthHomeAdapter;
 import cn.timeface.circle.baby.ui.growth.beans.PrintGrowthHomeObj;
 
@@ -89,7 +91,8 @@ public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClic
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.rl_root){
-            // TODO: 2017/1/11 book list
+            PrintGrowthHomeObj printGrowthHomeObj = (PrintGrowthHomeObj) view.getTag(R.string.tag_obj);
+            ProductionListActivityDelegate.dispatchProductionList(getActivity(), printGrowthHomeObj.getBookType());
         }
     }
 }
