@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 
 /**
  * Created by wangshuai on 2017/1/9.
@@ -59,7 +58,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                 if (msg.obj != null) {
                     if (msg.arg1 >= 0 && msg.arg1 <= getItemCount() && msg.arg2 > 0) {
                         if (msg.arg2 == 1) list.add(msg.arg1, msg.obj);
-                        else list.addAll(msg.arg1, (Collection<BaseObj>) msg.obj);
+                        else list.addAll(msg.arg1, (Collection<Object>) msg.obj);
                         notifyItemRangeInserted(msg.arg1, msg.arg2);
                     }
                 }
@@ -77,7 +76,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
             case UPDATE_DATA_UPDATE_DATA:
                 if (msg.obj != null) {
                     list.remove(msg.arg1);
-                    list.add(msg.arg1, (BaseObj) msg.obj);
+                    list.add(msg.arg1, msg.obj);
                 }
                 notifyItemChanged(msg.arg1);
                 if (msg.arg1 != getItemCount())
@@ -92,7 +91,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
      * @param itemId
      * @param object
      */
-    public void updateItem(int itemId, BaseObj object) {
+    public void updateItem(int itemId, Object object) {
         if (itemId < 0)
             itemId = 0;
         if (itemId >= getItemCount())
@@ -174,7 +173,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         return list == null ? 0 : list.size();
     }
 
-    public <T extends BaseObj> T getItem(int position) {
+    public <T extends Object> T getItem(int position) {
         if (position >= 0 && position < getItemCount())
             return (T) list.get(position);
         return null;

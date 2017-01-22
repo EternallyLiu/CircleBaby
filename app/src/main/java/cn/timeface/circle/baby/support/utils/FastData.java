@@ -207,13 +207,14 @@ public class FastData extends Remember {
         return getString(PASSWORD, "");
     }
 
-    public static String BABY_COUNT="baby_count";
+    public static String BABY_COUNT = "baby_count";
 
-    public static int getBabyCount(){
-        return getInt(BABY_COUNT,0);
+    public static int getBabyCount() {
+        return getInt(BABY_COUNT, 0);
     }
-    public static void setBabyCount(int count){
-        putInt(BABY_COUNT,count);
+
+    public static void setBabyCount(int count) {
+        putInt(BABY_COUNT, count);
     }
 
     public static void setPassword(String password) {
@@ -330,6 +331,7 @@ public class FastData extends Remember {
             setIsCreator(userObj.getIsCreator());
             setPhoneNumber(userObj.getPhoneNumber());
             setUniId(userObj.getUniId());
+            BabyObj.saveAll(userObj.getBabies());
         }
     }
 
@@ -347,100 +349,142 @@ public class FastData extends Remember {
     }
 
     public static void setBabyObj(BabyObj babyObj) {
-        System.out.println("babyObj ===== " + babyObj);
         if (babyObj != null) {
-            setBabyAge(babyObj.getAge());
-            setBabyAvatar(babyObj.getAvatar());
             setBabyId(babyObj.getBabyId());
-            setBabyBithday(babyObj.getBithday());
-            setBabyBlood(babyObj.getBlood());
-            setBabyConstellation(babyObj.getConstellation());
-            setBabyGender(babyObj.getGender());
-            setBabyName(babyObj.getName());
-            setBabyRealName(babyObj.getRealName());
-            setShowRealName(babyObj.getShowRealName());
+            babyObj.save();
+//            setBabyAge(babyObj.getAge());
+//            setBabyAvatar(babyObj.getAvatar());
+//            setBabyBithday(babyObj.getBithday());
+//            setBabyBlood(babyObj.getBlood());
+//            setBabyConstellation(babyObj.getConstellation());
+//            setBabyGender(babyObj.getGender());
+//            setBabyName(babyObj.getName());
+//            setBabyRealName(babyObj.getRealName());
+//            setShowRealName(babyObj.getShowRealName());
         }
     }
 
     public static BabyObj getBabyObj() {
-        String babyAge = getBabyAge();
-        String babyAvatar = getBabyAvatar();
-        int babyId = getBabyId();
-        long babyBithday = getBabyBithday();
-        String babyBlood = getBabyBlood();
-        String babyConstellation = getBabyConstellation();
-        int babyGender = getBabyGender();
-        String babyName = getBabyName();
-        BabyObj babyObj = new BabyObj(babyAge, babyAvatar, babyId, babyBithday, babyBlood, babyConstellation, babyGender, babyName);
-        babyObj.setRealName(getBabyRealName());
-        babyObj.setShowRealName(getShowRealName());
-        return babyObj;
+//        String babyAge = getBabyAge();
+//        String babyAvatar = getBabyAvatar();
+//        int babyId = getBabyId();
+//        long babyBithday = getBabyBithday();
+//        String babyBlood = getBabyBlood();
+//        String babyConstellation = getBabyConstellation();
+//        int babyGender = getBabyGender();
+//        String babyName = getBabyName();
+//        BabyObj babyObj = new BabyObj(babyAge, babyAvatar, babyId, babyBithday, babyBlood, babyConstellation, babyGender, babyName);
+//        babyObj.setRealName(getBabyRealName());
+//        babyObj.setShowRealName(getShowRealName());
+//        return babyObj;
+        return BabyObj.getInstance(getBabyId());
     }
 
     public static void setBabyName(String name) {
         if (!TextUtils.isEmpty(name)) {
-            putString(BABY_Name, name);
+            BabyObj babyObj = getBabyObj();
+            if (babyObj != null) {
+                babyObj.setName(name);
+                babyObj.update();
+            }
+//            putString(BABY_Name, name);
         }
     }
 
     public static String getBabyName() {
-        return getString(BABY_Name, "");
+//        return getString(BABY_Name, "");
+        return getBabyObj().getName();
     }
 
     public static void setBabyRealName(String name) {
         if (!TextUtils.isEmpty(name)) {
-            putString(BABY_RealName, name);
+            BabyObj babyObj = getBabyObj();
+            if (babyObj != null) {
+                babyObj.setRealName(name);
+                babyObj.update();
+            }
+//            putString(BABY_RealName, name);
         }
     }
 
     public static String getBabyRealName() {
-        return getString(BABY_RealName, "");
+        return getBabyObj().getRealName();
+//        return getString(BABY_RealName, "");
     }
 
     public static void setShowRealName(int code) {
-        putInt(BABY_ShowRealName, code);
+        BabyObj babyObj = getBabyObj();
+        if (babyObj != null) {
+            babyObj.setShowRealName(code);
+            babyObj.update();
+        }
+//        putInt(BABY_ShowRealName, code);
     }
 
     public static int getShowRealName() {
-        return getInt(BABY_ShowRealName, 0);
+        return getBabyObj().getShowRealName();
+//        return getInt(BABY_ShowRealName, 0);
     }
 
     public static void setBabyGender(int gender) {
-        putInt(BABY_Gender, gender);
+        BabyObj babyObj = getBabyObj();
+        if (babyObj != null) {
+            babyObj.setGender(gender);
+            babyObj.update();
+        }
+//        putInt(BABY_Gender, gender);
     }
 
     public static int getBabyGender() {
-        return getInt(BABY_Gender, 0);
+        return getBabyObj().getGender();
+//        return getInt(BABY_Gender, 0);
     }
 
     public static void setBabyConstellation(String constellation) {
         if (!TextUtils.isEmpty(constellation)) {
-            putString(BABY_Constellation, constellation);
+            BabyObj babyObj = getBabyObj();
+            if (babyObj != null) {
+                babyObj.setConstellation(constellation);
+                babyObj.update();
+            }
+//            putString(BABY_Constellation, constellation);
         }
     }
 
     public static String getBabyConstellation() {
-        return getString(BABY_Constellation, "");
+        return getBabyObj().getConstellation();
+//        return getString(BABY_Constellation, "");
     }
 
     public static void setBabyBlood(String blood) {
         if (!TextUtils.isEmpty(blood)) {
-            putString(BABY_Blood, blood);
+            BabyObj babyObj = BabyObj.getInstance(getBabyId());
+            if (babyObj != null) {
+                babyObj.setBlood(blood);
+                babyObj.update();
+            }
+//            putString(BABY_Blood, blood);
         }
     }
 
     public static String getBabyBlood() {
-        return getString(BABY_Blood, "");
+        return BabyObj.getInstance(getBabyId()).getBlood();
+//        return getString(BABY_Blood, "");
     }
 
     public static void setBabyBithday(long bithday) {
         if (bithday != 0) {
-            putLong(BABY_Bithday, bithday);
+            BabyObj babyObj = BabyObj.getInstance(getBabyId());
+            if (babyObj != null) {
+                babyObj.setBithday(bithday);
+                babyObj.update();
+            }
         }
     }
 
     public static long getBabyBithday() {
-        return getLong(BABY_Bithday, 0);
+        return BabyObj.getInstance(getBabyId()).getBithday();
+//        return getLong(BABY_Bithday, 0);
     }
 
     public static void setBabyId(int babyId) {
@@ -453,22 +497,32 @@ public class FastData extends Remember {
 
     public static void setBabyAvatar(String avatar) {
         if (!TextUtils.isEmpty(avatar)) {
-            putString(BABY_Avatar, avatar);
+            BabyObj babyObj = BabyObj.getInstance(getBabyId());
+            if (babyObj != null) {
+                babyObj.setAvatar(avatar);
+                babyObj.update();
+            }
         }
     }
 
     public static String getBabyAvatar() {
-        return getString(BABY_Avatar, "");
+        return BabyObj.getInstance(getBabyId()).getAvatar();
+//        return getString(BABY_Avatar, "");
     }
 
     public static void setBabyAge(String age) {
         if (!TextUtils.isEmpty(age)) {
-            putString(BABY_AGE, age);
+            BabyObj babyObj = getBabyObj();
+            if (babyObj != null) {
+                babyObj.setAge(age);
+                babyObj.update();
+            }
         }
     }
 
     public static String getBabyAge() {
-        return getString(BABY_AGE, "");
+        return getBabyObj().getAge();
+//        return getString(BABY_AGE, "");
     }
 
     /**

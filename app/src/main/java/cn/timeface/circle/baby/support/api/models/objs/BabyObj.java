@@ -4,22 +4,58 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.structure.Model;
+
+import java.util.List;
+
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.support.api.models.db.AppDatabase;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
  * Created by lidonglin on 2016/4/28.
  */
-public class BabyObj extends BaseObj implements Parcelable {
+@Table(database = AppDatabase.class)
+public class BabyObj extends BaseModel implements Parcelable {
+    private static volatile BabyObj currentBabyObj = null;
+
+    public static BabyObj getInstance(int babyId) {
+        if (currentBabyObj == null || currentBabyObj.getBabyId() != babyId)
+            synchronized (BabyObj.class) {
+                if (currentBabyObj == null || currentBabyObj.getBabyId() != babyId)
+                    currentBabyObj = SQLite.select().from(BabyObj.class).where(BabyObj_Table.babyId.eq(babyId)).querySingle();
+            }
+        LogUtil.showLog("babyId==" + babyId);
+        LogUtil.showLog("currentBabyObj==" + (currentBabyObj == null));
+        return currentBabyObj;
+    }
+
     private String realName;//大名
     private int showRealName;//是否展示真实姓名
-    String age;
-    String avatar;
+    @PrimaryKey
     int babyId;
+    @Column
+    String age;
+    @Column(name = "icon")
+    String avatar;
+    @Column(name = "sccsdcsd")
     long bithday;
+    @Column(name = "blood")
     String blood;
+    @Column(name = "constellation")
     String constellation;
+    @Column(name = "sex")
     int gender;
+    @Column(name = "baby_name")
     String name;
+    @Column(name = "user_id")
+    String UserId;
 
     public BabyObj() {
     }
@@ -34,6 +70,7 @@ public class BabyObj extends BaseObj implements Parcelable {
         this.gender = gender;
         this.name = name;
     }
+
 
     public String getRealName() {
         return realName;
@@ -219,4 +256,10 @@ public class BabyObj extends BaseObj implements Parcelable {
             return new BabyObj[size];
         }
     };
+
+    public static void saveAll(List<BabyObj> list) {
+        if (list == null || list.size() <= 0)
+            return;
+        FlowManager.getModelAdapter(BabyObj.class).saveAll(list);
+    }
 }
