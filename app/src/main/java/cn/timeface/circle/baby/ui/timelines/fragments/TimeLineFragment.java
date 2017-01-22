@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineSelectAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.MonthRecord;
@@ -40,28 +42,24 @@ import rx.schedulers.Schedulers;
  */
 
 public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItemClickLister {
-    @Bind(R.id.tv_mine)
-    TextView tvMine;
+    @Bind(R.id.title)
+    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.list)
     RecyclerView list;
-    @Bind(R.id.back)
-    ImageView back;
     private TimeLineSelectAdapter adapter = null;
 
-    @OnClick(R.id.back)
-    public void click(View view) {
-        switch (view.getId()) {
-            case R.id.back:
-                getActivity().finish();
-                break;
-        }
-    }
 
     public static TimeLineFragment newInstance() {
         TimeLineFragment fragment = new TimeLineFragment();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -70,6 +68,13 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
         View view = inflater.inflate(R.layout.time_line_fragment, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        ActionBar actionBar = getActionBar();
+        if (actionBar!=null)
+        {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
+        title.setText(FastData.getBabyObj().getNickName()+"的成长记录");
         adapter = new TimeLineSelectAdapter(getActivity());
         list.setAdapter(adapter);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);

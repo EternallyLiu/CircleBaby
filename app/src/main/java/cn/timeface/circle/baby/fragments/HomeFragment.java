@@ -375,7 +375,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        tvName.setText(FastData.getBabyName());
+        tvName.setText(FastData.getBabyObj().getNickName());
         tvAge.setText(FastData.getBabyAge());
         GlideUtil.displayImage(FastData.getBabyAvatar(), ivAvatar);
     }

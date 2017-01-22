@@ -213,8 +213,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
             layoutParams.width = width;
             layoutParams.height = width;
-            if(timelineobj.getType() == 2){
-                layoutParams.height = (int) (width*1.4);
+            if (timelineobj.getType() == 2) {
+                layoutParams.height = (int) (width * 1.4);
             }
             ivCover.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -223,8 +223,10 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                     @Override
                     public void onClick(View v) {
                         ArrayList<String> strings = new ArrayList<>();
+                        ArrayList<MediaObj> mediaObjs = new ArrayList<>();
                         strings.add(url);
-                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0, true, false);
+                        mediaObjs.add(timelineobj.getMediaList().get(0));
+                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), mediaObjs, strings, 0, true, false);
                     }
                 });
             }
@@ -235,11 +237,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         if (timelineobj.getMediaList().size() > 1) {
             gv.setVisibility(View.VISIBLE);
             List<MediaObj> imgObjList = timelineobj.getMediaList();
+            ArrayList<MediaObj> mediaObjs=new ArrayList<>();
             ArrayList<String> urls = new ArrayList<>();
             for (MediaObj mediaObj : imgObjList) {
                 urls.add(mediaObj.getImgUrl());
+                mediaObjs.add(mediaObj);
             }
-            MyAdapter myAdapter = new MyAdapter(this, urls);
+            MyAdapter myAdapter = new MyAdapter(this, urls, mediaObjs);
             gv.setAdapter(myAdapter);
             ViewGroup.LayoutParams layoutParams = gv.getLayoutParams();
             layoutParams.height = Remember.getInt("width", 0);
@@ -270,7 +274,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             for (UserObj u : timelineobj.getLikeList()) {
                 ImageView imageView = initPraiseItem();
                 llGoodListUsersBar.addView(imageView);
-                GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
+                GlideUtil.displayImage(u.getAvatar(), imageView, R.drawable.ic_launcher);
             }
         } else {
             llGoodListUsersBar.removeAllViews();
@@ -466,7 +470,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
                                     EventBus.getDefault().post(new CommentSubmit(replacePosition, listPos, timelineobj));
 
-                                    GlideUtil.displayImage(FastData.getAvatar(), imageView,R.drawable.ic_launcher);
+                                    GlideUtil.displayImage(FastData.getAvatar(), imageView, R.drawable.ic_launcher);
                                 } else {//之前已点赞
 
                                     timelineobj.setLike(0);
@@ -502,7 +506,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                             if (!u.getUserId().equals(FastData.getUserId())) {
                                                 llGoodListUsersBar.addView(imageView);
                                             }
-                                            GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
+                                            GlideUtil.displayImage(u.getAvatar(), imageView, R.drawable.ic_launcher);
                                         }
                                     }
                                 }
@@ -596,9 +600,11 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     private class MyAdapter extends BaseAdapter {
         ArrayList<String> urls;
+        ArrayList<MediaObj> mediaObjs;
 
-        public MyAdapter(Context context, ArrayList<String> urls) {
+        public MyAdapter(Context context, ArrayList<String> urls, ArrayList<MediaObj> mediaObjs) {
             this.urls = urls;
+            this.mediaObjs = mediaObjs;
         }
 
         @Override
@@ -636,7 +642,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position, true, false);
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), mediaObjs, urls, position, true, false);
                 }
             });
             return view;

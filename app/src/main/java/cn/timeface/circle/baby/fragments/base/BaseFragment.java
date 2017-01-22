@@ -24,6 +24,14 @@ public class BaseFragment extends Fragment {
     protected final String TAG = this.getClass().getSimpleName();
     public static final ApiService apiService = BaseAppCompatActivity.apiService;
 
+    protected void initActionBar() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,19 +66,20 @@ public class BaseFragment extends Fragment {
             ((BaseAppCompatActivity) getActivity()).addSubscription(s);
         }
     }
-    public void setActionBar(android.support.v7.widget.Toolbar view){
+
+    public void setActionBar(android.support.v7.widget.Toolbar view) {
         if (getActivity() instanceof AppCompatActivity) {
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ((AppCompatActivity) getActivity()).setSupportActionBar(view);
+            ((AppCompatActivity) getActivity()).setSupportActionBar(view);
 //            }
         }
     }
 
-    public ActionBar getActionBar(){
+    public ActionBar getActionBar() {
         if (getActivity() instanceof AppCompatActivity) {
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                return supportActionBar;
+            ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            return supportActionBar;
 //            }
         }
         return null;

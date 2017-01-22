@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,20 +24,19 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.adapters.KithsAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
-import cn.timeface.circle.baby.ui.timelines.views.SuperSwipeRefreshLayout;
+import cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout;
 
 /**
  * 亲友团
  * author : wangshuai Created on 2017/1/19
  * email : wangs1992321@gmail.com
  */
-public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister {
+public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister, MySuperRefreshLayout.loadListener {
 
     @Bind(R.id.title)
     TextView title;
@@ -46,6 +44,8 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     Toolbar toolbar;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
+    @Bind(R.id.pull_refresh_list)
+    MySuperRefreshLayout pullRefreshList;
 
     private KithsAdapter adapter = null;
     private ArrayList<String> relationNames;
@@ -75,6 +75,9 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        pullRefreshList.setPullRefreshEnable(true);
+        pullRefreshList.setLoadMoreEnable(true);
+        pullRefreshList.setListener(this);
         reqData();
         return view;
     }
@@ -83,6 +86,8 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
         if (relationNames == null) {
             relationNames = new ArrayList<>();
         }
+        if (relationNames.size() > 0)
+            relationNames.clear();
         relationNames.add("爸爸");
         relationNames.add("妈妈");
         relationNames.add("爷爷");
@@ -107,7 +112,11 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
                 .subscribe(familyListResponse -> {
                     if (familyListResponse.success())
                         adapter.addList(true, filterData(familyListResponse.getDataList()));
+                    pullRefreshList.setRefreshing(false);
+                    pullRefreshList.setLoadMore(false);
                 }, throwable -> {
+                    pullRefreshList.setRefreshing(false);
+                    pullRefreshList.setLoadMore(false);
                 });
     }
 
@@ -136,5 +145,15 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
         FamilyMemberInfo item = adapter.getItem(position);
         if (item.getUserInfo() != null && !TextUtils.isEmpty(item.getUserInfo().getUserId()))
             FragmentBridgeActivity.openFamilyMemberInfoFragment(getActivity(), item.getUserInfo());
+    }
+
+    @Override
+    public void pullRefresh() {
+        reqData();
+    }
+
+    @Override
+    public void loadMore() {
+        reqData();
     }
 }

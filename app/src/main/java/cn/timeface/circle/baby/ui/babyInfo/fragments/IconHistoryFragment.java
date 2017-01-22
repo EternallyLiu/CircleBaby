@@ -30,10 +30,8 @@ import rx.schedulers.Schedulers;
 
 public class IconHistoryFragment extends BaseFragment {
 
-    @Bind(R.id.back)
-    ImageView back;
-    @Bind(R.id.tv_mine)
-    TextView tvMine;
+    @Bind(R.id.title)
+    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.list)
@@ -41,19 +39,33 @@ public class IconHistoryFragment extends BaseFragment {
 
     private IconHisAdapter adapter=null;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.time_line_fragment, container, false);
         ButterKnife.bind(this, view);
+        setActionBar(toolbar);
+        initActionBar();
         adapter=new IconHisAdapter(getActivity());
         GridLayoutManager manager=new GridLayoutManager(getActivity(),3,GridLayoutManager.VERTICAL,false);
         list.setLayoutManager(manager);
         list.setItemAnimator(new DefaultItemAnimator());
         list.setAdapter(adapter);
         reqData();
-        tvMine.setText(R.string.baby_icon_his_title);
+        title.setText(R.string.baby_icon_his_title);
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     private void reqData(){
@@ -70,14 +82,4 @@ public class IconHistoryFragment extends BaseFragment {
         addSubscription(ss);
     }
 
-    @OnClick(R.id.back)
-    public void back(View view){
-        getActivity().finish();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
 }

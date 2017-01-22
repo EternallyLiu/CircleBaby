@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
  * Created by wangshuai on 2017/1/9.
@@ -61,6 +62,9 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                         else list.addAll(msg.arg1, (Collection<Object>) msg.obj);
                         notifyItemRangeInserted(msg.arg1, msg.arg2);
                     }
+                    LogUtil.showLog(msg.arg1 + "===" + getItemCount() + "---");
+//                    if (msg.arg1 != getItemCount())
+//                        notifyItemRangeChanged(msg.arg1, getItemCount() - msg.arg1);
                 }
                 break;
             case UPDATE_DATA_DELETE_DATA:
@@ -115,7 +119,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
 
     public void addList(boolean isClear, List list) {
         if (isClear) clearAll();
-        addList(getItemCount(), list);
+        addList(isClear ? 0 : getItemCount(), list);
     }
 
     public void addList(List list) {

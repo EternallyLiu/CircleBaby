@@ -4,28 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/bg_color1"
-        android:fitsSystemWindows="true">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/back"
-            android:id="@+id/back"
-            android:scaleType="fitCenter"/>
-        <TextView
-            android:id="@+id/tv_mine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/time_line_select_title"
-            android:textColor="@color/text_color1"
-            android:textSize="@dimen/text_large" />
-    </android.support.v7.widget.Toolbar>
+    <include layout="@layout/head"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"

@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.timelines.views;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -28,6 +30,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
@@ -35,9 +38,20 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 /**
- * Created by wangshuai on 2017/1/10.
+ * @Author Zheng Haibo
+ * @PersonalWebsite http://www.mobctrl.net
+ * @Description 自定义CustomeSwipeRefreshLayout<br>
+ * 支持下拉刷新和上拉加载更多<br>
+ * 非侵入式，对原来的ListView、RecyclerView没有任何影响,用法和SwipeRefreshLayout类似。<br>
+ * 可自定义头部View的样式，调用setHeaderView方法即可 <br>
+ * 可自定义页尾View的样式，调用setFooterView方法即可 <br>
+ * 支持RecyclerView，ListView，ScrollView，GridView等等。<br>
+ * 被包含的View(RecyclerView,ListView etc.)可跟随手指的滑动而滑动<br>
+ * 默认是跟随手指的滑动而滑动，也可以设置为不跟随：setTargetScrollWithLayout(false) 回调方法更多<br>
+ * 比如：onRefresh() onPullDistance(int distance)和onPullEnable(boolean
+ * enable)<br>
+ * 开发人员可以根据下拉过程中distance的值做一系列动画。 <br>
  */
-
 @SuppressLint("ClickableViewAccessibility")
 public class SuperSwipeRefreshLayout extends ViewGroup {
     private static final String LOG_TAG = "CustomeSwipeRefreshLayout";
@@ -123,7 +137,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     /**
      * 下拉时，超过距离之后，弹回来的动画监听器
      */
-    private Animation.AnimationListener mRefreshListener = new Animation.AnimationListener() {
+    private AnimationListener mRefreshListener = new AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
             isProgressEnable = false;
@@ -358,7 +372,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
         }
     }
 
-    private void startScaleUpAnimation(Animation.AnimationListener listener) {
+    private void startScaleUpAnimation(AnimationListener listener) {
         mHeadViewContainer.setVisibility(View.VISIBLE);
         mScaleAnimation = new Animation() {
             @Override
@@ -398,7 +412,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
         }
     }
 
-    private void startScaleDownAnimation(Animation.AnimationListener listener) {
+    private void startScaleDownAnimation(AnimationListener listener) {
         mScaleDownAnimation = new Animation() {
             @Override
             public void applyTransformation(float interpolatedTime,
@@ -554,7 +568,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
         }
         if (mTarget instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) mTarget;
-            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+            LayoutManager layoutManager = recyclerView.getLayoutManager();
             int count = recyclerView.getAdapter().getItemCount();
             if (layoutManager instanceof LinearLayoutManager && count > 0) {
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
@@ -813,9 +827,9 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
                     setRefreshing(true, true /* notify */);
                 } else {
                     mRefreshing = false;
-                    Animation.AnimationListener listener = null;
+                    AnimationListener listener = null;
                     if (!mScale) {
-                        listener = new Animation.AnimationListener() {
+                        listener = new AnimationListener() {
 
                             @Override
                             public void onAnimationStart(Animation animation) {
@@ -935,7 +949,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     private void animatorFooterToBottom(int start, final int end) {
         ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
         valueAnimator.setDuration(150);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        valueAnimator.addUpdateListener(new AnimatorUpdateListener() {
 
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -979,7 +993,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     }
 
     private void animateOffsetToCorrectPosition(int from,
-                                                Animation.AnimationListener listener) {
+                                                AnimationListener listener) {
         mFrom = from;
         mAnimateToCorrectPosition.reset();
         mAnimateToCorrectPosition.setDuration(ANIMATE_TO_TRIGGER_DURATION);
@@ -992,7 +1006,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     }
 
     private void animateOffsetToStartPosition(int from,
-                                              Animation.AnimationListener listener) {
+                                              AnimationListener listener) {
         if (mScale) {
             startScaleDownReturnToStartAnimation(from, listener);
         } else {
@@ -1087,7 +1101,7 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
     };
 
     private void startScaleDownReturnToStartAnimation(int from,
-                                                      Animation.AnimationListener listener) {
+                                                      AnimationListener listener) {
         mFrom = from;
         mStartingScale = ViewCompat.getScaleX(mHeadViewContainer);
         mScaleDownToStartAnimation = new Animation() {
@@ -1152,13 +1166,13 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
      */
     private class HeadViewContainer extends RelativeLayout {
 
-        private Animation.AnimationListener mListener;
+        private AnimationListener mListener;
 
         public HeadViewContainer(Context context) {
             super(context);
         }
 
-        public void setAnimationListener(Animation.AnimationListener listener) {
+        public void setAnimationListener(AnimationListener listener) {
             mListener = listener;
         }
 

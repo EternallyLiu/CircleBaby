@@ -3,6 +3,7 @@ package cn.timeface.circle.baby;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
+import android.view.WindowManager;
 
 import com.activeandroid.ActiveAndroid;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -32,6 +33,8 @@ import cn.timeface.common.utils.TimeFaceUtilInit;
 public class App extends MultiDexApplication {
     private static App app = new App();
     private static MiPushMessageReceiver.DemoHandler handler = null;
+    public static int mScreenHeight = -1;
+    public static int mScreenWidth = -1;
 
     public static App getInstance() {
         if (app == null) {
@@ -74,6 +77,12 @@ public class App extends MultiDexApplication {
 //            LeakCanary.install(this);
 //        }
 
+        mScreenWidth = ((WindowManager) this
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay()
+                .getWidth();
+        mScreenHeight = ((WindowManager) this
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay()
+                .getHeight();
         Fresco.initialize(this);
     }
 
