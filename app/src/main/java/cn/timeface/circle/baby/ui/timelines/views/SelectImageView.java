@@ -54,6 +54,7 @@ public class SelectImageView extends ImageView implements Checkable {
         isSelected = typedArray.getBoolean(R.styleable.SelectImageView_isSelected, false);
         selectDrawable = typedArray.getDrawable(R.styleable.SelectImageView_selectDrawable);
         unSelectDrawable = typedArray.getDrawable(R.styleable.SelectImageView_unselectDrawable);
+        typedArray.recycle();
         setChecked(isSelected);
     }
 

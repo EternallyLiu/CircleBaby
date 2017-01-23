@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.adapters.KithsAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
+import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout;
 
 /**
@@ -36,7 +37,7 @@ import cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout;
  * author : wangshuai Created on 2017/1/19
  * email : wangs1992321@gmail.com
  */
-public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister, MySuperRefreshLayout.loadListener {
+public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister, MySuperRefreshLayout.loadListener, EmptyDataView.EmptyCallBack {
 
     @Bind(R.id.title)
     TextView title;
@@ -46,6 +47,8 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     RecyclerView recyclerView;
     @Bind(R.id.pull_refresh_list)
     MySuperRefreshLayout pullRefreshList;
+
+    private EmptyDataView emptyDataView = null;
 
     private KithsAdapter adapter = null;
     private ArrayList<String> relationNames;
@@ -70,8 +73,27 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
         }
         title.setText("亲友团");
         adapter = new KithsAdapter(getActivity());
+        emptyDataView = new EmptyDataView(getActivity());
+        emptyDataView.setErrorDrawable(R.drawable.net_empty);
+        emptyDataView.setErrorRetryText("重新加载");
+        emptyDataView.setErrorText("对不起！没有加载到数据！");
+        emptyDataView.setEmptyCallBack(this);
+        adapter.setEmptyDataView(emptyDataView);
         adapter.setItemClickLister(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false){
+            /**
+             * 为了解决一个LinearLayoutManager的异常崩溃问题
+             * IndexOutOfBoundsException
+             */
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                try{
+                    super.onLayoutChildren(recycler, state);
+                }catch (IndexOutOfBoundsException e){
+                    e.printStackTrace();
+                }
+            }
+        };
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -112,11 +134,15 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
                 .subscribe(familyListResponse -> {
                     if (familyListResponse.success())
                         adapter.addList(true, filterData(familyListResponse.getDataList()));
-                    pullRefreshList.setRefreshing(false);
-                    pullRefreshList.setLoadMore(false);
+                    if (pullRefreshList.isHeaderRefreshing())
+                        pullRefreshList.setHeaderRefreshing(false);
+                    if (pullRefreshList.isFooterRefreshing())
+                        pullRefreshList.setFooterRefreshing(false);
                 }, throwable -> {
-                    pullRefreshList.setRefreshing(false);
-                    pullRefreshList.setLoadMore(false);
+                    if (pullRefreshList.isHeaderRefreshing())
+                        pullRefreshList.setHeaderRefreshing(false);
+                    if (pullRefreshList.isFooterRefreshing())
+                        pullRefreshList.setFooterRefreshing(false);
                 });
     }
 
@@ -154,6 +180,11 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
 
     @Override
     public void loadMore() {
+        reqData();
+    }
+
+    @Override
+    public void retry() {
         reqData();
     }
 }

@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.timelines.adapters;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,11 +18,11 @@ import java.util.List;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
-/**
- * Created by wangshuai on 2017/1/9.
- */
-
 public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> implements ViewHolderInterface, View.OnClickListener {
+
+    private RecyclerView.LayoutParams emptyLayoutParams = null;
+
+    public static final int EMPTY_DATE_VIEW = -999999;
 
     /**
      * 给数据源中间添加数据
@@ -57,25 +58,22 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                 break;
             case UPDATE_DATA_ADD_LIST_CENTER:
                 if (msg.obj != null) {
-                    if (msg.arg1 >= 0 && msg.arg1 <= getItemCount() && msg.arg2 > 0) {
+                    if (msg.arg1 >= 0 && msg.arg1 <= getRealItemSize() && msg.arg2 > 0) {
                         if (msg.arg2 == 1) list.add(msg.arg1, msg.obj);
                         else list.addAll(msg.arg1, (Collection<Object>) msg.obj);
                         notifyItemRangeInserted(msg.arg1, msg.arg2);
                     }
-                    LogUtil.showLog(msg.arg1 + "===" + getItemCount() + "---");
-//                    if (msg.arg1 != getItemCount())
-//                        notifyItemRangeChanged(msg.arg1, getItemCount() - msg.arg1);
                 }
                 break;
             case UPDATE_DATA_DELETE_DATA:
-                if (msg.arg1 >= 0 && msg.arg1 < getItemCount()) {
+                if (msg.arg1 >= 0 && msg.arg1 < getRealItemSize()) {
                     for (int i = 0; i < msg.arg2; i++) {
                         list.remove(msg.arg1);
                         notifyItemRemoved(msg.arg1);
                     }
                 }
-                if (msg.arg1 != getItemCount())
-                    notifyItemRangeChanged(msg.arg1, getItemCount() - msg.arg1);
+                if (msg.arg1 != getRealItemSize())
+                    notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
                 break;
             case UPDATE_DATA_UPDATE_DATA:
                 if (msg.obj != null) {
@@ -83,8 +81,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                     list.add(msg.arg1, msg.obj);
                 }
                 notifyItemChanged(msg.arg1);
-                if (msg.arg1 != getItemCount())
-                    notifyItemRangeChanged(msg.arg1, getItemCount() - msg.arg1);
+                if (msg.arg1 != getRealItemSize())
+                    notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
                 break;
         }
     }
@@ -98,8 +96,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     public void updateItem(int itemId, Object object) {
         if (itemId < 0)
             itemId = 0;
-        if (itemId >= getItemCount())
-            itemId = getItemCount() - 1;
+        if (itemId >= getRealItemSize())
+            itemId = getRealItemSize() - 1;
         handler.sendMessage(handler.obtainMessage(UPDATE_DATA_UPDATE_DATA, itemId, 0, object));
     }
 
@@ -119,8 +117,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
 
     public void addList(boolean isClear, List list) {
         if (isClear) clearAll();
-        addList(isClear ? 0 : getItemCount(), list);
+        addList(isClear ? 0 : getRealItemSize(), list);
     }
+
+    private View emptyDataView = null;
 
     public void addList(List list) {
         addList(false, list);
@@ -137,15 +137,15 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     public void deleteItem(int itemId, int count) {
         if (itemId < 0)
             itemId = 0;
-        if (itemId >= getItemCount())
-            itemId = getItemCount() - 1;
-        if (count + itemId > 0 && count + itemId <= getItemCount())
+        if (itemId >= getRealItemSize())
+            itemId = getRealItemSize() - 1;
+        if (count + itemId > 0 && count + itemId <= getRealItemSize())
             handler.sendMessage(handler.obtainMessage(UPDATE_DATA_DELETE_DATA, itemId, count, null));
     }
 
     private ArrayList list = new ArrayList<>(0);
-
     protected LayoutInflater inflater = null;
+
     protected Context activity;
 
     public BaseAdapter(Context activity) {
@@ -153,32 +153,19 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         this.inflater = LayoutInflater.from(activity);
     }
 
-    public abstract int getViewLayoutID(int viewType);
-
-    public abstract int getItemViewType(int position);
-
-    @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new BaseViewHolder(inflater.inflate(getViewLayoutID(viewType),
-                parent, false), this);
-    }
-
-    @Override
-    public void onBindViewHolder(BaseViewHolder holder, int position) {
-        if (holder != null && holder.getListener() != null) {
-            holder.getRootView().setTag(R.id.recycler_item_click_tag, position);
-            holder.getRootView().setOnClickListener(this);
-            holder.getListener().initView(holder.getRootView(), position);
-        }
+    public int getRealItemSize() {
+        return list == null ? 0 : list.size();
     }
 
     @Override
     public int getItemCount() {
-        return list == null ? 0 : list.size();
+        if (getEmptyDataView() != null)
+            return list == null ? 1 : list.size() <= 0 ? 1 : list.size();
+        else return getRealItemSize();
     }
 
     public <T extends Object> T getItem(int position) {
-        if (position >= 0 && position < getItemCount())
+        if (position >= 0 && position < getRealItemSize())
             return (T) list.get(position);
         return null;
     }
@@ -193,8 +180,16 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         this.itemClickLister = itemClickLister;
     }
 
-    public interface OnItemClickLister {
-        public void onItemClick(View view, int position);
+    public View getEmptyDataView() {
+        return emptyDataView;
+    }
+
+    public void setEmptyDataView(View emptyDataView) {
+        this.emptyDataView = emptyDataView;
+        if (emptyLayoutParams == null) {
+            emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+        this.emptyDataView.setLayoutParams(emptyLayoutParams);
     }
 
     @Override
@@ -206,5 +201,41 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     }
 
     @Override
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == EMPTY_DATE_VIEW) {
+            return new BaseViewHolder(getEmptyDataView(), this);
+        } else
+            return new BaseViewHolder(inflater.inflate(getViewLayoutID(viewType),
+                    parent, false), this);
+    }
+
+    @Override
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        if (getItem(position) != null)
+            if (holder != null && holder.getListener() != null) {
+                holder.getRootView().setTag(R.id.recycler_item_click_tag, position);
+                holder.getRootView().setOnClickListener(this);
+                holder.getListener().initView(holder.getRootView(), position);
+            }
+
+    }
+
+
+    public abstract @LayoutRes int getViewLayoutID(int viewType);
+
+
+    public abstract int getViewType(int position);
+    @Override
+    public int getItemViewType(int position) {
+        if (getEmptyDataView() != null && getItem(position) == null)
+            return EMPTY_DATE_VIEW;
+        return getViewType(position);
+    }
+
+    @Override
     public abstract void initView(View contentView, int position);
+
+    public interface OnItemClickLister {
+        public void onItemClick(View view, int position);
+    }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.LayoutRes;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,7 +41,7 @@ public class TimeLineSelectAdapter extends BaseAdapter {
     private Resources resources;
 
     @Override
-    public int getViewLayoutID(int viewType) {
+    public @LayoutRes int getViewLayoutID(int viewType) {
         switch (viewType) {
             case 1:
                 return R.layout.time_line_year;
@@ -50,7 +51,7 @@ public class TimeLineSelectAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getViewType(int position) {
         if (getItem(position) instanceof TimeAxisObj)
             return 1;
         else

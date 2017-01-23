@@ -52,7 +52,7 @@ public class KithsAdapter extends BaseAdapter implements View.OnClickListener {
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getViewType(int position) {
         FamilyMemberInfo info = getItem(position);
         return info.getAttention();
     }
