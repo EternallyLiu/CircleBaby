@@ -80,6 +80,7 @@ import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -173,6 +174,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        toolbar.setOnClickListener(this);
         setupPTR();
         initData();
 //        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
@@ -187,6 +189,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         tvRelative.setOnClickListener(this);
         tvChangebaby.setOnClickListener(this);
         ivMessage.setOnClickListener(this);
+        ivMessage.setVisibility(View.GONE);
         ivAvatar.setOnClickListener(this);
 
         reqData(1);
@@ -390,9 +393,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         EventBus.getDefault().unregister(this);
     }
 
+    private static long clickToolBarLastTime = 0;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.toolbar:
+                LogUtil.showLog("clicl toolbar");
+                if (System.currentTimeMillis() - clickToolBarLastTime <= 500 && adapter.getCount() > 0)
+                    contentRecyclerView.scrollToPosition(0);
+                clickToolBarLastTime = System.currentTimeMillis();
+                break;
             case R.id.tv_changebaby:
                 ChangeBabyActivity.open(getActivity());
                 break;
@@ -621,7 +632,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             @Override
             public void run() {
                 int progress = event.getProgress();
-                mTvprogress.setText("上传中 " + progress+"%");
+                mTvprogress.setText("上传中 " + progress + "%");
                 if (tvProgress != null)
                     tvProgress.setText(progress + "%");
                 if (progress == 100) {
@@ -662,10 +673,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     @Subscribe
-    public void onEvent(MediaUpdateEvent mediaUpdateEvent){
-        TimeLineGroupObj timeGroup=adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
-        for(int i=0;i<timeGroup.getTimeLineList().size();i++){
-            if (timeGroup.getTimeLineList().get(i).getMediaList().contains(mediaUpdateEvent.getMediaObj())){
+    public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
+        TimeLineGroupObj timeGroup = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
+        for (int i = 0; i < timeGroup.getTimeLineList().size(); i++) {
+            if (timeGroup.getTimeLineList().get(i).getMediaList().contains(mediaUpdateEvent.getMediaObj())) {
                 List<MediaObj> list = timeGroup.getTimeLineList().get(i).getMediaList();
                 int index = list.indexOf(mediaUpdateEvent.getMediaObj());
                 list.get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());

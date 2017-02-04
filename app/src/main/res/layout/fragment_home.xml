@@ -193,17 +193,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-
-
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/ll_menu"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            >
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/content_recycler_view"
@@ -211,8 +207,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/bg_color2"
                 android:scrollbars="none"
-                android:paddingBottom="@dimen/size_36"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                />
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <LinearLayout
