@@ -154,7 +154,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(this.babyObj.getNickName()).append("\n").append(this.babyObj.getAge());
         AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));
-        StyleSpan styleSpan=new StyleSpan(Typeface.BOLD);
+        StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
 
         builder.setSpan(sizeSpan, 0, this.babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         builder.setSpan(styleSpan, 0, this.babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -495,7 +495,18 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
         Button btnOk = (Button) view.findViewById(R.id.btn_ok);
 
-        tvMsg.setText("你确定不再关注宝宝 " + FastData.getBabyName() + " 吗?这会导致你不能继续查看宝宝相关内容。");
+        String babyNickName = FastData.getBabyObj().getNickName();
+        StringBuilder builder = new StringBuilder("你确定不再关注宝宝 ").append(babyNickName).append(" 吗?这会导致你不能继续查看宝宝相关内容。");
+        SpannableStringBuilder content = new SpannableStringBuilder();
+        content.append(builder.toString());
+
+        ForegroundColorSpan babyColorSpan = new ForegroundColorSpan(Color.RED);
+        StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
+        int index = builder.indexOf(babyNickName);
+        content.setSpan(babyColorSpan, index, index + babyNickName.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        content.setSpan(styleSpan, index, index + babyNickName.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+        tvMsg.setText(content);
         btnCancel.setOnClickListener(this);
         btnOk.setOnClickListener(this);
         return view;

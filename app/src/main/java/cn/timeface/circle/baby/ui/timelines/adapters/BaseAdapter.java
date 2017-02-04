@@ -85,6 +85,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                     notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
                 break;
         }
+        if (getLoadDataFinish()!=null)
+            getLoadDataFinish().loadfinish();
     }
 
     /**
@@ -235,7 +237,25 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     @Override
     public abstract void initView(View contentView, int position);
 
+    public LoadDataFinish getLoadDataFinish() {
+        return loadDataFinish;
+    }
+
+    public void setLoadDataFinish(LoadDataFinish loadDataFinish) {
+        this.loadDataFinish = loadDataFinish;
+    }
+
     public interface OnItemClickLister {
         public void onItemClick(View view, int position);
+    }
+
+    private LoadDataFinish loadDataFinish;
+
+    /**
+     * 数据加载完毕之后回调改接口，为了处理数据加载完成之后的操作
+     *
+     */
+    public interface LoadDataFinish {
+        public void loadfinish();
     }
 }

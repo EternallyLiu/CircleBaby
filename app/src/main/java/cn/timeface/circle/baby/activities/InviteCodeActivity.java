@@ -121,13 +121,13 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
         apiService.queryBabyFamilyLoginInfoList().compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(familyListResponse -> {
                     if (familyListResponse.success()) {
-                        ForegroundColorSpan babyColorSpan = new ForegroundColorSpan(Color.RED);
                         ForegroundColorSpan colorSpan;
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                             colorSpan = new ForegroundColorSpan(getColor(R.color.sea_buckthorn));
                         } else {
                             colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.sea_buckthorn));
                         }
+                        ForegroundColorSpan babyColorSpan = new ForegroundColorSpan(Color.RED);
                         StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
                         SpannableStringBuilder builder = new SpannableStringBuilder();
                         AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));

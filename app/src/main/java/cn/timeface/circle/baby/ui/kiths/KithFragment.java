@@ -16,9 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.timeface.refreshload.PullRefreshLoadRecyclerView;
-import com.timeface.refreshload.headfoot.LoadMoreView;
-import com.timeface.refreshload.headfoot.RefreshView;
 import com.timeface.refreshload.headfoot.impl.DefaultLoadMoreView;
 
 import java.util.ArrayList;
@@ -31,14 +28,13 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.adapters.KithsAdapter;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
-import cn.timeface.circle.baby.ui.timelines.views.MyLinearLayoutManager;
-import cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 
 /**
@@ -46,7 +42,7 @@ import cn.timeface.circle.baby.views.DividerItemDecoration;
  * author : wangshuai Created on 2017/1/19
  * email : wangs1992321@gmail.com
  */
-public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister, EmptyDataView.EmptyCallBack, SwipeRefreshLayout.OnRefreshListener {
+public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister, EmptyDataView.EmptyCallBack, BaseAdapter.LoadDataFinish {
 
     @Bind(R.id.title)
     TextView title;
@@ -56,12 +52,13 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     RecyclerView recyclerView;
     @Bind(R.id.pull_refresh_list)
     SwipeRefreshLayout pullRefreshList;
-
-    private EmptyDataView emptyDataView = null;
+    @Bind(R.id.empty)
+    EmptyDataView emptyDataView;
 
     private KithsAdapter adapter = null;
     private ArrayList<String> relationNames;
     private DefaultLoadMoreView loadMoreView;
+    private TFPTRRecyclerViewHelper helper;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,23 +80,45 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
         }
         title.setText("亲友团");
         adapter = new KithsAdapter(getActivity());
-        emptyDataView = new EmptyDataView(getActivity());
+        adapter.setLoadDataFinish(this);
         emptyDataView.setErrorDrawable(R.drawable.net_empty);
         emptyDataView.setErrorRetryText("重新加载");
         emptyDataView.setErrorText("对不起！没有加载到数据！");
         emptyDataView.setEmptyCallBack(this);
-        adapter.setEmptyDataView(emptyDataView);
         adapter.setItemClickLister(this);
-        MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(recyclerView);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), layoutManager.getOrientation(), R.color.divider_color);
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        pullRefreshList.setOnRefreshListener(this);
-        pullRefreshList.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
-//        TFPTRRecyclerViewHelper helper = new TFPTRRecyclerViewHelper(getActivity(), recyclerView, pullRefreshList);
+//        pullRefreshList.setColorSchemeResources(android.R.color.holo_blue_bright,
+//                android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+//        pullRefreshList.setDistanceToTriggerSync(300);
+//        pullRefreshList.setSize(SwipeRefreshLayout.DEFAULT);
+//        pullRefreshList.setOnRefreshListener(this);
+        helper = new TFPTRRecyclerViewHelper(getActivity(), recyclerView, pullRefreshList);
+        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
+                .tfPtrListener(new IPTRRecyclerListener() {
+                    @Override
+                    public void onTFPullDownToRefresh(View refreshView) {
+                        reqData();
+                    }
+
+                    @Override
+                    public void onTFPullUpToRefresh(View refreshView) {
+
+                    }
+
+                    @Override
+                    public void onScrollUp(int firstVisibleItem) {
+                    }
+
+                    @Override
+                    public void onScrollDown(int firstVisibleItem) {
+                    }
+                });
         reqData();
 
         return view;
@@ -135,11 +154,23 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
                 .subscribe(familyListResponse -> {
                     if (familyListResponse.success()) {
                         adapter.addList(true, filterData(familyListResponse.getDataList()));
-                        pullRefreshList.setRefreshing(false);
-                    }
+                    } else
+                        empty();
+                    helper.finishTFPTRRefresh();
                 }, throwable -> {
-                    pullRefreshList.setRefreshing(false);
+                    helper.finishTFPTRRefresh();
+                    empty();
                 });
+    }
+
+    private void empty() {
+        if (adapter.getRealItemSize() <= 0) {
+            emptyDataView.setVisibility(View.VISIBLE);
+            pullRefreshList.setVisibility(View.GONE);
+        } else {
+            emptyDataView.setVisibility(View.GONE);
+            pullRefreshList.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -175,7 +206,7 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     }
 
     @Override
-    public void onRefresh() {
-        reqData();
+    public void loadfinish() {
+        empty();
     }
 }
