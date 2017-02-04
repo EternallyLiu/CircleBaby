@@ -1,8 +1,10 @@
 package cn.timeface.circle.baby.activities;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -85,6 +87,13 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
     private String notifyString = "";
     private String coverTitle;
     private TimeBookPickerPhotoAdapter adapter;
+
+    public static void open(Context context, int bookType, List<ImageInfoListObj> dataList){
+        Intent intent = new Intent(context, TimeBookPickerPhotoActivity.class);
+        intent.putExtra("bookType", bookType);
+        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.growth.activities;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,5 +45,11 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.bookType = getIntent().getIntExtra("book_type", 0);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_mine_book, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
