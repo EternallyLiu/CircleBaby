@@ -2,8 +2,8 @@ package cn.timeface.circle.baby.ui.kiths;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.timeface.refreshload.PullRefreshLoadRecyclerView;
+import com.timeface.refreshload.headfoot.LoadMoreView;
+import com.timeface.refreshload.headfoot.RefreshView;
+import com.timeface.refreshload.headfoot.impl.DefaultLoadMoreView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,18 +31,22 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.adapters.KithsAdapter;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
+import cn.timeface.circle.baby.ui.timelines.views.MyLinearLayoutManager;
 import cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout;
+import cn.timeface.circle.baby.views.DividerItemDecoration;
 
 /**
  * 亲友团
  * author : wangshuai Created on 2017/1/19
  * email : wangs1992321@gmail.com
  */
-public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister, MySuperRefreshLayout.loadListener, EmptyDataView.EmptyCallBack {
+public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister, EmptyDataView.EmptyCallBack, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.title)
     TextView title;
@@ -46,12 +55,13 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     @Bind(R.id.pull_refresh_list)
-    MySuperRefreshLayout pullRefreshList;
+    SwipeRefreshLayout pullRefreshList;
 
     private EmptyDataView emptyDataView = null;
 
     private KithsAdapter adapter = null;
     private ArrayList<String> relationNames;
+    private DefaultLoadMoreView loadMoreView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,27 +90,18 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
         emptyDataView.setEmptyCallBack(this);
         adapter.setEmptyDataView(emptyDataView);
         adapter.setItemClickLister(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false){
-            /**
-             * 为了解决一个LinearLayoutManager的异常崩溃问题
-             * IndexOutOfBoundsException
-             */
-            @Override
-            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-                try{
-                    super.onLayoutChildren(recycler, state);
-                }catch (IndexOutOfBoundsException e){
-                    e.printStackTrace();
-                }
-            }
-        };
-        recyclerView.setAdapter(adapter);
+        MyLinearLayoutManager layoutManager = new MyLinearLayoutManager(recyclerView);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), layoutManager.getOrientation(), R.color.divider_color);
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        pullRefreshList.setPullRefreshEnable(true);
-        pullRefreshList.setLoadMoreEnable(true);
-        pullRefreshList.setListener(this);
+        recyclerView.setAdapter(adapter);
+        pullRefreshList.setOnRefreshListener(this);
+        pullRefreshList.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+//        TFPTRRecyclerViewHelper helper = new TFPTRRecyclerViewHelper(getActivity(), recyclerView, pullRefreshList);
         reqData();
+
         return view;
     }
 
@@ -132,17 +133,12 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
         apiService.queryBabyFamilyLoginInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(familyListResponse -> {
-                    if (familyListResponse.success())
+                    if (familyListResponse.success()) {
                         adapter.addList(true, filterData(familyListResponse.getDataList()));
-                    if (pullRefreshList.isHeaderRefreshing())
-                        pullRefreshList.setHeaderRefreshing(false);
-                    if (pullRefreshList.isFooterRefreshing())
-                        pullRefreshList.setFooterRefreshing(false);
+                        pullRefreshList.setRefreshing(false);
+                    }
                 }, throwable -> {
-                    if (pullRefreshList.isHeaderRefreshing())
-                        pullRefreshList.setHeaderRefreshing(false);
-                    if (pullRefreshList.isFooterRefreshing())
-                        pullRefreshList.setFooterRefreshing(false);
+                    pullRefreshList.setRefreshing(false);
                 });
     }
 
@@ -174,17 +170,12 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     }
 
     @Override
-    public void pullRefresh() {
-        reqData();
-    }
-
-    @Override
-    public void loadMore() {
-        reqData();
-    }
-
-    @Override
     public void retry() {
+        reqData();
+    }
+
+    @Override
+    public void onRefresh() {
         reqData();
     }
 }

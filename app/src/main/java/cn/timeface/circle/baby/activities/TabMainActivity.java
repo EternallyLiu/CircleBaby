@@ -9,10 +9,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
@@ -44,7 +48,11 @@ import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
 import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
+import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.CommonUtil;
 import cn.timeface.open.TFOpen;
 import cn.timeface.open.TFOpenConfig;
@@ -58,7 +66,7 @@ import rx.functions.Func1;
  * author : YW.SUN Created on 2017/1/11
  * email : sunyw10@gmail.com
  */
-public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
+public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus, DeleteDialog.SubmitListener, DeleteDialog.CloseListener {
     @Bind(R.id.menu_home_tv)
     TextView menuHomeTv;
     @Bind(R.id.menu_mime_tv)
@@ -82,10 +90,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Bind(R.id.container)
     FrameLayout container;
     private BaseFragment currentFragment = null;
-
-    public static void open(Context context) {
-        context.startActivity(new Intent(context, TabMainActivity.class));
-    }
+    private DeleteDialog dialog;
+    private TFProgressDialog tfprogress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +135,16 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
                 .debug(BuildConfig.DEBUG).build()
         );
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
+    public static void open(Context context) {
+        context.startActivity(new Intent(context, TabMainActivity.class));
     }
 
     public void clickTab(View view) {
@@ -220,12 +236,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_publish:
@@ -306,5 +316,42 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         } else {
             rlToensurerelation.setVisibility(View.GONE);
         }
+    }
+
+    private void showDialog(CharSequence tiitle) {
+        if (dialog == null) {
+            dialog = new DeleteDialog(this);
+            dialog.getSubmit().setText("立即查看");
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dialog.getSubmit().getLayoutParams();
+            if (params == null) {
+                params = new LinearLayout.LayoutParams(App.mScreenWidth / 2, ViewGroup.LayoutParams.WRAP_CONTENT);
+            } else params.width = App.mScreenWidth / 2;
+            params.weight = 0;
+            dialog.getSubmit().setLayoutParams(params);
+            dialog.hideCacelButton();
+            dialog.setMessageGravity(Gravity.CENTER_HORIZONTAL);
+            dialog.setCloseListener(this);
+            dialog.showClose(true);
+        }
+        dialog.setMessage(tiitle);
+        dialog.setSubmitListener(this);
+        dialog.show();
+    }
+
+
+    @Subscribe
+    public void onEvent(BabyAttentionEvent attentionEvent) {
+        if (attentionEvent.getType() == 1 && attentionEvent.getBuilder() != null)
+            showDialog(attentionEvent.getBuilder());
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public void submit() {
+        FragmentBridgeActivity.open(this, KithFragment.class.getSimpleName());
     }
 }

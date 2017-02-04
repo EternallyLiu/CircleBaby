@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
+import cn.timeface.circle.baby.ui.babyInfo.beans.BabyChanged;
 import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.TFOpen;
@@ -55,16 +58,12 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     private ChangebabyAdapter adapter;
     private BabyInfoListResponse babyInfoListResponse;
 
-    public static void open(Context context) {
-        Intent intent = new Intent(context, ChangeBabyActivity.class);
-        context.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_changebaby);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -85,6 +84,18 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     public void onResume() {
         reqData();
         super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
+    }
+
+    public static void open(Context context) {
+        Intent intent = new Intent(context, ChangeBabyActivity.class);
+        context.startActivity(intent);
     }
 
     private void reqData() {
@@ -114,12 +125,6 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         }
         adapter.setListData(userObjs);
         adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     @Override
@@ -184,4 +189,11 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
             super.onBackPressed();
         }
     }
+
+    @Subscribe
+    public void onEvent(BabyChanged changed){
+        changeBaby(changed.getUserObj());
+        EventBus.getDefault().post(new BabyAttentionEvent(changed.getBuilder()));
+    }
+
 }
