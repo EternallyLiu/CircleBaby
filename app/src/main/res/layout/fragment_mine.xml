@@ -82,6 +82,36 @@
         android:background="@color/bg_color6" />
 
     <RelativeLayout
+        android:id="@+id/ll_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:background="@color/text_color1"
+            android:drawablePadding="@dimen/size_6"
+            android:text="我的消息"
+            android:textSize="@dimen/text_medium" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_12"
+            android:src="@drawable/mine_data_go" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6" />
+    <RelativeLayout
         android:id="@+id/ll_mine_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -94,7 +124,6 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
-            android:drawableLeft="@drawable/ic_minebook"
             android:drawablePadding="@dimen/size_6"
             android:text="我的作品"
             android:textSize="@dimen/text_medium" />
@@ -127,7 +156,6 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
-            android:drawableLeft="@drawable/ic_cart"
             android:drawablePadding="@dimen/size_6"
             android:text="我的印刷车"
             android:textSize="@dimen/text_medium" />
@@ -160,7 +188,6 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
-            android:drawableLeft="@drawable/ic_mineorder"
             android:drawablePadding="@dimen/size_6"
             android:text="我的订单"
             android:textSize="@dimen/text_medium" />
@@ -194,7 +221,6 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
-            android:drawableLeft="@drawable/ic_setting"
             android:drawablePadding="@dimen/size_6"
             android:text="设置"
             android:textSize="@dimen/text_medium" />

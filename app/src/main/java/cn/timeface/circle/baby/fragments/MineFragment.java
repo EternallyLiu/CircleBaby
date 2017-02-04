@@ -51,6 +51,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     RelativeLayout llSet;
     @Bind(R.id.ll_baby)
     LinearLayout llBaby;
+    @Bind(R.id.ll_message)
+    RelativeLayout llMessage;
 
     public MineFragment() {
     }
@@ -84,7 +86,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         llMineCar.setOnClickListener(this);
         llMineInfo.setOnClickListener(this);
         llMineOrder.setOnClickListener(this);
-
+        llMessage.setOnClickListener(this);
         return view;
     }
 
@@ -140,6 +142,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.ll_message:
+                FragmentBridgeActivity.open(getActivity(), "MessageFragment");
+                break;
             case R.id.ll_set:
                 FragmentBridgeActivity.open(getContext(), "SettingFragment");
                 break;
