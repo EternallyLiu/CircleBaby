@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_book_cover)
-        RatioImageView ivBookCover;
+        ImageView ivBookCover;
         @Bind(R.id.iv_menu)
         ImageView ivMenu;
         @Bind(R.id.tv_pagenum)

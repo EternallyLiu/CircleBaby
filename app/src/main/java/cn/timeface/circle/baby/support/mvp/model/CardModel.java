@@ -15,11 +15,11 @@ public class CardModel extends BasePresenterModel implements CardPresentation.Mo
 
     @Override
     public Observable<KnowledgeCardListResponse> recognizeCardList() {
-        return null;
+        return apiService.recognizeCardList();
     }
 
     @Override
     public Observable<DiaryCardListResponse> diaryCardList() {
-        return null;
+        return apiService.diaryCardList();
     }
 }

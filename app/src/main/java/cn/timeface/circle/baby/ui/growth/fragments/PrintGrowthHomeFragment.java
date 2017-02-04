@@ -74,13 +74,13 @@ public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClic
         if(growthHomeAdapter == null){
             rvBooks.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             growthHomeAdapter = new PrintGrowthHomeAdapter(getActivity(), growthHomeObjs, this);
-            rvBooks.addItemDecoration(
-                    new HorizontalDividerItemDecoration
-                            .Builder(getActivity())
-                            .colorResId(R.color.trans)
-                            .size(DeviceUtil.dpToPx(getResources(), 12))
-                            .build()
-            );
+//            rvBooks.addItemDecoration(
+//                    new HorizontalDividerItemDecoration
+//                            .Builder(getActivity())
+//                            .colorResId(R.color.trans)
+//                            .size(DeviceUtil.dpToPx(getResources(), 12))
+//                            .build()
+//            );
             rvBooks.setAdapter(growthHomeAdapter);
         } else {
             growthHomeAdapter.setListData(growthHomeObjs);

@@ -23,8 +23,10 @@ public class ProductionListActivityDelegate {
                 break;
 
             case BookModel.BOOK_TYPE_DIARY_CARD:
+                DiaryCardListActivity.open(context);
+                break;
             case BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD:
-                CardListActivity.open(context, bookType);
+                RecognizeCardListActivity.open(context);
                 break;
         }
     }

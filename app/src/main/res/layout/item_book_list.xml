@@ -4,24 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/bg_main"
     android:orientation="vertical"
-    android:padding="@dimen/view_space_medium">
+    android:paddingTop="@dimen/size_12">
 
-    <com.github.rayboot.widget.ratioview.RatioImageView
-        android:id="@+id/iv_book_cover"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/bg_default_holder_img"
-        app:fixRatio="fixWidth"
-        app:heightRatio="10"
-        app:widthRatio="9" />
-
-    <LinearLayout
+    <ImageView
+        android:layout_marginTop="-10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/fl_book_cover"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_book_shelf" />
+
+    <com.github.rayboot.widget.ratioview.RatioFrameLayout
+        app:fixRatio="fixWidth"
+        app:heightRatio="550"
+        app:widthRatio="344"
         android:layout_marginLeft="@dimen/view_space_medium"
-        android:layout_toRightOf="@+id/iv_book_cover"
+        android:id="@+id/fl_book_cover"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_book_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bg_default_holder_img" />
+
+        <ImageView
+            android:scaleType="fitXY"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/book_front_mask" />
+
+    </com.github.rayboot.widget.ratioview.RatioFrameLayout>
+
+    <LinearLayout
+        android:layout_marginRight="@dimen/view_space_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/fl_book_cover"
+        android:layout_alignTop="@+id/fl_book_cover"
+        android:layout_marginLeft="@dimen/view_space_medium"
+        android:layout_toRightOf="@+id/fl_book_cover"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -72,17 +97,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="创建时间: "
-
-                />
+                android:text="创建时间: " />
 
             <TextView
                 android:id="@+id/tv_creattime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
-
-                />
+                android:text="" />
         </LinearLayout>
 
         <LinearLayout
@@ -118,5 +139,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
 </RelativeLayout>

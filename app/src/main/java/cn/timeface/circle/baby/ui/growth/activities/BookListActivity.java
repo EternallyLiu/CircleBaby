@@ -10,8 +10,10 @@ import android.view.View;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 
 /**
@@ -35,6 +37,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
         tvTip.setVisibility(View.GONE);
         bookPresenter = new BookPresenter(this);
         bookPresenter.loadData(bookType);
+        getSupportActionBar().setTitle(FastData.getBabyName() + "的" + BookModel.getGrowthBookName(bookType));
     }
 
     @Override

@@ -9,6 +9,7 @@ import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.mvp.presentations.CardPresentation;
+import cn.timeface.circle.baby.support.mvp.presenter.CardPresenter;
 import cn.timeface.circle.baby.ui.growth.adapters.CardListAdapter;
 
 /**
@@ -16,8 +17,9 @@ import cn.timeface.circle.baby.ui.growth.adapters.CardListAdapter;
  * author : YW.SUN Created on 2017/1/12
  * email : sunyw10@gmail.com
  */
-public class CardListActivity extends ProductionListActivity implements CardPresentation.View {
+public class CardListActivity extends ProductionListActivity {
     CardListAdapter cardListAdapter;
+    CardPresenter cardPresenter;
 
     public static void open(Context context, int bookType) {
         Intent intent = new Intent(context, CardListActivity.class);
@@ -29,22 +31,4 @@ public class CardListActivity extends ProductionListActivity implements CardPres
         super.onCreate(savedInstanceState);
         tvTip.setVisibility(View.VISIBLE);
     }
-
-    @Override
-    public void setStateView(boolean loading) {
-
-    }
-
-    @Override
-    public void setCardData(List<CardObj> cardObjs) {
-
-    }
-
-    @Override
-    public void showError(String errMsg) {
-
-    }
 }
-
-
-

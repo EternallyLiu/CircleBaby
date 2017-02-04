@@ -15,10 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/view_space_medium"
+        android:layout_marginLeft="12dp"
         android:layout_marginTop="@dimen/view_space_normal"
+        android:text="每套选择8张（也可以是8的倍数）"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/text"
-        tools:text="每套选择8张（也可以是8的倍数）" />
+        android:textColor="@color/text" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_books"

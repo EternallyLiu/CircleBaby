@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.rayboot.widget.ratioview.RatioImageView;
+import com.github.rayboot.widget.ratioview.utils.RatioFixMode;
 
 import java.util.List;
 
@@ -17,15 +19,16 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.api.models.objs.DiaryCardObj;
 
 /**
- * 卡片 list adapter
- * author : YW.SUN Created on 2017/1/19
+ * 日记卡片list adapter
+ * author : YW.SUN Created on 2017/1/22
  * email : sunyw10@gmail.com
  */
-public class CardListAdapter extends BaseRecyclerAdapter<CardObj> {
+public class DiaryCardListAdapter extends BaseRecyclerAdapter<DiaryCardObj> {
 
-    public CardListAdapter(Context mContext, List<CardObj> listData) {
+    public DiaryCardListAdapter(Context mContext, List<DiaryCardObj> listData) {
         super(mContext, listData);
     }
 
@@ -37,13 +40,12 @@ public class CardListAdapter extends BaseRecyclerAdapter<CardObj> {
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        ViewHolder holder = (ViewHolder) viewHolder;
+        DiaryCardListAdapter.ViewHolder holder = (DiaryCardListAdapter.ViewHolder) viewHolder;
         final CardObj cardObj = listData.get(position);
-
+        holder.ivImg.setRatio(RatioFixMode.FIX_WIDTH, cardObj.getMedia().getW(), cardObj.getMedia().getH());
         Glide.with(mContext)
                 .load(cardObj.getMedia().getImgUrl())
                 .into(holder.ivImg);
-
     }
 
     @Override
@@ -57,10 +59,10 @@ public class CardListAdapter extends BaseRecyclerAdapter<CardObj> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.iv_img)
+        RatioImageView ivImg;
         @Bind(R.id.iv_select)
         ImageView ivSelect;
-        @Bind(R.id.iv_img)
-        ImageView ivImg;
 
         ViewHolder(View view) {
             super(view);
