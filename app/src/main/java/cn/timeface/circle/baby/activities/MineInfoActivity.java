@@ -75,6 +75,7 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
         rlAvtar.setOnClickListener(this);
         rlNickname.setOnClickListener(this);
         rlChangepsw.setOnClickListener(this);
+        rlChangepsw.setVisibility(View.GONE);
     }
 
     private void initData() {
