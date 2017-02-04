@@ -117,7 +117,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         tvToensurerelation.setOnClickListener(this);
         rlToensurerelation.setOnClickListener(this);
 
-        if (TextUtils.isEmpty(FastData.getRelationName())) {
+        if (TextUtils.isEmpty(FastData.getRelationName
+                ())) {
             rlToensurerelation.setVisibility(View.VISIBLE);
         } else {
             rlToensurerelation.setVisibility(View.GONE);

@@ -3,13 +3,14 @@ package cn.timeface.circle.baby.ui.growth.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.util.List;
 
@@ -17,8 +18,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.ui.growth.beans.PrintGrowthHomeObj;
 
 /**
@@ -46,12 +47,17 @@ public class PrintGrowthHomeAdapter extends BaseRecyclerAdapter<PrintGrowthHomeO
         final PrintGrowthHomeObj printGrowthHomeObj = listData.get(position);
         Glide.with(mContext)
                 .load(printGrowthHomeObj.getUrl())
+                .asBitmap()
                 .placeholder(R.drawable.bg_default_holder_img)
                 .centerCrop()
                 .into(holder.ivBook);
         holder.tvDesc.setText(printGrowthHomeObj.getDesc());
         holder.tvSize.setText(printGrowthHomeObj.getSize());
-        holder.tvTitle.setText(BookModel.getGrowthBookName(printGrowthHomeObj.getBookType()));
+        holder.tvTitle.setText(
+                Html.fromHtml(
+                        mContext.getResources().getString(R.string.baby_name, FastData.getBabyName())
+                                + "的"
+                                + BookModel.getGrowthBookName(printGrowthHomeObj.getBookType())));
         holder.rlRoot.setTag(R.string.tag_obj, printGrowthHomeObj);
         if(clickListener != null){
             holder.rlRoot.setOnClickListener(clickListener);
@@ -70,7 +76,7 @@ public class PrintGrowthHomeAdapter extends BaseRecyclerAdapter<PrintGrowthHomeO
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_book)
-        RatioImageView ivBook;
+        ImageView ivBook;
         @Bind(R.id.tv_title)
         TextView tvTitle;
         @Bind(R.id.tv_desc)

@@ -1,6 +1,9 @@
 package cn.timeface.circle.baby.support.mvp.presentations;
 
+import java.util.List;
+
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.CardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
@@ -85,7 +88,7 @@ public interface BookPresentation {
          */
         void create();
 
-        void loadData();
+        void loadData(int bookType);
 
         /**
          * 编辑书作品
@@ -106,7 +109,7 @@ public interface BookPresentation {
 
     }
 
-    interface View{
+    interface View extends BasePresenterView{
         /**
          * 提示错误信息
          * @param errMsg
@@ -118,6 +121,8 @@ public interface BookPresentation {
          * @param loading
          */
         void setStateView(boolean loading);
+
+        void setBookData(List<BookObj> bookObjs);
 
     }
 

@@ -27,8 +27,6 @@
         android:id="@+id/rv_books"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"
-        android:paddingLeft="@dimen/view_space_normal"
-        android:paddingRight="@dimen/view_space_normal" />
+        android:layout_below="@+id/toolbar" />
 
 </RelativeLayout>

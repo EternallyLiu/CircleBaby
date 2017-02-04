@@ -12,8 +12,8 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CardObj implements Parcelable {
-    private long cartdId;
-    private MediaObj media;
+    protected long cartdId;
+    protected MediaObj media;
 
     public long getCartdId() {
         return cartdId;

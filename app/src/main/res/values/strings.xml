@@ -718,4 +718,5 @@
     <string name="save_tip">保存</string>
     <string name="tag_add_title">加标签</string>
     <string name="tag_save_null_tip">对不起！选择标签之后再提交此操作1</string>
+    <string name="baby_name"><![CDATA[ <font color=\'#F79646\'>%1$s</font> ]]></string>
 </resources>
