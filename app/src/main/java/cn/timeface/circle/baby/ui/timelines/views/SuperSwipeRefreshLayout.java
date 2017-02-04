@@ -480,7 +480,6 @@ public class SuperSwipeRefreshLayout extends ViewGroup {
         final int childTop = getPaddingTop() + distance - pushDistance;// 根据偏移量distance更新
         final int childWidth = width - getPaddingLeft() - getPaddingRight();
         final int childHeight = height - getPaddingTop() - getPaddingBottom();
-        Log.d(LOG_TAG, "debug:onLayout childHeight = " + childHeight);
         child.layout(childLeft, childTop, childLeft + childWidth, childTop
                 + childHeight);// 更新目标View的位置
         int headViewWidth = mHeadViewContainer.getMeasuredWidth();

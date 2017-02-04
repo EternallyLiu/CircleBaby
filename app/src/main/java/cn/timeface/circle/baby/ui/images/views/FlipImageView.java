@@ -45,6 +45,7 @@ public class FlipImageView extends ImageView {
             return;
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.FlipImageView);
         default_image = typedArray.getDrawable(R.styleable.FlipImageView_defaultImage);
+        typedArray.recycle();
         setImageDrawable(default_image);
     }
 

@@ -12,6 +12,10 @@ public class MySuperRefreshLayout extends SuperSwipeRefreshLayout implements Sup
     private RefreshHeaderLayout headerView;
     private RefreshHeaderLayout footView;
 
+    private boolean isHeaderRefreshing;
+    private boolean isFooterRefreshing;
+
+
     private loadListener listener;
     private boolean loadMoreEnable;
     private boolean pullRefreshEnable;
@@ -72,6 +76,7 @@ public class MySuperRefreshLayout extends SuperSwipeRefreshLayout implements Sup
     public void onRefresh() {
         headerView.startAmination();
         headerView.setTitle("正在刷新……");
+        setHeaderRefreshing(true);
         if (getListener() != null) getListener().pullRefresh();
     }
 
@@ -93,6 +98,7 @@ public class MySuperRefreshLayout extends SuperSwipeRefreshLayout implements Sup
         footView.setTitle("正在加载…………");
         if (getListener() != null)
             getListener().loadMore();
+        setFooterRefreshing(true);
     }
 
     @Override
@@ -105,6 +111,26 @@ public class MySuperRefreshLayout extends SuperSwipeRefreshLayout implements Sup
         if (enable)
             footView.setTitle("放开加载更多");
         else footView.setTitle("上拉加载更多");
+    }
+
+    public boolean isHeaderRefreshing() {
+        return isHeaderRefreshing;
+    }
+
+    public void setHeaderRefreshing(boolean headerRefreshing) {
+        isHeaderRefreshing = headerRefreshing;
+        if (!isHeaderRefreshing())
+            setRefreshing(false);
+    }
+
+    public boolean isFooterRefreshing() {
+        return isFooterRefreshing;
+    }
+
+    public void setFooterRefreshing(boolean footerRefreshing) {
+        isFooterRefreshing = footerRefreshing;
+        if (!isFooterRefreshing())
+            setLoadMore(false);
     }
 
     public interface loadListener {

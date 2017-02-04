@@ -6,6 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,9 +20,13 @@ import cn.timeface.circle.baby.activities.MineBookActivity;
 import cn.timeface.circle.baby.activities.MineInfoActivity;
 import cn.timeface.circle.baby.activities.OrderListActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
@@ -43,6 +49,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     Toolbar toolbar;
     @Bind(R.id.ll_set)
     RelativeLayout llSet;
+    @Bind(R.id.ll_baby)
+    LinearLayout llBaby;
 
     public MineFragment() {
     }
@@ -81,7 +89,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar,R.drawable.ic_launcher);
+        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar, R.drawable.ic_launcher);
         tvName.setText(FastData.getUserName());
     }
 
@@ -91,9 +99,41 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         ButterKnife.unbind(this);
     }
 
+    private LinearLayout.LayoutParams babyImageLayoutParams = null;
+    private int babyImageWidth, babyImageHeigh;
+
+    private ImageView getBabyImageView(BabyObj babyObj) {
+        ImageView imageView = new ImageView(getActivity());
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        if (babyImageHeigh <= 0 || babyImageWidth <= 0) {
+            babyImageHeigh = (int) getActivity().getResources().getDimension(R.dimen.size_30);
+            babyImageWidth = (int) getActivity().getResources().getDimension(R.dimen.size_30);
+        }
+        if (babyImageLayoutParams == null) {
+            babyImageLayoutParams = new LinearLayout.LayoutParams(babyImageWidth, babyImageHeigh);
+            babyImageLayoutParams.rightMargin = 10;
+        }
+        imageView.setLayoutParams(babyImageLayoutParams);
+        GlideUtil.displayImageCircle(babyObj.getAvatar(), imageView);
+        return imageView;
+
+    }
+
     @Override
     public void onResume() {
         initData();
+        LogUtil.showLog("mainThread:" + Thread.currentThread().getName());
+        addSubscription(BabyObj.getCurrentUserBabyObjs()
+                .subscribeOn(Schedulers.io())
+                .toList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
+                    if (llBaby.getChildCount() > 0)
+                        llBaby.removeAllViews();
+                    for (BabyObj babyObj : list) {
+                        llBaby.addView(getBabyImageView(babyObj));
+                    }
+                }));
         super.onResume();
     }
 

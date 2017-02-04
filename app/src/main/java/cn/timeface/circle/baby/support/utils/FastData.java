@@ -351,6 +351,7 @@ public class FastData extends Remember {
     public static void setBabyObj(BabyObj babyObj) {
         if (babyObj != null) {
             setBabyId(babyObj.getBabyId());
+            babyObj.setUserId(FastData.getUserId());
             babyObj.save();
 //            setBabyAge(babyObj.getAge());
 //            setBabyAvatar(babyObj.getAvatar());

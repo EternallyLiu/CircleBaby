@@ -25,6 +25,7 @@
         android:id="@+id/ll_mine_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/size_12"
         android:background="@color/text_color1">
 
@@ -40,7 +41,6 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/iv_avatar"
             android:background="@color/text_color1"
             android:text="小宝的麻麻"
@@ -48,9 +48,22 @@
             android:textSize="@dimen/text_medium" />
 
 
-        <ImageView
+        <LinearLayout
+            android:id="@+id/ll_baby"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/iv_avatar"
+            android:layout_alignLeft="@+id/tv_name"
+            android:layout_below="@+id/tv_name"
+            android:layout_marginTop="@dimen/size_4"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/size_12"
+            android:layout_height="@dimen/size_24"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_12"

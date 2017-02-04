@@ -6,7 +6,7 @@
 
     <include layout="@layout/head" />
 
-    <cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/pull_refresh_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -15,7 +15,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

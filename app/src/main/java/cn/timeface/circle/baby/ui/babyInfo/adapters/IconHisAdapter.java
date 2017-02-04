@@ -26,7 +26,7 @@ public class IconHisAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getViewType(int position) {
         return 0;
     }
 
