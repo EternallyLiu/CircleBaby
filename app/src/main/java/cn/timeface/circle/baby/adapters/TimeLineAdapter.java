@@ -130,7 +130,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                         ArrayList<MediaObj> medias = new ArrayList<>();
                         strings.add(url);
                         medias.add(mediaObj);
-                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), medias, strings, 0, true, false);
+                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition,medias, strings, 0, true, false);
                     }
                 });
             }
@@ -624,7 +624,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), medias, getUrls(), position, true, false);
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition,medias, getUrls(), position, true, false);
                 }
             });
             return view;

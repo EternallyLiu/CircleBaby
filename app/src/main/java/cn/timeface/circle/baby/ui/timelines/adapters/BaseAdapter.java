@@ -89,6 +89,16 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
             getLoadDataFinish().loadfinish();
     }
 
+    public boolean containObj(Object object){
+        return list.contains(object);
+    }
+
+    public <T extends Object> T getObj(Object object){
+        if (containObj(object))
+            return (T) list.get(list.indexOf(object));
+        else return null;
+    }
+
     /**
      * 更新item
      *
@@ -232,6 +242,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         if (getEmptyDataView() != null && getItem(position) == null)
             return EMPTY_DATE_VIEW;
         return getViewType(position);
+    }
+
+    public void error(){
+        if (getLoadDataFinish()!=null)
+            getLoadDataFinish().loadfinish();
     }
 
     @Override

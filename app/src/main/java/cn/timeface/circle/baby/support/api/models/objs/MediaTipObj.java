@@ -55,7 +55,6 @@ public class MediaTipObj extends BaseObj implements Parcelable {
 
         MediaTipObj tipObj = (MediaTipObj) o;
 
-        if (tipId != tipObj.tipId) return false;
         return tipName != null ? tipName.equals(tipObj.tipName) : tipObj.tipName == null;
 
     }

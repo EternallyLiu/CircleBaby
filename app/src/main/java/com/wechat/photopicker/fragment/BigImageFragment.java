@@ -42,6 +42,8 @@ import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.images.views.FlipImageView;
 import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_PHOTO_PATHS;
@@ -89,10 +91,13 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private MenuItem save;
     private TFProgressDialog tfProgressDialog;
 
+    private int allDetailsListPosition;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getActivity().getIntent();
+        allDetailsListPosition = intent.getIntExtra("allDetailsListPosition", -1);
         mPaths = intent.getStringArrayListExtra(KEY_PHOTO_PATHS);
         mMedias = intent.getParcelableArrayListExtra("mediaList");
         mCurrenItem = intent.getIntExtra(KEY_SELECTOR_POSITION, 0);
@@ -146,9 +151,10 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     @Subscribe
     public void onEvent(MediaObj mediaObj) {
         int currentPosition = mViewPager.getCurrentItem();
-        mMedias.remove(currentPosition);
-        mMedias.add(currentPosition, mediaObj);
+        mMedias.get(currentPosition).setTips(mediaObj.getTips());
         initTips();
+        if (allDetailsListPosition >= 0)
+            EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
     }
 
     private LayoutInflater inflate = null;
@@ -198,11 +204,11 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                     if (response.success()) {
                         if (mediaObj.getTips().contains(currentTip))
                             mediaObj.getTips().remove(currentTip);
-                        mMedias.remove(deletePostion);
-                        mMedias.add(deletePostion, mediaObj);
                         initTips();
                         deletePostion = -1;
                         currentTip = null;
+                        if (allDetailsListPosition >= 0)
+                            EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
                     }
 
                 }, throwable -> {
@@ -382,17 +388,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     private List<MediaTipObj> tips;
 
-    private void reqData() {
-        addSubscription(apiService.getTips("", "")
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
-
-                    if (response.success()) {
-                    }
-
-                }, throwable -> {
-                }));
-    }
 
     @Override
     public void click(View view, int type) {
@@ -426,8 +421,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                         if (response.success()) {
                             mediaObj.setFavoritecount(response.getFavoritecount());
                             mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
-                            mMedias.remove(currentPosition);
-                            mMedias.add(currentPosition, mediaObj);
                             tvLikeCount.setText("+ " + response.getFavoritecount());
                             ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
                         }

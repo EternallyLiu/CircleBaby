@@ -12,6 +12,8 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  */
 public class TimeLineObj extends BaseObj implements Parcelable {
 
+    String age;                             //年龄描述
+    String dateEx;                          //时间附属信息
     UserObj author;                 //作者
     int commentCount;               //评论个数
     List<CommentObj> commentList;   //评论列表
@@ -139,6 +141,25 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.milestoneId = milestoneId;
     }
 
+    public TimeLineObj() {
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getDateEx() {
+        return dateEx;
+    }
+
+    public void setDateEx(String dateEx) {
+        this.dateEx = dateEx;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -146,6 +167,8 @@ public class TimeLineObj extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.age);
+        dest.writeString(this.dateEx);
         dest.writeParcelable(this.author, flags);
         dest.writeInt(this.commentCount);
         dest.writeTypedList(this.commentList);
@@ -162,10 +185,9 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         dest.writeString(this.content);
     }
 
-    public TimeLineObj() {
-    }
-
     protected TimeLineObj(Parcel in) {
+        this.age = in.readString();
+        this.dateEx = in.readString();
         this.author = in.readParcelable(UserObj.class.getClassLoader());
         this.commentCount = in.readInt();
         this.commentList = in.createTypedArrayList(CommentObj.CREATOR);
@@ -182,7 +204,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.content = in.readString();
     }
 
-    public static final Parcelable.Creator<TimeLineObj> CREATOR = new Parcelable.Creator<TimeLineObj>() {
+    public static final Creator<TimeLineObj> CREATOR = new Creator<TimeLineObj>() {
         @Override
         public TimeLineObj createFromParcel(Parcel source) {
             return new TimeLineObj(source);

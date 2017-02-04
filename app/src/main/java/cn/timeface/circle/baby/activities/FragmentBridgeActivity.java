@@ -68,8 +68,18 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         open(context, "BigImageFragment", "", bundle);
     }
 
-    public static void openBigimageFragment(Context context, ArrayList<MediaObj> list, ArrayList<String> paths, int index, boolean download, boolean delete) {
+    public static void openBigimageFragment(Context context,ArrayList<MediaObj> list, ArrayList<String> paths, int index, boolean download, boolean delete) {
         Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("mediaList",list);
+        bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
+        bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
+        bundle.putBoolean("download", download);
+        bundle.putBoolean("delete", delete);
+        open(context, "BigImageFragment", "", bundle);
+    }
+    public static void openBigimageFragment(Context context, int allDetailsListPosition,ArrayList<MediaObj> list, ArrayList<String> paths, int index, boolean download, boolean delete) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("allDetailsListPosition",allDetailsListPosition);
         bundle.putParcelableArrayList("mediaList",list);
         bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
         bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);

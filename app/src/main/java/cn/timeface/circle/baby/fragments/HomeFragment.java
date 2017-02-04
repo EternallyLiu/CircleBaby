@@ -63,6 +63,7 @@ import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.BookTypeListObj;
@@ -79,6 +80,7 @@ import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import cn.timeface.circle.baby.views.TFStateView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -657,6 +659,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         tvProgress = (TextView) view.findViewById(R.id.tv_progress);
         ((Animatable) ivLoad.getDrawable()).start();
         return view;
+    }
+
+    @Subscribe
+    public void onEvent(MediaUpdateEvent mediaUpdateEvent){
+        TimeLineGroupObj timeGroup=adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
+        for(int i=0;i<timeGroup.getTimeLineList().size();i++){
+            if (timeGroup.getTimeLineList().get(i).getMediaList().contains(mediaUpdateEvent.getMediaObj())){
+                List<MediaObj> list = timeGroup.getTimeLineList().get(i).getMediaList();
+                int index = list.indexOf(mediaUpdateEvent.getMediaObj());
+                list.get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
+            }
+        }
     }
 
     /**

@@ -66,6 +66,7 @@ import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.functions.Func1;
@@ -237,7 +238,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         if (timelineobj.getMediaList().size() > 1) {
             gv.setVisibility(View.VISIBLE);
             List<MediaObj> imgObjList = timelineobj.getMediaList();
-            ArrayList<MediaObj> mediaObjs=new ArrayList<>();
+            ArrayList<MediaObj> mediaObjs = new ArrayList<>();
             ArrayList<String> urls = new ArrayList<>();
             for (MediaObj mediaObj : imgObjList) {
                 urls.add(mediaObj.getImgUrl());
@@ -696,6 +697,15 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             if (timelineobj.getLikeCount() == 0) {
                 ll_commentLikeWrapper.setVisibility(View.GONE);
             }
+        }
+    }
+
+    @Subscribe
+    public void onEvent(MediaUpdateEvent event) {
+        if (timelineobj.getMediaList().contains(event.getMediaObj())) {
+            List<MediaObj> mediaList = timelineobj.getMediaList();
+            int indexOf = mediaList.indexOf(event.getMediaObj());
+            mediaList.get(indexOf).setTips(event.getMediaObj().getTips());
         }
     }
 

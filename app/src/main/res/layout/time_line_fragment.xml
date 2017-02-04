@@ -4,10 +4,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/head"/>
+    <include layout="@layout/head" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <cn.timeface.circle.baby.ui.timelines.views.EmptyDataView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></cn.timeface.circle.baby.ui.timelines.views.EmptyDataView>
+
 </LinearLayout>

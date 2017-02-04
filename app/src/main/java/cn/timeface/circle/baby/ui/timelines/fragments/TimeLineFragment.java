@@ -1,9 +1,8 @@
 package cn.timeface.circle.baby.ui.timelines.fragments;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,26 +12,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
+import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineSelectAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.MonthRecord;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxisObj;
+import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -41,14 +39,19 @@ import rx.schedulers.Schedulers;
  * Created by wangshuai on 2017/1/10.
  */
 
-public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItemClickLister {
+public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItemClickLister ,BaseAdapter.LoadDataFinish,IPTRRecyclerListener,EmptyDataView.EmptyCallBack {
     @Bind(R.id.title)
     TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.list)
     RecyclerView list;
+    @Bind(R.id.swipe_refresh)
+    SwipeRefreshLayout swipeRefresh;
+    @Bind(R.id.empty)
+    EmptyDataView empty;
     private TimeLineSelectAdapter adapter = null;
+    private TFPTRRecyclerViewHelper helper;
 
 
     public static TimeLineFragment newInstance() {
@@ -69,19 +72,26 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if (actionBar!=null)
-        {
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
-        title.setText(FastData.getBabyObj().getNickName()+"的成长记录");
+        title.setText(FastData.getBabyObj().getNickName() + "的成长记录");
         adapter = new TimeLineSelectAdapter(getActivity());
+        adapter.setLoadDataFinish(this);
         list.setAdapter(adapter);
         LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         list.setLayoutManager(manager);
 //        list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
         list.setItemAnimator(new DefaultItemAnimator());
+        empty.setErrorDrawable(R.drawable.net_empty);
+        empty.setErrorRetryText("重新加载");
+        empty.setErrorText("对不起！没有加载到数据！");
+        empty.setEmptyCallBack(this);
         adapter.setItemClickLister(this);
+        helper=new TFPTRRecyclerViewHelper(getActivity(),list,swipeRefresh);
+        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
+        helper.tfPtrListener(this);
         reqData();
         return view;
     }
@@ -93,12 +103,11 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
                     Log.d("test", timeAxixResponse.getErrorCode() + "--");
                     if (timeAxixResponse.success()) {
                         if (timeAxixResponse.getDataList() != null && timeAxixResponse.getDataList().size() > 0) {
-                            Log.d("test", "datalistSize==" + timeAxixResponse.getDataList().size());
                             setDataList(timeAxixResponse.getDataList());
-                        }
+                        }else adapter.error();
                     }
                 }, error -> {
-                    Log.d("test", "error:" + error.getMessage());
+                    adapter.error();
                 });
         addSubscription(ss);
     }
@@ -106,12 +115,12 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
 
     private void setDataList(List<TimeAxisObj> lisr) {
         if (lisr != null && lisr.size() > 0) {
-            ArrayList rlist=new ArrayList();
+            ArrayList rlist = new ArrayList();
             TimeAxisObj time = lisr.get(0);
             time.setSelected(true);
             rlist.addAll(lisr);
             rlist.addAll(1, time.getMonthRecords());
-            adapter.addList(true,rlist);
+            adapter.addList(true, rlist);
         }
     }
 
@@ -120,6 +129,16 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    private void empty() {
+        if (adapter.getRealItemSize() <= 0) {
+            empty.setVisibility(View.VISIBLE);
+            swipeRefresh.setVisibility(View.GONE);
+        } else {
+            empty.setVisibility(View.GONE);
+            swipeRefresh.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -139,5 +158,36 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
             bundle.putParcelable("data", mon);
             FragmentBridgeActivity.open(getContext(), "TimeLineDayFragment", "", bundle);
         }
+    }
+
+    @Override
+    public void loadfinish() {
+        helper.finishTFPTRRefresh();
+        empty();
+    }
+
+    @Override
+    public void onTFPullDownToRefresh(View refreshView) {
+        reqData();
+    }
+
+    @Override
+    public void onTFPullUpToRefresh(View refreshView) {
+
+    }
+
+    @Override
+    public void onScrollUp(int firstVisibleItem) {
+
+    }
+
+    @Override
+    public void onScrollDown(int firstVisibleItem) {
+
+    }
+
+    @Override
+    public void retry() {
+        reqData();
     }
 }

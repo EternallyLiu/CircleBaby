@@ -259,31 +259,8 @@ public class MediaObj extends BaseObj implements Parcelable {
 
         MediaObj mediaObj = (MediaObj) o;
 
-        if (h != mediaObj.h) return false;
-        if (w != mediaObj.w) return false;
         if (id != mediaObj.id) return false;
-        if (length != mediaObj.length) return false;
-        if (photographTime != mediaObj.photographTime) return false;
-        if (selected != mediaObj.selected) return false;
-        if (isCover != mediaObj.isCover) return false;
-        if (timeId != mediaObj.timeId) return false;
-        if (date != mediaObj.date) return false;
-        if (imageOrientation != mediaObj.imageOrientation) return false;
-        if (favoritecount != mediaObj.favoritecount) return false;
-        if (isFavorite != mediaObj.isFavorite) return false;
-        if (content != null ? !content.equals(mediaObj.content) : mediaObj.content != null)
-            return false;
-        if (imgUrl != null ? !imgUrl.equals(mediaObj.imgUrl) : mediaObj.imgUrl != null)
-            return false;
-        if (localPath != null ? !localPath.equals(mediaObj.localPath) : mediaObj.localPath != null)
-            return false;
-        if (videoUrl != null ? !videoUrl.equals(mediaObj.videoUrl) : mediaObj.videoUrl != null)
-            return false;
-        if (localIdentifier != null ? !localIdentifier.equals(mediaObj.localIdentifier) : mediaObj.localIdentifier != null)
-            return false;
-        if (location != null ? !location.equals(mediaObj.location) : mediaObj.location != null)
-            return false;
-        return tips != null ? tips.equals(mediaObj.tips) : mediaObj.tips == null;
+        return true;
 
     }
 

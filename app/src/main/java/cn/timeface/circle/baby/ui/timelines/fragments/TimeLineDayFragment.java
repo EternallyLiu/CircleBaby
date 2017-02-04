@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.ui.timelines.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,35 +24,45 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
+import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineDayAdapter;
+import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.ui.timelines.beans.MonthRecord;
+import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout;
 
 /**
  * Created by wangshuai on 2017/1/10.
  */
 
-public class TimeLineDayFragment extends BaseFragment implements MySuperRefreshLayout.loadListener {
+public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.LoadDataFinish, IPTRRecyclerListener, EmptyDataView.EmptyCallBack {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
     @Bind(R.id.swipe_refresh_layout)
-    MySuperRefreshLayout swipeRefreshLayout;
+    SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.title)
     TextView title;
+    @Bind(R.id.empty)
+    EmptyDataView empty;
     private TimeLineDayAdapter adapter;
 
     private int year, month;
     private int currentPage = 1;
+    private TFPTRRecyclerViewHelper helper;
 
     public static TimeLineDayFragment newInstance(MonthRecord monthRecord) {
         TimeLineDayFragment fragment = new TimeLineDayFragment();
@@ -87,8 +98,9 @@ public class TimeLineDayFragment extends BaseFragment implements MySuperRefreshL
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
-        title.setText(FastData.getBabyObj().getNickName()+"的成长记录");
+        title.setText(FastData.getBabyObj().getNickName() + "的成长记录");
         adapter = new TimeLineDayAdapter(getActivity());
+        adapter.setLoadDataFinish(this);
         contentRecyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         contentRecyclerView.setLayoutManager(layoutManager);
@@ -97,15 +109,19 @@ public class TimeLineDayFragment extends BaseFragment implements MySuperRefreshL
 //        if (mMonthRecord != null)
 //            tvCount.setText(mMonthRecord.getRecordcount() + "条");
 //        else tvCount.setVisibility(View.GONE);
-        swipeRefreshLayout.setPullRefreshEnable(true);
-        swipeRefreshLayout.setLoadMoreEnable(true);
-        swipeRefreshLayout.setListener(this);
+        empty.setErrorDrawable(R.drawable.net_empty);
+        empty.setErrorRetryText("重新加载");
+        empty.setErrorText("对不起！没有加载到数据！");
+        empty.setEmptyCallBack(this);
+        helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout);
+        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
+        helper.tfPtrListener(this);
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (mMonthRecord != null){
+        if (mMonthRecord != null) {
             inflater.inflate(R.menu.menu_complete, menu);
             menu.findItem(R.id.complete).setTitle(mMonthRecord.getRecordcount() + "条");
         }
@@ -120,35 +136,36 @@ public class TimeLineDayFragment extends BaseFragment implements MySuperRefreshL
                 .subscribe(timelineResponse -> {
                     if (timelineResponse.success()) {
                         setDataList(timelineResponse.getDataList());
-                        currentPage++;
-                        swipeRefreshLayout.setRefreshing(false);
-                        swipeRefreshLayout.setLoadMore(false);
-                    }
+                        if (timelineResponse.getCurrentPage() <= timelineResponse.getTotalPage())
+                            currentPage++;
+                    } else adapter.error();
                 }, error -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    swipeRefreshLayout.setLoadMore(false);
+                    adapter.error();
                 });
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
-        LogUtil.showLog(dataList.size() + "====" + currentPage);
-        ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
-        for (TimeLineGroupObj obj : dataList) {
-            if (obj.getTimeLineList().size() > 0) {
-                lists.add(obj);
-            }
-        }
+//        LogUtil.showLog(dataList.size() + "====" + currentPage);
+//        ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
+//        for (TimeLineGroupObj obj : dataList) {
+//            if (obj.getTimeLineList().size() > 0) {
+//                for (TimeLineObj timeLineObj : obj.getTimeLineList()) {
+//                    TimeLineGroupObj timeLineGroupObj=new TimeLineGroupObj(obj.getAge(),obj.getDate(),obj.getDateEx(),new ArrayList<>());
+//                    timeLineGroupObj.getTimeLineList().add(timeLineObj);
+//                    lists.add(timeLineGroupObj);
+//                }
+//            }
+//        }
         if (currentPage == 1) {
-            adapter.addList(true, lists);
+            adapter.addList(true, dataList);
         } else {
-            adapter.addList(lists);
+            adapter.addList(dataList);
         }
     }
 
     @Subscribe
     public void onEvent(MonthRecord event) {
         mMonthRecord = event;
-        Log.i("test", mMonthRecord.toString());
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -171,13 +188,54 @@ public class TimeLineDayFragment extends BaseFragment implements MySuperRefreshL
     }
 
     @Override
-    public void pullRefresh() {
+    public void onTFPullDownToRefresh(View refreshView) {
         currentPage = 1;
         reqData(currentPage);
     }
 
     @Override
-    public void loadMore() {
+    public void onTFPullUpToRefresh(View refreshView) {
         reqData(currentPage);
+    }
+
+    @Override
+    public void onScrollUp(int firstVisibleItem) {
+
+    }
+
+    @Override
+    public void onScrollDown(int firstVisibleItem) {
+
+    }
+
+    @Override
+    public void loadfinish() {
+        helper.finishTFPTRRefresh();
+        if (adapter.getRealItemSize() <= 0) {
+            empty.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+        } else {
+            empty.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
+        TimeLineGroupObj timeGroup = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
+        for (int i = 0; i < timeGroup.getTimeLineList().size(); i++) {
+            if (timeGroup.getTimeLineList().get(i).getMediaList().contains(mediaUpdateEvent.getMediaObj())) {
+                List<MediaObj> list = timeGroup.getTimeLineList().get(i).getMediaList();
+                int index = list.indexOf(mediaUpdateEvent.getMediaObj());
+                list.get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
+            }
+        }
+    }
+
+    @Override
+    public void retry() {
+        currentPage = 1;
+        reqData(currentPage);
+
     }
 }
