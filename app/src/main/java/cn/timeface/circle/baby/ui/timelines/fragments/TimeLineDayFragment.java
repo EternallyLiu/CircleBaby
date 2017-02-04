@@ -228,6 +228,8 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
                 List<MediaObj> list = timeGroup.getTimeLineList().get(i).getMediaList();
                 int index = list.indexOf(mediaUpdateEvent.getMediaObj());
                 list.get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
+                list.get(index).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
+                list.get(index).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
             }
         }
     }

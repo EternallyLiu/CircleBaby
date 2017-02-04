@@ -706,6 +706,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             List<MediaObj> mediaList = timelineobj.getMediaList();
             int indexOf = mediaList.indexOf(event.getMediaObj());
             mediaList.get(indexOf).setTips(event.getMediaObj().getTips());
+            mediaList.get(indexOf).setFavoritecount(event.getMediaObj().getFavoritecount());
+            mediaList.get(indexOf).setIsFavorite(event.getMediaObj().getIsFavorite());
         }
     }
 
