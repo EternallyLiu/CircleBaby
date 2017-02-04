@@ -5,11 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.views.TFStateView;
 
 /**
  * 作品列表页面
@@ -26,8 +28,12 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
     LinearLayout llEmpty;
     @Bind(R.id.content_book_list)
     RelativeLayout contentBookList;
+    @Bind(R.id.tv_tip)
+    TextView tvTip;
+    @Bind(R.id.tf_stateView)
+    TFStateView stateView;
 
-    private int bookType;
+    protected int bookType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

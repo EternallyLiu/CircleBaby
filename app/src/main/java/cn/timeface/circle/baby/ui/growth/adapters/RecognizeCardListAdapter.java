@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.rayboot.widget.ratioview.RatioImageView;
+import com.github.rayboot.widget.ratioview.utils.RatioFixMode;
 
 import java.util.List;
 
@@ -16,38 +18,34 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.support.api.models.objs.BookObj;
-import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 
 /**
- * book list adapter
- * author : YW.SUN Created on 2017/1/13
+ * 识图卡片list adapter
+ * author : YW.SUN Created on 2017/1/22
  * email : sunyw10@gmail.com
  */
-public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
+public class RecognizeCardListAdapter extends BaseRecyclerAdapter<KnowledgeCardObj> {
 
-    public BookListAdapter(Context mContext, List<BookObj> listData) {
+    public RecognizeCardListAdapter(Context mContext, List<KnowledgeCardObj> listData) {
         super(mContext, listData);
     }
 
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_book_list, viewGroup, false);
+        View view = mLayoutInflater.inflate(R.layout.item_card_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        ViewHolder holder = (ViewHolder) viewHolder;
-        final BookObj bookObj = listData.get(position);
-
+        RecognizeCardListAdapter.ViewHolder holder = (RecognizeCardListAdapter.ViewHolder) viewHolder;
+        final CardObj cardObj = listData.get(position);
+        holder.ivImg.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
         Glide.with(mContext)
-                .load(bookObj.getBookCover())
-                .into(holder.ivBookCover);
-        holder.tvTitle.setText(bookObj.getBookName());
-        holder.tvPagenum.setText(String.valueOf(bookObj.getPageNum()));
-        holder.tvCreattime.setText(DateUtil.getYear2(bookObj.getCreateTime()));
-
+                .load(cardObj.getMedia().getImgUrl())
+                .into(holder.ivImg);
     }
 
     @Override
@@ -61,20 +59,10 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_book_cover)
-        ImageView ivBookCover;
-        @Bind(R.id.iv_menu)
-        ImageView ivMenu;
-        @Bind(R.id.tv_pagenum)
-        TextView tvPagenum;
-        @Bind(R.id.tv_creattime)
-        TextView tvCreattime;
-        @Bind(R.id.tv_edit)
-        TextView tvEdit;
-        @Bind(R.id.tv_print)
-        TextView tvPrint;
-        @Bind(R.id.tv_title)
-        TextView tvTitle;
+        @Bind(R.id.iv_img)
+        RatioImageView ivImg;
+        @Bind(R.id.iv_select)
+        ImageView ivSelect;
 
         ViewHolder(View view) {
             super(view);
