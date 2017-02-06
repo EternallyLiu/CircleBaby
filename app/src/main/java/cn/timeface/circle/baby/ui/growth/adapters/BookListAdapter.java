@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 
 import java.util.List;
 
@@ -25,9 +26,11 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
  * email : sunyw10@gmail.com
  */
 public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
+    View.OnClickListener clickListener;
 
-    public BookListAdapter(Context mContext, List<BookObj> listData) {
+    public BookListAdapter(Context mContext, List<BookObj> listData, View.OnClickListener clickListener) {
         super(mContext, listData);
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -47,6 +50,10 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         holder.tvTitle.setText(bookObj.getBookName());
         holder.tvPagenum.setText(String.valueOf(bookObj.getPageNum()));
         holder.tvCreattime.setText(DateUtil.getYear2(bookObj.getCreateTime()));
+        if(clickListener != null ){
+            holder.ivMenu.setOnClickListener(clickListener);
+            holder.ivMenu.setTag(R.string.tag_obj, bookObj);
+        }
 
     }
 
@@ -75,6 +82,8 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         TextView tvPrint;
         @Bind(R.id.tv_title)
         TextView tvTitle;
+        @Bind(R.id.fl_book_cover)
+        RatioFrameLayout flBookCover;
 
         ViewHolder(View view) {
             super(view);

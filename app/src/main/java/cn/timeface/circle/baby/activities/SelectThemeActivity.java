@@ -39,6 +39,7 @@ import cn.timeface.open.api.bean.obj.TFOBookType;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
+import cn.timeface.open.model.TFOpenDataProvider;
 
 public class SelectThemeActivity extends BaseAppCompatActivity {
 
@@ -92,17 +93,16 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
 
     private void reqData() {
         tfStateView.loading();
-        // FIXME: 2017/1/9 开放平台api
-//        ApiFactory.getOpenApi().getApiService().bookTypeList()
-//                .compose(SchedulersCompat.applyIoSchedulers())
-//                .subscribe(listBaseResponse -> {
-//                    tfStateView.finish();
-//                    this.listBaseResponse = listBaseResponse;
-//                    setDataList(listBaseResponse.getData());
-//                }, throwable -> {
-//                    tfStateView.showException(throwable);
-//                    Log.e(TAG, "getRelationshipList:", throwable);
-//                });
+        TFOpenDataProvider.get().bookTypeList()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(listBaseResponse -> {
+                    tfStateView.finish();
+                    this.listBaseResponse = listBaseResponse;
+                    setDataList(listBaseResponse.getData());
+                }, throwable -> {
+                    tfStateView.showException(throwable);
+                    Log.e(TAG, "getRelationshipList:", throwable);
+                });
     }
 
 
