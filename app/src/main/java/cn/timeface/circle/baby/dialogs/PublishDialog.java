@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ public class PublishDialog extends BaseDialog {
     private TextView tvPhoto;
     private TextView tvDiary;
     private TextView tvCard;
-    private RelativeLayout rlPublish;
+    private LinearLayout rlPublish;
 
     public PublishDialog(Context context) {
         super(context, R.style.TFDialogStyle);
@@ -61,7 +62,7 @@ public class PublishDialog extends BaseDialog {
         WindowManager.LayoutParams p = window.getAttributes();
         p.width = d.getWidth();
         window.setAttributes(p);
-        window.setGravity(Gravity.BOTTOM);
+        window.setGravity(Gravity.CENTER);
         window.setWindowAnimations(R.style.bottom_dialog_animation);
     }
 

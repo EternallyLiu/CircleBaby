@@ -19,6 +19,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,24 +31,36 @@ import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
+import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
+import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.VideoEditActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.ClipVideoSuccessEvent;
+import cn.timeface.circle.baby.events.MediaLoadComplete;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.VideoInfo;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.support.utils.BitmapUtil;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import rx.functions.Func0;
+import rx.functions.Func1;
 
 /**
  * 选择视频界面
@@ -87,12 +100,11 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 //            optionalPhotoSize = (int) savedInstanceState.get(KEY_OPTIONAL_PICTURE_SIZE);
 //        }
         initData();
+        init();
 //        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
 //        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
 //        mRecyclerView.setLayoutManager(layoutManager);
 //        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        adapter = new VideoAdapter(videos);
-        gv.setAdapter(adapter);
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -102,7 +114,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
                         ActivityCompat.requestPermissions(PickerVideoActivity.this, new String[]{Manifest.permission.CAMERA},
                                 CAMERA_REQUEST_CODE);
-                    }else{
+                    } else {
                         //跳转到录像
                         Intent takePictureIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 //                    takePictureIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5);
@@ -125,75 +137,34 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
     }
 
+    private void init() {
+        startService(new Intent(this, LoadMediaService.class));
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         initData();
+        init();
         adapter.notifyDataSetChanged();
     }
 
     //获取手机中的视频
     private void initData() {
-        videos.clear();
-        String progress[] = {
-
-                MediaStore.Video.Media.DISPLAY_NAME,//视频的名字
-                MediaStore.Video.Media.SIZE,//大小
-                MediaStore.Video.Media.DURATION,//长度
-                MediaStore.Video.Media.DATA,//播放地址
-                MediaStore.Video.Media.DATE_ADDED//时间
-        };
-
-//获取数据提供者,this是上下文
-        ContentResolver cr = this.getContentResolver();
-
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-//有sd卡的情况
-            Cursor cursor = cr.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, progress, null, null, null);
-            while (cursor.moveToNext()) {
-// 到视频文件的信息
-                String name = cursor.getString(0);//得到视频的名字
-                long size = cursor.getLong(1);//得到视频的大小
-                long durantion = cursor.getLong(2);//得到视频的时间长度
-                String data = cursor.getString(3);//得到视频的路径，可以转化为uri进行视频播放
-                long date = cursor.getLong(4);
-//使用静态方法获取视频的缩略图
-                Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
-                VideoInfo videoInfo = new VideoInfo();
-//创建视频信息对象
-                videoInfo.setVedioName(name);
-                videoInfo.setPath(data);
-                videoInfo.setDuration(durantion);
-                videoInfo.setSize(size);
-                videoInfo.setThumbnail(thumbnail);
-                videoInfo.setDate(date);
-
-                videos.add(videoInfo);
-            }
-            cursor.close();
-        }
-//不论是否有sd卡都要查询手机内存
-        Cursor cursor = cr.query(MediaStore.Video.Media.INTERNAL_CONTENT_URI, progress, null, null, null);
-        while (cursor.moveToNext()) {
-// 到视频文件的信息
-            String name = cursor.getString(0);//得到视频的名字
-            long size = cursor.getLong(1);//得到视频的大小
-            long durantion = cursor.getLong(2);//得到视频的时间长度
-            String data = cursor.getString(3);//得到视频的路径，可以转化为uri进行视频播放
-            long date = cursor.getLong(4);
-//使用静态方法获取视频的缩略图
-            Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
-            VideoInfo videoInfo = new VideoInfo();
-//创建视频信息对象
-            videoInfo.setPath(data);
-            videoInfo.setVedioName(name);
-            videoInfo.setDuration(durantion);
-            videoInfo.setSize(size);
-            videoInfo.setThumbnail(thumbnail);
-            videoInfo.setDate(date);
-
-            videos.add(videoInfo);
-        }
-        cursor.close();
+        VideoInfo.getAllVideos()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(list -> {
+                    if (videos.size() > 0)
+                        videos.clear();
+                    if (list != null && list.size() > 0)
+                        videos.addAll(list);
+                    if (adapter == null) {
+                        adapter = new VideoAdapter(videos);
+                        gv.setAdapter(adapter);
+                    } else adapter.notifyDataSetChanged();
+                }, throwable -> {
+                    throwable.printStackTrace();
+                });
     }
 
     private void checkPermission() {
@@ -202,7 +173,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.CAMERA},
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
                         RECORD_CAMERA_REQUEST_CODE);
             }
         }
@@ -228,8 +199,8 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
             @Override
             public void run() {
                 initData();
-                adapter = new VideoAdapter(videos);
-                gv.setAdapter(adapter);
+//                adapter = new VideoAdapter(videos);
+//                gv.setAdapter(adapter);
             }
         });
     }
@@ -237,9 +208,6 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
     class VideoAdapter extends BaseAdapter {
 
         ArrayList<VideoInfo> videos;
-        private ImageView ivPhoto;
-        private TextView tvLong;
-        private File mPhotoFile;
 
         public VideoAdapter(ArrayList<VideoInfo> videos) {
             this.videos = videos;
@@ -262,19 +230,22 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = View.inflate(PickerVideoActivity.this, R.layout.item_video, null);
-            ivPhoto = (ImageView) view.findViewById(R.id.iv_photo);
-            tvLong = (TextView) view.findViewById(R.id.tv_long);
+            if (convertView == null)
+                convertView = View.inflate(PickerVideoActivity.this, R.layout.item_video, null);
+            ImageView ivPhoto = ViewHolder.getView(convertView, R.id.iv_photo);
+            TextView tvLong = ViewHolder.getView(convertView, R.id.tv_long);
             if (position == 0) {
                 ivPhoto.setImageResource(R.drawable.camera);
                 ivPhoto.setScaleType(ImageView.ScaleType.CENTER);
             } else {
-                ivPhoto.setImageBitmap(videos.get(position - 1).getThumbnail());
+                if (videos.get(position - 1).getThumbnail() != null)
+                    ivPhoto.setImageBitmap(videos.get(position - 1).getThumbnail());
+                else if (!TextUtils.isEmpty(videos.get(position - 1).getThumbmailLocalUrl()))
+                    GlideUtil.displayImage(videos.get(position - 1).getThumbmailLocalUrl(), ivPhoto);
+                else ivPhoto.setImageBitmap(null);
                 tvLong.setText(DateUtil.getTime4(videos.get(position - 1).getDuration()));
             }
-
-
-            return view;
+            return convertView;
         }
     }
 
@@ -336,5 +307,10 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
         }.start();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(MediaLoadComplete event) {
+        if (event.getType() == 1)
+            initData();
+    }
 
 }

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.UUID;
 
 import cn.timeface.circle.baby.BuildConfig;
 
@@ -419,6 +420,33 @@ public class ImageFactory {
             e.printStackTrace();
         }
 
+        return outDir.toString();
+
+    }
+    public static String saveImageCache(Bitmap bitmap) {
+
+        if (bitmap==null)
+            return null;
+
+        String fileName = UUID.randomUUID().toString() + ".cbaby";
+//        File file = new File("/mnt/sdcard/baby");
+        File file = new File(Environment.getExternalStorageDirectory().getPath() +File.separator+ "baby"+File.separator+"cache");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File outDir = new File(file, fileName);//将要保存图片的路径，android推荐这种写法，将目录名和文件名分开，不然容易报错。
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(outDir);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return outDir.toString();
 
     }

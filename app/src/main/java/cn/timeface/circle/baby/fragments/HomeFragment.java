@@ -63,6 +63,7 @@ import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.VideoInfo;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -85,6 +86,8 @@ import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import cn.timeface.circle.baby.views.TFStateView;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Observable;
+import rx.functions.Func0;
 import rx.functions.Func1;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener {

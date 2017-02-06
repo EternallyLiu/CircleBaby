@@ -43,6 +43,7 @@ public class GlideUtil {
         }
         Glide.with(context)
                 .load(url)
+                .asBitmap()
                 .into(imageView);
     }
 
@@ -142,5 +143,6 @@ public class GlideUtil {
                 .into(imageView);
 //        Glide.with(context).load(url).into(imageView);
     }
+
 
 }

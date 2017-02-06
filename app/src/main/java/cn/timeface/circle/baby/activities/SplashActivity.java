@@ -31,6 +31,7 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
@@ -103,6 +104,7 @@ public class SplashActivity extends BaseAppCompatActivity {
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
         firstRun();
         showGuide();
+        startService(new Intent(this, LoadMediaService.class));
 //        requestCheckUpdate();
 
     }
