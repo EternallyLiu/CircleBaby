@@ -309,6 +309,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(MediaLoadComplete event) {
+        LogUtil.showLog("get event===="+event.getType());
         if (event.getType() == 1)
             initData();
     }
