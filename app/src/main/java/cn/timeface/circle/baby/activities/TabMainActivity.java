@@ -83,6 +83,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     TextView tvToensurerelation;
     @Bind(R.id.foot_menu_ll)
     View footMenu;
+    @Bind(R.id.send_timeface)
+    ImageView sendTimeface;
     private long lastPressedTime = 0;
     private static final int TAB1 = 0;//时光轴
     private static final int TAB2 = 1;//我的
@@ -116,6 +118,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         ivPublish.setOnClickListener(this);
         tvToensurerelation.setOnClickListener(this);
         rlToensurerelation.setOnClickListener(this);
+        sendTimeface.setOnClickListener(this);
 
         if (TextUtils.isEmpty(FastData.getRelationName
                 ())) {
@@ -239,6 +242,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.send_timeface:
+                new PublishDialog(this).show();
+                break;
             case R.id.iv_publish:
                 new PublishDialog(this).show();
                 break;

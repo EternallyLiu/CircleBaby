@@ -73,6 +73,7 @@ import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
@@ -179,6 +180,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
         adapter = new PhotoGridAdapter(this);
         gvGridView.setAdapter(adapter);
+        LogUtil.showLog(publishType+"");
         switch (publishType) {
             case PHOTO:
                 type = 0;
@@ -257,6 +259,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
     private void selectVideos() {
+        LogUtil.showLog("intent to PickerVideoActivity");
         Intent intent = new Intent(this, PickerVideoActivity.class);
         startActivityForResult(intent, VIDEO_SELECT);
 
