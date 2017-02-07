@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.support.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.support.api.models.objs.CardBookSizeObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.DiaryCardListActivity;
 import cn.timeface.circle.baby.views.TFStateView;
 
 public class BookSizeListFragment extends BaseFragment {
@@ -71,18 +72,20 @@ public class BookSizeListFragment extends BaseFragment {
     }
 
     private void reqData() {
-        apiService.getSubBabyBookWorksTypeList(2)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(cardBookSizeResponse -> {
-                    tfStateView.finish();
-                    if (cardBookSizeResponse.success()) {
-                        setDataList(cardBookSizeResponse.getDataList());
-                    }
-                }, error -> {
-                    tfStateView.showException(error);
-                    Log.e(TAG, "getBabyBookWorksTypeList:");
-                    error.printStackTrace();
-                });
+        addSubscription(
+                apiService.getSubBabyBookWorksTypeList(2)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(cardBookSizeResponse -> {
+                            tfStateView.finish();
+                            if (cardBookSizeResponse.success()) {
+                                setDataList(cardBookSizeResponse.getDataList());
+                            }
+                        }, error -> {
+                            tfStateView.showException(error);
+                            Log.e(TAG, "getBabyBookWorksTypeList:");
+                            error.printStackTrace();
+                        })
+        );
 
     }
 
@@ -97,7 +100,15 @@ public class BookSizeListFragment extends BaseFragment {
                 bookSizeId = cardBookSizeObj.getBookSizeId()+"";
                 bookPage = cardBookSizeObj.getBookPage();
                 coverTitle = cardBookSizeObj.getCoverTitle();
-                startPhotoPick();
+
+                // 流程有变化不再去选择照片, 改为去选择卡片申请印刷
+                // startPhotoPick();
+                DiaryCardListActivity.open(
+                        getActivity(),
+                        true,
+                        cardBookSizeObj.getCoverTitle(),
+                        cardBookSizeObj.getBookPage(),
+                        cardBookSizeObj.getBookSizeId());
             }
         });
     }

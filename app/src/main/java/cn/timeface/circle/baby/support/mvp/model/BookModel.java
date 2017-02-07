@@ -16,7 +16,7 @@ import rx.Observable;
  */
 public class BookModel extends BasePresenterModel implements BookPresentation.Model{
     public static final int BOOK_TYPE_GROWTH_COMMEMORATION_BOOK = 1;//成长纪念册
-    public static final int BOOK_TYPE_DIARY_CARD = 2;//成长纪念册
+    public static final int BOOK_TYPE_DIARY_CARD = 2;//日记卡片
     public static final int BOOK_TYPE_RECOGNIZE_PHOTO_CARD = 3;//识图卡片
     public static final int BOOK_TYPE_CALENDAR = 4;//台历
     public static final int BOOK_TYPE_HARDCOVER_PHOTO_BOOK = 5;//精装照片书

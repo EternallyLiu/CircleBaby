@@ -135,7 +135,7 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
                                     }
                                     if (bookTypeListObj.getType() == 2) {
                                         //日记卡片书，进入选择size界面
-                                        FragmentBridgeActivity.openBookSizeListFragment(getContext(), dataList);
+                                        FragmentBridgeActivity.openBookSizeListFragment(getContext());
                                     } else if (bookTypeListObj.getType() == 5) {
                                         //照片书，进入选择主题界面
                                         Intent intent = new Intent(getActivity(), SelectThemeActivity.class);

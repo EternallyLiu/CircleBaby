@@ -3,9 +3,9 @@ package cn.timeface.circle.baby.support.api.services;
 import java.util.Map;
 
 import cn.timeface.circle.baby.BuildConfig;
-import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
@@ -460,10 +460,10 @@ public interface ApiService {
     /**
      * 提交订单
      */
+    @FormUrlEncoded
     @POST("babyOrder/addOrder")
-    Observable<LessResponse> addOrder(@Query("orderId") String orderId,
-                                      @Query("dataList") String dataList,
-                                      @Query("appId") String appId);
+    Observable<LessResponse> addOrder(@Field("dataList") String dataList,
+                                      @Field("appId") String appId);
 
     /**
      * 提交订单-新增订单
@@ -730,6 +730,37 @@ public interface ApiService {
      */
     @GET("printGrowth/diaryCardList")
     Observable<DiaryCardListResponse> diaryCardList();
+
+    /**
+     * 创建卡片作品
+     * @param babyId
+     * @param author
+     * @param bookCover
+     * @param bookId
+     * @param bookName
+     * @param bookType
+     * @param description
+     * @param extra
+     * @param openBookId
+     * @param openBookType
+     * @param pageNum
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("openBook/save")
+    Observable<EditBookResponse> saveCard(
+            @Field("babyId") int babyId,
+            @Field("author") String author,
+            @Field("bookCover") String bookCover,
+            @Field("bookId") String bookId,
+            @Field("bookName") String bookName,
+            @Field("bookType") int bookType,
+            @Field("description") String description,
+            @Field("extra") String extra,
+            @Field("openBookId") long openBookId,
+            @Field("openBookType") int openBookType,
+            @Field("pageNum") int pageNum);
+
 
 
 }

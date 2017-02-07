@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,7 +20,7 @@ import cn.timeface.circle.baby.views.TFStateView;
  * author : YW.SUN Created on 2017/1/12
  * email : sunyw10@gmail.com
  */
-public abstract class ProductionListActivity extends BasePresenterAppCompatActivity{
+public abstract class ProductionListActivity extends BasePresenterAppCompatActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -33,6 +34,8 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
     TextView tvTip;
     @Bind(R.id.tf_stateView)
     TFStateView stateView;
+    @Bind(R.id.btn_ask_for_print)
+    Button btnAskPrint;
 
     protected int bookType;
 
@@ -45,6 +48,7 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.bookType = getIntent().getIntExtra("book_type", 0);
+        rvBooks.getItemAnimator().setChangeDuration(0);//fix notify item shine problem
     }
 
     @Override

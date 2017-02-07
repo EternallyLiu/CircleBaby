@@ -12,15 +12,28 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CardObj implements Parcelable {
-    protected long cartdId;
+    protected long cardId;
     protected MediaObj media;
+    protected int select;
 
-    public long getCartdId() {
-        return cartdId;
+    public boolean select(){
+        return select == 1;
+    }
+
+    public int getSelect() {
+        return select;
+    }
+
+    public void setSelect(int select) {
+        this.select = select;
+    }
+
+    public long getCardId() {
+        return cardId;
     }
 
     public void setCartdId(long cartdId) {
-        this.cartdId = cartdId;
+        this.cardId = cartdId;
     }
 
     public MediaObj getMedia() {
@@ -31,6 +44,9 @@ public class CardObj implements Parcelable {
         this.media = media;
     }
 
+    public CardObj() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -38,16 +54,15 @@ public class CardObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.cartdId);
+        dest.writeLong(this.cardId);
         dest.writeParcelable(this.media, flags);
-    }
-
-    public CardObj() {
+        dest.writeInt(this.select);
     }
 
     protected CardObj(Parcel in) {
-        this.cartdId = in.readLong();
+        this.cardId = in.readLong();
         this.media = in.readParcelable(MediaObj.class.getClassLoader());
+        this.select = in.readInt();
     }
 
     public static final Creator<CardObj> CREATOR = new Creator<CardObj>() {
@@ -61,4 +76,10 @@ public class CardObj implements Parcelable {
             return new CardObj[size];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        CardObj other = (CardObj) obj;
+        return cardId == other.cardId;
+    }
 }

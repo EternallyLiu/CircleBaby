@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_card_preview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="cn.timeface.circle.baby.ui.growth.activities.CardPreviewActivity"
+    tools:showIn="@layout/activity_card_preview">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:elevation="24dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_color8"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_pinyin"
+                android:layout_width="@dimen/size_260"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="70dp"
+                android:background="@null"
+                android:gravity="center"
+                android:padding="@dimen/size_6" />
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="@dimen/size_260"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/size_2"
+                android:background="@drawable/shape_dash_bg"
+                android:gravity="center"
+                android:lines="1"
+                android:maxLength="4"
+                android:padding="@dimen/size_6" />
+
+
+            <com.github.rayboot.widget.ratioview.RatioRelativeLayout
+                android:id="@+id/rl_card"
+                android:layout_width="@dimen/size_260"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@color/bg_color8"
+                app:fixRatio="fixWidth"
+                app:heightRatio="10"
+                app:widthRatio="10">
+
+                <uk.co.senab.photoview.PhotoView
+                    android:id="@+id/iv_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ImageView
+                    android:id="@+id/iv_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:clickable="true"
+                    android:padding="@dimen/view_space_medium"
+                    android:src="@drawable/selector_cart_item" />
+            </com.github.rayboot.widget.ratioview.RatioRelativeLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</RelativeLayout>
