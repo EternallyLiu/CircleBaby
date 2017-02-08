@@ -85,15 +85,15 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                     notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
                 break;
         }
-        if (getLoadDataFinish()!=null)
+        if (getLoadDataFinish() != null)
             getLoadDataFinish().loadfinish();
     }
 
-    public boolean containObj(Object object){
+    public boolean containObj(Object object) {
         return list.contains(object);
     }
 
-    public <T extends Object> T getObj(Object object){
+    public <T extends Object> T getObj(Object object) {
         if (containObj(object))
             return (T) list.get(list.indexOf(object));
         else return null;
@@ -127,6 +127,17 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
             handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, position, list.size(), list));
     }
 
+    public void addList(Object item) {
+        if (item != null)
+            handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, getRealItemSize(), 1, item));
+    }
+    public void addList(int position,Object item) {
+        if (position < 0)
+            position = 0;
+        if (item != null)
+            handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, position, 1, item));
+    }
+
     public void addList(boolean isClear, List list) {
         if (isClear) clearAll();
         addList(isClear ? 0 : getRealItemSize(), list);
@@ -135,6 +146,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     private View emptyDataView = null;
 
     public void addList(List list) {
+        LogUtil.showLog("list:" + list.size());
         addList(false, list);
     }
 
@@ -144,6 +156,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
 
     public void deleteItem(int itemId) {
         deleteItem(itemId, 1);
+    }
+
+    public void deleteItem(Object item) {
+        if (containObj(item))
+            deleteItem(list.indexOf(item), 1);
     }
 
     public void deleteItem(int itemId, int count) {
@@ -233,10 +250,13 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     }
 
 
-    public abstract @LayoutRes int getViewLayoutID(int viewType);
+    public abstract
+    @LayoutRes
+    int getViewLayoutID(int viewType);
 
 
     public abstract int getViewType(int position);
+
     @Override
     public int getItemViewType(int position) {
         if (getEmptyDataView() != null && getItem(position) == null)
@@ -244,9 +264,13 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         return getViewType(position);
     }
 
-    public void error(){
-        if (getLoadDataFinish()!=null)
+    public void error() {
+        if (getLoadDataFinish() != null)
             getLoadDataFinish().loadfinish();
+    }
+
+    public Context context() {
+        return activity;
     }
 
     @Override
@@ -268,7 +292,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
 
     /**
      * 数据加载完毕之后回调改接口，为了处理数据加载完成之后的操作
-     *
      */
     public interface LoadDataFinish {
         public void loadfinish();

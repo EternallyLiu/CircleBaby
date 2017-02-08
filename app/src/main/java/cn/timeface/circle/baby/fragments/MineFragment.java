@@ -30,6 +30,11 @@ import rx.schedulers.Schedulers;
 
 public class MineFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
+
+    /**
+     * 显示宝宝头像的最大数量
+     */
+    private static final int MAX_BABY_ICON_COUNT = 5;
     @Bind(R.id.tv_mine)
     TextView tvMine;
     @Bind(R.id.iv_avatar)
@@ -132,8 +137,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 .subscribe(list -> {
                     if (llBaby.getChildCount() > 0)
                         llBaby.removeAllViews();
-                    for (BabyObj babyObj : list) {
-                        llBaby.addView(getBabyImageView(babyObj));
+                    int lastIndex = list.size() > MAX_BABY_ICON_COUNT ? MAX_BABY_ICON_COUNT - 1 : list.size() - 1;
+                    for (int i = 0; i <= lastIndex; i++) {
+                        llBaby.addView(getBabyImageView(list.get(i)));
                     }
                 }));
         super.onResume();

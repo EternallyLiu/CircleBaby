@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
@@ -231,6 +232,12 @@ public class MediaObj extends BaseObj implements Parcelable {
 
     public TFOResourceObj toTFOResourceObj() {
         return new TFOResourceObj(id + "", imgUrl, w, h, imageOrientation, "");
+    }
+
+    public boolean isVideo(){
+        if (TextUtils.isEmpty(getVideoUrl()))
+            return false;
+        else return true;
     }
 
     @Override

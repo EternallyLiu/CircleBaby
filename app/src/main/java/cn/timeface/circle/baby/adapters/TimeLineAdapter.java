@@ -54,6 +54,7 @@ import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.functions.Func1;
 
@@ -130,7 +131,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                         ArrayList<MediaObj> medias = new ArrayList<>();
                         strings.add(url);
                         medias.add(mediaObj);
-                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition,medias, strings, 0, true, false);
+                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition, medias, strings, 0, true, false);
                     }
                 });
             }
@@ -369,7 +370,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             switch (v.getId()) {
                 case R.id.ll_recode:
 //                    TimeLineDetailActivity.open(context, timeLineObj);
-                    TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
+                    TimeFaceDetailFragment.open(context, allDetailsPosition, timeLineObj);
+//                    TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
                     break;
                 case R.id.icon_like:
                 case R.id.tv_likecount:
@@ -624,7 +626,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition,medias, getUrls(), position, true, false);
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition, medias, getUrls(), position, true, false);
                 }
             });
             return view;

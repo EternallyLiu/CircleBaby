@@ -123,6 +123,32 @@ public class UserObj extends BaseObj implements Parcelable {
 
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserObj userObj = (UserObj) o;
+
+        if (userId != null ? !userId.equals(userObj.userId) : userObj.userId != null) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = avatar != null ? avatar.hashCode() : 0;
+        result = 31 * result + (babyObj != null ? babyObj.hashCode() : 0);
+        result = 31 * result + (nickName != null ? nickName.hashCode() : 0);
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
+        result = 31 * result + (relationName != null ? relationName.hashCode() : 0);
+        result = 31 * result + isCreator;
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + (uniId != null ? uniId.hashCode() : 0);
+        result = 31 * result + babycount;
+        result = 31 * result + (babies != null ? babies.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "UserObj{" +
                 "avatar='" + avatar + '\'' +

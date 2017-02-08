@@ -255,7 +255,6 @@
             android:background="@drawable/shape_milestone_bg"
             android:gravity="center_vertical"
             android:hint="我也说一句"
-
             android:padding="@dimen/view_space_normal"
             android:textSize="@dimen/text_normal" />
 

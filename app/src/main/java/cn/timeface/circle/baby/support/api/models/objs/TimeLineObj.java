@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -11,6 +12,7 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  * Created by lidonglin on 2016/5/9.
  */
 public class TimeLineObj extends BaseObj implements Parcelable {
+
 
     String age;                             //年龄描述
     String dateEx;                          //时间附属信息
@@ -78,6 +80,8 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     public List<MediaObj> getMediaList() {
+        if (mediaList == null)
+            mediaList = new ArrayList<>(0);
         return mediaList;
     }
 
@@ -110,6 +114,8 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     public List<CommentObj> getCommentList() {
+        if (commentList==null)
+            commentList=new ArrayList<>();
         return commentList;
     }
 
@@ -126,6 +132,8 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     public List<UserObj> getLikeList() {
+        if (likeList==null)
+            likeList=new ArrayList<>();
         return likeList;
     }
 

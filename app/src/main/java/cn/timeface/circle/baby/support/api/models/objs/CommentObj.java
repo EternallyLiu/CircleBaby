@@ -56,6 +56,31 @@ public class CommentObj extends BaseObj implements Parcelable {
         this.userInfo = userInfo;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CommentObj that = (CommentObj) o;
+
+        if (commentId != that.commentId) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (commentDate ^ (commentDate >>> 32));
+        result = 31 * result + commentId;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (toUserInfo != null ? toUserInfo.hashCode() : 0);
+        result = 31 * result + (userInfo != null ? userInfo.hashCode() : 0);
+        return result;
+    }
+
+    public CommentObj() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -70,9 +95,6 @@ public class CommentObj extends BaseObj implements Parcelable {
         dest.writeParcelable(this.userInfo, flags);
     }
 
-    public CommentObj() {
-    }
-
     protected CommentObj(Parcel in) {
         this.commentDate = in.readLong();
         this.commentId = in.readInt();
@@ -81,7 +103,7 @@ public class CommentObj extends BaseObj implements Parcelable {
         this.userInfo = in.readParcelable(UserObj.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<CommentObj> CREATOR = new Parcelable.Creator<CommentObj>() {
+    public static final Creator<CommentObj> CREATOR = new Creator<CommentObj>() {
         @Override
         public CommentObj createFromParcel(Parcel source) {
             return new CommentObj(source);

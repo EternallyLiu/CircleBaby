@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_color2"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/size_4"
+    android:paddingTop="@dimen/size_4"
+    android:paddingLeft="@dimen/size_4"
+    >
 
-</ImageView>
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@color/white"
+        android:scaleType="fitCenter" />
+
+</LinearLayout>

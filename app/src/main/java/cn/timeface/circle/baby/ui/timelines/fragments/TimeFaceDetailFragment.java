@@ -1,10 +1,483 @@
 package cn.timeface.circle.baby.ui.timelines.fragments;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
+import cn.timeface.circle.baby.activities.VideoPlayActivity;
+import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
+import cn.timeface.circle.baby.events.CommentSubmit;
+import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
+import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
+import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
+import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineDetailAdapter;
+import cn.timeface.circle.baby.ui.timelines.beans.LikeUserList;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
+import cn.timeface.circle.baby.ui.timelines.views.GridStaggerLookup;
+import cn.timeface.circle.baby.ui.timelines.views.SelectImageView;
+import rx.functions.Func1;
 
 /**
  * author : wangshuai Created on 2017/2/7
  * email : wangs1992321@gmail.com
  */
-public class TimeFaceDetailFragment extends BaseFragment {
+public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.LoadDataFinish, BaseAdapter.OnItemClickLister, View.OnClickListener, TextView.OnEditorActionListener, View.OnFocusChangeListener {
+
+
+    @Bind(R.id.title)
+    TextView title;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.content_recycler_view)
+    RecyclerView contentRecyclerView;
+    @Bind(R.id.swipe_refresh)
+    SwipeRefreshLayout swipeRefresh;
+    @Bind(R.id.empty)
+    EmptyDataView empty;
+    @Bind(R.id.et_commment)
+    EditText etCommment;
+    @Bind(R.id.add_like)
+    SelectImageView addLike;
+    @Bind(R.id.add_comment)
+    ImageView addComment;
+    @Bind(R.id.rl_botton)
+    RelativeLayout rlBotton;
+    private TimeLineObj currentTimeLineObj = null;
+    private TimeLineDetailAdapter adapter = null;
+    private TFPTRRecyclerViewHelper helper;
+    private AlertDialog dialog;
+    private int commmentId;
+    private int allDetailsListPosition = -1;
+    private InputMethodManager manager;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+        Bundle bundle = getArguments();
+        if (bundle != null && bundle.containsKey(TimeLineObj.class.getName())) {
+            currentTimeLineObj = bundle.getParcelable(TimeLineObj.class.getName());
+        }
+        if (bundle != null && bundle.containsKey("allDetailsListPosition"))
+            allDetailsListPosition = bundle.getInt("allDetailsListPosition", -1);
+        setHasOptionsMenu(true);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View contentView = inflater.inflate(R.layout.fragment_timeface_detail, container, false);
+
+        ButterKnife.bind(this, contentView);
+        setActionBar(toolbar);
+        initActionBar();
+        title.setText(FastData.getBabyObj().getNickName());
+        initRecyclerView();
+        etCommment.setOnEditorActionListener(this);
+        etCommment.setOnFocusChangeListener(this);
+        helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefresh);
+        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
+                .tfPtrListener(new IPTRRecyclerListener() {
+                    @Override
+                    public void onTFPullDownToRefresh(View refreshView) {
+                        reqData();
+                    }
+
+                    @Override
+                    public void onTFPullUpToRefresh(View refreshView) {
+
+                    }
+
+                    @Override
+                    public void onScrollUp(int firstVisibleItem) {
+                    }
+
+                    @Override
+                    public void onScrollDown(int firstVisibleItem) {
+                    }
+                });
+        reqData();
+        return contentView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    public static void open(Context context, TimeLineObj timeLineObj) {
+        LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
+        FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
+    }
+
+    public static void open(Context context, int allDetailsListPosition, TimeLineObj timeLineObj) {
+        LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
+        Bundle bundle = new Bundle();
+        bundle.putInt("allDetailsListPosition", allDetailsListPosition);
+        bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
+        FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
+    }
+
+    private void reqData() {
+        apiService.queryBabyTimeDetail(currentTimeLineObj.getTimeId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(timeDetailResponse -> {
+                    if (timeDetailResponse.success()) {
+                        currentTimeLineObj = timeDetailResponse.getTimeInfo();
+                        initRecyclerView();
+                    }
+                    helper.finishTFPTRRefresh();
+                }, error -> {
+                    Log.e("TimeLineDetailActivity", "queryBabyTimeDetail:");
+                    error.printStackTrace();
+                    helper.finishTFPTRRefresh();
+                });
+    }
+
+    private void initRecyclerView() {
+        if (adapter == null) {
+            adapter = new TimeLineDetailAdapter(getActivity());
+            adapter.setItemClickLister(this);
+            contentRecyclerView.setAdapter(adapter);
+            int columCount = 4;
+            GridStaggerLookup lookup;
+            GridLayoutManager manager = new GridLayoutManager(getActivity(), columCount, LinearLayoutManager.VERTICAL, false);
+//        if (currentTimeLineObj.getMediaList() != null && currentTimeLineObj.getMediaList().size() > 0) {
+            lookup = new GridStaggerLookup(currentTimeLineObj.getMediaList().size(), adapter.getItemCount(), columCount);
+            manager.setSpanSizeLookup(lookup);
+//        }
+            contentRecyclerView.setLayoutManager(manager);
+        }
+        ArrayList<Object> contentList = new ArrayList<>();
+        contentList.addAll(currentTimeLineObj.getMediaList());
+        contentList.add(currentTimeLineObj.getContent());
+        if (currentTimeLineObj.getLikeList().size() > 0) {
+            LikeUserList likeUserList = new LikeUserList(currentTimeLineObj.getLikeList());
+            contentList.add(likeUserList);
+        }
+        if (currentTimeLineObj.getCommentList().size() > 0)
+            contentList.addAll(currentTimeLineObj.getCommentList());
+        adapter.addList(true, contentList);
+        addLike.setChecked(currentTimeLineObj.getLike() % 2 == 1 ? true : false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_timeline_detail, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_more) {
+            new TimeLineActivityMenuDialog(getActivity()).share(currentTimeLineObj);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.add_like)
+    public void like(View view) {
+        apiService.like(currentTimeLineObj.getTimeId(), (currentTimeLineObj.getLike() + 1) % 2)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        currentTimeLineObj.setLike((currentTimeLineObj.getLike() + 1) % 2);
+                        addLike.setChecked(currentTimeLineObj.getLike() % 2 == 1 ? true : false);
+                    }
+                }, error -> {
+                });
+    }
+
+    @Override
+    public void loadfinish() {
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Object item = adapter.getItem(position);
+        if (item instanceof CommentObj) {
+            dialog = new AlertDialog.Builder(getActivity()).setView(initCommentMenu((CommentObj) item)).show();
+            dialog.setCanceledOnTouchOutside(true);
+            Window window = dialog.getWindow();
+            WindowManager m = window.getWindowManager();
+            Display d = m.getDefaultDisplay();
+            WindowManager.LayoutParams p = window.getAttributes();
+
+            p.width = d.getWidth();
+            window.setAttributes(p);
+            window.setGravity(Gravity.BOTTOM);
+            window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+            window.setWindowAnimations(R.style.bottom_dialog_animation);
+        } else if (item instanceof MediaObj) {
+            doMediaClick(position, (MediaObj) item);
+        }
+    }
+
+    private void doMediaClick(int position, MediaObj mediaObj) {
+        if (!TextUtils.isEmpty(mediaObj.getVideoUrl())) {
+            VideoPlayActivity.open(getActivity(), mediaObj.getVideoUrl());
+        } else if (!TextUtils.isEmpty(mediaObj.getImgUrl())) {
+            ArrayList<MediaObj> medias = medias();
+            FragmentBridgeActivity.openBigimageFragment(getActivity(), allDetailsListPosition, medias,
+                    urls(medias), position, true, false);
+        }
+    }
+
+    private ArrayList<MediaObj> medias() {
+        ArrayList<MediaObj> list = new ArrayList<>();
+        for (int i = 0; i < currentTimeLineObj.getMediaList().size(); i++) {
+            if (!currentTimeLineObj.getMediaList().get(i).isVideo())
+                list.add(currentTimeLineObj.getMediaList().get(i));
+
+        }
+        return list;
+    }
+
+    private ArrayList<String> urls(ArrayList<MediaObj> medias) {
+        ArrayList<String> list = new ArrayList<>();
+        for (int i = 0; i < medias.size(); i++) {
+            list.add(medias.get(i).getImgUrl());
+        }
+        return list;
+    }
+
+    public View initCommentMenu(CommentObj comment) {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.view_comment_menu, null);
+        LinearLayout backView = (LinearLayout) view.findViewById(R.id.ll_publish_menu);
+        backView.setBackgroundColor(getResources().getColor(R.color.trans));
+        RelativeLayout tvAction = (RelativeLayout) view.findViewById(R.id.rl_action);
+        TextView tv = (TextView) view.findViewById(R.id.tv_action);
+        RelativeLayout tvCancel = (RelativeLayout) view.findViewById(R.id.rl_cancel);
+        if (comment.getUserInfo().getUserId().equals(FastData.getUserId())) {
+            tv.setText("删除");
+        }
+        tvAction.setTag(R.string.tag_obj, comment);
+        tvAction.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
+        return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_cancel:
+                dialog.dismiss();
+                break;
+            case R.id.rl_action:
+                CommentObj commment = (CommentObj) v.getTag(R.string.tag_obj);
+                dialog.dismiss();
+                if (commment.getUserInfo().getUserId().equals(FastData.getUserId())) {
+                    //删除评论操作
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("确定删除这条评论吗?")
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteComment(commment);
+                        }
+                    }).show();
+                } else {
+                    //回复操作
+                    etCommment.requestFocus();
+                    etCommment.setHint("回复 " + commment.getUserInfo().getRelationName() + " ：");
+                    commmentId = commment.getCommentId();
+                    etCommment.setFocusable(true);
+                    etCommment.setFocusableInTouchMode(true);
+                    showKeyboard();
+                }
+                break;
+        }
+    }
+
+    private void deleteComment(CommentObj commment) {
+        apiService.delComment(commment.getCommentId())
+                .filter(new Func1<BaseResponse, Boolean>() {
+                    @Override
+                    public Boolean call(BaseResponse response) {
+                        return response.success();
+                    }
+                })
+                .flatMap(baseResponse -> apiService.queryBabyTimeDetail(currentTimeLineObj.getTimeId()))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    ToastUtil.showToast(response.getInfo());
+                    if (response.success()) {
+                        currentTimeLineObj = response.getTimeInfo();
+                        adapter.deleteItem(commment);
+                    }
+                }, error -> {
+                    Log.e(TAG, "delComment:");
+                    error.printStackTrace();
+                });
+    }
+
+    private void showKeyboard() {
+        if (manager == null)
+            manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.showSoftInput(etCommment, 0);
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    private void hideKeyboard() {
+        if (manager == null)
+            manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (getActivity().getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+            if (getActivity().getCurrentFocus() != null)
+                manager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(MediaUpdateEvent event) {
+        LogUtil.showLog("event=====>" + event.getMediaObj().getId());
+        if (currentTimeLineObj.getMediaList().contains(event.getMediaObj())) {
+            List<MediaObj> mediaList = currentTimeLineObj.getMediaList();
+            int indexOf = mediaList.indexOf(event.getMediaObj());
+            LogUtil.showLog("indexOf=====>" + indexOf);
+            mediaList.get(indexOf).setTips(event.getMediaObj().getTips());
+            mediaList.get(indexOf).setFavoritecount(event.getMediaObj().getFavoritecount());
+            mediaList.get(indexOf).setIsFavorite(event.getMediaObj().getIsFavorite());
+        }
+    }
+
+    @Subscribe
+    public void onEvent(Object event) {
+        if (event instanceof DeleteTimeLineEvent) {
+            getActivity().finish();
+        } else if (event instanceof TimelineEditEvent) {
+            getActivity().finish();
+            open(getActivity(), currentTimeLineObj);
+        }
+
+    }
+
+    private void sendComment() {
+        String s = etCommment.getText().toString();
+        if (TextUtils.isEmpty(s)) {
+            ToastUtil.showToast("请填写评论内容");
+            return;
+        }
+        apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), currentTimeLineObj.getTimeId(), commmentId)
+                .filter(new Func1<BaseResponse, Boolean>() {
+                    @Override
+                    public Boolean call(BaseResponse response) {
+                        return response.success();
+                    }
+                })
+                .flatMap(baseResponse -> apiService.queryBabyTimeDetail(currentTimeLineObj.getTimeId()))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(timeDetailResponse -> {
+                    if (timeDetailResponse.success()) {
+                        currentTimeLineObj = timeDetailResponse.getTimeInfo();
+                        readComment();
+                        hideKeyboard();
+                        ToastUtil.showToast(timeDetailResponse.getInfo());
+                        if (timeDetailResponse.success()) {
+                            etCommment.setText("");
+                        }
+                    }
+                }, error -> {
+                    Log.e(TAG, "comment");
+                    error.printStackTrace();
+                });
+    }
+
+    private void readComment() {
+        for (int i = 0; i < currentTimeLineObj.getCommentList().size(); i++) {
+            if (adapter.containObj(currentTimeLineObj.getCommentList().get(i)))
+                continue;
+            adapter.addList(currentTimeLineObj.getCommentList().get(i));
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        switch (actionId) {
+            case EditorInfo.IME_ACTION_SEND:
+                sendComment();
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            showKeyboard();
+        } else hideKeyboard();
+    }
 }
+
+
+

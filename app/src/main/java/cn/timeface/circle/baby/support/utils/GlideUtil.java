@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.ui.babyInfo.views.CircleTransform;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 
 /**
@@ -30,6 +31,7 @@ public class GlideUtil {
     }
 
     public static void displayImage(String url, ImageView imageView) {
+        LogUtil.showLog("url===> "+url);
         if (TextUtils.isEmpty(url) || imageView == null) {
             imageView.setImageResource(R.drawable.ic_launcher);
             return;
