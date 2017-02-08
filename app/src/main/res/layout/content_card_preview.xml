@@ -27,7 +27,6 @@
                 android:layout_width="@dimen/size_260"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="70dp"
                 android:background="@null"
                 android:gravity="center"
                 android:padding="@dimen/size_6" />
@@ -38,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/size_2"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/shape_dash_bg"
                 android:gravity="center"
                 android:lines="1"

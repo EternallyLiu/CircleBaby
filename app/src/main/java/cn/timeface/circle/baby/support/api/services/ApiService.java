@@ -305,7 +305,8 @@ public interface ApiService {
 
     //识图卡片-合成
     @GET("babyTime/cardComposed")
-    Observable<KnowledgeComposedResponse> cardComposed(@Query("content") String content,
+    Observable<KnowledgeComposedResponse> cardComposed(@Query("cardId") String cardId,
+                                                       @Query("content") String content,
                                                        @Query("imageInfo") String imageInfo,
                                                        @Query("pinyin") String pinyin);
 

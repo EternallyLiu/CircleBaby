@@ -18,7 +18,6 @@ import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
-import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
@@ -40,7 +39,7 @@ import rx.functions.Func1;
 public class RecognizeCardListActivity extends ProductionListActivity implements CardPresentation.RecognizeCardView, View.OnClickListener, IEventBus {
     RecognizeCardListAdapter cardListAdapter;
     CardPresenter cardPresenter;
-    List<CardObj> selectCards;
+    List<KnowledgeCardObj> selectCards;
     int bookPage = 8;
     TFDialog tougueDialog;
 
@@ -130,14 +129,14 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
         //申请印刷
         Observable.just(selectCards)
                 .filter(cardObjs -> checkPrintInfo())
-                .flatMap(new Func1<List<CardObj>, Observable<EditBookResponse>>() {
+                .flatMap(new Func1<List<KnowledgeCardObj>, Observable<EditBookResponse>>() {
                     @Override
-                    public Observable<EditBookResponse> call(List<CardObj> cardObjs) {
+                    public Observable<EditBookResponse> call(List<KnowledgeCardObj> cardObjs) {
                         StringBuffer sb = new StringBuffer("{\"dataList\":[");
                         int index = 0;
-                        for (CardObj cardObj : selectCards) {
+                        for (KnowledgeCardObj knowledgeCardObj : selectCards) {
                             index++;
-                            sb.append(cardObj.getCardId());
+                            sb.append(knowledgeCardObj.getCardId());
                             if (index < selectCards.size()) {
                                 sb.append(",");
                             } else {
@@ -186,7 +185,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
 
     @Override
     public void onClick(View view) {
-        CardObj cardObj = (CardObj) view.getTag(R.string.tag_obj);
+        KnowledgeCardObj knowledgeCardObj = (KnowledgeCardObj) view.getTag(R.string.tag_obj);
         switch (view.getId()) {
             //申请印刷
             case R.id.btn_ask_for_print:
@@ -196,17 +195,17 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
             //识图卡片预览
             case R.id.fl_root:
 
-                CardPreviewActivity.open(this, cardObj);
+                CardPreviewActivity.open(this, knowledgeCardObj);
                 break;
 
             //选择卡片
             case R.id.iv_select:
                 int index = (int) view.getTag(R.string.tag_index);
-                cardObj.setSelect(cardObj.select() ? 0 : 1);
-                if(cardObj.select()){
-                    if(!selectCards.contains(cardObj)) selectCards.add(cardObj);
+                knowledgeCardObj.setSelect(knowledgeCardObj.select() ? 0 : 1);
+                if(knowledgeCardObj.select()){
+                    if(!selectCards.contains(knowledgeCardObj)) selectCards.add(knowledgeCardObj);
                 } else {
-                    if(selectCards.contains(cardObj)) selectCards.remove(cardObj);
+                    if(selectCards.contains(knowledgeCardObj)) selectCards.remove(knowledgeCardObj);
                 }
                 cardListAdapter.notifyItemChanged(index);
 

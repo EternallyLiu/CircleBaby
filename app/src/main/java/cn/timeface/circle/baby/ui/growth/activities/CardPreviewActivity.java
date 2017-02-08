@@ -10,12 +10,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.github.rayboot.widget.ratioview.BuildConfig;
 import com.github.rayboot.widget.ratioview.RatioRelativeLayout;
 
 import java.io.File;
@@ -24,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
@@ -53,8 +54,10 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity {
     RatioRelativeLayout rlCard;
     @Bind(R.id.content_card_preview)
     RelativeLayout contentCardPreview;
+    @Bind(R.id.iv_select)
+    ImageView ivSelect;
 
-    CardObj cardObj;
+    private CardObj cardObj;
     private TFProgressDialog tfProgressDialog;
 
     public static void open(Context context, CardObj cardObj){
@@ -72,7 +75,7 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(FastData.getBabyName() + "的识图卡片");
         cardObj = getIntent().getParcelableExtra("card");
-        initView();
+        if(cardObj != null)initView();//编辑 cardobj为null
     }
 
     @Override
@@ -95,7 +98,11 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity {
 
             //编辑
             case R.id.action_edit:
-                CardEditActivity.open(this, cardObj);
+                if(cardObj instanceof KnowledgeCardObj){
+                    RecognizeCardEditActivity.open(this, cardObj);
+                } else {
+                    Log.e(TAG, "只有识图卡片可以编辑");
+                }
                 break;
 
             //下载
