@@ -19,7 +19,7 @@ public class PrintPropertyTypeObj extends BasePrintProperty {
     private String bookName;
     private long createTime;
     private int expressId;
-    private String orderId;
+    private String orderId = "";
 
     public int getAddressId() {
         return addressId;

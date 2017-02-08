@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,8 @@ import cn.timeface.circle.baby.events.CartAddClickEvent;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.CartPropertyChangeEvent;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.PrintCartItem;
 import cn.timeface.circle.baby.support.api.models.base.BasePrintProperty;
@@ -59,6 +62,7 @@ import cn.timeface.circle.baby.support.api.models.objs.PrintParamObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintParamResponse;
 import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyTypeObj;
+import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -80,6 +84,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     public final static int REQUEST_CODE_QQ = 2;
     public final static int REQUEST_CODE_POD = 3;
     public final static int REQUEST_CODE_SPLIT = 4;
+    public final static int REQUEST_CODE_DIARY_CARD = 5;
+    public final static int REQUEST_CODE_RECOGNIZE_CARD = 6;
 
     List<PrintParamObj> sizeList = new ArrayList<>();
     List<PrintParamObj> colorList = new ArrayList<>();
@@ -149,6 +155,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     private String bookName;
     private String createTime;
     private Context context;
+    private final ApiService apiService = ApiFactory.getApi().getApiService();
 
     public static CartPrintPropertyDialog getInstance(PrintCartItem printCartItem,
                                                       PrintPropertyPriceObj obj,
@@ -518,7 +525,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         btnBuyNow.setClickable(false);
         btnOk.setClickable(false);
 
-        Subscription s = BaseAppCompatActivity.apiService.queryBookPrice(getParams(1))
+        Subscription s = apiService.queryBookPrice(getParams(1))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -543,17 +550,23 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             btnAddCart.setClickable(true);
                             btnBuyNow.setClickable(true);
                             btnOk.setClickable(true);
+                            isQuery = false;
+                            Log.e(CartPrintPropertyDialog.class.getSimpleName(), throwable.getLocalizedMessage());
+                            Toast.makeText(getActivity(), "价格查询失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        if(getActivity() instanceof BaseAppCompatActivity){
+            ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        } else if(getActivity() instanceof BasePresenterAppCompatActivity){
+            ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
+        }
     }
 
     private void addToCart() {
         tfProgressDialog.show(getChildFragmentManager(), "");
         HashMap<String, String> params = getParams(0);
-        tfProgressDialog.show(getChildFragmentManager(), "");
 
-        Subscription s = BaseAppCompatActivity.apiService.addCartItem(params)
+        Subscription s = apiService.addCartItem(params)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -600,7 +613,11 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             Toast.makeText(getActivity(), "服务器返回失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        if(getActivity() instanceof BaseAppCompatActivity){
+            ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        } else if(getActivity() instanceof BasePresenterAppCompatActivity){
+            ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
+        }
     }
 
     private void doAddOrder() throws IOException {
@@ -637,7 +654,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         baseObj.setAddressId(0);
         baseObj.setBookCover(bookCover);
         baseObj.setBookName(URLEncoder.encode(bookName));
-        baseObj.setCreateTime(Long.valueOf(createTime));
+        baseObj.setCreateTime(Long.valueOf(createTime)/1000);
         baseObj.setExpressId(1);
         baseObjs.add(baseObj);
 
@@ -645,7 +662,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
         btnOk.setBackgroundResource(R.drawable.shape_grey_btn_bg);
         btnOk.setClickable(false);
-        Subscription s = BaseAppCompatActivity.apiService.addOrder("", LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), TypeConstant.APP_ID)
+        Subscription s = apiService.addOrder(LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), TypeConstant.APP_ID)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -662,7 +679,11 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             Toast.makeText(getActivity(), "服务器返回失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        if(getActivity() instanceof BaseAppCompatActivity){
+            ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        } else if(getActivity() instanceof BasePresenterAppCompatActivity){
+            ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
+        }
     }
 
     /**

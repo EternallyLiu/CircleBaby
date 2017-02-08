@@ -56,8 +56,8 @@ public class CartPrintPropertyGvAdapter extends BaseListAdapter<PrintParamObj>{
         if (key.equals(PrintParamResponse.KEY_PACK)) {
             Glide.with(mContext)
                     .load(paramObj.getImgUrl())
-                    .placeholder(R.drawable.cell_default_image)
-                    .error(R.drawable.cell_default_image)
+                    .placeholder(R.drawable.bg_default_holder_img)
+                    .error(R.drawable.bg_default_holder_img)
                     .into(viewHolder.mIcon);
             viewHolder.mIcon.setVisibility(View.VISIBLE);
         } else {

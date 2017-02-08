@@ -115,7 +115,7 @@ public class Utils {
         headers.put("USERID", FastData.getUserId());
         headers.put("DEVICEID", new DeviceUuidFactory(TimeFaceUtilInit.getContext()).getDeviceId());
         headers.put("TOKEN", TextUtils.isEmpty(FastData.getUserToken()) ? "timeface_android" : FastData.getUserToken());
-        headers.put("VERSION", "10");
+        headers.put("VERSION", "2");
         headers.put("CHANNEL", ChannelUtil.getChannel(TimeFaceUtilInit.getContext()));
         return headers;
     }

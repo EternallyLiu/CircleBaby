@@ -320,7 +320,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             e.printStackTrace();
         }
 
-        Subscription s = apiService.addOrder("", params,TypeConstant.APP_ID)
+        Subscription s = apiService.addOrder(params,TypeConstant.APP_ID)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {

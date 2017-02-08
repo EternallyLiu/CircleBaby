@@ -58,7 +58,7 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
         ((ViewHolder) viewHolder).mIvRadio.setSelected(true);
         ((ViewHolder) viewHolder).mTvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
         String size = cartItem.getPropertyShow("size", String.valueOf(obj.getSize()));
-        size = TextUtils.isEmpty(size) ? size : size.substring(0, size.indexOf(","));
+        size = TextUtils.isEmpty(size) || !size.contains(",") ? size : size.substring(0, size.indexOf(","));
         if (cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_LESS
                 || cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_MORE
                 || cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE) {

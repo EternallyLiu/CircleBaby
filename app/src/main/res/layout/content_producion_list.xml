@@ -17,7 +17,7 @@
         android:layout_marginBottom="@dimen/view_space_medium"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="@dimen/view_space_normal"
-        android:text="每套选择8张（也可以是8的倍数）"
+        tools:text="每套选择8张（也可以是8的倍数）"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/text" />
 
@@ -25,7 +25,8 @@
         android:id="@+id/rv_books"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_tip" />
+        android:layout_below="@id/tv_tip"
+        android:clipToPadding="false" />
 
     <LinearLayout
         android:id="@+id/ll_empty"
@@ -53,6 +54,17 @@
             android:textColor="@color/white" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_ask_for_print"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/view_space_medium"
+        android:background="@drawable/shape_yellow_bg"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        tools:text="选择印刷规格" />
 
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"
