@@ -301,7 +301,7 @@ public interface ApiService {
 
     //识图卡片-删除
     @GET("babyTime/delCard")
-    Observable<BaseResponse> delCard(@Query("id") int id);
+    Observable<BaseResponse> delCard(@Query("cardIds") String cardIds);
 
     //识图卡片-合成
     @GET("babyTime/cardComposed")

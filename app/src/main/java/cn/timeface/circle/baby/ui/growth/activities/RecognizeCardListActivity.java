@@ -54,7 +54,6 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cardPresenter = new CardPresenter(this);
-        cardPresenter.loadRecognizeCard();
         btnAskPrint.setOnClickListener(this);
         btnAskPrint.setText("申请印刷");
         tvTip.setVisibility(View.VISIBLE);
@@ -67,6 +66,12 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                 0,
                 getResources().getDimensionPixelOffset(R.dimen.size_16),
                 getResources().getDimensionPixelOffset(R.dimen.size_72));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cardPresenter.loadRecognizeCard();
     }
 
     @Override
@@ -136,9 +141,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                             if (index < selectCards.size()) {
                                 sb.append(",");
                             } else {
-                                sb.append("],\"bookSizeId\":")
-                                        .append(bookPage)
-                                        .append("}");
+                                sb.append("]}");
                             }
                         }
 
@@ -165,7 +168,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                                         this,
                                         BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD,
                                         selectCards.size(),
-                                        bookPage,
+                                        0,//识图卡片没有booksizeid，传值0
                                         response.getDataId(),
                                         selectCards.get(0).getMedia().getImgUrl(),
                                         FastData.getBabyName() + "的识图卡片",

@@ -3,14 +3,22 @@ package cn.timeface.circle.baby.ui.growth.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.rayboot.widget.ratioview.BuildConfig;
 import com.github.rayboot.widget.ratioview.RatioRelativeLayout;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -18,10 +26,16 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ImageFactory;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import uk.co.senab.photoview.PhotoView;
 
 /**
- * 卡片预览和编辑
+ * 卡片预览
  * author : YW.SUN Created on 2017/2/7
  * email : sunyw10@gmail.com
  */
@@ -41,6 +55,7 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity {
     RelativeLayout contentCardPreview;
 
     CardObj cardObj;
+    private TFProgressDialog tfProgressDialog;
 
     public static void open(Context context, CardObj cardObj){
         Intent intent = new Intent(context, CardPreviewActivity.class);
@@ -60,7 +75,56 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity {
         initView();
     }
 
-    private void initView(){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_card_preview, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            //分享
+            case R.id.action_share:
+                new ShareDialog(this).share(
+                        FastData.getBabyName() + "长大了",
+                        FastData.getBabyName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyName() + "的新变化",
+                        cardObj.getMedia().getImgUrl(),
+                        getString(R.string.share_url_time, cardObj.getCardId()));
+                break;
+
+            //编辑
+            case R.id.action_edit:
+                CardEditActivity.open(this, cardObj);
+                break;
+
+            //下载
+            case R.id.action_download:
+                saveImage();
+                break;
+
+            //删除
+            case R.id.action_delete:
+                apiService.delCard("[" + cardObj.getCardId() + "]")
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(
+                                response -> {
+                                    if(response.success()){
+                                        finish();
+                                    } else {
+                                        showToast(response.getInfo());
+                                    }
+                                },
+
+                                throwable -> {
+                                    Log.e(TAG, "delCard:");
+                                });
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    protected void initView(){
         tvPinyin.setVisibility(View.GONE);
         etTitle.setVisibility(View.GONE);
         ivCard.setZoomable(false);
@@ -70,5 +134,34 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity {
                 .placeholder(R.drawable.bg_default_holder_img)
                 .error(R.drawable.bg_default_holder_img)
                 .into(ivCard);
+    }
+
+    public void saveImage() {
+        String path = cardObj.getMedia().getImgUrl();
+        String fileName = path.substring(path.lastIndexOf("/"));
+        String s = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(s + "/baby");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File file1 = new File(file, fileName);
+        if (file1.exists()) {
+            Toast.makeText(this, "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!Utils.isNetworkConnected(this)) {
+            ToastUtil.showToast("网络异常");
+            return;
+        }
+        if(tfProgressDialog == null) tfProgressDialog = TFProgressDialog.getInstance("");
+        tfProgressDialog.setTvMessage("保存图片中…");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
+        new Thread(() -> {
+            ImageFactory.saveImage(path, file1);
+            runOnUiThread(() -> {
+                tfProgressDialog.dismiss();
+                Toast.makeText(CardPreviewActivity.this, "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
+            });
+        }).start();
     }
 }
