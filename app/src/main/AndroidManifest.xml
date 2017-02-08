@@ -424,18 +424,8 @@
         <activity
             android:name=".ui.growth.activities.CardPreviewActivity"
             android:label="@string/title_activity_card_preview"
-            android:theme="@style/AppTheme"></activity>
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
 
-        <activity android:name=".ui.growth.activities.BookListActivity"/>
-
-        <activity android:name=".ui.growth.activities.DiaryCardListActivity"/>
-
-        <activity android:name=".ui.growth.activities.RecognizeCardListActivity"/>
-
-        <activity android:name=".ui.growth.activities.CardListActivity"/>
-
-        <service android:name=".LoadMediaService"/>
+        <service android:name=".LoadMediaService" />
     </application>
-
 </manifest>
