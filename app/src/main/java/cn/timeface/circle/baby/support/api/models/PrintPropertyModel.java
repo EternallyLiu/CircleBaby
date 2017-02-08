@@ -1,7 +1,7 @@
 package cn.timeface.circle.baby.support.api.models;
 
-import com.activeandroid.annotation.Column;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.raizlabs.android.dbflow.annotation.Column;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 

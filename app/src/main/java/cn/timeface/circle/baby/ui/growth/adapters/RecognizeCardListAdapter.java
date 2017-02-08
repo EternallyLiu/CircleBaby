@@ -5,8 +5,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioImageView;
@@ -27,9 +27,12 @@ import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
  * email : sunyw10@gmail.com
  */
 public class RecognizeCardListAdapter extends BaseRecyclerAdapter<KnowledgeCardObj> {
+    View.OnClickListener clickListener;
+    List<CardObj> selectCards;
 
-    public RecognizeCardListAdapter(Context mContext, List<KnowledgeCardObj> listData) {
+    public RecognizeCardListAdapter(Context mContext, List<KnowledgeCardObj> listData, View.OnClickListener clickListener) {
         super(mContext, listData);
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -46,6 +49,14 @@ public class RecognizeCardListAdapter extends BaseRecyclerAdapter<KnowledgeCardO
         Glide.with(mContext)
                 .load(cardObj.getMedia().getImgUrl())
                 .into(holder.ivImg);
+        holder.ivSelect.setSelected(cardObj.select());
+        holder.ivSelect.setTag(R.string.tag_obj, cardObj);
+        holder.ivSelect.setTag(R.string.tag_index, position);
+        holder.flRoot.setTag(R.string.tag_obj, cardObj);
+        if(clickListener != null) {
+            holder.ivSelect.setOnClickListener(clickListener);
+            holder.flRoot.setOnClickListener(clickListener);
+        }
     }
 
     @Override
@@ -63,6 +74,9 @@ public class RecognizeCardListAdapter extends BaseRecyclerAdapter<KnowledgeCardO
         RatioImageView ivImg;
         @Bind(R.id.iv_select)
         ImageView ivSelect;
+        @Bind(R.id.fl_root)
+        FrameLayout flRoot;
+
 
         ViewHolder(View view) {
             super(view);

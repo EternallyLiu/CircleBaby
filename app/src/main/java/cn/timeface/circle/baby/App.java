@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 import android.view.WindowManager;
 
-import com.activeandroid.ActiveAndroid;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -47,8 +46,6 @@ public class App extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         app = this;
-        //初始化db
-        ActiveAndroid.initialize(this);
         //数据库ORM
         FlowManager.init(new FlowConfig.Builder(this).build());
 

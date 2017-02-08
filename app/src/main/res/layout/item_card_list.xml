@@ -8,11 +8,13 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical"
     app:cardBackgroundColor="@color/white"
-    app:cardElevation="4dp">
+    app:cardElevation="8dp">
 
     <FrameLayout
+        android:id="@+id/fl_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clickable="true">
 
         <com.github.rayboot.widget.ratioview.RatioImageView
             android:id="@+id/iv_img"
@@ -29,8 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|right"
-            android:layout_marginRight="@dimen/view_space_normal"
-            android:layout_marginTop="@dimen/view_space_normal"
+            android:clickable="true"
+            android:padding="@dimen/view_space_medium"
             android:src="@drawable/selector_cart_item" />
     </FrameLayout>
 </android.support.v7.widget.CardView>

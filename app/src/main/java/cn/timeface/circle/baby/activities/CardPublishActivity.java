@@ -160,7 +160,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                         vp.setCurrentItem(0);
                     }
                 }
-                apiService.delCard((int) cardObj.getCartdId())
+                apiService.delCard((int) cardObj.getCardId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                         }, throwable -> {

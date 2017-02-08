@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.ui.growth.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +28,13 @@ import cn.timeface.circle.baby.support.api.models.objs.DiaryCardObj;
  * email : sunyw10@gmail.com
  */
 public class DiaryCardListAdapter extends BaseRecyclerAdapter<DiaryCardObj> {
+    boolean canSelect;
+    View.OnClickListener clickListener;
 
-    public DiaryCardListAdapter(Context mContext, List<DiaryCardObj> listData) {
+    public DiaryCardListAdapter(Context mContext, List<DiaryCardObj> listData, boolean canSelect, View.OnClickListener clickListener) {
         super(mContext, listData);
+        this.canSelect = canSelect;
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -46,6 +51,13 @@ public class DiaryCardListAdapter extends BaseRecyclerAdapter<DiaryCardObj> {
         Glide.with(mContext)
                 .load(cardObj.getMedia().getImgUrl())
                 .into(holder.ivImg);
+        holder.ivSelect.setVisibility(canSelect ? View.VISIBLE : View.GONE);
+        holder.ivSelect.setSelected(cardObj.select());
+        holder.ivSelect.setTag(R.string.tag_obj, cardObj);
+        holder.ivSelect.setTag(R.string.tag_index, position);
+        if(clickListener != null){
+            holder.ivSelect.setOnClickListener(clickListener);
+        }
     }
 
     @Override
