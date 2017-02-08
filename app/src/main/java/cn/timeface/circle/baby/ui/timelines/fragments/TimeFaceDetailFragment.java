@@ -104,6 +104,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     private int commmentId;
     private int allDetailsListPosition = -1;
     private InputMethodManager manager;
+    private GridStaggerLookup lookup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,27 +131,33 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         initRecyclerView();
         etCommment.setOnEditorActionListener(this);
         etCommment.setOnFocusChangeListener(this);
-        helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefresh);
-        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
-                .tfPtrListener(new IPTRRecyclerListener() {
-                    @Override
-                    public void onTFPullDownToRefresh(View refreshView) {
-                        reqData();
-                    }
-
-                    @Override
-                    public void onTFPullUpToRefresh(View refreshView) {
-
-                    }
-
-                    @Override
-                    public void onScrollUp(int firstVisibleItem) {
-                    }
-
-                    @Override
-                    public void onScrollDown(int firstVisibleItem) {
-                    }
-                });
+//        helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefresh);
+//        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
+//                .tfPtrListener(new IPTRRecyclerListener() {
+//                    @Override
+//                    public void onTFPullDownToRefresh(View refreshView) {
+//                        reqData();
+//                    }
+//
+//                    @Override
+//                    public void onTFPullUpToRefresh(View refreshView) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onScrollUp(int firstVisibleItem) {
+//                    }
+//
+//                    @Override
+//                    public void onScrollDown(int firstVisibleItem) {
+//                    }
+//                });
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reqData();
+            }
+        });
         reqData();
         return contentView;
     }
@@ -189,32 +196,40 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                     if (timeDetailResponse.success()) {
                         currentTimeLineObj = timeDetailResponse.getTimeInfo();
                         initRecyclerView();
+                        doMenu();
                     }
-                    helper.finishTFPTRRefresh();
+                    swipeRefresh.setRefreshing(false);
+//                    helper.finishTFPTRRefresh();
                 }, error -> {
+                    swipeRefresh.setRefreshing(false);
                     Log.e("TimeLineDetailActivity", "queryBabyTimeDetail:");
                     error.printStackTrace();
-                    helper.finishTFPTRRefresh();
+//                    helper.finishTFPTRRefresh();
                 });
     }
 
     private void initRecyclerView() {
         if (adapter == null) {
             adapter = new TimeLineDetailAdapter(getActivity());
-            adapter.setItemClickLister(this);
-            contentRecyclerView.setAdapter(adapter);
             int columCount = 4;
-            GridStaggerLookup lookup;
-            GridLayoutManager manager = new GridLayoutManager(getActivity(), columCount, LinearLayoutManager.VERTICAL, false);
+            GridLayoutManager manager = new GridLayoutManager(getActivity(), columCount);
 //        if (currentTimeLineObj.getMediaList() != null && currentTimeLineObj.getMediaList().size() > 0) {
             lookup = new GridStaggerLookup(currentTimeLineObj.getMediaList().size(), adapter.getItemCount(), columCount);
-            manager.setSpanSizeLookup(lookup);
 //        }
+            adapter.setItemClickLister(this);
+            adapter.setLoadDataFinish(this);
+            adapter.setLookup(lookup);
+//            lookup.invalidateSpanIndexCache();
+            lookup.setSpanIndexCacheEnabled(true);
+            manager.setSpanSizeLookup(lookup);
             contentRecyclerView.setLayoutManager(manager);
+            contentRecyclerView.setAdapter(adapter);
         }
         ArrayList<Object> contentList = new ArrayList<>();
         contentList.addAll(currentTimeLineObj.getMediaList());
-        contentList.add(currentTimeLineObj.getContent());
+        if (!TextUtils.isEmpty(currentTimeLineObj.getContent()))
+            contentList.add(currentTimeLineObj.getContent());
+
         if (currentTimeLineObj.getLikeList().size() > 0) {
             LikeUserList likeUserList = new LikeUserList(currentTimeLineObj.getLikeList());
             contentList.add(likeUserList);
@@ -225,9 +240,20 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         addLike.setChecked(currentTimeLineObj.getLike() % 2 == 1 ? true : false);
     }
 
+    private Menu currentMenu;
+
+    private void doMenu(){
+        if (currentMenu!=null&&currentTimeLineObj.getMediaList().size()>GridStaggerLookup.MAX_MEDIA_SIZE_SHOW_GRID)
+            currentMenu.findItem(R.id.action_smail_image).setVisible(true);
+        else if (currentMenu!=null)
+            currentMenu.findItem(R.id.action_smail_image).setVisible(false);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_timeline_detail, menu);
+        currentMenu = menu;
+        doMenu();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -235,6 +261,14 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_more) {
             new TimeLineActivityMenuDialog(getActivity()).share(currentTimeLineObj);
+        } else if (item.getItemId() == R.id.action_smail_image) {
+            lookup.setShowSmail(!lookup.isShowSmail());
+            adapter.notifyDataSetChanged();
+//            if (adapter.getRealItemSize() >= 0)
+//                contentRecyclerView.scrollToPosition(0);
+            if (lookup.isShowSmail())
+                item.setTitle("查看大图");
+            else item.setTitle("浏览小图");
         }
         return super.onOptionsItemSelected(item);
     }
@@ -254,6 +288,8 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     @Override
     public void loadfinish() {
+        LogUtil.showLog("adapter size:" + adapter.getItemCount());
+        LogUtil.showLog("medias size:" + currentTimeLineObj.getMediaList().size());
     }
 
     @Override

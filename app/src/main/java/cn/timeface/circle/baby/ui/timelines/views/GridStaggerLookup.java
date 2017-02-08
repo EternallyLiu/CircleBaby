@@ -8,8 +8,9 @@ import android.support.v7.widget.GridLayoutManager;
  */
 public class GridStaggerLookup extends GridLayoutManager.SpanSizeLookup {
 
-    public static final int MAX_MEDIA_SIZE_SHOW_GRID = 16;
+    public static final int MAX_MEDIA_SIZE_SHOW_GRID = 4;
 
+    private boolean isShowSmail = false;
     private int mediaSize = 0;
     private int count = 0;
     private int columCount = 4;
@@ -56,12 +57,22 @@ public class GridStaggerLookup extends GridLayoutManager.SpanSizeLookup {
         this.remoinder = mediaSize % columCount;
     }
 
+    public GridStaggerLookup() {
+    }
+
     @Override
     public int getSpanSize(int position) {
         if (mediaSize < MAX_MEDIA_SIZE_SHOW_GRID)
             return getColumCount();
-        else
-            return spanSize(position);
+        else if (position < mediaSize)
+            return isShowSmail() ? 1 : getColumCount();
+        else return getColumCount();
+    }
+
+    @Override
+    public int getSpanIndex(int position, int spanCount) {
+        return position % spanCount;
+//        return super.getSpanIndex(position, spanCount);
     }
 
     private int spanSize(int position) {
@@ -83,5 +94,13 @@ public class GridStaggerLookup extends GridLayoutManager.SpanSizeLookup {
             } else return 1;
         }
 
+    }
+
+    public boolean isShowSmail() {
+        return isShowSmail;
+    }
+
+    public void setShowSmail(boolean showSmail) {
+        isShowSmail = showSmail;
     }
 }

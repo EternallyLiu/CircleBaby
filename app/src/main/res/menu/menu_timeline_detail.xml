@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="cn.timeface.circle.baby.activities.CloudAlbumEditActivity">
     <item
+        android:id="@+id/action_smail_image"
+        android:orderInCategory="100"
+        android:title="预览小图"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_more"
         android:icon="@drawable/ic_operate_normal"
         android:orderInCategory="100"

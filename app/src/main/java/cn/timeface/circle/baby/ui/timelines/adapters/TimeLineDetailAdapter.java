@@ -9,11 +9,13 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
@@ -21,12 +23,15 @@ import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.LikeUserList;
+import cn.timeface.circle.baby.ui.timelines.views.GridStaggerLookup;
 
 /**
  * author : wangshuai Created on 2017/2/7
  * email : wangs1992321@gmail.com
  */
 public class TimeLineDetailAdapter extends BaseAdapter {
+    private GridStaggerLookup lookup;
+
     public TimeLineDetailAdapter(Context activity) {
         super(activity);
     }
@@ -65,7 +70,7 @@ public class TimeLineDetailAdapter extends BaseAdapter {
     @Override
     public void initView(View contentView, int position) {
         Object item = getItem(position);
-        if (item instanceof MediaObj) doMediaObj(contentView, (MediaObj) item);
+        if (item instanceof MediaObj) doMediaObj(contentView, position, (MediaObj) item);
         else if (item instanceof CommentObj)
             doCommentObj(contentView, (CommentObj) item);
         else if (item instanceof LikeUserList)
@@ -75,9 +80,25 @@ public class TimeLineDetailAdapter extends BaseAdapter {
 
     }
 
-    private void doMediaObj(View contentView, MediaObj mediaObj) {
+    private void doMediaObj(View contentView, int position, MediaObj mediaObj) {
+        int width = lookup.getSpanSize(position) * columWidth;
+        int height = (mediaObj.getH() * width) / mediaObj.getW();
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) contentView.getLayoutParams();
+        if (params == null) {
+            params = new RecyclerView.LayoutParams(width, height);
+        } else {
+            params.width = width;
+            params.height = height;
+        }
+        LogUtil.showLog("width:" + width + "----height:" + height);
+        contentView.setLayoutParams(params);
         ImageView icon = ViewHolder.getView(contentView, R.id.icon);
-        Glide.with(context()).load(mediaObj.getImgUrl()).asBitmap().into(icon);
+        LogUtil.showLog(position + "---" + mediaObj.getImgUrl());
+        Glide.with(context())
+                .load(mediaObj.getImgUrl())
+                .crossFade().placeholder(R.drawable.bg_default_holder_img)
+                .error(R.drawable.bg_default_holder_img)
+                .into(icon);
     }
 
     private void doCommentObj(View contentView, CommentObj comment) {
@@ -116,5 +137,16 @@ public class TimeLineDetailAdapter extends BaseAdapter {
         LogUtil.showLog("content===>" + content);
         TextView contentView = ViewHolder.getView(view, R.id.content);
         contentView.setText(content);
+    }
+
+    private int columWidth = 0;
+
+    public GridStaggerLookup getLookup() {
+        return lookup;
+    }
+
+    public void setLookup(GridStaggerLookup lookup) {
+        this.lookup = lookup;
+        this.columWidth = App.mScreenWidth / lookup.getColumCount();
     }
 }
