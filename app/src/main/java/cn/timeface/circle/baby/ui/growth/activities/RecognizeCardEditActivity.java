@@ -104,7 +104,7 @@ public class RecognizeCardEditActivity extends CardPreviewActivity {
                                 0,
                                 cropH,
                                 knowledgeCardObj.getImageInfo().getImageH(),
-                                knowledgeCardObj.getImageInfo().getImageH(),
+                                knowledgeCardObj.getImageInfo().getImageW(),
                                 cropW, cropLeft, cropTop, objKey, createTime);
                         String imageInfo = new Gson().toJson(templateImage);
                         return imageInfo;
