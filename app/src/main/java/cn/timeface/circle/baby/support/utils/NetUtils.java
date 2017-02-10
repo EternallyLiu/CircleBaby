@@ -27,7 +27,7 @@ public class NetUtils {
         headers.put("BABYID", FastData.getBabyId() + "");
         headers.put("DEVICEID", new DeviceUuidFactory(App.getInstance()).getDeviceId());
         headers.put("TOKEN", FastData.getUserToken());
-        headers.put("VERSION", BuildConfig.VERSION_CODE + "");
+        headers.put("VERSION", BuildConfig.SERVER_API_VERSION);
         Log.v("NetUtils","USERID======" + FastData.getUserId());
         Log.v("NetUtils","BABYID======" + FastData.getBabyId());
         Log.v("NetUtils","DEVICEID======" + new DeviceUuidFactory(App.getInstance()).getDeviceId());

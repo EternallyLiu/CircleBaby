@@ -427,5 +427,6 @@
             android:theme="@style/AppTheme" />
 
         <service android:name=".LoadMediaService" />
+        <activity android:name=".ui.growth.activities.RecognizeCardEditActivity" />
     </application>
 </manifest>

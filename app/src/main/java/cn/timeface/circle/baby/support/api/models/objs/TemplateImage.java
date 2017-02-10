@@ -1,11 +1,14 @@
 package cn.timeface.circle.baby.support.api.models.objs;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 
 /**
  * Created by lidonglin on 2016/5/27.
  */
-public class TemplateImage extends BaseObj {
+public class TemplateImage extends BaseObj implements Parcelable {
     float degree;           //旋转角度 [-15,15]
     float h;                //裁剪高度
     int imageH;             //原图高度
@@ -114,4 +117,46 @@ public class TemplateImage extends BaseObj {
                 ", creationDate=" + creationDate +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(this.degree);
+        dest.writeFloat(this.h);
+        dest.writeInt(this.imageH);
+        dest.writeInt(this.imageW);
+        dest.writeFloat(this.w);
+        dest.writeFloat(this.x);
+        dest.writeFloat(this.y);
+        dest.writeString(this.yurl);
+        dest.writeLong(this.creationDate);
+    }
+
+    protected TemplateImage(Parcel in) {
+        this.degree = in.readFloat();
+        this.h = in.readFloat();
+        this.imageH = in.readInt();
+        this.imageW = in.readInt();
+        this.w = in.readFloat();
+        this.x = in.readFloat();
+        this.y = in.readFloat();
+        this.yurl = in.readString();
+        this.creationDate = in.readLong();
+    }
+
+    public static final Parcelable.Creator<TemplateImage> CREATOR = new Parcelable.Creator<TemplateImage>() {
+        @Override
+        public TemplateImage createFromParcel(Parcel source) {
+            return new TemplateImage(source);
+        }
+
+        @Override
+        public TemplateImage[] newArray(int size) {
+            return new TemplateImage[size];
+        }
+    };
 }

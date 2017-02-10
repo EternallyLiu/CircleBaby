@@ -301,11 +301,12 @@ public interface ApiService {
 
     //识图卡片-删除
     @GET("babyTime/delCard")
-    Observable<BaseResponse> delCard(@Query("id") int id);
+    Observable<BaseResponse> delCard(@Query("cardIds") String cardIds);
 
     //识图卡片-合成
     @GET("babyTime/cardComposed")
-    Observable<KnowledgeComposedResponse> cardComposed(@Query("content") String content,
+    Observable<KnowledgeComposedResponse> cardComposed(@Query("cardId") String cardId,
+                                                       @Query("content") String content,
                                                        @Query("imageInfo") String imageInfo,
                                                        @Query("pinyin") String pinyin);
 

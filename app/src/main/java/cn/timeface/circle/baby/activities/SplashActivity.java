@@ -104,7 +104,7 @@ public class SplashActivity extends BaseAppCompatActivity {
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
         firstRun();
         showGuide();
-        startService(new Intent(this, LoadMediaService.class));
+//        startService(new Intent(this, LoadMediaService.class));
 //        requestCheckUpdate();
 
     }
