@@ -12,29 +12,6 @@
         android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/AppTheme.PopupOverlay"
         app:theme="@style/ToolbarColor">
-
-        <LinearLayout
-            android:id="@+id/ll_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="识图卡片"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_large" />
-
-            <ImageView
-                android:id="@+id/iv_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/down" />
-        </LinearLayout>
-
     </android.support.v7.widget.Toolbar>
 
     <RelativeLayout

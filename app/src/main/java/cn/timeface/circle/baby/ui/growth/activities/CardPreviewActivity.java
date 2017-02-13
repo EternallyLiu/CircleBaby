@@ -18,12 +18,17 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioRelativeLayout;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -31,6 +36,7 @@ import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.events.CardEditEvent;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import uk.co.senab.photoview.PhotoView;
@@ -40,7 +46,7 @@ import uk.co.senab.photoview.PhotoView;
  * author : YW.SUN Created on 2017/2/7
  * email : sunyw10@gmail.com
  */
-public class CardPreviewActivity extends BasePresenterAppCompatActivity {
+public class CardPreviewActivity extends BasePresenterAppCompatActivity implements View.OnClickListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -134,6 +140,8 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity {
     protected void initView(){
         tvPinyin.setVisibility(View.GONE);
         etTitle.setVisibility(View.GONE);
+        ivSelect.setSelected(cardObj.select());
+        ivSelect.setOnClickListener(this);
         ivCard.setZoomable(false);
         Glide.with(this)
                 .load(cardObj.getMedia().getImgUrl())
@@ -170,5 +178,14 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity {
                 Toast.makeText(CardPreviewActivity.this, "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
             });
         }).start();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.iv_select){
+            cardObj.setSelect(cardObj.select() ? 0 : 1);
+            ivSelect.setSelected(cardObj.select());
+            EventBus.getDefault().post(new CardEditEvent(cardObj.getCardId(), cardObj.getSelect()));
+        }
     }
 }

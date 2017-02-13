@@ -33,6 +33,11 @@ import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 
+/**
+ * 日记卡片制作
+ * author : YW.SUN Created on 2017/2/13
+ * email : sunyw10@gmail.com
+ */
 public class DiaryPublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
 
@@ -50,10 +55,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     TextView tvContent;
     @Bind(R.id.ll_single_date)
     LinearLayout llSingleDate;
-    @Bind(R.id.iv_icon)
-    ImageView ivIcon;
-    @Bind(R.id.ll_title)
-    LinearLayout llTitle;
     @Bind(R.id.sv)
     ScrollView sv;
     private List<ImgObj> selImages = new ArrayList<>();
@@ -85,8 +86,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
 
         ivDiary.setOnClickListener(this);
         tvContent.setOnClickListener(this);
-        llTitle.setOnClickListener(this);
-
 //        selectImages();
     }
 
@@ -124,17 +123,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
             case R.id.tv_content:
                 String s = tvContent.getText().toString();
                 FragmentBridgeActivity.openForResult(this, "DiaryTextFragment", DIARYTEXT, s);
-                break;
-            case R.id.ll_title:
-                if (showGuide) {
-                    sv.setVisibility(View.GONE);
-                    showGuide = false;
-                    ivIcon.setImageResource(R.drawable.down);
-                }else{
-                    sv.setVisibility(View.VISIBLE);
-                    showGuide = true;
-                    ivIcon.setImageResource(R.drawable.up);
-                }
                 break;
         }
     }

@@ -5,15 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
@@ -28,6 +31,7 @@ import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.adapters.RecognizeCardListAdapter;
+import cn.timeface.circle.baby.ui.growth.events.CardEditEvent;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -68,8 +72,26 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_add){
+            RecognizeCardCreateActivity.open(this);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+
+        Iterator iterator = selectCards.iterator();
+        //去掉没选择的
+        while (iterator.hasNext()){
+            KnowledgeCardObj knowledgeCardObj = (KnowledgeCardObj) iterator.next();
+            if(!knowledgeCardObj.select()){
+                iterator.remove();
+            }
+        }
         cardPresenter.loadRecognizeCard();
     }
 
@@ -90,6 +112,12 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
 
     @Override
     public void setRecognizeCardData(List<KnowledgeCardObj> knowledgeCardObjs) {
+        for(KnowledgeCardObj knowledgeCardObj : knowledgeCardObjs){
+            if(selectCards.contains(knowledgeCardObj)){
+                knowledgeCardObj.setSelect(1);
+            }
+        }
+
         if(cardListAdapter == null){
             rvBooks.setLayoutManager(new GridLayoutManager(this, 2));
             cardListAdapter = new RecognizeCardListAdapter(this, knowledgeCardObjs, this);
@@ -226,6 +254,25 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                 MyOrderConfirmActivity.open(this, event.response.getOrderId(),event.baseObjs);
             } else {
                 Toast.makeText(this, event.response.getInfo(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Subscribe
+    public void CardSelectEvent(CardEditEvent event){
+        if(cardListAdapter != null && !cardListAdapter.getListData().isEmpty()){
+            for(KnowledgeCardObj cardObj : cardListAdapter.getListData()){
+                if(cardObj.getCardId() == event.getCardId()){
+                    cardObj.setSelect(event.getSelect());
+
+                    if(cardObj.select() && !selectCards.contains(cardObj)){
+                        selectCards.add(cardObj);
+                    }
+
+                    if(!cardObj.select() && selectCards.contains(cardObj)){
+                        selectCards.remove(cardObj);
+                    }
+                }
             }
         }
     }

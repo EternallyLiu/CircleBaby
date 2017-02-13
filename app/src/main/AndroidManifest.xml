@@ -62,7 +62,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="cn.timeface.circle.baby.support.utils.glide.TFGlideModule"
             android:value="GlideModule" />
@@ -427,6 +426,16 @@
             android:theme="@style/AppTheme" />
 
         <service android:name=".LoadMediaService" />
+
         <activity android:name=".ui.growth.activities.RecognizeCardEditActivity" />
+        <activity
+            android:name=".ui.growth.activities.MineBookActivityV2"
+            android:label="@string/title_activity_mine_book_v2"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.growth.activities.RecognizeCardCreateActivity"
+            android:label="@string/title_activity_recognize_card_create"
+            android:theme="@style/AppTheme"></activity>
     </application>
+
 </manifest>

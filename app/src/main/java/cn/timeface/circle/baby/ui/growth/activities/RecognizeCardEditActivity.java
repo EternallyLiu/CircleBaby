@@ -17,11 +17,12 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.constants.TypeConstant;
-import cn.timeface.circle.baby.fragments.CardPreviewFragment;
+import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
@@ -42,11 +43,13 @@ import rx.schedulers.Schedulers;
  * author : YW.SUN Created on 2017/2/8
  * email : sunyw10@gmail.com
  */
-public class RecognizeCardEditActivity extends CardPreviewActivity {
+public class RecognizeCardEditActivity extends CardPreviewActivity implements View.OnClickListener {
+    private final int REQUEST_CODE_SELECT_IMAGE = 100;
     private TFProgressDialog tfProgressDialog;
     KnowledgeCardObj knowledgeCardObj;
     long createTime;
     String py;
+    ImgObj imgObj;
 
     public static void open(Context context, CardObj cardObj){
         Intent intent = new Intent(context, RecognizeCardEditActivity.class);
@@ -88,7 +91,7 @@ public class RecognizeCardEditActivity extends CardPreviewActivity {
             if (py.contains("%C4%AD")) {
                 py = py.replace("%C4%AD", "%C7%90");
             }
-            uploadImageObservable(knowledgeCardObj.getImageInfo().getYurl())
+            uploadImageObservable(imgObj != null ? imgObj.getLocalPath() : knowledgeCardObj.getImageInfo().getYurl())
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .filter(objKey -> !TextUtils.isEmpty(objKey))
@@ -170,6 +173,27 @@ public class RecognizeCardEditActivity extends CardPreviewActivity {
                 .placeholder(R.drawable.bg_default_holder_img)
                 .error(R.drawable.bg_default_holder_img)
                 .into(ivCard);
+        rlCard.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.rl_card){
+            SelectPhotoActivity.openForResult(this, new ArrayList<>(), 1, REQUEST_CODE_SELECT_IMAGE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK && data != null){
+            imgObj = (ImgObj) data.getParcelableArrayListExtra("result_select_image_list").get(0);
+            Glide.with(this)
+                    .load(imgObj.getLocalPath())
+                    .placeholder(R.drawable.bg_default_holder_img)
+                    .error(R.drawable.bg_default_holder_img)
+                    .into(ivCard);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private Observable<String> uploadImageObservable(String imgPath) {

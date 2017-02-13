@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -31,18 +30,19 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.TFStateView;
 
+/**
+ * 制作卡片
+ * author : YW.SUN Created on 2017/2/13
+ * email : sunyw10@gmail.com
+ */
 public class CardPublishActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
-
     protected final int PHOTO_COUNT_MAX = 1;
-
-
     public final int PICTURE = 0;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -50,10 +50,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     ViewPager vp;
     @Bind(R.id.tv_add)
     TextView tvAdd;
-    @Bind(R.id.iv_icon)
-    ImageView ivIcon;
-    @Bind(R.id.ll_title)
-    LinearLayout llTitle;
     @Bind(R.id.sv)
     ScrollView sv;
     @Bind(R.id.tf_stateView)
@@ -61,7 +57,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     private List<ImgObj> selImages = new ArrayList<>();
     private List<CardObj> dataList;
     private MyAdapter adapter;
-    private boolean showGuide;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, CardPublishActivity.class);
@@ -78,7 +73,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         tfStateView.setOnRetryListener(() -> reqData());
 
         tvAdd.setOnClickListener(this);
-        llTitle.setOnClickListener(this);
         tvAdd.setEnabled(false);
     }
 
@@ -167,18 +161,6 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                             Log.e(TAG, "delCard:");
                         });
                 break;
-            case R.id.ll_title:
-                if (showGuide) {
-                    sv.setVisibility(View.GONE);
-                    showGuide = false;
-                    ivIcon.setImageResource(R.drawable.down);
-                } else {
-                    sv.setVisibility(View.VISIBLE);
-                    showGuide = true;
-                    ivIcon.setImageResource(R.drawable.up);
-                }
-                break;
-
         }
 
     }
@@ -220,7 +202,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
                 int measuredWidth = ivDeletecard.getMeasuredWidth();
                 ivDeletecard.setTranslationX(measuredWidth / 2);
                 ivDeletecard.setTranslationY(-measuredWidth / 2);
-                GlideUtil.displayImage(list.get(position).getMedia().getImgUrl(), ivCard);
+                if(list.get(position).getMedia() != null)GlideUtil.displayImage(list.get(position).getMedia().getImgUrl(), ivCard);
                 ivDeletecard.setTag(R.string.tag_ex, position);
                 ivDeletecard.setOnClickListener(this);
             } else {
