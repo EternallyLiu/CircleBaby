@@ -287,6 +287,14 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
         }
         if (TextUtils.isEmpty(json))
             return;
+        if (currentMediaObj.getId()<=0)
+        {
+            currentMediaObj.setTips(selectList);
+            EventBus.getDefault().post(currentMediaObj);
+            getActivity().finish();
+            return;
+        }
+
         addSubscription(apiService.addLabel(currentMediaObj.getId() + "", Uri.encode(json))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {

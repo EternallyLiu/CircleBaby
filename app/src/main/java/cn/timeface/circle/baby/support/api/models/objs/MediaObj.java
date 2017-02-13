@@ -266,8 +266,13 @@ public class MediaObj extends BaseObj implements Parcelable {
 
         MediaObj mediaObj = (MediaObj) o;
 
-        if (id != mediaObj.id) return false;
-        return true;
+        if (id == mediaObj.id) return true;
+        else if (!TextUtils.isEmpty(getImgUrl())&&getImgUrl().equals(mediaObj.getImgUrl()))return true;
+        else if (!TextUtils.isEmpty(getVideoUrl())&&getVideoUrl().equals(mediaObj.getVideoUrl()))return true;
+        else if (!TextUtils.isEmpty(getLocalIdentifier())&&getLocalIdentifier().equals(mediaObj.getLocalIdentifier()))return true;
+        else if (!TextUtils.isEmpty(getLocalPath())&&getLocalPath().equals(mediaObj.getLocalPath()))return true;
+
+        return false;
 
     }
 

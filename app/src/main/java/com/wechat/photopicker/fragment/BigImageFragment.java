@@ -155,6 +155,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         initTips();
         if (allDetailsListPosition >= 0)
             EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+        else
+            EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
     }
 
     private LayoutInflater inflate = null;
@@ -207,8 +209,10 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                         initTips();
                         deletePostion = -1;
                         currentTip = null;
-                        if (allDetailsListPosition >= 0)
+                        if (allDetailsListPosition >= -1)
                             EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+                        else
+                            EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, deletePostion));
                     }
 
                 }, throwable -> {
@@ -405,6 +409,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     private void initLikeCount() {
         int currentPosition = mViewPager.getCurrentItem();
+        LogUtil.showLog(mMedias==null?"null":mMedias.size()+"----"+currentPosition);
         MediaObj mediaObj = mMedias.get(currentPosition);
         tvLikeCount.setText("+ " + mediaObj.getFavoritecount());
         ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
@@ -413,7 +418,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private void addLike() {
         int currentPosition = mViewPager.getCurrentItem();
         MediaObj mediaObj = mMedias.get(currentPosition);
-        if (mediaObj != null) {
+        if (mediaObj != null&&mediaObj.getId()>0) {
             addSubscription(apiService.addLabelLike(mediaObj.getIsFavorite() == 1 ? "0" : "1", mediaObj.getId() + "")
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
@@ -423,12 +428,26 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                             mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
                             tvLikeCount.setText("+ " + response.getFavoritecount());
                             ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
-                            if (allDetailsListPosition >= 0)
+                            if (allDetailsListPosition >= 0) {
                                 EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+                            }
+                            else {
+                                EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
+                            }
                         }
 
                     }, throwable -> {
                     }));
+        }else if (mediaObj!=null){
+            mediaObj.setFavoritecount(mediaObj.getFavoritecount()+1);
+            mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
+            ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
+            tvLikeCount.setText("+ " + mediaObj.getFavoritecount());
+            if (allDetailsListPosition >= 0) {
+                EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+            }
+            else
+                EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
         }
     }
 

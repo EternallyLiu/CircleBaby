@@ -85,6 +85,33 @@
                 android:text=""
                 android:textSize="@dimen/text_medium" />
         </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/text_color1"
+            android:padding="@dimen/size_12">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@color/text_color1"
+                android:text="所在位置"
+                android:textSize="@dimen/text_medium" />
+
+            <TextView
+                android:id="@+id/tv_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@color/text_color1"
+                android:drawablePadding="@dimen/size_12"
+                android:drawableRight="@drawable/mine_data_go"
+                android:text=""
+                android:textSize="@dimen/text_medium" />
+        </RelativeLayout>
 
         <GridView
             android:id="@+id/gv_grid_view"

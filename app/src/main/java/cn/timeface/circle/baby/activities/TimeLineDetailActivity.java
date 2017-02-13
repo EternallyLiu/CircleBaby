@@ -703,6 +703,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     @Subscribe
     public void onEvent(MediaUpdateEvent event) {
+        if (event.getAllDetailsListPosition() < 0)
+            return;
         if (timelineobj.getMediaList().contains(event.getMediaObj())) {
             List<MediaObj> mediaList = timelineobj.getMediaList();
             int indexOf = mediaList.indexOf(event.getMediaObj());

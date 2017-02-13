@@ -39,7 +39,6 @@ public class LoadMediaService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         loadVideo();
         EventBus.getDefault().post(new MediaLoadComplete(1));
-        LogUtil.showLog("post event");
     }
 
     private void loadVideo() {
@@ -119,7 +118,6 @@ public class LoadMediaService extends IntentService {
             list.add(videoInfo);
         }
         cursor.close();
-        LogUtil.showLog("getData complete");
         VideoInfo.saveAll(list);
     }
 }

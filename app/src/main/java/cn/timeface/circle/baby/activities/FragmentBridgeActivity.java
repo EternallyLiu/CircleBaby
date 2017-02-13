@@ -45,6 +45,7 @@ import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 import cn.timeface.circle.baby.ui.timelines.fragments.TimeLineDayFragment;
 import cn.timeface.circle.baby.ui.timelines.fragments.TimeLineFragment;
@@ -362,6 +363,9 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
             case "TimeFaceDetailFragment":
 
                 return new TimeFaceDetailFragment();
+            case "LocationListFragment":
+
+                return new LocationListFragment();
             default:
                 return null;
         }

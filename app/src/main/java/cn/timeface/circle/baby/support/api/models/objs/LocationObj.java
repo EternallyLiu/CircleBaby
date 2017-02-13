@@ -45,6 +45,29 @@ public class LocationObj implements Parcelable {
     public LocationObj() {
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LocationObj that = (LocationObj) o;
+
+        if (Double.compare(that.lat, lat) != 0) return false;
+        return Double.compare(that.log, log) == 0;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(lat);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(log);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
     protected LocationObj(Parcel in) {
         this.lat = in.readDouble();
         this.log = in.readDouble();

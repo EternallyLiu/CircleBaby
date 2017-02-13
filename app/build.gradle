@@ -21,15 +21,10 @@ android {
 
     signingConfigs {
         signingConfig {
-            try {
-                keyAlias 'timeface'
-                keyPassword project.hasProperty('KEY_PASSWORD') ? KEY_PASSWORD : ''
-                storeFile file('../tf215.ks')
-                storePassword project.hasProperty('STORE_PASSWORD') ? STORE_PASSWORD : ''
-            }
-            catch (ex) {
-                throw new InvalidUserDataException("You should define KEYSTORE_PASSWORD and KEY_PASSWORD in gradle.properties.")
-            }
+            keyAlias 'timeface'
+            keyPassword project.hasProperty('KEY_PASSWORD') ? KEY_PASSWORD : ''
+            storeFile file('../tf215.ks')
+            storePassword project.hasProperty('STORE_PASSWORD') ? STORE_PASSWORD : ''
         }
     }
 

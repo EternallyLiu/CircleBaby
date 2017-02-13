@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
@@ -31,6 +32,10 @@ import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
 import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
@@ -54,16 +59,16 @@ import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
-import cn.timeface.circle.baby.support.api.models.objs.CardObj;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.api.models.PhotoRecode;
 import cn.timeface.circle.baby.support.api.models.VideoInfo;
+import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.Milestone;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.api.models.objs.PublishObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
@@ -74,6 +79,11 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
+import cn.timeface.circle.baby.ui.timelines.beans.SendTimeFace;
+import cn.timeface.circle.baby.ui.timelines.beans.TimeConttent;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
@@ -114,6 +124,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     RelativeLayout rlVideo;
     @Bind(R.id.tv_videotime)
     TextView tvVideotime;
+    @Bind(R.id.tv_location)
+    TextView tvLocation;
+    @Bind(R.id.rl_location)
+    RelativeLayout rlLocation;
+    @Bind(R.id.rlvideo)
+    RelativeLayout rlvideo;
 
     private PhotoGridAdapter adapter;
     private List<String> imageUrls = new ArrayList<>();
@@ -142,6 +158,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private int count = 0;
     private boolean isPublish;
     private double oldProgress = 0;
+    private NearLocationObj currentLocation = null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+    private ArrayList<MediaObj> mediaObjs;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -167,6 +190,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish);
         ButterKnife.bind(this);
+        rlLocation.setOnClickListener(this);
+        initLocation();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         tfProgressDialog = TFProgressDialog.getInstance("");
@@ -180,7 +205,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
         adapter = new PhotoGridAdapter(this);
         gvGridView.setAdapter(adapter);
-        LogUtil.showLog(publishType+"");
+        LogUtil.showLog(publishType + "");
         switch (publishType) {
             case PHOTO:
                 type = 0;
@@ -213,9 +238,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             gvGridView.setVisibility(View.VISIBLE);
             ivCard.setVisibility(View.GONE);
             List<String> list = new ArrayList<>();
+            mediaObjs = new ArrayList<>();
             for (CardObj cardObj : cardObjs) {
                 list.add(cardObj.getMedia().getImgUrl());
+                mediaObjs.add(cardObj.getMedia());
             }
+            adapter.setMediaObjs(mediaObjs);
             adapter.setData(list);
             adapter.notifyDataSetChanged();
             if (cardObjs.get(0).getMedia().getPhotographTime() == 0) {
@@ -248,9 +276,47 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
+                LogUtil.showLog("adapter medias:" + (adapter.getMediaObjs() == null ? "null" : adapter.getMediaObjs().size()));
+                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, -1, adapter.getMediaObjs(), (ArrayList<String>) adapter.getData(), position, false, true);
             }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    private void img2Medias() {
+        if (selImages != null && selImages.size() > 0) {
+            if (mediaObjs == null)
+                mediaObjs = new ArrayList();
+            ArrayList<MediaObj> list = new ArrayList<>();
+            if (mediaObjs.size() > 0) {
+                list.addAll(mediaObjs);
+                mediaObjs.clear();
+            }
+            for (int i = 0; i < selImages.size(); i++) {
+                if (list.contains(selImages.get(i).getMediaObj()))
+                    mediaObjs.add(list.get(list.indexOf(selImages.get(i).getMediaObj())));
+                else mediaObjs.add(selImages.get(i).getMediaObj());
+            }
+        }
+    }
+
+    private void initLocation() {
+        if (currentLocation == null) {
+            tvLocation.setText("不显示位置");
+        } else tvLocation.setText(currentLocation.getArea());
+    }
+
+    @Subscribe
+    public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
+        if (mediaUpdateEvent.getAllDetailsListPosition() >= 0)
+            return;
+        if (mediaUpdateEvent.getIndex() >= 0) {
+            mediaObjs.get(mediaUpdateEvent.getIndex()).setTips(mediaUpdateEvent.getMediaObj().getTips());
+            mediaObjs.get(mediaUpdateEvent.getIndex()).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
+            mediaObjs.get(mediaUpdateEvent.getIndex()).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+        }
     }
 
     private void selectImages() {
@@ -287,6 +353,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     }
 
                     imagelLists = new List[titles.size()];
+                    img2Medias();
 
                     for (int i = 0; i < titles.size(); i++) {
                         imagelLists[i] = new ArrayList<>();
@@ -295,7 +362,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                                 imagelLists[i].add(item);
                             }
                         }
-                        photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i]));
+                        photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i], mediaObjs));
                     }
                     if (photoRecodes.size() > 1) {
                         llSingleDate.setVisibility(View.GONE);
@@ -311,6 +378,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             adapter.getData().clear();
                             adapter.getData().addAll(imageUrls);
                             adapter.notifyDataSetChanged();
+                            adapter.setMediaObjs(mediaObjs);
 
                             tvTime.setText(titles.get(0));
                         }
@@ -377,6 +445,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_location:
+                Bundle bundle = new Bundle();
+                if (currentLocation == null)
+                    bundle.putBoolean("isShowLocation", true);
+                else bundle.putBoolean("isShowLocation", false);
+                FragmentBridgeActivity.open(this, LocationListFragment.class.getSimpleName(), bundle);
+                break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
@@ -407,15 +482,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
 
-        List<PublishObj> datalist = new ArrayList<>();
-
-        PublishObj publishObj = new PublishObj(content, cardObjs, milestone == null ? 0 : milestone.getId(), time);
-        datalist.add(publishObj);
+        SendTimeFace data = new SendTimeFace(0);
+        data.getDataList().add(new TimeConttent(null, content, mediaObjs, milestone == null ? 0 : milestone.getId(), time));
 
         Gson gson = new Gson();
-        String s = gson.toJson(datalist);
+        String s = gson.toJson(data.getDataList());
 
-        apiService.publish(URLEncoder.encode(s), type)
+        apiService.publish(URLEncoder.encode(s), data.getType())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     tfProgressDialog.dismiss();
@@ -453,12 +526,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         tfProgressDialog.show(getSupportFragmentManager(), "");
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
-        List<PublishObj> datalist = new ArrayList<>();
-        List<CardObj> cardObjs = new ArrayList<>();
-        cardObjs.add(cardObj);
+        List<TimeConttent> datalist = new ArrayList<>();
+        ArrayList<MediaObj> cardObjs = new ArrayList<>();
+        cardObjs.add(cardObj.getMedia());
 
-        PublishObj publishObj = new PublishObj(content, cardObjs, milestone == null ? 0 : milestone.getId(), time);
-        datalist.add(publishObj);
+        TimeConttent timeConttent = new TimeConttent(currentLocation, content, cardObjs, milestone == null ? 0 : milestone.getId(), time);
+        datalist.add(timeConttent);
 
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
@@ -509,9 +582,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         tfProgressDialog.show(getSupportFragmentManager(), "");
         //发布
         localUrls = new ArrayList<>();
-        List<PublishObj> datalist = new ArrayList<>();
+        List<TimeConttent> datalist = new ArrayList<>();
         if (photoRecodes.size() == 1) {
             photoRecodes.get(0).setContent(value);
+            photoRecodes.get(0).setLocationObj(currentLocation);
         }
         for (PhotoRecode photoRecode : photoRecodes) {
             if (photoRecodes.size() > 1) {
@@ -523,20 +597,17 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             Milestone mileStone = photoRecode.getMileStone();
             int mileStoneId = mileStone == null ? 0 : mileStone.getId();
             List<ImgObj> imgObjList = photoRecode.getImgObjList();
-            List<CardObj> cardObjs = new ArrayList<>();
+            TimeConttent timeContent = new TimeConttent();
             for (ImgObj img : imgObjList) {
 //                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
-                CardObj cardObj = new CardObj();
-                int height = img.getHeight();
-                int width = img.getWidth();
-                Log.v(TAG, "img.getUrl ============ " + img.getUrl());
                 localUrls.add(img.getLocalPath());
-                MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
-                cardObj.setMedia(mediaObj);
-                cardObjs.add(cardObj);
             }
-            PublishObj publishObj = new PublishObj(content, cardObjs, mileStoneId, time);
-            datalist.add(publishObj);
+            timeContent.setMilestone(mileStoneId);
+            timeContent.setContent(content);
+            timeContent.setTime(time);
+            timeContent.setMediaList(photoRecode.getMediaObjList());
+            timeContent.setLocationInfo(photoRecode.getLocationObj());
+            datalist.add(timeContent);
         }
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
@@ -740,4 +811,48 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Publish Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Subscribe
+    public void onEvent(NearLocationObj location) {
+        if (location.getLocation() == null)
+            currentLocation = null;
+        else
+            currentLocation = location;
+        initLocation();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
 }

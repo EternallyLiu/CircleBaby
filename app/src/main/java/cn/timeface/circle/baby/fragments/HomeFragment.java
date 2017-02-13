@@ -83,6 +83,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import cn.timeface.circle.baby.views.TFStateView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -677,6 +678,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Subscribe
     public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
+        if (mediaUpdateEvent.getAllDetailsListPosition() < 0)
+            return;
         TimeLineGroupObj timeGroup = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
         for (int i = 0; i < timeGroup.getTimeLineList().size(); i++) {
             if (timeGroup.getTimeLineList().get(i).getMediaList().contains(mediaUpdateEvent.getMediaObj())) {

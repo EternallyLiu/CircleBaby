@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
  * Created by lidonglin on 2016/5/12.
@@ -34,7 +36,7 @@ public class PhotoGridAdapter extends BaseAdapter {
         return data;
     }
 
-    public void setData(List<String> data){
+    public void setData(List<String> data) {
         this.data = data;
     }
 
@@ -65,11 +67,11 @@ public class PhotoGridAdapter extends BaseAdapter {
         if (getItemViewType(position) == TYPE_HEADER) {
             view = View.inflate(context, R.layout.item_timeline_add, null);
             ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
-            ivAdd.setLayoutParams(new FrameLayout.LayoutParams(width,width));
+            ivAdd.setLayoutParams(new FrameLayout.LayoutParams(width, width));
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(listener!=null){
+                    if (listener != null) {
                         listener.onClick(v);
                     }
                 }
@@ -84,7 +86,18 @@ public class PhotoGridAdapter extends BaseAdapter {
         return view;
     }
 
-    public void setOnAddClickListener(View.OnClickListener listener){
+    public void setOnAddClickListener(View.OnClickListener listener) {
         this.listener = listener;
+    }
+
+    private ArrayList<MediaObj> mediaObjs;
+
+    public ArrayList<MediaObj> getMediaObjs() {
+        return mediaObjs;
+    }
+
+    public void setMediaObjs(ArrayList<MediaObj> mediaObjs) {
+        LogUtil.showLog("call adapter setMediaList:" + (mediaObjs == null ? "null" : mediaObjs.size()));
+        this.mediaObjs = mediaObjs;
     }
 }

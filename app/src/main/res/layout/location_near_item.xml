@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:padding="@dimen/size_6">
+
+    <TextView
+        android:id="@+id/area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="@dimen/size_4"
+        android:layout_toLeftOf="@+id/iv_select"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:text="合肥市"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_medium" />
+
+    <TextView
+        android:id="@+id/detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/area"
+        android:layout_marginBottom="@dimen/size_4"
+        android:layout_toLeftOf="@+id/iv_select"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:text="合肥市"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_normal" />
+
+    <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
+        android:id="@+id/iv_select"
+        android:layout_width="@dimen/size_16"
+        android:layout_height="@dimen/size_16"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/size_6"
+        android:scaleType="fitCenter"
+        app:selectDrawable="@drawable/time_line_marker"
+        app:unselectDrawable="@drawable/time_line_marker_no" />
+
+</RelativeLayout>

@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.support.api.services;
 import java.util.Map;
 
 import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.support.api.models.db.LocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
@@ -58,6 +59,7 @@ import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
+import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -730,6 +732,14 @@ public interface ApiService {
      */
     @GET("printGrowth/diaryCardList")
     Observable<DiaryCardListResponse> diaryCardList();
+    /**
+     * 获取附近热点
+     * @return diary card list response
+     */
+    @GET("map/getPois")
+    Observable<NearLocalResponse> queryNearList(@Query("key") String key,
+                                                @Query("lat") double lat,
+                                                @Query("log") double log);
 
     /**
      * 创建卡片作品
