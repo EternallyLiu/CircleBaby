@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.timelines.fragments;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,9 @@ import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
@@ -35,14 +39,16 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.NearLocationAdapter;
+import cn.timeface.circle.baby.ui.timelines.beans.ContentType;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
+import cn.timeface.circle.baby.ui.timelines.views.LocationSearchDialog;
 
 /**
  * author : wangshuai Created on 2017/2/9
  * email : wangs1992321@gmail.com
  */
-public class LocationListFragment extends BaseFragment implements BDLocationListener, IPTRRecyclerListener, BaseAdapter.LoadDataFinish, EmptyDataView.EmptyCallBack, BaseAdapter.OnItemClickLister {
+public class LocationListFragment extends BaseFragment implements BDLocationListener, IPTRRecyclerListener, BaseAdapter.LoadDataFinish, EmptyDataView.EmptyCallBack, BaseAdapter.OnItemClickLister, LocationSearchDialog.SearchCallBack,DialogInterface.OnDismissListener {
 
     @Bind(R.id.title)
     TextView title;
@@ -117,18 +123,25 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
             locationHelper.stopLocation();
     }
 
+    private String keywoard = null;
+
     private void reqData() {
         if (currentLocationObj == null) {
             helper.finishTFPTRRefresh();
             return;
         }
-        apiService.queryNearList("", currentLocationObj.getLat(), currentLocationObj.getLog())
+        apiService.queryNearList(keywoard, currentLocationObj.getLat(), currentLocationObj.getLog())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
-                        adapter.addList(true, response.getDataList());
+                        List<ContentType> list = new ArrayList<>();
+                        for (int i = 0; i < response.getDataList().size(); i++) {
+                            list.add(new ContentType(0, response.getDataList().get(i)));
+                        }
+                        adapter.addList(true, list);
                         NearLocationObj nearLocationObj = new NearLocationObj("不显示位置", isShowLocation ? "显示" : null, null);
-                        adapter.addList(0, nearLocationObj);
+                        adapter.addList(0, new ContentType(0, nearLocationObj));
+                        adapter.addList(0, new ContentType(1, null));
                     }
                     helper.finishTFPTRRefresh();
                 }, throwable -> {
@@ -136,6 +149,7 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
                     helper.finishTFPTRRefresh();
                 });
     }
+
 
     @Override
     public void onReceiveLocation(BDLocation bdLocation) {
@@ -206,8 +220,29 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
 
     @Override
     public void onItemClick(View view, int position) {
-        NearLocationObj nearLocationObj = adapter.getItem(position);
-        EventBus.getDefault().post(nearLocationObj);
-        getActivity().finish();
+        ContentType item = adapter.getItem(position);
+        if (item.getType() == 0) {
+            NearLocationObj nearLocationObj = (NearLocationObj) item.getItem();
+            EventBus.getDefault().post(nearLocationObj);
+            getActivity().finish();
+        } else if (item.getType() == 1) {
+            LocationSearchDialog dialog = new LocationSearchDialog(getActivity());
+            dialog.setSearchCallBack(this);
+            dialog.setOnDismissListener(this);
+            dialog.show();
+            adapter.deleteItem(item);
+            list.scrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void searchCall(String text) {
+        keywoard=text;
+        startLocation();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        adapter.addList(0, new ContentType(1, null));
     }
 }
