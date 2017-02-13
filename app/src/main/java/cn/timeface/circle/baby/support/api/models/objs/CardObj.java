@@ -65,18 +65,6 @@ public class CardObj implements Parcelable {
         this.select = in.readInt();
     }
 
-    public static final Creator<CardObj> CREATOR = new Creator<CardObj>() {
-        @Override
-        public CardObj createFromParcel(Parcel source) {
-            return new CardObj(source);
-        }
-
-        @Override
-        public CardObj[] newArray(int size) {
-            return new CardObj[size];
-        }
-    };
-
     @Override
     public boolean equals(Object obj) {
         CardObj other = (CardObj) obj;

@@ -18,7 +18,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 
 /**
@@ -28,7 +27,6 @@ import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
  */
 public class RecognizeCardListAdapter extends BaseRecyclerAdapter<KnowledgeCardObj> {
     View.OnClickListener clickListener;
-    List<CardObj> selectCards;
 
     public RecognizeCardListAdapter(Context mContext, List<KnowledgeCardObj> listData, View.OnClickListener clickListener) {
         super(mContext, listData);
@@ -44,15 +42,15 @@ public class RecognizeCardListAdapter extends BaseRecyclerAdapter<KnowledgeCardO
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         RecognizeCardListAdapter.ViewHolder holder = (RecognizeCardListAdapter.ViewHolder) viewHolder;
-        final CardObj cardObj = listData.get(position);
+        final KnowledgeCardObj knowledgeCardObj = listData.get(position);
         holder.ivImg.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
         Glide.with(mContext)
-                .load(cardObj.getMedia().getImgUrl())
+                .load(knowledgeCardObj.getMedia().getImgUrl())
                 .into(holder.ivImg);
-        holder.ivSelect.setSelected(cardObj.select());
-        holder.ivSelect.setTag(R.string.tag_obj, cardObj);
+        holder.ivSelect.setSelected(knowledgeCardObj.select());
+        holder.ivSelect.setTag(R.string.tag_obj, knowledgeCardObj);
         holder.ivSelect.setTag(R.string.tag_index, position);
-        holder.flRoot.setTag(R.string.tag_obj, cardObj);
+        holder.flRoot.setTag(R.string.tag_obj, knowledgeCardObj);
         if(clickListener != null) {
             holder.ivSelect.setOnClickListener(clickListener);
             holder.flRoot.setOnClickListener(clickListener);
