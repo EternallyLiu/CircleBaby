@@ -156,6 +156,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         switch (view.getId()) {
             //时光轴
             case R.id.menu_home_tv:
+                sendTimeface.setVisibility(View.VISIBLE);
                 menuHomeTv.setSelected(true);
                 menuMimeTv.setSelected(false);
                 menuGrowthTv.setSelected(false);
@@ -163,6 +164,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 break;
             //我的
             case R.id.menu_mime_tv:
+                sendTimeface.setVisibility(View.GONE);
                 menuHomeTv.setSelected(false);
                 menuMimeTv.setSelected(true);
                 menuGrowthTv.setSelected(false);
@@ -170,6 +172,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 break;
             //印成长
             case R.id.menu_growth_up_tv:
+                sendTimeface.setVisibility(View.GONE);
                 menuHomeTv.setSelected(false);
                 menuMimeTv.setSelected(false);
                 menuGrowthTv.setSelected(true);
