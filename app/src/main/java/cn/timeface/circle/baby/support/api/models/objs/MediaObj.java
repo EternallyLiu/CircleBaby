@@ -39,7 +39,8 @@ public class MediaObj extends BaseObj implements Parcelable {
     private LocationObj location;
     private List<MediaTipObj> tips;
 
-    public MediaObj() {}
+    public MediaObj() {
+    }
 
     //图片
     public MediaObj(String content, String imgUrl, int w, int h, long photographTime) {
@@ -234,7 +235,7 @@ public class MediaObj extends BaseObj implements Parcelable {
         return new TFOResourceObj(id + "", imgUrl, w, h, imageOrientation, "");
     }
 
-    public boolean isVideo(){
+    public boolean isVideo() {
         if (TextUtils.isEmpty(getVideoUrl()))
             return false;
         else return true;
@@ -266,11 +267,15 @@ public class MediaObj extends BaseObj implements Parcelable {
 
         MediaObj mediaObj = (MediaObj) o;
 
-        if (id == mediaObj.id) return true;
-        else if (!TextUtils.isEmpty(getImgUrl())&&getImgUrl().equals(mediaObj.getImgUrl()))return true;
-        else if (!TextUtils.isEmpty(getVideoUrl())&&getVideoUrl().equals(mediaObj.getVideoUrl()))return true;
-        else if (!TextUtils.isEmpty(getLocalIdentifier())&&getLocalIdentifier().equals(mediaObj.getLocalIdentifier()))return true;
-        else if (!TextUtils.isEmpty(getLocalPath())&&getLocalPath().equals(mediaObj.getLocalPath()))return true;
+        if (id != 0 && id == mediaObj.id) return true;
+        else if (!TextUtils.isEmpty(getImgUrl()) && getImgUrl().equals(mediaObj.getImgUrl()))
+            return true;
+        else if (!TextUtils.isEmpty(getVideoUrl()) && getVideoUrl().equals(mediaObj.getVideoUrl()))
+            return true;
+        else if (!TextUtils.isEmpty(getLocalIdentifier()) && getLocalIdentifier().equals(mediaObj.getLocalIdentifier()))
+            return true;
+        else if (!TextUtils.isEmpty(getLocalPath()) && getLocalPath().equals(mediaObj.getLocalPath()))
+            return true;
 
         return false;
 

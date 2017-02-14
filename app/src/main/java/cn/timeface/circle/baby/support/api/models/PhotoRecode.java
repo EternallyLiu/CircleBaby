@@ -54,6 +54,9 @@ public class PhotoRecode extends BaseObj implements Parcelable {
     }
 
     public ArrayList<MediaObj> getMediaObjList() {
+        if (mediaObjList == null) mediaObjList = new ArrayList<>();
+        if (getImgObjList().size() != mediaObjList.size())
+            img2Medias();
         return mediaObjList;
     }
 
@@ -101,6 +104,21 @@ public class PhotoRecode extends BaseObj implements Parcelable {
         this.time = time;
     }
 
+
+    private void img2Medias() {
+        if (getImgObjList() != null && getImgObjList().size() > 0) {
+            ArrayList<MediaObj> list = new ArrayList<>();
+            if (mediaObjList.size() > 0) {
+                list.addAll(mediaObjList);
+                mediaObjList.clear();
+            }
+            for (int i = 0; i < getImgObjList().size(); i++) {
+                if (list.contains(getImgObjList().get(i).getMediaObj()))
+                    mediaObjList.add(list.get(list.indexOf(getImgObjList().get(i).getMediaObj())));
+                else mediaObjList.add(getImgObjList().get(i).getMediaObj());
+            }
+        }
+    }
 
     @Override
     public int describeContents() {

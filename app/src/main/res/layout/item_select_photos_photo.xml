@@ -6,55 +6,108 @@
     android:orientation="horizontal"
     android:padding="@dimen/view_space_small">
 
-    <cn.timeface.circle.baby.views.PhotoSelectImageView
-        android:id="@+id/iv_img0"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:onClick="clickPhotoView"
-        android:paddingLeft="@dimen/view_space_small"
-        android:paddingRight="@dimen/view_space_small"
-        ratio:fixRatio="fixWidth"
-        ratio:heightRatio="1"
-        ratio:widthRatio="1" />
+        android:layout_weight="1">
 
-    <cn.timeface.circle.baby.views.PhotoSelectImageView
-        android:id="@+id/iv_img1"
+        <cn.timeface.circle.baby.views.PhotoSelectImageView
+            android:id="@+id/iv_img0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="clickPhotoView"
+            android:paddingLeft="@dimen/view_space_small"
+            android:paddingRight="@dimen/view_space_small"
+            ratio:fixRatio="fixWidth"
+            ratio:heightRatio="1"
+            ratio:widthRatio="1" />
+        <ImageView
+            android:id="@+id/pic_upload_0"
+            android:layout_width="@dimen/size_36"
+            android:layout_height="@dimen/size_36"
+            android:scaleType="fitCenter"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/pic_uploaded"/>
+    </RelativeLayout>
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:onClick="clickPhotoView"
-        android:paddingLeft="@dimen/view_space_small"
-        android:paddingRight="@dimen/view_space_small"
-        ratio:fixRatio="fixWidth"
-        ratio:heightRatio="1"
-        ratio:widthRatio="1" />
+        android:layout_weight="1">
 
-    <cn.timeface.circle.baby.views.PhotoSelectImageView
-        android:id="@+id/iv_img2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:onClick="clickPhotoView"
-        android:paddingLeft="@dimen/view_space_small"
-        android:paddingRight="@dimen/view_space_small"
-        ratio:fixRatio="fixWidth"
-        ratio:heightRatio="1"
-        ratio:widthRatio="1" />
+        <cn.timeface.circle.baby.views.PhotoSelectImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/iv_img1"
+            android:clickable="true"
+            android:onClick="clickPhotoView"
+            android:paddingLeft="@dimen/view_space_small"
+            android:paddingRight="@dimen/view_space_small"
+            ratio:fixRatio="fixWidth"
+            ratio:heightRatio="1"
+            ratio:widthRatio="1" />
+        <ImageView
+            android:id="@+id/pic_upload_1"
+            android:layout_width="@dimen/size_36"
+            android:layout_height="@dimen/size_36"
+            android:scaleType="fitCenter"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/pic_uploaded"/>
+    </RelativeLayout>
 
-    <cn.timeface.circle.baby.views.PhotoSelectImageView
-        android:id="@+id/iv_img3"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:onClick="clickPhotoView"
-        android:paddingLeft="@dimen/view_space_small"
-        android:paddingRight="@dimen/view_space_small"
-        ratio:fixRatio="fixWidth"
-        ratio:heightRatio="1"
-        ratio:widthRatio="1" />
+        android:layout_weight="1">
+
+        <cn.timeface.circle.baby.views.PhotoSelectImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/iv_img2"
+            android:clickable="true"
+            android:onClick="clickPhotoView"
+            android:paddingLeft="@dimen/view_space_small"
+            android:paddingRight="@dimen/view_space_small"
+            ratio:fixRatio="fixWidth"
+            ratio:heightRatio="1"
+            ratio:widthRatio="1" />
+        <ImageView
+            android:id="@+id/pic_upload_2"
+            android:layout_width="@dimen/size_36"
+            android:layout_height="@dimen/size_36"
+            android:scaleType="fitCenter"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/pic_uploaded"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <cn.timeface.circle.baby.views.PhotoSelectImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/iv_img3"
+            android:clickable="true"
+            android:onClick="clickPhotoView"
+            android:paddingLeft="@dimen/view_space_small"
+            android:paddingRight="@dimen/view_space_small"
+            ratio:fixRatio="fixWidth"
+            ratio:heightRatio="1"
+            ratio:widthRatio="1" />
+        <ImageView
+            android:id="@+id/pic_upload_3"
+            android:layout_width="@dimen/size_36"
+            android:layout_height="@dimen/size_36"
+            android:scaleType="fitCenter"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/pic_uploaded"/>
+    </RelativeLayout>
+
+
+
 </LinearLayout>

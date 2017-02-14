@@ -61,6 +61,7 @@ import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
+import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -772,6 +773,9 @@ public interface ApiService {
             @Field("openBookType") int openBookType,
             @Field("pageNum") int pageNum);
 
-
+    @POST("mediaID/backup")
+    Observable<MediaIdResponse> mediaBackup(@Query("identifiers") String identifiers);
+    @POST("mediaID/localList")
+    Observable<MediaIdResponse> localList(@Query("userId") String userId);
 
 }

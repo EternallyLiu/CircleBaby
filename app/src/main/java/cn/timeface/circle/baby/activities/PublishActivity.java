@@ -312,7 +312,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
         if (mediaUpdateEvent.getAllDetailsListPosition() >= 0)
             return;
-        if (mediaUpdateEvent.getIndex() >= 0) {
+        if (mediaUpdateEvent.getIndex() >= 0&&mediaObjs.get(mediaUpdateEvent.getIndex()).getLocalIdentifier().equals(mediaUpdateEvent.getMediaObj().getLocalIdentifier())) {
             mediaObjs.get(mediaUpdateEvent.getIndex()).setTips(mediaUpdateEvent.getMediaObj().getTips());
             mediaObjs.get(mediaUpdateEvent.getIndex()).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
             mediaObjs.get(mediaUpdateEvent.getIndex()).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());

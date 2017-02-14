@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.events.UploadEvent;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
@@ -73,6 +74,7 @@ public class UploadService extends Service {
                     UploadFileObj uploadFileObj = new MyUploadFileObj(path);
                     //上传操作
                     try {
+                        PhotoModel model = PhotoModel.getPhotoModel(path);
                         //判断服务器是否已存在该文件
                         if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
                             //如果不存在则上传
@@ -95,6 +97,10 @@ public class UploadService extends Service {
                                     if (i > oldProgress) {
                                         oldProgress = i;
                                         EventBus.getDefault().post(new UploadEvent(i));
+                                    }
+                                    if (model!=null){
+                                        model.setNeedUpload(false);
+                                        model.update();
                                     }
                                     if (count < localUrls.size()) {
                                         uploadImage(localUrls.get(count));
@@ -120,6 +126,10 @@ public class UploadService extends Service {
                             }
                         }
                         String objectKey = uploadFileObj.getObjectKey();
+                        if (model!=null){
+                            model.setNeedUpload(false);
+                            model.update();
+                        }
                         Log.v(TAG, "uploadImage  objectKey============ " + objectKey);
                     } catch (Exception e) {
                         Log.e(TAG, "uploadImage", e);

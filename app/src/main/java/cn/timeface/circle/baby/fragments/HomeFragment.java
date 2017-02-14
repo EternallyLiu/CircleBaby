@@ -15,8 +15,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -35,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rayboot.widget.ratioview.RatioImageView;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,6 +48,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,11 +65,14 @@ import cn.timeface.circle.baby.events.ActionCallBackEvent;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.IconCommentClickEvent;
+import cn.timeface.circle.baby.events.PicSaveCompleteEvent;
 import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.VideoInfo;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel_Table;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -81,9 +90,11 @@ import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
+import cn.timeface.circle.baby.ui.timelines.views.TimerImageView;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import cn.timeface.circle.baby.views.TFStateView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -151,6 +162,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private AlertDialog dialog;
     private TextView tvProgress;
     private AlertDialog progressDialog;
+    private View picChangeView;
 
     public HomeFragment() {
     }
@@ -202,6 +214,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         if (FastData.getBabyId() != 0) {
             updateLoginInfo();
         }
+
         return view;
     }
 
@@ -211,6 +224,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 .subscribe(response -> {
                 }, throwable -> {
                     Log.e(TAG, "updateLoginInfo:");
+
                 });
     }
 
@@ -326,9 +340,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     tfptrListViewHelper.finishTFPTRRefresh();
 
                     if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
-                        if (!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())) {
-                            adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
-                        }
+//                        if (!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())) {
+//                            adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
+//                        }
                     }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.DISABLED);
@@ -402,6 +416,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.upload:
+                PublishActivity.open(getActivity(), PublishActivity.PHOTO);
+                break;
             case R.id.toolbar:
                 LogUtil.showLog("clicl toolbar");
                 if (System.currentTimeMillis() - clickToolBarLastTime <= 500 && adapter.getCount() > 0)
@@ -690,6 +707,58 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 list.get(index).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
             }
         }
+    }
+
+    private void initPicChange(List<String> list) {
+        if (list != null && list.size() > 0) {
+            LogUtil.showLog("change:" + JSONUtils.parse2JSONString(list));
+            if (picChangeView == null)
+                picChangeView = View.inflate(getActivity(), R.layout.home_header_photo_added, null);
+            TimerImageView imageView = (TimerImageView) picChangeView.findViewById(R.id.pic_array);
+            TextView addCount = (TextView) picChangeView.findViewById(R.id.pic_add_count);
+            TextView upload = (TextView) picChangeView.findViewById(R.id.upload);
+            String count=list.size()+"";
+            String content = String.format("手机新增了 %s 张照片！", count);
+            LogUtil.showLog("content:" + content);
+            SpannableStringBuilder builder = new SpannableStringBuilder();
+            builder.append(content);
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#F59650"));
+            builder.setSpan(colorSpan, content.indexOf(count), content.indexOf(count) + count.length()+1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            addCount.setText(builder);
+            upload.setOnClickListener(this);
+            imageView.setList(list);
+            adapter.removeHeader(picChangeView);
+            adapter.addHeader(picChangeView);
+            adapter.notifyDataSetChanged();
+            contentRecyclerView.scrollToPosition(0);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(PicSaveCompleteEvent pic) {
+        PhotoModel.getAllPhotoId().compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(list -> {
+                    LogUtil.showLog(list);
+                    if (!TextUtils.isEmpty(list))
+                        apiService.mediaBackup(list)
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .subscribe(response -> {
+                                    if (response.success()) {
+                                        List<PhotoModel> models = SQLite.select().from(PhotoModel.class).where(PhotoModel_Table.photo_id.in(response.getDataList()))
+                                                .queryList();
+                                        ArrayList<String> arrayList = new ArrayList<String>();
+                                        for (int i = 0; i < models.size(); i++) {
+                                            arrayList.add(models.get(i).getLocalPath());
+                                        }
+                                        initPicChange(arrayList);
+                                    }
+                                }, error -> {
+                                    Log.e("test", "error:" + error.getMessage(), error);
+                                });
+                }, error -> {
+                    Log.e("test", "error:" + error.getMessage(), error);
+                });
+
     }
 
     /**

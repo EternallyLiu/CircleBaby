@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.google.gson.Gson;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -16,10 +17,13 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.common.utils.MD5;
 import cn.timeface.common.utils.StorageUtil;
 import rx.Observable;
@@ -29,6 +33,7 @@ import rx.functions.Func0;
  * author: rayboot  Created on 16/4/13.
  * email : sy0725work@gmail.com
  */
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 @Table(database = AppDatabase.class)
 public class PhotoModel extends BaseModel implements Parcelable {
     // 信息缓存标志 0:未缓存 1:无位置信息 2:有位置信息
@@ -140,7 +145,7 @@ public class PhotoModel extends BaseModel implements Parcelable {
     @Column(name = "objectKey")
     String objectKey;
 
-    @Column(name = "need_upload")
+    @Column(name = "need_upload", defaultValue = "true")
     boolean needUpload;
 
     @Column(name = "thumbPath")
@@ -184,6 +189,7 @@ public class PhotoModel extends BaseModel implements Parcelable {
         this.size = cursor.getLong(sizeColumn);
         this.dateTaken = cursor.getLong(dateTakenColumn);
         this.dateAdded = cursor.getLong(dateAddedColumn);
+        this.needUpload = true;
     }
 
     public String getLocalPath() {
@@ -591,6 +597,26 @@ public class PhotoModel extends BaseModel implements Parcelable {
                 return Observable.from(result);
             }
         });
+    }
+
+    public static Observable<String> getAllPhotoId() {
+        return Observable.defer(new Func0<Observable<String>>() {
+            @Override
+            public Observable<String> call() {
+                List<PhotoModel> result = SQLite.select().from(PhotoModel.class).queryList();
+                ArrayList<String> arrays = new ArrayList<String>();
+                LogUtil.showLog("result:" + result.size());
+                for (int i = 0; i < result.size(); i++) {
+                    arrays.add(result.get(i).getPhotoId());
+                }
+                return Observable.just(JSONUtils.parse2JSONString(arrays));
+            }
+        });
+    }
+
+    public static PhotoModel getPhotoModel(String path) {
+        return SQLite.select().from(PhotoModel.class).where(PhotoModel_Table.local_path.eq(path)).or(PhotoModel_Table.objectKey.eq(path))
+                .querySingle();
     }
 
     public static Observable<PhotoModel> getAllBuckets() {

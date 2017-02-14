@@ -313,6 +313,7 @@ public class ImgObj extends BaseImgObj {
 
     public MediaObj getMediaObj() {
         MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
+        mediaObj.setLocalIdentifier(getId());
         return mediaObj;
     }
 

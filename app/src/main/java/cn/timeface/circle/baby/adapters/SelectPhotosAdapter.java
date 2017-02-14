@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -111,9 +112,11 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
                     //选中状态
                     holder.ivImgs[i].setChecked(selImgs.contains(imgs.get(i)));
                     holder.ivImgs[i].setTag(R.string.tag_obj, imgs.get(i));
+                    holder.picUpload[i].setVisibility(imgs.get(i).isNeedUpload() ? View.GONE : View.VISIBLE);
                 } else {
                     holder.ivImgs[i].setVisibility(View.INVISIBLE);
                     holder.ivImgs[i].getCbSel().setTag(R.string.tag_obj, null);
+                    holder.picUpload[i].setVisibility(View.GONE);
                 }
                 holder.ivImgs[i].getCbSel().setTag(R.string.tag_ex, dataPosition);
             }
@@ -182,6 +185,8 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
     class PhotosViewHolder extends RecyclerView.ViewHolder {
         @Bind({R.id.iv_img0, R.id.iv_img1, R.id.iv_img2, R.id.iv_img3})
         PhotoSelectImageView[] ivImgs;
+        @Bind({R.id.pic_upload_0, R.id.pic_upload_1, R.id.pic_upload_2, R.id.pic_upload_3})
+        ImageView[] picUpload;
 
         PhotosViewHolder(View view) {
             super(view);

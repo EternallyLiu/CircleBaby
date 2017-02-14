@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -32,14 +33,17 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.PhotoRecode;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.Milestone;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 
-public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements View.OnClickListener ,IEventBus{
+public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
     protected final int PHOTO_COUNT_MAX = 100;
 
@@ -57,6 +61,20 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     RelativeLayout rlTime;
     @Bind(R.id.et_content)
     EditText etContent;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.tv_location)
+    TextView tvLocation;
+    @Bind(R.id.rl_location)
+    RelativeLayout rlLocation;
+    @Bind(R.id.iv_video)
+    ImageView ivVideo;
+    @Bind(R.id.iv_cover)
+    ImageView ivCover;
+    @Bind(R.id.tv_videotime)
+    TextView tvVideotime;
+    @Bind(R.id.ll_video)
+    LinearLayout llVideo;
     private PhotoGridAdapter adapter;
     private HashSet<String> imageUrls = new HashSet<>();
     private final int PICTURE = 0;
@@ -76,7 +94,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        photoRecode =  getIntent().getParcelableExtra("photoRecode");
+        photoRecode = getIntent().getParcelableExtra("photoRecode");
         position = getIntent().getIntExtra("position", 0);
         selImages = photoRecode.getImgObjList();
         for (ImgObj item : selImages) {
@@ -102,10 +120,12 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentBridgeActivity.openBigimageFragment(PhotoRecodeDetailActivity.this, (ArrayList<String>) adapter.getData(), position,false,true);
+//                FragmentBridgeActivity.openBigimageFragment(PhotoRecodeDetailActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
+                FragmentBridgeActivity.openBigimageFragment(PhotoRecodeDetailActivity.this, -1, photoRecode.getMediaObjList(), (ArrayList<String>) adapter.getData(), position, false, true);
             }
         });
-
+        initLocation();
+        rlLocation.setOnClickListener(this);
     }
 
     private void selectImages() {
@@ -155,6 +175,13 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_location:
+                Bundle bundle = new Bundle();
+                if (photoRecode.getLocationObj() == null)
+                    bundle.putBoolean("isShowLocation", true);
+                else bundle.putBoolean("isShowLocation", false);
+                FragmentBridgeActivity.open(this, LocationListFragment.class.getSimpleName(), bundle);
+                break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
@@ -162,7 +189,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
                 time_shot = photoRecode.getImgObjList().get(0).getDate();
-                if(TextUtils.isEmpty(time_shot)){
+                if (TextUtils.isEmpty(time_shot)) {
                     time_shot = photoRecode.getTitle();
                 }
                 intent1.putExtra("time_shot", time_shot);
@@ -203,7 +230,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
             this.context = context;
         }
 
-        public void setData(List<String> data){
+        public void setData(List<String> data) {
             this.data = data;
         }
 
@@ -238,11 +265,11 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
             if (getItemViewType(position) == TYPE_HEADER) {
                 view = View.inflate(context, R.layout.item_timeline_add, null);
                 ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
-                ivAdd.setLayoutParams(new FrameLayout.LayoutParams(width,width));
+                ivAdd.setLayoutParams(new FrameLayout.LayoutParams(width, width));
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(listener!=null){
+                        if (listener != null) {
                             listener.onClick(v);
                         }
                     }
@@ -256,7 +283,8 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
             }
             return view;
         }
-        public void setOnAddClickListener(View.OnClickListener listener){
+
+        public void setOnAddClickListener(View.OnClickListener listener) {
             this.listener = listener;
         }
     }
@@ -277,20 +305,45 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         return super.onOptionsItemSelected(item);
     }
 
+    @Subscribe
+    public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
+        if (mediaUpdateEvent.getAllDetailsListPosition() >= 0)
+            return;
+        if (mediaUpdateEvent.getIndex() >= 0 && photoRecode.getMediaObjList().get(mediaUpdateEvent.getIndex()).getLocalIdentifier().equals(mediaUpdateEvent.getMediaObj().getLocalIdentifier())) {
+            photoRecode.getMediaObjList().get(mediaUpdateEvent.getIndex()).setTips(mediaUpdateEvent.getMediaObj().getTips());
+            photoRecode.getMediaObjList().get(mediaUpdateEvent.getIndex()).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
+            photoRecode.getMediaObjList().get(mediaUpdateEvent.getIndex()).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+        }
+    }
+
+    @Subscribe
+    public void onEvent(NearLocationObj location) {
+        if (location.getLocation() == null)
+            photoRecode.setLocationObj(null);
+        else
+            photoRecode.setLocationObj(location);
+        initLocation();
+    }
+
+    private void initLocation() {
+        if (photoRecode.getLocationObj() == null) {
+            tvLocation.setText("不显示位置");
+        } else tvLocation.setText(photoRecode.getLocationObj().getArea());
+    }
 
     @Subscribe
     public void onEvent(TimeEditPhotoDeleteEvent event) {
         int position = event.getPosition();
         String url = event.getUrl();
         List<String> data = adapter.getData();
-        if(data.size()>position){
+        if (data.size() > position) {
             data.remove(position);
 //            selImages.remove(position);
             adapter.setData(data);
             adapter.notifyDataSetChanged();
 
-            for(ImgObj img : selImages){
-                if(url.equals(img.getLocalPath())){
+            for (ImgObj img : selImages) {
+                if (url.equals(img.getLocalPath())) {
                     selImages.remove(img);
                 }
             }

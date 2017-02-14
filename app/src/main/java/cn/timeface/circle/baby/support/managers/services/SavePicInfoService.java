@@ -116,6 +116,7 @@ public class SavePicInfoService extends Service {
                         @Override
                         public void execute(DatabaseWrapper databaseWrapper) {
                             for (PhotoModel pm : photoModels) {
+                                pm.setNeedUpload(true);
                                 pm.save(databaseWrapper);
                             }
                         }
