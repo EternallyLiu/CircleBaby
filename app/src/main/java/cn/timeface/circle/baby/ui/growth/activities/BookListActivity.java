@@ -3,27 +3,27 @@ package cn.timeface.circle.baby.ui.growth.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.activities.SelectThemeActivity;
 import cn.timeface.circle.baby.activities.TimeBookPickerPhotoActivity;
+import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.ProductionMenuDialog;
+import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
+import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -37,6 +37,7 @@ import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 public class BookListActivity extends ProductionListActivity implements BookPresentation.View, View.OnClickListener{
     BookListAdapter bookListAdapter;
     BookPresenter bookPresenter;
+    ProductionMenuDialog productionMenuDialog;
 
     public static void open(Context context, int bookType){
         Intent intent = new Intent(context, BookListActivity.class);
@@ -50,6 +51,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
         tvTip.setVisibility(View.GONE);
         bookPresenter = new BookPresenter(this);
         bookPresenter.loadData(bookType);
+        btnAskPrint.setVisibility(View.GONE);
         getSupportActionBar().setTitle(FastData.getBabyName() + "的" + BookModel.getGrowthBookName(bookType));
     }
 
@@ -114,13 +116,44 @@ public class BookListActivity extends ProductionListActivity implements BookPres
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.iv_menu){
-            BookObj bookObj = (BookObj) view.getTag(R.string.tag_obj);
-            ProductionMenuDialog productionMenuDialog = ProductionMenuDialog.newInstance(
-                    bookType,
+        BookObj bookObj = (BookObj) view.getTag(R.string.tag_obj);
+        if (view.getId() == R.id.iv_menu) {
+            if (productionMenuDialog == null) {
+                ProductionMenuDialog productionMenuDialog = ProductionMenuDialog.newInstance(
+                        bookType,
+                        String.valueOf(bookObj.getBookId()),
+                        bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
+                productionMenuDialog.show(getSupportFragmentManager(), "");
+            }
+        } else if(view.getId() == R.id.tv_print){
+            new BookPrintHelper(
+                    this,
+                    bookObj.getBookType(),
+                    bookObj.getPageNum(),
+                    0,//识图卡片没有booksizeid，传值0
                     String.valueOf(bookObj.getBookId()),
-                    bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
-            productionMenuDialog.show(getSupportFragmentManager(), "");
+                    bookObj.getBookCover(),
+                    FastData.getBabyName() + "的识图卡片",
+                    System.currentTimeMillis(),
+                    CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD).reqPrintStatus();
+        }
+    }
+
+    @Subscribe
+    public void bookOptionEvent(BookOptionEvent optionEvent){
+        if(optionEvent.getBookType() == bookType){
+            //删除书籍操作
+            if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE){
+                int index = -1;
+                for(BookObj bookObj : bookListAdapter.getListData()){
+                    index++;
+                    if(bookObj.getBookId() == bookObj.getBookId()){
+                        bookListAdapter.notifyItemRemoved(index);
+                        productionMenuDialog.dismiss();
+                        break;
+                    }
+                }
+            }
         }
     }
 }

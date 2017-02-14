@@ -50,11 +50,12 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         holder.tvTitle.setText(bookObj.getBookName());
         holder.tvPagenum.setText(String.valueOf(bookObj.getPageNum()));
         holder.tvCreattime.setText(DateUtil.getYear2(bookObj.getCreateTime()));
-        if(clickListener != null ){
+        if(clickListener != null ) {
             holder.ivMenu.setOnClickListener(clickListener);
+            holder.tvPrint.setOnClickListener(clickListener);
             holder.ivMenu.setTag(R.string.tag_obj, bookObj);
+            holder.tvPrint.setTag(R.string.tag_obj, bookObj);
         }
-
     }
 
     @Override
