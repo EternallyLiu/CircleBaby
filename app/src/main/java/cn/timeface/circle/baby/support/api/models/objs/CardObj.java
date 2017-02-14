@@ -48,6 +48,12 @@ public class CardObj implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        CardObj other = (CardObj) obj;
+        return cardId == other.cardId;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -65,9 +71,15 @@ public class CardObj implements Parcelable {
         this.select = in.readInt();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        CardObj other = (CardObj) obj;
-        return cardId == other.cardId;
-    }
+    public static final Creator<CardObj> CREATOR = new Creator<CardObj>() {
+        @Override
+        public CardObj createFromParcel(Parcel source) {
+            return new CardObj(source);
+        }
+
+        @Override
+        public CardObj[] newArray(int size) {
+            return new CardObj[size];
+        }
+    };
 }

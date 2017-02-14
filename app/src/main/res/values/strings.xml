@@ -720,4 +720,6 @@
     <string name="tag_save_null_tip">对不起！选择标签之后再提交此操作1</string>
     <string name="baby_name"><![CDATA[ <font color=\'#F79646\'>%1$s</font> ]]></string>
     <string name="title_activity_card_preview">CardPreviewActivity</string>
+    <string name="title_activity_mine_book_v2">我的作品</string>
+    <string name="title_activity_recognize_card_create">识图卡片</string>
 </resources>

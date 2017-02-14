@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -120,13 +121,13 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
 
         //删除
         } else if (view.getId() == R.id.tv_delete) {
-            ((BaseAppCompatActivity) getActivity()).addSubscription(
+            ((BasePresenterAppCompatActivity) getActivity()).addSubscription(
                     apiService.deleteBook(bookId)
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 ToastUtil.showToast(response.getInfo());
                                 if (response.success()) {
-                                    EventBus.getDefault().post(new BookOptionEvent());
+                                    EventBus.getDefault().post(new BookOptionEvent(BookOptionEvent.BOOK_OPTION_DELETE, bookType, bookId));
                                 }
                             }, error -> {
                                 Log.e(ProductionMenuDialog.class.getSimpleName(), "deleteBook:");

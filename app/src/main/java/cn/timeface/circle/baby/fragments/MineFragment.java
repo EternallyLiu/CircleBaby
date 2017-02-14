@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.ui.growth.activities.MineBookActivityV2;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.android.schedulers.AndroidSchedulers;
@@ -158,7 +159,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 MineInfoActivity.open(getActivity());
                 break;
             case R.id.ll_mine_product:
-                MineBookActivity.open(getActivity());
+//                MineBookActivity.open(getActivity());
+                MineBookActivityV2.open(getActivity());
                 break;
             case R.id.ll_mine_order:
                 OrderListActivity.open(getContext());
