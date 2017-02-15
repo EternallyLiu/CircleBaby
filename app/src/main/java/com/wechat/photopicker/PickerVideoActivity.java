@@ -269,19 +269,22 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
     }
 
     private void uploadImage(String imgLocalUrl) {
+        LogUtil.showLog("imgLocalUrl:" + imgLocalUrl);
         if (TextUtils.isEmpty(imgLocalUrl)) {
             return;
         }
-        OSSManager ossManager = OSSManager.getOSSManager(this);
         new Thread() {
             @Override
             public void run() {
                 try {
+                    OSSManager ossManager = OSSManager.getOSSManager(PickerVideoActivity.this);
                     //获取上传文件
                     UploadFileObj uploadFileObj = new MyUploadFileObj(imgLocalUrl);
                     //上传操作
                     try {
                         //判断服务器是否已存在该文件
+                        String objectKey = uploadFileObj.getObjectKey();
+                        LogUtil.showLog("objectkey:" + objectKey);
                         if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
                             //如果不存在则上传
                             ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath());
@@ -303,6 +306,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                         LogUtil.showError(e);
                     }
                 } catch (Exception e) {
+                    LogUtil.showLog("upload video Exception");
                     LogUtil.showError(e);
                 }
             }

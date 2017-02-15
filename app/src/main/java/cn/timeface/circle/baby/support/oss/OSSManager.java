@@ -148,6 +148,7 @@ public class OSSManager {
 
     public PutObjectResult upload(String objectKey, String uploadFilePath) throws ClientException, ServiceException {
         PutObjectRequest put = getPutRequest(bucket, objectKey, uploadFilePath);
+        if (oss == null) throw new NullPointerException("oss is a null object");
         return oss.putObject(put);
     }
 

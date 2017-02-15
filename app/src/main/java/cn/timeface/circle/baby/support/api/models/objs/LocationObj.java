@@ -15,6 +15,11 @@ public class LocationObj implements Parcelable {
     private double lat;
     private double log;
 
+    public LocationObj(double lat, double log) {
+        this.lat = lat;
+        this.log = log;
+    }
+
     public double getLat() {
         return lat;
     }

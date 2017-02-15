@@ -2,9 +2,14 @@ package cn.timeface.circle.baby.ui.timelines.fragments;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +17,11 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +46,9 @@ import cn.timeface.circle.baby.support.utils.LocationHelper;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.PermissionUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.NearLocationAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.ContentType;
@@ -48,7 +60,7 @@ import cn.timeface.circle.baby.ui.timelines.views.LocationSearchDialog;
  * author : wangshuai Created on 2017/2/9
  * email : wangs1992321@gmail.com
  */
-public class LocationListFragment extends BaseFragment implements BDLocationListener, IPTRRecyclerListener, BaseAdapter.LoadDataFinish, EmptyDataView.EmptyCallBack, BaseAdapter.OnItemClickLister, LocationSearchDialog.SearchCallBack,DialogInterface.OnDismissListener {
+public class LocationListFragment extends BaseFragment implements BDLocationListener, IPTRRecyclerListener, BaseAdapter.LoadDataFinish, EmptyDataView.EmptyCallBack, BaseAdapter.OnItemClickLister, LocationSearchDialog.SearchCallBack, DialogInterface.OnDismissListener ,DeleteDialog.SubmitListener{
 
     @Bind(R.id.title)
     TextView title;
@@ -66,6 +78,7 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
     private TFPTRRecyclerViewHelper helper;
 
     private boolean isShowLocation = false;
+    private DeleteDialog deleteDialog;
 
 
     @Override
@@ -96,25 +109,57 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
         helper = new TFPTRRecyclerViewHelper(getActivity(), list, swipeRefreshLayout);
         helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
                 .tfPtrListener(this);
-        locationHelper.startLocation();
+        startLocation();
         return view;
     }
 
     private void startLocation() {
         if (locationHelper == null)
             locationHelper = new LocationHelper(getActivity(), this);
-        RxPermissions.getInstance(getActivity()).request(
+        RxPermissions.getInstance(getActivity()).requestEach(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(aBoolean -> {
-                    if (aBoolean) {
-                        locationHelper.startLocation();
-                        locationHelper.getLocationClient().requestHotSpotState();
+                .subscribe(permission -> {
+                    if (permission.name.equals(Manifest.permission.ACCESS_COARSE_LOCATION)
+                            || permission.name.equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        if (permission.granted) {
+                            locationHelper.startLocation();
+                            locationHelper.getLocationClient().requestHotSpotState();
+                        }else {
+                            showRequestPermissionDialog();
+                        }
                     }
                 });
+    }
+
+    private void showRequestPermissionDialog(){
+        if (deleteDialog == null) {
+            deleteDialog = new DeleteDialog(getActivity());
+            deleteDialog.setTitle("提示");
+            String contentMessage = "未获取GPS定位权限，请前往设置相关权限!";
+
+
+            SpannableStringBuilder builder = new SpannableStringBuilder(contentMessage).append(" ");
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.RED);
+            AbsoluteSizeSpan span = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));
+            //标红宝宝名字
+            builder.setSpan(span, 0, contentMessage.length(),
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(colorSpan, 0, contentMessage.length(),
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            //关键提示语加粗
+            StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
+            builder.setSpan(styleSpan, 0, contentMessage.length(),
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+
+            deleteDialog.setMessage(builder);
+            deleteDialog.setSubmitListener(this);
+        }
+        deleteDialog.show();
     }
 
 
@@ -237,12 +282,37 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
 
     @Override
     public void searchCall(String text) {
-        keywoard=text;
+        keywoard = text;
         startLocation();
     }
 
     @Override
     public void onDismiss(DialogInterface dialog) {
         adapter.addList(0, new ContentType(1, null));
+    }
+
+    @Override
+    public void submit() {
+        PermissionUtils.skipSpec(getActivity());
+//        Intent localIntent = new Intent();
+//        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        if (Build.VERSION.SDK_INT >= 9) {
+//            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+//            localIntent.setData(Uri.fromParts("package", "cn.timeface.circle.baby", null));
+//        } else if (Build.VERSION.SDK_INT <= 8) {
+//            localIntent.setAction(Intent.ACTION_VIEW);
+//            localIntent.setClassName("com.android.settings","com.android.settings.InstalledAppDetails");
+//            localIntent.putExtra("com.android.settings.ApplicationPkgName", "cn.timeface.circle.baby");
+//        }
+//        startActivity(localIntent);
+
+
+//        Uri packageURI = Uri.parse("package:" + "cn.timeface.circle.baby");
+//        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,packageURI);
+//        startActivity(intent);
+
+//        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//        startActivity(intent);
+
     }
 }

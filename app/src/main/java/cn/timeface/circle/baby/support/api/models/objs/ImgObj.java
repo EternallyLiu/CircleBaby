@@ -314,26 +314,27 @@ public class ImgObj extends BaseImgObj {
     public MediaObj getMediaObj() {
         MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
         mediaObj.setLocalIdentifier(getId());
+        mediaObj.setLocation(new LocationObj(getLat(), getLng()));
         return mediaObj;
     }
 
 
-    public void setUrl(){
-        this.url =  TypeConstants.UPLOAD_FOLDER
+    public void setUrl() {
+        this.url = TypeConstants.UPLOAD_FOLDER
                 + "/"
                 + getMd5()
                 + localPath.substring(localPath.lastIndexOf("."));
         System.out.println("ImgObj.setUrl()  =============  " + url);
     }
 
-    public void setObjectKey(){
-        this.objectKey =  TypeConstants.UPLOAD_FOLDER
+    public void setObjectKey() {
+        this.objectKey = TypeConstants.UPLOAD_FOLDER
                 + "/"
                 + getMd5()
                 + localPath.substring(localPath.lastIndexOf("."));
     }
 
-    public void setMd5(){
+    public void setMd5() {
         this.md5 = MD5.encode(new File(localPath));
     }
 }

@@ -21,6 +21,8 @@ import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.LikeUserList;
 import cn.timeface.circle.baby.ui.timelines.views.GridStaggerLookup;
@@ -39,14 +41,16 @@ public class TimeLineDetailAdapter extends BaseAdapter {
     @Override
     public int getViewLayoutID(int viewType) {
         switch (viewType) {
-            case 1:
-                return R.layout.tiime_line_detail_imageview;
-            case 3:
-                return R.layout.time_line_detail_content;
             case 0:
+                return R.layout.tiime_line_detail_imageview;
+            case 1:
                 return R.layout.time_line_detail_comment;
             case 2:
                 return R.layout.time_line_detail_like;
+            case 3:
+                return R.layout.time_line_detail_content;
+            case 4:
+                return R.layout.time_line_detail_video;
             default:
                 return -1;
         }
@@ -57,9 +61,12 @@ public class TimeLineDetailAdapter extends BaseAdapter {
     public int getViewType(int position) {
         Object item = getItem(position);
         if (item instanceof MediaObj) {
-            return 1;
-        } else if (item instanceof CommentObj)
+            MediaObj mediaObj = (MediaObj) item;
+            if (mediaObj.isVideo())
+                return 4;
             return 0;
+        } else if (item instanceof CommentObj)
+            return 1;
         else if (item instanceof LikeUserList)
             return 2;
         else if (item instanceof String)
@@ -80,15 +87,52 @@ public class TimeLineDetailAdapter extends BaseAdapter {
 
     }
 
-    private void doMediaObj(View contentView, int position, MediaObj mediaObj) {
-        int width = lookup.getSpanSize(position) * columWidth;
-        int height = (mediaObj.getH() * width) / mediaObj.getW();
+    private void doVideo(View contentView, int postion, MediaObj mediaObj) {
+        ImageView ivVideo = ViewHolder.getView(contentView, R.id.iv_video);
+        ImageView ivCover = ViewHolder.getView(contentView, R.id.iv_cover);
+        TextView tvVideotime = ViewHolder.getView(contentView, R.id.tv_videotime);
+        tvVideotime.setText("时长：" + DateUtil.getTime4(mediaObj.getLength() * 1000));
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) contentView.getLayoutParams();
         if (params == null) {
-            params = new RecyclerView.LayoutParams(width, height);
+            params = new RecyclerView.LayoutParams(App.mScreenWidth,
+                    Remember.getInt("width", 0));
         } else {
-            params.width = width;
-            params.height = height;
+            params.width = App.mScreenWidth;
+            params.height = (int) (Remember.getInt("width", 0) + context().getResources().getDimension(R.dimen.size_20));
+        }
+        contentView.setLayoutParams(params);
+        ViewGroup.LayoutParams layoutParams = ivVideo.getLayoutParams();
+        layoutParams.width = Remember.getInt("width", 0);
+        layoutParams.height = Remember.getInt("width", 0);
+        ivVideo.setLayoutParams(layoutParams);
+        Glide.with(context())
+                .load(mediaObj.getImgUrl())
+                .crossFade().placeholder(R.drawable.bg_default_holder_img)
+                .error(R.drawable.bg_default_holder_img)
+                .into(ivVideo);
+    }
+
+
+    private void doMediaObj(View contentView, int position, MediaObj mediaObj) {
+        if (mediaObj.isVideo()) {
+            doVideo(contentView, position, mediaObj);
+            return;
+        }
+        LogUtil.showLog(JSONUtils.parse2JSONString(mediaObj));
+        int width = Remember.getInt("width", 0);
+        if (mediaObj.getW() > 0)
+            width = lookup.getSpanSize(position) * columWidth;
+        int height = Remember.getInt("width", 0);
+        ;
+        if (mediaObj.getH() > 0)
+            height = (mediaObj.getH() * width) / mediaObj.getW();
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) contentView.getLayoutParams();
+        if (params == null) {
+            params = new RecyclerView.LayoutParams(width == 0 ? RecyclerView.LayoutParams.MATCH_PARENT : width,
+                    height == 0 ? RecyclerView.LayoutParams.WRAP_CONTENT : height);
+        } else {
+            params.width = width == 0 ? RecyclerView.LayoutParams.MATCH_PARENT : width;
+            params.height = height == 0 ? RecyclerView.LayoutParams.WRAP_CONTENT : height;
         }
         LogUtil.showLog("width:" + width + "----height:" + height);
         contentView.setLayoutParams(params);

@@ -234,7 +234,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         switch (v.getId()) {
             case R.id.rl_location:
                 Bundle bundle = new Bundle();
-                if (timelimeobj.getLocationInfo() == null||TextUtils.isEmpty(timelimeobj.getLocationInfo().getArea()))
+                if (timelimeobj.getLocationInfo() == null || TextUtils.isEmpty(timelimeobj.getLocationInfo().getArea()))
                     bundle.putBoolean("isShowLocation", true);
                 else bundle.putBoolean("isShowLocation", false);
                 FragmentBridgeActivity.open(this, LocationListFragment.class.getSimpleName(), bundle);
@@ -258,7 +258,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     private void editTime() {
         String value = etContent.getText().toString();
-        if (imageUrls.size() < 1 && timelimeobj.getType() != 1) {
+        if (imageUrls.size() < 1 && timelimeobj.getType() != 4 && timelimeobj.getType() != 1) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }

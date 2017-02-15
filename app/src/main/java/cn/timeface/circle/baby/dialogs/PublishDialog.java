@@ -84,7 +84,7 @@ public class PublishDialog extends BaseDialog {
         tvDiary.setOnClickListener(v -> {
             dismiss();
 //            PublishActivity.open(context, PublishActivity.DIALY);
-            DiaryPublishActivity.open(context);
+            PublishActivity.open(context, PublishActivity.VOICE);
         });
         tvCard.setOnClickListener(v -> {
             dismiss();

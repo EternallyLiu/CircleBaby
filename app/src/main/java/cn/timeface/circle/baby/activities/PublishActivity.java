@@ -93,6 +93,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public static final int VIDEO = 2;
     public static final int DIALY = 3;
     public static final int CARD = 4;
+    public static final int VOICE = 5;
 
     protected final int PHOTO_COUNT_MAX = 99;
 
@@ -223,6 +224,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 type = 3;
                 CardPublishActivity.open(this);
                 break;
+            case VOICE:
+                type = 4;
+                tvTime.setText(DateUtil.getYear2(System.currentTimeMillis()));
+                break;
         }
 
         if (cardObj != null) {
@@ -259,6 +264,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             public void onClick(View v) {
                 switch (type) {
                     case 0:
+                    case 4:
                         selectImages();
                         break;
                     case 1:
@@ -312,7 +318,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
         if (mediaUpdateEvent.getAllDetailsListPosition() >= 0)
             return;
-        if (mediaUpdateEvent.getIndex() >= 0&&mediaObjs.get(mediaUpdateEvent.getIndex()).getLocalIdentifier().equals(mediaUpdateEvent.getMediaObj().getLocalIdentifier())) {
+        if (mediaUpdateEvent.getIndex() >= 0 && mediaObjs.get(mediaUpdateEvent.getIndex()).getLocalIdentifier().equals(mediaUpdateEvent.getMediaObj().getLocalIdentifier())) {
             mediaObjs.get(mediaUpdateEvent.getIndex()).setTips(mediaUpdateEvent.getMediaObj().getTips());
             mediaObjs.get(mediaUpdateEvent.getIndex()).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
             mediaObjs.get(mediaUpdateEvent.getIndex()).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
@@ -332,6 +338,54 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
 
+    private void resultPictrue() {
+        photoRecodes.clear();
+        imageUrls.clear();
+        titles.clear();
+        for (ImgObj item : selImages) {
+            imageUrls.add(item.getLocalPath());
+            String title = item.getDate();
+
+            if (!titles.contains(title)) {
+                titles.add(title);
+
+            }
+        }
+
+        imagelLists = new List[titles.size()];
+        img2Medias();
+
+        for (int i = 0; i < titles.size(); i++) {
+            imagelLists[i] = new ArrayList<>();
+            for (ImgObj item : selImages) {
+                if (titles.get(i).equals(item.getDate())) {
+                    imagelLists[i].add(item);
+                }
+            }
+            photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i], mediaObjs));
+        }
+        if (photoRecodes.size() > 1) {
+            llSingleDate.setVisibility(View.GONE);
+            contentRecyclerView.setVisibility(View.VISIBLE);
+            publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
+            contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            contentRecyclerView.setAdapter(publishPhotoAdapter);
+        } else {
+            llSingleDate.setVisibility(View.VISIBLE);
+            contentRecyclerView.setVisibility(View.GONE);
+
+            if (imageUrls.size() > 0) {
+                adapter.getData().clear();
+                adapter.getData().addAll(imageUrls);
+                adapter.notifyDataSetChanged();
+                adapter.setMediaObjs(mediaObjs);
+
+                tvTime.setText(titles.get(0));
+            }
+        }
+        time_shot = titles.get(0);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -339,51 +393,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             switch (requestCode) {
                 case PICTURE:
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
-                    photoRecodes.clear();
-                    imageUrls.clear();
-                    titles.clear();
-                    for (ImgObj item : selImages) {
-                        imageUrls.add(item.getLocalPath());
-                        String title = item.getDate();
-
-                        if (!titles.contains(title)) {
-                            titles.add(title);
-
-                        }
-                    }
-
-                    imagelLists = new List[titles.size()];
-                    img2Medias();
-
-                    for (int i = 0; i < titles.size(); i++) {
-                        imagelLists[i] = new ArrayList<>();
-                        for (ImgObj item : selImages) {
-                            if (titles.get(i).equals(item.getDate())) {
-                                imagelLists[i].add(item);
-                            }
-                        }
-                        photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i], mediaObjs));
-                    }
-                    if (photoRecodes.size() > 1) {
-                        llSingleDate.setVisibility(View.GONE);
-                        contentRecyclerView.setVisibility(View.VISIBLE);
-                        publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
-                        contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                        contentRecyclerView.setAdapter(publishPhotoAdapter);
-                    } else {
-                        llSingleDate.setVisibility(View.VISIBLE);
-                        contentRecyclerView.setVisibility(View.GONE);
-
-                        if (imageUrls.size() > 0) {
-                            adapter.getData().clear();
-                            adapter.getData().addAll(imageUrls);
-                            adapter.notifyDataSetChanged();
-                            adapter.setMediaObjs(mediaObjs);
-
-                            tvTime.setText(titles.get(0));
-                        }
-                    }
-                    time_shot = titles.get(0);
+                    resultPictrue();
                     break;
                 case MILESTONE:
                     milestone = (Milestone) data.getParcelableExtra("milestone");
@@ -429,6 +439,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     tvTime.setText(time_shot);
                     tvVideotime.setText("时长：" + DateUtil.getTime4(videoInfo.getDuration() * 1000));
                     MediaObj mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
+                    if (cardObj == null)
+                        cardObj = new CardObj();
                     cardObj.setMedia(mediaObj);
                     break;
             }
@@ -568,8 +580,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private void postRecord() {
         String value = etContent.getText().toString();
         long time = 0;
-        if (imageUrls.size() < 1) {
+        if (imageUrls.size() < 1 && type != 4) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
+            isPublish = false;
+            return;
+        }
+        if (type == 4 && TextUtils.isEmpty(value)) {
+            ToastUtil.showToast("在输入框写点内容吧？");
             isPublish = false;
             return;
         }
@@ -609,6 +626,15 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             timeContent.setLocationInfo(photoRecode.getLocationObj());
             datalist.add(timeContent);
         }
+        if (datalist.size() <= 0 && photoRecodes.size() <= 0) {
+            TimeConttent timeContent = new TimeConttent();
+            if (milestone != null)
+                timeContent.setMilestone(milestone.getId());
+            timeContent.setContent(value);
+            timeContent.setTime(time);
+            timeContent.setLocationInfo(currentLocation);
+            datalist.add(timeContent);
+        }
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
@@ -630,7 +656,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 }, throwable -> {
                     tfProgressDialog.dismiss();
                     isPublish = false;
-                    Log.e(TAG, "publish:", throwable);
+                    LogUtil.showError(throwable);
                     ToastUtil.showToast("服务器异常，请稍后重试");
                 });
 
@@ -775,6 +801,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             isPublish = true;
             switch (type) {
                 case 0:
+                case 4:
                     postRecord();
                     break;
                 case 1:

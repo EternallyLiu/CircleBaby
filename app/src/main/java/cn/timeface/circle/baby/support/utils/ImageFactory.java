@@ -429,7 +429,7 @@ public class ImageFactory {
         if (bitmap==null)
             return null;
 
-        String fileName = UUID.randomUUID().toString() + ".cbaby";
+        String fileName = UUID.randomUUID().toString() + ".jpg";
 //        File file = new File("/mnt/sdcard/baby");
         File file = new File(Environment.getExternalStorageDirectory().getPath() +File.separator+ "baby"+File.separator+"cache");
         if (!file.exists()) {
