@@ -125,7 +125,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                 } else {
                     //跳转到裁剪视频界面
                     videoInfo = videos.get(position);
-                    String s = ImageFactory.saveImage(videoInfo.getThumbnail());
+                    String s = videoInfo.getThumbmailLocalUrl();
                     videoInfo.setImgLocalUrl(s);
                     Intent intent = new Intent(PickerVideoActivity.this, VideoEditActivity.class);
                     intent.putExtra("path", videoInfo.getPath());
@@ -255,6 +255,8 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
         tfProgressDialog.setTvMessage("剪裁视频中，请稍候…");
         tfProgressDialog.show(getSupportFragmentManager(), "");
         String clipVideoPath = event.getClipVideoPath();
+        LogUtil.showLog(event.getClipVideoPath());
+        LogUtil.showLog("Duration:" + event.getDuration());
         int duration = event.getDuration();
         videoInfo.setPath(clipVideoPath);
         videoInfo.setDuration(duration);
@@ -298,10 +300,10 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
                         finish();
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
                     } catch (ServiceException | ClientException e) {
-                        e.printStackTrace();
+                        LogUtil.showError(e);
                     }
                 } catch (Exception e) {
-
+                    LogUtil.showError(e);
                 }
             }
         }.start();
@@ -309,7 +311,7 @@ public class PickerVideoActivity extends BaseAppCompatActivity implements IEvent
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(MediaLoadComplete event) {
-        LogUtil.showLog("get event===="+event.getType());
+        LogUtil.showLog("get event====" + event.getType());
         if (event.getType() == 1)
             initData();
     }

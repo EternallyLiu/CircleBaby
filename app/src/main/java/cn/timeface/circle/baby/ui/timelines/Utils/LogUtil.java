@@ -11,10 +11,16 @@ import cn.timeface.circle.baby.support.api.services.ApiService;
 
 public class LogUtil {
 
-    public static final String TAG="test_log";
+    public static final String TAG = "test_log";
 
-    public static void showLog(String text){
+    public static void showLog(String text) {
         if (BuildConfig.SHOW_LOG)
-            Log.d(TAG,text);
+            Log.d(TAG, text);
+    }
+
+    public static void showError(Throwable e) {
+        if (BuildConfig.SHOW_LOG)
+            Log.e(TAG, e.getMessage(), e);
+
     }
 }

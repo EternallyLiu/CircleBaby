@@ -400,6 +400,7 @@ public class ImageFactory {
 
     public static String saveImage(Bitmap bitmap) {
 
+        if (bitmap==null)return null;
         String fileName = System.currentTimeMillis() + ".jpg";
 //        File file = new File("/mnt/sdcard/baby");
         File file = new File(Environment.getExternalStorageDirectory().getPath() + "/baby");

@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.events.ClipVideoSuccessEvent;
 import cn.timeface.circle.baby.support.utils.ClipUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.RangeSeekBar;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
@@ -167,7 +168,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
                 } catch (IOException e) {
                     isClip = false;
                     tfProgressDialog.dismiss();
-                    e.printStackTrace();
+                    LogUtil.showError(e);
                 }
                 isClip = false;
             }

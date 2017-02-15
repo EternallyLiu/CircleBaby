@@ -110,7 +110,9 @@ public class LoadMediaService extends IntentService {
                     continue;
             }
             Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
-            String thumbPath = ImageFactory.saveImageCache(thumbnail);
+            String thumbPath = null;
+            if (thumbnail != null)
+                thumbPath = ImageFactory.saveImageCache(thumbnail);
             videoInfo.setThumbnail(thumbnail);
             videoInfo.setThumbmailLocalUrl(thumbPath);
             videoInfo.setDate(date);
