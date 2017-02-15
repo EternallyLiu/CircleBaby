@@ -49,6 +49,8 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
     private RelativeLayout tvShare;
     private RelativeLayout tvCancel;
 
+    private int allDetailsListPosition;
+
     public TimeLineActivityMenuDialog(Context context) {
         super(context, R.style.TFDialogStyle);
         this.context = context;
@@ -97,7 +99,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
     private void initListener() {
         tvEdit.setOnClickListener(v -> {
             dismiss();
-            context.startActivity(new Intent(context, TimeLineEditActivity.class).putExtra("timelimeobj", timelineobj));
+            context.startActivity(new Intent(context, TimeLineEditActivity.class).putExtra("timelimeobj", timelineobj).putExtra("allDetailsListPosition",allDetailsListPosition));
         });
         tvDlete.setOnClickListener(v -> {
             dismiss();
@@ -188,4 +190,12 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         });
     }
 
+    public int getAllDetailsListPosition() {
+        return allDetailsListPosition;
+    }
+
+    public TimeLineActivityMenuDialog setAllDetailsListPosition(int allDetailsListPosition) {
+        this.allDetailsListPosition = allDetailsListPosition;
+        return this;
+    }
 }

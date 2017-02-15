@@ -3,6 +3,8 @@ package cn.timeface.circle.baby.ui.timelines.beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.objs.LocationObj;
 
@@ -10,6 +12,7 @@ import cn.timeface.circle.baby.support.api.models.objs.LocationObj;
  * author : wangshuai Created on 2017/2/9
  * email : wangs1992321@gmail.com
  */
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class NearLocationObj extends BaseObj implements Parcelable {
 
     private String area;

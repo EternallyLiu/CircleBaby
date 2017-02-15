@@ -36,6 +36,7 @@ import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.support.api.models.PhotoRecode;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.Milestone;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
@@ -86,6 +87,16 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     private PhotoRecode photoRecode;
     private String time_shot;
 
+    private boolean isEdit = false;
+    private TimeLineObj currentTimeLineObj = null;
+
+    public static void open(Context context, TimeLineObj timeLineObj) {
+        Intent intent = new Intent(context, PhotoRecodeDetailActivity.class);
+        intent.putExtra("isEdit", true);
+        intent.putExtra(TimeLineObj.class.getName(), timeLineObj);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +104,6 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         photoRecode = getIntent().getParcelableExtra("photoRecode");
         position = getIntent().getIntExtra("position", 0);
         selImages = photoRecode.getImgObjList();
@@ -126,6 +136,16 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
         });
         initLocation();
         rlLocation.setOnClickListener(this);
+    }
+
+    private List<ImgObj> getImageObjList() {
+        List<ImgObj> list = new ArrayList<>();
+        if (currentTimeLineObj != null && currentTimeLineObj.getMediaList().size() > 0) {
+            for (int i = 0; i < currentTimeLineObj.getMediaList().size(); i++) {
+                list.add(currentTimeLineObj.getMediaList().get(i).getImgObj());
+            }
+        }
+        return list;
     }
 
     private void selectImages() {

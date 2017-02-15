@@ -41,12 +41,12 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.TimelineEditEvent;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.Milestone;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
@@ -54,6 +54,11 @@ import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 
 public class TimeLineEditActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
@@ -83,6 +88,10 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     TextView tvVideotime;
     @Bind(R.id.ll_video)
     LinearLayout llVideo;
+    @Bind(R.id.tv_location)
+    TextView tvLocation;
+    @Bind(R.id.rl_location)
+    RelativeLayout rlLocation;
     private PhotoGridAdapter adapter;
     private List<String> imageUrls = new ArrayList<>();
     private final int PICTURE = 0;
@@ -99,6 +108,8 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     private ArrayList<ImgObj> imgObjs = new ArrayList<>();
     private String time_shot;
 
+    private int allDetailsListPosition = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,12 +117,14 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         initView();
+        rlLocation.setOnClickListener(this);
+        initLocation();
     }
 
     private void initView() {
         timelimeobj = getIntent().getParcelableExtra("timelimeobj");
+        allDetailsListPosition = getIntent().getIntExtra("allDetailsListPosition", -1);
         mediaList = timelimeobj.getMediaList();
         milestoneId = timelimeobj.getMilestoneId();
         time = DateUtil.getYear2(timelimeobj.getDotime());
@@ -160,7 +173,9 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
+//                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
+                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, allDetailsListPosition, timelimeobj.getMediaArray(),
+                                (ArrayList<String>) adapter.getData(), position, true, false);
                     }
                 });
             } else {
@@ -217,6 +232,13 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_location:
+                Bundle bundle = new Bundle();
+                if (timelimeobj.getLocationInfo() == null||TextUtils.isEmpty(timelimeobj.getLocationInfo().getArea()))
+                    bundle.putBoolean("isShowLocation", true);
+                else bundle.putBoolean("isShowLocation", false);
+                FragmentBridgeActivity.open(this, LocationListFragment.class.getSimpleName(), bundle);
+                break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
@@ -236,7 +258,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     private void editTime() {
         String value = etContent.getText().toString();
-        if (imageUrls.size() < 1 && timelimeobj.getType()!=1) {
+        if (imageUrls.size() < 1 && timelimeobj.getType() != 1) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -249,7 +271,8 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         String s = new Gson().toJson(mediaList);
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
-        apiService.editTime(URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, time, timelimeobj.getTimeId())
+        String locationInfo = JSONUtils.parse2JSONString(timelimeobj.getLocationInfo());
+        apiService.editTime(URLEncoder.encode(locationInfo), URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, time, timelimeobj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
@@ -426,6 +449,32 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     }
 
     @Subscribe
+    public void onEvent(MediaUpdateEvent event) {
+        if (timelimeobj.getMediaList().contains(event.getMediaObj())) {
+            List<MediaObj> mediaList = timelimeobj.getMediaList();
+            int indexOf = mediaList.indexOf(event.getMediaObj());
+            mediaList.get(indexOf).setTips(event.getMediaObj().getTips());
+            mediaList.get(indexOf).setFavoritecount(event.getMediaObj().getFavoritecount());
+            mediaList.get(indexOf).setIsFavorite(event.getMediaObj().getIsFavorite());
+        }
+    }
+
+    @Subscribe
+    public void onEvent(NearLocationObj location) {
+        if (location.getLocation() == null)
+            timelimeobj.setLocationInfo(null);
+        else
+            timelimeobj.setLocationInfo(location);
+        initLocation();
+    }
+
+    private void initLocation() {
+        if (timelimeobj.getLocationInfo() == null || TextUtils.isEmpty(timelimeobj.getLocationInfo().getArea())) {
+            tvLocation.setText("不显示位置");
+        } else tvLocation.setText(timelimeobj.getLocationInfo().getArea());
+    }
+
+    @Subscribe
     public void onEvent(TimeEditPhotoDeleteEvent event) {
         boolean b = true;
         int position = event.getPosition();
@@ -443,14 +492,14 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 }
             }
         }
-        if(!b){
-            for(String s : imageUrls){
-                if(url.equals(s)){
+        if (!b) {
+            for (String s : imageUrls) {
+                if (url.equals(s)) {
                     imageUrls.remove(s);
                 }
             }
         }
-        if(b){
+        if (b) {
             for (ImgObj img : imgObjs) {
                 if (img.getLocalPath().equals(url)) {
                     imgObjs.remove(img);

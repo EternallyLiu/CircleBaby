@@ -331,7 +331,8 @@ public interface ApiService {
 
     //编辑时光
     @GET("babyTime/editTime")
-    Observable<BaseResponse> editTime(@Query("content") String content,
+    Observable<BaseResponse> editTime(@Query("locationInfo") String locationInfo,
+                                      @Query("content") String content,
                                       @Query("mediaList") String mediaList,
                                       @Query("milestone") int milestone,
                                       @Query("time") long time,
@@ -655,20 +656,21 @@ public interface ApiService {
     @POST("auth/binding")
     Observable<BaseResponse> bindPhone(@Query("phoneNum") String phoneNum,
                                        @Query("verifycode") String verifycode);
+
     /**
-     *
      * @param newPwd
      * @param oldPwd
      * @return
      */
     @POST("auth/modifyPassword\n")
     Observable<BaseResponse> modifyPassword
-            (@Query("newPwd") String newPwd,
-             @Query("oldPwd") String oldPwd);
+    (@Query("newPwd") String newPwd,
+     @Query("oldPwd") String oldPwd);
 
 
     /**
      * 获取他图片标签列表
+     *
      * @param lat
      * @param log
      * @return
@@ -679,16 +681,18 @@ public interface ApiService {
 
     /**
      * 添加图片为喜欢
+     *
      * @param favore
      * @param mediaId
-     * @return  喜欢的数量
+     * @return 喜欢的数量
      */
     @POST("label/addLike")
     Observable<LikeResponse> addLabelLike(@Query("favore") String favore,
-                                     @Query("mediaId") String mediaId);
+                                          @Query("mediaId") String mediaId);
 
     /**
      * 添加标签到图片中
+     *
      * @param mediaId
      * @param tips
      * @return
@@ -699,16 +703,18 @@ public interface ApiService {
 
     /**
      * 删除标签
+     *
      * @param mediaId
      * @param tips
      * @return
      */
     @POST("label/delLabel")
     Observable<BaseResponse> deleteLabel(@Query("mediaId") String mediaId,
-                                        @Query("tipId") String tips);
+                                         @Query("tipId") String tips);
 
     /**
      * 获取印成长首页数据
+     *
      * @return print growth data
      */
     @GET("printGrowth/index")
@@ -716,6 +722,7 @@ public interface ApiService {
 
     /**
      * 获取书的列表数据
+     *
      * @return book list response
      */
     @GET("printGrowth/getBookListByBookType")
@@ -723,6 +730,7 @@ public interface ApiService {
 
     /**
      * 获取识图卡片列表
+     *
      * @return recognize card list response
      */
     @GET("printGrowth/knowCardList")
@@ -730,12 +738,15 @@ public interface ApiService {
 
     /**
      * 获取日记卡片列表
+     *
      * @return diary card list response
      */
     @GET("printGrowth/diaryCardList")
     Observable<DiaryCardListResponse> diaryCardList();
+
     /**
      * 获取附近热点
+     *
      * @return diary card list response
      */
     @GET("map/getPois")
@@ -745,6 +756,7 @@ public interface ApiService {
 
     /**
      * 创建卡片作品
+     *
      * @param babyId
      * @param author
      * @param bookCover
@@ -775,6 +787,7 @@ public interface ApiService {
 
     @POST("mediaID/backup")
     Observable<MediaIdResponse> mediaBackup(@Query("identifiers") String identifiers);
+
     @POST("mediaID/localList")
     Observable<MediaIdResponse> localList(@Query("userId") String userId);
 

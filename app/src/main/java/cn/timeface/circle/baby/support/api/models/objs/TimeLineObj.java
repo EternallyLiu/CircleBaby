@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
 
 /**
  * Created by lidonglin on 2016/5/9.
@@ -30,6 +31,8 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     int timeId;
     int type;                       //0 照片 1 视频 2 日记 3 识图
     String content;                 //时光内容
+    NearLocationObj locationInfo;
+
 
     public long getDotime() {
         return dotime;
@@ -85,6 +88,20 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         return mediaList;
     }
 
+    public ArrayList<MediaObj> getMediaArray() {
+        if (mediaList == null)
+            mediaList = new ArrayList<>(0);
+        ArrayList<MediaObj> list = null;
+        try {
+            list = (ArrayList<MediaObj>) this.mediaList;
+        } catch (Exception e) {
+            list = new ArrayList<>();
+            list.addAll(mediaList);
+        }
+        return list;
+    }
+
+
     public void setMediaList(List<MediaObj> mediaList) {
         this.mediaList = mediaList;
     }
@@ -114,8 +131,8 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     public List<CommentObj> getCommentList() {
-        if (commentList==null)
-            commentList=new ArrayList<>();
+        if (commentList == null)
+            commentList = new ArrayList<>();
         return commentList;
     }
 
@@ -132,8 +149,8 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     public List<UserObj> getLikeList() {
-        if (likeList==null)
-            likeList=new ArrayList<>();
+        if (likeList == null)
+            likeList = new ArrayList<>();
         return likeList;
     }
 
@@ -150,6 +167,14 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     public TimeLineObj() {
+    }
+
+    public NearLocationObj getLocationInfo() {
+        return locationInfo;
+    }
+
+    public void setLocationInfo(NearLocationObj locationInfo) {
+        this.locationInfo = locationInfo;
     }
 
     public String getAge() {
@@ -191,6 +216,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         dest.writeInt(this.timeId);
         dest.writeInt(this.type);
         dest.writeString(this.content);
+        dest.writeParcelable(this.locationInfo, flags);
     }
 
     protected TimeLineObj(Parcel in) {
@@ -210,6 +236,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.timeId = in.readInt();
         this.type = in.readInt();
         this.content = in.readString();
+        this.locationInfo = in.readParcelable(NearLocationObj.class.getClassLoader());
     }
 
     public static final Creator<TimeLineObj> CREATOR = new Creator<TimeLineObj>() {

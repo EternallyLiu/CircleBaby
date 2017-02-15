@@ -13,6 +13,7 @@ import java.util.List;
 public class JSONUtils {
 
     public static String parse2JSONString(Object object){
+        if (object==null)return "";
         String json = null;
         try {
             json = LoganSquare.serialize(object);
@@ -24,6 +25,7 @@ public class JSONUtils {
         return json;
     }
     public static String parse2JSONString(List list){
+        if (list==null)return "";
         String json = null;
         try {
             json = LoganSquare.serialize(list);

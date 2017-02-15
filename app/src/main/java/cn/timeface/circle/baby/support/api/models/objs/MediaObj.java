@@ -219,6 +219,10 @@ public class MediaObj extends BaseObj implements Parcelable {
     public ImgObj getImgObj() {
         ImgObj imgObj = new ImgObj(getImgUrl(), getLocalPath());
         imgObj.setDateMills(getPhotographTime());
+        imgObj.setId(getLocalIdentifier());
+        imgObj.setContent(getContent());
+        imgObj.setWidth(getW());
+        imgObj.setHeight(getH());
         return imgObj;
     }
 
