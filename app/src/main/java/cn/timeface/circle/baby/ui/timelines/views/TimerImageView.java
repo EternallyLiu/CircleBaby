@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+
 /**
  * author : wangshuai Created on 2017/2/14
  * email : wangs1992321@gmail.com
@@ -23,7 +25,8 @@ public class TimerImageView extends ImageView implements Runnable {
     }
 
     private void showImage() {
-        Glide.with(getContext()).load(list.get(index)).crossFade(300).into(this);
+        GlideUtil.displayImageCrossfade(list.get(index),this);
+
         if (index < 0 || index >= list.size() - 1)
             index = 0;
         else index++;
