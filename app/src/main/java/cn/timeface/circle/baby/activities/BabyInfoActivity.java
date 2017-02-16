@@ -59,6 +59,7 @@ import cn.timeface.circle.baby.ui.babyInfo.activity.BigNameActivity;
 import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
 import cn.timeface.circle.baby.ui.babyInfo.views.GenderDialog;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnClickListener, DeleteDialog.SubmitListener, GenderDialog.GenderSelectedListener {
 
@@ -247,7 +248,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     } else {
                         outFile = new File(outPath);
                     }
-                    GlideUtil.displayImage(outFile.getAbsolutePath(), ivAvatar);
+                    GlideUtil.displayImageCircle(outFile.getAbsolutePath(), ivAvatar);
                     uploadImage(outFile.getAbsolutePath());
                     break;
             }
@@ -382,6 +383,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         String brithday = tvBrithday.getText().toString();
         long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
         String b = tvBlood.getText().toString();
+        if (TextUtils.isEmpty(b)) b = "";
         btnSave.setEnabled(false);
         apiService.editBabyInfo(time, URLEncoder.encode(b), gender, URLEncoder.encode(n),
                 URLEncoder.encode(this.babyObj.getRealName()),
@@ -407,7 +409,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     }
                     btnSave.setEnabled(true);
                 }, throwable -> {
-                    Log.e(TAG, "editBabyInfo:", throwable);
+                    LogUtil.showError(throwable);
+//                    Log.e(TAG, "editBabyInfo:", throwable);
                 });
     }
 

@@ -313,7 +313,8 @@ public class CreateBabyFragment extends BaseFragment implements View.OnClickList
                     } else {
                         outFile = new File(outPath);
                     }
-                    Glide.with(this).load(outFile).into(ivAvatar);
+                    GlideUtil.displayImageCircle(outFile.getAbsolutePath(),ivAvatar);
+//                    Glide.with(this).load(outFile).into(ivAvatar);
 //                    tvNext.setText("上传中");
 //                    tvNext.setEnabled(false);
                     showProgress("上传中……");
