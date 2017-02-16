@@ -40,6 +40,7 @@ import cn.timeface.circle.baby.support.managers.listeners.OnClickListener;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -129,7 +130,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                 keys.add("book_title");
                 values.add(FastData.getUserName());
                 values.add(FastData.getBabyName()+"的照片书");
-                MyPODActivity.open(MineBookActivity.this, mineBookObj.getBookId() ,mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null,"",false,mineBookObj.getBabyId(),keys,values,0);
+                MyPODActivity.open(MineBookActivity.this, mineBookObj.getBookId() ,mineBookObj.getOpenBookId(), BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, mineBookObj.getOpenBookType(), null,"",false,mineBookObj.getBabyId(),keys,values,0);
             } else {
                 //日记书、识图卡片书，跳转本地预览
                 apiService.queryImageInfoList(mineBookObj.getBookId(), mineBookObj.getBookType())

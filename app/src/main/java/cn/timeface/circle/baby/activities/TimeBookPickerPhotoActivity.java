@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.events.PhotoSelectEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
@@ -207,7 +208,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             values.add(FastData.getUserName());
             values.add(FastData.getBabyName()+"的照片书");
 
-            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
+            MyPODActivity.open(this, bookId, openBookId, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
             finish();
         }
         return super.onOptionsItemSelected(item);

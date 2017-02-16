@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#99000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingBottom="28dp"
+        android:paddingLeft="@dimen/view_space_medium"
+        android:paddingRight="@dimen/view_space_medium"
+        android:paddingTop="28dp">
+
+        <TextView
+            android:id="@+id/tv_type_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:clickable="true"
+            android:drawablePadding="@dimen/view_space_normal"
+            android:drawableTop="@drawable/selector_content_type_time"
+            android:gravity="center_horizontal"
+            android:text="按时间"
+            android:textColor="@drawable/selector_home_mine_textcolor" />
+
+        <TextView
+            android:id="@+id/tv_type_user"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:clickable="true"
+            android:drawablePadding="@dimen/view_space_normal"
+            android:drawableTop="@drawable/selector_content_type_user"
+            android:gravity="center_horizontal"
+            android:text="按发布人"
+            android:textColor="@drawable/selector_home_mine_textcolor" />
+
+        <TextView
+            android:id="@+id/tv_type_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:clickable="true"
+            android:drawablePadding="@dimen/view_space_normal"
+            android:drawableTop="@drawable/selector_content_type_location"
+            android:gravity="center_horizontal"
+            android:text="按地点"
+            android:textColor="@drawable/selector_home_mine_textcolor" />
+
+        <TextView
+            android:id="@+id/tv_type_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:clickable="true"
+            android:drawablePadding="@dimen/view_space_normal"
+            android:drawableTop="@drawable/selector_content_type_label"
+            android:gravity="center_horizontal"
+            android:text="按标签"
+            android:textColor="@drawable/selector_home_mine_textcolor" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

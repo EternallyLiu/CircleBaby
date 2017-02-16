@@ -12,8 +12,10 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.open.api.bean.obj.TFOBookContentModel;
@@ -29,10 +31,12 @@ public class MyPODActivity extends PODActivity {
     private boolean edit;
     private String bookId;
     private int babyId;
+    private int localBookType;
+    TFDialog tfDialog;
 
-    public static void open(Context context, String bookId , String openBookId, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values, int rebuild) {
+    public static void open(Context context, String bookId , String openBookId,int localBookType, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values, int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
-        intent.putExtra("book_type", openBookType);
+        intent.putExtra("book_type", openBookType);//开放平台booktype
         intent.putExtra("book_id", openBookId);
         intent.putParcelableArrayListExtra(TFOConstant.PUBLISH_OBJS, (ArrayList<? extends Parcelable>) publishObjs);
         intent.putExtra("dataList", dataList);
@@ -42,6 +46,7 @@ public class MyPODActivity extends PODActivity {
         intent.putStringArrayListExtra(TFOConstant.POD_KEYS,keys);
         intent.putStringArrayListExtra(TFOConstant.POD_VALUES,values);
         intent.putExtra(TFOConstant.REBUILD_BOOK,rebuild);
+        intent.putExtra("local_book_type", localBookType);
         context.startActivity(intent);
     }
 
@@ -52,13 +57,29 @@ public class MyPODActivity extends PODActivity {
         edit = getIntent().getBooleanExtra("edit", false);
         bookId = getIntent().getStringExtra("bookId");
         babyId = getIntent().getIntExtra("babyId", 0);
+        this.localBookType = getIntent().getIntExtra("local_book_type", 0);
+        tfDialog = TFDialog.getInstance();
+        tfDialog.show(getSupportFragmentManager(), "dialog");
     }
 
     @Override
     public void createBookInfo(TFOBookModel bookModel) {
         Log.d(TAG,"createBookInfo:");
         if(edit){
-            createBook(bookModel.getBookAuthor(), dataList, bookModel.getBookCover(), bookModel.getBookTitle(), 5, bookModel.getBookTotalPage(), bookModel.getBookId(), bookType);
+//            createBook(bookModel.getBookAuthor(), dataList, bookModel.getBookCover(), bookModel.getBookTitle(), 5, bookModel.getBookTotalPage(), bookModel.getBookId(), bookType);
+
+            createBook(
+                    bookModel.getBookAuthor(),
+                    bookModel.getBookCover(),
+                    bookId,
+                    bookModel.getBookTitle(),
+                    localBookType,
+                    "des",
+                    dataList,
+                    openBookId,
+                    (int)bookModel.getBookType(),
+                    0
+            );
         }
     }
 
@@ -104,22 +125,37 @@ public class MyPODActivity extends PODActivity {
         }
     }
 
-    private void createBook(String author, String dataList, String bookCover, String bookName, int type, int pageNum, String openBookId, int openBookType) {
-        Log.d("创建书","bookId ======== " + bookId);
-        ApiFactory.getApi().getApiService().createBook(author, babyId, bookCover, bookId, bookName, "", type, dataList, bookName, Long.valueOf(openBookId), pageNum, openBookType)
+    private void createBook(String author, String bookCover, String bookId, String bookName, int bookType, String des, String extra, String openBookId, int openBookType, int pageNum){
+        ApiFactory.getApi().getApiService().saveProduction(
+                FastData.getBabyId(),
+                author,
+                bookCover,
+                bookId,
+                bookName,
+                bookType,
+                des,
+                extra,
+                openBookId,
+                openBookType,
+                pageNum
+        )
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
-                    bookId = response.getBookId();
-                    if (response.success()) {
-                        EventBus.getDefault().post(new BookOptionEvent());
-                    } else {
-                        ToastUtil.showToast(response.getInfo());
-                    }
-                }, error -> {
-                    Log.e(TAG, "createBook:");
-                    error.printStackTrace();
-                });
+                .doOnUnsubscribe(() -> tfDialog.dismiss())
+                .subscribe(
+                        response -> {
+                            if(response.success()){
+                                this.bookId = response.getDataId();
+                                EventBus.getDefault().post(new BookOptionEvent(BookOptionEvent.BOOK_OPTION_CREATE, localBookType, bookId));
+                            } else {
+                                ToastUtil.showToast(response.info);
+                            }
+                        },
+                        throwable -> {
+                            Log.e(TAG, throwable.getLocalizedMessage());
+                        }
+                );
     }
+
 
     //pod中更换封面外的图片
     private void editContent(String imageId, String imageUrl) {

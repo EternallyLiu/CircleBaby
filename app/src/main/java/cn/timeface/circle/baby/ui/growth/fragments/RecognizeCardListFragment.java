@@ -2,10 +2,8 @@ package cn.timeface.circle.baby.ui.growth.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +12,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,9 +22,6 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
-import cn.timeface.circle.baby.events.BookOptionEvent;
-import cn.timeface.circle.baby.support.api.models.objs.BookObj;
-import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
@@ -199,7 +192,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
                             }
                         }
 
-                        return apiService.saveCard(
+                        return apiService.saveProduction(
                                 FastData.getBabyId(),
                                 FastData.getUserInfo().getNickName(),
                                 selectCards.get(0).getMedia().getImgUrl(),
@@ -208,7 +201,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
                                 BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD,
                                 "",
                                 sb.toString(),
-                                2,
+                                "2",
                                 0,
                                 bookPage
                         );

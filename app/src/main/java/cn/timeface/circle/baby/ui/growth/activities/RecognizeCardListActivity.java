@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
@@ -172,7 +171,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                             }
                         }
 
-                        return apiService.saveCard(
+                        return apiService.saveProduction(
                                 FastData.getBabyId(),
                                 FastData.getUserInfo().getNickName(),
                                 selectCards.get(0).getMedia().getImgUrl(),
@@ -181,7 +180,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                                 bookType,
                                 "",
                                 sb.toString(),
-                                2,
+                                "2",
                                 0,
                                 bookPage
                         );

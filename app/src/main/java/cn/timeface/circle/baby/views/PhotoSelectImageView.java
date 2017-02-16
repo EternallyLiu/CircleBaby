@@ -16,6 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 /**
  * author : YW.SUN Created on 2016/4/11
@@ -57,6 +58,14 @@ public class PhotoSelectImageView extends RatioFrameLayout implements Checkable 
     public void setContent(PhotoModel img) {
         Glide.with(getContext())
                 .load(img.getUri())
+                .thumbnail(0.1f)
+                .centerCrop()
+                .into(ivPhoto);
+    }
+
+    public void setContent(MediaObj img) {
+        Glide.with(getContext())
+                .load(img.getImgUrl())
                 .thumbnail(0.1f)
                 .centerCrop()
                 .into(ivPhoto);

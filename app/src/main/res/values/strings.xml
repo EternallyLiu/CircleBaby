@@ -722,4 +722,6 @@
     <string name="title_activity_card_preview">CardPreviewActivity</string>
     <string name="title_activity_mine_book_v2">我的作品</string>
     <string name="title_activity_recognize_card_create">识图卡片</string>
+    <string name="title_activity_select_server_photo">SelectServerPhotoActivity</string>
+    <string name="title_activity_select_time">SelectTimeActivity</string>
 </resources>

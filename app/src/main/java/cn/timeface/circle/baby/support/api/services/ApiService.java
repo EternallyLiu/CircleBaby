@@ -9,6 +9,13 @@ import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListRespons
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLabelResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLocationResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByTimeResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByUserResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
+import cn.timeface.circle.baby.support.api.models.responses.UsersInfoResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ADResponse;
@@ -61,7 +68,6 @@ import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
-import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -331,8 +337,7 @@ public interface ApiService {
 
     //编辑时光
     @GET("babyTime/editTime")
-    Observable<BaseResponse> editTime(@Query("locationInfo") String locationInfo,
-                                      @Query("content") String content,
+    Observable<BaseResponse> editTime(@Query("content") String content,
                                       @Query("mediaList") String mediaList,
                                       @Query("milestone") int milestone,
                                       @Query("time") long time,
@@ -772,7 +777,7 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("openBook/save")
-    Observable<EditBookResponse> saveCard(
+    Observable<EditBookResponse> saveProduction(
             @Field("babyId") int babyId,
             @Field("author") String author,
             @Field("bookCover") String bookCover,
@@ -781,14 +786,69 @@ public interface ApiService {
             @Field("bookType") int bookType,
             @Field("description") String description,
             @Field("extra") String extra,
-            @Field("openBookId") long openBookId,
+            @Field("openBookId") String openBookId,
             @Field("openBookType") int openBookType,
             @Field("pageNum") int pageNum);
 
     @POST("mediaID/backup")
     Observable<MediaIdResponse> mediaBackup(@Query("identifiers") String identifiers);
+    /**
+     * 按时间查询所有图片
+     * @param babyId
+     * @return
+     */
+    @GET("printGrowth/getMediaInfoByTime")
+    Observable<QueryPhotoResponse> queryPhotoByTime(
+            @Query("babyId") int babyId);
 
     @POST("mediaID/localList")
     Observable<MediaIdResponse> localList(@Query("userId") String userId);
+    /**
+     * 按标签查询所有图片
+     * @param babyId
+     * @return
+     */
+    @GET("printGrowth/getMediaInfoByLabel")
+    Observable<QueryPhotoResponse> queryPhotoByLabel(
+            @Query("babyId") int babyId);
+
+    /**
+     * 按地点查询所有图片
+     * @param babyId
+     * @return
+     */
+    @GET("printGrowth/queryAllMediaByArea")
+    Observable<QueryPhotoByLocationResponse> queryPhotoByLocation(
+            @Query("babyId") int babyId);
+
+    /**
+     * 按成员查询所有图片
+     * @param babyId
+     * @return
+     */
+    @GET("printGrowth/getMediaInfoByUser")
+    Observable<QueryPhotoResponse> queryPhotoByUser(
+            @Query("babyId") int babyId,
+            @Query("userId") String userId);
+
+    /**
+     * 查询所有时光
+     * @param babyId
+     * @param userId
+     * @param type
+     * @return
+     */
+    @GET("printGrowth/getTimeLineByTime")
+    Observable<QueryTimeLineResponse> queryTimeLine(
+            @Query("babyId") int babyId,
+            @Query("memberId") String userId,
+            @Query("type") int type);
+
+    /**
+     * 查询所有成员信息
+     * @return
+     */
+    @GET("printGrowth/getFamilyMember")
+    Observable<UsersInfoResponse> queryUsers();
 
 }

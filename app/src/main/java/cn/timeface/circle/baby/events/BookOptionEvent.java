@@ -7,7 +7,8 @@ package cn.timeface.circle.baby.events;
  */
 public class BookOptionEvent {
 
-    public final static int BOOK_OPTION_DELETE = 1;//删除书籍操作
+    public final static int BOOK_OPTION_DELETE = 1;//成功删除书籍操作
+    public final static int BOOK_OPTION_CREATE = 0;//成功创建书籍操作
     private int option;
     private int bookType;
     private String bookId;

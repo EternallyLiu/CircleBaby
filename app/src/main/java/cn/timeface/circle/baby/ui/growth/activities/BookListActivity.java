@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.SelectThemeActivity;
 import cn.timeface.circle.baby.activities.TimeBookPickerPhotoActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.ProductionMenuDialog;
@@ -88,26 +89,19 @@ public class BookListActivity extends ProductionListActivity implements BookPres
             switch (bookType) {
                 //精装照片书
                 case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
-                    apiService.queryImageInfoList("", BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK)
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .subscribe(response -> {
-                                if (response.success()) {
-                                    List<ImageInfoListObj> dataList = response.getDataList();
-                                    for (ImageInfoListObj obj : dataList) {
-                                        List<MediaObj> mediaList = obj.getMediaList();
-                                        int timeId = obj.getTimeId();
-                                        for (MediaObj mediaObj : mediaList) {
-                                            mediaObj.setTimeId(timeId);
-                                        }
-                                    }
-                                    //直接进入挑选照片页面
-                                    TimeBookPickerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, dataList);
-                                } else {
-                                    ToastUtil.showToast(response.getInfo());
-                                }
-                            }, error -> {
-                                Log.e(TAG, "queryImageInfoList:");
-                            });
+                    SelectThemeActivity.open(this);
+                    break;
+                //绘画集
+                case BookModel.BOOK_TYPE_PAINTING:
+                    SelectServerPhotoActivity.open(this, bookType, 111);
+                    break;
+                //成长纪念册
+                case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
+                    SelectServerTimeActivity.open(this, bookType, 113);
+                    break;
+                //成长语录
+                case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
+                    SelectServerTimeActivity.open(this, bookType, 114);
                     break;
             }
         }
