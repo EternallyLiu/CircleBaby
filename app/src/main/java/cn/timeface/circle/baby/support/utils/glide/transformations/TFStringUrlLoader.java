@@ -33,8 +33,6 @@ public class TFStringUrlLoader extends BaseGlideUrlLoader<String> {
 
         if (!imageUrl.contains("http")
                 || imageUrl.contains("http://www.")
-                //|| imageUrl.contains(TFApiServiceV2.IMAGE_BASE_URL)
-//                || imageUrl.contains(TFApiServiceV2.OUR_SERVER_IMAGE_BASE_URL2)
                 || imageUrl.contains("qzapp.qlogo.cn")) {
             return imageUrl;
         } else if (imageUrl.contains("http") && imageUrl.contains("@ex")) {
