@@ -77,8 +77,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                 break;
             case UPDATE_DATA_UPDATE_DATA:
                 if (msg.obj != null) {
-                    list.remove(msg.arg1);
-                    list.add(msg.arg1, msg.obj);
+                    if (!list.contains(msg.obj)) {
+                        list.remove(msg.arg1);
+                        list.add(msg.arg1, msg.obj);
+                    }
                 }
                 notifyItemChanged(msg.arg1);
                 if (msg.arg1 != getRealItemSize())
@@ -97,6 +99,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         if (containObj(object))
             return (T) list.get(list.indexOf(object));
         else return null;
+    }
+
+    public void updateItem(Object object) {
+        if (containObj(object))
+            handler.sendMessage(handler.obtainMessage(UPDATE_DATA_UPDATE_DATA, list.indexOf(object), 0, object));
     }
 
     /**
@@ -131,7 +138,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         if (item != null)
             handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, getRealItemSize(), 1, item));
     }
-    public void addList(int position,Object item) {
+
+    public void addList(int position, Object item) {
         if (position < 0)
             position = 0;
         if (item != null)

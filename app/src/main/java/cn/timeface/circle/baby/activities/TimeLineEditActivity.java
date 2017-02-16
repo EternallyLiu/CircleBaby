@@ -100,7 +100,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     private Milestone milestone;
     private List<ImgObj> selImages = new ArrayList<>();
     private TimeLineObj timelimeobj;
-    private List<MediaObj> mediaList;
+    private List<MediaObj> mediaList=new ArrayList<>(0);
     private int milestoneId;
     private String time;
     private List<String> urls = new ArrayList<>();
@@ -125,7 +125,6 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     private void initView() {
         timelimeobj = getIntent().getParcelableExtra("timelimeobj");
         allDetailsListPosition = getIntent().getIntExtra("allDetailsListPosition", -1);
-        mediaList = timelimeobj.getMediaList();
         milestoneId = timelimeobj.getMilestoneId();
         time = DateUtil.getYear2(timelimeobj.getDotime());
         rlMileStone.setOnClickListener(this);
@@ -152,15 +151,15 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             llVideo.setVisibility(View.GONE);
             gvGridView.setVisibility(View.VISIBLE);
 
-            if (mediaList.size() > 0) {
-                for (MediaObj media : mediaList) {
+            if (timelimeobj.getMediaList().size() > 0) {
+                for (MediaObj media : timelimeobj.getMediaList()) {
                     ImgObj imgObj = media.getImgObj();
                     selImages.add(imgObj);
-                    imageUrls.add(media.getImgUrl());
+                    imageUrls.add(TextUtils.isEmpty(media.getLocalPath()) ? media.getImgUrl() : media.getImgUrl());
                 }
             }
 
-            if (timelimeobj.getType() == 0) {
+            if (timelimeobj.getType() == 0 || timelimeobj.getType() == 4) {
                 adapter = new PhotoGridAdapter(this);
                 adapter.getData().addAll(imageUrls);
                 gvGridView.setAdapter(adapter);
@@ -198,9 +197,16 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 case PICTURE:
                     imgObjs = data.getParcelableArrayListExtra("result_select_image_list");
                     urls.clear();
+                    if (mediaList.size()>0){
+                        timelimeobj.getMediaList().removeAll(mediaList);
+                        mediaList.clear();
+                    }
                     for (ImgObj item : imgObjs) {
                         urls.add(item.getLocalPath());
+                        if (!timelimeobj.getMediaList().contains(item.getMediaObj()))
+                            mediaList.add(item.getMediaObj());
                     }
+                    timelimeobj.getMediaList().addAll(mediaList);
                     if (urls.size() > 0) {
                         List<String> imgs = new ArrayList<>();
                         imgs.addAll(imageUrls);
@@ -262,13 +268,13 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (imgObjs.size() > 0) {
-            for (ImgObj img : imgObjs) {
-                MediaObj mediaObj = img.getMediaObj();
-                mediaList.add(mediaObj);
-            }
-        }
-        String s = new Gson().toJson(mediaList);
+//        if (imgObjs.size() > 0) {
+//            for (ImgObj img : imgObjs) {
+//                MediaObj mediaObj = img.getMediaObj();
+//                mediaList.add(mediaObj);
+//            }
+//        }
+        String s = new Gson().toJson(timelimeobj.getMediaList());
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         String locationInfo = JSONUtils.parse2JSONString(timelimeobj.getLocationInfo());
@@ -484,9 +490,9 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         adapter.setData(data);
         adapter.notifyDataSetChanged();
         if (b) {
-            for (MediaObj media : mediaList) {
+            for (MediaObj media : timelimeobj.getMediaList()) {
                 if (url.equals(media.getImgUrl())) {
-                    mediaList.remove(media);
+                    timelimeobj.getMediaList().remove(media);
                     b = false;
                     break;
                 }

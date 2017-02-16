@@ -6,6 +6,7 @@
         android:id="@+id/action_smail_image"
         android:orderInCategory="100"
         android:title="预览小图"
+        android:visible="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_more"
