@@ -56,7 +56,7 @@ public class ChangeInfoFragment extends BaseFragment {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 //        tvTitle.setText(title);
-        cet.setText(info);
+        cet.setHint(info);
 
         return view;
     }
