@@ -160,6 +160,7 @@
         </item>
         <item name="android:windowExitAnimation">@anim/dialog_bottom_out</item>
     </style>
+
     <style name="top_dialog_animation" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/dialog_bottom_enter
         </item>

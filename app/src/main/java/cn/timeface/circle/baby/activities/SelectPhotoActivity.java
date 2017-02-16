@@ -72,6 +72,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     SwipeRefreshLayout srlRefreshLayout;
     SelectPhotosAdapter adapter;
     PhotoCategoryFragment fragment;
+
     boolean fragmentShow = false;
     List<MediaStoreBucket> buckets = new ArrayList<>();
     String curBucketId = null;

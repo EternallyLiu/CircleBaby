@@ -9,6 +9,13 @@ import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListRespons
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLabelResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLocationResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByTimeResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByUserResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
+import cn.timeface.circle.baby.support.api.models.responses.UsersInfoResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ADResponse;
@@ -743,7 +750,7 @@ public interface ApiService {
                                                 @Query("log") double log);
 
     /**
-     * 创建卡片作品
+     * 创建/修改作品
      * @param babyId
      * @param author
      * @param bookCover
@@ -759,7 +766,7 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST("openBook/save")
-    Observable<EditBookResponse> saveCard(
+    Observable<EditBookResponse> saveProduction(
             @Field("babyId") int babyId,
             @Field("author") String author,
             @Field("bookCover") String bookCover,
@@ -768,10 +775,65 @@ public interface ApiService {
             @Field("bookType") int bookType,
             @Field("description") String description,
             @Field("extra") String extra,
-            @Field("openBookId") long openBookId,
+            @Field("openBookId") String openBookId,
             @Field("openBookType") int openBookType,
             @Field("pageNum") int pageNum);
 
+    /**
+     * 按时间查询所有图片
+     * @param babyId
+     * @return
+     */
+    @GET("printGrowth/getMediaInfoByTime")
+    Observable<QueryPhotoResponse> queryPhotoByTime(
+            @Query("babyId") int babyId);
 
+    /**
+     * 按标签查询所有图片
+     * @param babyId
+     * @return
+     */
+    @GET("printGrowth/getMediaInfoByLabel")
+    Observable<QueryPhotoResponse> queryPhotoByLabel(
+            @Query("babyId") int babyId);
+
+    /**
+     * 按地点查询所有图片
+     * @param babyId
+     * @return
+     */
+    @GET("printGrowth/queryAllMediaByArea")
+    Observable<QueryPhotoByLocationResponse> queryPhotoByLocation(
+            @Query("babyId") int babyId);
+
+    /**
+     * 按成员查询所有图片
+     * @param babyId
+     * @return
+     */
+    @GET("printGrowth/getMediaInfoByUser")
+    Observable<QueryPhotoResponse> queryPhotoByUser(
+            @Query("babyId") int babyId,
+            @Query("userId") String userId);
+
+    /**
+     * 查询所有时光
+     * @param babyId
+     * @param userId
+     * @param type
+     * @return
+     */
+    @GET("printGrowth/getTimeLineByTime")
+    Observable<QueryTimeLineResponse> queryTimeLine(
+            @Query("babyId") int babyId,
+            @Query("memberId") String userId,
+            @Query("type") int type);
+
+    /**
+     * 查询所有成员信息
+     * @return
+     */
+    @GET("printGrowth/getFamilyMember")
+    Observable<UsersInfoResponse> queryUsers();
 
 }

@@ -427,21 +427,23 @@
 
         <service android:name=".LoadMediaService" />
 
-
         <!-- ***********************BAIDU LOC SDK START************************ -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote">
             <intent-filter>
-                <action android:name="com.baidu.location.service_v2.2"/>
+                <action android:name="com.baidu.location.service_v2.2" />
             </intent-filter>
         </service>
         <!-- meta-data需要写在application中 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="1s2n546GzyP7un7GFvUeqi4ZR8kcDPaA"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+            android:value="1s2n546GzyP7un7GFvUeqi4ZR8kcDPaA" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -454,6 +456,14 @@
         <activity
             android:name=".ui.growth.activities.RecognizeCardCreateActivity"
             android:label="@string/title_activity_recognize_card_create"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.growth.activities.SelectServerPhotoActivity"
+            android:label="@string/title_activity_select_server_photo"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.growth.activities.SelectServerTimeActivity"
+            android:label="@string/title_activity_select_time"
             android:theme="@style/AppTheme"></activity>
     </application>
 

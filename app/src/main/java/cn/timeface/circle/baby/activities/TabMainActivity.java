@@ -107,7 +107,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         int width = wm.getDefaultDisplay().getWidth() / 3;
         Remember.putInt("width", width);
 
-        RxPermissions.getInstance(this).request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+        new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
                         SavePicInfoService.open(getApplicationContext());

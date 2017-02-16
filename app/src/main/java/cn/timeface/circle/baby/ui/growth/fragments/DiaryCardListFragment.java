@@ -2,10 +2,8 @@ package cn.timeface.circle.baby.ui.growth.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -151,7 +149,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                                     }
                                 }
 
-                                return apiService.saveCard(
+                                return apiService.saveProduction(
                                         FastData.getBabyId(),
                                         FastData.getUserInfo().getNickName(),
                                         selectCards.get(0).getMedia().getImgUrl(),
@@ -160,7 +158,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                                         BookModel.BOOK_TYPE_DIARY_CARD,
                                         "",
                                         sb.toString(),
-                                        2,
+                                        "2",
                                         0,
                                         bookPage
                                 );

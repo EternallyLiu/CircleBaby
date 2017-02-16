@@ -56,4 +56,9 @@ public class TypeConstants {
     public static final String SHARE_URL_DIARY = "http://www.timeface.cn/baby/babyShare/diary.html?timeId=%1$d";//日记卡片
     public static final String SHARE_URL_VIDEO = "http://www.timeface.cn/baby/babyShare/video.html?timeId=%1$d";//视频分享
     public static final String SHARE_URL_INVITE = "http://www.timeface.cn/baby/babyShare/invite.html?babyId=%1$d&inviteCode=%2$d";//邀请码分享
+
+    public static final int PHOTO_TYPE_TIME = 0;//按时间
+    public static final int PHOTO_TYPE_USER = 1;//按发布者
+    public static final int PHOTO_TYPE_LOCATION = 2;//按位置
+    public static final int PHOTO_TYPE_LABEL = 3;//按标签
 }

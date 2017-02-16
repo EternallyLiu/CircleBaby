@@ -103,7 +103,7 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
     private void startLocation() {
         if (locationHelper == null)
             locationHelper = new LocationHelper(getActivity(), this);
-        RxPermissions.getInstance(getActivity()).request(
+        new RxPermissions(getActivity()).request(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.READ_PHONE_STATE,

@@ -16,6 +16,8 @@ import android.widget.AdapterView;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +26,17 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter3;
+import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.TFOpen;
@@ -41,7 +47,7 @@ import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import cn.timeface.open.model.TFOpenDataProvider;
 
-public class SelectThemeActivity extends BaseAppCompatActivity {
+public class SelectThemeActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -93,7 +99,9 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
 
     private void reqData() {
         tfStateView.loading();
-        TFOpenDataProvider.get().bookTypeList()
+        // 7-开放平台照片书 pod type
+//        addSubscription(
+                TFOpenDataProvider.get().bookTypeList(0, 7, 0, 0)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(listBaseResponse -> {
                     tfStateView.finish();
@@ -103,6 +111,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
                     tfStateView.showException(throwable);
                     Log.e(TAG, "getRelationshipList:", throwable);
                 });
+//        );
     }
 
 
@@ -149,13 +158,13 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
 //    }
 
     private void startPhotoPick() {
-        Intent intent = new Intent(this, TimeBookPickerPhotoActivity.class);
-        intent.putExtra("bookType", 5);
-        intent.putExtra("openBookType", bookTheme);
-        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
-//        startActivityForResult(intent, 10);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(this, TimeBookPickerPhotoActivity.class);
+//        intent.putExtra("bookType", BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
+//        intent.putExtra("openBookType", bookTheme);
+//        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
+//        startActivity(intent);
+//        finish();
+        SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme);
     }
 
     private void creatBook() {
@@ -181,7 +190,14 @@ public class SelectThemeActivity extends BaseAppCompatActivity {
         values.add(FastData.getUserName());
         values.add(FastData.getBabyName()+"的照片书");
 
-        MyPODActivity.open(this, "","", bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true, FastData.getBabyId(),keys,values,1);
+        MyPODActivity.open(this, "","", BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true, FastData.getBabyId(),keys,values,1);
         finish();
+    }
+
+    @Subscribe
+    public void bookOptionEvent(BookOptionEvent optionEvent){
+        if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_CREATE){
+            finish();
+        }
     }
 }
