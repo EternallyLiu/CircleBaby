@@ -116,23 +116,24 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
     private void startLocation() {
         if (locationHelper == null)
             locationHelper = new LocationHelper(getActivity(), this);
-        RxPermissions.getInstance(getActivity()).requestEach(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(permission -> {
-                    if (permission.name.equals(Manifest.permission.ACCESS_COARSE_LOCATION)
-                            || permission.name.equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        if (permission.granted) {
-                            locationHelper.startLocation();
-                            locationHelper.getLocationClient().requestHotSpotState();
-                        }else {
-                            showRequestPermissionDialog();
-                        }
-                    }
-                });
+        // TODO: 2/16/17 fix it  in test version
+//        RxPermissions.getInstance(getActivity()).requestEach(
+//                Manifest.permission.ACCESS_COARSE_LOCATION,
+//                Manifest.permission.ACCESS_FINE_LOCATION,
+//                Manifest.permission.READ_PHONE_STATE,
+//                Manifest.permission.READ_EXTERNAL_STORAGE,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                .subscribe(permission -> {
+//                    if (permission.name.equals(Manifest.permission.ACCESS_COARSE_LOCATION)
+//                            || permission.name.equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
+//                        if (permission.granted) {
+//                            locationHelper.startLocation();
+//                            locationHelper.getLocationClient().requestHotSpotState();
+//                        }else {
+//                            showRequestPermissionDialog();
+//                        }
+//                    }
+//                });
     }
 
     private void showRequestPermissionDialog(){

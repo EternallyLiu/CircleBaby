@@ -16,6 +16,8 @@ import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByUserResp
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UsersInfoResponse;
+import cn.timeface.circle.baby.support.mvp.model.GeneralBookItemResponse;
+import cn.timeface.circle.baby.support.mvp.model.GeneralBookResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ADResponse;
@@ -68,6 +70,7 @@ import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
+import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -851,4 +854,114 @@ public interface ApiService {
     @GET("printGrowth/getFamilyMember")
     Observable<UsersInfoResponse> queryUsers();
 
+
+    /**
+     * 开放平台里的书保存
+     *
+     * @param bookId       book id
+     * @param bookType     book type
+     * @param bookCover    book cover
+     * @param bookAuthor   book author
+     * @param authorAvatar author avatar
+     * @param bookTitle    book title
+     * @param bookSummary  book summary
+     * @return
+     */
+    @POST("openBook/save")
+    @FormUrlEncoded
+    Observable<cn.timeface.circle.baby.support.mvp.response.bases.BaseResponse> sdkBookSave(
+            @Field("book_id") String bookId,
+            @Field("book_type") String bookType,
+            @Field("book_cover") String bookCover,
+            @Field("book_author") String bookAuthor,
+            @Field("author_avatar") String authorAvatar,
+            @Field("book_title") String bookTitle,
+            @Field("book_summary") String bookSummary,
+            @Field("days") String commemorations,
+            @Field("extra") String extra
+    );
+
+    /**
+     * 加了个type
+     *
+     * @param type 书的大分类，在老檀的极力要求下加的
+     * @return
+     */
+    @POST("openBook/save")
+    @FormUrlEncoded
+    Observable<cn.timeface.circle.baby.support.mvp.response.bases.BaseResponse> sdkBookSave(
+            @Field("book_id") String bookId,
+            @Field("book_type") String bookType,
+            @Field("type") String type,
+            @Field("book_cover") String bookCover,
+            @Field("book_author") String bookAuthor,
+            @Field("author_avatar") String authorAvatar,
+            @Field("book_title") String bookTitle,
+            @Field("book_summary") String bookSummary,
+            @Field("days") String commemorations,
+            @Field("extra") String extra
+    );
+
+    /**
+     * fetch all book in open sdk
+     * actually those are indexed in timeFace server what you get.
+     *
+     * @param types this value is string array wrapper with '[]'
+     * @return Observable
+     */
+    @GET("openBook/list")
+    Observable<GeneralBookResponse> sdkBookList(@Query("book_type") String types);
+
+
+    /**
+     * Delete one book tha saved on timeFace server which created on OpenSDK
+     * Actually deleteRemoteNotebook the index on timeFace server, not deleteRemoteNotebook this on OpenSDk yet.
+     *
+     * @param id id$type
+     * @return
+     * @Notice this id is'nt the id on OpenSDk
+     */
+    @GET("openBook/delete")
+    Observable<cn.timeface.circle.baby.support.mvp.response.bases.BaseResponse> sdkBookDelete(@Query("id") String id);
+
+    /**
+     * get one book info from timeFace server by the id  which on timeFace server
+     * Just get the info for book id on OpenSDk
+     *
+     * @param id remote id$type
+     * @return Observable
+     */
+    @GET("openBook/get")
+    Observable<GeneralBookItemResponse> sdkBookGet(@Query("id") String id);
+
+    @POST("openBook/update")
+    @FormUrlEncoded
+    Observable<cn.timeface.circle.baby.support.mvp.response.bases.BaseResponse> sdkBookUpdate(
+            @Field("id") String remoteId,
+            @Field("book_id") String bookId,
+            @Field("book_type") String bookType,
+            @Field("book_cover") String bookCover,
+            @Field("book_author") String bookAuthor,
+            @Field("author_avatar") String authorAvatar,
+            @Field("book_title") String bookTitle,
+            @Field("book_summary") String bookSummary,
+            @Field("days") String commemorations,
+            @Field("extra") String extra
+    );
+
+    @POST("openBook/update")
+    @FormUrlEncoded
+    Observable<BaseResponse> sdkBookUpdate(
+            @Field("id") String remoteId,
+            @Field("book_id") String bookId,
+            @Field("type") String type,
+            @Field("book_type") String bookType,
+            @Field("book_cover") String bookCover,
+            @Field("book_author") String bookAuthor,
+            @Field("author_avatar") String authorAvatar,
+            @Field("book_title") String bookTitle,
+            @Field("book_summary") String bookSummary,
+            @Field("days") String commemorations,
+            @Field("extra") String extra
+    );
 }

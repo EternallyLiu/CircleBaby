@@ -14,6 +14,11 @@
     <color name="tran_50_white">#DDffffff</color>
     <color name="tran_30_black">#4C000000</color>
 
+
+    <color name="text_color5">#f44336</color>
+    <color name="text_color29">#B4B4B4</color>
+    <color name="text_color30">#1D1D1D</color>
+
     <color name="bg_color1">#F79646</color>
     <color name="bg_color2">#FAFAFA</color>
     <color name="bg_color3">#F7F7F7</color>
@@ -125,4 +130,26 @@
     <color name="aluminum">#999999</color>
     <color name="alabaster">#FAFAFA</color>
     <color name="mercury">#E4E4E4</color>
+
+    <color name="bg_trans_70">#b2ffffff</color>
+    <color name="bg_trans_80">#ccffffff</color>
+    <color name="bg_trans_50">#80ffffff</color>
+    <color name="bg_trans_60">#99ffffff</color>
+    <color name="bg_record_music">#483841</color>
+    <color name="bg_trans_70_black">#b2000000</color>
+    <color name="bg_trans_30">#4cffffff</color>
+    <color name="bg_trans_20_black">#33000000</color>
+    <color name="bg_trans_30_black">#4c000000</color>
+    <color name="login_blue">#069bf2</color>
+    <color name="login_blue_50">#80069bf2</color>
+    <color name="guide_back">#0584CE</color>
+    <color name="item_delete">#FF3B30</color>
+    <color name="selected_item_color">#069BF2</color>
+
+    <color name="edit_textcolor">#373535</color>
+    <color name="divider_scan">#ececec</color>
+    <color name="divider_main">#f2f2f2</color>
+    <color name="divider1">#4b8cdf</color>
+    <color name="white_50">#80ffffff</color>
+    <color name="stroke">#dddddd</color>
 </resources>

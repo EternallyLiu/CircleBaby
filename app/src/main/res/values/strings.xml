@@ -724,4 +724,91 @@
     <string name="title_activity_recognize_card_create">识图卡片</string>
     <string name="title_activity_select_server_photo">SelectServerPhotoActivity</string>
     <string name="title_activity_select_time">SelectTimeActivity</string>
+    <string name="complete">完成</string>
+
+    <string name="msg_camera_framework_bug">抱歉，Android相机出现问题。您可能需要重启设备。</string>
+    <string name="select_picture">选择照片</string>
+    <string name="phone_album">手机相册</string>
+    <string name="time_album">时光相册</string>
+    <string name="dialog_ok">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="take_photo">拍照</string>
+    <string name="confirm">确认</string>
+    <string name="dialog_clear_cache">确定清空图片缓存?</string>
+
+    <string name="count_down_split_operator"> : </string>
+    <string name="put2my_bookshelf">加入我的书架</string>
+    <string name="width">宽度</string>
+    <string name="height">高度</string>
+
+    <string name="activity_notices">
+        活动期间我们会通过该手机号通知众筹活动进度以及剩余支付时间,
+        请及时关注.活动结束若不支付剩余金额,即视为自动放弃众筹活动资格,
+        预付款概不退回!
+    </string>
+    <string name="crowdfunding_notice">
+        <![CDATA[
+        <p>1. 当前图书最终价格根据预购人数，匹配相应的优惠折扣。预购人数越多，折扣越大。详情请点击价格帮助；</p>
+        <p>2. 在最终支付时间到达后仍未完成尾款支付的用户，众筹资格自动作废，预购款概不退回。</p>
+        <p><font color="#ff0000">3. 最终实付款为当前众筹价减去预付款。</font></p>
+        ]]>
+    </string>
+
+    <string name="import_qq_albums_tips">
+        我们正在导入您QQ空间的相册,请耐心等候,完成后我们会以系统消息的方式通知你. \n此页面关闭也没有关系哦!
+    </string>
+    <string name="importing_qq_albums">
+        我们正在导入您QQ空间的相册,请耐心等候,完成后我们会以系统消息的方式通知您.此页面关闭也没有关系哦!
+    </string>
+    <string name="import_too_faster">亲,您更新照片的速度太频繁,请明天再试</string>
+    <string name="check_in_earn_corn">签到赚积分</string>
+
+    <string name="book_subject_section2_content">
+        <![CDATA[<p>
+        <b>尺寸:</b><br/>
+        大小开本设定,满足不同需求 <br/>
+        收藏版（正16K） 260 X 185 毫米<br/>
+        舒适版（正32K） 216 X 150 毫米<br/>
+        </p>]]>
+    </string>
+
+    <string name="book_subject_section3_content">
+        <![CDATA[<p>
+        <b>封面:</b><br/>
+        （简装）简约文艺范儿<br/>
+        软装微喷打印, 完美 还原自设计封面<br/>
+        简约是一种生活态度<br/>
+        （精装）精致生活范儿<br/>
+        立体书壳包裹, 精致设计自己的小确幸<br/>
+        精致是没入灵魂的优雅感<br/>
+        </p>]]>
+    </string>
+
+    <string name="book_subject_section4_content">
+        <![CDATA[<p>
+        <b>印刷工艺:</b><br/>
+        独家高清印刷<br/>
+        原汁原味呈现你的真实记录<br/>
+        一本时光书,一段人生路<br/>
+        </p>]]>
+    </string>
+    <string name="create_calendar_now">立即制作</string>
+    <string name="calendar_2017_title">时光台历2017</string>
+    <string name="calendar_2017_subtitle">为家人/朋友/客户/员工定制一年美好回忆</string>
+    <string name="calendar_introduction_1">　　挑选12张照片入册</string>
+    <string name="calendar_introduction_2">　　丰富设计模板满足不同需求</string>
+    <string name="calendar_introduction_3">　　采用250g哑粉纸美感极致</string>
+    <string name="calendar_introduction_size">横版:宽230mm * 高165mm, 含底座高度约6寸</string>
+    <string name="calendar_introduction_orientation">竖版:宽150mm * 高205mm, 含底座高度约8寸</string>
+    <string name="calendar_page_size">13页双面印刷（12个月份, 每个月份正反2P+封面封底2P, 合计26P, 13张纸）</string>
+    <string name="calendar_page_paper">250g哑粉纸, 纸张坚挺用一年豪无压力, 手感温润细腻易书写</string>
+    <string name="bookbinding">装订方式</string>
+    <string name="calendar_introduction_bookbinding">360°双环装订, 单手就能翻阅, 完整呈现每一页画面</string>
+    <string name="memorials">纪念事件</string>
+    <string name="memorials_hint">如:妈妈生日等（最多5个字）</string>
+    <string name="select_date">选择日期</string>
+    <string name="select_date_hint">十月一日</string>
+    <string name="new_memorials">新增纪念日</string>
+
+    <string name="delete_name">删除</string>
 </resources>
