@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.utils.glide.transformations.TFStringUrlLoader;
-
+//
 
 /**
  * author: rayboot  Created on 15/9/16.
@@ -27,6 +27,6 @@ public class TFGlideModule implements GlideModule {
 
     @Override
     public void registerComponents(Context context, Glide glide) {
-        glide.register(String.class, InputStream.class, new TFStringUrlLoader.Factory());
+//        glide.register(String.class, InputStream.class, new TFStringUrlLoader.Factory());
     }
 }

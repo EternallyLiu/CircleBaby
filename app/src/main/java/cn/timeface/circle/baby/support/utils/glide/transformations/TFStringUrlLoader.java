@@ -54,7 +54,8 @@ public class TFStringUrlLoader extends BaseGlideUrlLoader<String> {
 
         @Override
         public ModelLoader<String, InputStream> build(Context context, GenericLoaderFactory factories) {
-            return new TFStringUrlLoader(factories.buildModelLoader(GlideUrl.class, InputStream.class));
+//            return new TFStringUrlLoader(factories.buildModelLoader(GlideUrl.class, InputStream.class));
+            return new TFStringUrlLoader(context);
         }
 
         @Override

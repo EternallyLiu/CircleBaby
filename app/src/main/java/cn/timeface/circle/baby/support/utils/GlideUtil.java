@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.utils.glide.transformations.TFStringUrlLoader;
 import cn.timeface.circle.baby.ui.babyInfo.views.CircleTransform;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
@@ -41,17 +42,32 @@ public class GlideUtil {
             } else {
                 url = url + "@600w_600h_1l_1o";
             }
-        }
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .into(imageView);
+            Glide.with(context)
+                    .using(new TFStringUrlLoader(imageView.getContext()))
+                    .load(url)
+                    .asBitmap()
+                    .into(imageView);
+        } else
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .asBitmap()
+                    .into(imageView);
     }
 
+    public static void displayImageCrossfade(String url, ImageView imageView) {
+        if (url.startsWith("http"))
+            Glide.with(imageView.getContext())
+                    .using(new TFStringUrlLoader(imageView.getContext()))
+                    .load(url).crossFade(300).into(imageView);
+        else
+            Glide.with(imageView.getContext())
+                    .load(url).crossFade(300).into(imageView);
+    }
 
     public static void displayImageCircle(String url, ImageView imageView) {
         displayImageCircle(url, R.drawable.ic_launcher, imageView);
     }
+
     public static void displayImageCircle(@DrawableRes int resurceId, ImageView imageView) {
         displayImageCircle(null, resurceId, imageView);
     }
@@ -59,7 +75,7 @@ public class GlideUtil {
     public static void displayImageCircle(String url, @DrawableRes int rid, ImageView imageView) {
         if (imageView == null) return;
         if (TextUtils.isEmpty(url)) {
-            Glide.with(context).load(rid).asBitmap().transform(new CircleTransform(context))
+            Glide.with(imageView.getContext()).load(rid).asBitmap().transform(new CircleTransform(context))
                     .into(imageView);
             return;
         }
@@ -69,15 +85,18 @@ public class GlideUtil {
             } else {
                 url = url + "@600w_600h_1l_1o";
             }
-        }
-        Glide.with(context)
-                .load(url)
-                .asBitmap()
-                .transform(new CircleTransform(context))
-                .into(imageView);
-//        Glide.with(context)
-//                .load(url)
-//                .into(imageView);
+            Glide.with(imageView.getContext())
+                    .using(new TFStringUrlLoader(imageView.getContext()))
+                    .load(url)
+                    .asBitmap()
+                    .transform(new CircleTransform(context))
+                    .into(imageView);
+        } else
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .asBitmap()
+                    .transform(new CircleTransform(context))
+                    .into(imageView);
     }
 
     public static void displayImage(String url, ImageView imageView, int id) {
@@ -85,7 +104,7 @@ public class GlideUtil {
             imageView.setImageResource(id);
             return;
         }
-        Glide.with(context).load(url).into(imageView);
+        displayImage(url, imageView);
     }
 
     public static void setImage(String url, ImageView imageView, int id) {
@@ -93,11 +112,23 @@ public class GlideUtil {
             imageView.setImageResource(id);
             return;
         }
-        Glide.with(context)
-                .load(url)
-                .error(id)
-                .placeholder(id)
-                .into(imageView);
+        if (url.startsWith("http")) {
+
+            Glide.with(imageView.getContext())
+                    .using(new TFStringUrlLoader(imageView.getContext()))
+                    .load(url)
+                    .error(id)
+                    .crossFade()
+                    .placeholder(id)
+                    .into(imageView);
+        } else {
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .error(id)
+                    .crossFade()
+                    .placeholder(id)
+                    .into(imageView);
+        }
     }
 
     public static String getCacheDir() {
@@ -136,12 +167,20 @@ public class GlideUtil {
             } else {
                 url = url + "@600w_600h_1l_1o";
             }
-        }
-        Glide.with(context)
-                .load(url)
-                .thumbnail(0.1f)
-                .centerCrop()
-                .into(imageView);
+            Glide.with(imageView.getContext())
+                    .using(new TFStringUrlLoader(imageView.getContext()))
+                    .load(url)
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .crossFade()
+                    .into(imageView);
+        } else
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .crossFade()
+                    .into(imageView);
 //        Glide.with(context).load(url).into(imageView);
     }
 
