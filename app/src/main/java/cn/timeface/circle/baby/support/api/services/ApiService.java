@@ -68,6 +68,7 @@ import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
+import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -337,7 +338,8 @@ public interface ApiService {
 
     //编辑时光
     @GET("babyTime/editTime")
-    Observable<BaseResponse> editTime(@Query("content") String content,
+    Observable<BaseResponse> editTime(@Query("locationInfo") String locationInfo,
+                                      @Query("content") String content,
                                       @Query("mediaList") String mediaList,
                                       @Query("milestone") int milestone,
                                       @Query("time") long time,
