@@ -53,7 +53,7 @@
             android:paddingLeft="@dimen/size_12"
             android:paddingRight="@dimen/size_12"
             android:paddingTop="@dimen/size_4"
-            android:text="立即上床"
+            android:text="立即上传"
             android:textColor="@color/white"
             android:textSize="@dimen/text_medium" />
     </LinearLayout>
