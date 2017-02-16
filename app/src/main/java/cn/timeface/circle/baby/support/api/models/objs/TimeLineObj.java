@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
 
 /**
@@ -86,6 +87,18 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         if (mediaList == null)
             mediaList = new ArrayList<>(0);
         return mediaList;
+    }
+
+    public void clearMedias(List<String> urls) {
+        MediaObj mediaObj = null;
+        for (int i = 0; i < urls.size(); i++) {
+            mediaObj = new MediaObj(null, urls.get(i), 0, 0, 0);
+            LogUtil.showLog("contain:"+getMediaList().contains(mediaObj));
+            if (getMediaList().contains(mediaObj))
+            {
+                getMediaList().remove(mediaObj);
+            }
+        }
     }
 
     public ArrayList<MediaObj> getMediaArray() {

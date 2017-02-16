@@ -105,6 +105,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     private int allDetailsListPosition = -1;
     private InputMethodManager manager;
     private GridStaggerLookup lookup;
+    private LikeUserList likeUserList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -231,7 +232,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
             contentList.add(currentTimeLineObj.getContent());
 
         if (currentTimeLineObj.getLikeList().size() > 0) {
-            LikeUserList likeUserList = new LikeUserList(currentTimeLineObj.getLikeList());
+            likeUserList = new LikeUserList(currentTimeLineObj.getLikeList());
             contentList.add(likeUserList);
         }
         if (currentTimeLineObj.getCommentList().size() > 0)
@@ -242,10 +243,10 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     private Menu currentMenu;
 
-    private void doMenu(){
-        if (currentMenu!=null&&currentTimeLineObj.getMediaList().size()>GridStaggerLookup.MAX_MEDIA_SIZE_SHOW_GRID)
+    private void doMenu() {
+        if (currentMenu != null && currentTimeLineObj.getMediaList().size() > GridStaggerLookup.MAX_MEDIA_SIZE_SHOW_GRID)
             currentMenu.findItem(R.id.action_smail_image).setVisible(true);
-        else if (currentMenu!=null)
+        else if (currentMenu != null)
             currentMenu.findItem(R.id.action_smail_image).setVisible(false);
     }
 
@@ -273,16 +274,28 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         return super.onOptionsItemSelected(item);
     }
 
+    @OnClick(R.id.add_comment)
+    public void comment(View view) {
+        if (commmentId > 0 && TextUtils.isEmpty(etCommment.getText().toString())) {
+            commmentId = 0;
+            etCommment.setHint("我也说一句");
+            etCommment.setText("");
+        }
+        etCommment.setFocusable(true);
+        etCommment.setFocusableInTouchMode(true);
+        showKeyboard();
+    }
+
     @OnClick(R.id.add_like)
     public void like(View view) {
         apiService.like(currentTimeLineObj.getTimeId(), (currentTimeLineObj.getLike() + 1) % 2)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
-                        currentTimeLineObj.setLike((currentTimeLineObj.getLike() + 1) % 2);
-                        addLike.setChecked(currentTimeLineObj.getLike() % 2 == 1 ? true : false);
+                        reqData();
                     }
                 }, error -> {
+                    LogUtil.showError(error);
                 });
     }
 
@@ -394,6 +407,11 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         }
     }
 
+    /**
+     * 删除评论
+     *
+     * @param commment
+     */
     private void deleteComment(CommentObj commment) {
         apiService.delComment(commment.getCommentId())
                 .filter(new Func1<BaseResponse, Boolean>() {
@@ -457,6 +475,9 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     }
 
+    /**
+     * 发送评论
+     */
     private void sendComment() {
         String s = etCommment.getText().toString();
         if (TextUtils.isEmpty(s)) {
