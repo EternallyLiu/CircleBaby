@@ -355,14 +355,17 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         imagelLists = new List[titles.size()];
         img2Medias();
 
+        ArrayList<MediaObj> list = null;
         for (int i = 0; i < titles.size(); i++) {
+            list = new ArrayList<>(0);
             imagelLists[i] = new ArrayList<>();
-            for (ImgObj item : selImages) {
-                if (titles.get(i).equals(item.getDate())) {
-                    imagelLists[i].add(item);
+            for (int index = 0; index < selImages.size(); index++) {
+                if (titles.get(i).equals(selImages.get(index).getDate())) {
+                    imagelLists[i].add(selImages.get(index));
+                    list.add(mediaObjs.get(index));
                 }
             }
-            photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i], mediaObjs));
+            photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i], list));
         }
         if (photoRecodes.size() > 1) {
             llSingleDate.setVisibility(View.GONE);
