@@ -36,6 +36,8 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
     TFStateView stateView;
     @Bind(R.id.btn_ask_for_print)
     Button btnAskPrint;
+    @Bind(R.id.tv_empty_info)
+    TextView tvEmptyInfo;
 
     protected int bookType;
 

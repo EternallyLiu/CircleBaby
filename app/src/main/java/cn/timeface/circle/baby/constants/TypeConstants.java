@@ -44,10 +44,11 @@ public class TypeConstants {
     public static final String UPLOAD_FOLDER = "baby";
     public static final int PHOTO_COUNT_MAX = 100;
 
-    public static final int PHOTO = 0;
-    public static final int VIDEO = 1;
-    public static final int DIARY = 2;
-    public static final int CARD = 3;
+    public static final int PHOTO = 0;//照片
+    public static final int VIDEO = 1;//视频
+    public static final int DIARY = 2;//日记卡片
+    public static final int CARD = 3;//识图卡片
+    public static final int QUOTATION = 4;//成长语录
 
     //分享url
     public static final String SHARE_URL_TIME = "http://www.timeface.cn/baby/babyShare/groupPicture.html?timeId=%1$d";//照片组

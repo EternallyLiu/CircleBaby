@@ -249,4 +249,26 @@ public class DateUtil {
         }
         return s;
     }
+
+    /**
+     * 计算年龄
+     * @param birthday 出生日期
+     * @param currentDate 当前时间
+     * @return
+     */
+    public static String getAge(long birthday, long currentDate) {
+        Calendar birthdayCalendar = Calendar.getInstance();
+        birthdayCalendar.setTimeInMillis(birthday);
+
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.setTimeInMillis(currentDate);
+
+        int year = currentCalendar.get(Calendar.YEAR) - birthdayCalendar.get(Calendar.YEAR);
+        int month = currentCalendar.get(Calendar.MONTH) - birthdayCalendar.get(Calendar.MONTH);
+        int day = currentCalendar.get(Calendar.DAY_OF_MONTH) - birthdayCalendar.get(Calendar.DAY_OF_MONTH);
+
+        return (year == 0 ? "" : (year + "岁")) + (month == 0 ? "" : (month + "月")) + (day == 0 ? "" : (day + "天"));
+    }
+
+
 }
