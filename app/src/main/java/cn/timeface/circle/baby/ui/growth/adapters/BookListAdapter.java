@@ -53,6 +53,9 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         if(clickListener != null ) {
             holder.ivMenu.setOnClickListener(clickListener);
             holder.tvPrint.setOnClickListener(clickListener);
+            holder.flBookCover.setOnClickListener(clickListener);
+
+            holder.flBookCover.setTag(R.string.tag_obj, bookObj);
             holder.ivMenu.setTag(R.string.tag_obj, bookObj);
             holder.tvPrint.setTag(R.string.tag_obj, bookObj);
         }

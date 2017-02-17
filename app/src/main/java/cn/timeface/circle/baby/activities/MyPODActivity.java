@@ -12,7 +12,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -32,7 +31,6 @@ public class MyPODActivity extends PODActivity {
     private String bookId;
     private int babyId;
     private int localBookType;
-    TFDialog tfDialog;
 
     public static void open(Context context, String bookId , String openBookId,int localBookType, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values, int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
@@ -58,8 +56,6 @@ public class MyPODActivity extends PODActivity {
         bookId = getIntent().getStringExtra("bookId");
         babyId = getIntent().getIntExtra("babyId", 0);
         this.localBookType = getIntent().getIntExtra("local_book_type", 0);
-        tfDialog = TFDialog.getInstance();
-        tfDialog.show(getSupportFragmentManager(), "dialog");
     }
 
     @Override
@@ -76,7 +72,7 @@ public class MyPODActivity extends PODActivity {
                     localBookType,
                     "des",
                     dataList,
-                    openBookId,
+                    bookModel.getBookId(),
                     (int)bookModel.getBookType(),
                     0
             );
@@ -140,7 +136,6 @@ public class MyPODActivity extends PODActivity {
                 pageNum
         )
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .doOnUnsubscribe(() -> tfDialog.dismiss())
                 .subscribe(
                         response -> {
                             if(response.success()){

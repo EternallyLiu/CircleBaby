@@ -108,25 +108,11 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 DateUtils.formatDateTime(mContext, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_WEEKDAY);
                 holder.tvTitle.setText(DateUtils.formatDateTime(mContext, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_DATE)
                         + DateUtils.formatDateTime(mContext, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
+                holder.tvImgCount.setText(String.valueOf(timeLineObj.getMediaList().size()));
                 holder.tvContent.setText(timeLineObj.getContent());
+                holder.cbSelect.setTag(R.string.tag_ex, dataPosition);
+                holder.cbSelect.setTag(R.string.tag_obj, timeLineObj);
             }
-
-
-//            for (int i = 0; i < COLUMN_NUM; i++) {
-//                if (i < imgs.size()) {
-//                    holder.ivImgs[i].setVisibility(View.VISIBLE);
-//                    holder.ivImgs[i].setContent(imgs.get(i));
-//                    holder.ivImgs[i].getCbSel().setTag(R.string.tag_obj, imgs.get(i));
-//
-//                    //选中状态
-//                    holder.ivImgs[i].setChecked(selMedias.contains(imgs.get(i)));
-//                    holder.ivImgs[i].setTag(R.string.tag_obj, imgs.get(i));
-//                } else {
-//                    holder.ivImgs[i].setVisibility(View.INVISIBLE);
-//                    holder.ivImgs[i].getCbSel().setTag(R.string.tag_obj, null);
-//                }
-//                holder.ivImgs[i].getCbSel().setTag(R.string.tag_ex, dataPosition);
-//            }
         }
     }
 
@@ -177,7 +163,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         return new Animator[0];
     }
 
-    static class TitleViewHolder extends RecyclerView.ViewHolder {
+    class TitleViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_title)
         TextView tvTitle;
         @Bind(R.id.cb_all_sel)
@@ -186,10 +172,11 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         TitleViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            cbAllSel.setOnClickListener(onCheckedAllListener);
         }
     }
 
-    static class TimesViewHolder extends RecyclerView.ViewHolder {
+    class TimesViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_image)
         ImageView ivImage;
         @Bind(R.id.tv_title)
@@ -198,10 +185,13 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         CheckBox cbSelect;
         @Bind(R.id.tv_content)
         TextView tvContent;
+        @Bind(R.id.tv_img_count)
+        TextView tvImgCount;
 
         TimesViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            cbSelect.setOnClickListener(onCheckedListener);
         }
     }
 

@@ -54,6 +54,18 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
         }
     }
 
+    public static int getOpenBookType(int bookType){
+        if(bookType == BOOK_TYPE_PAINTING){
+            return 111;
+        } else if(bookType == BOOK_TYPE_GROWTH_QUOTATIONS){
+            return 114;
+        } else if(bookType == BOOK_TYPE_GROWTH_COMMEMORATION_BOOK){
+            return 113;
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public Observable<BookListResponse> productionList(int bookType) {
         return apiService.bookList(bookType);

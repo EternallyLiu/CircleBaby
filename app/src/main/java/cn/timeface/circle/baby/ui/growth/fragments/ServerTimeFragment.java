@@ -19,6 +19,7 @@ import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -70,7 +71,7 @@ public class ServerTimeFragment extends BasePresenterFragment {
     private void reqData(){
         stateView.setVisibility(View.VISIBLE);
         stateView.loading();
-        Observable<QueryTimeLineResponse> timeResponseObservable = apiService.queryTimeLine(FastData.getBabyId(), userId, bookType);
+        Observable<QueryTimeLineResponse> timeResponseObservable = apiService.queryTimeLine(FastData.getBabyId(), userId, getQueryType());
 //        if (contentType == TypeConstants.PHOTO_TYPE_TIME) {
 //            timeResponseObservable = apiService.queryTimeLine();
 //        } else if(contentType == TypeConstants.PHOTO_TYPE_USER){
@@ -109,6 +110,17 @@ public class ServerTimeFragment extends BasePresenterFragment {
 
     public List<TimeLineObj> getSelectedMedias(){
         return serverTimesAdapter.getSelImgs();
+    }
+
+    public int getQueryType(){
+        switch (bookType) {
+            //成长语录
+            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
+                return TypeConstants.QUOTATION;
+
+            default:
+                return -1;
+        }
     }
 
     @Override

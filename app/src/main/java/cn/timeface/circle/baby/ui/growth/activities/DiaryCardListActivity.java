@@ -110,7 +110,12 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
             rvBooks.setLayoutManager(new GridLayoutManager(this, 2));
             diaryCardListAdapter = new DiaryCardListAdapter(this, diaryCardObjs, canSelect, this);
             rvBooks.setAdapter(diaryCardListAdapter);
+        } else {
+            diaryCardListAdapter.setListData(diaryCardObjs);
+            diaryCardListAdapter.notifyDataSetChanged();
         }
+
+        llEmpty.setVisibility(diaryCardListAdapter.getListData().isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     @Override

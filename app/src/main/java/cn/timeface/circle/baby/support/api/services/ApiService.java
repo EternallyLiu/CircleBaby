@@ -7,6 +7,7 @@ import cn.timeface.circle.baby.support.api.models.db.LocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
+import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLabelResponse;
@@ -852,5 +853,12 @@ public interface ApiService {
      */
     @GET("printGrowth/getFamilyMember")
     Observable<UsersInfoResponse> queryUsers();
+
+    /**
+     * 查询图片信息
+     * @return
+     */
+    @GET("babyCloudAlbums/imageParam")
+    Observable<ImageExInfoResponse> queryImageInfo(@Query("url") String url);
 
 }

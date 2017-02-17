@@ -24,6 +24,7 @@ import cn.timeface.circle.baby.support.utils.MiPushUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.TimeFaceUtilInit;
+import timber.log.Timber;
 
 /**
  * author: rayboot  Created on 15/12/3.
@@ -81,6 +82,10 @@ public class App extends MultiDexApplication {
                 .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay()
                 .getHeight();
         Fresco.initialize(this);
+
+        if(BuildConfig.DEBUG){
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     /**

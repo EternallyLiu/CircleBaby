@@ -31,7 +31,10 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
     @Bind({R.id.tv_type_time, R.id.tv_type_user, R.id.tv_type_location, R.id.tv_type_label})
     TextView[] textViews;
 
+    public static int CONTENT_TYPE_PHOTO = 0;//选择照片（按时间/按发布人/按地点/按标签）
+    public static int CONTENT_TYPE_TIME = 1;//选择时光（只有按时间/按发布人）
     SelectTypeListener selectTypeListener;
+    int contentType;
 
     public interface SelectTypeListener{
         void selectTypeTime();
@@ -41,9 +44,12 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
         void setTypeText(String title);//设置标题名称
     }
 
-    public static SelectContentTypeDialog newInstance(SelectTypeListener selectTypeListener){
+    public static SelectContentTypeDialog newInstance(SelectTypeListener selectTypeListener, int contentType){
         SelectContentTypeDialog selectContentTypeDialog = new SelectContentTypeDialog();
+        Bundle bundle = new Bundle();
+        bundle.putInt("content_type", contentType);
         selectContentTypeDialog.setSelectTypeListener(selectTypeListener);
+        selectContentTypeDialog.setArguments(bundle);
         return selectContentTypeDialog;
     }
 
@@ -58,15 +64,13 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
         tvTypeUser.setOnClickListener(this);
         tvTypeLocation.setOnClickListener(this);
         tvTypeLabel.setOnClickListener(this);
+
+        contentType = getArguments().getInt("content_type", CONTENT_TYPE_PHOTO);
+        if(contentType == CONTENT_TYPE_TIME){
+            tvTypeLocation.setVisibility(View.INVISIBLE);
+            tvTypeLabel.setVisibility(View.INVISIBLE);
+        }
         return view;
-    }
-
-    public void setTypeLocationVisibilty(int visibilty) {
-        this.tvTypeLocation.setVisibility(visibilty);
-    }
-
-    public void setTypeLabelVisibilty(int visibilty) {
-        this.tvTypeLabel.setVisibility(visibilty);
     }
 
     @Override
