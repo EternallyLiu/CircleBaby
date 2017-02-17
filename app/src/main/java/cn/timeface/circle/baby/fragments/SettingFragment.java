@@ -80,6 +80,10 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     TextView tvPhoneNumber;
     @Bind(R.id.rl_setting_phone)
     RelativeLayout rlSettingPhone;
+    @Bind(R.id.iv_swich_sms)
+    ImageView ivSwichSms;
+    @Bind(R.id.rl_sms)
+    RelativeLayout rlSms;
     private String phoneNumber;
 
     @Override
@@ -129,7 +133,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         String replace = phoneNumber.substring(3, 7);
 
         if (!TextUtils.isEmpty(phoneNumber)) {
-            tvPhoneNumber.setText(phoneNumber.replace(replace,"****"));
+            tvPhoneNumber.setText(phoneNumber.replace(replace, "****"));
         }
     }
 

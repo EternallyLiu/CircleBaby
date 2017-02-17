@@ -77,10 +77,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                 break;
             case UPDATE_DATA_UPDATE_DATA:
                 if (msg.obj != null) {
-                    if (!list.contains(msg.obj)) {
-                        list.remove(msg.arg1);
-                        list.add(msg.arg1, msg.obj);
-                    }
+                    list.remove(msg.arg1);
+                    list.add(msg.arg1, msg.obj);
                 }
                 notifyItemChanged(msg.arg1);
                 if (msg.arg1 != getRealItemSize())

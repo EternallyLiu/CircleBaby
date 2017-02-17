@@ -26,6 +26,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
@@ -36,9 +37,11 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineDayAdapter;
+import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.ui.timelines.beans.MonthRecord;
+import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout;
 
@@ -58,7 +61,7 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
     TextView title;
     @Bind(R.id.empty)
     EmptyDataView empty;
-    private TimeLineDayAdapter adapter;
+    private TimeLineGroupListAdapter adapter;
 
     private int year, month;
     private int currentPage = 1;
@@ -99,7 +102,7 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
             actionBar.setDisplayShowTitleEnabled(false);
         }
         title.setText(FastData.getBabyObj().getNickName() + "的成长记录");
-        adapter = new TimeLineDayAdapter(getActivity());
+        adapter = new TimeLineGroupListAdapter(getActivity());
         adapter.setLoadDataFinish(this);
         contentRecyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -145,21 +148,17 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
-//        LogUtil.showLog(dataList.size() + "====" + currentPage);
-//        ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
-//        for (TimeLineGroupObj obj : dataList) {
-//            if (obj.getTimeLineList().size() > 0) {
-//                for (TimeLineObj timeLineObj : obj.getTimeLineList()) {
-//                    TimeLineGroupObj timeLineGroupObj=new TimeLineGroupObj(obj.getAge(),obj.getDate(),obj.getDateEx(),new ArrayList<>());
-//                    timeLineGroupObj.getTimeLineList().add(timeLineObj);
-//                    lists.add(timeLineGroupObj);
-//                }
-//            }
-//        }
+        ArrayList<BaseObj> list = new ArrayList<>();
+        for (TimeLineGroupObj groupObj : dataList) {
+            TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+            list.add(bean);
+            for (TimeLineObj timeLineObj : groupObj.getTimeLineList())
+                list.add(timeLineObj);
+        }
         if (currentPage == 1) {
-            adapter.addList(true, dataList);
+            adapter.addList(true, list);
         } else {
-            adapter.addList(dataList);
+            adapter.addList(list);
         }
     }
 
@@ -222,15 +221,16 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
 
     @Subscribe
     public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
-        TimeLineGroupObj timeGroup = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
-        for (int i = 0; i < timeGroup.getTimeLineList().size(); i++) {
-            if (timeGroup.getTimeLineList().get(i).getMediaList().contains(mediaUpdateEvent.getMediaObj())) {
-                List<MediaObj> list = timeGroup.getTimeLineList().get(i).getMediaList();
-                int index = list.indexOf(mediaUpdateEvent.getMediaObj());
-                list.get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
-                list.get(index).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
-                list.get(index).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
-            }
+        if (mediaUpdateEvent.getAllDetailsListPosition() < 0)
+            return;
+        TimeLineObj timeLineObj = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
+        boolean flag = timeLineObj.getMediaList().contains(mediaUpdateEvent.getMediaObj());
+        LogUtil.showLog("flag:" + flag);
+        if (flag) {
+            int index = timeLineObj.getMediaList().indexOf(mediaUpdateEvent.getMediaObj());
+            timeLineObj.getMediaList().get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
+            timeLineObj.getMediaList().get(index).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+            timeLineObj.getMediaList().get(index).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
         }
     }
 

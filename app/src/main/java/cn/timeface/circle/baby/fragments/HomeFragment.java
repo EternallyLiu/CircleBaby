@@ -71,6 +71,7 @@ import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.VideoInfo;
+import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel_Table;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
@@ -92,7 +93,9 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
 import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 import cn.timeface.circle.baby.ui.timelines.views.TimerImageView;
 import cn.timeface.circle.baby.views.InputMethodRelative;
@@ -145,13 +148,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     private boolean rlCommentShow;
     private int currentPage = 1;
-    private TimeLineGroupAdapter adapter;
+    private TimeLineGroupListAdapter adapter;
     public BabyInfoResponse babyInfoResponse;
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
     private boolean enableAnimation = true;
     private boolean bottomMenuShow = true;
 
-    private List<TimeLineGroupObj> tempList;
     AnimatorSet animatorSet = new AnimatorSet();
     private int commentId = 0;
     private int replacePosition;
@@ -194,7 +196,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         setupPTR();
         initData();
 //        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
-        adapter = new TimeLineGroupAdapter(getActivity(), new ArrayList<>());
+        adapter = new TimeLineGroupListAdapter(getActivity());
         contentRecyclerView.setAdapter(adapter);
 
         tfStateView.setOnRetryListener(() -> reqData(1));
@@ -347,7 +349,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
                         tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.DISABLED);
                     }
-                    tempList = timelineResponse.getDataList();
                     setDataList(timelineResponse.getDataList());
                 }, error -> {
                     if (tfStateView != null) {
@@ -360,19 +361,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void setDataList(List<TimeLineGroupObj> dataList) {
-        ArrayList<TimeLineGroupObj> lists = new ArrayList<>();
-        for (TimeLineGroupObj obj : dataList) {
-            if (obj.getTimeLineList().size() > 0) {
-                lists.add(obj);
-            }
+        ArrayList<BaseObj> list = new ArrayList<>();
+        for (TimeLineGroupObj groupObj : dataList) {
+            TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+            list.add(bean);
+            for (TimeLineObj timeLineObj : groupObj.getTimeLineList())
+                list.add(timeLineObj);
         }
-        tempList = lists;
-//        if(lists.size()==0){
-//            showNoDataView(true);
-//        }else{
-//            showNoDataView(false);
-//        }
-        if (lists.size() < 3) {
+        if (list.size() < 3) {
             if (enableAnimation && !bottomMenuShow) {
                 bottomMenuShow = true;
                 Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
@@ -384,11 +380,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             }
         }
         if (currentPage == 1) {
-            adapter.setListData(lists);
+            adapter.addList(true, list);
         } else {
-            adapter.getListData().addAll(lists);
+            adapter.addList(list);
         }
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -421,7 +416,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.toolbar:
                 LogUtil.showLog("clicl toolbar");
-                if (System.currentTimeMillis() - clickToolBarLastTime <= 500 && adapter.getCount() > 0)
+                if (System.currentTimeMillis() - clickToolBarLastTime <= 500 && adapter.getRealItemSize() > 0)
                     contentRecyclerView.scrollToPosition(0);
                 clickToolBarLastTime = System.currentTimeMillis();
                 break;
@@ -444,39 +439,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 CloudAlbumActivity.open(getActivity());
                 break;
             case R.id.btn_send:
-                String s = etCommment.getText().toString();
-                if (TextUtils.isEmpty(s)) {
-                    ToastUtil.showToast("请填写评论内容");
-                    return;
-                }
-                btnSend.setClickable(false);
-                Remember.putString("sendComment", s);
-                apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timeLineObj.getTimeId(), commentId)
-                        .filter(new Func1<BaseResponse, Boolean>() {
-                            @Override
-                            public Boolean call(BaseResponse response) {
-                                return response.success();
-                            }
-                        })
-                        .flatMap(baseResponse -> apiService.queryBabyTimeDetail(timeLineObj.getTimeId()))
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(timeDetailResponse -> {
-                            if (timeDetailResponse.success()) {
-                                Remember.putString("sendComment", "");
-                                dialog.dismiss();
-                                timeLineObj = timeDetailResponse.getTimeInfo();
-                                hideKeyboard();
-//                                ToastUtil.showToast(timeDetailResponse.getInfo());
-                                if (replacePosition >= 0 && listPos >= 0) {
-                                    replaceList(replacePosition, listPos, timeLineObj);
-                                }
-                            }
-                            if (btnSend != null)
-                                btnSend.setClickable(false);
-                        }, error -> {
-                            Log.e(TAG, "comment");
-                            error.printStackTrace();
-                        });
                 break;
         }
     }
@@ -536,7 +498,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     @Subscribe
     public void onEvent(CommentSubmit commentSubmit) {
 
-        replaceList(commentSubmit.getReplacePosition(), commentSubmit.getListPos(), commentSubmit.getTimeLineObj());
+        LogUtil.showLog(commentSubmit.getClass().getName());
+        if (adapter.containObj(commentSubmit.getTimeLineObj())) {
+            LogUtil.showLog("contain:" + true);
+            adapter.updateItem(commentSubmit.getTimeLineObj());
+        }
+//        replaceList(commentSubmit.getReplacePosition(), commentSubmit.getListPos(), commentSubmit.getTimeLineObj());
     }
 
     @Subscribe
@@ -549,17 +516,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         initMsg();
     }
 
-    public void replaceList(int replacePosition, int listPos, TimeLineObj timeLineObj) {
-
-        if (tempList.size() > replacePosition) {
-            if (tempList.get(replacePosition).getTimeLineList().size() > listPos) {
-                tempList.get(replacePosition).getTimeLineList().remove(listPos);
-                tempList.get(replacePosition).getTimeLineList().add(listPos, timeLineObj);
-            }
-        }
-        adapter.setListData(tempList);
-        adapter.notifyDataSetChanged();
-    }
 
     private void showNoDataView(boolean showNoData) {
         llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
@@ -625,14 +581,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
     @Subscribe
     public void onEvent(ActionCallBackEvent event) {
-        CommentObj comment = event.getComment();
-        timeLineObj = event.getTimeLineObj();
-        replacePosition = event.getReplacePosition();
-        listPos = event.getListPos();
-        commentId = comment.getCommentId();
-        editComment();
-        etCommment.requestFocus();
-        etCommment.setHint("回复 " + comment.getUserInfo().getRelationName() + " ：");
+//        CommentObj comment = event.getComment();
+//        timeLineObj = event.getTimeLineObj();
+//        replacePosition = event.getReplacePosition();
+//        listPos = event.getListPos();
+//        commentId = comment.getCommentId();
+//        editComment();
+//        etCommment.requestFocus();
+//        etCommment.setHint("回复 " + comment.getUserInfo().getRelationName() + " ：");
     }
 
     @Subscribe
@@ -697,15 +653,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
         if (mediaUpdateEvent.getAllDetailsListPosition() < 0)
             return;
-        TimeLineGroupObj timeGroup = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
-        for (int i = 0; i < timeGroup.getTimeLineList().size(); i++) {
-            if (timeGroup.getTimeLineList().get(i).getMediaList().contains(mediaUpdateEvent.getMediaObj())) {
-                List<MediaObj> list = timeGroup.getTimeLineList().get(i).getMediaList();
-                int index = list.indexOf(mediaUpdateEvent.getMediaObj());
-                list.get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
-                list.get(index).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
-                list.get(index).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
-            }
+        TimeLineObj timeLineObj = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
+        boolean flag = timeLineObj.getMediaList().contains(mediaUpdateEvent.getMediaObj());
+        LogUtil.showLog("flag:" + flag);
+        if (flag) {
+            int index = timeLineObj.getMediaList().indexOf(mediaUpdateEvent.getMediaObj());
+            timeLineObj.getMediaList().get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
+            timeLineObj.getMediaList().get(index).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+            timeLineObj.getMediaList().get(index).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
         }
     }
 
@@ -717,13 +672,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             TimerImageView imageView = (TimerImageView) picChangeView.findViewById(R.id.pic_array);
             TextView addCount = (TextView) picChangeView.findViewById(R.id.pic_add_count);
             TextView upload = (TextView) picChangeView.findViewById(R.id.upload);
-            String count=list.size()+"";
+            String count = list.size() + "";
             String content = String.format("手机新增了 %s 张照片！", count);
             LogUtil.showLog("content:" + content);
             SpannableStringBuilder builder = new SpannableStringBuilder();
             builder.append(content);
             ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#F59650"));
-            builder.setSpan(colorSpan, content.indexOf(count), content.indexOf(count) + count.length()+1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(colorSpan, content.indexOf(count), content.indexOf(count) + count.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             addCount.setText(builder);
             upload.setOnClickListener(this);
             imageView.setList(list);

@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -53,6 +54,7 @@ public class TimeLineGroupObj extends BaseObj implements Cloneable, Parcelable {
     }
 
     public List<TimeLineObj> getTimeLineList() {
+        if (timeLineList==null)timeLineList=new ArrayList<>(0);
         return timeLineList;
     }
 
