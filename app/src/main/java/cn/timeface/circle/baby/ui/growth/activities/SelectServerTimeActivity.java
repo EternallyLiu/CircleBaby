@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +18,10 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,13 +30,16 @@ import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.SelectContentTypeDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserWrapObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.fragments.SelectUserFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
@@ -79,9 +87,9 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         getSupportActionBar().setTitle("");
 
         tvContentType.setOnClickListener(this);
-        timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
         this.openBookType = getIntent().getIntExtra("open_book_type", 0);
         this.bookType = getIntent().getIntExtra("book_type", 0);
+        timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
         showContent(timeFragment);
     }
 
@@ -108,46 +116,110 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                 return true;
             }
 
-            //跳转开放平台POD接口；
-            String bookName = FastData.getBabyName() + "的精装照片书";
-            if(bookType == BookModel.BOOK_TYPE_PAINTING){
-                bookName = FastData.getBabyName() + "的绘画集";
-            }
-            List<TFOResourceObj> tfoResourceObjs = new ArrayList<TFOResourceObj>();
-            StringBuffer sb = new StringBuffer("{\"dataList\":[");
-            int index = 0;
-//            for(TimeLineObj mediaObj : selectedMedias){
-//                index++;
-//                TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
-//                tfoResourceObjs.add(tfoResourceObj);
-//                sb.append(mediaObj.getId());
-//                if (index < selectedMedias.size()) {
-//                    sb.append(",");
-//                } else {
-//                    sb.append("]}");
-//                }
-//            }
+            addSubscription(
+                    apiService.queryImageInfo(FastData.getBabyAvatar())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(
+                                    response -> {
+                                        if (response.success()) {
+                                            //跳转开放平台POD接口；
+                                            String bookName = FastData.getBabyName() + "的成长纪念册";
+                                            if (bookType == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
+                                                bookName = FastData.getBabyName() + "的成长语录";
+                                            }
 
 
-            TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
-            List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
-            tfoContentObjs1.add(tfoContentObj);
-            TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
-            List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
-            tfoPublishObjs.add(tfoPublishObj);
+                                            //按月份分组时光
+                                            HashMap<String, List<TimeLineObj>> timelineMap = new HashMap<>();
+                                            for (TimeLineObj timeLineObj : selectedMedias) {
+                                                String key = DateUtil.formatDate("yyyy-MM", timeLineObj.getDate());
+                                                if (timelineMap.containsKey(key)) {
+                                                    timelineMap.get(key).add(timeLineObj);
+                                                } else {
+                                                    List<TimeLineObj> timeLineObjs = new ArrayList<>();
+                                                    timeLineObjs.add(timeLineObj);
+                                                    timelineMap.put(key, timeLineObjs);
+                                                }
+                                            }
 
-            ArrayList<String> keys = new ArrayList<>();
-            ArrayList<String> values = new ArrayList<>();
-            keys.add("book_author");
-            keys.add("book_title");
-            values.add(FastData.getUserName());
-            values.add(bookName);
 
-            MyPODActivity.open(this, "", "", bookType, openBookType, tfoPublishObjs, sb.toString(),true,FastData.getBabyId(),keys,values,1);
-//            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
-//            finish();
+                                            //组装发布数据
+                                            //每个月一个tfopublishobj
+                                            List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+
+                                            Iterator iterator = timelineMap.entrySet().iterator();
+                                            while (iterator.hasNext()) {
+                                                Map.Entry entry = (Map.Entry) iterator.next();
+                                                String key = (String) entry.getKey();
+                                                List<TimeLineObj> timeLineObjs = (List<TimeLineObj>) entry.getValue();
+
+                                                //content list，代表一个时光
+                                                List<TFOContentObj> tfoContentObjs = new ArrayList<>(selectedMedias.size());
+                                                for (TimeLineObj timeLineObj : selectedMedias) {
+                                                    tfoContentObjs.add(timeLineObj.toTFOContentObj());
+                                                }
+
+                                                TFOPublishObj tfoPublishObj = new TFOPublishObj(key, tfoContentObjs);
+                                                tfoPublishObjs.add(tfoPublishObj);
+                                            }
+
+
+                                            ArrayList<String> keys = new ArrayList<>();
+                                            ArrayList<String> values = new ArrayList<>();
+                                            keys.add("book_author");
+                                            keys.add("book_title");
+                                            values.add(FastData.getUserName());
+                                            values.add(bookName);
+
+                                            //成长语录插页数据，content_list第一条数据为插页信息
+                                            List<TFOResourceObj> insertPageResources = new ArrayList<>(1);
+                                            TFOResourceObj insertPageResourceObj = new TFOResourceObj();
+                                            insertPageResourceObj.setImageUrl(FastData.getBabyAvatar());
+                                            insertPageResourceObj.setImageOrientation(response.getImageRotation());
+                                            insertPageResourceObj.setImageHeight(response.getImageHeight());
+                                            insertPageResourceObj.setImageWidth(response.getImageWidth());
+                                            insertPageResources.add(insertPageResourceObj);
+                                            TFOContentObj insertPageContent = new TFOContentObj("", insertPageResources);//没有subtitile
+                                            String insertContent = FastData.getBabyName()
+                                                    + ","
+                                                    + FastData.getBabyAge()
+                                                    + ","
+                                                    + "是一个活泼可爱的小宝宝，在"
+                                                    + FastData.getBabyName()
+                                                    + "成长的过程中经常会\"语出惊人\"，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了"
+                                                    + FastData.getBabyName()
+                                                    + "成长中的童言趣语，一起来看看吧~";
+                                            insertPageContent.setContent(insertContent);
+                                            tfoPublishObjs.get(0).getContentList().add(0, insertPageContent);//插入插页信息
+
+                                            //拼接所有图片的id，作为保存书籍接口使用
+                                            StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                            for (TimeLineObj timeLineObj : selectedMedias) {
+                                                if (timeLineObj != null) {
+                                                    if (!timeLineObj.getMediaList().isEmpty()) {
+                                                        for (MediaObj mediaObj : timeLineObj.getMediaList()) {
+                                                            sb.append(mediaObj.getId());
+                                                            sb.append(",");
+                                                        }
+
+                                                        sb.replace(sb.lastIndexOf(","), sb.length(), "]}");
+                                                    } else {
+                                                        sb.append("]}");
+                                                    }
+                                                }
+                                            }
+
+
+                                            MyPODActivity.open(this, "", "", bookType, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
+                                        }
+                                    },
+                                    throwable -> {
+                                        Log.e(TAG, throwable.getLocalizedMessage());
+                                    }
+                            ));
+
+
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -252,9 +324,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                     fragmentShow = false;
                 } else {
                     if (selectContentTypeDialog == null) {
-                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this);
-                        selectContentTypeDialog.setTypeLabelVisibilty(View.INVISIBLE);
-                        selectContentTypeDialog.setTypeLocationVisibilty(View.INVISIBLE);
+                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_TIME);
                         transaction.add(R.id.fl_container_type, selectContentTypeDialog);
                     } else {
                         transaction.show(selectContentTypeDialog);

@@ -17,6 +17,7 @@
         android:src="@drawable/ic_book_shelf" />
 
     <com.github.rayboot.widget.ratioview.RatioFrameLayout
+        android:clickable="true"
         android:id="@+id/fl_book_cover"
         android:layout_width="100dp"
         android:layout_height="wrap_content"

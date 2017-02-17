@@ -256,8 +256,8 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
                             }
                         }, (coverTemplateInfoBaseResponse, editBookCoverBaseResponse) -> {
 
-                            if (coverTemplateInfoBaseResponse.getData().getContent_list().size() > 1) {
-                                TFOBookContentModel c = coverTemplateInfoBaseResponse.getData().getContent_list().get(0);
+                            if (coverTemplateInfoBaseResponse.getData().getContentList().size() > 1) {
+                                TFOBookContentModel c = coverTemplateInfoBaseResponse.getData().getContentList().get(0);
 
                                 String ccId = originBook.getContentList().get(0).getContentId();
 
@@ -281,7 +281,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
 
                                 // 封底
                                 originBook.getContentList().remove(originBook.getContentList().size() - 1);
-                                originBook.getContentList().add(coverTemplateInfoBaseResponse.getData().getContent_list().get(1));
+                                originBook.getContentList().add(coverTemplateInfoBaseResponse.getData().getContentList().get(1));
                             } else {
                                 return null;
                             }

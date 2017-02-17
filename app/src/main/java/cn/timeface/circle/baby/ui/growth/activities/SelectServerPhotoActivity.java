@@ -7,10 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -25,12 +28,15 @@ import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.SelectContentTypeDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionCustomDataObj;
+import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionRemarkObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserWrapObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.fragments.SelectUserFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.ServerPhotoFragment;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
@@ -109,42 +115,87 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                 return true;
             }
 
-            //跳转开放平台POD接口；
-            String bookName = FastData.getBabyName() + "的精装照片书";
-            if(bookType == BookModel.BOOK_TYPE_PAINTING){
-                bookName = FastData.getBabyName() + "的绘画集";
-            }
-            List<TFOResourceObj> tfoResourceObjs = new ArrayList<TFOResourceObj>();
-            StringBuffer sb = new StringBuffer("{\"dataList\":[");
-            int index = 0;
-            for(MediaObj mediaObj : selectedMedias){
-                index++;
-                TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
-                tfoResourceObjs.add(tfoResourceObj);
-                sb.append(mediaObj.getId());
-                if (index < selectedMedias.size()) {
-                    sb.append(",");
-                } else {
-                    sb.append("]}");
-                }
-            }
+            addSubscription(
+                    apiService.queryImageInfo(FastData.getBabyAvatar())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(
+                                    response -> {
+                                        if(response.success()){
+                                            //跳转开放平台POD接口；
+                                            String bookName = FastData.getBabyName() + "的精装照片书";
+                                            if(bookType == BookModel.BOOK_TYPE_PAINTING){
+                                                bookName = FastData.getBabyName() + "的绘画集";
+                                            }
+                                            List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+                                            StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                            int index = 0;
+                                            for(MediaObj mediaObj : selectedMedias){
+                                                index++;
+                                                TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
+                                                tfoResourceObjs.add(tfoResourceObj);
+                                                sb.append(mediaObj.getId());
+                                                if (index < selectedMedias.size()) {
+                                                    sb.append(",");
+                                                } else {
+                                                    sb.append("]}");
+                                                }
+                                            }
 
 
-            TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
-            List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
-            tfoContentObjs1.add(tfoContentObj);
-            TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
-            List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
-            tfoPublishObjs.add(tfoPublishObj);
 
-            ArrayList<String> keys = new ArrayList<>();
-            ArrayList<String> values = new ArrayList<>();
-            keys.add("book_author");
-            keys.add("book_title");
-            values.add(FastData.getUserName());
-            values.add(bookName);
+                                            List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+                                            TFOContentObj tfoContentObj;
+                                            tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+                                            tfoContentObjs1.add(tfoContentObj);
 
-            MyPODActivity.open(this, "", "", bookType, openBookType, tfoPublishObjs, sb.toString(),true,FastData.getBabyId(),keys,values,1);
+                                            ArrayList<String> keys = new ArrayList<>();
+                                            ArrayList<String> values = new ArrayList<>();
+                                            keys.add("book_author");
+                                            keys.add("book_title");
+
+                                            values.add(FastData.getUserName());
+                                            values.add(bookName);
+
+
+                                            if(bookType == BookModel.BOOK_TYPE_PAINTING) {
+                                                PaintingCollectionCustomDataObj customDataObj = new PaintingCollectionCustomDataObj();
+                                                TFOResourceObj tfoResourceObj = new TFOResourceObj();
+
+                                                tfoResourceObj.setImageOrientation(response.getImageRotation());
+                                                tfoResourceObj.setImageUrl(FastData.getBabyAvatar());
+                                                tfoResourceObj.setImageWidth(response.getImageWidth());
+                                                tfoResourceObj.setImageHeight(response.getImageHeight());
+                                                PaintingCollectionRemarkObj remarkObj = new PaintingCollectionRemarkObj(FastData.getBabyName(), FastData.getBabyAge());
+                                                customDataObj.setRemark(remarkObj);
+                                                customDataObj.setImgInfo(tfoResourceObj);
+
+                                                Gson gson = new Gson();
+                                                tfoContentObj.setCustomData(gson.toJson(customDataObj));
+                                                String coverImage = gson.toJson(customDataObj.getImgInfo());
+                                                coverImage = "{\"cover4\":[" + coverImage + "]}";
+
+                                                keys.add("cover_image");
+                                                values.add(coverImage);
+                                            }
+
+
+
+
+                                            TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
+                                            List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+                                            tfoPublishObjs.add(tfoPublishObj);
+
+
+                                            MyPODActivity.open(this, "", "", bookType, openBookType, tfoPublishObjs, sb.toString(),true,FastData.getBabyId(),keys,values,1);
+                                        }
+                                    },
+                                    throwable -> {
+                                        Log.e(TAG, throwable.getLocalizedMessage());
+                                    }
+                            )
+            );
+
+
 //            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
 //            finish();
         }
@@ -261,7 +312,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                     fragmentShow = false;
                 } else {
                     if (selectContentTypeDialog == null) {
-                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this);
+                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_PHOTO);
                         transaction.add(R.id.fl_container_type, selectContentTypeDialog);
                     } else {
                         transaction.show(selectContentTypeDialog);

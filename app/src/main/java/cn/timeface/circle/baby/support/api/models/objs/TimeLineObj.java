@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
  * Created by lidonglin on 2016/5/9.
@@ -208,6 +211,20 @@ public class TimeLineObj extends BaseObj implements Parcelable {
 
     public void setDateEx(String dateEx) {
         this.dateEx = dateEx;
+    }
+
+    public List<TFOResourceObj> toTFOResourceObjs(){
+        List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+        for(MediaObj mediaObj : getMediaList()){
+            tfoResourceObjs.add(mediaObj.toTFOResourceObj());
+        }
+        return tfoResourceObjs;
+    }
+
+    public TFOContentObj toTFOContentObj(){
+        TFOContentObj tfoContentObj = new TFOContentObj(DateUtil.formatDate("yyyy-MM-dd hh:kk:mm", getDate()), toTFOResourceObjs());
+        tfoContentObj.setContent(getContent());
+        return tfoContentObj;
     }
 
     @Override

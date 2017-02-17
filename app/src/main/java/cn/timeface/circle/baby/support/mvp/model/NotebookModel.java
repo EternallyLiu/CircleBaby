@@ -141,7 +141,7 @@ public class NotebookModel extends BasePresenterModel implements NotebookPresent
 
     @Override
     public Observable<TFOBaseResponse<List<TFOSimpleTemplate>>> getCoverTemplates() {
-        return openApi.getTemplateList(TYPE, 1);
+        return openApi.getTemplateList(TYPE, true);
     }
 
     @Override

@@ -10,9 +10,12 @@ import android.view.View;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.MineBookActivity;
+import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.SelectThemeActivity;
 import cn.timeface.circle.baby.activities.TimeBookPickerPhotoActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
@@ -81,6 +84,9 @@ public class BookListActivity extends ProductionListActivity implements BookPres
             bookListAdapter.setListData(bookObjs);
             bookListAdapter.notifyDataSetChanged();
         }
+
+        tvEmptyInfo.setText(FastData.getBabyName() + BookModel.getGrowthBookName(bookType) + "为空哦，赶紧发布内容，制作一本吧~");
+        llEmpty.setVisibility(bookListAdapter.getListData().isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -111,25 +117,50 @@ public class BookListActivity extends ProductionListActivity implements BookPres
     @Override
     public void onClick(View view) {
         BookObj bookObj = (BookObj) view.getTag(R.string.tag_obj);
-        if (view.getId() == R.id.iv_menu) {
-            if (productionMenuDialog == null) {
-                ProductionMenuDialog productionMenuDialog = ProductionMenuDialog.newInstance(
-                        bookType,
+
+        switch (view.getId()) {
+            case R.id.iv_menu:
+                if (productionMenuDialog == null) {
+                    ProductionMenuDialog productionMenuDialog = ProductionMenuDialog.newInstance(
+                            bookType,
+                            String.valueOf(bookObj.getBookId()),
+                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
+                    productionMenuDialog.show(getSupportFragmentManager(), "");
+                }
+                break;
+
+            case R.id.tv_print:
+                new BookPrintHelper(
+                        this,
+                        bookObj.getBookType(),
+                        bookObj.getPageNum(),
+                        0,//识图卡片没有booksizeid，传值0
                         String.valueOf(bookObj.getBookId()),
-                        bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
-                productionMenuDialog.show(getSupportFragmentManager(), "");
-            }
-        } else if(view.getId() == R.id.tv_print){
-            new BookPrintHelper(
-                    this,
-                    bookObj.getBookType(),
-                    bookObj.getPageNum(),
-                    0,//识图卡片没有booksizeid，传值0
-                    String.valueOf(bookObj.getBookId()),
-                    bookObj.getBookCover(),
-                    FastData.getBabyName() + "的识图卡片",
-                    System.currentTimeMillis(),
-                    CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD).reqPrintStatus();
+                        bookObj.getBookCover(),
+                        FastData.getBabyName() + "的识图卡片",
+                        System.currentTimeMillis(),
+                        CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD).reqPrintStatus();
+                break;
+
+            case R.id.fl_book_cover:
+                //跳转POD预览
+                ArrayList<String> keys = new ArrayList<>();
+                ArrayList<String> values = new ArrayList<>();
+                keys.add("book_author");
+                keys.add("book_title");
+                values.add(FastData.getUserName());
+                values.add(FastData.getBabyName()+"的照片书");
+                MyPODActivity.open(
+                        BookListActivity.this,
+                        String.valueOf(bookObj.getBookId()),
+                        String.valueOf(bookObj.getOpenBookId()),
+                        bookObj.getBookType(),
+                        BookModel.getOpenBookType(bookObj.getBookType()),
+                        null,
+                        "",
+                        false,
+                        bookObj.getBaby().getBabyId(),keys,values,0);
+                break;
         }
     }
 

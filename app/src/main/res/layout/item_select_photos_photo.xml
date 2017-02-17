@@ -24,6 +24,7 @@
             ratio:heightRatio="1"
             ratio:widthRatio="1" />
         <ImageView
+            android:visibility="gone"
             android:id="@+id/pic_upload_0"
             android:layout_width="@dimen/size_36"
             android:layout_height="@dimen/size_36"
@@ -49,6 +50,7 @@
             ratio:heightRatio="1"
             ratio:widthRatio="1" />
         <ImageView
+            android:visibility="gone"
             android:id="@+id/pic_upload_1"
             android:layout_width="@dimen/size_36"
             android:layout_height="@dimen/size_36"
@@ -75,6 +77,7 @@
             ratio:heightRatio="1"
             ratio:widthRatio="1" />
         <ImageView
+            android:visibility="gone"
             android:id="@+id/pic_upload_2"
             android:layout_width="@dimen/size_36"
             android:layout_height="@dimen/size_36"
@@ -100,6 +103,7 @@
             ratio:heightRatio="1"
             ratio:widthRatio="1" />
         <ImageView
+            android:visibility="gone"
             android:id="@+id/pic_upload_3"
             android:layout_width="@dimen/size_36"
             android:layout_height="@dimen/size_36"
