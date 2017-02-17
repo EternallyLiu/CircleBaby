@@ -184,5 +184,41 @@ public class GlideUtil {
 //        Glide.with(context).load(url).into(imageView);
     }
 
+    public static void displayImage(String url, ImageView imageView, boolean fitCenter) {
+        if (url.startsWith("http")) {
+            if (fitCenter)
+                Glide.with(imageView.getContext())
+                        .using(new TFStringUrlLoader(imageView.getContext()))
+                        .load(url)
+                        .thumbnail(0.1f)
+                        .fitCenter()
+                        .crossFade()
+                        .into(imageView);
+            else
+                Glide.with(imageView.getContext())
+                        .using(new TFStringUrlLoader(imageView.getContext()))
+                        .load(url)
+                        .thumbnail(0.1f)
+                        .centerCrop()
+                        .crossFade()
+                        .into(imageView);
+        } else {
+            if (fitCenter)
+                Glide.with(imageView.getContext())
+                        .load(url)
+                        .thumbnail(0.1f)
+                        .fitCenter()
+                        .crossFade()
+                        .into(imageView);
+            else
+                Glide.with(imageView.getContext())
+                        .load(url)
+                        .thumbnail(0.1f)
+                        .centerCrop()
+                        .crossFade()
+                        .into(imageView);
+        }
+    }
+
 
 }
