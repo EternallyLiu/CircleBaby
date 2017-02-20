@@ -140,6 +140,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private void initData() {
         GlideUtil.displayImage(FastData.getAvatar(), ivAvatar, R.drawable.ic_launcher);
         tvName.setText(FastData.getUserName());
+        initUnreadMessage();
     }
 
     private LinearLayout.LayoutParams babyImageLayoutParams = null;
