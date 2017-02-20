@@ -26,6 +26,7 @@ import butterknife.Bind;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -54,6 +55,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     private int maxImageHeight = 240;
     private int paddingImage = 4;
     private static final int MAX_ROW_COUNT = 2;
+    private int lastPadding = 0;
 
     public TimeLineGroupListAdapter(Context activity) {
         super(activity);
@@ -62,6 +64,8 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         dayColor = context().getResources().getColor(R.color.sea_buckthorn);
         maxImageHeight = (int) (context().getResources().getDimension(R.dimen.size_120) * 1.5f);
         paddingImage = (int) (context().getResources().getDimension(R.dimen.size_2));
+        if (activity instanceof TabMainActivity)
+            lastPadding = (int) context().getResources().getDimension(R.dimen.size_56);
     }
 
     @Override
@@ -91,7 +95,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
             return HEADER_VIEW_TYPE + position;
 
         } else if (position < (mHeaders.size() + getCount())) {
-            BaseObj item = getItem(position-mHeaders.size());
+            BaseObj item = getItem(position - mHeaders.size());
             return item.getBaseType();
 
         } else {
@@ -177,7 +181,8 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
     @Override
     public void initView(View contentView, int position) {
-        LogUtil.showLog("adapter position===" + position);
+        if (contentView != null && position == getItemCount() - 1)
+            contentView.setPadding(0, 0, 0, lastPadding);
         if (position < mHeaders.size()) {
 
         } else if (position < (mHeaders.size() + getCount())) {
