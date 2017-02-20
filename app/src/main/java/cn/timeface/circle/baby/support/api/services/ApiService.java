@@ -871,11 +871,18 @@ public interface ApiService {
     Observable<TimeOfPageResponse> timeOfpage(@Query("pageSize") int pageSize,
                                               @Query("timeId") int timeId);
     /**
-     * 查询页码
+     * 查询经纬度反地理编码
      * @return
      */
     @GET("map/getAddress")
     Observable<QueryLocationInfoResponse> queryLocationInfo(@Query("lat") double lat,
                                                             @Query("log") double log);
+    /**
+     * 设置短信提醒
+     * @return
+     */
+    @GET("member/msgRemind")
+    Observable<BaseResponse> smsRemind(@Query("open") int open);
+
 
 }
