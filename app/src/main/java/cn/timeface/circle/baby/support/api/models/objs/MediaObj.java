@@ -97,6 +97,8 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public LocationObj getLocation() {
+        if (location.getLat() == 0 || location.getLog() == 0)
+            return null;
         return location;
     }
 

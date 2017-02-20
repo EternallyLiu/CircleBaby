@@ -68,6 +68,7 @@ import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
+import cn.timeface.circle.baby.ui.timelines.beans.QueryLocationInfoResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.SendTimeLineResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeOfPageResponse;
@@ -869,5 +870,12 @@ public interface ApiService {
     @GET("babyTime/getTimeOfPageNo")
     Observable<TimeOfPageResponse> timeOfpage(@Query("pageSize") int pageSize,
                                               @Query("timeId") int timeId);
+    /**
+     * 查询页码
+     * @return
+     */
+    @GET("map/getAddress")
+    Observable<QueryLocationInfoResponse> queryLocationInfo(@Query("lat") double lat,
+                                                            @Query("log") double log);
 
 }

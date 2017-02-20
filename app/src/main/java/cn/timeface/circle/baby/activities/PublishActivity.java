@@ -63,6 +63,7 @@ import cn.timeface.circle.baby.support.api.models.PhotoRecode;
 import cn.timeface.circle.baby.support.api.models.VideoInfo;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.LocationObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.Milestone;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
@@ -300,10 +301,19 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 list.addAll(mediaObjs);
                 mediaObjs.clear();
             }
+            MediaObj mediaObj = null;
+            boolean requestLocation = false;
             for (int i = 0; i < selImages.size(); i++) {
-                if (list.contains(selImages.get(i).getMediaObj()))
-                    mediaObjs.add(list.get(list.indexOf(selImages.get(i).getMediaObj())));
-                else mediaObjs.add(selImages.get(i).getMediaObj());
+                mediaObj = selImages.get(i).getMediaObj();
+                if (list.contains(mediaObj))
+                    mediaObjs.add(list.get(list.indexOf(mediaObj)));
+                else mediaObjs.add(mediaObj);
+                if (!requestLocation)
+                    if (mediaObj.getLocation() != null) {
+                        gettLocationAddress(mediaObj.getLocation());
+                        requestLocation = true;
+                    }
+
             }
         }
     }
@@ -348,7 +358,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
             if (!titles.contains(title)) {
                 titles.add(title);
-
             }
         }
 
@@ -652,7 +661,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         isPublish = false;
                         count = 0;
                         EventBus.getDefault().post(new StartUploadEvent(response.getTimeInfo().getTimeId()));
-                        UploadService.start(PublishActivity.this,response.getTimeInfo().getTimeId(), localUrls);
+                        UploadService.start(PublishActivity.this, response.getTimeInfo().getTimeId(), localUrls);
                     } else {
                         ToastUtil.showToast(response.getInfo());
                     }
@@ -874,6 +883,19 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         else
             currentLocation = location;
         initLocation();
+    }
+
+    private void gettLocationAddress(LocationObj locationObj) {
+        apiService.queryLocationInfo(locationObj.getLat(), locationObj.getLog())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        currentLocation = response.getLocationInfo();
+                        initLocation();
+                    }
+                }, throwable -> {
+                    LogUtil.showError(throwable);
+                });
     }
 
     @Override
