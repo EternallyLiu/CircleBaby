@@ -91,12 +91,26 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
             return HEADER_VIEW_TYPE + position;
 
         } else if (position < (mHeaders.size() + getCount())) {
-            BaseObj item = getItem(position);
+            BaseObj item = getItem(position-mHeaders.size());
             return item.getBaseType();
 
         } else {
             return FOOTER_VIEW_TYPE + position - mHeaders.size() - getCount();
         }
+    }
+
+    public void deleteTimeLine(int timeId) {
+        if (timeId <= 0) return;
+        TimeLineObj timeLineObj = new TimeLineObj();
+        timeLineObj.setTimeId(timeId);
+        deleteItem(timeLineObj);
+    }
+
+    public int findPosition(int timeId) {
+        if (timeId <= 0) return 0;
+        TimeLineObj timeLineObj = new TimeLineObj();
+        timeLineObj.setTimeId(timeId);
+        return mHeaders.size() + getPosition(timeLineObj);
     }
 
     private boolean isHeader(int viewType) {
@@ -153,25 +167,32 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         if (position < mHeaders.size()) {
-            // Headers don't need anything special
 
-        } else if (position < mHeaders.size() + getCount()) {
+        } else if (position < (mHeaders.size() + getCount())) {
             super.onBindViewHolder(holder, position - mHeaders.size());
 
         } else {
-            // Footers don't need anything special
         }
     }
 
     @Override
     public void initView(View contentView, int position) {
-        BaseObj item = getItem(position);
-        switch (item.getBaseType()) {
-            case 1:
-                doGroup(contentView, position, (TimeGroupSimpleBean) item);
-                break;
-            case 0:
-                doTimeLine(contentView, position, (TimeLineObj) item);
+        LogUtil.showLog("adapter position===" + position);
+        if (position < mHeaders.size()) {
+
+        } else if (position < (mHeaders.size() + getCount())) {
+            BaseObj item = getItem(position);
+            if (item == null)
+                return;
+            switch (item.getBaseType()) {
+                case 1:
+                    doGroup(contentView, position, (TimeGroupSimpleBean) item);
+                    break;
+                case 0:
+                    doTimeLine(contentView, position, (TimeLineObj) item);
+            }
+        } else {
+
         }
 
     }
@@ -181,6 +202,13 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         return super.getItem(position);
     }
 
+    /**
+     * 处理时光内容展示
+     *
+     * @param contentView
+     * @param position
+     * @param item
+     */
     private void doTimeLine(View contentView, int position, TimeLineObj item) {
         TextView tvContent = ViewHolder.getView(contentView, R.id.tv_content);
         LinearLayout gv = ViewHolder.getView(contentView, R.id.gv);
@@ -195,6 +223,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         ImageView iconComment = ViewHolder.getView(contentView, R.id.icon_comment);
         TextView tvCommentcount = ViewHolder.getView(contentView, R.id.tv_commentcount);
         LinearLayout llRecode = ViewHolder.getView(contentView, R.id.ll_recode);
+        TextView picCount = ViewHolder.getView(contentView, R.id.pic_count);
 
         //设置基本信息 内容 作者 时间 是否点赞 评论个数 点赞个数
         if (TextUtils.isEmpty(item.getContent()))
@@ -267,10 +296,13 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                     }
                     rowView.addView(view);
                 }
-                LogUtil.showLog("postion:" + position + "---count:" + count + "----startIndex:" + startIndex + "---i:" + i);
                 startIndex = count;
                 gv.addView(rowView);
             }
+            if (count < item.getMediaList().size()) {
+                picCount.setVisibility(View.VISIBLE);
+                picCount.setText(String.format("共%d张图片  ", item.getMediaList().size()));
+            } else picCount.setVisibility(View.GONE);
             if (gv.getChildCount() > 0) gv.setVisibility(View.VISIBLE);
             else gv.setVisibility(View.GONE);
         } else {
@@ -291,6 +323,15 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
     }
 
+    /**
+     * 获取图片视图
+     *
+     * @param groupIndex
+     * @param index
+     * @param rowLineaylayout
+     * @param mediaObj
+     * @return
+     */
     private View getView(int groupIndex, int index, LinearLayout rowLineaylayout, MediaObj mediaObj) {
         View view = inflater.inflate(R.layout.time_line_list_image, rowLineaylayout, false);
         ImageView imageView = (ImageView) view.findViewById(R.id.icon);
@@ -311,6 +352,13 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         return view;
     }
 
+    /**
+     * 处理时光列表组内容展示
+     *
+     * @param contentView
+     * @param position
+     * @param item
+     */
     private void doGroup(View contentView, int position, TimeGroupSimpleBean item) {
         TextView calendar = ViewHolder.getView(contentView, R.id.calendar);
         TextView tvDateex = ViewHolder.getView(contentView, R.id.tv_dateex);
@@ -350,7 +398,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                     }
                     v.setClickable(true);
                 }, throwable -> {
-                    LogUtil.showError(throwable);
                 });
     }
 

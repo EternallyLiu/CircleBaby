@@ -71,6 +71,29 @@ public class TimeGroupSimpleBean extends BaseObj implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+
+        TimeGroupSimpleBean bean = (TimeGroupSimpleBean) object;
+
+        if (date != bean.date) return false;
+        if (allDetailsListPosition != bean.allDetailsListPosition) return false;
+        if (age != null ? !age.equals(bean.age) : bean.age != null) return false;
+        return dateEx != null ? dateEx.equals(bean.dateEx) : bean.dateEx == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = age != null ? age.hashCode() : 0;
+        result = 31 * result + (dateEx != null ? dateEx.hashCode() : 0);
+        result = 31 * result + (int) (date ^ (date >>> 32));
+        result = 31 * result + allDetailsListPosition;
+        return result;
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.age);
         dest.writeString(this.dateEx);

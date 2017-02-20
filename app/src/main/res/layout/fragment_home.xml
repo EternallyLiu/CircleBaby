@@ -172,6 +172,7 @@
                         android:paddingLeft="@dimen/size_12"
                         android:paddingRight="@dimen/size_12"
                         android:paddingTop="@dimen/size_2"
+                        android:visibility="gone"
                         android:src="@drawable/msg" />
 
                     <ImageView

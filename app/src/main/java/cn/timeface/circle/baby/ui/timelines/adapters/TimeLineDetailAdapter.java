@@ -21,6 +21,7 @@ import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -105,11 +106,7 @@ public class TimeLineDetailAdapter extends BaseAdapter {
         layoutParams.width = Remember.getInt("width", 0);
         layoutParams.height = Remember.getInt("width", 0);
         ivVideo.setLayoutParams(layoutParams);
-        Glide.with(context())
-                .load(mediaObj.getImgUrl())
-                .crossFade().placeholder(R.drawable.bg_default_holder_img)
-                .error(R.drawable.bg_default_holder_img)
-                .into(ivVideo);
+        GlideUtil.setImage(mediaObj.getImgUrl(),ivVideo,R.drawable.bg_default_holder_img);
     }
 
 
@@ -138,11 +135,7 @@ public class TimeLineDetailAdapter extends BaseAdapter {
         contentView.setLayoutParams(params);
         ImageView icon = ViewHolder.getView(contentView, R.id.icon);
         LogUtil.showLog(position + "---" + mediaObj.getImgUrl());
-        Glide.with(context())
-                .load(mediaObj.getImgUrl())
-                .crossFade().placeholder(R.drawable.bg_default_holder_img)
-                .error(R.drawable.bg_default_holder_img)
-                .into(icon);
+        GlideUtil.setImage(mediaObj.getImgUrl(),icon,R.drawable.bg_default_holder_img);
     }
 
     private void doCommentObj(View contentView, CommentObj comment) {

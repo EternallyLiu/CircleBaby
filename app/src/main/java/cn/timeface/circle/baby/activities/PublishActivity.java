@@ -651,8 +651,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         finish();
                         isPublish = false;
                         count = 0;
-                        EventBus.getDefault().post(new StartUploadEvent());
-                        UploadService.start(PublishActivity.this, localUrls);
+                        EventBus.getDefault().post(new StartUploadEvent(response.getTimeInfo().getTimeId()));
+                        UploadService.start(PublishActivity.this,response.getTimeInfo().getTimeId(), localUrls);
                     } else {
                         ToastUtil.showToast(response.getInfo());
                     }

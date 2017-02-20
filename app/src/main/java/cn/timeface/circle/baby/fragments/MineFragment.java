@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.fragments;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +12,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CartActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.activities.MineBookActivity;
 import cn.timeface.circle.baby.activities.MineInfoActivity;
 import cn.timeface.circle.baby.activities.OrderListActivity;
+import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.MineBookActivityV2;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -59,21 +64,15 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     LinearLayout llBaby;
     @Bind(R.id.ll_message)
     RelativeLayout llMessage;
-
-    public MineFragment() {
-    }
-
-    public static MineFragment newInstance(String param1) {
-        MineFragment fragment = new MineFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    @Bind(R.id.msg_tip)
+    TextView msgTip;
+    @Bind(R.id.iv_dot)
+    ImageView ivDot;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         if (getArguments() != null) {
             String mParam1 = getArguments().getString(ARG_PARAM1);
         }
@@ -96,15 +95,51 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         return view;
     }
 
-    private void initData() {
-        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar, R.drawable.ic_launcher);
-        tvName.setText(FastData.getUserName());
+    @Override
+    public void onResume() {
+        initData();
+        LogUtil.showLog("mainThread:" + Thread.currentThread().getName());
+        addSubscription(BabyObj.getCurrentUserBabyObjs()
+                .subscribeOn(Schedulers.io())
+                .toList()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
+                    if (llBaby.getChildCount() > 0)
+                        llBaby.removeAllViews();
+                    int lastIndex = list.size() > MAX_BABY_ICON_COUNT ? MAX_BABY_ICON_COUNT - 1 : list.size() - 1;
+                    for (int i = 0; i <= lastIndex; i++) {
+                        llBaby.addView(getBabyImageView(list.get(i)));
+                    }
+                }));
+        super.onResume();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    public MineFragment() {
+    }
+
+    public static MineFragment newInstance(String param1) {
+        MineFragment fragment = new MineFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private void initData() {
+        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar, R.drawable.ic_launcher);
+        tvName.setText(FastData.getUserName());
     }
 
     private LinearLayout.LayoutParams babyImageLayoutParams = null;
@@ -127,23 +162,26 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onResume() {
-        initData();
-        LogUtil.showLog("mainThread:" + Thread.currentThread().getName());
-        addSubscription(BabyObj.getCurrentUserBabyObjs()
-                .subscribeOn(Schedulers.io())
-                .toList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list -> {
-                    if (llBaby.getChildCount() > 0)
-                        llBaby.removeAllViews();
-                    int lastIndex = list.size() > MAX_BABY_ICON_COUNT ? MAX_BABY_ICON_COUNT - 1 : list.size() - 1;
-                    for (int i = 0; i <= lastIndex; i++) {
-                        llBaby.addView(getBabyImageView(list.get(i)));
+    private void initUnreadMessage(){
+        apiService.noReadMsg()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(unReadMsgResponse -> {
+                    if (unReadMsgResponse.success()) {
+                        if (unReadMsgResponse.getUnreadMessageCount() > 0) {
+                            ivDot.setVisibility(View.VISIBLE);
+                        } else {
+                            ivDot.setVisibility(View.GONE);
+                        }
                     }
-                }));
-        super.onResume();
+                }, error -> {
+                    Log.e(TAG, "noReadMsg:");
+                    error.printStackTrace();
+                });
+    }
+
+    @Subscribe
+    public void onEvent(UnreadMsgEvent event) {
+        initUnreadMessage();
     }
 
     @Override

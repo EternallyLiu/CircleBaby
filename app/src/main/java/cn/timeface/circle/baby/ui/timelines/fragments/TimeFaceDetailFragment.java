@@ -209,6 +209,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                     if (timeDetailResponse.success()) {
                         currentTimeLineObj = timeDetailResponse.getTimeInfo();
                         initRecyclerView();
+                        EventBus.getDefault().post(currentTimeLineObj);
                         doMenu();
                     }
                     swipeRefresh.setRefreshing(false);
@@ -315,7 +316,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     }
 
     @Override
-    public void loadfinish() {
+    public void loadfinish(int code) {
         LogUtil.showLog("adapter size:" + adapter.getItemCount());
         LogUtil.showLog("medias size:" + currentTimeLineObj.getMediaList().size());
     }

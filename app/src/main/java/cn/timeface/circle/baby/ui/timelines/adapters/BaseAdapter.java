@@ -27,18 +27,18 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     /**
      * 给数据源中间添加数据
      */
-    private static final int UPDATE_DATA_ADD_LIST_CENTER = 1101;
+    public static final int UPDATE_DATA_ADD_LIST_CENTER = 1101;
 
-    private static final int DELETE_ALL = -100001;
+    public static final int DELETE_ALL = -100001;
 
     /**
      * 删除数据
      */
-    private static final int UPDATE_DATA_DELETE_DATA = -1001;
+    public static final int UPDATE_DATA_DELETE_DATA = -1001;
     /**
      * 修改数据
      */
-    private static final int UPDATE_DATA_UPDATE_DATA = 1002;
+    public static final int UPDATE_DATA_UPDATE_DATA = 1002;
 
     private Handler handler = new Handler() {
         @Override
@@ -86,17 +86,27 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                 break;
         }
         if (getLoadDataFinish() != null)
-            getLoadDataFinish().loadfinish();
+            getLoadDataFinish().loadfinish(msg.what);
     }
 
     public boolean containObj(Object object) {
         return list.contains(object);
     }
 
+    public ArrayList getData() {
+        return list;
+    }
+
     public <T extends Object> T getObj(Object object) {
         if (containObj(object))
             return (T) list.get(list.indexOf(object));
         else return null;
+    }
+
+    public int getPosition(Object object) {
+        if (containObj(object))
+            return list.indexOf(object);
+        else return 0;
     }
 
     public void updateItem(Object object) {
@@ -272,7 +282,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
 
     public void error() {
         if (getLoadDataFinish() != null)
-            getLoadDataFinish().loadfinish();
+            getLoadDataFinish().loadfinish(DELETE_ALL);
     }
 
     public Context context() {
@@ -300,6 +310,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
      * 数据加载完毕之后回调改接口，为了处理数据加载完成之后的操作
      */
     public interface LoadDataFinish {
-        public void loadfinish();
+        public void loadfinish(int code);
     }
 }

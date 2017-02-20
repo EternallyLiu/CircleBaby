@@ -208,7 +208,7 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
     }
 
     @Override
-    public void loadfinish() {
+    public void loadfinish(int code) {
         helper.finishTFPTRRefresh();
         if (adapter.getRealItemSize() <= 0) {
             empty.setVisibility(View.VISIBLE);

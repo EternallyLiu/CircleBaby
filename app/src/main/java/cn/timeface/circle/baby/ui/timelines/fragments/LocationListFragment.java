@@ -247,7 +247,7 @@ public class LocationListFragment extends BaseFragment implements BDLocationList
     }
 
     @Override
-    public void loadfinish() {
+    public void loadfinish(int code) {
         empty();
     }
 

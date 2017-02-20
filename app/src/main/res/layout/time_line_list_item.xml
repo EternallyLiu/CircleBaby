@@ -35,6 +35,19 @@
 
         </LinearLayout>
 
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/pic_count"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/size_12"
+            android:textSize="@dimen/text_medium"
+            android:textColor="@color/sea_buckthorn"
+            android:text="共9张图片  "
+            android:drawableRight="@drawable/time_line_select_down"/>
+
         <RelativeLayout
             android:id="@+id/rl_single"
             android:layout_width="wrap_content"

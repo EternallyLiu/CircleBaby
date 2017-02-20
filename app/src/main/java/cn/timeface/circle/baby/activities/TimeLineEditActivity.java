@@ -289,8 +289,8 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                                 uploadImage(url);
                             }
                         }
-                        EventBus.getDefault().post(new TimelineEditEvent());
-                        EventBus.getDefault().post(new HomeRefreshEvent());
+                        EventBus.getDefault().post(new TimelineEditEvent(timelimeobj.getTimeId()));
+                        EventBus.getDefault().post(new HomeRefreshEvent(timelimeobj.getTimeId()));
                     }
                 }, throwable -> {
                     throwable.printStackTrace();

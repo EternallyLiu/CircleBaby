@@ -63,10 +63,12 @@ import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
 import cn.timeface.circle.baby.events.ActionCallBackEvent;
 import cn.timeface.circle.baby.events.CommentSubmit;
+import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.IconCommentClickEvent;
 import cn.timeface.circle.baby.events.PicSaveCompleteEvent;
 import cn.timeface.circle.baby.events.StartUploadEvent;
+import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -93,6 +95,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
@@ -105,7 +108,7 @@ import rx.Observable;
 import rx.functions.Func0;
 import rx.functions.Func1;
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener {
+public class HomeFragment extends BaseFragment implements View.OnClickListener, BaseAdapter.LoadDataFinish {
     private static final String ARG_PARAM1 = "param1";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -165,6 +168,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     private TextView tvProgress;
     private AlertDialog progressDialog;
     private View picChangeView;
+    private static final int PAGE_SIZE = 30;
 
     public HomeFragment() {
     }
@@ -197,6 +201,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         initData();
 //        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
         adapter = new TimeLineGroupListAdapter(getActivity());
+        adapter.setLoadDataFinish(this);
         contentRecyclerView.setAdapter(adapter);
 
         tfStateView.setOnRetryListener(() -> reqData(1));
@@ -210,9 +215,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         ivMessage.setVisibility(View.GONE);
         ivAvatar.setOnClickListener(this);
 
-        reqData(1);
+        currentPage = 1;
+        reqData(currentPage);
 
-        initMsg();
+//        initMsg();
         if (FastData.getBabyId() != 0) {
             updateLoginInfo();
         }
@@ -230,22 +236,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 });
     }
 
-    private void initMsg() {
-        apiService.noReadMsg()
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(unReadMsgResponse -> {
-                    if (unReadMsgResponse.success()) {
-                        if (unReadMsgResponse.getUnreadMessageCount() > 0) {
-                            ivDot.setVisibility(View.VISIBLE);
-                        } else {
-                            ivDot.setVisibility(View.GONE);
-                        }
-                    }
-                }, error -> {
-                    Log.e(TAG, "noReadMsg:");
-                    error.printStackTrace();
-                });
-    }
 
     //    @TargetApi(Build.VERSION_CODES.M)
     private void setupPTR() {
@@ -326,14 +316,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         };
 
         tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
-                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FROM_END)
+                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
                 .tfPtrListener(ptrListener);
         contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
 
     }
 
     private void reqData(int page) {
-        apiService.timeline(page, 30)
+        apiService.timeline(page, PAGE_SIZE)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timelineResponse -> {
                     if (tfStateView != null) {
@@ -347,9 +337,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 //                        }
                     }
                     if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
-                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.DISABLED);
+                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
                     }
-                    setDataList(timelineResponse.getDataList());
+                    setDataList(timelineResponse.getDataList(), currentPage == 1);
                 }, error -> {
                     if (tfStateView != null) {
                         tfStateView.showException(error);
@@ -360,13 +350,59 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 });
     }
 
-    private void setDataList(List<TimeLineGroupObj> dataList) {
+    private void reqData(int page, int pageSize) {
+        apiService.timeline(page, pageSize)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(timelineResponse -> {
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
+                    tfptrListViewHelper.finishTFPTRRefresh();
+
+                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
+//                        if (!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())) {
+//                            adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
+//                        }
+                    }
+                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
+                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
+                    }
+                    if (timelineResponse.success()) {
+                        currentPage = pageSize / PAGE_SIZE;
+                        currentPage++;
+                    }
+                    setDataList(timelineResponse.getDataList(), true);
+                    if (!timelineResponse.success())
+                        currentPage--;
+                }, error -> {
+                    currentPage--;
+                    if (tfStateView != null) {
+                        tfStateView.showException(error);
+                    }
+                    Log.e(TAG, "timeline:");
+                    tfptrListViewHelper.finishTFPTRRefresh();
+                    error.printStackTrace();
+                });
+    }
+
+    private void setDataList(List<TimeLineGroupObj> dataList, boolean flag) {
+        if (flag || currentPage == 1) {
+            flag = true;
+            adapter.clearAll();
+        }
         ArrayList<BaseObj> list = new ArrayList<>();
         for (TimeLineGroupObj groupObj : dataList) {
             TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
-            list.add(bean);
-            for (TimeLineObj timeLineObj : groupObj.getTimeLineList())
-                list.add(timeLineObj);
+            if (flag)
+                list.add(bean);
+            else if (!adapter.containObj(bean))
+                list.add(bean);
+            for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                if (flag)
+                    list.add(timeLineObj);
+                else if (!adapter.containObj(timeLineObj))
+                    list.add(timeLineObj);
+            }
         }
         if (list.size() < 3) {
             if (enableAnimation && !bottomMenuShow) {
@@ -379,6 +415,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 animatorSet.start();
             }
         }
+
         if (currentPage == 1) {
             adapter.addList(true, list);
         } else {
@@ -495,25 +532,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         return view;
     }
 
-    @Subscribe
-    public void onEvent(CommentSubmit commentSubmit) {
-
-        LogUtil.showLog(commentSubmit.getClass().getName());
-        if (adapter.containObj(commentSubmit.getTimeLineObj())) {
-            LogUtil.showLog("contain:" + true);
-            adapter.updateItem(commentSubmit.getTimeLineObj());
-        }
-//        replaceList(commentSubmit.getReplacePosition(), commentSubmit.getListPos(), commentSubmit.getTimeLineObj());
-    }
 
     @Subscribe
     public void onEvent(HomeRefreshEvent event) {
-        reqData(1);
-    }
-
-    @Subscribe
-    public void onEvent(UnreadMsgEvent event) {
-        initMsg();
+        if (event.getTimeId() > 0)
+            timeLineUpdate(event.getTimeId());
+        else {
+            currentPage = 1;
+            reqData(currentPage);
+        }
     }
 
 
@@ -522,74 +549,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         contentRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
 
-    @Subscribe
-    public void onEvent(IconCommentClickEvent event) {
-        replacePosition = event.getReplacePosition();
-        listPos = event.getListPos();
-        timeLineObj = event.getTimeLineObj();
-        commentId = 0;
-        editComment();
-        etCommment.requestFocus();
-        etCommment.setHint("说点什么吧");
-    }
-
-    private void editComment() {
-        dialog = new AlertDialog.Builder(getActivity()).setView(initCommentEdit()).show();
-        dialog.setCanceledOnTouchOutside(true);
-        Window window = dialog.getWindow();
-        WindowManager m = window.getWindowManager();
-        Display d = m.getDefaultDisplay();
-        WindowManager.LayoutParams p = window.getAttributes();
-
-        p.width = d.getWidth();
-        window.setAttributes(p);
-        window.setGravity(Gravity.BOTTOM);
-        window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
-        window.setWindowAnimations(R.style.bottom_dialog_animation);
-    }
-
-    private View initCommentEdit() {
-        View view = View.inflate(getActivity(), R.layout.view_send_comment, null);
-        InputMethodRelative rlComment = (InputMethodRelative) view.findViewById(R.id.rl_comment);
-        etCommment = (EditText) view.findViewById(R.id.et_commment);
-        btnSend = (Button) view.findViewById(R.id.btn_send);
-
-        String sendComment = Remember.getString("sendComment", "");
-        if (!TextUtils.isEmpty(sendComment)) {
-            etCommment.setText(sendComment);
-        }
-        etCommment.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String s1 = s.toString();
-                Remember.putString("sendComment", s1);
-            }
-        });
-        btnSend.setOnClickListener(this);
-        return view;
-    }
-
-    @Subscribe
-    public void onEvent(ActionCallBackEvent event) {
-//        CommentObj comment = event.getComment();
-//        timeLineObj = event.getTimeLineObj();
-//        replacePosition = event.getReplacePosition();
-//        listPos = event.getListPos();
-//        commentId = comment.getCommentId();
-//        editComment();
-//        etCommment.requestFocus();
-//        etCommment.setHint("回复 " + comment.getUserInfo().getRelationName() + " ：");
-    }
 
     @Subscribe
     public void onEvent(StartUploadEvent event) {
@@ -616,10 +575,29 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                     mTvprogress.setVisibility(View.GONE);
                     if (progressDialog != null)
                         progressDialog.dismiss();
-                    reqData(1);
+                    if (event.isComplete() && event.getTimeId() > 0)
+                        timeLineUpdate(event.getTimeId());
+                    else {
+                        currentPage = 1;
+                        reqData(currentPage);
+                    }
                     ToastUtil.showToast("发布成功");
-                    UploadService.stop(getContext());
                 }
+                if (event.isComplete()) {
+                    mTvprogress.setVisibility(View.GONE);
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                    if (event.isComplete() && event.getTimeId() > 0) {
+                        LogUtil.showLog("event currentTimeId=====" + event.getTimeId());
+                        timeLineUpdate(event.getTimeId());
+                    } else {
+                        currentPage = 1;
+                        reqData(currentPage);
+                    }
+                    ToastUtil.showToast("发布成功");
+                }
+
             }
         });
 
@@ -649,6 +627,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         return view;
     }
 
+    /**
+     * 回调处理mediaObj对象发生变更的处理结果
+     *
+     * @param mediaUpdateEvent
+     */
     @Subscribe
     public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
         if (mediaUpdateEvent.getAllDetailsListPosition() < 0)
@@ -664,6 +647,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * 处理相册图片发生变化
+     *
+     * @param list
+     */
     private void initPicChange(List<String> list) {
         if (list != null && list.size() > 0) {
             LogUtil.showLog("change:" + JSONUtils.parse2JSONString(list));
@@ -711,9 +699,45 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                                     Log.e("test", "error:" + error.getMessage(), error);
                                 });
                 }, error -> {
-                    Log.e("test", "error:" + error.getMessage(), error);
+                    LogUtil.showError(error);
                 });
 
+    }
+
+    /**
+     * 当前需要滑动的时光id
+     */
+    private int currentTimeId = 0;
+
+    /**
+     * 处理发布或者编辑、删除操作之后首页数据响应
+     *
+     * @param timeId
+     */
+    private void timeLineUpdate(int timeId) {
+        LogUtil.showLog("timeId===" + timeId);
+        apiService.timeOfpage(PAGE_SIZE, timeId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        currentPage = response.getPageNo();
+                        currentTimeId = timeId;
+                        reqData(1, currentPage * PAGE_SIZE);
+                    }
+                });
+    }
+
+    @Subscribe
+    public void onEvent(TimelineEditEvent event) {
+        if (event instanceof DeleteTimeLineEvent) {
+            adapter.deleteTimeLine(event.getTimeId());
+        }
+    }
+
+    @Subscribe
+    public void onEvent(TimeLineObj timeLineObj){
+        LogUtil.showLog("event timeLineObj----"+adapter.getPosition(timeLineObj));
+        adapter.updateItem(timeLineObj);
     }
 
     /**
@@ -724,6 +748,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         if (getActivity().getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
             if (getActivity().getCurrentFocus() != null)
                 manager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    @Override
+    public void loadfinish(int code) {
+        LogUtil.showLog("loadfinish  currentTimeId===" + currentTimeId);
+        LogUtil.showLog("position====" + adapter.findPosition(currentTimeId));
+        if (code == BaseAdapter.UPDATE_DATA_ADD_LIST_CENTER) {
+            if (currentTimeId > 0)
+                contentRecyclerView.scrollToPosition(adapter.findPosition(currentTimeId));
+            currentTimeId = 0;
         }
     }
 }
