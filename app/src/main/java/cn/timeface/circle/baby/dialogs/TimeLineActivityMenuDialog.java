@@ -21,6 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.TimeLineEditActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
@@ -165,16 +166,16 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
             String url = context.getString(R.string.share_url_time, timelineobj.getTimeId());
             switch (timelineobj.getType()) {
                 case TypeConstants.PHOTO:
-                    url = context.getString(R.string.share_url_time, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL+context.getString(R.string.share_url_time, timelineobj.getTimeId());
                     break;
                 case TypeConstants.VIDEO:
-                    url = context.getString(R.string.share_url_video, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL+context.getString(R.string.share_url_video, timelineobj.getTimeId());
                     break;
                 case TypeConstants.DIARY:
-                    url = context.getString(R.string.share_url_diary, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL+context.getString(R.string.share_url_diary, timelineobj.getTimeId());
                     break;
                 case TypeConstants.CARD:
-                    url = context.getString(R.string.share_url_generalmap, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL+context.getString(R.string.share_url_generalmap, timelineobj.getTimeId());
                     break;
 
             }

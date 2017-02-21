@@ -35,6 +35,7 @@ import cn.timeface.circle.baby.activities.LoginActivity;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.MiPushUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
@@ -234,6 +235,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
 
             case R.id.btn_sign_out:
+                BabyObj.deleteAll();
                 FastData.setUserFrom(-1);
                 LoginActivity.open(getActivity());
                 getActivity().finish();

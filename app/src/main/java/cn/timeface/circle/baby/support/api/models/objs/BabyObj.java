@@ -238,6 +238,12 @@ public class BabyObj extends BaseModel implements Parcelable {
             }
         });
     }
+    public static void deleteAll(){
+        SQLite.delete().from(BabyObj.class).where(BabyObj_Table.user_id.eq(FastData.getUserId())).query();
+    }
+    public static void delete(int babyId){
+        SQLite.delete().from(BabyObj.class).where(BabyObj_Table.babyId.eq(babyId)).query();
+    }
 
     public static void saveAll(List<BabyObj> list) {
         if (list == null || list.size() <= 0)
