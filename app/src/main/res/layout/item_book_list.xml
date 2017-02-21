@@ -17,11 +17,11 @@
         android:src="@drawable/ic_book_shelf" />
 
     <com.github.rayboot.widget.ratioview.RatioFrameLayout
-        android:clickable="true"
+        android:layout_marginLeft="@dimen/view_space_medium"
         android:id="@+id/fl_book_cover"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/view_space_medium"
+        android:clickable="true"
         app:fixRatio="fixWidth"
         app:heightRatio="550"
         app:widthRatio="344">
@@ -58,8 +58,8 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/text"
+                android:textSize="16sp"
                 tools:text="小CC的精装照片书" />
 
             <ImageView
@@ -74,19 +74,21 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_12"
+            android:layout_marginTop="@dimen/view_space_normal"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="页      数: " />
+                android:text="页      数: "
+                android:textColor="@color/text_color_hint" />
 
             <TextView
                 android:id="@+id/tv_pagenum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="" />
+                android:text=""
+                android:textColor="@color/text_color_hint" />
         </LinearLayout>
 
         <LinearLayout
@@ -98,13 +100,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="创建时间: " />
+                android:text="创建时间: "
+                android:textColor="@color/text_color_hint" />
 
             <TextView
                 android:id="@+id/tv_creattime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="" />
+                android:text=""
+                android:textColor="@color/text_color_hint" />
         </LinearLayout>
 
         <LinearLayout

@@ -180,4 +180,9 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
+    <style name="font_smaller_ffffff">
+        <item name="android:textSize">@dimen/text_small_12</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 </resources>

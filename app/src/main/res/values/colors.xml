@@ -13,6 +13,7 @@
 
     <color name="tran_50_white">#DDffffff</color>
     <color name="tran_30_black">#4C000000</color>
+    <color name="tran_60_black">#9a000000</color>
 
     <color name="bg_color1">#F79646</color>
     <color name="bg_color2">#FAFAFA</color>
@@ -125,4 +126,7 @@
     <color name="aluminum">#999999</color>
     <color name="alabaster">#FAFAFA</color>
     <color name="mercury">#E4E4E4</color>
+
+    <color name="color_367ff9">#367ff9</color>
+    <color name="color_eceff4">#eceff4</color>
 </resources>

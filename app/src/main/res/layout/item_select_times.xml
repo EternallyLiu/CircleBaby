@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_time_root"
+    android:clickable="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="horizontal"
     android:paddingBottom="12dp"
-    android:background="@color/white"
     android:paddingLeft="@dimen/view_space_normal"
     android:paddingRight="@dimen/view_space_normal"
     android:paddingTop="12dp">
@@ -61,13 +63,13 @@
         </LinearLayout>
 
         <TextView
-            android:ellipsize="end"
-            android:maxLines="3"
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:layout_marginTop="12dp"
+            android:ellipsize="end"
+            android:maxLines="3"
             android:textSize="16sp"
             tools:text="又到了周末，外面阳光明媚，却又天气凉爽，实在适合出去转转" />
 
