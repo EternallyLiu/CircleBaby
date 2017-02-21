@@ -221,6 +221,11 @@ public class BabyObj extends BaseModel implements Parcelable {
         return currentBabyObj;
     }
 
+    public static BabyObj refreshBaby(int babyId) {
+        currentBabyObj = null;
+        return getInstance(babyId);
+    }
+
     public static Observable<BabyObj> getCurrentUserBabyObjs() {
         return Observable.defer(new Func0<Observable<BabyObj>>() {
             @Override

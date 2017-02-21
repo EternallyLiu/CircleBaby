@@ -538,8 +538,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         if (event.getTimeId() > 0)
             timeLineUpdate(event.getTimeId());
         else {
+            initData();
             currentPage = 1;
             reqData(currentPage);
+
         }
     }
 
