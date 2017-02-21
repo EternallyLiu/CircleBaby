@@ -63,11 +63,6 @@ public class PhotoSelectImageView extends RatioFrameLayout implements Checkable 
 
     public void setContent(MediaObj img) {
         GlideUtil.displayImagePick(img.getImgUrl(),ivPhoto);
-//        Glide.with(getContext())
-//                .load(img.getImgUrl())
-//                .thumbnail(0.1f)
-//                .centerCrop()
-//                .into(ivPhoto);
     }
 
     @Override

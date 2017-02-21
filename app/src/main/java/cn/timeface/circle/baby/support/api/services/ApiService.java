@@ -7,6 +7,7 @@ import cn.timeface.circle.baby.support.api.models.db.LocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
+import cn.timeface.circle.baby.support.api.models.responses.GroupPhotoByLocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
@@ -885,4 +886,6 @@ public interface ApiService {
     Observable<BaseResponse> smsRemind(@Query("open") int open);
 
 
+    @GET("printGrowth/queryGroupMediaByArea")
+    Observable<GroupPhotoByLocationResponse> groupPhotoByLocation(@Query("mediaIds") String mediaIds);
 }

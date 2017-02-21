@@ -218,6 +218,10 @@ public class MediaObj extends BaseObj implements Parcelable {
         this.videoUrl = videoUrl;
     }
 
+    public boolean select(){
+        return selected == 1;
+    }
+
     public ImgObj getImgObj() {
         ImgObj imgObj = new ImgObj(getImgUrl(), getLocalPath());
         imgObj.setDateMills(getPhotographTime());
