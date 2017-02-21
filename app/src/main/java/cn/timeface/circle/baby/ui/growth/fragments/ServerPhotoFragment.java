@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     RecyclerView rvContent;
     @Bind(R.id.tf_stateView)
     TFStateView stateView;
+    @Bind(R.id.ll_empty)
+    LinearLayout llEmpty;
 
     int contentType;
     String userId;
@@ -115,10 +118,12 @@ public class ServerPhotoFragment extends BasePresenterFragment {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             serverPhotosAdapter = new SelectServerPhotosAdapter(getActivity(), data, 99, contentType);
             rvContent.setAdapter(serverPhotosAdapter);
-            return;
+        } else {
+            serverPhotosAdapter.setListData(data);
+            serverPhotosAdapter.notifyDataSetChanged();
         }
-        serverPhotosAdapter.setListData(data);
-        serverPhotosAdapter.notifyDataSetChanged();
+
+        llEmpty.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
     }
 
     public List<MediaObj> getSelectedMedias(){
