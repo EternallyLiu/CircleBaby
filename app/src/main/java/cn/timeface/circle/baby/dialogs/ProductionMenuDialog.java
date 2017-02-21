@@ -98,6 +98,7 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
         if (view.getId() == R.id.tv_change_theme) {
             apiService.queryImageInfoList("", BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK)
                     .compose(SchedulersCompat.applyIoSchedulers())
+                    .doOnUnsubscribe(() -> dismiss())
                     .subscribe(response -> {
                         if (response.success()) {
                             List<ImageInfoListObj> dataList = response.getDataList();
@@ -124,6 +125,7 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
             ((BasePresenterAppCompatActivity) getActivity()).addSubscription(
                     apiService.deleteBook(bookId)
                             .compose(SchedulersCompat.applyIoSchedulers())
+                            .doOnUnsubscribe(()->dismiss())
                             .subscribe(response -> {
                                 ToastUtil.showToast(response.getInfo());
                                 if (response.success()) {

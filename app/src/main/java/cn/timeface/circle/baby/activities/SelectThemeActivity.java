@@ -163,7 +163,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
 //        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivity(intent);
 //        finish();
-        SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme);
+        SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, "", "");
     }
 
     private void creatBook() {

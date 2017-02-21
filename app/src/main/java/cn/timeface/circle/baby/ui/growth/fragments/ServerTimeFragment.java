@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.growth.fragments;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
@@ -47,6 +50,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     int bookType;
     String userId;
     SelectServerTimesAdapter serverTimesAdapter;
+    List<MediaObj> mediaObjs;
 
     public static ServerTimeFragment newInstance(int contentType, String userId, int bookType){
         ServerTimeFragment fragment = new ServerTimeFragment();
@@ -54,6 +58,24 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         bundle.putInt("content_type", contentType);
         bundle.putInt("book_type", bookType);
         bundle.putString("user_id", userId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    /**
+     * 编辑状态
+     * @param contentType
+     * @param userId
+     * @param selectedMedias
+     * @return
+     */
+    public static ServerTimeFragment newInstanceEdit(int contentType, String userId, int bookType, List<MediaObj> selectedMedias){
+        ServerTimeFragment fragment = new ServerTimeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("content_type", contentType);
+        bundle.putInt("book_type", bookType);
+        bundle.putString("user_id", userId);
+        bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,6 +90,8 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         this.contentType = getArguments().getInt("content_type", TypeConstants.PHOTO_TYPE_TIME);
         this.userId = getArguments().getString("user_id");
         this.bookType = getArguments().getInt("book_type", 0);
+        this.mediaObjs = getArguments().getParcelableArrayList("media_objs");
+        if(mediaObjs == null) mediaObjs = new ArrayList<>();
         reqData();
         return view;
     }
@@ -97,7 +121,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     private void setListData(List<TimeLineWrapObj> data){
         if (serverTimesAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99, this);
+            serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99, this, mediaObjs);
             rvContent.setAdapter(serverTimesAdapter);
         } else {
             serverTimesAdapter.setListData(data);
