@@ -3,7 +3,7 @@
 
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <solid android:color="#1593dc"/>
+            <solid android:color="@color/colorPrimary"/>
             <!-- 圆角 -->
             <corners android:bottomLeftRadius="15dp"
                      android:bottomRightRadius="0dp"
@@ -14,7 +14,7 @@
 
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <solid android:color="#157fbe"/>
+            <solid android:color="@color/colorPrimaryDark"/>
             <!-- 圆角 -->
             <corners android:bottomLeftRadius="15dp"
                      android:bottomRightRadius="0dp"

@@ -26,7 +26,7 @@
                 android:textColor="@color/text_color3"
                 android:paddingBottom="@dimen/size_12"/>
 
-            <cn.timeface.support.views.IconText
+            <cn.timeface.circle.baby.views.IconText
                 android:id="@+id/icon_delete"
                 android:layout_width="@dimen/size_48"
                 android:layout_height="@dimen/size_48"

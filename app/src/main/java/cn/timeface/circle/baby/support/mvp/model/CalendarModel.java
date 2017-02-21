@@ -19,6 +19,7 @@ import cn.timeface.open.api.bean.obj.TFOBookModel;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.response.EditPod;
 import cn.timeface.open.api.bean.response.EditText;
+import cn.timeface.open.api.bean.response.ReFormat;
 import cn.timeface.open.api.bean.response.SimplePageTemplate;
 import cn.timeface.open.model.TFOpenDataProvider;
 import rx.Observable;
@@ -75,7 +76,7 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
         return openApi.pageTemplate(bookId, bookType, idList);
     }
 
-    public Observable<TFOBaseResponse<List<TFOBookContentModel>>> changePageTemplate(
+    public Observable<TFOBaseResponse<ReFormat>> changePageTemplate(
             String bookId,
             int templateId,
             List<TFOBookContentModel> contentList) {
@@ -89,7 +90,7 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
 
     @Override
     public Observable<TFOBaseResponse<TFOBookModel>> get(String id) {
-        return openApi.getBook(id, BOOK_TYPE_CALENDAR_VERTICAL);
+        return openApi.getBook(id, BOOK_TYPE_CALENDAR_VERTICAL, true);
     }
 
     public Observable<TFOBaseResponse<TFOBookModel>> get(String id, String type) {
@@ -103,7 +104,7 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
             return Observable.empty();
         }
 
-        return openApi.getBook(id, bType);
+        return openApi.getBook(id, bType, true);
     }
 
     @Override

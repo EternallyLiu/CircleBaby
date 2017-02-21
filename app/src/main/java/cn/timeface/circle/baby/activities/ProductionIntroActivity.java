@@ -15,7 +15,6 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bumptech.glide.Glide;
-import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import java.util.List;
 
@@ -24,6 +23,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.responses.ProductionIntroListResponse;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
@@ -155,7 +155,9 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                 break;
             //台历
             case BookModel.BOOK_TYPE_CALENDAR:
-
+                CreateCalendarDialog createCalendarDialog = CreateCalendarDialog.newInstance();
+                createCalendarDialog.setCancelable(true);
+                createCalendarDialog.show(getSupportFragmentManager(), "CreateCalendarDialog");
                 break;
         }
     }
@@ -165,7 +167,7 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
 
         @Override
         public View createView(Context context) {
-            imageView = new RatioImageView(context);
+            imageView = new ImageView(context);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             return imageView;
         }

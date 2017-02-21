@@ -55,7 +55,7 @@ public class NotebookModel extends BasePresenterModel implements NotebookPresent
     @Override
     public Observable<TFOBaseResponse<TFOBookModel>> get(String id) {
 
-        return openApi.getBook(id, TYPE);
+        return openApi.getBook(id, TYPE, true);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class NotebookModel extends BasePresenterModel implements NotebookPresent
 
     @Override
     public Observable<TFOBaseResponse<TFOBookModel>> getBookModel(String bookId) {
-        return openApi.getBook(bookId, NotebookModel.TYPE);
+        return openApi.getBook(bookId, NotebookModel.TYPE, true);
     }
 
     @Override

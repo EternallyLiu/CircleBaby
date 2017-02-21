@@ -12,12 +12,19 @@
         android:background="@drawable/bg_create_calendar"
         android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:navigationIcon="?attr/homeAsUpIndicator"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+        </android.support.design.widget.AppBarLayout>
 
         <RadioGroup
             android:id="@+id/rg_sides"
@@ -66,7 +73,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <cn.timeface.support.views.IconText
+                <cn.timeface.circle.baby.views.IconText
                     android:id="@+id/tv_left"
                     android:layout_width="@dimen/size_48"
                     android:layout_height="@dimen/size_48"
@@ -84,7 +91,7 @@
                     android:textStyle="bold"
                     tools:text="2月"/>
 
-                <cn.timeface.support.views.IconText
+                <cn.timeface.circle.baby.views.IconText
                     android:id="@+id/tv_right"
                     android:layout_width="@dimen/size_48"
                     android:layout_height="@dimen/size_48"
@@ -143,7 +150,7 @@
 
     </LinearLayout>
 
-    <cn.timeface.ui.views.stateview.TFStateView
+    <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/stateView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

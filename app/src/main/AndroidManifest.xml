@@ -482,6 +482,24 @@
             android:name=".ui.growth.activities.SelectServerTimeDetailActivity"
             android:label="@string/title_activity_select_server_time_detail"
             android:theme="@style/AppTheme"></activity>
+
+        <!-- 台历相关 -->
+        <activity
+            android:name=".ui.calendar.CalendarActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.CalendarPreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.CommemorationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.UpdateCommemorationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/TimeFaceTheme.DayNight" />
     </application>
 
 </manifest>

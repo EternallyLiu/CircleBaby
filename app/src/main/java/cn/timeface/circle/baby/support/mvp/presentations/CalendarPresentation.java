@@ -14,6 +14,7 @@ import cn.timeface.open.api.bean.base.TFOBaseResponse;
 import cn.timeface.open.api.bean.obj.TFOBookContentModel;
 import cn.timeface.open.api.bean.obj.TFOBookModel;
 import cn.timeface.open.api.bean.response.EditPod;
+import cn.timeface.open.api.bean.response.ReFormat;
 import cn.timeface.open.api.bean.response.SimplePageTemplate;
 
 import rx.Observable;
@@ -92,7 +93,7 @@ public interface CalendarPresentation {
          * @param contentList content list
          * @return Observable
          */
-        Observable<TFOBaseResponse<List<TFOBookContentModel>>> changePageTemplate(
+        Observable<TFOBaseResponse<ReFormat>>changePageTemplate(
                 String bookId,
                 int templateId,
                 List<TFOBookContentModel> contentList);

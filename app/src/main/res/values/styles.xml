@@ -7,6 +7,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@null</item>
+
+        <item name="android:dialogTheme">@style/AppTheme.DialogTheme</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -109,6 +111,12 @@
         <!-- 自己想要的背景 -->
         <item name="android:backgroundDimEnabled">false</item>
         <!-- 模糊 -->
+    </style>
+
+    <style name="AppTheme.DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="DialogAnimation">

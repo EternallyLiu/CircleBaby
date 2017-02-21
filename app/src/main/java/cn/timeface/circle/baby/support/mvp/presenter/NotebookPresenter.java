@@ -67,7 +67,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
     private int currentTemplateId = 0;
     private List<String> contentTitles = new ArrayList<>();
 
-    private HashMap<String, HashMap<Integer, TFOBookElementModel>>
+    private HashMap<String, HashMap<Long, TFOBookElementModel>>
             elementMap = new LinkedHashMap<>();
 
     public NotebookPresenter(NotebookPresentation.View view) {
@@ -112,7 +112,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
             elementMap.clear();
             for (TFOBookContentModel c :
                     response.getData().getContentList()) {
-                HashMap<Integer, TFOBookElementModel> em = new LinkedHashMap<>();
+                HashMap<Long, TFOBookElementModel> em = new LinkedHashMap<>();
 
                 for (TFOBookElementModel ele : c.getElementList()) {
                     em.put(ele.getElementId(), ele);
@@ -137,7 +137,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
 
                     // 存一下扩展信息
                     String extra = response.getData().getExtra();
-                    String bookId = response.getData().getBook_id();
+                    String bookId = response.getData().getBookId();
 
                     try {
                         if (!TextUtils.isEmpty(extra)) {
@@ -204,7 +204,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
 
                             // 存一下扩展信息
                             String extra = response.getData().getExtra();
-                            String bookId = response.getData().getBook_id();
+                            String bookId = response.getData().getBookId();
 
                             try {
                                 if (!TextUtils.isEmpty(extra)) {
@@ -268,7 +268,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
                                 elementMap.remove(ccId);
 
                                 Log.d(TAG, "--------------------");
-                                HashMap<Integer, TFOBookElementModel> eMap = new LinkedHashMap<>();
+                                HashMap<Long, TFOBookElementModel> eMap = new LinkedHashMap<>();
                                 for (TFOBookElementModel e :
                                         c.getElementList()) {
                                     eMap.put(e.getElementId(), e);
@@ -433,7 +433,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
                 ).first(), new Func2<TFOEditTextReplaceObj, TFOBookContentModel, TFOBookContentModel>() {
                     @Override
                     public TFOBookContentModel call(TFOEditTextReplaceObj editTextReplaceObj, TFOBookContentModel contentModel) {
-                        int eleId = editTextReplaceObj.getElementModel().getElementId();
+                        long eleId = editTextReplaceObj.getElementModel().getElementId();
                         TFOBookElementModel target = elementMap.get(contentModel.getContentId())
                                 .get(eleId);
 
@@ -633,7 +633,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
 
                             if (remoteBook != null) {
                                 //baseResponse.getData().setId(remoteBook.getId());
-                                response.dataId = remoteBook.getBook_id();
+                                response.dataId = remoteBook.getBookId();
                             } else {
                                 response.dataId = String.valueOf(baseResponse.getData().getId());
                             }

@@ -427,8 +427,8 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
      */
     private Observable<TFOBaseResponse<String>> createCover() {
         try {
-            int width = bookModel.getBookWidth();
-            int height = bookModel.getBookHeight();
+            int width = (int) bookModel.getBookWidth();
+            int height = (int) bookModel.getBookHeight();
             TFOBookContentModel content = bookModel.getFrontSide().getContentList().get(0);
             return model.createCover(width, height, content);
         } catch (Exception e) {
@@ -983,7 +983,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
                             int realIndex = bookModel.getContentList()
                                     .indexOf(contentModelMap.get(contentId));
 
-                            TFOBookContentModel content = listBaseResponse.getData().get(0);
+                            TFOBookContentModel content = listBaseResponse.getData().getContentList().get(0);
 
                             bookModel.getContentList().set(
                                     realIndex,
@@ -1016,7 +1016,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
                         // 保存到服务器上
                         .flatMap(listBaseResponse -> {
 
-                            return model.updateContents(bookModel.getBookId(), listBaseResponse.getData());
+                            return model.updateContents(bookModel.getBookId(), listBaseResponse.getData().getContentList());
                         }, ((listBaseResponse, editPodBaseResponse) -> {
                             if (!editPodBaseResponse.success()) {
                                 return Observable.error(new Exception("修改版式失败"));

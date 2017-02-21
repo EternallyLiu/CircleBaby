@@ -53,7 +53,7 @@ public class NotebookInsertPagePresenter extends BasePresenter<NotebookPresentat
 
     private TFOBookModel originBookModel;
     private TFProgressDialog progressDialog;
-    private HashMap<String, HashMap<Integer, TFOBookElementModel>> elementMap = new LinkedHashMap<>();
+    private HashMap<String, HashMap<Long, TFOBookElementModel>> elementMap = new LinkedHashMap<>();
     private HashMap<String, TFOBookContentModel> contentMap = new LinkedHashMap<>();
 
     private Queue<DelayPostEvent> eventBusMessageQueue = new LinkedBlockingQueue<>();
@@ -430,7 +430,7 @@ public class NotebookInsertPagePresenter extends BasePresenter<NotebookPresentat
 
                             try {
                                 TFOBookModel book = getContentModel();
-                                List<Integer> ids = getAllPicElement();
+                                List<Long> ids = getAllPicElement();
 
                                 if (ids == null) {
                                     Observable.error(new Exception("ids is null."));
@@ -515,14 +515,14 @@ public class NotebookInsertPagePresenter extends BasePresenter<NotebookPresentat
         }
     }
 
-    private List<Integer> getAllPicElement() throws BookDataErrorException {
+    private List<Long> getAllPicElement() throws BookDataErrorException {
 
-        List<Integer> ids = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
         TFOBookModel book = getContentModel();
         for (int i = 0; i < book.getContentList().size(); i++) {
             String contentId = book.getContentList().get(i).getContentId();
             Collection<TFOBookElementModel> elements = elementMap.get(contentId).values();
-            int eleId = 0;
+            long eleId = 0;
             for (TFOBookElementModel ele :
                     elements) {
                 if (ele.getElementType() == 1) {
