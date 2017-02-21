@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.SelectPhotosAdapter;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.PhotoSelectEvent;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
@@ -42,10 +43,12 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
 
     ArrayList<MediaObj> selMedias = new ArrayList<>(10);//用于存储所有选中的图片
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
+    int contentType;
 
-    public SelectServerPhotosAdapter(Context mContext, List<MediaWrapObj> listData, int maxCount) {
+    public SelectServerPhotosAdapter(Context mContext, List<MediaWrapObj> listData, int maxCount, int contentType) {
         super(mContext, listData);
         this.maxCount = maxCount;
+        this.contentType = contentType;
         setupData();
     }
 
@@ -91,8 +94,12 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
         MediaWrapObj item = getItem(dataPosition);
         if (viewType == TYPE_TITLE) {
             SelectServerPhotosAdapter.TitleViewHolder holder = ((SelectServerPhotosAdapter.TitleViewHolder) viewHolder);
-            holder.tvTitle.setText(TextUtils.isEmpty(item.getDate()) ? item.getTip().getTipName() + " " + item.getMediaCount() + "张照片" : item.getDate());
-            holder.cbAllSel.setTag(R.string.tag_index, position);
+            if(contentType == TypeConstants.PHOTO_TYPE_LOCATION){
+                holder.tvTitle.setText(item.getAddress());
+            } else {
+                holder.tvTitle.setText(TextUtils.isEmpty(item.getDate()) ? item.getTip().getTipName() + " " + item.getMediaCount() + "张照片" : item.getDate());
+                holder.cbAllSel.setTag(R.string.tag_index, position);
+            }
 
             holder.cbAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
         } else if (viewType == TYPE_PHOTOS) {

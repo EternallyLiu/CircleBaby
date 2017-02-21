@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -40,10 +41,16 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
 
     ArrayList<TimeLineObj> selMedias = new ArrayList<>(10);//用于存储所有选中的图片
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
+    View.OnClickListener clickListener;
 
     public SelectServerTimesAdapter(Context mContext, List<TimeLineWrapObj> listData, int maxCount) {
+        this(mContext, listData, maxCount, null);
+    }
+
+    public SelectServerTimesAdapter(Context mContext, List<TimeLineWrapObj> listData, int maxCount, View.OnClickListener clickListener) {
         super(mContext, listData);
         this.maxCount = maxCount;
+        this.clickListener = clickListener;
         setupData();
     }
 
@@ -108,10 +115,13 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 DateUtils.formatDateTime(mContext, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_WEEKDAY);
                 holder.tvTitle.setText(DateUtils.formatDateTime(mContext, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_DATE)
                         + DateUtils.formatDateTime(mContext, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
-                holder.tvImgCount.setText(String.valueOf(timeLineObj.getMediaList().size()));
+                holder.tvImgCount.setText(String.valueOf(timeLineObj.getMediaList().size()) + "张");
                 holder.tvContent.setText(timeLineObj.getContent());
                 holder.cbSelect.setTag(R.string.tag_ex, dataPosition);
                 holder.cbSelect.setTag(R.string.tag_obj, timeLineObj);
+
+                if(clickListener != null) holder.llRoot.setOnClickListener(clickListener);
+                holder.llRoot.setTag(R.string.tag_obj, timeLineObj);
             }
         }
     }
@@ -187,6 +197,8 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         TextView tvContent;
         @Bind(R.id.tv_img_count)
         TextView tvImgCount;
+        @Bind(R.id.ll_time_root)
+        LinearLayout llRoot;
 
         TimesViewHolder(View view) {
             super(view);
