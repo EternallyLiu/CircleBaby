@@ -93,6 +93,7 @@ import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.ui.settings.SkipRattingDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
@@ -222,7 +223,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         if (FastData.getBabyId() != 0) {
             updateLoginInfo();
         }
-
         return view;
     }
 

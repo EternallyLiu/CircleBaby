@@ -53,6 +53,13 @@ public class DeleteDialog extends BaseDialog implements View.OnClickListener {
             this.cancel.setVisibility(View.GONE);
     }
 
+    public void setCancelTip(CharSequence tip){
+        if (this.cancel!=null)this.cancel.setText(tip);
+    }
+    public void setSubmitTip(CharSequence tip){
+        if (this.submit!=null)submit.setText(tip);
+    }
+
     public Button getSubmit() {
         return submit;
     }
