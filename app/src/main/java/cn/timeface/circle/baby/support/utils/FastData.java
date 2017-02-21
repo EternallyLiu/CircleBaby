@@ -335,12 +335,14 @@ public class FastData extends Remember {
         }
     }
 
-    public static int getSendSms(){
-        return getInt("send_sms",0);
+    public static int getSendSms() {
+        return getInt("send_sms", 0);
     }
-    public static void setSendSms(int sendSms){
-        putInt("send_sms",sendSms);
+
+    public static void setSendSms(int sendSms) {
+        putInt("send_sms", sendSms);
     }
+
     public static UserObj getUserInfo() {
         String userName = getUserName();
         String userId = getUserId();
@@ -350,8 +352,8 @@ public class FastData extends Remember {
         int isCreator = getIsCreator();
         String phoneNumber = getPhoneNumber();
         String uniId = getUniId();
-        int sendMessag=getSendSms();
-        return new UserObj(avatar, babyObj, userName, userId, relationName, isCreator, phoneNumber, uniId,sendMessag);
+        int sendMessag = getSendSms();
+        return new UserObj(avatar, babyObj, userName, userId, relationName, isCreator, phoneNumber, uniId, sendMessag);
     }
 
     public static void setBabyObj(BabyObj babyObj) {
@@ -359,6 +361,7 @@ public class FastData extends Remember {
             setBabyId(babyObj.getBabyId());
             babyObj.setUserId(FastData.getUserId());
             babyObj.save();
+            BabyObj.refreshBaby(babyObj.getBabyId());
 //            setBabyAge(babyObj.getAge());
 //            setBabyAvatar(babyObj.getAvatar());
 //            setBabyBithday(babyObj.getBithday());

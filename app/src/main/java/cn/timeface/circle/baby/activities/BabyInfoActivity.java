@@ -282,7 +282,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                             }
                         });
                     } catch (ServiceException | ClientException e) {
-                        e.printStackTrace();
+                        LogUtil.showError(e);
                     }
                 } catch (Exception e) {
 
