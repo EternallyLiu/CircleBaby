@@ -43,6 +43,7 @@ import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.PermissionUtils;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.ShareSdkUtil;
@@ -153,7 +154,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         rlSettingMsg.setOnClickListener(this);
         rlSettingShare.setOnClickListener(this);
         rlSettingAbout.setOnClickListener(this);
-        rlSettingScore.setVisibility(View.GONE);
+        rlSettingScore.setOnClickListener(this);
         rlSettingClear.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
         rlSettingPwd.setOnClickListener(this);
@@ -165,6 +166,9 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_setting_score:
+                PermissionUtils.skipRatting(getActivity());
+                break;
             case R.id.rl_sms:
                 apiService.smsRemind(FastData.getSendSms() == 1 ? 0 : 1)
                         .compose(SchedulersCompat.applyIoSchedulers())
