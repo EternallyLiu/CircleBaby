@@ -12,7 +12,11 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.ProductionIntroActivity;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.views.IntroView;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -38,6 +42,8 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
     Button btnAskPrint;
     @Bind(R.id.tv_empty_info)
     TextView tvEmptyInfo;
+    @Bind(R.id.intro_view)
+    IntroView introView;
 
     protected int bookType;
 
@@ -51,6 +57,13 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
 
         this.bookType = getIntent().getIntExtra("book_type", 0);
         rvBooks.getItemAnimator().setChangeDuration(0);//fix notify item shine problem
+
+        introView.setIntroText("一分钟了解" + BookModel.getGrowthBookName(bookType));
+        introView.setOnClickTextListener(v -> ProductionIntroActivity.open(this, bookType));
+        if (FastData.showProductionIntro()) {
+            FastData.setProductionIntro(false);
+            introView.startShakeAnimation();
+        }
     }
 
     @Override

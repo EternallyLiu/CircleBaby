@@ -18,6 +18,7 @@ import cn.timeface.circle.baby.activities.MineBookActivity;
 import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.SelectThemeActivity;
 import cn.timeface.circle.baby.activities.TimeBookPickerPhotoActivity;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.ProductionMenuDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
@@ -99,15 +100,15 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                     break;
                 //绘画集
                 case BookModel.BOOK_TYPE_PAINTING:
-                    SelectServerPhotoActivity.open(this, bookType, 111);
+                    SelectServerPhotoActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING);
                     break;
                 //成长纪念册
                 case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
-                    SelectServerTimeActivity.open(this, bookType, 113);
+                    SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK);
                     break;
                 //成长语录
                 case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
-                    SelectServerTimeActivity.open(this, bookType, 114);
+                    SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS);
                     break;
             }
         }

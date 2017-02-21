@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.support.mvp.model;
 
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.CardListResponse;
@@ -54,13 +55,13 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
         }
     }
 
-    public static int getOpenBookType(int bookType){
-        if(bookType == BOOK_TYPE_PAINTING){
-            return 111;
-        } else if(bookType == BOOK_TYPE_GROWTH_QUOTATIONS){
-            return 114;
-        } else if(bookType == BOOK_TYPE_GROWTH_COMMEMORATION_BOOK){
-            return 113;
+    public static int getOpenBookType(int bookType) {
+        if (bookType == BOOK_TYPE_PAINTING) {
+            return TypeConstants.OPEN_BOOK_TYPE_PAINTING;
+        } else if (bookType == BOOK_TYPE_GROWTH_QUOTATIONS) {
+            return TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS;
+        } else if (bookType == BOOK_TYPE_GROWTH_COMMEMORATION_BOOK) {
+            return TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK;
         } else {
             return 0;
         }

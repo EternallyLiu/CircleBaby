@@ -10,6 +10,7 @@ import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
+import cn.timeface.circle.baby.support.api.models.responses.ProductionIntroListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLabelResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByTimeResponse;
@@ -860,5 +861,11 @@ public interface ApiService {
      */
     @GET("babyCloudAlbums/imageParam")
     Observable<ImageExInfoResponse> queryImageInfo(@Query("url") String url);
+
+    /**
+     * 印品介绍
+     */
+    @GET("printGrowth/introduce")
+    Observable<ProductionIntroListResponse> queryProductionIntro(@Query("bookType") int bookType);
 
 }

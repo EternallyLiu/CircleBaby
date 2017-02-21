@@ -724,4 +724,6 @@
     <string name="title_activity_recognize_card_create">识图卡片</string>
     <string name="title_activity_select_server_photo">SelectServerPhotoActivity</string>
     <string name="title_activity_select_time">SelectTimeActivity</string>
+    <string name="title_activity_production_intro">产品介绍</string>
+
 </resources>

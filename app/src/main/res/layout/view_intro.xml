@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_intro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/iv_image"
+        android:layout_marginBottom="@dimen/view_space_medium"
+        android:layout_marginRight="@dimen/view_space_medium"
+        android:layout_toLeftOf="@+id/iv_image"
+        android:background="@drawable/bg_production_intro_text"
+        android:gravity="center"
+        android:maxWidth="180dp"
+        android:paddingLeft="@dimen/view_space_medium"
+        android:paddingRight="@dimen/view_space_medium"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_small"
+        android:translationX="288dp"
+        tools:text="一分钟了解精装照片书" />
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="76dp"
+        android:layout_height="88dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/view_space_medium"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_production_intro_image"
+        android:transformPivotX="38dp"
+        android:transformPivotY="88dp"
+        android:translationX="36dp" />
+</RelativeLayout>

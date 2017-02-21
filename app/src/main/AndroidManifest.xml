@@ -421,6 +421,10 @@
         <activity android:name=".ui.growth.activities.RecognizeCardListActivity" />
         <activity android:name=".ui.growth.activities.CardListActivity" />
         <activity
+            android:name=".activities.ProductionIntroActivity"
+            android:label="@string/title_activity_production_intro"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.growth.activities.CardPreviewActivity"
             android:label="@string/title_activity_card_preview"
             android:theme="@style/AppTheme" />

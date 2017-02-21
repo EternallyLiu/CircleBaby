@@ -138,6 +138,11 @@ public class FastData extends Remember {
     public static final String PRE_USER_UID = "pre_user_uid";
 
     /**
+     * 是否显示印成长 产品介绍
+     */
+    public static final String PRODUCTION_INTRO = "production_intro";
+
+    /**
      * 获取下载的apk绝对路径
      */
     public static String getApkDownloadPath() {
@@ -582,4 +587,14 @@ public class FastData extends Remember {
         return getLong(REGION_DB_UPDATE_TIME, defaultValue);
     }
 
+    /**
+     * 是否显示印成长 产品介绍
+     */
+    public static Boolean showProductionIntro() {
+        return getBoolean(PRODUCTION_INTRO, true);
+    }
+
+    public static void setProductionIntro(boolean show) {
+        putBoolean(PRODUCTION_INTRO, show);
+    }
 }
