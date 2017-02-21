@@ -115,6 +115,16 @@ public class PermissionUtils {
         }
     }
 
+    /**
+     * 跳转到应用市场应用详情页面进行评分
+     * @param context
+     */
+    public static void skipRatting(Context context){
+        String mAddress = "market://details?id=" + getPackageName();
+        Intent marketIntent = new Intent("android.intent.action.VIEW");
+        marketIntent.setData(Uri.parse(mAddress ));
+        context.startActivity(marketIntent);
+    }
 
     public static boolean isPropertiesExist(String... keys) {
         try {
