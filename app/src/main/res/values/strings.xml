@@ -725,4 +725,5 @@
     <string name="title_activity_select_server_photo">SelectServerPhotoActivity</string>
     <string name="title_activity_select_time">SelectTimeActivity</string>
     <string name="title_activity_select_server_time_detail">SelectServerTimeDetailActivity</string>
+    <string name="input_password">1234567890QWERTYUIOPASDFGHJKLZXCVBNM_</string>
 </resources>
