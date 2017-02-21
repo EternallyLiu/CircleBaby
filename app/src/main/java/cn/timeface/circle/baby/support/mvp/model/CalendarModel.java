@@ -2,19 +2,21 @@ package cn.timeface.circle.baby.support.mvp.model;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterModel;
 import cn.timeface.circle.baby.support.mvp.presentations.CalendarPresentation;
+import cn.timeface.circle.baby.support.mvp.response.bases.BaseResponse;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.ui.calendar.bean.CalendarExtendObj;
+import cn.timeface.circle.baby.ui.calendar.bean.CommemorationDataManger;
 import cn.timeface.open.api.bean.base.TFOBaseResponse;
 import cn.timeface.open.api.bean.obj.TFOBookContentModel;
 import cn.timeface.open.api.bean.obj.TFOBookElementModel;
 import cn.timeface.open.api.bean.obj.TFOBookModel;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.response.EditPod;
 import cn.timeface.open.api.bean.response.EditText;
 import cn.timeface.open.api.bean.response.SimplePageTemplate;
@@ -54,8 +56,8 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
         return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), null);
     }
 
-    public Observable<TFOBaseResponse<TFOBookModel>> create(int type, String contentList) {
-        return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), null);
+    public Observable<TFOBaseResponse<TFOBookModel>> create(int type, List<TFOPublishObj> contentList) {
+        return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), contentList);
     }
 
     public Observable<TFOBaseResponse<EditPod>> update(TFOBookModel model) {
@@ -68,16 +70,16 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
 
         // 请注意,这面要的是数组,但是传多个的时候,他不起作用,只能传一个。
         // 为了发泄我的愤怒,  我要打高指导一下。
-        return openApi.pageTemplate(bookId, bookType, Collections.singletonList(contentId));
+        List<String> idList = new ArrayList<>();
+        idList.add(contentId);
+        return openApi.pageTemplate(bookId, bookType, idList);
     }
 
     public Observable<TFOBaseResponse<List<TFOBookContentModel>>> changePageTemplate(
             String bookId,
             int templateId,
-            String contentList) {
-        String content = String.format(Locale.CHINESE, "[%s]", contentList);
-        //return openApi.reformat(bookId, templateId, Collections.singletonList(contentList));
-        return null;
+            List<TFOBookContentModel> contentList) {
+        return openApi.reformat(bookId, templateId, contentList);
     }
 
     @Override
@@ -105,7 +107,7 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
     }
 
     @Override
-    public Observable<?> delete(String id) {
+    public Observable<BaseResponse> delete(String id) {
         return null;
     }
 
@@ -115,7 +117,6 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
             TFOBookElementModel element,
             String text) {
 
-        String elementString = new Gson().toJson(element);
         return openApi.editText(bookId, element, text);
     }
 
@@ -125,7 +126,6 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
             TFOBookElementModel element,
             String text) {
         element.setReContentId(contentId);
-        String elementString = new Gson().toJson(element);
         return openApi.editText(bookId, element, text);
     }
 
@@ -133,13 +133,74 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
     public Observable<TFOBaseResponse<EditPod>> updateContents(
             String bookId,
             List<TFOBookContentModel> contentArray) {
-        String contentString = new Gson().toJson(contentArray);
         return openApi.editPod(bookId, contentArray);
+    }
 
+    @Override
+    public Observable<BaseResponse>
+    addRemoteCalendar(CalendarExtendObj obj) {
+
+
+        return apiService.sdkBookSave(
+                obj.getBookId(),
+                String.valueOf(obj.getBookType()),
+                obj.getBookCover(),
+                FastData.getUserName(),
+                FastData.getAvatar(),
+                obj.getBookTitle(),
+                obj.getBookSummary(),
+                CommemorationDataManger.getInstance().toData(),
+                ""
+        );
+    }
+
+    @Override
+    public Observable<GeneralBookItemResponse> getRemoteBook(String id, String type) {
+        String finalId = String.format(Locale.CHINESE, "%s$%s", id, type);
+        return apiService.sdkBookGet(finalId);
+    }
+
+    @Override
+    public Observable<BaseResponse>
+    deleteRemoteCalendar(String id, String type) {
+        String finalId = String.format(Locale.CHINESE, "%s$%s", id, type);
+        return apiService.sdkBookDelete(finalId);
+    }
+
+    @Override
+    public Observable<BaseResponse>
+    updateRemoteCalendar(String remoteId, CalendarExtendObj obj) {
+
+        return apiService.sdkBookUpdate(
+                remoteId,
+                obj.getBookId(),
+                String.valueOf(obj.getBookType()),
+                obj.getBookCover(),
+                FastData.getUserName(),
+                FastData.getAvatar(),
+                obj.getBookTitle(),
+                obj.getBookSummary(),
+                CommemorationDataManger.getInstance().toData(),
+                ""
+        );
     }
 
     public Observable<TFOBaseResponse<String>> createCover(int width, int height, TFOBookContentModel content) {
-        String jStr = new Gson().toJson(content);
+
         return openApi.createBookCover(width, height, content);
+    }
+
+    public static boolean isCalendar(int bookType) {
+        switch (bookType) {
+
+            case BOOK_TYPE_CALENDAR_VERTICAL:
+            case BOOK_TYPE_CALENDAR_HORIZONTAL:
+            case BOOK_TYPE_CALENDAR_ACTIVITY_STARS:
+
+                return true;
+
+            default:
+                return false;
+        }
     }
 }

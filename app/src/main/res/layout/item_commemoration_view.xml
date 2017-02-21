@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/ll_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:padding="@dimen/size_12">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/memorials"
+                android:textSize="@dimen/text_medium"
+                android:textColor="@color/text_color3"
+                android:paddingBottom="@dimen/size_12"/>
+
+            <cn.timeface.support.views.IconText
+                android:id="@+id/icon_delete"
+                android:layout_width="@dimen/size_48"
+                android:layout_height="@dimen/size_48"
+                android:textColor="@color/text_color4"
+                android:layout_gravity="right"
+                android:textSize="@dimen/text_medium"
+                android:gravity="center_horizontal"
+                android:text="@string/ic_delete"/>
+        </FrameLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_normal"
+            android:text="@string/select_date"
+            android:textColor="@color/text_color4"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>
