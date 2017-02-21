@@ -11,11 +11,13 @@ import cn.timeface.circle.baby.support.api.models.responses.GroupPhotoByLocation
 import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
+import cn.timeface.circle.baby.support.api.models.responses.LocationInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLabelResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByTimeResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByUserResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QuerySelectedPhotoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UsersInfoResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
@@ -888,4 +890,11 @@ public interface ApiService {
 
     @GET("printGrowth/queryGroupMediaByArea")
     Observable<GroupPhotoByLocationResponse> groupPhotoByLocation(@Query("mediaIds") String mediaIds);
+
+    @GET("map/getAddress")
+    Observable<LocationInfoResponse> getAddress(@Query("lat") double lat, @Query("log") double log);
+
+    @GET("printGrowth/bookMedias")
+    Observable<QuerySelectedPhotoResponse> bookMedias(@Query("bookId") String bookId);
+
 }

@@ -24,6 +24,15 @@ public class BookObj extends BaseObj implements Parcelable {
     private int isCustom;//1-系统推荐 2-用户自己创建的
     private long openBookId;//开放平台bookid
     private int pageNum;//书的总页数
+    private int openBookType;//
+
+    public int getOpenBookType() {
+        return openBookType;
+    }
+
+    public void setOpenBookType(int openBookType) {
+        this.openBookType = openBookType;
+    }
 
     public UserObj getAuthor() {
         return author;

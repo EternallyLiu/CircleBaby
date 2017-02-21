@@ -48,7 +48,16 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     SelectServerPhotosAdapter serverPhotosAdapter;
     String addressName;
     List<MediaWrapObj> mediaWrapObjs;
+    List<MediaObj> mediaObjs;
 
+    /**
+     * 地图上选择照片后（已经包含照片信息）
+     * @param contentType
+     * @param userId
+     * @param addressName
+     * @param mediaWrapObjs
+     * @return
+     */
     public static ServerPhotoFragment newInstance(int contentType, String userId, String addressName, List<MediaWrapObj> mediaWrapObjs){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
@@ -60,8 +69,31 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         return fragment;
     }
 
+    /**
+     * 选择照片
+     * @param contentType
+     * @param userId
+     * @return
+     */
     public static ServerPhotoFragment newInstance(int contentType, String userId){
         return newInstance(contentType, userId, "", null);
+    }
+
+    /**
+     * 编辑状态
+     * @param contentType
+     * @param userId
+     * @param selectedMedias
+     * @return
+     */
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias){
+        ServerPhotoFragment fragment = new ServerPhotoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("content_type", contentType);
+        bundle.putString("user_id", userId);
+        bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public ServerPhotoFragment() {}
@@ -75,6 +107,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         this.userId = getArguments().getString("user_id");
         this.addressName = getArguments().getString("address_name");
         this.mediaWrapObjs = getArguments().getParcelableArrayList("media_wrap_objs");
+        this.mediaObjs = getArguments().getParcelableArrayList("media_objs");
+        if(mediaObjs == null) mediaObjs = new ArrayList<>();
         if(contentType != TypeConstants.PHOTO_TYPE_LOCATION){
             reqData();
         } else {
@@ -97,26 +131,28 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         }
 
         if(photoResponseObservable == null) return;
-        photoResponseObservable.compose(SchedulersCompat.applyIoSchedulers())
-                .doOnUnsubscribe(() -> stateView.finish())
-                .subscribe(
-                        response -> {
-                            if(response.success()){
-                                setListData(response.getDataList());
-                            } else {
-                                ToastUtil.showToast(response.info);
-                            }
-                        },
-                        throwable -> {
-                            Log.e(TAG, throwable.getLocalizedMessage());
-                        }
-                );
+        addSubscription(
+                photoResponseObservable.compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnUnsubscribe(() -> stateView.finish())
+                        .subscribe(
+                                response -> {
+                                    if (response.success()) {
+                                        setListData(response.getDataList());
+                                    } else {
+                                        ToastUtil.showToast(response.info);
+                                    }
+                                },
+                                throwable -> {
+                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                }
+                        )
+        );
     }
 
     private void setListData(List<MediaWrapObj> data){
         if (serverPhotosAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            serverPhotosAdapter = new SelectServerPhotosAdapter(getActivity(), data, 99, contentType);
+            serverPhotosAdapter = new SelectServerPhotosAdapter(getActivity(), data, 99, contentType, mediaObjs);
             rvContent.setAdapter(serverPhotosAdapter);
         } else {
             serverPhotosAdapter.setListData(data);
