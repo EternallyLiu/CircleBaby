@@ -152,7 +152,7 @@ public class PhotoMapFragment extends BasePresenterFragment implements AMap.OnCa
         //计算当前的经纬度坐标到屏幕的坐标的转换
             for (int j = 0; j < mediaObjs.size(); j++) {
                 MediaObj curMediaObj = mediaObjs.get(j);
-                if (curMediaObj.getLocation().getLat() != 0 && curMediaObj.getLocation().getLog()!= 0) {
+                if (curMediaObj.getLocation() != null && curMediaObj.getLocation().getLat() != 0 && curMediaObj.getLocation().getLog()!= 0) {
                     MarkOptionPhoto markOptionPhoto = new MarkOptionPhoto();
                     markOptionPhoto.setMediaObj(curMediaObj);
                     photoModels.add(markOptionPhoto);
@@ -171,7 +171,7 @@ public class PhotoMapFragment extends BasePresenterFragment implements AMap.OnCa
                         );
                         markerOptionsList.add(markOptionPhoto);
                     } catch (Exception e) {
-
+                        Log.e(TAG, e.getLocalizedMessage());
                     }
                 }
         }

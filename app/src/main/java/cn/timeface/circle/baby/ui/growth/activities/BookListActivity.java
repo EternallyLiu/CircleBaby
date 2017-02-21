@@ -162,6 +162,14 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                         false,
                         bookObj.getBaby().getBabyId(),keys,values,0);
                 break;
+
+            case R.id.tv_edit:
+                //精装照片书
+                if(bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK){
+                    SelectServerPhotoActivity.open(this, bookType, 111);
+                }
+
+                break;
         }
     }
 
