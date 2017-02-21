@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.responses.InviteResponse;
@@ -68,7 +69,7 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.setTitle("邀请");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -86,12 +87,12 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
                 .subscribe(inviteResponse -> {
                     this.inviteResponse = inviteResponse;
                     tvCode.setText(inviteResponse.getInviteCode());
-                    GlideUtil.displayImage(inviteResponse.getCodeUrl(), iv);
                     int width = Remember.getInt("width", 0);
                     ViewGroup.LayoutParams layoutParams = iv.getLayoutParams();
                     layoutParams.width = (int) (width * 1.8);
                     layoutParams.height = (int) (width * 1.8);
                     iv.setLayoutParams(layoutParams);
+                    GlideUtil.displayImage(inviteResponse.getCodeUrl(), iv);
                 }, throwable -> {
                     Log.e(TAG, "queryBabyFamilyList:");
                     throwable.printStackTrace();
@@ -110,18 +111,18 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
     public void onClick(View v) {
         String content = "我在成长印记记录了" + FastData.getBabyName() + "的成长，快来一起关注" + FastData.getBabyName() + "的成长瞬间！";
         String url = "";
-        if (inviteResponse!=null){
+        if (inviteResponse != null) {
             String inviteCode = inviteResponse.getInviteCode();
-            url = getActivity().getString(R.string.share_url_invite, FastData.getBabyId()) + "&inviteCode=" + inviteCode;
+            url = BuildConfig.API_URL + getActivity().getString(R.string.share_url_invite, FastData.getBabyId()) + "&inviteCode=" + inviteCode;
         }
         switch (v.getId()) {
             case R.id.btn_wx:
                 new ShareDialog(getActivity()).shareToWx("成长印记", content,
-                        FastData.getBabyAvatar(),"",url);
+                        FastData.getBabyAvatar(), "", url);
                 break;
             case R.id.btn_qq:
                 new ShareDialog(getActivity()).shareToQQ("成长印记", content,
-                        FastData.getBabyAvatar(),"",url);
+                        FastData.getBabyAvatar(), "", url);
                 break;
             case R.id.btn_sms:
                 String sms_body = content + url;

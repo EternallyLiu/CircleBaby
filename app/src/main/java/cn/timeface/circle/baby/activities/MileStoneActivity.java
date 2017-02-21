@@ -25,6 +25,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.sharesdk.framework.ShareSDK;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.dialogs.MilestoneMenuDialog;
@@ -166,7 +167,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
             }
             String title = FastData.getBabyName() + "成长里程碑";
             String content = FastData.getBabyName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑";
-            String url = getString(R.string.share_url_milestone,FastData.getBabyId());
+            String url = BuildConfig.API_URL+getString(R.string.share_url_milestone,FastData.getBabyId());
             new ShareDialog(this).share(title, content, imgUrl, url);
         }
         return super.onOptionsItemSelected(item);

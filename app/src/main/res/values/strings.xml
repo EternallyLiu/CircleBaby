@@ -73,12 +73,12 @@
     <string name="icon_weibo">&#xe629;</string>
     <string name="mine">我的</string>
 
-    <string name="share_url_invite">http://www.timeface.cn/baby/babyShare/invite.html?babyId=%1$d</string>
-    <string name="share_url_time">http://www.timeface.cn/baby/babyShare/groupPicture.html?timeId=%1$d</string>
-    <string name="share_url_milestone">http://www.timeface.cn/baby/babyShare/milestone.html?babyId=%1$d</string>
-    <string name="share_url_generalmap">http://www.timeface.cn/baby/babyShare/generalMap.html?timeId=%1$d</string>
-    <string name="share_url_diary">http://www.timeface.cn/baby/babyShare/diary.html?timeId=%1$d</string>
-    <string name="share_url_video">http://www.timeface.cn/baby/babyShare/video.html?timeId=%1$d</string>
+    <string name="share_url_invite">babyShare/invite.html?babyId=%1$d</string>
+    <string name="share_url_time">babyShare/groupPicture.html?timeId=%1$d</string>
+    <string name="share_url_milestone">babyShare/milestone.html?babyId=%1$d</string>
+    <string name="share_url_generalmap">babyShare/generalMap.html?timeId=%1$d</string>
+    <string name="share_url_diary">babyShare/diary.html?timeId=%1$d</string>
+    <string name="share_url_video">babyShare/video.html?timeId=%1$d</string>
 
     <string name="picker_photo">选择图片</string>
     <string name="all_photo">全部图片</string>
