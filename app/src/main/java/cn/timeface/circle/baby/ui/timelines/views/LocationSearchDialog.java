@@ -57,7 +57,7 @@ public class LocationSearchDialog extends BaseDialog implements View.OnClickList
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = window.getAttributes();
         p.width = d.getWidth();
-        p.dimAmount=0.1f;
+        p.dimAmount = 0.1f;
         window.setAttributes(p);
         window.setGravity(Gravity.TOP);
         window.setWindowAnimations(R.style.bottom_dialog_animation);
@@ -76,8 +76,7 @@ public class LocationSearchDialog extends BaseDialog implements View.OnClickList
         if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             if (TextUtils.isEmpty(input.getText().toString()))
                 ToastUtil.showToast("请输入搜索关键字");
-            else if (getSearchCallBack() != null)
-            {
+            else if (getSearchCallBack() != null) {
                 getSearchCallBack().searchCall(input.getText().toString().trim());
                 dismiss();
             }

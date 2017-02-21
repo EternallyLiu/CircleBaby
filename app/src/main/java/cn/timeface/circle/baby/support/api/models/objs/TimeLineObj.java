@@ -36,7 +36,15 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     int type;                       //0 照片 1 视频 2 日记 3 识图
     String content;                 //时光内容
     NearLocationObj locationInfo;
+    private int allDetailsListPosition;
 
+    public int getAllDetailsListPosition() {
+        return allDetailsListPosition;
+    }
+
+    public void setAllDetailsListPosition(int allDetailsListPosition) {
+        this.allDetailsListPosition = allDetailsListPosition;
+    }
 
     public long getDotime() {
         return dotime;
@@ -92,18 +100,6 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         return mediaList;
     }
 
-    public void clearMedias(List<String> urls) {
-        MediaObj mediaObj = null;
-        for (int i = 0; i < urls.size(); i++) {
-            mediaObj = new MediaObj(null, urls.get(i), 0, 0, 0);
-            LogUtil.showLog("contain:"+getMediaList().contains(mediaObj));
-            if (getMediaList().contains(mediaObj))
-            {
-                getMediaList().remove(mediaObj);
-            }
-        }
-    }
-
     public ArrayList<MediaObj> getMediaArray() {
         if (mediaList == null)
             mediaList = new ArrayList<>(0);
@@ -117,6 +113,14 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         return list;
     }
 
+    public ArrayList<String> getUrls() {
+        ArrayList<String> list = new ArrayList<>(0);
+        ArrayList<MediaObj> array = getMediaArray();
+        for (int i = 0; i < array.size(); i++) {
+            list.add(array.get(i).getImgUrl());
+        }
+        return list;
+    }
 
     public void setMediaList(List<MediaObj> mediaList) {
         this.mediaList = mediaList;
@@ -226,6 +230,62 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TimeLineObj that = (TimeLineObj) o;
+
+        if (timeId > 0 && timeId == that.timeId) return true;
+        if (commentCount != that.commentCount) return false;
+        if (date != that.date) return false;
+        if (dotime != that.dotime) return false;
+        if (like != that.like) return false;
+        if (likeCount != that.likeCount) return false;
+        if (milestoneId != that.milestoneId) return false;
+        if (type != that.type) return false;
+        if (allDetailsListPosition != that.allDetailsListPosition) return false;
+        if (age != null ? !age.equals(that.age) : that.age != null) return false;
+        if (dateEx != null ? !dateEx.equals(that.dateEx) : that.dateEx != null) return false;
+        if (author != null ? !author.equals(that.author) : that.author != null) return false;
+        if (commentList != null ? !commentList.equals(that.commentList) : that.commentList != null)
+            return false;
+        if (mediaList != null ? !mediaList.equals(that.mediaList) : that.mediaList != null)
+            return false;
+        if (likeList != null ? !likeList.equals(that.likeList) : that.likeList != null)
+            return false;
+        if (milestone != null ? !milestone.equals(that.milestone) : that.milestone != null)
+            return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        return locationInfo != null ? locationInfo.equals(that.locationInfo) : that.locationInfo == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = age != null ? age.hashCode() : 0;
+        result = 31 * result + (dateEx != null ? dateEx.hashCode() : 0);
+        result = 31 * result + (author != null ? author.hashCode() : 0);
+        result = 31 * result + commentCount;
+        result = 31 * result + (commentList != null ? commentList.hashCode() : 0);
+        result = 31 * result + (int) (date ^ (date >>> 32));
+        result = 31 * result + (int) (dotime ^ (dotime >>> 32));
+        result = 31 * result + like;
+        result = 31 * result + likeCount;
+        result = 31 * result + (mediaList != null ? mediaList.hashCode() : 0);
+        result = 31 * result + (likeList != null ? likeList.hashCode() : 0);
+        result = 31 * result + (milestone != null ? milestone.hashCode() : 0);
+        result = 31 * result + milestoneId;
+        result = 31 * result + timeId;
+        result = 31 * result + type;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (locationInfo != null ? locationInfo.hashCode() : 0);
+        result = 31 * result + allDetailsListPosition;
+        return result;
     }
 
     @Override

@@ -107,6 +107,8 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     private GridStaggerLookup lookup;
     private LikeUserList likeUserList;
 
+    private boolean commentable = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +119,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         }
         if (bundle != null && bundle.containsKey("allDetailsListPosition"))
             allDetailsListPosition = bundle.getInt("allDetailsListPosition", -1);
+        commentable = bundle.getBoolean("commentable", false);
         setHasOptionsMenu(true);
     }
 
@@ -190,6 +193,15 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
     }
 
+    public static void open(Context context, int allDetailsListPosition, boolean commentable, TimeLineObj timeLineObj) {
+        LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("commentable", commentable);
+        bundle.putInt("allDetailsListPosition", allDetailsListPosition);
+        bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
+        FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
+    }
+
     private void reqData() {
         apiService.queryBabyTimeDetail(currentTimeLineObj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -197,6 +209,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                     if (timeDetailResponse.success()) {
                         currentTimeLineObj = timeDetailResponse.getTimeInfo();
                         initRecyclerView();
+                        EventBus.getDefault().post(currentTimeLineObj);
                         doMenu();
                     }
                     swipeRefresh.setRefreshing(false);
@@ -239,6 +252,9 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
             contentList.addAll(currentTimeLineObj.getCommentList());
         adapter.addList(true, contentList);
         addLike.setChecked(currentTimeLineObj.getLike() % 2 == 1 ? true : false);
+        if (commentable)
+            showKeyboard();
+        else hideKeyboard();
     }
 
     private Menu currentMenu;
@@ -300,7 +316,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     }
 
     @Override
-    public void loadfinish() {
+    public void loadfinish(int code) {
         LogUtil.showLog("adapter size:" + adapter.getItemCount());
         LogUtil.showLog("medias size:" + currentTimeLineObj.getMediaList().size());
     }
@@ -454,7 +470,6 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     @Subscribe
     public void onEvent(MediaUpdateEvent event) {
-        LogUtil.showLog("event=====>" + event.getMediaObj().getId());
         if (currentTimeLineObj.getMediaList().contains(event.getMediaObj())) {
             List<MediaObj> mediaList = currentTimeLineObj.getMediaList();
             int indexOf = mediaList.indexOf(event.getMediaObj());
@@ -496,6 +511,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                 .subscribe(timeDetailResponse -> {
                     if (timeDetailResponse.success()) {
                         currentTimeLineObj = timeDetailResponse.getTimeInfo();
+                        EventBus.getDefault().post(new CommentSubmit(allDetailsListPosition, commmentId, currentTimeLineObj));
                         readComment();
                         hideKeyboard();
                         ToastUtil.showToast(timeDetailResponse.getInfo());

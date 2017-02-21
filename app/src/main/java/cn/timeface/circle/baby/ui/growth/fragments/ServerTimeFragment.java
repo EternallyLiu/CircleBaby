@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeDetailActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.SelectServerTimesAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
@@ -32,7 +33,7 @@ import rx.Observable;
  * author : YW.SUN Created on 2017/2/15
  * email : sunyw10@gmail.com
  */
-public class ServerTimeFragment extends BasePresenterFragment {
+public class ServerTimeFragment extends BasePresenterFragment implements View.OnClickListener {
 
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
@@ -72,13 +73,6 @@ public class ServerTimeFragment extends BasePresenterFragment {
         stateView.setVisibility(View.VISIBLE);
         stateView.loading();
         Observable<QueryTimeLineResponse> timeResponseObservable = apiService.queryTimeLine(FastData.getBabyId(), userId, getQueryType());
-//        if (contentType == TypeConstants.PHOTO_TYPE_TIME) {
-//            timeResponseObservable = apiService.queryTimeLine();
-//        } else if(contentType == TypeConstants.PHOTO_TYPE_USER){
-//            timeResponseObservable = apiService.queryPhotoByUser(FastData.getBabyId(), userId);
-//        } else if(contentType == TypeConstants.PHOTO_TYPE_LABEL){
-//            timeResponseObservable = apiService.queryPhotoByLabel(FastData.getBabyId());
-//        }
 
         if(timeResponseObservable == null) return;
         timeResponseObservable.compose(SchedulersCompat.applyIoSchedulers())
@@ -100,7 +94,7 @@ public class ServerTimeFragment extends BasePresenterFragment {
     private void setListData(List<TimeLineWrapObj> data){
         if (serverTimesAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99);
+            serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99, this);
             rvContent.setAdapter(serverTimesAdapter);
             return;
         }
@@ -127,5 +121,16 @@ public class ServerTimeFragment extends BasePresenterFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            //跳到时光详情页面
+            case R.id.ll_time_root:
+                TimeLineObj timeLineObj = (TimeLineObj) view.getTag(R.string.tag_obj);
+                SelectServerTimeDetailActivity.open(getActivity(), timeLineObj);
+                break;
+        }
     }
 }

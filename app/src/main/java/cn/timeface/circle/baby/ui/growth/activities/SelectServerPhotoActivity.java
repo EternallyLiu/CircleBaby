@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.SelectContentTypeDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
 import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionCustomDataObj;
 import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionRemarkObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserWrapObj;
@@ -37,6 +38,7 @@ import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.fragments.PhotoMapFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.SelectUserFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.ServerPhotoFragment;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
@@ -49,7 +51,7 @@ import cn.timeface.open.api.bean.obj.TFOResourceObj;
  * email : sunyw10@gmail.com
  */
 public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity implements
-        SelectContentTypeDialog.SelectTypeListener, View.OnClickListener, IEventBus {
+        SelectContentTypeDialog.SelectTypeListener, View.OnClickListener, IEventBus, PhotoMapFragment.SelectLocation {
 
     boolean fragmentShow = false;
     boolean userFragmentShow = false;
@@ -61,6 +63,8 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     ServerPhotoFragment timePhotoFragment;//按时间
     ServerPhotoFragment userPhotoFragment;//按发布人
     ServerPhotoFragment labelPhotoFragment;//按标签
+    PhotoMapFragment locationPhotoFragment;//按地点
+
     SelectContentTypeDialog selectContentTypeDialog;
     SelectUserFragment selectUserFragment;
     int openBookType;
@@ -86,7 +90,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         timePhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId());
         this.openBookType = getIntent().getIntExtra("open_book_type", 0);
         this.bookType = getIntent().getIntExtra("book_type", 0);
-        showContent(timePhotoFragment);
+        showContent(timePhotoFragment, false);
     }
 
     @Override
@@ -194,13 +198,11 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                     }
                             )
             );
-
-
-//            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
-//            finish();
+            return true;
+        } else {
+            onBackPressed();
+            return true;
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -213,7 +215,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         if(timePhotoFragment == null){
             timePhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId());
         }
-        showContent(timePhotoFragment);
+        showContent(timePhotoFragment, false);
         onClick(tvContentType);
     }
 
@@ -251,6 +253,10 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     public void selectTypeLocation() {
         if(userFragmentShow)setSelectUserFragmentHide();
         tvContentType.setText("按地点");
+//        if(locationPhotoFragment == null){
+            locationPhotoFragment = PhotoMapFragment.newInstance(this);
+//        }
+        showContent(locationPhotoFragment, true);
         onClick(tvContentType);
     }
 
@@ -264,7 +270,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         if(labelPhotoFragment == null){
             labelPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LABEL, FastData.getUserId());
         }
-        showContent(labelPhotoFragment);
+        showContent(labelPhotoFragment, false);
         onClick(tvContentType);
     }
 
@@ -275,7 +281,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
 
     Fragment currentFragment = null;
 
-    public void showContent(Fragment fragment) {
+    public void showContent(Fragment fragment, boolean canBack) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (currentFragment != null) {
@@ -287,6 +293,10 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
             ft.add(R.id.fl_container, fragment);
         }
         currentFragment = fragment;
+
+        if(canBack){
+            ft.addToBackStack(null);
+        }
         ft.commitAllowingStateLoss();
         invalidateOptionsMenu();
     }
@@ -329,7 +339,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                 if (userPhotoFragment == null) {
                     userPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId());
                 }
-                showContent(userPhotoFragment);
+                showContent(userPhotoFragment, true);
                 break;
         }
     }
@@ -341,5 +351,13 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_CREATE){
             finish();
         }
+    }
+
+    /**
+     * 选择地图上的图片位置后展示
+     */
+    @Override
+    public void clickLocation(String addressName, List<MediaWrapObj> mediaWrapObjs) {
+        showContent(ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), addressName, mediaWrapObjs), true);
     }
 }

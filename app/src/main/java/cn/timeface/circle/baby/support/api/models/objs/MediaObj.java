@@ -97,6 +97,8 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public LocationObj getLocation() {
+        if (location.getLat() == 0 || location.getLog() == 0)
+            return null;
         return location;
     }
 
@@ -214,6 +216,10 @@ public class MediaObj extends BaseObj implements Parcelable {
 
     public void setVideoUrl(String videoUrl) {
         this.videoUrl = videoUrl;
+    }
+
+    public boolean select(){
+        return selected == 1;
     }
 
     public ImgObj getImgObj() {

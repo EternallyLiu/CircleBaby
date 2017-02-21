@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/ll_head"
+    android:background="@color/bg30"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:id="@+id/rl_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/size_6"
+        android:layout_marginRight="@dimen/size_6"
+        android:gravity="center"
+        android:paddingLeft="@dimen/size_6">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="@dimen/size_60"
+            android:layout_height="@dimen/size_17"
+            android:layout_alignLeft="@+id/calendar"
+            android:layout_alignRight="@+id/calendar"
+            android:scaleType="fitEnd"
+            android:src="@drawable/time_line_calendar" />
+
+        <TextView
+            android:id="@+id/calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image"
+            android:background="@drawable/time_line_calendar_back"
+            android:gravity="center"
+            android:paddingLeft="@dimen/size_6"
+            android:paddingRight="@dimen/size_6"
+            android:textSize="@dimen/text_small_10" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/size_2"
+            android:text="2岁3个月" />
+
+        <TextView
+            android:id="@+id/tv_dateex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="周五" />
+
+
+    </LinearLayout>
+</LinearLayout>

@@ -7,6 +7,7 @@ import cn.timeface.circle.baby.support.api.models.db.LocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
+import cn.timeface.circle.baby.support.api.models.responses.GroupPhotoByLocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
@@ -69,7 +70,10 @@ import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
+import cn.timeface.circle.baby.ui.timelines.beans.QueryLocationInfoResponse;
+import cn.timeface.circle.baby.ui.timelines.beans.SendTimeLineResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
+import cn.timeface.circle.baby.ui.timelines.beans.TimeOfPageResponse;
 import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -284,8 +288,8 @@ public interface ApiService {
     //发布
     @FormUrlEncoded
     @POST("babyTime/publish")
-    Observable<BaseResponse> publish(@Field("dataList") String dataList,
-                                     @Field("type") int type);
+    Observable<SendTimeLineResponse> publish(@Field("dataList") String dataList,
+                                             @Field("type") int type);
 
     //获取里程碑列表
     @GET("babyTime/queryMilestoneList")
@@ -861,6 +865,29 @@ public interface ApiService {
      */
     @GET("babyCloudAlbums/imageParam")
     Observable<ImageExInfoResponse> queryImageInfo(@Query("url") String url);
+    /**
+     * 查询页码
+     * @return
+     */
+    @GET("babyTime/getTimeOfPageNo")
+    Observable<TimeOfPageResponse> timeOfpage(@Query("pageSize") int pageSize,
+                                              @Query("timeId") int timeId);
+    /**
+     * 查询经纬度反地理编码
+     * @return
+     */
+    @GET("map/getAddress")
+    Observable<QueryLocationInfoResponse> queryLocationInfo(@Query("lat") double lat,
+                                                            @Query("log") double log);
+    /**
+     * 设置短信提醒
+     * @return
+     */
+    @GET("member/msgRemind")
+    Observable<BaseResponse> smsRemind(@Query("open") int open);
+
+    @GET("printGrowth/queryGroupMediaByArea")
+    Observable<GroupPhotoByLocationResponse> groupPhotoByLocation(@Query("mediaIds") String mediaIds);
 
     /**
      * 印品介绍

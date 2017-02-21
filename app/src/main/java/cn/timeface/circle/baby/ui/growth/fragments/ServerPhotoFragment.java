@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.growth.fragments;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,14 +43,22 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     int contentType;
     String userId;
     SelectServerPhotosAdapter serverPhotosAdapter;
+    String addressName;
+    List<MediaWrapObj> mediaWrapObjs;
 
-    public static ServerPhotoFragment newInstance(int contentType, String userId){
+    public static ServerPhotoFragment newInstance(int contentType, String userId, String addressName, List<MediaWrapObj> mediaWrapObjs){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putString("user_id", userId);
+        bundle.putString("address_name", addressName);
+        bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static ServerPhotoFragment newInstance(int contentType, String userId){
+        return newInstance(contentType, userId, "", null);
     }
 
     public ServerPhotoFragment() {}
@@ -61,7 +70,14 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         ButterKnife.bind(this, view);
         this.contentType = getArguments().getInt("content_type", TypeConstants.PHOTO_TYPE_TIME);
         this.userId = getArguments().getString("user_id");
-        reqData();
+        this.addressName = getArguments().getString("address_name");
+        this.mediaWrapObjs = getArguments().getParcelableArrayList("media_wrap_objs");
+        if(contentType != TypeConstants.PHOTO_TYPE_LOCATION){
+            reqData();
+        } else {
+            stateView.setVisibility(View.GONE);
+            setListData(mediaWrapObjs);
+        }
         return view;
     }
 
@@ -97,7 +113,7 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     private void setListData(List<MediaWrapObj> data){
         if (serverPhotosAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            serverPhotosAdapter = new SelectServerPhotosAdapter(getActivity(), data, 99);
+            serverPhotosAdapter = new SelectServerPhotosAdapter(getActivity(), data, 99, contentType);
             rvContent.setAdapter(serverPhotosAdapter);
             return;
         }
@@ -107,6 +123,10 @@ public class ServerPhotoFragment extends BasePresenterFragment {
 
     public List<MediaObj> getSelectedMedias(){
         return serverPhotosAdapter.getSelImgs();
+    }
+
+    public int getContentType() {
+        return contentType;
     }
 
     @Override

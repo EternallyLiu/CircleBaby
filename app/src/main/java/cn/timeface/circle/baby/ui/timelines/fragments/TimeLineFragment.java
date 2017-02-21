@@ -161,7 +161,7 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
     }
 
     @Override
-    public void loadfinish() {
+    public void loadfinish(int code) {
         helper.finishTFPTRRefresh();
         empty();
     }

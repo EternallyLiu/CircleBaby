@@ -6,10 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioFrameLayout;
+import com.github.rayboot.widget.ratioview.utils.RatioFixMode;
 
 import java.util.List;
 
@@ -18,7 +20,9 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
 
 /**
  * book list adapter
@@ -43,6 +47,33 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         ViewHolder holder = (ViewHolder) viewHolder;
         final BookObj bookObj = listData.get(position);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                DeviceUtil.dpToPx(mContext.getResources(), 120),
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+        );
+        lp.setMargins(DeviceUtil.dpToPx(mContext.getResources(), 16), 0, 0, 0);
+        holder.flBookCover.setLayoutParams(lp);
+
+        //精装照片书
+        if(bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK){
+            holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
+        //成长纪念册
+        } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK){
+            lp.width = DeviceUtil.dpToPx(mContext.getResources(), 100);
+            holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 344, 550);
+        //成长语录
+        } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS){
+            holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
+        //绘画集
+        } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING){
+            lp.width = DeviceUtil.dpToPx(
+                    mContext.getResources(),
+                    150);
+            holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 680, 524);
+        } else {
+            holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
+        }
 
         Glide.with(mContext)
                 .load(bookObj.getBookCover())

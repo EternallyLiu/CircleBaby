@@ -21,12 +21,13 @@ public class UserObj extends BaseObj implements Parcelable {
     String phoneNumber;
     String uniId;
     int babycount;
+    int sendMessage;
     List<BabyObj> babies;
 
     public UserObj() {
     }
 
-    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId, String relationName, int isCreator, String phoneNumber, String uniId) {
+    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId, String relationName, int isCreator, String phoneNumber, String uniId,int sendMessage) {
         this.avatar = avatar;
         this.babyObj = babyObj;
         this.nickName = nickName;
@@ -35,6 +36,30 @@ public class UserObj extends BaseObj implements Parcelable {
         this.isCreator = isCreator;
         this.phoneNumber = phoneNumber;
         this.uniId = uniId;
+        this.sendMessage=sendMessage;
+    }
+
+    public int getSendMessage() {
+        return sendMessage;
+    }
+
+    public void setSendMessage(int sendMessage) {
+        this.sendMessage = sendMessage;
+    }
+
+    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId, String relationName, int isCreator, String phoneNumber, String uniId, int babycount, int sendMessage, List<BabyObj> babies) {
+
+        this.avatar = avatar;
+        this.babyObj = babyObj;
+        this.nickName = nickName;
+        this.userId = userId;
+        this.relationName = relationName;
+        this.isCreator = isCreator;
+        this.phoneNumber = phoneNumber;
+        this.uniId = uniId;
+        this.babycount = babycount;
+        this.sendMessage = sendMessage;
+        this.babies = babies;
     }
 
     public UserObj(String relationName) {
@@ -176,6 +201,9 @@ public class UserObj extends BaseObj implements Parcelable {
         dest.writeInt(this.isCreator);
         dest.writeString(this.phoneNumber);
         dest.writeString(this.uniId);
+        dest.writeInt(this.babycount);
+        dest.writeInt(this.sendMessage);
+        dest.writeTypedList(this.babies);
     }
 
     protected UserObj(Parcel in) {
@@ -187,9 +215,12 @@ public class UserObj extends BaseObj implements Parcelable {
         this.isCreator = in.readInt();
         this.phoneNumber = in.readString();
         this.uniId = in.readString();
+        this.babycount = in.readInt();
+        this.sendMessage = in.readInt();
+        this.babies = in.createTypedArrayList(BabyObj.CREATOR);
     }
 
-    public static final Parcelable.Creator<UserObj> CREATOR = new Parcelable.Creator<UserObj>() {
+    public static final Creator<UserObj> CREATOR = new Creator<UserObj>() {
         @Override
         public UserObj createFromParcel(Parcel source) {
             return new UserObj(source);

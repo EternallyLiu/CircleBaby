@@ -89,7 +89,8 @@
         android:padding="@dimen/size_12">
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/msg_tip"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
@@ -97,6 +98,17 @@
             android:drawablePadding="@dimen/size_6"
             android:text="我的消息"
             android:textSize="@dimen/text_medium" />
+
+        <ImageView
+            android:id="@+id/iv_dot"
+            android:layout_toRightOf="@+id/msg_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="@dimen/size_6"
+            android:layout_centerVertical="true"
+            android:src="@drawable/shape_dot_red"
+            android:visibility="visible" />
 
         <ImageView
             android:layout_width="wrap_content"

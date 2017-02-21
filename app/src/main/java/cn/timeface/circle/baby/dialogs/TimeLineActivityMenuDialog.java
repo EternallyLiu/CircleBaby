@@ -118,8 +118,8 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 if (response.success()) {
-                                    EventBus.getDefault().post(new DeleteTimeLineEvent());
-                                    EventBus.getDefault().post(new HomeRefreshEvent());
+                                    EventBus.getDefault().post(new DeleteTimeLineEvent(timelineobj.getTimeId()));
+                                    EventBus.getDefault().post(new HomeRefreshEvent(timelineobj.getTimeId()));
                                 } else {
                                     ToastUtil.showToast(response.getInfo());
                                 }

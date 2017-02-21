@@ -42,6 +42,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.ShareSdkUtil;
@@ -80,6 +81,10 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     TextView tvPhoneNumber;
     @Bind(R.id.rl_setting_phone)
     RelativeLayout rlSettingPhone;
+    @Bind(R.id.iv_swich_sms)
+    ImageView ivSwichSms;
+    @Bind(R.id.rl_sms)
+    RelativeLayout rlSms;
     private String phoneNumber;
 
     @Override
@@ -129,7 +134,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         String replace = phoneNumber.substring(3, 7);
 
         if (!TextUtils.isEmpty(phoneNumber)) {
-            tvPhoneNumber.setText(phoneNumber.replace(replace,"****"));
+            tvPhoneNumber.setText(phoneNumber.replace(replace, "****"));
         }
     }
 
@@ -153,11 +158,25 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         btnSignOut.setOnClickListener(this);
         rlSettingPwd.setOnClickListener(this);
         rlSettingPhone.setOnClickListener(this);
+        rlSms.setOnClickListener(this);
+        ivSwichSms.setImageResource(FastData.getSendSms()== 1 ? R.drawable.swichon : R.drawable.swichoff);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_sms:
+                apiService.smsRemind(FastData.getSendSms() == 1 ? 0 : 1)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                FastData.setSendSms(1 - FastData.getSendSms());
+                                ivSwichSms.setImageResource(FastData.getSendSms()== 1 ? R.drawable.swichon : R.drawable.swichoff);
+                            }
+                        }, throwable -> {
+                            LogUtil.showError(throwable);
+                        });
+                break;
             case R.id.rl_setting_phone:
 
                 FragmentBridgeActivity.open(getActivity(), BindPhoneFragment.class.getSimpleName());

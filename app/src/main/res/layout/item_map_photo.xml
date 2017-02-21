@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <!--定义一张图片  也就是聚簇中的任意一张图片的封面-->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/img_map_photo_cover"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:scaleType="fitXY"
+        />
+    <!--显示当前的地理位置的图片的数量-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/back_map_num"
+        android:layout_gravity="top|right"
+        android:textAppearance="@style/font_smaller_ffffff"
+        android:gravity="center"
+        android:id="@+id/tv_map_photo_num"
+        />
+</FrameLayout>

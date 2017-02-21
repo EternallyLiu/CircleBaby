@@ -75,6 +75,7 @@ public class BabyObj extends BaseModel implements Parcelable {
     }
 
     public String getRealName() {
+        if (TextUtils.isEmpty(realName)) realName = "";
         return realName;
     }
 
@@ -224,10 +225,10 @@ public class BabyObj extends BaseModel implements Parcelable {
         return Observable.defer(new Func0<Observable<BabyObj>>() {
             @Override
             public Observable<BabyObj> call() {
-                LogUtil.showLog("Thread:"+Thread.currentThread().getName());
+                LogUtil.showLog("Thread:" + Thread.currentThread().getName());
                 List<BabyObj> list = null;
                 list = SQLite.select().from(BabyObj.class).where(BabyObj_Table.user_id.eq(FastData.getUserId())).queryList();
-                LogUtil.showLog((list==null?"null":list.size()+""));
+                LogUtil.showLog((list == null ? "null" : list.size() + ""));
                 return Observable.from(list);
             }
         });

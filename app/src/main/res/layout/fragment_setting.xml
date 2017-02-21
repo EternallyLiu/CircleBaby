@@ -71,6 +71,36 @@
         android:background="@color/bg_color6" />
 
     <RelativeLayout
+        android:id="@+id/rl_sms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/text_color1"
+        android:padding="@dimen/size_12">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:background="@color/text_color1"
+            android:text="成员动态短信提醒"
+            android:textSize="@dimen/text_medium" />
+
+        <ImageView
+            android:id="@+id/iv_swich_sms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/swichon" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6" />
+    <RelativeLayout
         android:id="@+id/rl_wifi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

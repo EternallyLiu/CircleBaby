@@ -69,11 +69,6 @@ public class GridStaggerLookup extends GridLayoutManager.SpanSizeLookup {
         else return getColumCount();
     }
 
-    @Override
-    public int getSpanIndex(int position, int spanCount) {
-        return position % spanCount;
-//        return super.getSpanIndex(position, spanCount);
-    }
 
     private int spanSize(int position) {
         if (position > mediaSize - 1)
