@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/bg_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,6 +9,33 @@
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:id="@+id/ll_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_72"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:src="@drawable/nodata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginTop="@dimen/view_space_medium"
+            android:layout_marginBottom="@dimen/view_space_medium"
+            android:paddingLeft="@dimen/view_space_medium"
+            android:paddingRight="@dimen/view_space_medium"
+            android:id="@+id/tv_empty_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/text_color_hint"
+            android:text="天啦噜！内容是空的，你看不到我了！" />
+    </LinearLayout>
 
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"

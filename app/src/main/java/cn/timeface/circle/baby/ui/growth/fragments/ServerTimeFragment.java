@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -39,6 +40,8 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     RecyclerView rvContent;
     @Bind(R.id.tf_stateView)
     TFStateView stateView;
+    @Bind(R.id.ll_empty)
+    LinearLayout llEmpty;
 
     int contentType;
     int bookType;
@@ -96,10 +99,11 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99, this);
             rvContent.setAdapter(serverTimesAdapter);
-            return;
+        } else {
+            serverTimesAdapter.setListData(data);
+            serverTimesAdapter.notifyDataSetChanged();
         }
-        serverTimesAdapter.setListData(data);
-        serverTimesAdapter.notifyDataSetChanged();
+        llEmpty.setVisibility(serverTimesAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
     }
 
     public List<TimeLineObj> getSelectedMedias(){

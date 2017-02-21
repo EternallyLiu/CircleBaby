@@ -18,6 +18,8 @@ import com.google.gson.Gson;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -61,7 +63,8 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     Toolbar toolbar;
 
     ServerPhotoFragment timePhotoFragment;//按时间
-    ServerPhotoFragment userPhotoFragment;//按发布人
+//    ServerPhotoFragment userPhotoFragment;//按发布人
+    HashMap<String, ServerPhotoFragment> userPhotoFragmentMap = new HashMap<>();//存储下来所有用户的fragment
     ServerPhotoFragment labelPhotoFragment;//按标签
     PhotoMapFragment locationPhotoFragment;//按地点
 
@@ -106,9 +109,16 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
             if(timePhotoFragment != null){
                 selectedMedias.addAll(timePhotoFragment.getSelectedMedias());
             }
-            if(userPhotoFragment != null){
-                selectedMedias.addAll(userPhotoFragment.getSelectedMedias());
+
+            Iterator iterator = userPhotoFragmentMap.entrySet().iterator();
+            while (iterator.hasNext()){
+                ServerPhotoFragment photoFragment = (ServerPhotoFragment) iterator.next();
+                selectedMedias.addAll(photoFragment.getSelectedMedias());
             }
+
+//            if(userPhotoFragment != null){
+//                selectedMedias.addAll(userPhotoFragment.getSelectedMedias());
+//            }
             if(labelPhotoFragment != null){
                 selectedMedias.addAll(labelPhotoFragment.getSelectedMedias());
             }
@@ -336,10 +346,21 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
             case R.id.ll_root:
                 if(userFragmentShow)setSelectUserFragmentHide();
                 UserWrapObj userWrapObj = (UserWrapObj) view.getTag(R.string.tag_obj);
-                if (userPhotoFragment == null) {
-                    userPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId());
+
+                //已经加载
+                if(userPhotoFragmentMap.containsKey(userWrapObj.getUserInfo().getUserId())){
+                    showContent(userPhotoFragmentMap.get(userWrapObj.getUserInfo().getUserId()), true);
+                } else {
+                    ServerPhotoFragment serverPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId());
+                    userPhotoFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverPhotoFragment);
+                    showContent(serverPhotoFragment, true);
                 }
-                showContent(userPhotoFragment, true);
+
+
+//                if (userPhotoFragment == null) {
+//                    userPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId());
+//                }
+//                showContent(userPhotoFragment, true);
                 break;
         }
     }

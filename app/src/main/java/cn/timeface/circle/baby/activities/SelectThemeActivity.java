@@ -100,7 +100,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
     private void reqData() {
         tfStateView.loading();
         // 7-开放平台照片书 pod type
-//        addSubscription(
+        addSubscription(
                 TFOpenDataProvider.get().bookTypeList(0, 7, 0, 0)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(listBaseResponse -> {
@@ -110,8 +110,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
                 }, throwable -> {
                     tfStateView.showException(throwable);
                     Log.e(TAG, "getRelationshipList:", throwable);
-                });
-//        );
+                }));
     }
 
 
