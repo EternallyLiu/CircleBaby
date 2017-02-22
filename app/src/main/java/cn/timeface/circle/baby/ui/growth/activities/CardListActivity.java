@@ -31,4 +31,9 @@ public class CardListActivity extends ProductionListActivity {
         super.onCreate(savedInstanceState);
         tvTip.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void onCreateClick() {
+
+    }
 }

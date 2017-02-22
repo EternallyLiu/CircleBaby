@@ -37,22 +37,30 @@
         android:orientation="vertical"
         android:visibility="gone">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/nodata" />
+
         <TextView
+            android:id="@+id/tv_empty_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/view_space_medium"
+            android:layout_marginTop="@dimen/view_space_medium"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/text"
+            android:paddingLeft="@dimen/view_space_medium"
+            android:paddingRight="@dimen/view_space_medium"
+            android:textColor="@color/text_color_hint"
             tools:text="小CC的照片书为空哦，\n赶紧上传照片，制作照片书吧~" />
 
         <Button
+            android:id="@+id/btn_create"
             android:layout_width="@dimen/size_160"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/view_space_large"
             android:background="@drawable/shape_yellow_bg"
             android:text="立即上传"
             android:textColor="@color/white" />
-
     </LinearLayout>
 
     <Button

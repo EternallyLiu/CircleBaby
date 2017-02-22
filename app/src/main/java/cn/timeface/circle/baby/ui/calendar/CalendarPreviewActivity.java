@@ -470,7 +470,7 @@ public class CalendarPreviewActivity extends BasePresenterAppCompatActivity impl
 	}
 
 	@Override
-	public void setBookData(List<BookObj> bookObjs) {
+	public void setBookData(List<BookObj> bookObjs, boolean hasPic) {
 
 	}
 }

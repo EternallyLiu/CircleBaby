@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
@@ -51,12 +52,17 @@ import rx.functions.Func1;
  * email : sunyw10@gmail.com
  */
 public class DiaryCardListFragment extends BasePresenterFragment implements CardPresentation.DiaryCardView, View.OnClickListener, IEventBus {
+
     @Bind(R.id.tv_tip)
     TextView tvTip;
     @Bind(R.id.rv_books)
     RecyclerView rvBooks;
     @Bind(R.id.ll_empty)
     LinearLayout llEmpty;
+    @Bind(R.id.tv_empty_info)
+    TextView tvEmptyInfo;
+    @Bind(R.id.btn_create)
+    Button btnCreate;
     @Bind(R.id.btn_ask_for_print)
     Button btnAskForPrint;
     @Bind(R.id.tf_stateView)
@@ -236,11 +242,28 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
 
     @Override
     public void setDiaryCardData(List<DiaryCardObj> diaryCardObjs) {
-        if(diaryCardListAdapter == null){
-            rvBooks.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-            diaryCardListAdapter = new DiaryCardListAdapter(getActivity(), diaryCardObjs, canSelect, this);
+        if (diaryCardListAdapter == null) {
+            rvBooks.setLayoutManager(new GridLayoutManager(getContext(), 2));
+            diaryCardListAdapter = new DiaryCardListAdapter(getContext(), diaryCardObjs, canSelect, this);
             rvBooks.setAdapter(diaryCardListAdapter);
+        } else {
+            diaryCardListAdapter.setListData(diaryCardObjs);
+            diaryCardListAdapter.notifyDataSetChanged();
         }
+
+        llEmpty.setVisibility(diaryCardListAdapter.getListData().isEmpty() ? View.VISIBLE : View.GONE);
+        if (diaryCardListAdapter.getListData().isEmpty()) {
+            llEmpty.setVisibility(View.VISIBLE);
+            setupEmptyView();
+        } else {
+            llEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    private void setupEmptyView() {
+        tvEmptyInfo.setText(FastData.getBabyName() + "的日记卡片为空哦，赶紧制作一张吧~");
+        btnCreate.setText("立即制作");
+        btnCreate.setOnClickListener(v -> DiaryPublishActivity.open(getContext()));
     }
 
     @Override

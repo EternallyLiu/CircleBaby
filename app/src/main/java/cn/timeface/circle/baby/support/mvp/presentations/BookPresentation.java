@@ -122,7 +122,7 @@ public interface BookPresentation {
          */
         void setStateView(boolean loading);
 
-        void setBookData(List<BookObj> bookObjs);
+        void setBookData(List<BookObj> bookObjs, boolean hasPic);
 
     }
 

@@ -22,6 +22,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_producion_list" />
+    <include layout="@layout/content_production_list" />
 
 </android.support.design.widget.CoordinatorLayout>

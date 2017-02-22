@@ -50,7 +50,8 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity {
         adapter.addFragment(BookListFragment.newInstance(BookModel.BOOK_TYPE_GROWTH_QUOTATIONS), "成长语录");
         adapter.addFragment(RecognizeCardListFragment.newInstance(), "识图卡片");
         adapter.addFragment(DiaryCardListFragment.newInstance(), "日记卡片");
-        viewPager.setOffscreenPageLimit(6);
+        adapter.addFragment(BookListFragment.newInstance(BookModel.BOOK_TYPE_CALENDAR), "台历");
+        viewPager.setOffscreenPageLimit(7);
         viewPager.setAdapter(adapter);
 
         viewPager.setAdapter(adapter);

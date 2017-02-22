@@ -55,6 +55,7 @@
             tools:text="小CC的照片书为空哦，\n赶紧上传照片，制作照片书吧~" />
 
         <Button
+            android:id="@+id/btn_create"
             android:layout_width="@dimen/size_160"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_yellow_bg"

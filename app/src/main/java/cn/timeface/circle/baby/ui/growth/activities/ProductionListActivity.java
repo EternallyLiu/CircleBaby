@@ -32,6 +32,8 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
     RecyclerView rvBooks;
     @Bind(R.id.ll_empty)
     LinearLayout llEmpty;
+    @Bind(R.id.btn_create)
+    Button btnCreate;
     @Bind(R.id.content_book_list)
     RelativeLayout contentBookList;
     @Bind(R.id.tv_tip)
@@ -64,6 +66,8 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
             FastData.setProductionIntro(false);
             introView.startShakeAnimation();
         }
+
+        btnCreate.setOnClickListener(v -> onCreateClick());
     }
 
     @Override
@@ -71,4 +75,51 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
         getMenuInflater().inflate(R.menu.menu_mine_book, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+    protected void setupEmptyViewContent(boolean hasPic) {
+        String babyName = FastData.getBabyName();
+        switch (bookType) {
+            case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
+                tvEmptyInfo.setText(hasPic ? babyName + "的成长纪念册为空哦，赶紧制作一本属于" + babyName + "的成长纪念册吧~"
+                        : babyName + "的成长纪念册为空哦，赶紧发布内容，制作一本吧~");
+                btnCreate.setText(hasPic ? "立即制作" : "立即上传");
+                break;
+            case BookModel.BOOK_TYPE_DIARY_CARD:
+                tvEmptyInfo.setText(babyName + "的日记卡片为空哦，赶紧制作一张吧~");
+                btnCreate.setText("立即制作");
+                break;
+            case BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD:
+                tvEmptyInfo.setText(babyName + "的识图卡片为空哦，赶紧制作一张吧~");
+                btnCreate.setText("立即制作");
+                break;
+            case BookModel.BOOK_TYPE_CALENDAR:
+                tvEmptyInfo.setText(babyName + "的台历为空哦，赶紧制作一本属于" + babyName + "的台历吧~");
+                btnCreate.setText("立即制作");
+                break;
+            case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
+                tvEmptyInfo.setText(hasPic ? babyName + "的照片书为空哦，赶紧制作一本属于" + babyName + "的照片书吧~"
+                        : babyName + "的照片书为空哦，赶紧上传照片，制作照片书吧~");
+                btnCreate.setText(hasPic ? "立即制作" : "立即上传");
+                break;
+            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
+                tvEmptyInfo.setText(hasPic ? babyName + "的成长语录为空哦，赶紧制作一本属于" + babyName + "的成长语录吧~"
+                        : babyName + "的成长语录为空哦，赶紧发布内容，制作一本吧~");
+                btnCreate.setText(hasPic ? "立即制作" : "立即上传");
+                break;
+            case BookModel.BOOK_TYPE_NOTEBOOK:
+                tvEmptyInfo.setText(babyName + "的记事本为空哦，赶紧制作一本属于" + babyName + "的记事本吧~");
+                btnCreate.setText("立即制作");
+                break;
+            case BookModel.BOOK_TYPE_PAINTING:
+                tvEmptyInfo.setText(hasPic ? babyName + "的绘画集为空哦，赶紧制作一本属于" + babyName + "的绘画集吧~"
+                        : babyName + "的绘画集为空哦，赶紧发布内容，制作一本吧~");
+                btnCreate.setText(hasPic ? "立即制作" : "立即上传");
+                break;
+        }
+    }
+
+    /**
+     * 数据为空时点击创建按钮
+     */
+    public abstract void onCreateClick();
 }

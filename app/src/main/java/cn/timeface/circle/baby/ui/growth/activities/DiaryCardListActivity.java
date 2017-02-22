@@ -105,6 +105,11 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
     }
 
     @Override
+    public void onCreateClick() {
+        DiaryPublishActivity.open(this);
+    }
+
+    @Override
     public void setDiaryCardData(List<DiaryCardObj> diaryCardObjs) {
         if(diaryCardListAdapter == null){
             rvBooks.setLayoutManager(new GridLayoutManager(this, 2));
@@ -115,7 +120,12 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
             diaryCardListAdapter.notifyDataSetChanged();
         }
 
-        llEmpty.setVisibility(diaryCardListAdapter.getListData().isEmpty() ? View.VISIBLE : View.GONE);
+        if (diaryCardListAdapter.getListData().isEmpty()) {
+            llEmpty.setVisibility(View.VISIBLE);
+            setupEmptyViewContent(false);
+        } else {
+            llEmpty.setVisibility(View.GONE);
+        }
     }
 
     @Override

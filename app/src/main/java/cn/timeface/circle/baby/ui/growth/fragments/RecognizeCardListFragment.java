@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.CardPreviewActivity;
+import cn.timeface.circle.baby.ui.growth.activities.RecognizeCardCreateActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.RecognizeCardListAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
@@ -45,12 +46,17 @@ import rx.functions.Func1;
  * email : sunyw10@gmail.com
  */
 public class RecognizeCardListFragment extends BasePresenterFragment implements CardPresentation.RecognizeCardView, View.OnClickListener {
+
     @Bind(R.id.tv_tip)
     TextView tvTip;
     @Bind(R.id.rv_books)
     RecyclerView rvBooks;
     @Bind(R.id.ll_empty)
     LinearLayout llEmpty;
+    @Bind(R.id.tv_empty_info)
+    TextView tvEmptyInfo;
+    @Bind(R.id.btn_create)
+    Button btnCreate;
     @Bind(R.id.btn_ask_for_print)
     Button btnAskForPrint;
     @Bind(R.id.tf_stateView)
@@ -156,6 +162,19 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
             cardListAdapter.setListData(knowledgeCardObjs);
             cardListAdapter.notifyDataSetChanged();
         }
+
+        if (cardListAdapter.getListData().isEmpty()) {
+            llEmpty.setVisibility(View.VISIBLE);
+            setupEmptyView();
+        } else {
+            llEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    private void setupEmptyView() {
+        tvEmptyInfo.setText(FastData.getBabyName() + "的识图卡片为空哦，赶紧制作一张吧~");
+        btnCreate.setText("立即制作");
+        btnCreate.setOnClickListener(v -> RecognizeCardCreateActivity.open(getContext()));
     }
 
     @Override

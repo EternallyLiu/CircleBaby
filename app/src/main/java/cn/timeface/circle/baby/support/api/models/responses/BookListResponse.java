@@ -15,6 +15,7 @@ import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class BookListResponse extends BaseResponse {
     private List<BookObj> dataList;
+    private int hasPic; // 是否有图片 0:否 1:是
 
     public List<BookObj> getDataList() {
         return dataList;
@@ -22,5 +23,17 @@ public class BookListResponse extends BaseResponse {
 
     public void setDataList(List<BookObj> dataList) {
         this.dataList = dataList;
+    }
+
+    public int getHasPic() {
+        return hasPic;
+    }
+
+    public void setHasPic(int hasPic) {
+        this.hasPic = hasPic;
+    }
+
+    public boolean hasPic() {
+        return hasPic == 1;
     }
 }

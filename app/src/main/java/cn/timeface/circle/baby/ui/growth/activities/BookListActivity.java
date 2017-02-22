@@ -14,24 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.MineBookActivity;
 import cn.timeface.circle.baby.activities.MyPODActivity;
+import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.SelectThemeActivity;
-import cn.timeface.circle.baby.activities.TimeBookPickerPhotoActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
+import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
 import cn.timeface.circle.baby.dialogs.ProductionMenuDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
-import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
 import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
-import cn.timeface.circle.baby.support.utils.ToastUtil;
-import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 
 /**
@@ -39,12 +35,14 @@ import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
  * author : YW.SUN Created on 2017/1/12
  * email : sunyw10@gmail.com
  */
-public class BookListActivity extends ProductionListActivity implements BookPresentation.View, View.OnClickListener{
+public class BookListActivity extends ProductionListActivity implements BookPresentation.View, View.OnClickListener {
     BookListAdapter bookListAdapter;
     BookPresenter bookPresenter;
     ProductionMenuDialog productionMenuDialog;
 
-    public static void open(Context context, int bookType){
+    private boolean hasPic;
+
+    public static void open(Context context, int bookType) {
         Intent intent = new Intent(context, BookListActivity.class);
         intent.putExtra("book_type", bookType);
         context.startActivity(intent);
@@ -67,7 +65,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
 
     @Override
     public void setStateView(boolean loading) {
-        if(loading){
+        if (loading) {
             stateView.setVisibility(View.VISIBLE);
             stateView.loading();
         } else {
@@ -76,8 +74,8 @@ public class BookListActivity extends ProductionListActivity implements BookPres
     }
 
     @Override
-    public void setBookData(List<BookObj> bookObjs) {
-        if(bookListAdapter == null){
+    public void setBookData(List<BookObj> bookObjs, boolean hasPic) {
+        if (bookListAdapter == null) {
             bookListAdapter = new BookListAdapter(this, bookObjs, this);
             rvBooks.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             rvBooks.setAdapter(bookListAdapter);
@@ -86,13 +84,18 @@ public class BookListActivity extends ProductionListActivity implements BookPres
             bookListAdapter.notifyDataSetChanged();
         }
 
-        tvEmptyInfo.setText(FastData.getBabyName() + BookModel.getGrowthBookName(bookType) + "为空哦，赶紧发布内容，制作一本吧~");
-        llEmpty.setVisibility(bookListAdapter.getListData().isEmpty() ? View.VISIBLE : View.GONE);
+        this.hasPic = hasPic;
+        if (bookListAdapter.getListData().isEmpty()) {
+            llEmpty.setVisibility(View.VISIBLE);
+            setupEmptyViewContent(hasPic);
+        } else {
+            llEmpty.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_add){
+        if (item.getItemId() == R.id.action_add) {
             switch (bookType) {
                 //精装照片书
                 case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
@@ -110,9 +113,55 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                 case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
                     SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS);
                     break;
+                //台历
+                case BookModel.BOOK_TYPE_CALENDAR:
+                    showCreateCalendarDialog();
+                    break;
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateClick() {
+        switch (bookType) {
+            //精装照片书
+            case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
+                if (hasPic) {
+                    SelectThemeActivity.open(this);
+                } else {
+                    PublishActivity.open(this, PublishActivity.PHOTO);
+                }
+                break;
+            //绘画集
+            case BookModel.BOOK_TYPE_PAINTING:
+                if (hasPic) {
+                    SelectServerPhotoActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING);
+                } else {
+                    PublishActivity.open(this, PublishActivity.PHOTO);
+                }
+                break;
+            //成长纪念册
+            case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
+                if (hasPic) {
+                    SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK);
+                } else {
+                    PublishActivity.open(this, PublishActivity.PHOTO);
+                }
+                break;
+            //成长语录
+            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
+                if (hasPic) {
+                    SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS);
+                } else {
+                    PublishActivity.open(this, PublishActivity.VOICE);
+                }
+                break;
+            //台历
+            case BookModel.BOOK_TYPE_CALENDAR:
+                showCreateCalendarDialog();
+                break;
+        }
     }
 
     @Override
@@ -150,7 +199,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                 keys.add("book_author");
                 keys.add("book_title");
                 values.add(FastData.getUserName());
-                values.add(FastData.getBabyName()+"的照片书");
+                values.add(FastData.getBabyName() + "的照片书");
                 MyPODActivity.open(
                         BookListActivity.this,
                         String.valueOf(bookObj.getBookId()),
@@ -160,12 +209,12 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                         null,
                         "",
                         false,
-                        bookObj.getBaby().getBabyId(),keys,values,0);
+                        bookObj.getBaby().getBabyId(), keys, values, 0);
                 break;
 
             case R.id.tv_edit:
                 //精装照片书
-                if(bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK){
+                if (bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK) {
                     SelectServerPhotoActivity.open(this, bookType, 111);
                 }
 
@@ -173,15 +222,21 @@ public class BookListActivity extends ProductionListActivity implements BookPres
         }
     }
 
+    private void showCreateCalendarDialog() {
+        CreateCalendarDialog createCalendarDialog = CreateCalendarDialog.newInstance();
+        createCalendarDialog.setCancelable(true);
+        createCalendarDialog.show(getSupportFragmentManager(), "CreateCalendarDialog");
+    }
+
     @Subscribe
-    public void bookOptionEvent(BookOptionEvent optionEvent){
-        if(optionEvent.getBookType() == bookType){
+    public void bookOptionEvent(BookOptionEvent optionEvent) {
+        if (optionEvent.getBookType() == bookType) {
             //删除书籍操作
-            if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE){
+            if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
                 int index = -1;
-                for(BookObj bookObj : bookListAdapter.getListData()){
+                for (BookObj bookObj : bookListAdapter.getListData()) {
                     index++;
-                    if(bookObj.getBookId() == bookObj.getBookId()){
+                    if (bookObj.getBookId() == bookObj.getBookId()) {
                         bookListAdapter.notifyItemRemoved(index);
                         productionMenuDialog.dismiss();
                         break;

@@ -80,6 +80,11 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     }
 
     @Override
+    public void onCreateClick() {
+        RecognizeCardCreateActivity.open(this);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 
@@ -124,6 +129,13 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
         } else {
             cardListAdapter.setListData(knowledgeCardObjs);
             cardListAdapter.notifyDataSetChanged();
+        }
+
+        if (cardListAdapter.getListData().isEmpty()) {
+            llEmpty.setVisibility(View.VISIBLE);
+            setupEmptyViewContent(false);
+        } else {
+            llEmpty.setVisibility(View.GONE);
         }
     }
 

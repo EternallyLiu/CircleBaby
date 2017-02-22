@@ -32,7 +32,7 @@ public class BookPresenter extends BasePresenter<BookPresentation.View, BookMode
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(
                                 response -> {
-                                    view.setBookData(response.getDataList());
+                                    view.setBookData(response.getDataList(), response.hasPic());
                                     view.setStateView(false);
                                 },
                                 throwable -> {
