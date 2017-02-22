@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +28,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
+import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.SelectContentTypeDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
@@ -41,6 +43,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.fragments.SelectUserFragment;
+import cn.timeface.circle.baby.ui.growth.fragments.ServerPhotoFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
@@ -64,16 +67,23 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     boolean fragmentShow = false;
     boolean userFragmentShow = false;
     ServerTimeFragment timeFragment;//按时间
-    ServerTimeFragment userFragment;//按发布人
+//    ServerTimeFragment userFragment;//按发布人
+    HashMap<String, ServerTimeFragment> userFragmentMap = new HashMap<>();//存储下来所有用户对应的fragment
     SelectContentTypeDialog selectContentTypeDialog;
     SelectUserFragment selectUserFragment;
     int openBookType;
     int bookType;
+    String bookId;
+    String openBookId;
 
-    public static void open(Context context,int bookType, int openBookType) {
+    List<MediaObj> allSelectMedias = new ArrayList<>();
+
+    public static void open(Context context,int bookType, int openBookType, String bookId, String openBookId) {
         Intent intent = new Intent(context, SelectServerTimeActivity.class);
         intent.putExtra("open_book_type", openBookType);
         intent.putExtra("book_type", bookType);
+        intent.putExtra("book_id", bookId);
+        intent.putExtra("open_book_id", openBookId);
         context.startActivity(intent);
     }
 
@@ -89,8 +99,37 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         tvContentType.setOnClickListener(this);
         this.openBookType = getIntent().getIntExtra("open_book_type", 0);
         this.bookType = getIntent().getIntExtra("book_type", 0);
-        timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
-        showContent(timeFragment);
+        this.bookId = getIntent().getStringExtra("book_id");
+        this.openBookId = getIntent().getStringExtra("open_book_id");
+
+        //新建一本
+        if(TextUtils.isEmpty(bookId)){
+            timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
+            showContent(timeFragment);
+        //编辑一本
+        } else {
+            apiService.bookMedias(bookId)
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(
+                            response -> {
+                                if(response.success()){
+                                    this.allSelectMedias = response.getDataList();
+                                    timeFragment = ServerTimeFragment.newInstanceEdit(
+                                            TypeConstants.PHOTO_TYPE_TIME,
+                                            FastData.getUserId(),
+                                            bookType,
+                                            response.getDataList());
+                                    showContent(timeFragment);
+                                } else {
+                                    ToastUtil.showToast(response.info);
+                                }
+                            },
+                            throwable -> {
+                                Log.e(TAG, throwable.getLocalizedMessage());
+                            }
+                    );
+        }
+
     }
 
     @Override
@@ -106,9 +145,16 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             if(timeFragment != null){
                 selectedMedias.addAll(timeFragment.getSelectedMedias());
             }
-            if(userFragment != null){
-                selectedMedias.addAll(userFragment.getSelectedMedias());
+
+            Iterator iteratorFragment = userFragmentMap.entrySet().iterator();
+            while (iteratorFragment.hasNext()){
+                ServerTimeFragment timeFragment = (ServerTimeFragment) iteratorFragment.next();
+                selectedMedias.addAll(timeFragment.getSelectedMedias());
             }
+
+//            if(userFragment != null){
+//                selectedMedias.addAll(userFragment.getSelectedMedias());
+//            }
 
             int pageNum = selectedMedias.size();
             if(pageNum == 0){
@@ -171,26 +217,28 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                             values.add(FastData.getUserName());
                                             values.add(bookName);
 
-                                            //成长语录插页数据，content_list第一条数据为插页信息
-                                            List<TFOResourceObj> insertPageResources = new ArrayList<>(1);
-                                            TFOResourceObj insertPageResourceObj = new TFOResourceObj();
-                                            insertPageResourceObj.setImageUrl(FastData.getBabyAvatar());
-                                            insertPageResourceObj.setImageOrientation(response.getImageRotation());
-                                            insertPageResourceObj.setImageHeight(response.getImageHeight());
-                                            insertPageResourceObj.setImageWidth(response.getImageWidth());
-                                            insertPageResources.add(insertPageResourceObj);
-                                            TFOContentObj insertPageContent = new TFOContentObj("", insertPageResources);//没有subtitile
-                                            String insertContent = FastData.getBabyName()
-                                                    + ","
-                                                    + FastData.getBabyAge()
-                                                    + ","
-                                                    + "是一个活泼可爱的小宝宝，在"
-                                                    + FastData.getBabyName()
-                                                    + "成长的过程中经常会\"语出惊人\"，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了"
-                                                    + FastData.getBabyName()
-                                                    + "成长中的童言趣语，一起来看看吧~";
-                                            insertPageContent.setContent(insertContent);
-                                            tfoPublishObjs.get(0).getContentList().add(0, insertPageContent);//插入插页信息
+                                            if (bookType == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
+                                                //成长语录插页数据，content_list第一条数据为插页信息
+                                                List<TFOResourceObj> insertPageResources = new ArrayList<>(1);
+                                                TFOResourceObj insertPageResourceObj = new TFOResourceObj();
+                                                insertPageResourceObj.setImageUrl(FastData.getBabyAvatar());
+                                                insertPageResourceObj.setImageOrientation(response.getImageRotation());
+                                                insertPageResourceObj.setImageHeight(response.getImageHeight());
+                                                insertPageResourceObj.setImageWidth(response.getImageWidth());
+                                                insertPageResources.add(insertPageResourceObj);
+                                                TFOContentObj insertPageContent = new TFOContentObj("", insertPageResources);//没有subtitile
+                                                String insertContent = FastData.getBabyName()
+                                                        + ","
+                                                        + FastData.getBabyAge()
+                                                        + ","
+                                                        + "是一个活泼可爱的小宝宝，在"
+                                                        + FastData.getBabyName()
+                                                        + "成长的过程中经常会\"语出惊人\"，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了"
+                                                        + FastData.getBabyName()
+                                                        + "成长中的童言趣语，一起来看看吧~";
+                                                insertPageContent.setContent(insertContent);
+                                                tfoPublishObjs.get(0).getContentList().add(0, insertPageContent);//插入插页信息
+                                            }
 
                                             //拼接所有图片的id，作为保存书籍接口使用
                                             StringBuffer sb = new StringBuffer("{\"dataList\":[");
@@ -209,8 +257,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                                 }
                                             }
 
-
-                                            MyPODActivity.open(this, "", "", bookType, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
+                                            finish();
+                                            MyPODActivity.open(this, bookId, openBookId, bookType, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
                                         }
                                     },
                                     throwable -> {
@@ -231,7 +279,11 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         if(userFragmentShow)setSelectUserFragmentHide();
         tvContentType.setText("按时间");
         if(timeFragment == null){
-            timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
+            if(TextUtils.isEmpty(bookId)){
+                timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
+            } else {
+                timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias);
+            }
         }
         showContent(timeFragment);
         onClick(tvContentType);
@@ -338,10 +390,21 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             case R.id.ll_root:
                 if(userFragmentShow)setSelectUserFragmentHide();
                 UserWrapObj userWrapObj = (UserWrapObj) view.getTag(R.string.tag_obj);
-                if (userFragment == null) {
-                    userFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType);
+
+                if(userFragmentMap.containsKey(userWrapObj.getUserInfo().getUserId())){
+                    showContent(userFragmentMap.get(userWrapObj.getUserInfo().getUserId()));
+                } else {
+                    ServerTimeFragment serverTimeFragment;
+                    if(TextUtils.isEmpty(bookId)){
+                        serverTimeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType);
+                    } else {
+                        serverTimeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType, allSelectMedias);
+                    }
+
+                    userFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverTimeFragment);
+                    showContent(serverTimeFragment);
                 }
-                showContent(userFragment);
+
                 break;
         }
     }
@@ -352,4 +415,5 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             finish();
         }
     }
+
 }

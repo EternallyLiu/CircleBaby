@@ -135,15 +135,15 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                 break;
             //成长纪念册
             case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
-                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK);
+                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "");
                 break;
             //绘画集
             case BookModel.BOOK_TYPE_PAINTING:
-                SelectServerPhotoActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING);
+                SelectServerPhotoActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING, "", "");
                 break;
             //成长语录
             case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
-                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS);
+                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "");
                 break;
             //识图卡片
             case BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD:

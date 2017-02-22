@@ -60,6 +60,7 @@ import cn.timeface.open.api.bean.response.SimplePageTemplate;
 import cn.timeface.open.constant.TFOConstant;
 import cn.timeface.open.event.ContentChangeEvent;
 
+import cn.timeface.open.model.BookModelCache;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -492,7 +493,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
 
                     // 对应日期的element
                     element.setElementContent(text);
-                    element.setElementDeleted(0);
+                    element.setElementDeleted(false);
 
                     observableList.add(
                             model.updateElement(bookModel.getBookId(), backContentId, element, text)
@@ -564,7 +565,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
         return response -> {
             TFOBaseResponse<CalendarExtendObj> baseResponse =
                     new TFOBaseResponse<>();
-
+            BookModelCache.getInstance().setBookModel(response.getData());
             CalendarExtendObj obj = new CalendarExtendObj(response.getData());
             bookModel = obj;
             BookCache.getInstance().putModelById(bookModel.getBookId(), bookModel);
@@ -610,7 +611,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
             if (elementsMap.get(contentId).containsKey(elementId)) {
 
                 TFOBookElementModel elementModel = elementsMap.get(contentId).get(elementId);
-                elementModel.setElementDeleted(visibility ? 0 : 1);
+                elementModel.setElementDeleted(visibility);
                 return elementModel;
             }
         }
@@ -641,7 +642,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
             if (daList.size() > i) {
 
                 if (ele != null) {
-                    ele.setElementDeleted(0);
+                    ele.setElementDeleted(false);
                     DateObj dateObj = daList.get(i);
                     String elementText = String.format(Locale.CHINESE, "%s / %s",
                             dateObj.getDay(), dateObj.getContent());
@@ -653,7 +654,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
                 }
             } else {
                 if (ele != null) {
-                    ele.setElementDeleted(1);
+                    ele.setElementDeleted(true);
                 }
             }
         }
@@ -836,7 +837,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
 
                     // 对应日期的element
                     element.setElementContent(text);
-                    element.setElementDeleted(0);
+                    element.setElementDeleted(false);
 
                     observableList.add(
                             model.updateElement(bookModel.getBookId(), backContentId, element, text)

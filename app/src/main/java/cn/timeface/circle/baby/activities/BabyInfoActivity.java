@@ -474,6 +474,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
+                        BabyObj.delete(babyObj.getBabyId());
                         FastData.setBabyId(0);
                         ChangeBabyActivity.open(BabyInfoActivity.this);
                         finish();

@@ -74,7 +74,7 @@ public class MyPODActivity extends PODActivity {
                     dataList,
                     bookModel.getBookId(),
                     (int)bookModel.getBookType(),
-                    0
+                    bookModel.getBookTotalPage()
             );
         }
     }

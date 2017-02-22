@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
@@ -99,7 +100,7 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
                         FastData.getBabyName() + "长大了",
                         FastData.getBabyName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyName() + "的新变化",
                         cardObj.getMedia().getImgUrl(),
-                        getString(R.string.share_url_time, cardObj.getCardId()));
+                        BuildConfig.API_URL+getString(R.string.share_url_time, cardObj.getCardId()));
                 break;
 
             //编辑

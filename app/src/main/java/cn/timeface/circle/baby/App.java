@@ -13,6 +13,7 @@ import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.util.List;
 
+import cn.sharesdk.framework.ShareSDK;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.managers.recorders.SimpleUploadRecorder;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadService;
@@ -62,7 +63,7 @@ public class App extends MultiDexApplication {
 
 //        pushSetting();
         MiPushUtil.init(this);
-
+        ShareSDK.initSDK(this);
         UploadService.setRecorder(new SimpleUploadRecorder());
 
         GlideUtil.init(this);

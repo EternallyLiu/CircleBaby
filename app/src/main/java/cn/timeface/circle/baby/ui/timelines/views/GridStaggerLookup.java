@@ -8,7 +8,7 @@ import android.support.v7.widget.GridLayoutManager;
  */
 public class GridStaggerLookup extends GridLayoutManager.SpanSizeLookup {
 
-    public static final int MAX_MEDIA_SIZE_SHOW_GRID = 4;
+    public static final int MAX_MEDIA_SIZE_SHOW_GRID = 16;
 
     private boolean isShowSmail = false;
     private int mediaSize = 0;

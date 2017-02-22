@@ -41,14 +41,15 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
     final int COLUMN_NUM = 4;
     final int maxCount;
 
-    ArrayList<MediaObj> selMedias = new ArrayList<>(10);//用于存储所有选中的图片
+    List<MediaObj> selMedias = new ArrayList<>(10);//用于存储所有选中的图片
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
     int contentType;
 
-    public SelectServerPhotosAdapter(Context mContext, List<MediaWrapObj> listData, int maxCount, int contentType) {
+    public SelectServerPhotosAdapter(Context mContext, List<MediaWrapObj> listData, int maxCount, int contentType, List<MediaObj> mediaObjs) {
         super(mContext, listData);
         this.maxCount = maxCount;
         this.contentType = contentType;
+        this.selMedias = mediaObjs;
         setupData();
     }
 

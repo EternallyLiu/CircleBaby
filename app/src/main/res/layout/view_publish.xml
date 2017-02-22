@@ -44,7 +44,7 @@
         android:layout_weight="1"
         android:drawableTop="@drawable/home_note"
         android:gravity="center"
-        android:text="日记"
+        android:text="语录"
         android:translationX="-6dp" />
 
     <TextView

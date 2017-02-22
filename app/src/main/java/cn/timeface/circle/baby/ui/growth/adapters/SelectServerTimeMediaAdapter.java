@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -13,6 +15,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
 
 /**
@@ -37,6 +40,8 @@ public class SelectServerTimeMediaAdapter extends BaseRecyclerAdapter<MediaObj> 
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.ivImg.setContent(mediaObj);
         holder.ivImg.setChecked(mediaObj.select());
+        holder.ivImg.getCbSel().setTag(R.string.tag_obj, mediaObj);
+        holder.ivImg.setOnCheckedListener(onCheckedListener);
     }
 
     @Override
@@ -49,7 +54,16 @@ public class SelectServerTimeMediaAdapter extends BaseRecyclerAdapter<MediaObj> 
         return new Animator[0];
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    private View.OnClickListener onCheckedListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            MediaObj mediaObj = (MediaObj) view.getTag(R.string.tag_obj);
+            mediaObj.setSelected(mediaObj.select() ? 0 : 1);
+            EventBus.getDefault().post(new SelectMediaEvent(mediaObj.select(), mediaObj));
+        }
+    };
+
+    class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_img)
         PhotoSelectImageView ivImg;
 

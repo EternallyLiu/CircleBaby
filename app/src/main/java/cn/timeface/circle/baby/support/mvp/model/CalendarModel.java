@@ -54,11 +54,19 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
 
     @Override
     public Observable<TFOBaseResponse<TFOBookModel>> create(int type) {
-        return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), null);
+        try {
+            return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), null);
+        } catch (Throwable e) {
+            return Observable.error(new Throwable(e));
+        }
     }
 
     public Observable<TFOBaseResponse<TFOBookModel>> create(int type, List<TFOPublishObj> contentList) {
-        return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), contentList);
+        try {
+            return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), contentList);
+        } catch (Throwable e) {
+            return Observable.error(new Throwable(e));
+        }
     }
 
     public Observable<TFOBaseResponse<EditPod>> update(TFOBookModel model) {
@@ -141,18 +149,20 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
     public Observable<BaseResponse>
     addRemoteCalendar(CalendarExtendObj obj) {
 
+//        obj.getBookId(),
+//                String.valueOf(obj.getBookType()),
+//                obj.getBookCover(),
+//                FastData.getUserName(),
+//                FastData.getAvatar(),
+//                obj.getBookTitle(),
+//                obj.getBookSummary(),
+//                CommemorationDataManger.getInstance().toData(),
+//                ""
 
-        return apiService.sdkBookSave(
-                obj.getBookId(),
-                String.valueOf(obj.getBookType()),
-                obj.getBookCover(),
-                FastData.getUserName(),
-                FastData.getAvatar(),
-                obj.getBookTitle(),
-                obj.getBookSummary(),
-                CommemorationDataManger.getInstance().toData(),
-                ""
-        );
+        //return apiService.sdkBookSave();
+        // TODO: 2/22/17 fill sdk book save in params.
+        CommemorationDataManger.getInstance().toData();
+        return Observable.empty();
     }
 
     @Override
@@ -171,19 +181,21 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
     @Override
     public Observable<BaseResponse>
     updateRemoteCalendar(String remoteId, CalendarExtendObj obj) {
+        // todo delete update .
 
-        return apiService.sdkBookUpdate(
-                remoteId,
-                obj.getBookId(),
-                String.valueOf(obj.getBookType()),
-                obj.getBookCover(),
-                FastData.getUserName(),
-                FastData.getAvatar(),
-                obj.getBookTitle(),
-                obj.getBookSummary(),
-                CommemorationDataManger.getInstance().toData(),
-                ""
-        );
+        return Observable.empty();
+//        return apiService.sdkBookUpdate(
+//                remoteId,
+//                obj.getBookId(),
+//                String.valueOf(obj.getBookType()),
+//                obj.getBookCover(),
+//                FastData.getUserName(),
+//                FastData.getAvatar(),
+//                obj.getBookTitle(),
+//                obj.getBookSummary(),
+//                CommemorationDataManger.getInstance().toData(),
+//                ""
+//        );
     }
 
     public Observable<TFOBaseResponse<String>> createCover(int width, int height, TFOBookContentModel content) {

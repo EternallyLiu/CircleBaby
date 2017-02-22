@@ -135,7 +135,7 @@ public class CalendarExtendObj extends TFOBookModel {
         target.setElementRotation(editedEle.getElementRotation());
         target.setElementType(editedEle.getElementType());
         target.setElementContent(editedEle.getElementContent());
-        target.setElementDeleted(editedEle.getElementDeleted());
+        target.setElementDeleted(editedEle.getElementDeleted() == 1);
         target.setElementAssist(editedEle.getElementAssist());
 
         target.setElementBackground(editedEle.getElementBackground());

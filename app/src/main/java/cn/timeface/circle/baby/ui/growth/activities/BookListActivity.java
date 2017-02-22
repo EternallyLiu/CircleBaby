@@ -23,6 +23,9 @@ import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
 import cn.timeface.circle.baby.dialogs.ProductionMenuDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
@@ -35,7 +38,7 @@ import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
  * author : YW.SUN Created on 2017/1/12
  * email : sunyw10@gmail.com
  */
-public class BookListActivity extends ProductionListActivity implements BookPresentation.View, View.OnClickListener {
+public class BookListActivity extends ProductionListActivity implements BookPresentation.View, View.OnClickListener, IEventBus {
     BookListAdapter bookListAdapter;
     BookPresenter bookPresenter;
     ProductionMenuDialog productionMenuDialog;
@@ -103,15 +106,15 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                     break;
                 //绘画集
                 case BookModel.BOOK_TYPE_PAINTING:
-                    SelectServerPhotoActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING);
+                    SelectServerPhotoActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING, "", "");
                     break;
                 //成长纪念册
                 case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
-                    SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK);
+                    SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "");
                     break;
                 //成长语录
                 case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
-                    SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS);
+                    SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "");
                     break;
                 //台历
                 case BookModel.BOOK_TYPE_CALENDAR:
@@ -205,7 +208,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                         String.valueOf(bookObj.getBookId()),
                         String.valueOf(bookObj.getOpenBookId()),
                         bookObj.getBookType(),
-                        BookModel.getOpenBookType(bookObj.getBookType()),
+                        bookObj.getOpenBookType(),
                         null,
                         "",
                         false,
@@ -213,11 +216,17 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                 break;
 
             case R.id.tv_edit:
-                //精装照片书
-                if (bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK) {
-                    SelectServerPhotoActivity.open(this, bookType, 111);
+                //精装照片书&绘画集
+                if(bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK
+                        || bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING){
+                    SelectServerPhotoActivity.open(this, bookType, bookObj.getOpenBookType(), String.valueOf(bookObj.getBookId()), String.valueOf(bookObj.getOpenBookId()));
+                //成长纪念册&成长语录
+                } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK
+                        || bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS){
+                    SelectServerTimeActivity.open(this, bookType, bookObj.getOpenBookType(), String.valueOf(bookObj.getBookId()), String.valueOf(bookObj.getOpenBookId()));
+                } else {
+                    Log.e(TAG, "无法识别的书籍类型");
                 }
-
                 break;
         }
     }
@@ -229,20 +238,21 @@ public class BookListActivity extends ProductionListActivity implements BookPres
     }
 
     @Subscribe
-    public void bookOptionEvent(BookOptionEvent optionEvent) {
-        if (optionEvent.getBookType() == bookType) {
-            //删除书籍操作
-            if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
-                int index = -1;
-                for (BookObj bookObj : bookListAdapter.getListData()) {
-                    index++;
-                    if (bookObj.getBookId() == bookObj.getBookId()) {
-                        bookListAdapter.notifyItemRemoved(index);
-                        productionMenuDialog.dismiss();
-                        break;
-                    }
-                }
-            }
-        }
+    public void bookOptionEvent(BookOptionEvent optionEvent){
+        bookPresenter.loadData(bookType);
+//        if(optionEvent.getBookType() == bookType){
+//            //删除书籍操作
+//            if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE){
+//                int index = -1;
+//                for(BookObj bookObj : bookListAdapter.getListData()){
+//                    index++;
+//                    if(bookObj.getBookId() == bookObj.getBookId()\){
+//                        bookListAdapter.notifyItemRemoved(index);
+//                        productionMenuDialog.dismiss();
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     }
 }

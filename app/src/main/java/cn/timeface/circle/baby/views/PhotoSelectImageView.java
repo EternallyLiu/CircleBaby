@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 
 import butterknife.Bind;

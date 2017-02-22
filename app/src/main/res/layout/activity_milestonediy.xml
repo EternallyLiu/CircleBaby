@@ -9,7 +9,7 @@
         android:id="@+id/appbar_layout"
         layout="@layout/layout_toolbar" />
 
-    <EditText
+    <cn.timeface.circle.baby.views.ClearableEditText
         android:id="@+id/et_milestone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

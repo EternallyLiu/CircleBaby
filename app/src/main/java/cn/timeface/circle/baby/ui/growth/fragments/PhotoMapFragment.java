@@ -34,6 +34,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.objs.LocationObj;
 import cn.timeface.circle.baby.support.api.models.objs.MarkOptionPhoto;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
@@ -90,7 +91,7 @@ public class PhotoMapFragment extends BasePresenterFragment implements AMap.OnCa
     };
 
     public interface SelectLocation{
-        void clickLocation(String addressName, List<MediaWrapObj> mediaWrapObjs);
+        void clickLocation(LocationObj locationObj, List<MediaWrapObj> mediaWrapObjs);
     }
 
     public static PhotoMapFragment newInstance(SelectLocation selectLocation){
@@ -260,7 +261,7 @@ public class PhotoMapFragment extends BasePresenterFragment implements AMap.OnCa
                                                         .subscribe(
                                                                 response -> {
                                                                     if(response.success()){
-                                                                        selectLocation.clickLocation("合肥市蜀山区", response.getDataList());
+                                                                        selectLocation.clickLocation(new LocationObj(markerLatlng.latitude, markerLatlng.longitude), response.getDataList());
                                                                     } else {
                                                                         ToastUtil.showToast(response.info);
                                                                     }
