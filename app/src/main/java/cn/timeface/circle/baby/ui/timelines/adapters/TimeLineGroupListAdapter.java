@@ -251,9 +251,10 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
         //处理图片
         rlSingle.setVisibility(View.GONE);
+        gv.setVisibility(View.GONE);
+        picCount.setVisibility(View.GONE);
         if (gv.getChildCount() > 0)
             gv.removeAllViews();
-        gv.setVisibility(View.GONE);
         if (item.getType() != 1) {
             LinearLayout rowView = null;
             int height = maxImageHeight, width = 0;
