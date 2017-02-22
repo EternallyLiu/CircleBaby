@@ -233,8 +233,6 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
             adapter.setItemClickLister(this);
             adapter.setLoadDataFinish(this);
             adapter.setLookup(lookup);
-//            lookup.invalidateSpanIndexCache();
-            lookup.setSpanIndexCacheEnabled(true);
             manager.setSpanSizeLookup(lookup);
             contentRecyclerView.setLayoutManager(manager);
             contentRecyclerView.setAdapter(adapter);
