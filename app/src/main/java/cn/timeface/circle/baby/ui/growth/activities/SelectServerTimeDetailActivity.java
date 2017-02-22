@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -18,16 +21,19 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.ui.growth.adapters.SelectServerTimeMediaAdapter;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
+import cn.timeface.circle.baby.ui.growth.events.ServerTimePhotoAllSelectEvent;
 
 /**
  * 选择时光详情页面
  * author : YW.SUN Created on 2017/2/20
  * email : sunyw10@gmail.com
  */
-public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivity implements View.OnClickListener {
+public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivity implements View.OnClickListener, IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -49,6 +55,7 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
 
     SelectServerTimeMediaAdapter serverPhotosAdapter;
     TimeLineObj timeLineObj;
+    boolean allSelect = true;
 
     public static void open(Context context, TimeLineObj timeLineObj) {
         Intent intent = new Intent(context, SelectServerTimeDetailActivity.class);
@@ -69,6 +76,14 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
         tvCancel.setOnClickListener(this);
         tvSelectAll.setOnClickListener(this);
         tvFinish.setOnClickListener(this);
+
+        for(MediaObj mediaObj : timeLineObj.getMediaList()){
+            if(!mediaObj.select()){
+                allSelect = false;
+                break;
+            }
+        }
+        tvSelectAll.setText(allSelect ? "取消全选" : "全选");
         setData(timeLineObj.getMediaList());
     }
 
@@ -101,6 +116,46 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
             case R.id.tv_finish:
                 finish();
                 break;
+        }
+    }
+
+    public void clickPhotoView(View view){}
+
+    private boolean isAllSelect(){
+        boolean isAllSelect = true;
+        for(MediaObj mediaObj : timeLineObj.getMediaList()){
+            if(!mediaObj.select()){
+                isAllSelect = false;
+                break;
+            }
+        }
+        return isAllSelect;
+    }
+
+    private boolean isTimeSelect(){
+        boolean isTimeSelect = false;
+        for(MediaObj mediaObj : timeLineObj.getMediaList()){
+            if(mediaObj.select()){
+                isTimeSelect = true;
+                break;
+            }
+        }
+        return isTimeSelect;
+    }
+
+    @Subscribe
+    public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
+        if(!selectMediaEvent.getSelect()){
+            allSelect = false;
+            tvSelectAll.setText("全选");
+            EventBus.getDefault().post(new ServerTimePhotoAllSelectEvent(timeLineObj, allSelect));
+        } else {
+            allSelect = isAllSelect();
+            if(allSelect){
+                tvSelectAll.setText("取消全选");
+                EventBus.getDefault().post(new ServerTimePhotoAllSelectEvent(timeLineObj, allSelect));
+            }
+            EventBus.getDefault().post(new ServerTimePhotoAllSelectEvent(timeLineObj, allSelect, true));
         }
     }
 }

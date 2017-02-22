@@ -278,6 +278,9 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         if (!selTimeLines.contains(img)) {
             //选中上传
 //            UploadAllPicService.addUrgent(App.getInstance(), img);
+            for(MediaObj mediaObj : img.getMediaList()){
+                mediaObj.setSelected(1);
+            }
             selTimeLines.add(img);
             everyGroupUnSelImgSize[dataIndex] -= 1;
             if (everyGroupUnSelImgSize[dataIndex] == 0) {
@@ -290,6 +293,9 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
 
     private void doUnSelImg(int dataIndex, TimeLineObj img) {
         if (selTimeLines.contains(img)) {
+            for(MediaObj mediaObj : img.getMediaList()){
+                mediaObj.setSelected(0);
+            }
             //取消上传
 //            UploadAllPicService.addUrgent(App.getInstance(), img);
             selTimeLines.remove(img);
