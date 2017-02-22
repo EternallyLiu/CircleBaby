@@ -54,11 +54,19 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
 
     @Override
     public Observable<TFOBaseResponse<TFOBookModel>> create(int type) {
-        return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), null);
+        try {
+            return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), null);
+        } catch (Throwable e) {
+            return Observable.error(new Throwable(e));
+        }
     }
 
     public Observable<TFOBaseResponse<TFOBookModel>> create(int type, List<TFOPublishObj> contentList) {
-        return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), contentList);
+        try {
+            return openApi.createBook(type, FastData.getUserName() + "的2017时光台历", FastData.getUserName(), contentList);
+        } catch (Throwable e) {
+            return Observable.error(new Throwable(e));
+        }
     }
 
     public Observable<TFOBaseResponse<EditPod>> update(TFOBookModel model) {
