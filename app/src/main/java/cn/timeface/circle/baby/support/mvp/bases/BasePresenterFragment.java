@@ -47,21 +47,8 @@ public class BasePresenterFragment extends Fragment implements BasePresenterView
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         apiService = ApiFactory.getApi().getApiService();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(this instanceof IEventBus){
-            EventBus.getDefault().unregister(this);
         }
     }
 

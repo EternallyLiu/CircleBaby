@@ -11,7 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -22,6 +26,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -29,6 +34,8 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeDetailActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.SelectServerTimesAdapter;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
+import cn.timeface.circle.baby.ui.growth.events.ServerTimePhotoAllSelectEvent;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
 
@@ -37,7 +44,7 @@ import rx.Observable;
  * author : YW.SUN Created on 2017/2/15
  * email : sunyw10@gmail.com
  */
-public class ServerTimeFragment extends BasePresenterFragment implements View.OnClickListener {
+public class ServerTimeFragment extends BasePresenterFragment implements View.OnClickListener, IEventBus {
 
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
@@ -159,6 +166,44 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
                 TimeLineObj timeLineObj = (TimeLineObj) view.getTag(R.string.tag_obj);
                 SelectServerTimeDetailActivity.open(getActivity(), timeLineObj);
                 break;
+        }
+    }
+
+    @Subscribe
+    public void timePhotoAllSelectEvent(ServerTimePhotoAllSelectEvent allSelectEvent){
+        //全选
+        if(allSelectEvent.getAllSelect()){
+            if(!serverTimesAdapter.getSelImgs().contains(allSelectEvent.getTimeLineObj())){
+                serverTimesAdapter.getSelImgs().add(allSelectEvent.getTimeLineObj());
+            }
+        //全不选
+        } else {
+            //还是选中
+            if(allSelectEvent.getTimeLineSelect()){
+                if(!serverTimesAdapter.getSelImgs().contains(allSelectEvent.getTimeLineObj())){
+                    serverTimesAdapter.getSelImgs().add(allSelectEvent.getTimeLineObj());
+                }
+            //没有选中
+            } else {
+                if(serverTimesAdapter.getSelImgs().contains(allSelectEvent.getTimeLineObj())){
+                    serverTimesAdapter.getSelImgs().remove(allSelectEvent.getTimeLineObj());
+                }
+            }
+        }
+
+        serverTimesAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
+        for(TimeLineWrapObj timeLineWrapObj : serverTimesAdapter.getListData()){
+            for(TimeLineObj timeLineObj : timeLineWrapObj.getTimelineList()){
+                for(MediaObj mediaObj : timeLineObj.getMediaList()){
+                    if(mediaObj.equals(selectMediaEvent.getMediaObj())){
+                        mediaObj.setSelected(selectMediaEvent.getSelect() ? 1 : 0);
+                    }
+                }
+            }
         }
     }
 }

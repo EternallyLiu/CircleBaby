@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.support.mvp.bases;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public abstract class BasePresenterAppCompatActivity extends RxAppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         apiService = ApiFactory.getApi().getApiService();
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
