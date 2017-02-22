@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -509,6 +510,16 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             reqData();
             reqBucket();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            setResult(RESULT_OK, getIntent());
+            finish();
+            return true;
+        }else
+        return super.onKeyDown(keyCode, event);
     }
 
     private void checkCameraPermission() {
