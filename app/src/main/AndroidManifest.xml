@@ -478,6 +478,7 @@
             android:name=".ui.growth.activities.SelectServerTimeDetailActivity"
             android:label="@string/title_activity_select_server_time_detail"
             android:theme="@style/AppTheme"></activity>
+        <service android:name=".ui.timelines.services.UploadVideoService"/>
     </application>
 
 </manifest>

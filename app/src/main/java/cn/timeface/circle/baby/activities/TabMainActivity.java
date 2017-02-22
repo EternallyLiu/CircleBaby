@@ -396,12 +396,12 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             SpannableStringBuilder builder = new SpannableStringBuilder();
             sb.append(String.format("%s 创建成功", babyObj.getNickName()));
             builder.append(String.format("%s 创建成功", babyObj.getNickName()));
-            builder.setSpan(SpannableUtils.getTextColor(Color.RED), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
             sb.append(String.format("\n %s 可以导入 %s 的照片了", relativeName, babyObj.getNickName())).append("\n");
             builder.append(String.format("\n %s 可以导入 %s 的照片了", relativeName, babyObj.getNickName())).append("\n");
-            builder.setSpan(SpannableUtils.getTextColor(Color.RED), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             sb.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName())).append("\n");
             builder.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName()));

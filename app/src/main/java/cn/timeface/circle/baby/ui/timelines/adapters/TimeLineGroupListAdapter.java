@@ -251,8 +251,10 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
         //处理图片
         rlSingle.setVisibility(View.GONE);
+        if (gv.getChildCount()>0)
+            gv.removeAllViews();
+        gv.setVisibility(View.GONE);
         if (item.getType() != 1) {
-            if (gv.getChildCount() > 0) gv.removeAllViews();
             LinearLayout rowView = null;
             int height = maxImageHeight, width = 0;
             int count = 0;
@@ -374,7 +376,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
         //设置日历日期
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(day).append("\n").append(year).append(",").append(month);
+        builder.append(day).append("\n").append(year).append(".").append(month);
         AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(largeSize);
         builder.setSpan(sizeSpan, 0, day.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(dayColor);

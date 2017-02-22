@@ -10,6 +10,7 @@ import android.support.annotation.DimenRes;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.SparseArray;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import cn.timeface.circle.baby.R;
  * email : wangs1992321@gmail.com
  */
 public class SpannableUtils {
+
 
     /**
      * 获取字体样式 Typeface.BOLD加粗

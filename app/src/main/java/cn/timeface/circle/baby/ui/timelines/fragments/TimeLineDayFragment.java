@@ -25,6 +25,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
+import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
@@ -232,6 +234,17 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
             timeLineObj.getMediaList().get(index).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
             timeLineObj.getMediaList().get(index).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
         }
+    }
+
+    @Subscribe
+    public void onEvent(TimelineEditEvent event) {
+        if (event instanceof DeleteTimeLineEvent) {
+            adapter.deleteTimeLine(event.getTimeId());
+        }
+    }
+    @Subscribe
+    public void onEvent(TimeLineObj timeLineObj) {
+        adapter.updateItem(timeLineObj);
     }
 
     @Override

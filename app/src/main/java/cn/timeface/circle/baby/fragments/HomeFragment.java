@@ -43,6 +43,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -434,6 +435,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.close:
+                adapter.removeHeader(picChangeView);
+                adapter.notifyDataSetChanged();
+                break;
             case R.id.upload:
                 PublishActivity.open(getActivity(), PublishActivity.PHOTO);
                 break;
@@ -538,56 +543,46 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(StartUploadEvent event) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog();
-                mTvprogress.setText("上传中");
-                mTvprogress.setVisibility(View.VISIBLE);
-            }
-        });
+//        progressDialog();
+        mTvprogress.setText("上传中");
+        mTvprogress.setVisibility(View.VISIBLE);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(UploadEvent event) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                int progress = event.getProgress();
-                mTvprogress.setText("上传中 " + progress + "%");
-                if (tvProgress != null)
-                    tvProgress.setText(progress + "%");
-                if (progress == 100) {
-                    mTvprogress.setVisibility(View.GONE);
-                    if (progressDialog != null)
-                        progressDialog.dismiss();
-                    if (event.isComplete() && event.getTimeId() > 0)
-                        timeLineUpdate(event.getTimeId());
-                    else {
-                        currentPage = 1;
-                        reqData(currentPage);
-                    }
-                    ToastUtil.showToast("发布成功");
-                }
-                if (event.isComplete()) {
-                    mTvprogress.setVisibility(View.GONE);
-                    if (progressDialog != null) {
-                        progressDialog.dismiss();
-                    }
-                    if (event.isComplete() && event.getTimeId() > 0) {
-                        LogUtil.showLog("event currentTimeId=====" + event.getTimeId());
-                        timeLineUpdate(event.getTimeId());
-                    } else {
-                        currentPage = 1;
-                        reqData(currentPage);
-                    }
-                    ToastUtil.showToast("发布成功");
-                }
-
+        int progress = event.getProgress();
+        mTvprogress.setText("上传中 " + progress + "%");
+        if (tvProgress != null)
+            tvProgress.setText(progress + "%");
+        if (progress == 100) {
+            mTvprogress.setVisibility(View.GONE);
+            if (progressDialog != null)
+                progressDialog.dismiss();
+            if (event.isComplete() && event.getTimeId() > 0)
+                timeLineUpdate(event.getTimeId());
+            else {
+                currentPage = 1;
+                reqData(currentPage);
             }
-        });
+            ToastUtil.showToast("发布成功");
+        }
+        if (event.isComplete()) {
+            mTvprogress.setVisibility(View.GONE);
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+            if (event.isComplete() && event.getTimeId() > 0) {
+                LogUtil.showLog("event currentTimeId=====" + event.getTimeId());
+                timeLineUpdate(event.getTimeId());
+            } else {
+                currentPage = 1;
+                reqData(currentPage);
+            }
+            ToastUtil.showToast("发布成功");
+        }
+
 
     }
 
@@ -648,6 +643,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             TimerImageView imageView = (TimerImageView) picChangeView.findViewById(R.id.pic_array);
             TextView addCount = (TextView) picChangeView.findViewById(R.id.pic_add_count);
             TextView upload = (TextView) picChangeView.findViewById(R.id.upload);
+            ImageView imageView1= (ImageView) picChangeView.findViewById(R.id.close);
+            imageView1.setOnClickListener(this);
             String count = list.size() + "";
             String content = String.format("手机新增了 %s 张照片！", count);
             LogUtil.showLog("content:" + content);
@@ -716,14 +713,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 });
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(TimelineEditEvent event) {
         if (event instanceof DeleteTimeLineEvent) {
             adapter.deleteTimeLine(event.getTimeId());
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(TimeLineObj timeLineObj) {
         LogUtil.showLog("event timeLineObj----" + adapter.getPosition(timeLineObj));
         adapter.updateItem(timeLineObj);
@@ -744,8 +741,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     public void loadfinish(int code) {
         emptyView.setVisibility(View.GONE);
         if (code == BaseAdapter.UPDATE_DATA_ADD_LIST_CENTER) {
-            LogUtil.showLog("currentTimeId=="+currentPage);
-            LogUtil.showLog("positiion==="+adapter.findPosition(currentTimeId));
+            LogUtil.showLog("currentTimeId==" + currentPage);
+            LogUtil.showLog("positiion===" + adapter.findPosition(currentTimeId));
             if (currentTimeId > 0)
                 contentRecyclerView.scrollToPosition(adapter.findPosition(currentTimeId));
             currentTimeId = 0;
