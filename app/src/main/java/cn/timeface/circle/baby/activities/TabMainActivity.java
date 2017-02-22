@@ -3,11 +3,18 @@ package cn.timeface.circle.baby.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -42,6 +49,7 @@ import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.api.models.responses.DistrictListResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
@@ -52,6 +60,7 @@ import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
 import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.CommonUtil;
 import cn.timeface.open.TFOpen;
@@ -139,6 +148,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
                 .debug(BuildConfig.DEBUG).build()
         );
+        int type = getIntent().getIntExtra("type", 0);
+        if (type == 1)
+            onEvent(new BabyAttentionEvent(-1));
     }
 
     @Override
@@ -149,6 +161,16 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, TabMainActivity.class));
+    }
+
+    /**
+     * 为了扩展跳转模式，例如1、创建宝宝，默认为0无任何操作
+     *
+     * @param context
+     * @param type
+     */
+    public static void open(Context context, int type) {
+        context.startActivity(new Intent(context, TabMainActivity.class).putExtra("type", type));
     }
 
     public void clickTab(View view) {
@@ -328,10 +350,14 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         }
     }
 
-    private void showDialog(CharSequence tiitle) {
+    /**
+     * 显示关注宝宝之后的对话框
+     *
+     * @param tiitle
+     */
+    private void showDialog(int type, CharSequence tiitle) {
         if (dialog == null) {
             dialog = new DeleteDialog(this);
-            dialog.getSubmit().setText("立即查看");
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dialog.getSubmit().getLayoutParams();
             if (params == null) {
                 params = new LinearLayout.LayoutParams(App.mScreenWidth / 2, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -341,18 +367,52 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             dialog.hideCacelButton();
             dialog.setMessageGravity(Gravity.CENTER_HORIZONTAL);
             dialog.setCloseListener(this);
+            dialog.setCanceledOnTouchOutside(false);
             dialog.showClose(true);
         }
+        if (type == -1) {
+            dialog.setTitle(new SpannableStringBuilder("创建成功！ "));
+            dialog.getTitle().setVisibility(View.VISIBLE);
+            dialog.getTitle().setGravity(Gravity.CENTER);
+            dialog.getTitle().setTextColor(Color.BLACK);
+            dialog.setSubmitListener(this);
+        } else dialog.getTitle().setVisibility(View.GONE);
+        dialog.getSubmit().setText(type == 1 ? "立即查看" : "立即导入");
+        dialog.setType(type);
         dialog.setMessage(tiitle);
-        dialog.setSubmitListener(this);
-        dialog.show();
+        if (!dialog.isShowing())
+            dialog.show();
     }
 
 
     @Subscribe
     public void onEvent(BabyAttentionEvent attentionEvent) {
         if (attentionEvent.getType() == 1 && attentionEvent.getBuilder() != null)
-            showDialog(attentionEvent.getBuilder());
+            showDialog(attentionEvent.getType(), attentionEvent.getBuilder());
+        else if (attentionEvent.getType() == -1) {
+            String relativeName = FastData.getRelationName();
+            BabyObj babyObj = FastData.getBabyObj();
+            StringBuilder sb = new StringBuilder();
+            SpannableStringBuilder builder = new SpannableStringBuilder();
+            sb.append(String.format("%s 创建成功", babyObj.getNickName()));
+            builder.append(String.format("%s 创建成功", babyObj.getNickName()));
+            builder.setSpan(SpannableUtils.getTextColor(Color.RED), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+            sb.append(String.format("\n %s 可以导入 %s 的照片了", relativeName, babyObj.getNickName())).append("\n");
+            builder.append(String.format("\n %s 可以导入 %s 的照片了", relativeName, babyObj.getNickName())).append("\n");
+            builder.setSpan(SpannableUtils.getTextColor(Color.RED), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            sb.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName())).append("\n");
+            builder.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName()));
+            builder.setSpan(SpannableUtils.getTextColor(Color.RED), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+            builder.setSpan(SpannableUtils.getTextSize(this, R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            showDialog(attentionEvent.getType(), builder);
+        }
     }
 
     @Override
@@ -362,6 +422,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public void submit() {
-        FragmentBridgeActivity.open(this, KithFragment.class.getSimpleName());
+        if (dialog != null && dialog.getType() == 1)
+            FragmentBridgeActivity.open(this, KithFragment.class.getSimpleName());
+        else if (dialog != null && dialog.getType() == -1)
+            PublishActivity.open(this, PublishActivity.PHOTO);
     }
 }

@@ -16,6 +16,10 @@ public class BabyAttentionEvent {
         this.type = type;
     }
 
+    public BabyAttentionEvent(int type) {
+        this.type = type;
+    }
+
     public BabyAttentionEvent(SpannableStringBuilder builder) {
         this.builder = builder;
         this.type = 1;

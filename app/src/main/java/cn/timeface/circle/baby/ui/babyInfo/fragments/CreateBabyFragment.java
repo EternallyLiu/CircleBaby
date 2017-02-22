@@ -26,6 +26,8 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.bumptech.glide.Glide;
 import com.wechat.photopicker.PickerPhotoActivity;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -51,6 +53,7 @@ import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
 import cn.timeface.circle.baby.ui.babyInfo.views.GenderDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
@@ -197,7 +200,9 @@ public class CreateBabyFragment extends BaseFragment implements View.OnClickList
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(userLoginResponse -> {
                         if (userLoginResponse.success()) {
-                            TabMainActivity.open(getActivity());
+                            if (userLoginResponse.getUserInfo().getBabycount() <= 1)
+                                TabMainActivity.open(getActivity(), 1);
+                            else EventBus.getDefault().post(new BabyAttentionEvent(-1));
                             FastData.setUserInfo(userLoginResponse.getUserInfo());
                             getActivity().finish();
                         } else {
@@ -313,7 +318,7 @@ public class CreateBabyFragment extends BaseFragment implements View.OnClickList
                     } else {
                         outFile = new File(outPath);
                     }
-                    GlideUtil.displayImageCircle(outFile.getAbsolutePath(),ivAvatar);
+                    GlideUtil.displayImageCircle(outFile.getAbsolutePath(), ivAvatar);
 //                    Glide.with(this).load(outFile).into(ivAvatar);
 //                    tvNext.setText("上传中");
 //                    tvNext.setEnabled(false);

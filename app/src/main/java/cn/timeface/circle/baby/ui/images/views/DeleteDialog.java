@@ -29,7 +29,7 @@ public class DeleteDialog extends BaseDialog implements View.OnClickListener {
 
     private SubmitListener submitListener;
     private CloseListener closeListener;
-
+    private int type;
     public CloseListener getCloseListener() {
         return closeListener;
     }
@@ -62,6 +62,10 @@ public class DeleteDialog extends BaseDialog implements View.OnClickListener {
 
     public Button getSubmit() {
         return submit;
+    }
+
+    public TextView getTitle() {
+        return title;
     }
 
     public DeleteDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
@@ -151,6 +155,13 @@ public class DeleteDialog extends BaseDialog implements View.OnClickListener {
         }
     }
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public interface SubmitListener {
         /**
