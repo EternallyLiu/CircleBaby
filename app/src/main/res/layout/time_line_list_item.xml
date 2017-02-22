@@ -116,7 +116,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="@dimen/size_2"
                     android:padding="@dimen/size_6"
-                    android:src="@drawable/selector_timeline_like" />
+                    />
 
                 <TextView
                     android:id="@+id/tv_likecount"

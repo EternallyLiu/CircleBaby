@@ -87,6 +87,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     public int getLikeCount() {
+        if (likeCount < 0) likeCount = 0;
         return likeCount;
     }
 
@@ -213,15 +214,15 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.dateEx = dateEx;
     }
 
-    public List<TFOResourceObj> toTFOResourceObjs(){
+    public List<TFOResourceObj> toTFOResourceObjs() {
         List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
-        for(MediaObj mediaObj : getMediaList()){
+        for (MediaObj mediaObj : getMediaList()) {
             tfoResourceObjs.add(mediaObj.toTFOResourceObj());
         }
         return tfoResourceObjs;
     }
 
-    public TFOContentObj toTFOContentObj(){
+    public TFOContentObj toTFOContentObj() {
         TFOContentObj tfoContentObj = new TFOContentObj(DateUtil.formatDate("yyyy-MM-dd hh:kk:mm", getDate()), toTFOResourceObjs());
         tfoContentObj.setContent(getContent());
         return tfoContentObj;

@@ -15,6 +15,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
@@ -311,7 +312,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
                 .tfPtrListener(ptrListener);
         contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
-
+        contentRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     private void reqData(int page) {

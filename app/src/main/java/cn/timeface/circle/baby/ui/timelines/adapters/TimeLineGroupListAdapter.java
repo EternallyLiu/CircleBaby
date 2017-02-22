@@ -239,7 +239,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         }
         tvAuthor.setText(item.getAuthor().getRelationName());
         tvDate.setText(DateUtil.formatDate("MM-dd kk:mm", item.getDate()));
-        iconLike.setSelected(item.getLike() == 1 ? true : false);
+        iconLike.setImageResource(item.getLike() == 1 ? R.drawable.time_line_cool : R.drawable.time_line_cool_no);
         tvCommentcount.setText(item.getCommentCount() + "");
         tvLikecount.setText(item.getLikeCount() + "");
         iconLike.setTag(R.id.icon_like, position);
@@ -251,7 +251,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
         //处理图片
         rlSingle.setVisibility(View.GONE);
-        if (gv.getChildCount()>0)
+        if (gv.getChildCount() > 0)
             gv.removeAllViews();
         gv.setVisibility(View.GONE);
         if (item.getType() != 1) {
