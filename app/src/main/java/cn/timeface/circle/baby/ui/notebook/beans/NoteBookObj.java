@@ -51,7 +51,7 @@ public class NoteBookObj extends TFOBookModel {
         target.setElementRotation(source.getElementRotation());
         target.setElementType(source.getElementType());
         target.setElementContent(source.getElementContent());
-        target.setElementDeleted(source.getElementDeleted());
+        target.setElementDeleted(source.getElementDeleted() == 1);
         target.setElementAssist(source.getElementAssist());
 
         target.setElementBackground(source.getElementBackground());
@@ -72,7 +72,7 @@ public class NoteBookObj extends TFOBookModel {
         if (imageModel == null) {
             return;
         }
-        target.setElementDeleted(0);
+        target.setElementDeleted(false);
         // FIXME: 2017/1/9 记事本功能完善
 //        target.setElementContent(source.getImage_url());
 //        imageModel.setImageUrl(source.getImage_url());
@@ -94,7 +94,7 @@ public class NoteBookObj extends TFOBookModel {
 
         TFOBookImageModel imageModel = target.getImageContentExpand();
 
-        target.setElementDeleted(0);
+        target.setElementDeleted(false);
         target.setElementContent(source.getImageUrl());
 
         imageModel.setImageUrl(source.getImageUrl());
