@@ -62,4 +62,10 @@ public class TypeConstants {
     public static final int PHOTO_TYPE_USER = 1;//按发布者
     public static final int PHOTO_TYPE_LOCATION = 2;//按位置
     public static final int PHOTO_TYPE_LABEL = 3;//按标签
+
+    // 开放平台BookType
+    public static final int OPEN_BOOK_TYPE_PAINTING = 111; //绘画集：111
+    public static final int OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK = 113; // 成长纪念册：113
+    public static final int OPEN_BOOK_TYPE_GROWTH_QUOTATIONS = 114; // 成长语录：114
+
 }

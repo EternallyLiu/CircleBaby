@@ -430,6 +430,10 @@
         <activity android:name=".ui.growth.activities.RecognizeCardListActivity" />
         <activity android:name=".ui.growth.activities.CardListActivity" />
         <activity
+            android:name=".activities.ProductionIntroActivity"
+            android:label="@string/title_activity_production_intro"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.growth.activities.CardPreviewActivity"
             android:label="@string/title_activity_card_preview"
             android:theme="@style/AppTheme" />
@@ -478,6 +482,24 @@
             android:name=".ui.growth.activities.SelectServerTimeDetailActivity"
             android:label="@string/title_activity_select_server_time_detail"
             android:theme="@style/AppTheme"></activity>
+
+        <!-- 台历相关 -->
+        <activity
+            android:name=".ui.calendar.CalendarActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.CalendarPreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.CommemorationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.UpdateCommemorationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/TimeFaceTheme.DayNight" />
     </application>
 
 </manifest>

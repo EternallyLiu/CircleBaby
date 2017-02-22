@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#333333"
+    android:fitsSystemWindows="true">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#70000000"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+    </android.support.design.widget.AppBarLayout>
+
+    <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
+        android:id="@+id/recyclerView_pod_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="80dp"
+        android:layout_marginTop="@dimen/view_space_xlarge"/>
+
+    <ImageView
+        android:id="@+id/iv_calendar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="58dp"
+        android:src="@drawable/ic_calendar_top_cc"/>
+
+    <LinearLayout
+        android:id="@+id/ll_foot_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#70000000"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_next_page"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_space_large"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_calendar_pod_arrow"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_edit_this_page"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:drawablePadding="@dimen/view_space_normal"
+                android:drawableTop="@drawable/ic_modify_paragraph"
+                android:gravity="center"
+                android:onClick="clickEditThisPage"
+                android:paddingBottom="@dimen/view_space_normal"
+                android:paddingTop="@dimen/view_space_normal"
+                android:text="编辑此页"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_add_to_cart"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:drawablePadding="@dimen/view_space_normal"
+                android:drawableTop="@drawable/ic_time_book_add2cart"
+                android:gravity="center"
+                android:onClick="clickAddToCart"
+                android:paddingBottom="@dimen/view_space_normal"
+                android:paddingTop="@dimen/view_space_normal"
+                android:text="加入印刷车"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_buy_now"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:drawablePadding="@dimen/view_space_normal"
+                android:drawableTop="@drawable/ic_time_book_buy_pay"
+                android:gravity="center"
+                android:onClick="clickBuyNow"
+                android:paddingBottom="@dimen/view_space_normal"
+                android:paddingTop="@dimen/view_space_normal"
+                android:text="立即购买"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <cn.timeface.circle.baby.views.TFStateView
+        android:id="@+id/stateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/app_bar_layout"
+        android:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/ivGuide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:scaleType="center"
+        android:clickable="true"
+        android:onClick="clickGuide"
+        android:src="@drawable/calender_pod_guide"
+        android:visibility="gone"/>
+</RelativeLayout>
