@@ -3,9 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_120"
     android:background="@color/white"
+    android:paddingBottom="@dimen/size_4"
     android:paddingLeft="@dimen/size_16"
-    android:paddingTop="@dimen/size_4"
-    android:paddingBottom="@dimen/size_4">
+    android:paddingTop="@dimen/size_4">
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="@dimen/size_36"
+        android:layout_height="@dimen/size_36"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/size_12"
+        android:scaleType="fitCenter"
+        android:src="@drawable/dialog_close"
+        android:visibility="visible" />
 
     <cn.timeface.circle.baby.ui.timelines.views.TimerImageView
         android:id="@+id/pic_array"
@@ -16,10 +26,10 @@
 
     <ImageView
         android:layout_width="@dimen/size_24"
-        android:padding="@dimen/size_4"
         android:layout_height="@dimen/size_24"
         android:layout_alignBottom="@+id/pic_array"
         android:layout_alignRight="@+id/pic_array"
+        android:padding="@dimen/size_4"
         android:scaleType="fitCenter"
         android:src="@drawable/home_pic_change_icon" />
 

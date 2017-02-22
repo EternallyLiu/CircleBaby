@@ -101,8 +101,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                     list.add(msg.arg1, msg.obj);
                 }
                 notifyItemChanged(msg.arg1);
-                if (msg.arg1 != getRealItemSize())
-                    notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
+//                if (msg.arg1 != getRealItemSize())
+//                    notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
                 break;
         }
         if (getLoadDataFinish() != null)

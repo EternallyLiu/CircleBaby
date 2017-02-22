@@ -85,6 +85,7 @@ import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
 import cn.timeface.circle.baby.ui.timelines.beans.SendTimeFace;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeConttent;
 import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
+import cn.timeface.circle.baby.ui.timelines.services.UploadVideoService;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
@@ -674,12 +675,11 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         finish();
                         isPublish = false;
                         count = 0;
-                        if (localUrls != null && localUrls.size() > 0)
-                        {
+                        if (localUrls != null && localUrls.size() > 0) {
                             EventBus.getDefault().post(new StartUploadEvent(response.getTimeInfo().getTimeId()));
                             UploadService.start(PublishActivity.this, response.getTimeInfo().getTimeId(), localUrls);
-                        }
-                        else EventBus.getDefault().post(new HomeRefreshEvent(response.getTimeInfo().getTimeId()));
+                        } else
+                            EventBus.getDefault().post(new HomeRefreshEvent(response.getTimeInfo().getTimeId()));
                     } else {
                         ToastUtil.showToast(response.getInfo());
                     }
@@ -732,57 +732,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             ToastUtil.showToast("视频文件异常");
             return;
         }
-        OSSManager ossManager = OSSManager.getOSSManager(this);
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    //获取上传文件
-                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
-                    //上传操作
-                    try {
-                        //判断服务器是否已存在该文件
-                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
-                            //如果不存在则上传
-                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath(), new OSSProgressCallback<PutObjectRequest>() {
-                                @Override
-                                public void onProgress(PutObjectRequest putObjectRequest, long l, long l1) {
-                                    int progress = (int) (l * 100 / l1);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            EventBus.getDefault().post(new UploadEvent(progress,timeId,true));
-                                        }
-                                    });
-                                }
-                            }, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
-                                @Override
-                                public void onSuccess(PutObjectRequest putObjectRequest, PutObjectResult putObjectResult) {
-
-                                }
-
-                                @Override
-                                public void onFailure(PutObjectRequest putObjectRequest, ClientException e, ServiceException e1) {
-
-                                }
-                            });
-                        } else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    EventBus.getDefault().post(new UploadEvent(100,timeId,true));
-                                }
-                            });
-                        }
-                        String videoObjectKey = uploadFileObj.getObjectKey();
-                    } catch (Exception e) {
-                        Log.e(TAG, "uploadVideo", e);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "uploadVideo", e);
-                }
-            }
-        }.start();
+        UploadVideoService.start(this, timeId, path);
     }
 
     @Override
