@@ -212,10 +212,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             case PHOTO:
                 type = 0;
                 selectImages();
+                etContent.setHint("为这天记录说点什么吧~");
                 break;
             case VIDEO:
                 type = 1;
                 selectVideos();
+                etContent.setHint("为这天记录说点什么吧~");
                 break;
             case DIALY:
                 type = 2;
@@ -228,6 +230,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             case VOICE:
                 type = 4;
                 tvTime.setText(DateUtil.getYear2(System.currentTimeMillis()));
+                etContent.setHint("记录下宝宝的童言趣语吧~");
                 break;
         }
 
@@ -341,7 +344,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
     private void selectVideos() {
-        LogUtil.showLog("intent to PickerVideoActivity");
         Intent intent = new Intent(this, PickerVideoActivity.class);
         startActivityForResult(intent, VIDEO_SELECT);
 
@@ -405,6 +407,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             switch (requestCode) {
                 case PICTURE:
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
+                    if (type == 0 && (selImages == null || selImages.size() <= 0)) {
+                        finish();
+                        return;
+                    }
                     resultPictrue();
                     break;
                 case MILESTONE:
@@ -457,6 +463,14 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     break;
             }
 
+        } else if (data == null) {
+            if (type == 0 && (selImages == null || selImages.size() <= 0)) {
+                finish();
+                return;
+            } else if (type == 1 && (cardObj == null || cardObj.getMedia() == null)) {
+                finish();
+                return;
+            }
         }
     }
 
@@ -568,7 +582,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     if (response.success()) {
                         if (type == 1) {
                             EventBus.getDefault().post(new StartUploadEvent());
-                            uploadVideo(videoInfo.getPath());
+                            uploadVideo(response.getTimeInfo().getTimeId(), videoInfo.getPath());
                         } else {
                             EventBus.getDefault().post(new PickerPhototAddEvent());
                             EventBus.getDefault().post(new HomeRefreshEvent());
@@ -660,8 +674,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         finish();
                         isPublish = false;
                         count = 0;
-                        EventBus.getDefault().post(new StartUploadEvent(response.getTimeInfo().getTimeId()));
-                        UploadService.start(PublishActivity.this, response.getTimeInfo().getTimeId(), localUrls);
+                        if (localUrls != null && localUrls.size() > 0)
+                        {
+                            EventBus.getDefault().post(new StartUploadEvent(response.getTimeInfo().getTimeId()));
+                            UploadService.start(PublishActivity.this, response.getTimeInfo().getTimeId(), localUrls);
+                        }
+                        else EventBus.getDefault().post(new HomeRefreshEvent(response.getTimeInfo().getTimeId()));
                     } else {
                         ToastUtil.showToast(response.getInfo());
                     }
@@ -709,7 +727,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         ButterKnife.unbind(this);
     }
 
-    private void uploadVideo(String path) {
+    private void uploadVideo(int timeId, String path) {
         if (TextUtils.isEmpty(path)) {
             ToastUtil.showToast("视频文件异常");
             return;
@@ -733,7 +751,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            EventBus.getDefault().post(new UploadEvent(progress));
+                                            EventBus.getDefault().post(new UploadEvent(progress,timeId,true));
                                         }
                                     });
                                 }
@@ -752,7 +770,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    EventBus.getDefault().post(new UploadEvent(100));
+                                    EventBus.getDefault().post(new UploadEvent(100,timeId,true));
                                 }
                             });
                         }

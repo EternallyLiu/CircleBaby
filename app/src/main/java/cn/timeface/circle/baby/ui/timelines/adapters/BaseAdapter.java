@@ -20,6 +20,26 @@ import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> implements ViewHolderInterface, View.OnClickListener {
 
+    @Override
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == EMPTY_DATE_VIEW) {
+            return new BaseViewHolder(getEmptyDataView(), this);
+        } else
+            return new BaseViewHolder(inflater.inflate(getViewLayoutID(viewType),
+                    parent, false), this);
+    }
+
+    @Override
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        if (getItem(position) != null)
+            if (holder != null && holder.getListener() != null) {
+                holder.getRootView().setTag(R.id.recycler_item_click_tag, position);
+                holder.getRootView().setOnClickListener(this);
+                holder.getListener().initView(holder.getRootView(), position);
+            }
+
+    }
+
     private RecyclerView.LayoutParams emptyLayoutParams = null;
 
     public static final int EMPTY_DATE_VIEW = -999999;
@@ -129,7 +149,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     }
 
     public void clearAll() {
-        handler.sendMessage(handler.obtainMessage(DELETE_ALL));
+        if (getRealItemSize() > 0)
+            handler.sendMessage(handler.obtainMessage(DELETE_ALL));
     }
 
     public void addList(int position, List list) {
@@ -243,26 +264,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         if (getItemClickLister() != null) {
             getItemClickLister().onItemClick(v, tag);
         }
-    }
-
-    @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == EMPTY_DATE_VIEW) {
-            return new BaseViewHolder(getEmptyDataView(), this);
-        } else
-            return new BaseViewHolder(inflater.inflate(getViewLayoutID(viewType),
-                    parent, false), this);
-    }
-
-    @Override
-    public void onBindViewHolder(BaseViewHolder holder, int position) {
-        if (getItem(position) != null)
-            if (holder != null && holder.getListener() != null) {
-                holder.getRootView().setTag(R.id.recycler_item_click_tag, position);
-                holder.getRootView().setOnClickListener(this);
-                holder.getListener().initView(holder.getRootView(), position);
-            }
-
     }
 
 

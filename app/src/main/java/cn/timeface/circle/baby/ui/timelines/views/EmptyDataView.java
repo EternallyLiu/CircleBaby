@@ -27,7 +27,7 @@ public class EmptyDataView extends LinearLayout implements View.OnClickListener 
 
     private boolean isRetry = true;
     private String errorText = null;
-    private String errorRetryText = null;
+    private CharSequence errorRetryText = null;
 
     public boolean isRetry() {
         return isRetry;
@@ -36,6 +36,18 @@ public class EmptyDataView extends LinearLayout implements View.OnClickListener 
     public void setRetry(boolean retry) {
         isRetry = retry;
         errorRetry.setVisibility(isRetry ? View.VISIBLE : View.GONE);
+    }
+
+    public ImageView getEmptyIcon() {
+        return emptyIcon;
+    }
+
+    public TextView getErrorTitle() {
+        return errorTitle;
+    }
+
+    public TextView getErrorRetry() {
+        return errorRetry;
     }
 
     public String getErrorText() {
@@ -47,11 +59,11 @@ public class EmptyDataView extends LinearLayout implements View.OnClickListener 
         errorTitle.setText(errorText);
     }
 
-    public String getErrorRetryText() {
+    public CharSequence getErrorRetryText() {
         return errorRetryText;
     }
 
-    public void setErrorRetryText(String errorRetryText) {
+    public void setErrorRetryText(CharSequence errorRetryText) {
         this.errorRetryText = errorRetryText;
         errorRetry.setText(errorRetryText);
     }
