@@ -170,7 +170,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             media = mMedias.get(currentPosition);
         if (media != null && media.getTips() != null && media.getTips().size() > 0) {
             llTagList.setVisibility(View.VISIBLE);
-            ivTagAdd.changeStatus(R.drawable.tag_click_added);
             if (inflate == null) {
                 inflate = LayoutInflater.from(getActivity());
             }
@@ -185,9 +184,9 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                 llTagList.addView(view);
             }
         } else {
-            ivTagAdd.changeStatus(R.drawable.tag_clicl_add);
             llTagList.setVisibility(View.GONE);
         }
+        ivTagAdd.changeStatus(R.drawable.tag_clicl_add);
     }
 
     private int deletePostion = -1;
@@ -409,16 +408,18 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     private void initLikeCount() {
         int currentPosition = mViewPager.getCurrentItem();
-        LogUtil.showLog(mMedias==null?"null":mMedias.size()+"----"+currentPosition);
+        LogUtil.showLog(mMedias == null ? "null" : mMedias.size() + "----" + currentPosition);
         MediaObj mediaObj = mMedias.get(currentPosition);
         tvLikeCount.setText("+ " + mediaObj.getFavoritecount());
+        if (mediaObj.getFavoritecount() > 0) tvLikeCount.setTextColor(getResources().getColor(R.color.sea_buckthorn));
+        else tvLikeCount.setTextColor(getResources().getColor(R.color.aluminum));
         ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
     }
 
     private void addLike() {
         int currentPosition = mViewPager.getCurrentItem();
         MediaObj mediaObj = mMedias.get(currentPosition);
-        if (mediaObj != null&&mediaObj.getId()>0) {
+        if (mediaObj != null && mediaObj.getId() > 0) {
             addSubscription(apiService.addLabelLike(mediaObj.getIsFavorite() == 1 ? "0" : "1", mediaObj.getId() + "")
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
@@ -430,23 +431,21 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                             ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
                             if (allDetailsListPosition >= 0) {
                                 EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
-                            }
-                            else {
+                            } else {
                                 EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
                             }
                         }
 
                     }, throwable -> {
                     }));
-        }else if (mediaObj!=null){
-            mediaObj.setFavoritecount(mediaObj.getFavoritecount()+1);
+        } else if (mediaObj != null) {
+            mediaObj.setFavoritecount(mediaObj.getFavoritecount() + 1);
             mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
             ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
             tvLikeCount.setText("+ " + mediaObj.getFavoritecount());
             if (allDetailsListPosition >= 0) {
                 EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
-            }
-            else
+            } else
                 EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
         }
     }

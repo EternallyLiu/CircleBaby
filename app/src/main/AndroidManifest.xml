@@ -500,6 +500,7 @@
             android:name=".ui.calendar.UpdateCommemorationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TimeFaceTheme.DayNight" />
+        <service android:name=".ui.timelines.services.UploadVideoService"/>
     </application>
 
 </manifest>

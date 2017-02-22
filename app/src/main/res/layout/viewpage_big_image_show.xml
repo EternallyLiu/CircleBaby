@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/size_4"
                 android:text="加标签"
-                android:textColor="@color/main_blue"
+                android:textColor="@color/aluminum"
                 android:textSize="@dimen/text_normal" />
 
         </LinearLayout>
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/size_4"
                 android:text="+0"
-                android:textColor="@color/main_blue"
+                android:textColor="@color/aluminum"
                 android:textSize="@dimen/text_normal" />
         </LinearLayout>
 

@@ -19,18 +19,26 @@
 
 
             <LinearLayout
+                android:id="@+id/ll_iv_avatar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/size_160"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/iv_avatar"
                     android:layout_width="@dimen/size_80"
                     android:layout_height="@dimen/size_80"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
                     android:layout_margin="@dimen/size_12"
                     android:src="@color/bg_color5" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="点击上传宝宝头像"
+                    android:textSize="@dimen/text_small" />
 
             </LinearLayout>
 
@@ -43,10 +51,21 @@
                 android:id="@+id/rl_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_12"
                 android:background="@color/text_color1"
                 android:padding="@dimen/size_12">
 
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_baby_name"
+                    android:layout_width="@dimen/size_30"
+                    android:layout_height="@dimen/size_30"
+                    android:scaleType="fitCenter"
+                    android:layout_marginRight="@dimen/size_4"
+                    android:src="@drawable/baby_name"/>
+
                 <TextView
+                    android:layout_toRightOf="@+id/iv_baby_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -55,6 +74,7 @@
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,7 +106,18 @@
                 android:background="@color/text_color1"
                 android:padding="@dimen/size_12">
 
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_brithday_icon"
+                    android:layout_width="@dimen/size_30"
+                    android:layout_height="@dimen/size_30"
+                    android:scaleType="fitCenter"
+                    android:layout_marginRight="@dimen/size_4"
+                    android:src="@drawable/brithday"/>
+
                 <TextView
+
+                    android:layout_toRightOf="@+id/iv_brithday_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -95,6 +126,7 @@
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_brithday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -126,7 +158,17 @@
                 android:background="@color/text_color1"
                 android:padding="@dimen/size_12">
 
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_sex"
+                    android:layout_width="@dimen/size_30"
+                    android:layout_height="@dimen/size_30"
+                    android:scaleType="fitCenter"
+                    android:layout_marginRight="@dimen/size_4"
+                    android:src="@drawable/baby_gender"/>
+
                 <TextView
+                    android:layout_toRightOf="@+id/iv_sex"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -135,6 +177,7 @@
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -167,7 +210,17 @@
                 android:background="@color/text_color1"
                 android:padding="@dimen/size_12">
 
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/iv_relative_icon"
+                    android:layout_width="@dimen/size_30"
+                    android:layout_height="@dimen/size_30"
+                    android:scaleType="fitCenter"
+                    android:layout_marginRight="@dimen/size_4"
+                    android:src="@drawable/relation"/>
+
                 <TextView
+                    android:layout_toRightOf="@+id/iv_relative_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -176,6 +229,7 @@
                     android:textSize="@dimen/text_medium" />
 
                 <TextView
+                    android:layout_centerVertical="true"
                     android:id="@+id/tv_relative"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

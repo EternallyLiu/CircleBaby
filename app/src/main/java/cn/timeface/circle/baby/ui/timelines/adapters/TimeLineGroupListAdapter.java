@@ -239,7 +239,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         }
         tvAuthor.setText(item.getAuthor().getRelationName());
         tvDate.setText(DateUtil.formatDate("MM-dd kk:mm", item.getDate()));
-        iconLike.setSelected(item.getLike() == 1 ? true : false);
+        iconLike.setImageResource(item.getLike() == 1 ? R.drawable.time_line_cool : R.drawable.time_line_cool_no);
         tvCommentcount.setText(item.getCommentCount() + "");
         tvLikecount.setText(item.getLikeCount() + "");
         iconLike.setTag(R.id.icon_like, position);
@@ -251,8 +251,11 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
         //处理图片
         rlSingle.setVisibility(View.GONE);
+        gv.setVisibility(View.GONE);
+        picCount.setVisibility(View.GONE);
+        if (gv.getChildCount() > 0)
+            gv.removeAllViews();
         if (item.getType() != 1) {
-            if (gv.getChildCount() > 0) gv.removeAllViews();
             LinearLayout rowView = null;
             int height = maxImageHeight, width = 0;
             int count = 0;
@@ -374,7 +377,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
         //设置日历日期
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(day).append("\n").append(year).append(",").append(month);
+        builder.append(day).append("\n").append(year).append(".").append(month);
         AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(largeSize);
         builder.setSpan(sizeSpan, 0, day.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(dayColor);
