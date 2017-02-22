@@ -46,7 +46,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     int bookPage = 8;
     TFDialog tougueDialog;
 
-    public static void open(Context context){
+    public static void open(Context context) {
         Intent intent = new Intent(context, RecognizeCardListActivity.class);
         intent.putExtra("book_type", BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD);
         context.startActivity(intent);
@@ -55,14 +55,16 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cardPresenter = new CardPresenter(this);
-        btnAskPrint.setOnClickListener(this);
-        btnAskPrint.setText("申请印刷");
-        tvTip.setVisibility(View.VISIBLE);
-        tvTip.setText(" 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
-        selectCards = new ArrayList<>();
+
         getSupportActionBar().setTitle(FastData.getBabyName() + "识图卡片");
 
+        cardPresenter = new CardPresenter(this);
+
+        btnAskPrint.setOnClickListener(this);
+        btnAskPrint.setText("申请印刷");
+        tvTip.setText(" 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
+
+        selectCards = new ArrayList<>();
         rvBooks.setPadding(
                 getResources().getDimensionPixelOffset(R.dimen.size_16),
                 0,
@@ -90,9 +92,9 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
 
         Iterator iterator = selectCards.iterator();
         //去掉没选择的
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             KnowledgeCardObj knowledgeCardObj = (KnowledgeCardObj) iterator.next();
-            if(!knowledgeCardObj.select()){
+            if (!knowledgeCardObj.select()) {
                 iterator.remove();
             }
         }
@@ -101,7 +103,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
 
     @Override
     public void setStateView(boolean loading) {
-        if(loading){
+        if (loading) {
             stateView.setVisibility(View.VISIBLE);
             stateView.loading();
         } else {
@@ -116,13 +118,13 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
 
     @Override
     public void setRecognizeCardData(List<KnowledgeCardObj> knowledgeCardObjs) {
-        for(KnowledgeCardObj knowledgeCardObj : knowledgeCardObjs){
-            if(selectCards.contains(knowledgeCardObj)){
+        for (KnowledgeCardObj knowledgeCardObj : knowledgeCardObjs) {
+            if (selectCards.contains(knowledgeCardObj)) {
                 knowledgeCardObj.setSelect(1);
             }
         }
 
-        if(cardListAdapter == null){
+        if (cardListAdapter == null) {
             rvBooks.setLayoutManager(new GridLayoutManager(this, 2));
             cardListAdapter = new RecognizeCardListAdapter(this, knowledgeCardObjs, this);
             rvBooks.setAdapter(cardListAdapter);
@@ -132,29 +134,35 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
         }
 
         if (cardListAdapter.getListData().isEmpty()) {
+            tvTip.setVisibility(View.GONE);
+            btnAskPrint.setVisibility(View.GONE);
+
             llEmpty.setVisibility(View.VISIBLE);
             setupEmptyViewContent(false);
         } else {
             llEmpty.setVisibility(View.GONE);
+
+            tvTip.setVisibility(View.VISIBLE);
+            btnAskPrint.setVisibility(View.VISIBLE);
         }
     }
 
-    private boolean checkPrintInfo(){
-        if(tougueDialog == null){
+    private boolean checkPrintInfo() {
+        if (tougueDialog == null) {
             tougueDialog = TFDialog.getInstance();
             tougueDialog.setPositiveButton("确定", v -> tougueDialog.dismiss());
         }
 
-        if(selectCards.size() < bookPage){
+        if (selectCards.size() < bookPage) {
             tougueDialog.setMessage(
-                     "识图卡片需要"
+                    "识图卡片需要"
                             + bookPage + "张，只选了" + selectCards.size()
                             + "张还少" + (bookPage - selectCards.size() + "张。"));
             tougueDialog.show(getSupportFragmentManager(), "dialog");
             return false;
         } else {
             //bookPage 的倍数才可以申请印制
-            if(selectCards.size() % bookPage != 0){
+            if (selectCards.size() % bookPage != 0) {
                 tougueDialog.setMessage(
                         "识图卡片需要"
                                 + bookPage + "的倍数哦~");
@@ -241,14 +249,15 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
             case R.id.iv_select:
                 int index = (int) view.getTag(R.string.tag_index);
                 knowledgeCardObj.setSelect(knowledgeCardObj.select() ? 0 : 1);
-                if(knowledgeCardObj.select()){
-                    if(!selectCards.contains(knowledgeCardObj)) selectCards.add(knowledgeCardObj);
+                if (knowledgeCardObj.select()) {
+                    if (!selectCards.contains(knowledgeCardObj)) selectCards.add(knowledgeCardObj);
                 } else {
-                    if(selectCards.contains(knowledgeCardObj)) selectCards.remove(knowledgeCardObj);
+                    if (selectCards.contains(knowledgeCardObj))
+                        selectCards.remove(knowledgeCardObj);
                 }
                 cardListAdapter.notifyItemChanged(index);
 
-                if(selectCards.size() > 0){
+                if (selectCards.size() > 0) {
                     btnAskPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
                 } else {
                     btnAskPrint.setText("申请印刷");
@@ -262,7 +271,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
         if (event != null &&
                 event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD) {
             if (event.response.success()) {
-                MyOrderConfirmActivity.open(this, event.response.getOrderId(),event.baseObjs);
+                MyOrderConfirmActivity.open(this, event.response.getOrderId(), event.baseObjs);
             } else {
                 Toast.makeText(this, event.response.getInfo(), Toast.LENGTH_SHORT).show();
             }
@@ -270,17 +279,17 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     }
 
     @Subscribe
-    public void CardSelectEvent(CardEditEvent event){
-        if(cardListAdapter != null && !cardListAdapter.getListData().isEmpty()){
-            for(KnowledgeCardObj cardObj : cardListAdapter.getListData()){
-                if(cardObj.getCardId() == event.getCardId()){
+    public void CardSelectEvent(CardEditEvent event) {
+        if (cardListAdapter != null && !cardListAdapter.getListData().isEmpty()) {
+            for (KnowledgeCardObj cardObj : cardListAdapter.getListData()) {
+                if (cardObj.getCardId() == event.getCardId()) {
                     cardObj.setSelect(event.getSelect());
 
-                    if(cardObj.select() && !selectCards.contains(cardObj)){
+                    if (cardObj.select() && !selectCards.contains(cardObj)) {
                         selectCards.add(cardObj);
                     }
 
-                    if(!cardObj.select() && selectCards.contains(cardObj)){
+                    if (!cardObj.select() && selectCards.contains(cardObj)) {
                         selectCards.remove(cardObj);
                     }
                 }

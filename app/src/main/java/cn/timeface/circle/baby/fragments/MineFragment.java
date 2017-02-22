@@ -31,6 +31,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.MineBookActivityV2;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -68,6 +69,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     TextView msgTip;
     @Bind(R.id.iv_dot)
     ImageView ivDot;
+    @Bind(R.id.tv_count_msg)
+    TextView tvCountMsg;
+    @Bind(R.id.tv_count_production)
+    TextView tvCountProduction;
+    @Bind(R.id.tv_count_cart)
+    TextView tvCountCart;
+    @Bind(R.id.tv_count_order)
+    TextView tvCountOrder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +108,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onResume() {
         initData();
         LogUtil.showLog("mainThread:" + Thread.currentThread().getName());
+        reqMine();
         addSubscription(BabyObj.getCurrentUserBabyObjs()
                 .subscribeOn(Schedulers.io())
                 .toList()
@@ -163,7 +173,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     }
 
-    private void initUnreadMessage(){
+    private void initUnreadMessage() {
         apiService.noReadMsg()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(unReadMsgResponse -> {
@@ -178,6 +188,35 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     Log.e(TAG, "noReadMsg:");
                     error.printStackTrace();
                 });
+    }
+
+    // 更新 我的 相关数量及小红点
+    private void reqMine() {
+        Subscription s = apiService.queryMine()
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        ivDot.setVisibility(response.getMessagecount() > 0 ?
+                                View.VISIBLE : View.GONE);
+
+                        tvCountMsg.setVisibility(response.getMessagecount() > 0 ?
+                                View.VISIBLE : View.GONE);
+                        tvCountMsg.setText(String.valueOf(response.getMessagecount()));
+                        tvCountProduction.setVisibility(response.getWorkcount() > 0 ?
+                                View.VISIBLE : View.GONE);
+                        tvCountProduction.setText(String.valueOf(response.getWorkcount()));
+                        tvCountCart.setVisibility(response.getPrintcarcount() > 0 ?
+                                View.VISIBLE : View.GONE);
+                        tvCountCart.setText(String.valueOf(response.getPrintcarcount()));
+                        tvCountOrder.setVisibility(response.getOrdercount() > 0 ?
+                                View.VISIBLE : View.GONE);
+                        tvCountOrder.setText(String.valueOf(response.getOrdercount()));
+                    }
+                }, error -> {
+                    Log.e(TAG, "noReadMsg:");
+                    error.printStackTrace();
+                });
+        addSubscription(s);
     }
 
     @Subscribe

@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color8"
@@ -110,6 +111,18 @@
             android:src="@drawable/shape_dot_red"
             android:visibility="visible" />
 
+        <TextView
+            android:id="@+id/tv_count_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_24"
+            android:gravity="center"
+            android:textColor="@color/text_color27"
+            android:textSize="@dimen/text_normal"
+            tools:text="0" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -139,6 +152,18 @@
             android:drawablePadding="@dimen/size_6"
             android:text="我的作品"
             android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/tv_count_production"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_24"
+            android:gravity="center"
+            android:textColor="@color/text_color27"
+            android:textSize="@dimen/text_normal"
+            tools:text="0" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -172,6 +197,18 @@
             android:text="我的印刷车"
             android:textSize="@dimen/text_medium" />
 
+        <TextView
+            android:id="@+id/tv_count_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_24"
+            android:gravity="center"
+            android:textColor="@color/text_color27"
+            android:textSize="@dimen/text_normal"
+            tools:text="0" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -203,6 +240,18 @@
             android:drawablePadding="@dimen/size_6"
             android:text="我的订单"
             android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/tv_count_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_24"
+            android:gravity="center"
+            android:textColor="@color/text_color27"
+            android:textSize="@dimen/text_normal"
+            tools:text="0" />
 
         <ImageView
             android:layout_width="wrap_content"

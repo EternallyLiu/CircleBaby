@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
+import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.DiaryCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
@@ -79,7 +80,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
     List<CardObj> selectCards;
     TFDialog tougueDialog;
 
-    public static DiaryCardListFragment newInstance(){
+    public static DiaryCardListFragment newInstance() {
         return newInstance(false, "", 0, 0);
     }
 
@@ -106,17 +107,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
         bookSizeId = getArguments().getInt("book_size_id", 0);
         cardPresenter = new CardPresenter(this);
         cardPresenter.loadDiaryCard();
-        //just 展示列表
-        if(!canSelect){
-            btnAskForPrint.setText("选择印刷规格");
-            tvTip.setVisibility(View.GONE);
-            //可以选择卡片申请印刷
-        } else {
-            if(selectCards == null) selectCards = new ArrayList<>();
-            btnAskForPrint.setText("申请印刷");
-            tvTip.setVisibility(View.VISIBLE);
-            tvTip.setText(coverTitle + " 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
-        }
+
         btnAskForPrint.setOnClickListener(this);
         rvBooks.setPadding(
                 getResources().getDimensionPixelOffset(R.dimen.size_16),
@@ -134,7 +125,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
             if (!canSelect) {
                 FragmentBridgeActivity.openBookSizeListFragment(getActivity());
 
-            //申请印刷
+                //申请印刷
             } else {
                 Observable.just(selectCards)
                         .filter(cardObjs -> checkPrintInfo())
@@ -143,10 +134,10 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                             public Observable<EditBookResponse> call(List<CardObj> cardObjs) {
                                 StringBuffer sb = new StringBuffer("{\"dataList\":[");
                                 int index = 0;
-                                for(CardObj cardObj : selectCards){
+                                for (CardObj cardObj : selectCards) {
                                     index++;
                                     sb.append(cardObj.getCardId());
-                                    if(index < selectCards.size()){
+                                    if (index < selectCards.size()) {
                                         sb.append(",");
                                     } else {
                                         sb.append("],\"bookSizeId\":")
@@ -193,18 +184,18 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                                 }
                         );
             }
-        } else if(view.getId() == R.id.iv_select){
+        } else if (view.getId() == R.id.iv_select) {
             CardObj cardObj = (CardObj) view.getTag(R.string.tag_obj);
             int index = (int) view.getTag(R.string.tag_index);
             cardObj.setSelect(cardObj.select() ? 0 : 1);
-            if(cardObj.select()){
-                if(!selectCards.contains(cardObj)) selectCards.add(cardObj);
+            if (cardObj.select()) {
+                if (!selectCards.contains(cardObj)) selectCards.add(cardObj);
             } else {
-                if(selectCards.contains(cardObj)) selectCards.remove(cardObj);
+                if (selectCards.contains(cardObj)) selectCards.remove(cardObj);
             }
             diaryCardListAdapter.notifyItemChanged(index);
 
-            if(selectCards.size() > 0){
+            if (selectCards.size() > 0) {
                 btnAskForPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
             } else {
                 btnAskForPrint.setText("申请印刷");
@@ -213,13 +204,13 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
 
     }
 
-    private boolean checkPrintInfo(){
-        if(tougueDialog == null){
+    private boolean checkPrintInfo() {
+        if (tougueDialog == null) {
             tougueDialog = TFDialog.getInstance();
             tougueDialog.setPositiveButton("确定", v -> tougueDialog.dismiss());
         }
 
-        if(selectCards.size() < bookPage){
+        if (selectCards.size() < bookPage) {
             tougueDialog.setMessage(
                     "印制"
                             + coverTitle + "日记卡片需要"
@@ -229,7 +220,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
             return false;
         } else {
             //bookPage 的倍数才可以申请印制
-            if(selectCards.size() % bookPage != 0){
+            if (selectCards.size() % bookPage != 0) {
                 tougueDialog.setMessage(
                         "印制"
                                 + coverTitle + "日记卡片需要"
@@ -251,12 +242,27 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
             diaryCardListAdapter.notifyDataSetChanged();
         }
 
-        llEmpty.setVisibility(diaryCardListAdapter.getListData().isEmpty() ? View.VISIBLE : View.GONE);
         if (diaryCardListAdapter.getListData().isEmpty()) {
+            tvTip.setVisibility(View.GONE);
+            btnAskForPrint.setVisibility(View.GONE);
+
             llEmpty.setVisibility(View.VISIBLE);
             setupEmptyView();
         } else {
             llEmpty.setVisibility(View.GONE);
+
+            btnAskForPrint.setVisibility(View.VISIBLE);
+            //just 展示列表
+            if (!canSelect) {
+                btnAskForPrint.setText("选择印刷规格");
+                tvTip.setVisibility(View.GONE);
+                //可以选择卡片申请印刷
+            } else {
+                if (selectCards == null) selectCards = new ArrayList<>();
+                btnAskForPrint.setText("申请印刷");
+                tvTip.setVisibility(View.VISIBLE);
+                tvTip.setText(coverTitle + " 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
+            }
         }
     }
 
@@ -268,7 +274,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
 
     @Override
     public void setStateView(boolean loading) {
-        if(loading){
+        if (loading) {
             tfStateView.setVisibility(View.VISIBLE);
             tfStateView.loading();
         } else {
@@ -286,10 +292,17 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
         if (event != null &&
                 event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_DIARY_CARD) {
             if (event.response.success()) {
-                MyOrderConfirmActivity.open(getActivity(), event.response.getOrderId(),event.baseObjs);
+                MyOrderConfirmActivity.open(getActivity(), event.response.getOrderId(), event.baseObjs);
             } else {
                 Toast.makeText(getActivity(), event.response.getInfo(), Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Subscribe
+    public void onEvent(DiaryPublishEvent event) {
+        if (cardPresenter != null) {
+            cardPresenter.loadDiaryCard();
         }
     }
 

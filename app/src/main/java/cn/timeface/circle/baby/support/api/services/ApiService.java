@@ -12,6 +12,7 @@ import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
 import cn.timeface.circle.baby.support.api.models.responses.LocationInfoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.MineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ProductionIntroListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLabelResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLocationResponse;
@@ -1013,4 +1014,11 @@ public interface ApiService {
             @Field("days") String commemorations,
             @Field("extra") String extra
     );
+
+    /**
+     * 我的首页
+     */
+    @GET("member/index")
+    Observable<MineResponse> queryMine();
+
 }

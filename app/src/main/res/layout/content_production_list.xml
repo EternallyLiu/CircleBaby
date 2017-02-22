@@ -17,9 +17,10 @@
         android:layout_marginBottom="@dimen/view_space_medium"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="@dimen/view_space_normal"
-        tools:text="每套选择8张（也可以是8的倍数）"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/text" />
+        android:textColor="@color/text"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:text="每套选择8张（也可以是8的倍数）" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_books"
@@ -38,19 +39,19 @@
         android:visibility="gone">
 
         <ImageView
-            android:src="@drawable/nodata"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/nodata" />
 
         <TextView
-            android:layout_marginTop="@dimen/view_space_medium"
-            android:layout_marginBottom="@dimen/view_space_medium"
-            android:paddingLeft="@dimen/view_space_medium"
-            android:paddingRight="@dimen/view_space_medium"
             android:id="@+id/tv_empty_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/view_space_medium"
+            android:layout_marginTop="@dimen/view_space_medium"
             android:gravity="center"
+            android:paddingLeft="@dimen/view_space_medium"
+            android:paddingRight="@dimen/view_space_medium"
             android:textColor="@color/text_color_hint"
             tools:text="小CC的照片书为空哦，\n赶紧上传照片，制作照片书吧~" />
 
@@ -73,6 +74,7 @@
         android:background="@drawable/shape_yellow_bg"
         android:textColor="@color/white"
         android:textSize="16sp"
+        android:visibility="gone"
         tools:text="选择印刷规格" />
 
     <cn.timeface.circle.baby.views.TFStateView

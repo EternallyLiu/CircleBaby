@@ -335,10 +335,10 @@ public class DiaryPreviewFragment extends BaseFragment {
                     })
                     .subscribe(diaryComposedResponse -> {
                                 if (diaryComposedResponse.success()) {
-                                    DiaryCardObj diaryCardObj = diaryComposedResponse.getDiaryCardObj();
-                                    diaryCardObj.getMedia().setPhotographTime(System.currentTimeMillis());
+//                                    DiaryCardObj diaryCardObj = diaryComposedResponse.getDiaryCardObj();
+//                                    diaryCardObj.getMedia().setPhotographTime(System.currentTimeMillis());
                                     tfProgressDialog.dismiss();
-                                    PublishActivity.open(getContext(), diaryCardObj);
+//                                    PublishActivity.open(getContext(), diaryCardObj);
                                     getActivity().finish();
                                     EventBus.getDefault().post(new DiaryPublishEvent());
                                 } else {

@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
+import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.DiaryCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
@@ -75,17 +76,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
         bookSizeId = getIntent().getIntExtra("book_size_id", 0);
         cardPresenter = new CardPresenter(this);
         cardPresenter.loadDiaryCard();
-        //just 展示列表
-        if(!canSelect){
-            btnAskPrint.setText("选择印刷规格");
-            tvTip.setVisibility(View.GONE);
-        //可以选择卡片申请印刷
-        } else {
-            if(selectCards == null) selectCards = new ArrayList<>();
-            btnAskPrint.setText("申请印刷");
-            tvTip.setVisibility(View.VISIBLE);
-            tvTip.setText(coverTitle + " 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
-        }
+
         btnAskPrint.setOnClickListener(this);
         getSupportActionBar().setTitle(FastData.getBabyName() + "的日记卡片");
         rvBooks.setPadding(
@@ -121,10 +112,26 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
         }
 
         if (diaryCardListAdapter.getListData().isEmpty()) {
+            tvTip.setVisibility(View.GONE);
+            btnAskPrint.setVisibility(View.GONE);
+
             llEmpty.setVisibility(View.VISIBLE);
             setupEmptyViewContent(false);
         } else {
             llEmpty.setVisibility(View.GONE);
+
+            btnAskPrint.setVisibility(View.VISIBLE);
+            //just 展示列表
+            if (!canSelect) {
+                btnAskPrint.setText("选择印刷规格");
+                tvTip.setVisibility(View.GONE);
+                //可以选择卡片申请印刷
+            } else {
+                if (selectCards == null) selectCards = new ArrayList<>();
+                btnAskPrint.setText("申请印刷");
+                tvTip.setVisibility(View.VISIBLE);
+                tvTip.setText(coverTitle + " 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
+            }
         }
     }
 
@@ -270,6 +277,13 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
             } else {
                 Toast.makeText(this, event.response.getInfo(), Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    @Subscribe
+    public void onEvent(DiaryPublishEvent event) {
+        if (cardPresenter != null) {
+            cardPresenter.loadDiaryCard();
         }
     }
 }

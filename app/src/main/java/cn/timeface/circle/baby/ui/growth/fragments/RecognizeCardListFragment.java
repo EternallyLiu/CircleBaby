@@ -70,11 +70,12 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
     int bookPage = 8;
     TFDialog tougueDialog;
 
-    public static RecognizeCardListFragment newInstance(){
+    public static RecognizeCardListFragment newInstance() {
         return new RecognizeCardListFragment();
     }
 
-    public RecognizeCardListFragment() {}
+    public RecognizeCardListFragment() {
+    }
 
     @Nullable
     @Override
@@ -82,10 +83,11 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
         ButterKnife.bind(this, view);
         cardPresenter = new CardPresenter(this);
+
         btnAskForPrint.setOnClickListener(this);
         btnAskForPrint.setText("申请印刷");
-        tvTip.setVisibility(View.VISIBLE);
         tvTip.setText(" 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
+
         selectCards = new ArrayList<>();
 
         rvBooks.setPadding(
@@ -102,9 +104,9 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
 
         Iterator iterator = selectCards.iterator();
         //去掉没选择的
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             KnowledgeCardObj knowledgeCardObj = (KnowledgeCardObj) iterator.next();
-            if(!knowledgeCardObj.select()){
+            if (!knowledgeCardObj.select()) {
                 iterator.remove();
             }
         }
@@ -130,14 +132,15 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
             case R.id.iv_select:
                 int index = (int) view.getTag(R.string.tag_index);
                 knowledgeCardObj.setSelect(knowledgeCardObj.select() ? 0 : 1);
-                if(knowledgeCardObj.select()){
-                    if(!selectCards.contains(knowledgeCardObj)) selectCards.add(knowledgeCardObj);
+                if (knowledgeCardObj.select()) {
+                    if (!selectCards.contains(knowledgeCardObj)) selectCards.add(knowledgeCardObj);
                 } else {
-                    if(selectCards.contains(knowledgeCardObj)) selectCards.remove(knowledgeCardObj);
+                    if (selectCards.contains(knowledgeCardObj))
+                        selectCards.remove(knowledgeCardObj);
                 }
                 cardListAdapter.notifyItemChanged(index);
 
-                if(selectCards.size() > 0){
+                if (selectCards.size() > 0) {
                     btnAskForPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
                 } else {
                     btnAskForPrint.setText("申请印刷");
@@ -148,13 +151,13 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
 
     @Override
     public void setRecognizeCardData(List<KnowledgeCardObj> knowledgeCardObjs) {
-        for(KnowledgeCardObj knowledgeCardObj : knowledgeCardObjs){
-            if(selectCards.contains(knowledgeCardObj)){
+        for (KnowledgeCardObj knowledgeCardObj : knowledgeCardObjs) {
+            if (selectCards.contains(knowledgeCardObj)) {
                 knowledgeCardObj.setSelect(1);
             }
         }
 
-        if(cardListAdapter == null){
+        if (cardListAdapter == null) {
             rvBooks.setLayoutManager(new GridLayoutManager(getActivity(), 2));
             cardListAdapter = new RecognizeCardListAdapter(getActivity(), knowledgeCardObjs, this);
             rvBooks.setAdapter(cardListAdapter);
@@ -164,10 +167,16 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
         }
 
         if (cardListAdapter.getListData().isEmpty()) {
+            tvTip.setVisibility(View.GONE);
+            btnAskForPrint.setVisibility(View.GONE);
+
             llEmpty.setVisibility(View.VISIBLE);
             setupEmptyView();
         } else {
             llEmpty.setVisibility(View.GONE);
+
+            tvTip.setVisibility(View.VISIBLE);
+            btnAskForPrint.setVisibility(View.VISIBLE);
         }
     }
 
@@ -179,7 +188,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
 
     @Override
     public void setStateView(boolean loading) {
-        if(loading){
+        if (loading) {
             tfStateView.setVisibility(View.VISIBLE);
             tfStateView.loading();
         } else {
@@ -250,13 +259,13 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
                 );
     }
 
-    private boolean checkPrintInfo(){
-        if(tougueDialog == null){
+    private boolean checkPrintInfo() {
+        if (tougueDialog == null) {
             tougueDialog = TFDialog.getInstance();
             tougueDialog.setPositiveButton("确定", v -> tougueDialog.dismiss());
         }
 
-        if(selectCards.size() < bookPage){
+        if (selectCards.size() < bookPage) {
             tougueDialog.setMessage(
                     "识图卡片需要"
                             + bookPage + "张，只选了" + selectCards.size()
@@ -265,7 +274,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
             return false;
         } else {
             //bookPage 的倍数才可以申请印制
-            if(selectCards.size() % bookPage != 0){
+            if (selectCards.size() % bookPage != 0) {
                 tougueDialog.setMessage(
                         "识图卡片需要"
                                 + bookPage + "的倍数哦~");
