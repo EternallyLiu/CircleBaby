@@ -31,6 +31,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.support.api.exception.ResultException;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.CalendarModel;
@@ -557,13 +558,17 @@ public class CalendarActivity extends BasePresenterAppCompatActivity
 
         // 同步会太慢，所以选择异步
         new Thread(() -> {
-            ArrayList<PhotoModel> images = data.getParcelableArrayListExtra("result_select_image_list");
+            ArrayList<ImgObj> images = data.getParcelableArrayListExtra("result_select_image_list");
+            List<PhotoModel> photoModels = new ArrayList<PhotoModel>();
+            for(ImgObj imgObj : images){
+                photoModels.add(PhotoModel.getPhotoModel(imgObj.getId(), imgObj.getLocalPath(), imgObj.getUrl()));
+            }
 
             if (calendarPresenter == null) {
                 calendarPresenter = new CalendarPresenter(this);
             }
 
-            if (images.size() < 1) {
+            if (photoModels.size() < 1) {
                 return;
             } else {
                 if (uploadImagesDialog != null) {
@@ -574,7 +579,7 @@ public class CalendarActivity extends BasePresenterAppCompatActivity
             try {
                 int type = selectedType == 1 ? CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL
                         : CalendarModel.BOOK_TYPE_CALENDAR_VERTICAL;
-                calendarPresenter.uploadImageWithProgress(type, images, response -> {
+                calendarPresenter.uploadImageWithProgress(type, photoModels, response -> {
                     hideProgress();
                     hideUploadProgressDialog();
                     try {
