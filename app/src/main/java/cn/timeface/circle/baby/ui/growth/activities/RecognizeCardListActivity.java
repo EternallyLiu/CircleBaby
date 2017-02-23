@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
@@ -75,7 +76,8 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_add){
-            RecognizeCardCreateActivity.open(this);
+//            RecognizeCardCreateActivity.open(this);
+            CardPublishActivity.open(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -83,7 +85,8 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
 
     @Override
     public void onCreateClick() {
-        RecognizeCardCreateActivity.open(this);
+//        RecognizeCardCreateActivity.open(this);
+        CardPublishActivity.open(this);
     }
 
     @Override

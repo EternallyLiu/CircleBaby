@@ -696,7 +696,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     @Subscribe
     public void onEvent(Object event) {
         if (event instanceof PublishRefreshEvent) {
-            cardObjs = ((PublishRefreshEvent) event).getDataList();
+//            cardObjs = ((PublishRefreshEvent) event).getDataList();
             List<String> list = new ArrayList<>();
             for (CardObj cardObj : cardObjs) {
                 list.add(cardObj.getMedia().getImgUrl());

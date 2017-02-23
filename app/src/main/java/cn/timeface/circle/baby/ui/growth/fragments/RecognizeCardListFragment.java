@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
@@ -34,7 +35,6 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.CardPreviewActivity;
-import cn.timeface.circle.baby.ui.growth.activities.RecognizeCardCreateActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.RecognizeCardListAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
@@ -183,7 +183,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
     private void setupEmptyView() {
         tvEmptyInfo.setText(FastData.getBabyName() + "的识图卡片为空哦，赶紧制作一张吧~");
         btnCreate.setText("立即制作");
-        btnCreate.setOnClickListener(v -> RecognizeCardCreateActivity.open(getContext()));
+        btnCreate.setOnClickListener(v -> CardPublishActivity.open(getContext()));
     }
 
     @Override
