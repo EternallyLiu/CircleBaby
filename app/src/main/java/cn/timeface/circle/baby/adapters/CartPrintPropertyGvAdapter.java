@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -44,16 +45,22 @@ public class CartPrintPropertyGvAdapter extends BaseListAdapter<PrintParamObj>{
         final PrintParamObj paramObj = listData.get(position);
         viewHolder.mLlRoot.setSelected(paramObj.isSelect());
         if (key.equals(PrintParamResponse.KEY_SIZE)) {
-            viewHolder.mTvBookSizeDetail.setVisibility(View.VISIBLE);
             String sizeString = paramObj.getShow();
-            viewHolder.mTvBookSize.setText(sizeString.substring(0, sizeString.indexOf(",")));
-            viewHolder.mTvBookSizeDetail.setText(sizeString.substring(sizeString.indexOf(",") + 1, sizeString.length()));
+
+            if (sizeString.indexOf(",") > 0) {
+                viewHolder.mTvBookSize.setText(sizeString.substring(0, sizeString.indexOf(",")));
+                viewHolder.mTvBookSizeDetail.setText(sizeString.substring(sizeString.indexOf(",") + 1, sizeString.length()));
+                viewHolder.mTvBookSizeDetail.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.mTvBookSize.setText(sizeString);
+                viewHolder.mTvBookSizeDetail.setVisibility(View.GONE);
+            }
         } else {
             viewHolder.mTvBookSizeDetail.setVisibility(View.GONE);
             viewHolder.mTvBookSize.setText(paramObj.getShow());
         }
 
-        if (key.equals(PrintParamResponse.KEY_PACK)) {
+        if (key.equals(PrintParamResponse.KEY_PACK) && !TextUtils.isEmpty(paramObj.getImgUrl())) {
             Glide.with(mContext)
                     .load(paramObj.getImgUrl())
                     .placeholder(R.drawable.bg_default_holder_img)

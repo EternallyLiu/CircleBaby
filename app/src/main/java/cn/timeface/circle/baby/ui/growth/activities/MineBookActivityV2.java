@@ -6,10 +6,20 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
+import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
+import cn.timeface.circle.baby.events.CartBuyNowEvent;
+import cn.timeface.circle.baby.events.CartItemClickEvent;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.ui.growth.adapters.MineBookAdapterV2;
@@ -17,7 +27,7 @@ import cn.timeface.circle.baby.ui.growth.fragments.BookListFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.DiaryCardListFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.RecognizeCardListFragment;
 
-public class MineBookActivityV2 extends BasePresenterAppCompatActivity {
+public class MineBookActivityV2 extends BasePresenterAppCompatActivity implements IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -58,4 +68,23 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
+
+    public void doDialogItemClick(View view) {
+        EventBus.getDefault().post(new CartItemClickEvent(view));
+    }
+
+    @Subscribe
+    public void onEvent(CartBuyNowEvent event) {
+        if (event != null &&
+                (event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_DIARY_CARD
+                        || event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD
+                        || event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_BOOK_LIST)) {
+            if (event.response.success()) {
+                MyOrderConfirmActivity.open(this, event.response.getOrderId(), event.baseObjs);
+            } else {
+                Toast.makeText(this, event.response.getInfo(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 }

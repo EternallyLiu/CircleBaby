@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
+import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
@@ -75,7 +77,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_add){
+        if (item.getItemId() == R.id.action_add) {
 //            RecognizeCardCreateActivity.open(this);
             CardPublishActivity.open(this);
             return true;
@@ -268,6 +270,10 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                 }
                 break;
         }
+    }
+
+    public void doDialogItemClick(View view) {
+        EventBus.getDefault().post(new CartItemClickEvent(view));
     }
 
     @Subscribe

@@ -86,6 +86,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     public final static int REQUEST_CODE_SPLIT = 4;
     public final static int REQUEST_CODE_DIARY_CARD = 5;
     public final static int REQUEST_CODE_RECOGNIZE_CARD = 6;
+    public final static int REQUEST_CODE_BOOK_LIST = 7;
 
     List<PrintParamObj> sizeList = new ArrayList<>();
     List<PrintParamObj> colorList = new ArrayList<>();

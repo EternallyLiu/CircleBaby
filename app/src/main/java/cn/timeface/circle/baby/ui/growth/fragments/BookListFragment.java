@@ -124,9 +124,9 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                         0,//识图卡片没有booksizeid，传值0
                         String.valueOf(bookObj.getBookId()),
                         bookObj.getBookCover(),
-                        FastData.getBabyName() + "的识图卡片",
+                        bookObj.getBookName(),
                         System.currentTimeMillis(),
-                        CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD).reqPrintStatus();
+                        CartPrintPropertyDialog.REQUEST_CODE_BOOK_LIST).reqPrintStatus();
                 break;
 
             case R.id.fl_book_cover:
