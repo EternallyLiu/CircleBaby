@@ -119,6 +119,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                 new BookPrintHelper(
                         (BasePresenterAppCompatActivity) getActivity(),
                         bookObj.getBookType(),
+                        bookObj.getOpenBookType(),
                         bookObj.getPageNum(),
                         0,//识图卡片没有booksizeid，传值0
                         String.valueOf(bookObj.getBookId()),

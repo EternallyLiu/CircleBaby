@@ -232,6 +232,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
                                         new BookPrintHelper(
                                                 DiaryCardListActivity.this,
                                                 BookModel.BOOK_TYPE_DIARY_CARD,
+                                                BookModel.BOOK_TYPE_DIARY_CARD,//日记卡片没有openBookType，直接使用本平台BookType
                                                 selectCards.size(),
                                                 bookSizeId,
                                                 response.getDataId(),

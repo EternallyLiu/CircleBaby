@@ -242,6 +242,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
                                 new BookPrintHelper(
                                         (BasePresenterAppCompatActivity) getActivity(),
                                         BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD,
+                                        BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD,//识图卡片没有openBookType，直接使用本平台BookType
                                         selectCards.size(),
                                         0,//识图卡片没有booksizeid，传值0
                                         response.getDataId(),

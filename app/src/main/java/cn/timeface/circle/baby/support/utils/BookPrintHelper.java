@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.support.utils;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class BookPrintHelper {
     TFDialog tougueDialog;
     ApiService apiService;
     int bookType;
+    int openBookType;
     int pageNum;
     int bookSizeId;
     String bookId;
@@ -41,6 +43,7 @@ public class BookPrintHelper {
     public BookPrintHelper(
             BasePresenterAppCompatActivity context,
             int bookType,
+            int openBookType,
             int pageNum,
             int bookSizeId,
             String bookId,
@@ -50,6 +53,7 @@ public class BookPrintHelper {
             int requestCode) {
         this.context = context;
         this.bookType = bookType;
+        this.openBookType = openBookType;
         this.pageNum = pageNum;
         this.bookSizeId = bookSizeId;
         this.bookId = bookId;
@@ -149,8 +153,9 @@ public class BookPrintHelper {
      * 加入购物车
      */
     private void showCartDialog(final int printCode) {
+        Log.d("-------->", "-------->showCartDialog openBookType:" + openBookType);
 
-        Subscription s = apiService.queryParamList(bookType, pageNum)
+        Subscription s = apiService.queryParamList(openBookType, pageNum)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {

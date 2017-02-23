@@ -184,6 +184,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                 new BookPrintHelper(
                         this,
                         bookObj.getBookType(),
+                        bookObj.getOpenBookType(),
                         bookObj.getPageNum(),
                         0,//识图卡片没有booksizeid，传值0
                         String.valueOf(bookObj.getBookId()),

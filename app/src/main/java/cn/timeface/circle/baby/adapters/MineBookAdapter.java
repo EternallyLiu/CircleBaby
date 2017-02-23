@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintParamObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintParamResponse;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -244,7 +245,16 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         }
 
         private void queryParamList() {
-            BaseAppCompatActivity.apiService.queryParamList(obj.getBookType(), obj.getPageNum())
+            // 卡片不走开放平台，传本平台type，其余传开放平台type
+            int realBookType = obj.getOpenBookType();
+            if (obj.getBookType() == BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD
+                    || obj.getBookType() == BookModel.BOOK_TYPE_DIARY_CARD) {
+                realBookType = obj.getBookType();
+            }
+
+            Log.d("-------->", "-------->queryParamList:  OpenBookType:" + obj.getOpenBookType()
+                    + "  BookType:" + obj.getBookType());
+            BaseAppCompatActivity.apiService.queryParamList(realBookType/*obj.getBookType()*/, obj.getPageNum())
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(paramListResponse -> {
                         if (paramListResponse.success()) {

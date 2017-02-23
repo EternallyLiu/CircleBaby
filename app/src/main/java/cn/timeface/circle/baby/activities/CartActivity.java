@@ -40,12 +40,13 @@ import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.CartPropertyChangeEvent;
 import cn.timeface.circle.baby.events.PayResultEvent;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.PrintCartItem;
 import cn.timeface.circle.baby.support.api.models.base.BasePrintProperty;
 import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyTypeObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.MineBookActivityV2;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
@@ -124,7 +125,8 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
      * @param view
      */
     public void clickPrint(View view) {
-        MineBookActivity.open(this);
+//        MineBookActivity.open(this);
+        MineBookActivityV2.open(this);
         finish();
     }
 
@@ -219,7 +221,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 TypeConstant.FROM_PHONE,
                 cartItem.getTotalPage(),
                 cartItem.getTitle(),
-                cartItem.getDate(),CartActivity.this);
+                cartItem.getDate(), CartActivity.this);
         dialog.show(getSupportFragmentManager(), "dialog");
     }
 
@@ -320,14 +322,14 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
             e.printStackTrace();
         }
 
-        Subscription s = apiService.addOrder(params,TypeConstant.APP_ID)
+        Subscription s = apiService.addOrder(params, TypeConstant.APP_ID)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
                             progressDialog.dismiss();
                             if (response.success()) {
 //                                OrderDetailActivity.open(CartActivity.this, response.getOrderId());
-                                MyOrderConfirmActivity.open(CartActivity.this, response.getOrderId(),baseObjs);
+                                MyOrderConfirmActivity.open(CartActivity.this, response.getOrderId(), baseObjs);
                             } else {
                                 Toast.makeText(CartActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
                             }
@@ -409,9 +411,9 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 printProperties.add(property);
             }
             try {
-                params.put("pageNum", mAdapter.getItem(position).getTotalPage()+"");
+                params.put("pageNum", mAdapter.getItem(position).getTotalPage() + "");
                 params.put("createTime", mAdapter.getItem(position).getDate());
-                params.put("bookName",URLEncoder.encode(mAdapter.getItem(position).getTitle()));
+                params.put("bookName", URLEncoder.encode(mAdapter.getItem(position).getTitle()));
                 params.put("bookCover", mAdapter.getItem(position).getCoverImage());
                 params.put("bookId", mAdapter.getItem(position).getBookId());
                 params.put("bookType", String.valueOf(mAdapter.getItem(position).getBookType()));

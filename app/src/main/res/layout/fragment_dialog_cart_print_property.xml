@@ -191,7 +191,7 @@
 
                     <TextView
                         style="@style/OrderTextLabel"
-                        android:text="选择开本（书本尺寸）"/>
+                        android:text="尺寸"/>
 
                     <cn.timeface.circle.baby.views.NoScrollGridView
                         android:id="@+id/gv_book_size"
@@ -247,7 +247,7 @@
 
                     <TextView
                         style="@style/OrderTextLabel"
-                        android:text="纸张"/>
+                        android:text="纸张类别"/>
 
                     <cn.timeface.circle.baby.views.NoScrollGridView
                         android:id="@+id/gv_paper"
@@ -280,7 +280,7 @@
 
                         <TextView
                             style="@style/OrderTextLabel"
-                            android:text="@string/cart_print_property_pack_text"/>
+                            android:text="装订方式"/>
 
                         <TextView
                             android:id="@+id/tv_pack_label"

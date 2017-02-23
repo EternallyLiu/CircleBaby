@@ -168,6 +168,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                                         new BookPrintHelper(
                                                 (BasePresenterAppCompatActivity) getActivity(),
                                                 BookModel.BOOK_TYPE_DIARY_CARD,
+                                                BookModel.BOOK_TYPE_DIARY_CARD,//日记卡片没有openBookType，直接使用本平台BookType
                                                 selectCards.size(),
                                                 bookSizeId,
                                                 response.getDataId(),
