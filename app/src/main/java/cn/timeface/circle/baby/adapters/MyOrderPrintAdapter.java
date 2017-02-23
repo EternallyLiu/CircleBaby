@@ -57,7 +57,7 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
         viewHolder.tvPack.setText(mContext.getString(R.string.cart_print_property_pack,
                 bookItem.getPropertyShow("pack", String.valueOf(obj.getPack()))));
         String size = bookItem.getPropertyShow("size", String.valueOf(obj.getSize()));
-        size = size.substring(0, size.indexOf(","));
+        size = size.substring(0, size.indexOf(",") > 0 ? size.indexOf(",") : size.length());
         viewHolder.tvSize.setText(mContext.getString(R.string.cart_print_property_size, size));
 
         viewHolder.tvColor.setVisibility(View.VISIBLE);

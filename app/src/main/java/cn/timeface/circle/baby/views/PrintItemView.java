@@ -100,7 +100,7 @@ public class PrintItemView extends LinearLayout {
         tvPack.setText(resources.getString(R.string.cart_print_property_pack,
                 bookItem.getPropertyShow("pack", String.valueOf(obj.getPack()))));
         String size = bookItem.getPropertyShow("size", String.valueOf(obj.getSize()));
-        size = size.substring(0, size.indexOf(","));
+        size = size.substring(0, size.indexOf(",") > 0 ? size.indexOf(",") : size.length());
         tvSize.setText(resources.getString(R.string.cart_print_property_size, size));
 
         tvColor.setVisibility(View.VISIBLE);
