@@ -55,4 +55,5 @@
     <dimen name="size_4">4dp</dimen>
     <dimen name="size_14">14dp</dimen>
     <dimen name="size_120">120dp</dimen>
+    <dimen name="size_9">9dp</dimen>
 </resources>
