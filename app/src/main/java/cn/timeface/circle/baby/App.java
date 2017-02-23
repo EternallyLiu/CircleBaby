@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
@@ -25,6 +26,7 @@ import cn.timeface.circle.baby.support.utils.MiPushUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.TimeFaceUtilInit;
+import ly.count.android.sdk.Countly;
 import timber.log.Timber;
 
 /**
@@ -84,9 +86,25 @@ public class App extends MultiDexApplication {
                 .getHeight();
         Fresco.initialize(this);
 
+        // init Bugly
+        initBugly();
+        initCountly();
+
         if(BuildConfig.DEBUG){
             Timber.plant(new Timber.DebugTree());
         }
+    }
+
+    private void initBugly(){
+        CrashReport.setIsDevelopmentDevice(getApplicationContext(), BuildConfig.DEBUG);
+        CrashReport.initCrashReport(getApplicationContext(), "52ae73854c", BuildConfig.DEBUG);
+        CrashReport.setUserId(getApplicationContext(), FastData.getUserId());
+    }
+
+    private void initCountly(){
+        Countly.sharedInstance().init(this, "http://analytics.v5time.net", "557039698820881ee2c993f3acfdc438f30f44ff");
+        Countly.sharedInstance().setViewTracking(true);
+        Countly.sharedInstance().enableCrashReporting();
     }
 
     /**

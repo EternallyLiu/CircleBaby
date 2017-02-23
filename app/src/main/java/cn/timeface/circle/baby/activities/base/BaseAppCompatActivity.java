@@ -14,6 +14,7 @@ import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import ly.count.android.sdk.Countly;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -33,9 +34,25 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Countly.sharedInstance().setViewTracking(true);
+        Countly.sharedInstance().enableCrashReporting();
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
         }
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        Countly.sharedInstance().onStart(this);
+    }
+
+    @Override
+    public void onStop()
+    {
+        Countly.sharedInstance().onStop();
+        super.onStop();
     }
 
     @Override

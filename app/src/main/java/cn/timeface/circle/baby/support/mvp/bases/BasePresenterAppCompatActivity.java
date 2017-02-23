@@ -16,6 +16,7 @@ import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.presentations.BasePresenterView;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import ly.count.android.sdk.Countly;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -35,10 +36,26 @@ public abstract class BasePresenterAppCompatActivity extends RxAppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Countly.sharedInstance().setViewTracking(true);
+        Countly.sharedInstance().enableCrashReporting();
         apiService = ApiFactory.getApi().getApiService();
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
         }
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        Countly.sharedInstance().onStart(this);
+    }
+
+    @Override
+    public void onStop()
+    {
+        Countly.sharedInstance().onStop();
+        super.onStop();
     }
 
     @Override

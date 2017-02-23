@@ -90,6 +90,7 @@ dependencies {
 //    compile(name: 'open-debug', ext: 'aar')
     compile(name: 'refreshload-release', ext: 'aar')
     compile(name: 'timeface-common-release', ext: 'aar')
+    compile(name: 'countly-sdk-16.06.04', ext: 'aar')
     testCompile 'junit:junit:4.12'
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
@@ -153,6 +154,10 @@ dependencies {
     // rxLifecycle
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'
+
+    //Bugly
+    compile 'com.tencent.bugly:crashreport:latest.release'
+    compile 'com.tencent.bugly:nativecrashreport:latest.release'
 }
 
 

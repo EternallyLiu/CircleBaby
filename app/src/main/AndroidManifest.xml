@@ -501,6 +501,20 @@
             android:screenOrientation="portrait"
             android:theme="@style/TimeFaceTheme.DayNight" />
         <service android:name=".ui.timelines.services.UploadVideoService"/>
+
+        //-----------------------countly----------------------------------
+        <service android:name="org.openudid.OpenUDID_service">
+            <intent-filter>
+                <action android:name="org.openudid.GETUDID" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="ly.count.android.sdk.ReferrerReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+        //------------------------countly---------------------------------
     </application>
 
 </manifest>
