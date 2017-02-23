@@ -162,7 +162,19 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
         //return apiService.sdkBookSave();
         // TODO: 2/22/17 fill sdk book save in params.
         CommemorationDataManger.getInstance().toData();
-        return Observable.empty();
+        return apiService.sdkBookSave(
+                String.valueOf(FastData.getBabyId()),
+                FastData.getUserName(),
+                obj.getBookCover(),
+                obj.getBookId(),
+                obj.getBookTitle(),
+                String.valueOf(obj.getBookType()),
+                obj.getBookSummary(),
+                "",
+                "",
+                obj.getBookTotalPage(),
+                CommemorationDataManger.getInstance().toData()
+        );
     }
 
     @Override
@@ -183,7 +195,19 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
     updateRemoteCalendar(String remoteId, CalendarExtendObj obj) {
         // todo delete update .
 
-        return Observable.empty();
+        return apiService.sdkBookUpdate(
+                remoteId,
+                obj.getBookId(),
+                String.valueOf(obj.getBookType()),
+                "openbooktype",
+                obj.getBookCover(),
+                obj.getBookAuthor(),
+                obj.getAuthorAvatar(),
+                obj.getBookTitle(),
+                obj.getBookSummary(),
+                "",
+                CommemorationDataManger.getInstance().toData()
+        );
 //        return apiService.sdkBookUpdate(
 //                remoteId,
 //                obj.getBookId(),

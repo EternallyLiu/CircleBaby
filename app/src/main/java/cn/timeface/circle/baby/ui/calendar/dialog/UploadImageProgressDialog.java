@@ -21,7 +21,6 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.ui.calendar.events.PhotoUploadProgressEvent;
 import cn.timeface.common.utils.DeviceUtil;
-import cn.timeface.circle.baby.views.IconText;
 
 /**
  * Created by JieGuo on 16/10/24.
@@ -29,9 +28,6 @@ import cn.timeface.circle.baby.views.IconText;
 
 public class UploadImageProgressDialog extends DialogFragment {
 
-
-    @Bind(R.id.tv_close)
-    IconText tvClose;
     @Bind(R.id.uploadProgressBar)
     ProgressBar uploadProgressBar;
     @Bind(R.id.tv_message)
