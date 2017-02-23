@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="@dimen/size_4"
                 android:text="共9张图片  "
@@ -57,12 +57,12 @@
 
             <ImageView
                 android:id="@+id/iv_pic_count"
-                android:layout_width="@dimen/size_16"
-                android:layout_height="@dimen/size_16"
+                android:layout_width="@dimen/size_15"
+                android:layout_height="@dimen/size_9"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/pic_count"
                 android:scaleType="fitCenter"
-                android:src="@drawable/time_line_select_down" />
+                android:src="@drawable/home_pic_count" />
         </RelativeLayout>
 
         <RelativeLayout
