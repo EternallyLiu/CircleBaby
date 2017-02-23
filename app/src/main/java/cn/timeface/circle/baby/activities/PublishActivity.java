@@ -401,6 +401,50 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         time_shot = titles.get(0);
     }
 
+    private void resultSpeak() {
+        photoRecodes.clear();
+        imageUrls.clear();
+        titles.clear();
+        titles.add(TextUtils.isEmpty(tvTime.getText().toString()) ? DateUtil.getYear2(System.currentTimeMillis()) : tvTime.getText().toString());
+        for (ImgObj item : selImages) {
+            imageUrls.add(item.getLocalPath());
+        }
+
+        imagelLists = new List[titles.size()];
+        img2Medias();
+
+        ArrayList<MediaObj> list = null;
+        for (int i = 0; i < titles.size(); i++) {
+            list = new ArrayList<>(0);
+            imagelLists[i] = new ArrayList<>();
+            for (int index = 0; index < selImages.size(); index++) {
+                imagelLists[i].add(selImages.get(index));
+                list.add(mediaObjs.get(index));
+            }
+            photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i], list));
+        }
+        if (photoRecodes.size() > 1) {
+            llSingleDate.setVisibility(View.GONE);
+            contentRecyclerView.setVisibility(View.VISIBLE);
+            publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
+            contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            contentRecyclerView.setAdapter(publishPhotoAdapter);
+        } else {
+            llSingleDate.setVisibility(View.VISIBLE);
+            contentRecyclerView.setVisibility(View.GONE);
+
+            if (imageUrls.size() > 0) {
+                adapter.getData().clear();
+                adapter.getData().addAll(imageUrls);
+                adapter.notifyDataSetChanged();
+                adapter.setMediaObjs(mediaObjs);
+
+                tvTime.setText(titles.get(0));
+            }
+        }
+        time_shot = titles.get(0);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -412,7 +456,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         finish();
                         return;
                     }
-                    resultPictrue();
+                    if (type == 4) {
+                        resultSpeak();
+                    } else
+                        resultPictrue();
                     break;
                 case MILESTONE:
                     milestone = (Milestone) data.getParcelableExtra("milestone");
