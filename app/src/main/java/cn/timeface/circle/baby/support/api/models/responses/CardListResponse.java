@@ -6,6 +6,7 @@ import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 
 /**
  * card list
@@ -14,13 +15,13 @@ import cn.timeface.circle.baby.support.api.models.objs.CardObj;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CardListResponse extends BaseResponse {
-    List<CardObj> dataList;
+    List<KnowledgeCardObj> dataList;
 
-    public List<CardObj> getDataList() {
+    public List<KnowledgeCardObj> getDataList() {
         return dataList;
     }
 
-    public void setDataList(List<CardObj> dataList) {
+    public void setDataList(List<KnowledgeCardObj> dataList) {
         this.dataList = dataList;
     }
 }

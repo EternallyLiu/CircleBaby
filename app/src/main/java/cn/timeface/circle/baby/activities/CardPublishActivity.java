@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,20 +28,27 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
+import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.events.RecognizeCardCreateEvent;
 import cn.timeface.circle.baby.views.TFStateView;
+import rx.functions.Action1;
 
 /**
  * 制作卡片
  * author : YW.SUN Created on 2017/2/13
  * email : sunyw10@gmail.com
  */
-public class CardPublishActivity extends BaseAppCompatActivity implements View.OnClickListener {
+public class CardPublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
     protected final int PHOTO_COUNT_MAX = 1;
     public final int PICTURE = 0;
@@ -55,7 +63,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     @Bind(R.id.tf_stateView)
     TFStateView tfStateView;
     private List<ImgObj> selImages = new ArrayList<>();
-    private List<CardObj> dataList;
+    private List<KnowledgeCardObj> dataList = new ArrayList<>();
     private MyAdapter adapter;
 
     public static void open(Context context) {
@@ -70,39 +78,49 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        tfStateView.setOnRetryListener(() -> reqData());
+//        tfStateView.setOnRetryListener(() -> reqData());
 
         tvAdd.setOnClickListener(this);
-        tvAdd.setEnabled(false);
+        setData();
     }
 
-    @Override
-    protected void onResume() {
-        reqData();
-        super.onResume();
-    }
+//    @Override
+//    protected void onResume() {
+//        reqData();
+//        super.onResume();
+//    }
 
-    private void reqData() {
-        tfStateView.loading();
-        apiService.getComposedCardList()
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(cardListResponse -> {
-                    if (tfStateView != null)
-                        tfStateView.finish();
-                    dataList = cardListResponse.getDataList();
-                    adapter = null;
-                    adapter = new MyAdapter(dataList);
-                    adapter.setOnClickListener(this);
-                    vp.setAdapter(adapter);
-                    if (dataList.size() > 1) {
-                        vp.setCurrentItem(dataList.size() - 1);
-                    }
-                    tvAdd.setEnabled(true);
-                }, throwable -> {
-                    tfStateView.showException(throwable);
-                    Log.e(TAG, "getComposedCardList:", throwable);
-                });
+//    private void reqData() {
+//        tfStateView.loading();
+//        apiService.recognizeCardList()
+//                .compose(SchedulersCompat.applyIoSchedulers())
+//                .subscribe(cardListResponse -> {
+//                    if (tfStateView != null)
+//                        tfStateView.finish();
+//                    dataList = cardListResponse.getDataList();
+//                    adapter = null;
+//                    adapter = new MyAdapter(dataList);
+//                    adapter.setOnClickListener(CardPublishActivity.this);
+//                    vp.setAdapter(adapter);
+//                    if (dataList.size() > 1) {
+//                        vp.setCurrentItem(dataList.size() - 1);
+//                    }
+//                    tvAdd.setEnabled(true);
+//                }, throwable -> {
+//                    tfStateView.showException(throwable);
+//                    Log.e(TAG, "getComposedCardList:", throwable);
+//                });
+//    }
 
+    private void setData() {
+        if(adapter == null){
+            adapter = new MyAdapter(dataList);
+            adapter.setOnClickListener(CardPublishActivity.this);
+            vp.setAdapter(adapter);
+        } else {
+            adapter.setDataList(dataList);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void selectImages() {
@@ -117,7 +135,7 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
             switch (requestCode) {
                 case PICTURE:
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
-                    if (selImages.size() > 0) {
+                    if (selImages != null && selImages.size() > 0) {
                         //跳转识图卡片预览界面
                         FragmentBridgeActivity.openCardPreviewFragment(this, selImages.get(0));
                     }
@@ -166,10 +184,10 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
     }
 
     public class MyAdapter extends PagerAdapter implements View.OnClickListener {
-        List<CardObj> list;
+        List<KnowledgeCardObj> list;
         View.OnClickListener listener;
 
-        public MyAdapter(List<CardObj> list) {
+        public MyAdapter(List<KnowledgeCardObj> list) {
             this.list = list;
         }
 
@@ -208,18 +226,18 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
             } else {
                 view = getLayoutInflater().inflate(R.layout.view_addcard, container, false);
                 ImageView ivAdd = (ImageView) view.findViewById(R.id.iv_add);
-                ivAdd.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectImages();
-                    }
-                });
+                ivAdd.setOnClickListener(v -> selectImages());
             }
             container.addView(view);
             return view;
         }
 
-        public void setDataList(List<CardObj> list) {
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        public void setDataList(List<KnowledgeCardObj> list) {
             this.list = list;
         }
 
@@ -240,18 +258,56 @@ public class CardPublishActivity extends BaseAppCompatActivity implements View.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.home) {
-            onBackPressed();
+        if (item.getItemId() == android.R.id.home) {
+
+            if(dataList.size() > 0){
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setTitle("提示");
+                tfDialog.setMessage("离开后编辑内容会丢失，您确定这么做吗？");
+                tfDialog.setNegativeButton("取消", view -> tfDialog.dismiss());
+
+                tfDialog.setPositiveButton("确定", view -> {
+                    StringBuffer sb = new StringBuffer("[");
+                    //删除卡片
+                    for(KnowledgeCardObj knowledgeCardObj : dataList){
+                        sb.append(knowledgeCardObj.getCardId())
+                                .append(",");
+                    }
+                    sb.substring(0, sb.lastIndexOf(","));
+                    apiService.delCard(sb.append("]").toString())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(
+                                    response -> {
+                                        if(response.success()){
+                                            finish();
+                                        }
+                                    }
+                                    , throwable -> {
+                                        Log.e(TAG, "delCard:");
+                                    });
+                });
+                tfDialog.show(getSupportFragmentManager(), "");
+
+                return true;
+            }
+
         } else if (item.getItemId() == R.id.complete) {
             if (dataList.size() == 0) {
                 ToastUtil.showToast("先制作一张识图卡片吧~");
                 return true;
             }
             EventBus.getDefault().post(new PublishRefreshEvent(dataList));
-            PublishActivity.open(this, dataList);
+//            PublishActivity.open(this, dataList);
             finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void recognizeCardCreateEvent(RecognizeCardCreateEvent cardCreateEvent){
+        dataList.add(cardCreateEvent.getKnowledgeCardObj());
+        setData();
     }
 
     @Override

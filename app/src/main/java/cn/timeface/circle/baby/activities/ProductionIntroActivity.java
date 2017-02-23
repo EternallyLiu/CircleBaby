@@ -147,7 +147,8 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                 break;
             //识图卡片
             case BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD:
-                RecognizeCardCreateActivity.open(this);
+//                RecognizeCardCreateActivity.open(this);
+                CardPublishActivity.open(this);
                 break;
             //日记卡片
             case BookModel.BOOK_TYPE_DIARY_CARD:

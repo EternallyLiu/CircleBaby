@@ -229,6 +229,8 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         TextView tvCommentcount = ViewHolder.getView(contentView, R.id.tv_commentcount);
         LinearLayout llRecode = ViewHolder.getView(contentView, R.id.ll_recode);
         TextView picCount = ViewHolder.getView(contentView, R.id.pic_count);
+        RelativeLayout rlPicCount=ViewHolder.getView(contentView,R.id.rl_pic_count);
+
 
         //设置基本信息 内容 作者 时间 是否点赞 评论个数 点赞个数
         if (TextUtils.isEmpty(item.getContent()))
@@ -252,7 +254,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         //处理图片
         rlSingle.setVisibility(View.GONE);
         gv.setVisibility(View.GONE);
-        picCount.setVisibility(View.GONE);
+        rlPicCount.setVisibility(View.GONE);
         if (gv.getChildCount() > 0)
             gv.removeAllViews();
         if (item.getType() != 1) {
@@ -308,9 +310,9 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                 gv.addView(rowView);
             }
             if (count < item.getMediaList().size()) {
-                picCount.setVisibility(View.VISIBLE);
+                rlPicCount.setVisibility(View.VISIBLE);
                 picCount.setText(String.format("共%d张图片  ", item.getMediaList().size()));
-            } else picCount.setVisibility(View.GONE);
+            } else rlPicCount.setVisibility(View.GONE);
             if (gv.getChildCount() > 0) gv.setVisibility(View.VISIBLE);
             else gv.setVisibility(View.GONE);
         } else {

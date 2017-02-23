@@ -319,7 +319,7 @@ public interface ApiService {
 
     //识图卡片-列表
     @GET("babyTime/getComposedCardList")
-    Observable<CardListResponse> getComposedCardList();
+    Observable<CardListResponse> getComposedCardList(@Query("babyId") int babyId);
 
     //识图卡片-删除
     @GET("babyTime/delCard")

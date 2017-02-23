@@ -25,6 +25,8 @@ import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioRelativeLayout;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.URLEncoder;
 
 import butterknife.Bind;
@@ -41,6 +43,7 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.Pinyin4jUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.ui.growth.events.RecognizeCardCreateEvent;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -192,6 +195,7 @@ public class CardPreviewFragment extends BaseFragment {
                         if (knowledgeComposedResponse.success()) {
                             MediaObj mediaObj = knowledgeComposedResponse.getKnowledgeCardObj().getMedia();
                             mediaObj.setPhotographTime(createTime);
+                            EventBus.getDefault().post(new RecognizeCardCreateEvent(knowledgeComposedResponse.getKnowledgeCardObj()));
                             CardPreviewFragment.this.getActivity().finish();
                         } else {
                             ToastUtil.showToast(knowledgeComposedResponse.getInfo());
