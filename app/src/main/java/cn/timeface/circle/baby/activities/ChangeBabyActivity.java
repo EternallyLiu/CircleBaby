@@ -131,8 +131,8 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_createbaby:
-//                CreateBabyActivity.open(this,false);
-                FragmentBridgeActivity.open(this, CreateBabyFragment.class.getSimpleName());
+                CreateBabyActivity.open(this,false);
+//                FragmentBridgeActivity.open(this, CreateBabyFragment.class.getSimpleName());
                 break;
             case R.id.tv_focusbaby:
                 InviteCodeActivity.open(this);

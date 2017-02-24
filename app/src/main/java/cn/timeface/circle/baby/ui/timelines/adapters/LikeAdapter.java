@@ -13,8 +13,11 @@ import cn.timeface.circle.baby.support.utils.GlideUtil;
  * email : wangs1992321@gmail.com
  */
 public class LikeAdapter extends BaseAdapter {
+    private int paddingSize = 20;
+
     public LikeAdapter(Context activity) {
         super(activity);
+        paddingSize = (int) activity.getResources().getDimension(R.dimen.size_10);
     }
 
     @Override
@@ -32,8 +35,11 @@ public class LikeAdapter extends BaseAdapter {
         ImageView icon = ViewHolder.getView(contentView, R.id.icon);
         UserObj userObj = getItem(position);
         if (userObj.getIsCreator() == -1) {
-            icon.setImageResource(R.drawable.like_select);
-        } else
+            icon.setImageResource(R.drawable.time_line_cool);
+            icon.setPadding(paddingSize, paddingSize, paddingSize, paddingSize);
+        } else {
+            icon.setPadding(0, 0, 0, 0);
             GlideUtil.displayImageCircle(userObj.getAvatar(), icon);
+        }
     }
 }

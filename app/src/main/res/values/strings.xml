@@ -815,4 +815,5 @@
     <string name="new_memorials">新增纪念日</string>
 
     <string name="delete_name">删除</string>
+    <string name="bind_phone_get_code">发送验证码</string>
 </resources>
