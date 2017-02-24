@@ -30,6 +30,7 @@ public class PrintCartItem extends BaseModule {
     private int totalPage; //总页数
     private String authorName; //作者名
     private int bookType; //0 时光书（默认）1 微信书 2 时光圈时光书 3 时光圈通讯录 4 QQ书
+    private int openBookType; //开放平台BookType
     private String printDate; //最新加入印刷车的时间，时间戳
     private int printCode; //8800可印刷 8801可印刷，限软装（4-48页） 8802少于4页，不可印刷 8803超出255页，不可印刷
     private int childNum; //拆分书本数，printCode有错误时，该字段为0
@@ -146,6 +147,14 @@ public class PrintCartItem extends BaseModule {
 
     public void setBookType(int bookType) {
         this.bookType = bookType;
+    }
+
+    public int getOpenBookType() {
+        return openBookType;
+    }
+
+    public void setOpenBookType(int openBookType) {
+        this.openBookType = openBookType;
     }
 
     public String getPrintDate() {

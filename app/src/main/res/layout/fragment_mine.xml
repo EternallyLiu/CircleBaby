@@ -180,50 +180,6 @@
         android:background="@color/bg_color6" />
 
     <RelativeLayout
-        android:id="@+id/ll_mine_car"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/text_color1"
-
-        android:padding="@dimen/size_12">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:background="@color/text_color1"
-            android:drawablePadding="@dimen/size_6"
-            android:text="我的印刷车"
-            android:textSize="@dimen/text_medium" />
-
-        <TextView
-            android:id="@+id/tv_count_cart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/size_24"
-            android:gravity="center"
-            android:textColor="@color/text_color27"
-            android:textSize="@dimen/text_normal"
-            tools:text="0" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/size_12"
-            android:src="@drawable/mine_data_go" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_color6" />
-
-    <RelativeLayout
         android:id="@+id/ll_mine_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -267,6 +223,49 @@
         android:layout_height="1dp"
         android:background="@color/bg_color6" />
 
+    <RelativeLayout
+        android:id="@+id/ll_mine_car"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_color1"
+
+        android:padding="@dimen/size_12">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:background="@color/text_color1"
+            android:drawablePadding="@dimen/size_6"
+            android:text="我的印刷车"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/tv_count_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_24"
+            android:gravity="center"
+            android:textColor="@color/text_color27"
+            android:textSize="@dimen/text_normal"
+            tools:text="0" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_12"
+            android:src="@drawable/mine_data_go" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color6" />
 
     <RelativeLayout
         android:id="@+id/ll_set"
