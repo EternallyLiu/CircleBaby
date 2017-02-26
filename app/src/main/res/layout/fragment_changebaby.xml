@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="选择宝宝"
+            android:text="宝宝"
             android:textColor="@color/text_color1"
             android:textSize="@dimen/text_large" />
     </android.support.v7.widget.Toolbar>

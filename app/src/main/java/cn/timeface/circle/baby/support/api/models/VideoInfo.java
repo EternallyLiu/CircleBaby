@@ -21,6 +21,8 @@ import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.db.AppDatabase;
+import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import rx.Observable;
 import rx.functions.Func0;
@@ -50,6 +52,11 @@ public class VideoInfo extends BaseModel implements Parcelable {
     String videoObjectKey;
     @Column
     long Date;
+    @Column
+    int type = 0;  //类型，0、默认手机的视频资源，1、裁剪资源，2、下载保存下来的资源
+    @Column
+    String videoUrl;    //远程地址
+
 
     public VideoInfo() {
     }
@@ -59,6 +66,14 @@ public class VideoInfo extends BaseModel implements Parcelable {
         this.imgObjectKey = imgObjectKey;
         this.path = path;
         Date = date;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getImgLocalUrl() {
@@ -78,6 +93,11 @@ public class VideoInfo extends BaseModel implements Parcelable {
     }
 
     public String getVideoObjectKey() {
+        if (TextUtils.isEmpty(videoObjectKey)) {
+            UploadFileObj uploadFileObj = new MyUploadFileObj(path);
+            videoObjectKey = uploadFileObj.getObjectKey();
+            save();
+        }
         return videoObjectKey;
     }
 
@@ -148,6 +168,17 @@ public class VideoInfo extends BaseModel implements Parcelable {
             FlowManager.getModelAdapter(VideoInfo.class).saveAll(list);
     }
 
+    /**
+     * 依据objectKey获取VideoInfo对象
+     *
+     * @param url
+     * @return
+     */
+    public static Observable<VideoInfo> findVideo(String url) {
+
+        return Observable.just(SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.videoObjectKey.eq(url)).querySingle());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -158,6 +189,20 @@ public class VideoInfo extends BaseModel implements Parcelable {
         if (path != null ? !path.equals(videoInfo.path) : videoInfo.path != null) return false;
         return true;
 
+    }
+
+    /**
+     * 查询VideoInfo对象
+     *
+     * @param path path objectkey,imageurl等
+     * @return
+     */
+    public static Observable<VideoInfo> findVideos(String path) {
+        return Observable.defer(() -> {
+            return Observable.from(SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.path.eq(path)).or(VideoInfo_Table.videoObjectKey.eq(path))
+                    .or(VideoInfo_Table.videoUrl.eq(path)).or(VideoInfo_Table.thumbmailLocalUrl.eq(path))
+                    .or(VideoInfo_Table.imgLocalUrl.eq(path)).queryList());
+        });
     }
 
     public boolean isThumbmail() {
@@ -188,14 +233,12 @@ public class VideoInfo extends BaseModel implements Parcelable {
         return infos;
     }
 
+
     public static Observable<List<VideoInfo>> getAllVideos() {
-        return Observable.defer(new Func0<Observable<List<VideoInfo>>>() {
-            @Override
-            public Observable<List<VideoInfo>> call() {
-                LogUtil.showLog("getAllVideos=====>" + Thread.currentThread().getName());
-                List<VideoInfo> infos = SQLite.select().from(VideoInfo.class).queryList();
-                return Observable.just(infos);
-            }
+        return Observable.defer(() -> {
+            LogUtil.showLog("getAllVideos=====>" + Thread.currentThread().getName());
+            List<VideoInfo> infos = SQLite.select().from(VideoInfo.class).queryList();
+            return Observable.just(infos);
         });
     }
 
@@ -216,6 +259,7 @@ public class VideoInfo extends BaseModel implements Parcelable {
         dest.writeString(this.imgObjectKey);
         dest.writeString(this.videoObjectKey);
         dest.writeLong(this.Date);
+        dest.writeInt(this.type);
     }
 
     protected VideoInfo(Parcel in) {
@@ -229,6 +273,7 @@ public class VideoInfo extends BaseModel implements Parcelable {
         this.imgObjectKey = in.readString();
         this.videoObjectKey = in.readString();
         this.Date = in.readLong();
+        this.type = in.readInt();
     }
 
     public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {

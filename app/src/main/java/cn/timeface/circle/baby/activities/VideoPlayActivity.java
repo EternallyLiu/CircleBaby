@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.MediaController;
@@ -19,9 +20,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.support.api.models.VideoInfo;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class VideoPlayActivity extends BaseAppCompatActivity {
@@ -34,6 +38,8 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
     private MenuItem save;
     private String url;
     private TFProgressDialog tfProgressDialog;
+
+    private String objectKey;
 
     public static void open(Context context, String url) {
         Intent intent = new Intent(context, VideoPlayActivity.class);
@@ -80,12 +86,28 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         }
 
         url = getIntent().getStringExtra("url");
+        objectKey = url.substring(url.lastIndexOf("/baby/"));
+        LogUtil.showLog("objectKey==" + objectKey);
+        VideoInfo.findVideo(objectKey).compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(videoInfo -> {
+                    if (videoInfo != null && !TextUtils.isEmpty(videoInfo.getPath())) {
+                        url = videoInfo.getPath();
+                        init();
+                    } else init();
+                }, throwable -> {
+                    LogUtil.showError(throwable);
+                    init();
+                });
+
+    }
+
+    private void init() {
+        LogUtil.showLog("url:"+url);
         MediaController mc = new MediaController(this);
         videoview.setMediaController(mc);
         videoview.setVideoPath(url);
         videoview.requestFocus();
         videoview.start();
-
     }
 
     @Override
