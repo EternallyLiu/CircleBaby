@@ -70,6 +70,7 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
             tvTypeLocation.setVisibility(View.INVISIBLE);
             tvTypeLabel.setVisibility(View.INVISIBLE);
         }
+        tvTypeTime.setSelected(true);
         return view;
     }
 
@@ -101,7 +102,7 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
         this.selectTypeListener = selectTypeListener;
     }
 
-    private void setBtnsEnable(int resId){
+    public void setBtnsEnable(int resId){
         for(TextView textView : textViews){
             if(textView.getId() == resId){
                 textView.setSelected(true);
