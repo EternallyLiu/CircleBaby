@@ -30,7 +30,7 @@
         android:paddingTop="@dimen/size_4"
         android:text="这是第一次去拍照"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_small_12"
 
         />
 

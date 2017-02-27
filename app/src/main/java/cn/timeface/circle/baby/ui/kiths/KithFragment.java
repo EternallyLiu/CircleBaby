@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.FamilyMemberInfo;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -78,7 +79,7 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
-        title.setText("亲友团");
+        title.setText(String.format("%s的一家", FastData.getBabyObj().getNickName()));
         adapter = new KithsAdapter(getActivity());
         adapter.setLoadDataFinish(this);
         emptyDataView.setErrorDrawable(R.drawable.net_empty);

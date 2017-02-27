@@ -199,7 +199,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         adapter.setLoadDataFinish(this);
         contentRecyclerView.setAdapter(adapter);
 
-        tfStateView.setOnRetryListener(() -> reqData(1));
+        tfStateView.setOnRetryListener(() -> {currentPage=1;reqData(currentPage);});
         tfStateView.loading();
 
         tvAlbum.setOnClickListener(this);

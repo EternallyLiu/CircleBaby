@@ -41,9 +41,10 @@
         android:id="@+id/ll_tag_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_botton"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="@dimen/size_6"
+        android:layout_marginBottom="@dimen/size_24"
+        android:layout_marginLeft="@dimen/size_6"
         android:orientation="vertical"
         android:padding="@dimen/size_6" />
 

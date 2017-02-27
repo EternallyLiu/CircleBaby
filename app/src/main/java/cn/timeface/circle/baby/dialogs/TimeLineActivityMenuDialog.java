@@ -64,6 +64,8 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         init();
     }
 
+
+
     public void share(TimeLineObj timelineobj) {
         this.timelineobj = timelineobj;
         if (timelineobj.getType() == 1) {
@@ -95,6 +97,12 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         window.setAttributes(p);
         window.setGravity(Gravity.BOTTOM);
         window.setWindowAnimations(R.style.bottom_dialog_animation);
+    }
+
+    public TimeLineActivityMenuDialog editeor(boolean isEditor){
+        if (tvEdit!=null)
+            tvEdit.setVisibility(isEditor?View.VISIBLE:View.GONE);
+        return this;
     }
 
     private void initListener() {

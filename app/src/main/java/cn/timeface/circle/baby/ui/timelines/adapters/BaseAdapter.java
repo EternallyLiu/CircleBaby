@@ -155,7 +155,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     }
 
     public void addList(int position, List list) {
-        if (list == null || list.size() <= 0) return;
+        if (list == null || list.size() <= 0) {
+            error();
+            return;
+        }
         if (position < 0)
             position = 0;
         if (list.size() == 1)
@@ -184,7 +187,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     private View emptyDataView = null;
 
     public void addList(List list) {
-        LogUtil.showLog("list:" + list.size());
         addList(false, list);
     }
 
@@ -283,8 +285,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     }
 
     public void error() {
-        if (getLoadDataFinish() != null)
-            getLoadDataFinish().loadfinish(ERROR_DATA);
+        handler.sendMessage(handler.obtainMessage(ERROR_DATA));
     }
 
     public Context context() {

@@ -369,13 +369,13 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             dialog.setCloseListener(this);
             dialog.setCanceledOnTouchOutside(false);
             dialog.showClose(true);
+            dialog.setSubmitListener(this);
         }
         if (type == -1) {
             dialog.setTitle(new SpannableStringBuilder("创建成功！ "));
             dialog.getTitle().setVisibility(View.VISIBLE);
             dialog.getTitle().setGravity(Gravity.CENTER);
             dialog.getTitle().setTextColor(Color.BLACK);
-            dialog.setSubmitListener(this);
         } else dialog.getTitle().setVisibility(View.GONE);
         dialog.getSubmit().setText(type == 1 ? "立即查看" : "立即导入");
         dialog.setType(type);
@@ -405,7 +405,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             sb.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName())).append("\n");
             builder.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName()));
-            builder.setSpan(SpannableUtils.getTextColor(this,R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
             builder.setSpan(SpannableUtils.getTextSize(this, R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -422,9 +422,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public void submit() {
-        if (dialog != null && dialog.getType() == 1)
-            FragmentBridgeActivity.open(this, KithFragment.class.getSimpleName());
-        else if (dialog != null && dialog.getType() == -1)
+        if (dialog != null && dialog.getType() == -1) {
             PublishActivity.open(this, PublishActivity.PHOTO);
+        } else FragmentBridgeActivity.open(this, KithFragment.class.getSimpleName());
     }
 }

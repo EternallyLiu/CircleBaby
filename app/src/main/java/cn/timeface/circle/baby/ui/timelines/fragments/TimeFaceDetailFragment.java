@@ -107,6 +107,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     private GridStaggerLookup lookup;
     private LikeUserList likeUserList;
 
+    private boolean isEditor;
     private boolean commentable = false;
 
     @Override
@@ -117,6 +118,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         if (bundle != null && bundle.containsKey(TimeLineObj.class.getName())) {
             currentTimeLineObj = bundle.getParcelable(TimeLineObj.class.getName());
         }
+        isEditor=bundle.getBoolean("isEditor",true);
         if (bundle != null && bundle.containsKey("allDetailsListPosition"))
             allDetailsListPosition = bundle.getInt("allDetailsListPosition", -1);
         commentable = bundle.getBoolean("commentable", false);
@@ -181,6 +183,13 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     public static void open(Context context, TimeLineObj timeLineObj) {
         LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
         Bundle bundle = new Bundle();
+        bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
+        FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
+    }
+    public static void open(Context context, TimeLineObj timeLineObj,boolean isEditor) {
+        LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isEditor",isEditor);
         bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
         FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
     }
@@ -266,16 +275,18 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_timeline_detail, menu);
-        currentMenu = menu;
-        doMenu();
+        if (isEditor){
+            inflater.inflate(R.menu.menu_timeline_detail, menu);
+            currentMenu = menu;
+            doMenu();
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_more) {
-            new TimeLineActivityMenuDialog(getActivity()).setAllDetailsListPosition(allDetailsListPosition).share(currentTimeLineObj);
+            new TimeLineActivityMenuDialog(getActivity()).setAllDetailsListPosition(allDetailsListPosition).editeor(isEditor).share(currentTimeLineObj);
         } else if (item.getItemId() == R.id.action_smail_image) {
             lookup.setShowSmail(!lookup.isShowSmail());
             adapter.notifyDataSetChanged();

@@ -60,6 +60,7 @@ import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
 import cn.timeface.circle.baby.ui.babyInfo.views.GenderDialog;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 
 public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnClickListener, DeleteDialog.SubmitListener, GenderDialog.GenderSelectedListener {
 
@@ -439,19 +440,14 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
 
 
                     SpannableStringBuilder builder = new SpannableStringBuilder(contentMessage);
-                    ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.RED);
+                    ForegroundColorSpan colorSpan = SpannableUtils.getTextColor(this,R.color.sea_buckthorn);
                     builder.append(" ").append(this.babyObj.getNickName()).append(" ");
                     builder.append("吗？").append("\n");
                     int largeLength = builder.length();
                     builder.append("这会导致你不能继续查看宝宝相关").append("\n").append("的内容。");
-                    AbsoluteSizeSpan span = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));
                     //标红宝宝名字
                     builder.setSpan(colorSpan, contentMessage.length() + 1, contentMessage.length() + 1 + this.babyObj.getNickName().length() + 1,
                             Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                    //设置宝宝名字为大字体
-                    builder.setSpan(span, contentMessage.length() + 1, contentMessage.length() + 1 + this.babyObj.getNickName().length() + 1,
-                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-
                     //关键提示语加粗
                     StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
                     builder.setSpan(styleSpan, 0, largeLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
