@@ -153,16 +153,6 @@
                         android:textColor="@color/text_color1"
                         android:textSize="@dimen/text_medium" />
 
-                    <TextView
-                        android:id="@+id/tv_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="0%"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text_medium"
-                        android:visibility="gone" />
-
                     <ImageView
                         android:id="@+id/iv_message"
                         android:layout_width="wrap_content"
@@ -172,8 +162,8 @@
                         android:paddingLeft="@dimen/size_12"
                         android:paddingRight="@dimen/size_12"
                         android:paddingTop="@dimen/size_2"
-                        android:visibility="gone"
-                        android:src="@drawable/msg" />
+                        android:src="@drawable/msg"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/iv_dot"
@@ -190,6 +180,7 @@
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -211,6 +202,22 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
+        <TextView
+            android:layout_margin="@dimen/size_6"
+            android:paddingTop="@dimen/size_6"
+            android:paddingBottom="@dimen/size_6"
+            android:paddingRight="@dimen/size_24"
+            android:paddingLeft="@dimen/size_24"
+            android:background="@drawable/upload_tip_bg"
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/swipe_refresh_layout"
+            android:layout_centerHorizontal="true"
+            android:text="0%"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_medium"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_no_data"
@@ -256,11 +263,12 @@
             android:id="@+id/tf_stateView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
         <cn.timeface.circle.baby.ui.timelines.views.EmptyDataView
             android:id="@+id/empty_view"
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
 
     </RelativeLayout>

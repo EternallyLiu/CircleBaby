@@ -709,8 +709,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         LogUtil.showLog("size===" + adapter.getRealItemSize() + "----code===" + code);
         emptyView.setVisibility(View.GONE);
         if (code == BaseAdapter.UPDATE_DATA_ADD_LIST_CENTER) {
-            LogUtil.showLog("currentTimeId==" + currentPage);
-            LogUtil.showLog("positiion===" + adapter.findPosition(currentTimeId));
             if (currentTimeId > 0)
                 contentRecyclerView.scrollToPosition(adapter.findPosition(currentTimeId));
             currentTimeId = 0;

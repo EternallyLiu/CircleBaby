@@ -215,6 +215,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                         etBirthday.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 dialog.show();
                 break;
             case R.id.et_relationship:

@@ -324,6 +324,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                         tvBrithday.setText(brithday);
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+//                dialog.getDatePicker().setMinDate(DateUtil.getTime("2000-01-01","yyyy-MM-dd"));
                 dialog.show();
                 break;
             case R.id.rl_blood:
