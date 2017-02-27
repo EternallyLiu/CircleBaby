@@ -66,6 +66,8 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private static final int REQ_SELECT_COVER = 203;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.title)
+    TextView title;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     @Bind(R.id.fab)
@@ -111,10 +113,12 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_album_edit);
         ButterKnife.bind(this);
-        String title =  getIntent().getStringExtra("title");
+        String titleStr =  getIntent().getStringExtra("title");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        title.setText(titleStr);
+//        getSupportActionBar().setTitle(title);
         //toolbar.setNavigationIcon(R.drawable.ic_back);
         albumId = getIntent().getStringExtra("albumId");
         type = getIntent().getIntExtra("type", 0);

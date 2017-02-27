@@ -180,7 +180,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
         if (!TextUtils.isEmpty(phone) && CheckedUtil.isMobileNum(phone)) {
             registerSMSReceiver();// 注册接收短信，获取的手机验证码并自动填充
 
-            s = apiService.getVeriCode(phone, 2)
+            s = apiService.getVeriCode(phone, 3)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
                         Toast.makeText(getActivity(), response.getInfo(), Toast.LENGTH_SHORT).show();

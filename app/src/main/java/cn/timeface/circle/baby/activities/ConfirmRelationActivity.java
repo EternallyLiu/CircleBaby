@@ -46,6 +46,7 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.babyInfo.beans.BabyChanged;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class ConfirmRelationActivity extends BaseAppCompatActivity implements View.OnClickListener, DeleteDialog.SubmitListener, DeleteDialog.CloseListener {
@@ -144,7 +145,7 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
 
     public void attention(String name) {
         showProgress();
-        apiService.babyAttention(code, URLEncoder.encode(name))
+        apiService.babyAttention("", URLEncoder.encode(name))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(userLoginResponse -> {
                     if (userLoginResponse.success()) {
@@ -153,7 +154,7 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
                         } else {
                             babyChanged = new BabyChanged(userLoginResponse.getUserInfo());
                             queryFamily(userLoginResponse.getUserInfo().getRelationName(), userLoginResponse.getUserInfo().getBabyObj());
-//                            FastData.setUserInfo(userLoginResponse.getUserInfo());
+                            FastData.setUserInfo(userLoginResponse.getUserInfo());
 //                            EventBus.getDefault().post(new ConfirmRelationEvent());
 //                            finish();
                         }
@@ -172,16 +173,8 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
         apiService.queryBabyFamilyLoginInfoList().compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(familyListResponse -> {
                     if (familyListResponse.success()) {
-                        ForegroundColorSpan babyColorSpan = new ForegroundColorSpan(Color.RED);
-                        ForegroundColorSpan colorSpan;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                            colorSpan = new ForegroundColorSpan(getColor(R.color.sea_buckthorn));
-                        } else {
-                            colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.sea_buckthorn));
-                        }
                         StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
                         SpannableStringBuilder builder = new SpannableStringBuilder();
-                        AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));
                         builder.append(String.format("欢迎 %s 加入！", relativeName)).append("\n");
                         builder.append("你将和");
                         int beginIndex = builder.length();
@@ -194,12 +187,11 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
                         builder.append("一起来记录").append("\n");
                         builder.append(String.format("见证 %s 的成长~", babyObj.getNickName()));
                         String content = builder.toString();
-                        builder.setSpan(sizeSpan, content.indexOf(relativeName), content.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                        builder.setSpan(colorSpan, content.indexOf(relativeName), content.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                        builder.setSpan(SpannableUtils.getTextColor(this,R.color.sea_buckthorn), content.indexOf(relativeName), content.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                         builder.setSpan(styleSpan, content.indexOf(relativeName), content.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                        builder.setSpan(babyColorSpan, content.indexOf(babyObj.getNickName()), content.indexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                        builder.setSpan(SpannableUtils.getTextColor(this,R.color.sea_buckthorn), content.indexOf(babyObj.getNickName()), content.indexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                         builder.setSpan(styleSpan, content.indexOf(babyObj.getNickName()), content.indexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                        builder.setSpan(colorSpan, beginIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                        builder.setSpan(SpannableUtils.getTextColor(this,R.color.sea_buckthorn), beginIndex, endIndex, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                         babyChanged.setBuilder(builder);
                         hideProgress();
                         submit();

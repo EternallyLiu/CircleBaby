@@ -135,7 +135,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         } else {
             rlToensurerelation.setVisibility(View.GONE);
         }
-
         EventBus.getDefault().post(new EventTabMainWake());
 
         //初始化开放平台

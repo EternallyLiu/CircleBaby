@@ -232,8 +232,17 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         LinearLayout llRecode = ViewHolder.getView(contentView, R.id.ll_recode);
         TextView picCount = ViewHolder.getView(contentView, R.id.pic_count);
         RelativeLayout rlPicCount = ViewHolder.getView(contentView, R.id.rl_pic_count);
+        TextView tvMilestonename = ViewHolder.getView(contentView, R.id.tv_milestonename);
+        View milestoneLine = ViewHolder.getView(contentView, R.id.milestone_line);
 
-
+        milestoneLine.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(item.getMilestone()))
+            tvMilestonename.setVisibility(View.GONE);
+        else {
+            milestoneLine.setVisibility(View.VISIBLE);
+            tvMilestonename.setText(item.getMilestone());
+            tvMilestonename.setVisibility(View.VISIBLE);
+        }
         //设置基本信息 内容 作者 时间 是否点赞 评论个数 点赞个数
         if (TextUtils.isEmpty(item.getContent()))
             tvContent.setVisibility(View.GONE);

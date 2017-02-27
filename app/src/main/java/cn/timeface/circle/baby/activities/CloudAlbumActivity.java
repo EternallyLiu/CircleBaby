@@ -11,9 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.timeface.refreshload.PullRefreshLoadRecyclerView;
 import com.timeface.refreshload.headfoot.LoadMoreView;
@@ -30,8 +29,8 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumListAdapter;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.objs.CloudAlbumObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
@@ -49,12 +48,10 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
     PullRefreshLoadRecyclerView prlRecyclerView;
     @Bind(R.id.stateView)
     TFStateView tfStateView;
-    @Bind(R.id.iv_icon)
-    ImageView ivIcon;
-    @Bind(R.id.ll_title)
-    LinearLayout llTitle;
     @Bind(R.id.sv)
     ScrollView sv;
+    @Bind(R.id.title)
+    TextView title;
     private List<CloudAlbumObj> dataList = new ArrayList<>(8);
     private CloudAlbumListAdapter albumListAdapter;
     private boolean showGuide;
@@ -70,16 +67,14 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        title.setText("云相册");
         setupAlbumView();
         tfStateView.setOnRetryListener(this::reqCloudAlbumImages);
         tfStateView.loading();
         reqCloudAlbumImages();
-        initListener();
     }
 
-    private void initListener() {
-        llTitle.setOnClickListener(this);
-    }
 
     private void setupAlbumView() {
         RecyclerView recyclerView = prlRecyclerView.getRecyclerView();
@@ -115,8 +110,8 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
                         dataList.clear();
                         List<CloudAlbumObj> dataList = response.getDataList();
                         List<CloudAlbumObj> cloudAlbumObjs = new ArrayList<>();
-                        for(CloudAlbumObj obj : dataList){
-                            if(!TextUtils.isEmpty(obj.getContentInfo())){
+                        for (CloudAlbumObj obj : dataList) {
+                            if (!TextUtils.isEmpty(obj.getContentInfo())) {
                                 cloudAlbumObjs.add(obj);
                             }
                         }
@@ -160,7 +155,7 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
         CloudAlbumObj cloudAlbumObj = (CloudAlbumObj) view.getTag(R.string.tag_obj);
         String cloudAlbumObjId = cloudAlbumObj.getId();
         String title = cloudAlbumObj.getDesc();
-        CloudAlbumEditActivity.open(this, cloudAlbumObjId, cloudAlbumObj.getType(),title);
+        CloudAlbumEditActivity.open(this, cloudAlbumObjId, cloudAlbumObj.getType(), title);
     }
 
     @Subscribe
@@ -170,18 +165,5 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_title:
-                if (showGuide) {
-                    sv.setVisibility(View.GONE);
-                    showGuide = false;
-                    ivIcon.setImageResource(R.drawable.down);
-                }else{
-                    sv.setVisibility(View.VISIBLE);
-                    showGuide = true;
-                    ivIcon.setImageResource(R.drawable.up);
-                }
-                break;
-        }
     }
 }

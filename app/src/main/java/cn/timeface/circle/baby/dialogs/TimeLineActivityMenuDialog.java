@@ -32,6 +32,7 @@ import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
+import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -63,7 +64,6 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         this.context = context;
         init();
     }
-
 
 
     public void share(TimeLineObj timelineobj) {
@@ -99,16 +99,16 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         window.setWindowAnimations(R.style.bottom_dialog_animation);
     }
 
-    public TimeLineActivityMenuDialog editeor(boolean isEditor){
-        if (tvEdit!=null)
-            tvEdit.setVisibility(isEditor?View.VISIBLE:View.GONE);
+    public TimeLineActivityMenuDialog editeor(boolean isEditor) {
+        if (tvEdit != null)
+            tvEdit.setVisibility(isEditor ? View.VISIBLE : View.GONE);
         return this;
     }
 
     private void initListener() {
         tvEdit.setOnClickListener(v -> {
             dismiss();
-            context.startActivity(new Intent(context, TimeLineEditActivity.class).putExtra("timelimeobj", timelineobj).putExtra("allDetailsListPosition",allDetailsListPosition));
+            context.startActivity(new Intent(context, TimeLineEditActivity.class).putExtra("timelimeobj", timelineobj).putExtra("allDetailsListPosition", allDetailsListPosition));
         });
         tvDlete.setOnClickListener(v -> {
             dismiss();
@@ -174,25 +174,25 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
             String url = context.getString(R.string.share_url_time, timelineobj.getTimeId());
             switch (timelineobj.getType()) {
                 case TypeConstants.PHOTO:
-                    url = BuildConfig.API_URL+context.getString(R.string.share_url_time, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL + context.getString(R.string.share_url_time, timelineobj.getTimeId());
                     break;
                 case TypeConstants.VIDEO:
-                    url = BuildConfig.API_URL+context.getString(R.string.share_url_video, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL + context.getString(R.string.share_url_video, timelineobj.getTimeId());
                     break;
                 case TypeConstants.DIARY:
-                    url = BuildConfig.API_URL+context.getString(R.string.share_url_diary, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL + context.getString(R.string.share_url_diary, timelineobj.getTimeId());
                     break;
                 case TypeConstants.CARD:
-                    url = BuildConfig.API_URL+context.getString(R.string.share_url_generalmap, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL + context.getString(R.string.share_url_generalmap, timelineobj.getTimeId());
                     break;
 
             }
-            if (timelineobj.getMediaList().size() > 0 && !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getImgUrl())) {
-                imgUrl = timelineobj.getMediaList().get(0).getImgUrl();
-            } else {
-                imgUrl = FastData.getBabyAvatar();
-            }
-            new ShareDialog(context).share(title, content, imgUrl, url);
+//            if (timelineobj.getMediaList().size() > 0 && !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getImgUrl())) {
+//                imgUrl = timelineobj.getMediaList().get(0).getImgUrl();
+//            } else {
+//                imgUrl = FastData.getBabyAvatar();
+//            }
+            new ShareDialog(context).share(title, content, ShareSdkUtil.getImgStrByResource(getContext(), R.drawable.ic_laucher_quadrate), url);
         });
         tvCancel.setOnClickListener(v -> {
             dismiss();

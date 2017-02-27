@@ -73,13 +73,13 @@ public class DateUtil {
      * @return kk点mm分
      */
     public static String getTime(long timeInMillis) {
-        String format = "kk点mm分";
+        String format = "HH点mm分";
 
         return formatDate(format, timeInMillis);
     }
 
     public static String getTime2(long timeInMillis) {
-        String format = "kk:mm";
+        String format = "HH:mm";
 
         return formatDate(format, timeInMillis);
     }
@@ -114,7 +114,7 @@ public class DateUtil {
      */
     public static String formatDate(long timeInMillis) {
 
-        String format = (isCurrentYear(timeInMillis) ? "MM-dd kk:mm" : "yyyy-MM-dd kk:mm");
+        String format = (isCurrentYear(timeInMillis) ? "MM-dd HH:mm" : "yyyy-MM-dd HH:mm");
         return formatDate(format, timeInMillis);
     }
 
@@ -177,10 +177,10 @@ public class DateUtil {
      */
     public static String formatDate(String format, long timeInMillis) {
         String s = String.valueOf(timeInMillis);
-        if (s.length() < 13) {
-            s = s + "000";
-            timeInMillis = Long.valueOf(s);
-        }
+//        if (s.length() < 13) {
+//            s = s + "000";
+//            timeInMillis = Long.valueOf(s);
+//        }
         Calendar dealTime = Calendar.getInstance();
         dealTime.setTimeInMillis(timeInMillis);
         return DateFormat.format(format, dealTime).toString();
@@ -226,7 +226,7 @@ public class DateUtil {
     }
 
     public static long getTime(String time, String format) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format, Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format,Locale.getDefault());
         long time1 = 0;
         try {
             time1 = simpleDateFormat.parse(time).getTime();

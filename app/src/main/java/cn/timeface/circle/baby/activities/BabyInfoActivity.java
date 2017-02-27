@@ -38,6 +38,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.Calendar;
+import java.util.Observable;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -319,7 +320,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         monthOfYear = monthOfYear + 1;
-                        tvBrithday.setText(year + "-" + monthOfYear + "-" + dayOfMonth);
+                        String brithday = year + "-" + monthOfYear + "-" + dayOfMonth;
+                        tvBrithday.setText(brithday);
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 dialog.show();
@@ -440,7 +442,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
 
 
                     SpannableStringBuilder builder = new SpannableStringBuilder(contentMessage);
-                    ForegroundColorSpan colorSpan = SpannableUtils.getTextColor(this,R.color.sea_buckthorn);
+                    ForegroundColorSpan colorSpan = SpannableUtils.getTextColor(this, R.color.sea_buckthorn);
                     builder.append(" ").append(this.babyObj.getNickName()).append(" ");
                     builder.append("吗？").append("\n");
                     int largeLength = builder.length();

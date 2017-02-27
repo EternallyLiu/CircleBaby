@@ -151,9 +151,9 @@ public class TimeLineDetailAdapter extends BaseAdapter {
             msb.append(comment.getToUserInfo().getRelationName())
                     .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), msb.length() - comment.getToUserInfo().getRelationName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        msb.append("：").append(comment.getContent());
+        msb.append("\n").append(comment.getContent());
         tvComment.setText(msb);
-        tvTime.setText(DateUtil.formatDate("MM-dd kk:mm", comment.getCommentDate()));
+        tvTime.setText(DateUtil.formatDate("MM月dd日 HH:mm", comment.getCommentDate()));
     }
 
     private void doLikeList(View contentView, LikeUserList likeUserList) {
