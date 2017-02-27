@@ -7,13 +7,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.SelectThemeActivity;
@@ -22,6 +25,8 @@ import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
 import cn.timeface.circle.baby.dialogs.ProductionMenuDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
+import cn.timeface.circle.baby.events.CartBuyNowEvent;
+import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
@@ -189,9 +194,9 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                         0,//识图卡片没有booksizeid，传值0
                         String.valueOf(bookObj.getBookId()),
                         bookObj.getBookCover(),
-                        FastData.getBabyName() + "的识图卡片",
+                        bookObj.getBookName(),
                         System.currentTimeMillis(),
-                        CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD).reqPrintStatus();
+                        CartPrintPropertyDialog.REQUEST_CODE_BOOK_LIST).reqPrintStatus();
                 break;
 
             case R.id.fl_book_cover:
@@ -254,4 +259,23 @@ public class BookListActivity extends ProductionListActivity implements BookPres
 //            }
 //        }
     }
+
+    public void doDialogItemClick(View view) {
+        EventBus.getDefault().post(new CartItemClickEvent(view));
+    }
+
+    @Subscribe
+    public void onEvent(CartBuyNowEvent event) {
+        if (event != null &&
+                (event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_DIARY_CARD
+                        || event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD
+                        || event.requestCode == CartPrintPropertyDialog.REQUEST_CODE_BOOK_LIST)) {
+            if (event.response.success()) {
+                MyOrderConfirmActivity.open(this, event.response.getOrderId(), event.baseObjs);
+            } else {
+                Toast.makeText(this, event.response.getInfo(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
 }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -59,6 +60,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
 
     boolean fragmentShow = false;
     boolean userFragmentShow = false;
+//    boolean locationMapShow = false;
     @Bind(R.id.tv_content_type)
     TextView tvContentType;
     @Bind(R.id.toolbar)
@@ -147,15 +149,22 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                 selectedMedias.addAll(timePhotoFragment.getSelectedMedias());
             }
 
+            //取出所有用户发的选中的照片
             Iterator iterator = userPhotoFragmentMap.entrySet().iterator();
             while (iterator.hasNext()){
-                ServerPhotoFragment photoFragment = (ServerPhotoFragment) iterator.next();
+                Map.Entry entry = (Map.Entry) iterator.next();
+                ServerPhotoFragment photoFragment = (ServerPhotoFragment) entry.getValue();
                 selectedMedias.addAll(photoFragment.getSelectedMedias());
             }
 
-//            if(userPhotoFragment != null){
-//                selectedMedias.addAll(userPhotoFragment.getSelectedMedias());
-//            }
+            //取出所有从地点筛选选中的照片
+            Iterator iteratorLocation = locationPhotoFragmentMap.entrySet().iterator();
+            while (iteratorLocation.hasNext()){
+                Map.Entry entry = (Map.Entry) iteratorLocation.next();
+                ServerPhotoFragment photoFragment = (ServerPhotoFragment) entry.getValue();
+                selectedMedias.addAll(photoFragment.getSelectedMedias());
+            }
+
             if(labelPhotoFragment != null){
                 selectedMedias.addAll(labelPhotoFragment.getSelectedMedias());
             }
@@ -302,12 +311,13 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
      */
     @Override
     public void selectTypeLocation() {
-        if(userFragmentShow)setSelectUserFragmentHide();
         tvContentType.setText("按地点");
-        if(locationPhotoFragment == null){
+        if(userFragmentShow)setSelectUserFragmentHide();
+
+        if (locationPhotoFragment == null) {
             locationPhotoFragment = PhotoMapFragment.newInstance(this);
         }
-        showContent(locationPhotoFragment, false);
+        showContent(locationPhotoFragment, true);
         onClick(tvContentType);
     }
 
@@ -438,7 +448,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                             if (TextUtils.isEmpty(bookId)) {
                                                 locationFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), response.getLocationInfo().getCity(), mediaWrapObjs);
                                             } else {
-                                                locationFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), allSelectMedias);
+                                                locationFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), allSelectMedias, mediaWrapObjs);
                                             }
 
                                             locationPhotoFragmentMap.put(city, locationFragment);

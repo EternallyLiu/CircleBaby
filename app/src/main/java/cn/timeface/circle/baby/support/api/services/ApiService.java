@@ -1001,7 +1001,7 @@ public interface ApiService {
 
     @POST("openBook/update")
     @FormUrlEncoded
-    Observable<BaseResponse> sdkBookUpdate(
+    Observable<cn.timeface.circle.baby.support.mvp.response.bases.BaseResponse> sdkBookUpdate(
             @Field("id") String remoteId,
             @Field("book_id") String bookId,
             @Field("type") String type,
