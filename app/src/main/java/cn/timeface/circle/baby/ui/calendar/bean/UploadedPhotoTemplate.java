@@ -18,6 +18,7 @@ public class UploadedPhotoTemplate extends TFOResourceObj {
     public UploadedPhotoTemplate(PhotoModel photo) {
         //草   这个地方photoModel并不是真正的photoModel，草草草，而且高度和宽度可能是相反的
         PhotoModel pm = getOne(photo.getPhotoId(), photo.getLocalPath(), photo.getUrl());
+
         image_id = "diy/calendar/" + photo.getObjectKey().substring(6);
         image_url = photo.getUrl();
         image_width = pm.getWidth();

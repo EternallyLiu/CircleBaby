@@ -405,7 +405,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             sb.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName())).append("\n");
             builder.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName()));
-            builder.setSpan(SpannableUtils.getTextColor(Color.RED), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextColor(this,R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
             builder.setSpan(SpannableUtils.getTextSize(this, R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);

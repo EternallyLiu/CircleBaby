@@ -20,6 +20,8 @@ import cn.timeface.circle.baby.events.MediaLoadComplete;
 import cn.timeface.circle.baby.support.api.models.VideoInfo;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * author : wangshuai Created on 2017/2/6
@@ -37,6 +39,13 @@ public class LoadMediaService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         loadVideo();
         EventBus.getDefault().post(new MediaLoadComplete(1));
+        VideoInfo.getAllVideos().doOnNext(list -> {
+            for (VideoInfo videoInfo:list){
+                LogUtil.showLog("video objectkey=="+videoInfo.getVideoObjectKey());
+            }
+        }).subscribe(list -> {
+            VideoInfo.saveAll(list);
+        },throwable -> {LogUtil.showError(throwable);});
     }
 
     private void loadVideo() {

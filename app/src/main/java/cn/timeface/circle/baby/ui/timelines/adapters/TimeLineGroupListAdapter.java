@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.timelines.adapters;
 
 import android.content.Context;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -20,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import butterknife.Bind;
@@ -40,6 +42,8 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
 import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * author : wangshuai Created on 2017/2/16
@@ -55,7 +59,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     private int maxImageHeight = 240;
     private int paddingImage = 4;
     private static final int MAX_ROW_COUNT = 2;
-    private int lastPadding = 0;
 
     public TimeLineGroupListAdapter(Context activity) {
         super(activity);
@@ -64,8 +67,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         dayColor = context().getResources().getColor(R.color.sea_buckthorn);
         maxImageHeight = (int) (context().getResources().getDimension(R.dimen.size_120) * 1.5f);
         paddingImage = (int) (context().getResources().getDimension(R.dimen.size_2));
-        if (activity instanceof TabMainActivity)
-            lastPadding = (int) context().getResources().getDimension(R.dimen.size_56);
+
     }
 
     @Override
@@ -85,7 +87,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     }
 
     private int getCount() {
-
         return super.getRealItemSize();
     }
 
@@ -95,7 +96,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
             return HEADER_VIEW_TYPE + position;
 
         } else if (position < (mHeaders.size() + getCount())) {
-            BaseObj item = getItem(position - mHeaders.size());
+            BaseObj item = getItem(position);
             return item.getBaseType();
 
         } else {
@@ -138,7 +139,8 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     }
 
     public void addHeader(@NonNull View view) {
-        mHeaders.add(view);
+        if (!mHeaders.contains(view))
+            mHeaders.add(view);
     }
 
     public void addFooter(@NonNull View view) {
@@ -173,7 +175,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         if (position < mHeaders.size()) {
 
         } else if (position < (mHeaders.size() + getCount())) {
-            super.onBindViewHolder(holder, position - mHeaders.size());
+            super.onBindViewHolder(holder, position);
 
         } else {
         }
@@ -181,14 +183,14 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
     @Override
     public void initView(View contentView, int position) {
-        if (contentView != null && position == getItemCount() - 1)
-            contentView.setPadding(0, 0, 0, lastPadding);
         if (position < mHeaders.size()) {
 
         } else if (position < (mHeaders.size() + getCount())) {
             BaseObj item = getItem(position);
-            if (item == null)
+            if (item == null) {
+                LogUtil.showLog("position===" + position + "----");
                 return;
+            }
             switch (item.getBaseType()) {
                 case 1:
                     doGroup(contentView, position, (TimeGroupSimpleBean) item);
@@ -204,7 +206,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
     @Override
     public <T> T getItem(int position) {
-        return super.getItem(position);
+        return super.getItem(position - mHeaders.size());
     }
 
     /**
@@ -229,7 +231,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         TextView tvCommentcount = ViewHolder.getView(contentView, R.id.tv_commentcount);
         LinearLayout llRecode = ViewHolder.getView(contentView, R.id.ll_recode);
         TextView picCount = ViewHolder.getView(contentView, R.id.pic_count);
-        RelativeLayout rlPicCount=ViewHolder.getView(contentView,R.id.rl_pic_count);
+        RelativeLayout rlPicCount = ViewHolder.getView(contentView, R.id.rl_pic_count);
 
 
         //设置基本信息 内容 作者 时间 是否点赞 评论个数 点赞个数
@@ -385,9 +387,10 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(dayColor);
         builder.setSpan(colorSpan, 0, day.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         calendar.setText(builder);
+        LogUtil.showLog("builder==" + builder);
 
         tvDateex.setText(item.getDateEx());
-        tvAge.setText("宝宝" + item.getAge());
+        tvAge.setText(item.getAge());
         calendar.setOnClickListener(this);
         contentView.setTag(R.id.recycler_item_click_tag, position + 1);
     }
@@ -408,24 +411,38 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                     }
                     v.setClickable(true);
                 }, throwable -> {
+                    LogUtil.showError(throwable);
                 });
     }
 
+
     @Override
     public void onClick(View v) {
-        TimeLineObj timeLineObj = null;
         switch (v.getId()) {
             case R.id.icon_like:
             case R.id.tv_likecount:
-                v.setClickable(false);
-                like((Integer) v.getTag(R.id.icon_like), v);
+                Observable.defer(() -> Observable.just(v))
+                        .subscribe(view -> {
+                            v.setClickable(false);
+                            like((Integer) view.getTag(R.id.icon_like), view);
+                        }, throwable -> {
+                            LogUtil.showError(throwable);
+                        });
                 break;
             case R.id.icon:
-                int allDetailsListPosition = (int) v.getTag(R.id.icon);
-                int position = (int) v.getTag(R.id.recycler_item_click_tag);
-                timeLineObj = getItem(allDetailsListPosition);
-                if (timeLineObj != null)
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition, timeLineObj.getMediaArray(), timeLineObj.getUrls(), position, true, false);
+                Observable.defer(() -> Observable.just(v))
+                        .subscribe(view -> {
+                            int allDetailsListPosition = (int) view.getTag(R.id.icon);
+                            int position = (int) view.getTag(R.id.recycler_item_click_tag);
+                            TimeLineObj item = getItem(allDetailsListPosition);
+                            item.setAllDetailsListPosition(allDetailsListPosition);
+                            if (item != null)
+                                FragmentBridgeActivity.openBigimageFragment(v.getContext(), item.getAllDetailsListPosition(), item.getMediaArray(), item.getUrls(), position, true, false);
+                        }, throwable -> {
+                            LogUtil.showError(throwable);
+                        });
+
+
                 break;
             case R.id.rl_single:
                 VideoPlayActivity.open(context(), v.getTag(R.id.rl_single).toString());
@@ -434,20 +451,73 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                 FragmentBridgeActivity.open(context(), "TimeLineFragment");
                 break;
             case R.id.icon_comment:
-
-                int index = (int) v.getTag(R.id.recycler_item_click_tag);
-                timeLineObj = getItem(index);
-                TimeFaceDetailFragment.open(context(), index, true, timeLineObj);
+                Observable.defer(() -> Observable.just((int) v.getTag(R.id.recycler_item_click_tag)))
+                        .map(index -> {
+                            TimeLineObj item = getItem(index);
+                            item.setAllDetailsListPosition(index);
+                            return item;
+                        }).subscribe(item -> TimeFaceDetailFragment.open(context(), item.getAllDetailsListPosition(), true, item), throwable -> LogUtil.showError(throwable));
                 break;
             default:
-                int tag = (int) v.getTag(R.id.recycler_item_click_tag);
-                timeLineObj = getItem(tag);
-                if (getItemClickLister() == null) {
-                    if (timeLineObj != null) {
-                        TimeFaceDetailFragment.open(context(), tag, timeLineObj);
-                    }
-                } else super.onClick(v);
+                Observable.defer(() -> Observable.just((int) v.getTag(R.id.recycler_item_click_tag)))
+                        .map(postion -> {
+                            TimeLineObj item = getItem(postion);
+                            item.setAllDetailsListPosition(postion);
+                            return item;
+                        }).subscribe(item -> {
+                    if (getItemClickLister() == null) {
+                        if (item != null) {
+                            TimeFaceDetailFragment.open(context(), item.getAllDetailsListPosition(), item);
+                        }
+                    } else super.onClick(v);
+                }, throwable -> {
+                    LogUtil.showError(throwable);
+                });
                 break;
         }
+    }
+
+    @Override
+    protected void handleMsg(Message msg) {
+        switch (msg.what) {
+            case DELETE_ALL:
+                if (list != null && list.size() > 0) {
+                    list.clear();
+                    notifyDataSetChanged();
+                }
+                break;
+            case UPDATE_DATA_ADD_LIST_CENTER:
+                if (msg.obj != null) {
+                    if (msg.arg1 >= 0 && msg.arg1 <= getRealItemSize() && msg.arg2 > 0) {
+                        if (msg.arg2 == 1) list.add(msg.arg1, msg.obj);
+                        else list.addAll(msg.arg1, (Collection<Object>) msg.obj);
+                        notifyItemRangeInserted(msg.arg1 + mHeaders.size(), msg.arg2);
+                        if (msg.arg1 + mHeaders.size() < getItemCount())
+                            notifyItemRangeChanged(msg.arg1 + mHeaders.size(), getItemCount() - msg.arg1 - mHeaders.size());
+                    }
+                }
+                break;
+            case UPDATE_DATA_DELETE_DATA:
+                if (msg.arg1 >= 0 && msg.arg1 < getRealItemSize()) {
+                    for (int i = 0; i < msg.arg2; i++) {
+                        list.remove(msg.arg1);
+                        notifyItemRemoved(msg.arg1 + mHeaders.size());
+                    }
+                }
+                if (msg.arg1 + mHeaders.size() < getItemCount())
+                    notifyItemRangeChanged(msg.arg1 + mHeaders.size(), getItemCount() - msg.arg1 - mHeaders.size());
+                break;
+            case UPDATE_DATA_UPDATE_DATA:
+                if (msg.obj != null) {
+                    list.remove(msg.arg1);
+                    list.add(msg.arg1, msg.obj);
+                }
+                notifyItemChanged(msg.arg1 + mHeaders.size());
+//                if (msg.arg1 != getRealItemSize())
+//                    notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
+                break;
+        }
+        if (getLoadDataFinish() != null)
+            getLoadDataFinish().loadfinish(msg.what);
     }
 }

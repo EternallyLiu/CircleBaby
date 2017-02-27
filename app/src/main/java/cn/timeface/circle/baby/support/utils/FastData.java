@@ -328,6 +328,7 @@ public class FastData extends Remember {
 
     public static void setUserInfo(UserObj userObj) {
         if (userObj != null) {
+            BabyObj.deleteAll();
             setUserName(userObj.getNickName());
             setUserId(userObj.getUserId());
             setAvatar(userObj.getAvatar());

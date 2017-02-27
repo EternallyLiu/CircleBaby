@@ -1,7 +1,6 @@
 package cn.timeface.circle.baby.activities;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +21,7 @@ import com.alibaba.sdk.android.oss.ServiceException;
 import com.bumptech.glide.Glide;
 import com.wechat.photopicker.PickerPhotoActivity;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
@@ -35,8 +35,8 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
@@ -44,6 +44,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
 import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -80,6 +81,8 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     public static final int CROP_IMG_REQUEST_CODE = 1002;
     private final int PicutreSelcted = 10;
     private final int RELATIONSHIP = 1;
+    @Bind(R.id.rb_both)
+    RadioButton rbBoth;
     private int gender;
     File selImageFile;
     File outFile;
@@ -97,7 +100,6 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FragmentBridgeActivity.open(this, CreateBabyFragment.class.getSimpleName());
         setContentView(R.layout.activity_createbaby);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -108,10 +110,12 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         } else {
             rlFocus.setVisibility(View.GONE);
         }
+        tvNext.setText("完成");
         tvBack.setOnClickListener(this);
         tvNext.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);
         rbGirl.setOnClickListener(this);
+        rbBoth.setOnClickListener(this);
         rbBoy.setOnClickListener(this);
         etBirthday.setOnClickListener(this);
         rlFocus.setOnClickListener(this);
@@ -165,9 +169,12 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(userLoginResponse -> {
                                 if (userLoginResponse.success()) {
-                                    if (showFocus) {
-                                        TabMainActivity.open(this);
-                                    }
+//                                    if (showFocus) {
+//                                        TabMainActivity.open(this);
+//                                    }
+                                    if (userLoginResponse.getUserInfo().getBabycount() <= 1)
+                                        TabMainActivity.open(this, 1);
+                                    else EventBus.getDefault().post(new BabyAttentionEvent(-1));
                                     FastData.setUserInfo(userLoginResponse.getUserInfo());
                                     finish();
                                 } else {
@@ -184,13 +191,20 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
             case R.id.iv_avatar:
                 startPhotoPick();
                 break;
+            case R.id.rb_both:
+                gender = 2;
+                rbGirl.setChecked(false);
+                rbBoy.setChecked(false);
+                break;
             case R.id.rb_girl:
                 gender = 0;
                 rbBoy.setChecked(false);
+                rbBoth.setChecked(false);
                 break;
             case R.id.rb_boy:
                 gender = 1;
                 rbGirl.setChecked(false);
+                rbBoth.setChecked(false);
                 break;
             case R.id.et_birthday:
                 Calendar calendar = Calendar.getInstance();

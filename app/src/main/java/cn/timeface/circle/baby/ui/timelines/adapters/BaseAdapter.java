@@ -50,6 +50,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     public static final int UPDATE_DATA_ADD_LIST_CENTER = 1101;
 
     public static final int DELETE_ALL = -100001;
+    public static final int ERROR_DATA = -990099;
 
     /**
      * 删除数据
@@ -67,7 +68,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
         }
     };
 
-    private void handleMsg(Message msg) {
+    protected void handleMsg(Message msg) {
         Log.i("test", "handleMsg:" + msg.what + "--" + msg.arg1 + "--" + msg.arg2);
         switch (msg.what) {
             case DELETE_ALL:
@@ -209,7 +210,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
             handler.sendMessage(handler.obtainMessage(UPDATE_DATA_DELETE_DATA, itemId, count, null));
     }
 
-    private ArrayList list = new ArrayList<>(0);
+    protected ArrayList list = new ArrayList<>(0);
     protected LayoutInflater inflater = null;
 
     protected Context activity;
@@ -283,7 +284,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
 
     public void error() {
         if (getLoadDataFinish() != null)
-            getLoadDataFinish().loadfinish(DELETE_ALL);
+            getLoadDataFinish().loadfinish(ERROR_DATA);
     }
 
     public Context context() {

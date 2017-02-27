@@ -38,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alipay.sdk.auth.APAuthInfo;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -75,6 +76,7 @@ import cn.timeface.circle.baby.support.api.models.objs.RecommendObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.responses.BabyInfoResponse;
+import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
@@ -90,10 +92,14 @@ import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
+import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.TimerImageView;
 import cn.timeface.circle.baby.views.TFStateView;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener, BaseAdapter.LoadDataFinish, EmptyDataView.EmptyCallBack {
     private static final String ARG_PARAM1 = "param1";
@@ -220,7 +226,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 .subscribe(response -> {
                 }, throwable -> {
                     Log.e(TAG, "updateLoginInfo:");
-
                 });
     }
 
@@ -316,100 +321,69 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void reqData(int page) {
+        LogUtil.showLog("page===" + page);
         apiService.timeline(page, PAGE_SIZE)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(timelineResponse -> {
-                    if (tfStateView != null) {
-                        tfStateView.finish();
+                .map(timelineResponse -> timelineResponse.getDataList())
+                .map(timeLineGroupObjs -> {
+                    ArrayList<BaseObj> list = new ArrayList<>();
+                    for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
+                        TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+                        if (!adapter.containObj(bean) || currentPage == 1)
+                            list.add(bean);
+                        for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                            if (!adapter.containObj(timeLineObj) || currentPage == 1)
+                                list.add(timeLineObj);
+                        }
                     }
-                    tfptrListViewHelper.finishTFPTRRefresh();
+                    LogUtil.showLog("list size==" + list.size());
+                    if (currentPage == 1) adapter.addList(true, list);
+                    else adapter.addList(list);
+                    return list;
+                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
+            if (tfStateView != null) {
+                tfStateView.finish();
+            }
+            tfptrListViewHelper.finishTFPTRRefresh();
+            LogUtil.showLog("finish==" + adapter.getRealItemSize());
 
-                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
-//                        if (!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())) {
-//                            adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
-//                        }
-                    }
-                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
-                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
-                    }
-                    setDataList(timelineResponse.getDataList(), currentPage == 1);
-                }, error -> {
-                    if (tfStateView != null) {
-                        tfStateView.showException(error);
-                    }
-                    Log.e(TAG, "timeline:");
-                    tfptrListViewHelper.finishTFPTRRefresh();
-                    error.printStackTrace();
-                });
+        }, throwable -> {
+            LogUtil.showError(throwable);
+            if (tfStateView != null) {
+                tfStateView.showException(throwable);
+            }
+            tfptrListViewHelper.finishTFPTRRefresh();
+            adapter.error();
+        });
     }
 
     private void reqData(int page, int pageSize) {
         apiService.timeline(page, pageSize)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(timelineResponse -> {
-                    if (tfStateView != null) {
-                        tfStateView.finish();
+                .map(timelineResponse -> timelineResponse.getDataList())
+                .map(timeLineGroupObjs -> {
+                    ArrayList<BaseObj> list = new ArrayList<>();
+                    for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
+                        TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+                        list.add(bean);
+                        for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                            list.add(timeLineObj);
+                        }
                     }
-                    tfptrListViewHelper.finishTFPTRRefresh();
-
-                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
-//                        if (!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())) {
-//                            adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
-//                        }
-                    }
-                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
-                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
-                    }
-                    if (timelineResponse.success()) {
-                        currentPage = pageSize / PAGE_SIZE;
-                        currentPage++;
-                    }
-                    setDataList(timelineResponse.getDataList(), true);
-                }, error -> {
-                    if (tfStateView != null) {
-                        tfStateView.showException(error);
-                    }
-                    tfptrListViewHelper.finishTFPTRRefresh();
-                    LogUtil.showError(error);
-                });
+                    adapter.addList(true, list);
+                    return list;
+                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
+            if (tfStateView != null) {
+                tfStateView.finish();
+            }
+            tfptrListViewHelper.finishTFPTRRefresh();
+        }, throwable -> {
+            if (tfStateView != null) {
+                tfStateView.showException(throwable);
+            }
+            tfptrListViewHelper.finishTFPTRRefresh();
+            adapter.error();
+        });
     }
 
-    private void setDataList(List<TimeLineGroupObj> dataList, boolean flag) {
-        if (flag || currentPage == 1) {
-            flag = true;
-        }
-        ArrayList<BaseObj> list = new ArrayList<>();
-        for (TimeLineGroupObj groupObj : dataList) {
-            TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
-            if (flag)
-                list.add(bean);
-            else if (!adapter.containObj(bean))
-                list.add(bean);
-            for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
-                if (flag)
-                    list.add(timeLineObj);
-                else if (!adapter.containObj(timeLineObj))
-                    list.add(timeLineObj);
-            }
-        }
-        if (list.size() < 3) {
-            if (enableAnimation && !bottomMenuShow) {
-                bottomMenuShow = true;
-                Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
-                        "translationY",
-                        ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
-                        0);
-                animatorSet.playTogether(anim3);
-                animatorSet.start();
-            }
-        }
-
-        if (flag) {
-            adapter.addList(true, list);
-        } else {
-            adapter.addList(list);
-        }
-    }
 
     @Override
     public void onResume() {
@@ -441,6 +415,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 adapter.notifyDataSetChanged();
                 break;
             case R.id.upload:
+                adapter.removeHeader(picChangeView);
+                adapter.notifyDataSetChanged();
                 PublishActivity.open(getActivity(), PublishActivity.PHOTO);
                 break;
             case R.id.toolbar:
@@ -644,7 +620,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             TimerImageView imageView = (TimerImageView) picChangeView.findViewById(R.id.pic_array);
             TextView addCount = (TextView) picChangeView.findViewById(R.id.pic_add_count);
             TextView upload = (TextView) picChangeView.findViewById(R.id.upload);
-            ImageView imageView1= (ImageView) picChangeView.findViewById(R.id.close);
+            ImageView imageView1 = (ImageView) picChangeView.findViewById(R.id.close);
             imageView1.setOnClickListener(this);
             String count = list.size() + "";
             String content = String.format("手机新增了 %s 张照片！", count);
@@ -665,29 +641,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Subscribe
     public void onEvent(PicSaveCompleteEvent pic) {
-        PhotoModel.getAllPhotoId().compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(list -> {
-                    LogUtil.showLog(list);
-                    if (!TextUtils.isEmpty(list))
-                        apiService.mediaBackup(list)
-                                .compose(SchedulersCompat.applyIoSchedulers())
-                                .subscribe(response -> {
-                                    if (response.success()) {
-                                        List<PhotoModel> models = SQLite.select().from(PhotoModel.class).where(PhotoModel_Table.photo_id.in(response.getDataList()))
-                                                .queryList();
-                                        ArrayList<String> arrayList = new ArrayList<String>();
-                                        for (int i = 0; i < models.size(); i++) {
-                                            arrayList.add(models.get(i).getLocalPath());
-                                        }
-                                        initPicChange(arrayList);
-                                    }
-                                }, error -> {
-                                    Log.e("test", "error:" + error.getMessage(), error);
-                                });
-                }, error -> {
-                    LogUtil.showError(error);
-                });
-
+        PhotoModel.getAllPhotoId().flatMap(s -> apiService.mediaBackup(s))
+                .map(mediaIdResponse -> {
+                    ArrayList<String> arrayList = new ArrayList<String>();
+                    if (mediaIdResponse.success()) {
+                        List<PhotoModel> models = SQLite.select().from(PhotoModel.class).where(PhotoModel_Table.photo_id.in(mediaIdResponse.getDataList()))
+                                .queryList();
+                        for (int i = 0; i < models.size(); i++) {
+                            arrayList.add(models.get(i).getLocalPath());
+                        }
+                    }
+                    return arrayList;
+                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> initPicChange(list), throwable -> LogUtil.showError(throwable));
     }
 
     /**
@@ -740,6 +705,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Override
     public void loadfinish(int code) {
+        tfptrListViewHelper.finishTFPTRRefresh();
+        LogUtil.showLog("size===" + adapter.getRealItemSize() + "----code===" + code);
         emptyView.setVisibility(View.GONE);
         if (code == BaseAdapter.UPDATE_DATA_ADD_LIST_CENTER) {
             LogUtil.showLog("currentTimeId==" + currentPage);
@@ -749,29 +716,33 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             currentTimeId = 0;
         } else if (code != BaseAdapter.DELETE_ALL && adapter.getRealItemSize() <= 0) {
             if (tfStateView == null || tfStateView.getVisibility() != View.VISIBLE) {
-                String relativeName = FastData.getRelationName();
-                BabyObj babyObj = FastData.getBabyObj();
-                StringBuilder sb = new StringBuilder();
-                SpannableStringBuilder builder = new SpannableStringBuilder();
-                sb.append(String.format("%s 还没有成长记录哦", babyObj.getNickName()));
-                builder.append(String.format("%s 还没有成长记录哦", babyObj.getNickName()));
-                builder.setSpan(SpannableUtils.getTextColor(Color.RED), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                Observable.defer(() -> {
+                    String relativeName = FastData.getRelationName();
+                    BabyObj babyObj = FastData.getBabyObj();
+                    StringBuilder sb = new StringBuilder();
+                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                    sb.append(String.format("%s 还没有成长记录哦", babyObj.getNickName()));
+                    builder.append(String.format("%s 还没有成长记录哦", babyObj.getNickName()));
+                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
-                sb.append(String.format("\n %s 赶紧导入 %s 的照片了", relativeName, babyObj.getNickName()));
-                builder.append(String.format("\n %s 赶紧导入 %s 的照片了", relativeName, babyObj.getNickName()));
-                builder.setSpan(SpannableUtils.getTextColor(Color.RED), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    sb.append(String.format("\n %s 赶紧导入 %s 的照片了", relativeName, babyObj.getNickName()));
+                    builder.append(String.format("\n %s 赶紧导入 %s 的照片了", relativeName, babyObj.getNickName()));
+                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
-                builder.setSpan(SpannableUtils.getTextSize(getActivity(), R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                emptyView.getErrorTitle().setText(builder);
-                emptyView.getEmptyIcon().setVisibility(View.GONE);
-                emptyView.setRetry(true);
-                emptyView.setErrorRetryText("导入手机里的照片");
-                emptyView.setEmptyCallBack(this);
-                emptyView.setVisibility(View.VISIBLE);
+                    builder.setSpan(SpannableUtils.getTextSize(getActivity(), R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    return Observable.just(builder);
+                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(spannableStringBuilder -> {
+                    emptyView.getErrorTitle().setText(spannableStringBuilder);
+                    emptyView.getEmptyIcon().setVisibility(View.GONE);
+                    emptyView.setRetry(true);
+                    emptyView.setErrorRetryText("导入手机里的照片");
+                    emptyView.setEmptyCallBack(this);
+                    emptyView.setVisibility(View.VISIBLE);
+                }, throwable -> LogUtil.showError(throwable));
             }
         }
     }

@@ -148,13 +148,11 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
             Iterator iteratorFragment = userFragmentMap.entrySet().iterator();
             while (iteratorFragment.hasNext()){
-                ServerTimeFragment timeFragment = (ServerTimeFragment) iteratorFragment.next();
+                Map.Entry entry = (Map.Entry) iteratorFragment.next();
+                ServerTimeFragment timeFragment = (ServerTimeFragment) entry.getValue();
                 selectedMedias.addAll(timeFragment.getSelectedMedias());
             }
 
-//            if(userFragment != null){
-//                selectedMedias.addAll(userFragment.getSelectedMedias());
-//            }
 
             int pageNum = selectedMedias.size();
             if(pageNum == 0){

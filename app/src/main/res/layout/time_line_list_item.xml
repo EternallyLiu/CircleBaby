@@ -15,14 +15,6 @@
         android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:lineSpacingMultiplier="1.2"
-            android:padding="@dimen/size_6"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_medium" />
 
 
         <LinearLayout
@@ -47,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="@dimen/size_4"
                 android:text="共9张图片  "
@@ -57,12 +49,12 @@
 
             <ImageView
                 android:id="@+id/iv_pic_count"
-                android:layout_width="@dimen/size_16"
-                android:layout_height="@dimen/size_16"
+                android:layout_width="@dimen/size_15"
+                android:layout_height="@dimen/size_9"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/pic_count"
                 android:scaleType="fitCenter"
-                android:src="@drawable/time_line_select_down" />
+                android:src="@drawable/home_pic_count" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -88,6 +80,14 @@
                 android:visibility="gone" />
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.2"
+            android:padding="@dimen/size_6"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_medium" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -84,16 +84,29 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param contentType
      * @param userId
      * @param selectedMedias
+     * @param mediaWrapObjs
      * @return
      */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias){
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putString("user_id", userId);
         bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
+        bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    /**
+     * 编辑状态
+     * @param contentType
+     * @param userId
+     * @param selectedMedias
+     * @return
+     */
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias){
+        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>());
     }
 
     public ServerPhotoFragment() {}
