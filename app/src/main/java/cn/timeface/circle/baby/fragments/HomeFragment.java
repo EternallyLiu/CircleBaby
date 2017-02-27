@@ -64,6 +64,7 @@ import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.PicSaveCompleteEvent;
 import cn.timeface.circle.baby.events.StartUploadEvent;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
@@ -72,6 +73,7 @@ import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel_Table;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.RecommendObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
@@ -199,7 +201,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         adapter.setLoadDataFinish(this);
         contentRecyclerView.setAdapter(adapter);
 
-        tfStateView.setOnRetryListener(() -> {currentPage=1;reqData(currentPage);});
+        tfStateView.setOnRetryListener(() -> {
+            currentPage = 1;
+            reqData(currentPage);
+        });
         tfStateView.loading();
 
         tvAlbum.setOnClickListener(this);
@@ -701,6 +706,30 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             if (getActivity().getCurrentFocus() != null)
                 manager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    @Subscribe
+    public void onEvent(TimeEditPhotoDeleteEvent event) {
+
+        TimeLineObj currentTimeLineObj = adapter.getItem(event.getAllDetailsListPosition());
+        if (currentTimeLineObj != null)
+            Observable.defer(() -> Observable.just(event)).map(event1 -> {
+                if (event.getMediaObj() != null) return event.getMediaObj();
+                else return new MediaObj(event.getUrl(), event.getUrl());
+            })
+                    .filter(mediaObj -> currentTimeLineObj.getMediaList().contains(mediaObj))
+                    .map(mediaObj -> currentTimeLineObj.getMediaList().get(currentTimeLineObj.getMediaList().indexOf(mediaObj)))
+                    .flatMap(mediaObj -> {
+                        event.setMediaObj(mediaObj);
+                        return apiService.delTimeOfMedia(mediaObj.getId(), currentTimeLineObj.getTimeId());
+                    })
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(baseResponse -> {
+                        if (baseResponse.success()) {
+                            currentTimeLineObj.getMediaList().remove(event.getMediaObj());
+                            adapter.updateItem(currentTimeLineObj);
+                        }
+                    }, throwable -> LogUtil.showError(throwable));
     }
 
     @Override

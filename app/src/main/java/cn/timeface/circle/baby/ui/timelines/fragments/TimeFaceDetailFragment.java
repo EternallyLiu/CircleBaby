@@ -51,6 +51,7 @@ import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -70,6 +71,7 @@ import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.GridStaggerLookup;
 import cn.timeface.circle.baby.ui.timelines.views.SelectImageView;
+import rx.Observable;
 import rx.functions.Func1;
 
 /**
@@ -118,7 +120,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         if (bundle != null && bundle.containsKey(TimeLineObj.class.getName())) {
             currentTimeLineObj = bundle.getParcelable(TimeLineObj.class.getName());
         }
-        isEditor=bundle.getBoolean("isEditor",true);
+        isEditor = bundle.getBoolean("isEditor", true);
         if (bundle != null && bundle.containsKey("allDetailsListPosition"))
             allDetailsListPosition = bundle.getInt("allDetailsListPosition", -1);
         commentable = bundle.getBoolean("commentable", false);
@@ -186,10 +188,11 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
         FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
     }
-    public static void open(Context context, TimeLineObj timeLineObj,boolean isEditor) {
+
+    public static void open(Context context, TimeLineObj timeLineObj, boolean isEditor) {
         LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
         Bundle bundle = new Bundle();
-        bundle.putBoolean("isEditor",isEditor);
+        bundle.putBoolean("isEditor", isEditor);
         bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
         FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
     }
@@ -275,7 +278,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (isEditor){
+        if (isEditor) {
             inflater.inflate(R.menu.menu_timeline_detail, menu);
             currentMenu = menu;
             doMenu();
@@ -357,7 +360,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         } else if (!TextUtils.isEmpty(mediaObj.getImgUrl())) {
             ArrayList<MediaObj> medias = medias();
             FragmentBridgeActivity.openBigimageFragment(getActivity(), allDetailsListPosition, medias,
-                    urls(medias), position, true, false);
+                    urls(medias), position, true, isEditor ? currentTimeLineObj.getAuthor().equals(FastData.getUserInfo()) : false);
         }
     }
 
@@ -487,6 +490,26 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
             mediaList.get(indexOf).setFavoritecount(event.getMediaObj().getFavoritecount());
             mediaList.get(indexOf).setIsFavorite(event.getMediaObj().getIsFavorite());
         }
+    }
+
+    @Subscribe
+    public void onEvent(TimeEditPhotoDeleteEvent event) {
+        Observable.defer(() -> Observable.just(event)).map(event1 -> {
+            if (event.getMediaObj() != null) return event.getMediaObj();
+            else return new MediaObj(event.getUrl(), event.getUrl());
+        })
+                .filter(mediaObj -> currentTimeLineObj.getMediaList().contains(mediaObj))
+                .map(mediaObj -> currentTimeLineObj.getMediaList().get(currentTimeLineObj.getMediaList().indexOf(mediaObj)))
+                .flatMap(mediaObj -> {
+                    event.setMediaObj(mediaObj);
+                    return apiService.delTimeOfMedia(mediaObj.getId(), currentTimeLineObj.getTimeId());
+                })
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(baseResponse -> {
+                    if (baseResponse.success()) {
+                        adapter.deleteItem(event.getMediaObj());
+                    }
+                }, throwable -> LogUtil.showError(throwable));
     }
 
     @Subscribe
