@@ -172,27 +172,27 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
 
     }
 
-    public void clickPlus(View view) {
-        int num = (int) view.getTag(R.string.tag_ex);
-        PrintPropertyPriceObj propertyObj = (PrintPropertyPriceObj) view.getTag(R.string.tag_obj);
-        if (num < 99) {
-            num += 1;
-            propertyObj.setNum(num);
-        }
-        mAdapter.notifyDataSetChanged();
-        calcTotalPrice();
-    }
-
-    public void clickMinus(View view) {
-        int num = (int) view.getTag(R.string.tag_ex);
-        PrintPropertyPriceObj propertyObj = (PrintPropertyPriceObj) view.getTag(R.string.tag_obj);
-        if (num > 1) {
-            num -= 1;
-            propertyObj.setNum(num);
-        }
-        mAdapter.notifyDataSetChanged();
-        calcTotalPrice();
-    }
+//    public void clickPlus(View view) {
+//        int num = (int) view.getTag(R.string.tag_ex);
+//        PrintPropertyPriceObj propertyObj = (PrintPropertyPriceObj) view.getTag(R.string.tag_obj);
+//        if (num < 99) {
+//            num += 1;
+//            propertyObj.setNum(num);
+//        }
+//        mAdapter.notifyDataSetChanged();
+//        calcTotalPrice();
+//    }
+//
+//    public void clickMinus(View view) {
+//        int num = (int) view.getTag(R.string.tag_ex);
+//        PrintPropertyPriceObj propertyObj = (PrintPropertyPriceObj) view.getTag(R.string.tag_obj);
+//        if (num > 1) {
+//            num -= 1;
+//            propertyObj.setNum(num);
+//        }
+//        mAdapter.notifyDataSetChanged();
+//        calcTotalPrice();
+//    }
 
     /**
      * click 更改属性
@@ -242,6 +242,10 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                         dataList.addAll(printCartListResponse.getDataList());
                         if (mAdapter == null) {
                             mAdapter = new CartAdapter(CartActivity.this, dataList);
+                            mAdapter.setOnCartNumberChangeListener((obj, newNumber) -> {
+                                mAdapter.notifyDataSetChanged();
+                                calcTotalPrice();
+                            });
                             rlRecyclerView.setAdapter(mAdapter);
                         } else {
                             mAdapter.setListData(dataList);

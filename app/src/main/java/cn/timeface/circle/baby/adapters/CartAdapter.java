@@ -53,6 +53,7 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
                     item.getPrintList(),
                     listData.indexOf(item),
                     item);
+            adapter.setOnCartNumberChangeListener(onCartNumberChangeListener);
             adapter.setPropertyState(stateMap.get(adapter.getBookId()) == null
                     ? CartPrintPropertyAdapter.PROPERTY_STATE_NOMAL
                     : stateMap.get(adapter.getBookId()));
@@ -131,6 +132,12 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
 
     public CartPrintPropertyAdapter getPropertyAdapter(int position) {
         return adapterList.get(position);
+    }
+
+    private CartPrintPropertyAdapter.OnCartNumberChangeListener onCartNumberChangeListener;
+
+    public void setOnCartNumberChangeListener(CartPrintPropertyAdapter.OnCartNumberChangeListener onCartNumberChangeListener) {
+        this.onCartNumberChangeListener = onCartNumberChangeListener;
     }
 
     /**

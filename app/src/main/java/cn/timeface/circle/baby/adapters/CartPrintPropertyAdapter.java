@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -68,6 +70,7 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
         }
 
         ((ViewHolder) viewHolder).etNumber.setText(String.valueOf(obj.getNum()));
+        ((ViewHolder) viewHolder).etNumber.setSelection(String.valueOf(obj.getNum()).length());
         if (obj.getNum() < 99 && obj.getNum() > 1) {
             ((ViewHolder) viewHolder).ibPlus.setBackgroundResource(R.drawable.shape_number_input_bg);
             ((ViewHolder) viewHolder).ibMinus.setBackgroundResource(R.drawable.shape_number_input_bg);
@@ -110,7 +113,7 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
             ((ViewHolder) viewHolder).ivBookbg.setImageResource(R.drawable.book_front_mask);
         }
 
-        GlideUtil.displayImage(cartItem.getCoverImage(),((ViewHolder) viewHolder).ivBookCover);
+        GlideUtil.displayImage(cartItem.getCoverImage(), ((ViewHolder) viewHolder).ivBookCover);
 
         //台历数据
 //        if (TypeConstant.BOOK_TYPE_DESK_CALENDAR == cartItem.getBookType()) {
@@ -145,10 +148,15 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
         ((ViewHolder) viewHolder).ibMinus.setTag(R.string.tag_obj, obj);
         ((ViewHolder) viewHolder).ibPlus.setTag(R.string.tag_ex, Integer.parseInt(((ViewHolder) viewHolder).etNumber.getText().toString()));
         ((ViewHolder) viewHolder).ibPlus.setTag(R.string.tag_obj, obj);
+        ((ViewHolder) viewHolder).etNumber.setTag(R.string.tag_obj, obj);
         ((ViewHolder) viewHolder).tvDelete.setTag(R.string.tag_index, i);
         ((ViewHolder) viewHolder).tvDelete.setTag(R.string.tag_ex, sPosition);
 //        ((ViewHolder) viewHolder).mIvPullDown.setTag(R.string.tag_obj, obj);
 //        ((ViewHolder) viewHolder).mIvPullDown.setTag(R.string.tag_ex, cartItem);
+
+        ((ViewHolder) viewHolder).ibMinus.setOnClickListener(minusClickListener);
+        ((ViewHolder) viewHolder).ibPlus.setOnClickListener(plusClickListener);
+        ((ViewHolder) viewHolder).etNumber.addTextChangedListener(new EditTextWatcher(((ViewHolder) viewHolder).etNumber, 99));
 
         //处理printcode
         switch (cartItem.getPrintCode()) {
@@ -280,4 +288,96 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
             ButterKnife.bind(this, view);
         }
     }
+
+    private View.OnClickListener plusClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            PrintPropertyPriceObj propertyObj = (PrintPropertyPriceObj) v.getTag(R.string.tag_obj);
+            int num = propertyObj.getNum();
+            if (num < 99) {
+                num += 1;
+                propertyObj.setNum(num);
+//                notifyDataSetChanged();
+
+                if (onCartNumberChangeListener != null) {
+                    onCartNumberChangeListener.onChange(propertyObj, num);
+                }
+            }
+        }
+    };
+
+    private View.OnClickListener minusClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            PrintPropertyPriceObj propertyObj = (PrintPropertyPriceObj) v.getTag(R.string.tag_obj);
+            int num = propertyObj.getNum();
+            if (num > 1) {
+                num -= 1;
+                propertyObj.setNum(num);
+//                notifyDataSetChanged();
+
+                if (onCartNumberChangeListener != null) {
+                    onCartNumberChangeListener.onChange(propertyObj, num);
+                }
+            }
+        }
+    };
+
+    private OnCartNumberChangeListener onCartNumberChangeListener;
+
+    public void setOnCartNumberChangeListener(OnCartNumberChangeListener onCartNumberChangeListener) {
+        this.onCartNumberChangeListener = onCartNumberChangeListener;
+    }
+
+    public interface OnCartNumberChangeListener {
+        void onChange(PrintPropertyPriceObj obj, int newNumber);
+    }
+
+    private class EditTextWatcher implements TextWatcher {
+        private EditText editText;
+        private int maxNum;
+
+        public EditTextWatcher(EditText editText, int max) {
+            this.editText = editText;
+            this.maxNum = max;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            int num = 1;
+            if (TextUtils.isEmpty(s) || s.toString().equals("0")) {
+                s.replace(0, s.length(), "1");
+            } else if (s.toString().startsWith("-") || s.toString().startsWith("0")) {
+                s.replace(0, 1, "");
+                num = Integer.parseInt(s.toString());
+            } else {
+                num = Integer.parseInt(s.toString());
+                if (num > maxNum) {
+                    s.replace(0, s.length(), String.valueOf(maxNum));
+                    num = maxNum;
+                } else if (num < 1) {
+                    num = 1;
+                }
+            }
+
+            PrintPropertyPriceObj propertyObj = (PrintPropertyPriceObj) editText.getTag(R.string.tag_obj);
+            if (num != propertyObj.getNum()) {
+                propertyObj.setNum(num);
+//            notifyDataSetChanged();
+
+                if (onCartNumberChangeListener != null) {
+                    onCartNumberChangeListener.onChange(propertyObj, num);
+                }
+            }
+        }
+    }
+
 }

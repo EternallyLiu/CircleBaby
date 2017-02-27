@@ -114,6 +114,8 @@
                 android:id="@+id/ll_plus_minus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -123,7 +125,6 @@
                     android:layout_height="@dimen/size_36"
                     android:background="@drawable/shape_grey_border_bg"
                     android:clickable="true"
-                    android:onClick="clickMinus"
                     android:src="@drawable/ic_minus_default" />
 
                 <EditText
@@ -133,8 +134,8 @@
                     android:layout_marginLeft="@dimen/view_space_small"
                     android:layout_marginRight="@dimen/view_space_small"
                     android:background="@drawable/shape_number_input_bg"
-                    android:focusable="false"
                     android:gravity="center"
+                    android:imeOptions="actionDone"
                     android:inputType="numberSigned"
                     android:padding="5dp"
                     android:text="1"
@@ -147,7 +148,6 @@
                     android:layout_height="@dimen/size_36"
                     android:background="@drawable/shape_red_border_bg"
                     android:clickable="true"
-                    android:onClick="clickPlus"
                     android:src="@drawable/ic_plus_press" />
             </LinearLayout>
 
