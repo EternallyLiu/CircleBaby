@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 
@@ -14,6 +15,7 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class BookObj extends BaseObj implements Parcelable {
+    @SerializedName(value = "autor", alternate = {"author"})
     private UserObj author;//这本书的作者
     private BabyObj baby;//书所属的孩子
     private String bookCover;//书本封面

@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -48,9 +48,9 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         ViewHolder holder = (ViewHolder) viewHolder;
         final BookObj bookObj = listData.get(position);
 
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 DeviceUtil.dpToPx(mContext.getResources(), 120),
-                RelativeLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
         lp.setMargins(DeviceUtil.dpToPx(mContext.getResources(), 16), 0, 0, 0);
         holder.flBookCover.setLayoutParams(lp);
@@ -69,7 +69,7 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING){
             lp.width = DeviceUtil.dpToPx(
                     mContext.getResources(),
-                    150);
+                    130);
             holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 680, 524);
         } else {
             holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
@@ -79,9 +79,10 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
                 .load(bookObj.getBookCover())
                 .into(holder.ivBookCover);
         holder.tvTitle.setText(bookObj.getBookName());
-        holder.tvPagenum.setText(String.valueOf(bookObj.getPageNum()));
-        holder.tvCreattime.setText(DateUtil.getYear2(bookObj.getCreateTime()));
-        if(clickListener != null ) {
+        holder.tvPagenum.setText("页      数: "+String.valueOf(bookObj.getPageNum()));
+        holder.tvAuthor.setText("作      者: " + (bookObj.getAuthor() != null ? bookObj.getAuthor().getNickName() : ""));
+        holder.tvCreattime.setText("创建时间: : " + DateUtil.getYear2(bookObj.getCreateTime()));
+        if (clickListener != null) {
             holder.ivMenu.setOnClickListener(clickListener);
             holder.tvPrint.setOnClickListener(clickListener);
             holder.flBookCover.setOnClickListener(clickListener);
@@ -111,6 +112,8 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         ImageView ivMenu;
         @Bind(R.id.tv_pagenum)
         TextView tvPagenum;
+        @Bind(R.id.tv_author)
+        TextView tvAuthor;
         @Bind(R.id.tv_creattime)
         TextView tvCreattime;
         @Bind(R.id.tv_edit)

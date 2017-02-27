@@ -96,6 +96,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
+            android:drawableLeft="@drawable/ic_mine_message"
             android:drawablePadding="@dimen/size_6"
             android:text="我的消息"
             android:textSize="@dimen/text_medium" />
@@ -149,6 +150,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
+            android:drawableLeft="@drawable/ic_mine_prodution"
             android:drawablePadding="@dimen/size_6"
             android:text="我的作品"
             android:textSize="@dimen/text_medium" />
@@ -184,7 +186,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/text_color1"
-
         android:padding="@dimen/size_12">
 
         <TextView
@@ -193,6 +194,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
+            android:drawableLeft="@drawable/ic_mine_order"
             android:drawablePadding="@dimen/size_6"
             android:text="我的订单"
             android:textSize="@dimen/text_medium" />
@@ -237,6 +239,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
+            android:drawableLeft="@drawable/ic_mine_cart"
             android:drawablePadding="@dimen/size_6"
             android:text="我的印刷车"
             android:textSize="@dimen/text_medium" />
@@ -281,6 +284,7 @@
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:background="@color/text_color1"
+            android:drawableLeft="@drawable/ic_mine_setting"
             android:drawablePadding="@dimen/size_6"
             android:text="设置"
             android:textSize="@dimen/text_medium" />
