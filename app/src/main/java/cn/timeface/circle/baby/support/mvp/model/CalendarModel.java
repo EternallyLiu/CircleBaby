@@ -148,30 +148,16 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
     @Override
     public Observable<BaseResponse>
     addRemoteCalendar(CalendarExtendObj obj) {
-
-//        obj.getBookId(),
-//                String.valueOf(obj.getBookType()),
-//                obj.getBookCover(),
-//                FastData.getUserName(),
-//                FastData.getAvatar(),
-//                obj.getBookTitle(),
-//                obj.getBookSummary(),
-//                CommemorationDataManger.getInstance().toData(),
-//                ""
-
-        //return apiService.sdkBookSave();
-        // TODO: 2/22/17 fill sdk book save in params.
-        CommemorationDataManger.getInstance().toData();
         return apiService.sdkBookSave(
                 String.valueOf(FastData.getBabyId()),
                 FastData.getUserName(),
                 obj.getBookCover(),
-                obj.getBookId(),
+                "",
                 obj.getBookTitle(),
-                String.valueOf(obj.getBookType()),
+                String.valueOf(BookModel.BOOK_TYPE_CALENDAR),
                 obj.getBookSummary(),
-                "",
-                "",
+                obj.getBookId(),
+                String.valueOf(obj.getBookType()),
                 obj.getBookTotalPage(),
                 CommemorationDataManger.getInstance().toData()
         );
@@ -193,33 +179,18 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
     @Override
     public Observable<BaseResponse>
     updateRemoteCalendar(String remoteId, CalendarExtendObj obj) {
-        // todo delete update .
-
-        return apiService.sdkBookUpdate(
+        return apiService.sdkBookSave(
+                String.valueOf(FastData.getBabyId()),
+                obj.getBookAuthor(),
+                obj.getBookCover(),
                 remoteId,
+                obj.getBookTitle(),
+                String.valueOf(BookModel.BOOK_TYPE_CALENDAR),
+                obj.getBookSummary(),
                 obj.getBookId(),
                 String.valueOf(obj.getBookType()),
-                "openbooktype",
-                obj.getBookCover(),
-                obj.getBookAuthor(),
-                obj.getAuthorAvatar(),
-                obj.getBookTitle(),
-                obj.getBookSummary(),
-                "",
-                CommemorationDataManger.getInstance().toData()
-        );
-//        return apiService.sdkBookUpdate(
-//                remoteId,
-//                obj.getBookId(),
-//                String.valueOf(obj.getBookType()),
-//                obj.getBookCover(),
-//                FastData.getUserName(),
-//                FastData.getAvatar(),
-//                obj.getBookTitle(),
-//                obj.getBookSummary(),
-//                CommemorationDataManger.getInstance().toData(),
-//                ""
-//        );
+                obj.getBookTotalPage(),
+                CommemorationDataManger.getInstance().toData());
     }
 
     public Observable<TFOBaseResponse<String>> createCover(int width, int height, TFOBookContentModel content) {

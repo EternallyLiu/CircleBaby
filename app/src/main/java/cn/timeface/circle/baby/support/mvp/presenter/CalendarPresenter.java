@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.support.api.exception.ResultException;
 import cn.timeface.circle.baby.support.api.models.TFUploadFile;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenter;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.mvp.model.CalendarModel;
 import cn.timeface.circle.baby.support.mvp.model.GeneralBookObj;
 import cn.timeface.circle.baby.support.mvp.presentations.CalendarPresentation;
@@ -303,16 +304,17 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
                     Action1<TFOBaseResponse<CalendarExtendObj>> onLoad,
                     Action1<Throwable> onError) {
         view.addSubscription(
-                model.get(
-                        id, type
-                ).compose(
-                        SchedulersCompat.applyIoSchedulers()
-                ).flatMap(convert()
-                ).subscribe(response -> {
-                    this.bookModel = response.getData();
-                    BookCache.getInstance().putModelById(bookModel.getBookId(), bookModel);
-                    onLoad.call(response);
-                }, onError)
+                model.get(id, type)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(convert())
+                        .subscribe(
+                                response -> {
+                                    this.bookModel = response.getData();
+                                    BookCache.getInstance().putModelById(bookModel.getBookId(), bookModel);
+                                    onLoad.call(response);
+                                },
+                                onError)
         );
     }
 
@@ -325,7 +327,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
         ).observeOn(Schedulers.io()
         ).subscribe(response -> {
             remoteBook = response.getData();
-            String bookId = remoteBook.getBookId();
+            String bookId = remoteBook.getBook_id();
 
             CalendarExtendObj book = (CalendarExtendObj) BookCache.getInstance().getModelById(bookId);
             if (book != null) {
@@ -339,7 +341,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onLoad, onError);
             } else {
-                get(response.getData().getBookId(), String.valueOf(response.getData().getBookType())
+                get(response.getData().getBook_id(), String.valueOf(response.getData().getBook_type())
                         , onLoad, onError);
             }
 
@@ -400,7 +402,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
             view.hideLoading();
             if (TextUtils.isDigitsOnly(response.dataId)) {
                 CalendarPreviewActivity.open(view.getCurrentActivity(),
-                        bookModel.getBookId(), String.valueOf(bookModel.getBookType()), response.dataId);
+                        bookModel.getBookId(), String.valueOf(BookModel.BOOK_TYPE_CALENDAR), response.dataId);
                 if (view instanceof CalendarActivity) {
                     // 关闭这个界面
                     ((CalendarActivity) view).finish();
@@ -440,7 +442,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
     @Override
     public void delete() {
         view.addSubscription(
-                model.delete(remoteBook.getId()+"$"+remoteBook.getBookType())
+                model.delete(remoteBook.getId()+"$"+remoteBook.getBook_type())
                         .subscribe(baseResponse -> {
                             view.getCurrentActivity().finish();
                         }, throwable -> {
@@ -1207,7 +1209,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
         ).share(
                 FastData.getUserName() + "的2017时光台历",
                 "上传12张照片就能制作自己的专属台历，时光台历，让爱陪自己度过一整年。",
-                remoteBook.getBookCover(),
+                remoteBook.getBook_cover(),
                 shareUrl
         );
         return shareUrl;
@@ -1386,7 +1388,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
     @Override
     public void deleteRemoteBook() {
         view.addSubscription(
-        model.deleteRemoteCalendar(String.valueOf(remoteBook.getId()), String.valueOf(remoteBook.getBookType()))
+        model.deleteRemoteCalendar(String.valueOf(remoteBook.getId()), String.valueOf(remoteBook.getBook_type()))
                 .subscribe(baseResponse -> {
                     view.getCurrentActivity().finish();
                 }, throwable -> {

@@ -60,6 +60,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
 
     boolean fragmentShow = false;
     boolean userFragmentShow = false;
+    boolean canBack = false;
 //    boolean locationMapShow = false;
     @Bind(R.id.tv_content_type)
     TextView tvContentType;

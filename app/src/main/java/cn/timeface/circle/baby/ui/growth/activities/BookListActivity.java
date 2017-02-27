@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
 import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.ui.calendar.CalendarPreviewActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 
 /**
@@ -200,23 +201,31 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                 break;
 
             case R.id.fl_book_cover:
-                //跳转POD预览
-                ArrayList<String> keys = new ArrayList<>();
-                ArrayList<String> values = new ArrayList<>();
-                keys.add("book_author");
-                keys.add("book_title");
-                values.add(FastData.getUserName());
-                values.add(FastData.getBabyName() + "的照片书");
-                MyPODActivity.open(
-                        BookListActivity.this,
-                        String.valueOf(bookObj.getBookId()),
-                        String.valueOf(bookObj.getOpenBookId()),
-                        bookObj.getBookType(),
-                        bookObj.getOpenBookType(),
-                        null,
-                        "",
-                        false,
-                        bookObj.getBaby().getBabyId(), keys, values, 0);
+                if(bookType == BookModel.BOOK_TYPE_CALENDAR){
+                    CalendarPreviewActivity.open(
+                            this,
+                            String.valueOf(bookObj.getOpenBookId()),
+                            String.valueOf(bookObj.getBookType()),
+                            String.valueOf(bookObj.getBookId()));
+                } else {
+                    //跳转POD预览
+                    ArrayList<String> keys = new ArrayList<>();
+                    ArrayList<String> values = new ArrayList<>();
+                    keys.add("book_author");
+                    keys.add("book_title");
+                    values.add(FastData.getUserName());
+                    values.add(FastData.getBabyName() + "的照片书");
+                    MyPODActivity.open(
+                            BookListActivity.this,
+                            String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            bookObj.getBookType(),
+                            bookObj.getOpenBookType(),
+                            null,
+                            "",
+                            false,
+                            bookObj.getBaby().getBabyId(), keys, values, 0);
+                }
                 break;
 
             case R.id.tv_edit:
@@ -224,10 +233,17 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                 if (bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK
                         || bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING) {
                     SelectServerPhotoActivity.open(this, bookType, bookObj.getOpenBookType(), String.valueOf(bookObj.getBookId()), String.valueOf(bookObj.getOpenBookId()));
-                    //成长纪念册&成长语录
+                //成长纪念册&成长语录
                 } else if (bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK
                         || bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
                     SelectServerTimeActivity.open(this, bookType, bookObj.getOpenBookType(), String.valueOf(bookObj.getBookId()), String.valueOf(bookObj.getOpenBookId()));
+                //台历
+                } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_CALENDAR){
+                    CalendarPreviewActivity.open(
+                            this,
+                            String.valueOf(bookObj.getOpenBookId()),
+                            String.valueOf(bookObj.getBookType()),
+                            String.valueOf(bookObj.getBookId()));
                 } else {
                     Log.e(TAG, "无法识别的书籍类型");
                 }
