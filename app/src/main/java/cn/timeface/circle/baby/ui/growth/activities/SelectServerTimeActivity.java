@@ -374,7 +374,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                     fragmentShow = false;
                 } else {
                     if (selectContentTypeDialog == null) {
-                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_TIME);
+                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_TIME, bookType);
                         transaction.add(R.id.fl_container_type, selectContentTypeDialog);
                     } else {
                         transaction.show(selectContentTypeDialog);

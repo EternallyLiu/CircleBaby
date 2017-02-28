@@ -133,6 +133,15 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                             }
                     );
         }
+
+        //绘画集默认 按标签
+        if(bookType == BookModel.BOOK_TYPE_PAINTING){
+           selectTypeLabel();
+        //其他作品默认 按时间
+        } else {
+            selectTypeTime();
+        }
+        onClick(tvContentType);
     }
 
     @Override
@@ -371,7 +380,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                     fragmentShow = false;
                 } else {
                     if (selectContentTypeDialog == null) {
-                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_PHOTO);
+                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_PHOTO, bookType);
                         transaction.add(R.id.fl_container_type, selectContentTypeDialog);
                     } else {
                         transaction.show(selectContentTypeDialog);
