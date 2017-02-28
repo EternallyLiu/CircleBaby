@@ -747,7 +747,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         View view = getLayoutInflater().inflate(R.layout.guide_home_change_baby, null);
         view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
         GuideHelper.TipData tipdate = new GuideHelper.TipData(view, Gravity.CENTER | Gravity.BOTTOM, tvChangebaby);
-        tipdate.setLocation(Gravity.CENTER | Gravity.BOTTOM, DeviceUtil.dpToPx(getResources(), 20), 0);
+        tipdate.setLocation(Gravity.CENTER | Gravity.BOTTOM, DeviceUtil.dpToPx(getResources(), 30), 0);
         return tipdate;
     }
 
@@ -764,7 +764,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         });
         View v = ((TabMainActivity) getActivity()).getSendTimeface();
         GuideHelper.TipData sendTip = new GuideHelper.TipData(view, Gravity.CENTER_VERTICAL | Gravity.LEFT, v);
-        sendTip.setLocation(Gravity.CENTER_VERTICAL | Gravity.LEFT, 0, DeviceUtil.dpToPx(getResources(), 30));
+        sendTip.setLocation(Gravity.CENTER_VERTICAL | Gravity.LEFT, 0, DeviceUtil.dpToPx(getResources(), 40));
         return sendTip;
     }
 
