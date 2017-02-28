@@ -63,11 +63,12 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     RelativeLayout contentSelectTime;
     @Bind(R.id.tv_content_type)
     TextView tvContentType;
+    @Bind(R.id.tv_content)
+    TextView tvContent;
 
     boolean fragmentShow = false;
-    boolean userFragmentShow = false;
+    boolean canBack = false;
     ServerTimeFragment timeFragment;//按时间
-//    ServerTimeFragment userFragment;//按发布人
     HashMap<String, ServerTimeFragment> userFragmentMap = new HashMap<>();//存储下来所有用户对应的fragment
     SelectContentTypeDialog selectContentTypeDialog;
     SelectUserFragment selectUserFragment;
@@ -105,7 +106,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         //新建一本
         if(TextUtils.isEmpty(bookId)){
             timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
-            showContent(timeFragment);
+            showContent(timeFragment, false);
         //编辑一本
         } else {
             apiService.bookMedias(bookId)
@@ -119,7 +120,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                             FastData.getUserId(),
                                             bookType,
                                             response.getDataList());
-                                    showContent(timeFragment);
+                                    showContent(timeFragment, false);
                                 } else {
                                     ToastUtil.showToast(response.info);
                                 }
@@ -264,9 +265,24 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                     }
                             ));
 
-
+            return true;
+        } else if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(canBack){
+            tvContent.setVisibility(View.GONE);
+            tvContentType.setVisibility(View.VISIBLE);
+        } else {
+            finish();
+        }
+        super.onBackPressed();
     }
 
     /**
@@ -274,7 +290,6 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
      */
     @Override
     public void selectTypeTime() {
-        if(userFragmentShow)setSelectUserFragmentHide();
         tvContentType.setText("按时间");
         if(timeFragment == null){
             if(TextUtils.isEmpty(bookId)){
@@ -283,7 +298,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                 timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias);
             }
         }
-        showContent(timeFragment);
+        showContent(timeFragment, false);
         onClick(tvContentType);
     }
 
@@ -293,24 +308,10 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     @Override
     public void selectTypeUser() {
         tvContentType.setText("按发布人");
-
-        //展示选择发布人页面
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        if (userFragmentShow) {
-            transaction.hide(selectUserFragment);
-            userFragmentShow = false;
-        } else {
-            if (selectUserFragment == null) {
-                selectUserFragment = SelectUserFragment.newInstance(this);
-                transaction.add(R.id.fl_container_user, selectUserFragment);
-            } else {
-                transaction.show(selectUserFragment);
-            }
-            userFragmentShow = true;
+        if (selectUserFragment == null) {
+            selectUserFragment = SelectUserFragment.newInstance(this);
         }
-        transaction.commit();
+        showContent(selectUserFragment, false);
         onClick(tvContentType);
     }
 
@@ -319,7 +320,6 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
      */
     @Override
     public void selectTypeLocation() {
-        if(userFragmentShow)setSelectUserFragmentHide();
         tvContentType.setText("按地点");
         onClick(tvContentType);
     }
@@ -337,7 +337,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
     Fragment currentFragment = null;
 
-    public void showContent(Fragment fragment) {
+    public void showContent(Fragment fragment, boolean canBack) {
+        this.canBack = canBack;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (currentFragment != null) {
@@ -349,17 +350,11 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             ft.add(R.id.fl_container, fragment);
         }
         currentFragment = fragment;
+        if(canBack){
+            ft.addToBackStack(null);
+        }
         ft.commitAllowingStateLoss();
         invalidateOptionsMenu();
-    }
-
-    private void setSelectUserFragmentHide(){
-        userFragmentShow = false;
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        transaction.hide(selectUserFragment);
-        transaction.commit();
     }
 
     @Override
@@ -386,11 +381,12 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
             //点击选择用户操作
             case R.id.ll_root:
-                if(userFragmentShow)setSelectUserFragmentHide();
                 UserWrapObj userWrapObj = (UserWrapObj) view.getTag(R.string.tag_obj);
-
+                tvContentType.setVisibility(View.GONE);
+                tvContent.setVisibility(View.VISIBLE);
+                tvContent.setText(userWrapObj.getUserInfo().getRelationName());
                 if(userFragmentMap.containsKey(userWrapObj.getUserInfo().getUserId())){
-                    showContent(userFragmentMap.get(userWrapObj.getUserInfo().getUserId()));
+                    showContent(userFragmentMap.get(userWrapObj.getUserInfo().getUserId()), true);
                 } else {
                     ServerTimeFragment serverTimeFragment;
                     if(TextUtils.isEmpty(bookId)){
@@ -400,7 +396,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                     }
 
                     userFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverTimeFragment);
-                    showContent(serverTimeFragment);
+                    showContent(serverTimeFragment, true);
                 }
 
                 break;
