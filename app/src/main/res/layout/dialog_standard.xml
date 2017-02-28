@@ -94,7 +94,7 @@
                     android:layout_height="@dimen/view_space_large"
                     android:layout_marginLeft="@dimen/view_space_normal"
                     android:layout_marginRight="@dimen/view_space_medium"
-                    android:background="@drawable/dialog_btn_blue"
+                    android:background="@drawable/dialog_btn_orange"
                     android:gravity="center"
                     android:minWidth="120dp"
                     android:padding="@dimen/view_space_small"

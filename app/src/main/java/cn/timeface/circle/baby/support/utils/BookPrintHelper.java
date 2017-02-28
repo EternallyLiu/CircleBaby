@@ -16,6 +16,7 @@ import cn.timeface.circle.baby.support.api.models.objs.PrintParamResponse;
 import cn.timeface.circle.baby.support.api.models.responses.PrintStatusResponse;
 import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Subscription;
@@ -80,7 +81,7 @@ public class BookPrintHelper {
                         response -> {
                             progressDialog.dismiss();
                             if (response.success()) {
-                                doPrintStatus(response);
+                                doPrintStatus(response, pageNum);
                             } else {
                                 Toast.makeText(context, response.info, Toast.LENGTH_SHORT).show();
                             }
@@ -98,7 +99,7 @@ public class BookPrintHelper {
      *
      * @param response
      */
-    public void doPrintStatus(PrintStatusResponse response) {
+    public void doPrintStatus(PrintStatusResponse response, int pageNum) {
         switch (response.getPrintCode()) {
             case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
                 progressDialog.dismiss();
@@ -108,38 +109,56 @@ public class BookPrintHelper {
 
             case TypeConstant.PRINT_CODE_LIMIT_LESS:
                 progressDialog.dismiss();
-                tougueDialog.setMessage("少于20页，不可印刷");
+                tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                        + "页数为" + pageNum + "页，低于20页的最低印刷限制，请添加内容后再提交印刷。");
                 tougueDialog.show(context.getSupportFragmentManager(), "dialog");
-
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_MORE:
                 progressDialog.dismiss();
                 tougueDialog.setMessage("大于60页，不可印刷");
+                tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                        + "页数为" + pageNum + "页，已超过60页的印刷限制，请修改后再提交印刷。");
                 tougueDialog.show(context.getSupportFragmentManager(), "dialog");
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_8806:
                 progressDialog.dismiss();
-                tougueDialog.setMessage("印制3寸日记卡片需18张");
+                if (pageNum > 18) {
+                    tougueDialog.setMessage("印制3寸日记卡片需要18张的倍数哦~");
+                } else {
+                    tougueDialog.setMessage("印制3寸日记卡片需要18张，只选了" + pageNum + "张还少" + (18 - pageNum) + "张。");
+                }
                 tougueDialog.show(context.getSupportFragmentManager(), "dialog");
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_8807:
                 progressDialog.dismiss();
-                tougueDialog.setMessage("印制4寸日记卡片需15张");
+                if (pageNum > 15) {
+                    tougueDialog.setMessage("印制4寸日记卡片需要15张的倍数哦~");
+                } else {
+                    tougueDialog.setMessage("印制4寸日记卡片需要15张，只选了" + pageNum + "张还少" + (15 - pageNum) + "张。");
+                }
                 tougueDialog.show(context.getSupportFragmentManager(), "dialog");
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_8808:
                 progressDialog.dismiss();
-                tougueDialog.setMessage("印制5寸日记卡片需9张");
+                if (pageNum > 9) {
+                    tougueDialog.setMessage("印制5寸日记卡片需要9张的倍数哦~");
+                } else {
+                    tougueDialog.setMessage("印制5寸日记卡片需要9张，只选了" + pageNum + "张还少" + (9 - pageNum) + "张。");
+                }
                 tougueDialog.show(context.getSupportFragmentManager(), "dialog");
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_8809:
                 progressDialog.dismiss();
-                tougueDialog.setMessage("印制识图卡片需8张");
+                if (pageNum > 8) {
+                    tougueDialog.setMessage("印制识图卡片需要8张的倍数哦~");
+                } else {
+                    tougueDialog.setMessage("印制识图卡片需要8张，只选了" + pageNum + "张还少" + (8 - pageNum) + "张。");
+                }
                 tougueDialog.show(context.getSupportFragmentManager(), "dialog");
                 break;
 

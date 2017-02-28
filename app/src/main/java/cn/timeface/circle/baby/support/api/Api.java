@@ -1,5 +1,8 @@
 package cn.timeface.circle.baby.support.api;
 
+import com.bluelinelabs.logansquare.LoganSquare;
+import com.github.aurae.retrofit2.LoganSquareConverterFactory;
+
 import cn.timeface.circle.baby.BuildConfig;
 
 import java.util.Map;
@@ -48,6 +51,7 @@ public class Api {
                 .baseUrl(BuildConfig.API_URL)
                 .client(httpClientBuilder.build())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+//                .addConverterFactory(LoganSquareConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -57,6 +61,7 @@ public class Api {
                 .baseUrl(WechatApiService.BASE_URL)
                 .client(httpClientBuilder.build())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+//                .addConverterFactory(LoganSquareConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiWechatService = retrofit.create(WechatApiService.class);

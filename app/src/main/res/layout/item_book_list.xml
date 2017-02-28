@@ -9,140 +9,138 @@
     android:paddingTop="@dimen/size_12">
 
     <ImageView
+        android:id="@+id/iv_shelf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/fl_book_cover"
+        android:layout_below="@+id/ll_content"
         android:layout_marginTop="-10dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_book_shelf" />
 
-    <com.github.rayboot.widget.ratioview.RatioFrameLayout
-        android:id="@+id/fl_book_cover"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/view_space_medium"
-        android:clickable="true"
-        app:fixRatio="fixWidth"
-        app:heightRatio="550"
-        app:widthRatio="344">
-
-        <ImageView
-            android:id="@+id/iv_book_cover"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/bg_default_holder_img" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/book_front_mask" />
-
-    </com.github.rayboot.widget.ratioview.RatioFrameLayout>
-
     <LinearLayout
+        android:id="@+id/ll_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/fl_book_cover"
-        android:layout_alignTop="@+id/fl_book_cover"
-        android:layout_marginLeft="@dimen/view_space_medium"
-        android:layout_marginRight="@dimen/view_space_medium"
-        android:layout_toRightOf="@+id/fl_book_cover"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="horizontal">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text"
-                android:textSize="16sp"
-                tools:text="小CC的精装照片书" />
+        <com.github.rayboot.widget.ratioview.RatioFrameLayout
+            android:id="@+id/fl_book_cover"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/view_space_medium"
+            android:clickable="true"
+            app:fixRatio="fixWidth"
+            app:heightRatio="550"
+            app:widthRatio="344">
 
             <ImageView
-                android:id="@+id/iv_menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_menu" />
+                android:id="@+id/iv_book_cover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/bg_default_holder_img" />
 
-        </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_front_mask"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/book_front_mask" />
+        </com.github.rayboot.widget.ratioview.RatioFrameLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/view_space_normal"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/view_space_medium"
+            android:layout_marginRight="@dimen/view_space_medium"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/view_space_small"
+            android:paddingTop="@dimen/view_space_small">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="页      数: "
-                android:textColor="@color/text_color_hint" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_toLeftOf="@+id/iv_menu"
+                    android:id="@+id/tv_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text"
+                    android:textSize="16sp"
+                    tools:text="小CC的精装照片书" />
+
+                <ImageView
+                    android:id="@+id/iv_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_menu" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/tv_pagenum"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:layout_marginTop="@dimen/size_6"
+                android:text="页      数: "
                 android:textColor="@color/text_color_hint" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_6"
-            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="创建时间: "
+                android:layout_marginTop="@dimen/size_2"
+                android:text="作      者: "
                 android:textColor="@color/text_color_hint" />
 
             <TextView
                 android:id="@+id/tv_creattime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:layout_marginTop="@dimen/size_2"
+                android:text="创建时间: "
                 android:textColor="@color/text_color_hint" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_6"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_edit"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/selector_btn_login"
-                android:clickable="true"
-                android:paddingBottom="@dimen/size_6"
-                android:paddingLeft="@dimen/size_12"
-                android:paddingRight="@dimen/size_12"
-                android:paddingTop="@dimen/size_6"
-                android:text="编辑内容"
-                android:textColor="@color/white" />
+                android:layout_marginTop="@dimen/size_6"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_print"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/size_12"
-                android:background="@drawable/selector_btn_login"
-                android:paddingBottom="@dimen/size_6"
-                android:paddingLeft="@dimen/size_12"
-                android:paddingRight="@dimen/size_12"
-                android:paddingTop="@dimen/size_6"
-                android:text="申请印刷"
-                android:textColor="@color/white" />
+                <TextView
+                    android:id="@+id/tv_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_login"
+                    android:clickable="true"
+                    android:paddingBottom="@dimen/size_6"
+                    android:paddingLeft="@dimen/size_12"
+                    android:paddingRight="@dimen/size_12"
+                    android:paddingTop="@dimen/size_6"
+                    android:text="编辑内容"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_print"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_12"
+                    android:background="@drawable/selector_btn_login"
+                    android:paddingBottom="@dimen/size_6"
+                    android:paddingLeft="@dimen/size_12"
+                    android:paddingRight="@dimen/size_12"
+                    android:paddingTop="@dimen/size_6"
+                    android:text="申请印刷"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
+
 </RelativeLayout>

@@ -44,7 +44,7 @@ public class DateUtil {
     }
 
     public static String getYear2(long timeInMillis) {
-        String format = "yyyy.MM.dd";
+        String format = "yyyy-MM-dd";
 
         return formatDate(format, timeInMillis);
     }
@@ -176,11 +176,6 @@ public class DateUtil {
      * @param format {@link java.text.SimpleDateFormat}
      */
     public static String formatDate(String format, long timeInMillis) {
-        String s = String.valueOf(timeInMillis);
-//        if (s.length() < 13) {
-//            s = s + "000";
-//            timeInMillis = Long.valueOf(s);
-//        }
         Calendar dealTime = Calendar.getInstance();
         dealTime.setTimeInMillis(timeInMillis);
         return DateFormat.format(format, dealTime).toString();

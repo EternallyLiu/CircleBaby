@@ -3,10 +3,11 @@ package cn.timeface.circle.baby.ui.growth.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +22,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.mvp.model.CalendarModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 
@@ -48,9 +50,9 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         ViewHolder holder = (ViewHolder) viewHolder;
         final BookObj bookObj = listData.get(position);
 
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 DeviceUtil.dpToPx(mContext.getResources(), 120),
-                RelativeLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
         lp.setMargins(DeviceUtil.dpToPx(mContext.getResources(), 16), 0, 0, 0);
         holder.flBookCover.setLayoutParams(lp);
@@ -69,19 +71,48 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING){
             lp.width = DeviceUtil.dpToPx(
                     mContext.getResources(),
-                    150);
+                    130);
             holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 680, 524);
+        //台历
+        } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_CALENDAR){
+            holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
+            //横板台历
+            if(bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL){
+                Glide.with(mContext)
+                        .load(R.drawable.bg_calendar_horizontal)
+                        .into(holder.ivBookCover);
+            //竖版台历
+            } else if(bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_VERTICAL){
+                Glide.with(mContext)
+                        .load(R.drawable.bg_calendar_vertical)
+                        .into(holder.ivBookCover);
+            } else {
+                Log.e("台历", "无法识别的台历类型");
+            }
         } else {
             holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
         }
 
-        Glide.with(mContext)
-                .load(bookObj.getBookCover())
-                .into(holder.ivBookCover);
+        if(bookObj.getBookType() != BookModel.BOOK_TYPE_CALENDAR){
+            holder.ivMask.setVisibility(View.VISIBLE);
+            holder.tvPagenum.setVisibility(View.VISIBLE);
+            holder.tvAuthor.setVisibility(View.VISIBLE);
+            Glide.with(mContext)
+                    .load(bookObj.getBookCover())
+                    .into(holder.ivBookCover);
+            holder.tvCreattime.setText("创建时间: " + DateUtil.getYear2(bookObj.getCreateTime()));
+        } else {
+            holder.tvAuthor.setVisibility(View.GONE);
+            holder.ivMask.setVisibility(View.GONE);
+            holder.tvPagenum.setVisibility(View.GONE);
+            holder.tvCreattime.setText("最后编辑: " + DateUtil.getYear2(bookObj.getCreateTime()));
+        }
+
         holder.tvTitle.setText(bookObj.getBookName());
-        holder.tvPagenum.setText(String.valueOf(bookObj.getPageNum()));
-        holder.tvCreattime.setText(DateUtil.getYear2(bookObj.getCreateTime()));
-        if(clickListener != null ) {
+        holder.tvPagenum.setText("页      数: "+String.valueOf(bookObj.getPageNum()));
+        holder.tvAuthor.setText("作      者: " + (bookObj.getAuthor() != null ? bookObj.getAuthor().getNickName() : ""));
+
+        if (clickListener != null) {
             holder.ivMenu.setOnClickListener(clickListener);
             holder.tvPrint.setOnClickListener(clickListener);
             holder.flBookCover.setOnClickListener(clickListener);
@@ -111,6 +142,8 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         ImageView ivMenu;
         @Bind(R.id.tv_pagenum)
         TextView tvPagenum;
+        @Bind(R.id.tv_author)
+        TextView tvAuthor;
         @Bind(R.id.tv_creattime)
         TextView tvCreattime;
         @Bind(R.id.tv_edit)
@@ -121,6 +154,8 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         TextView tvTitle;
         @Bind(R.id.fl_book_cover)
         RatioFrameLayout flBookCover;
+        @Bind(R.id.iv_front_mask)
+        ImageView ivMask;
 
         ViewHolder(View view) {
             super(view);

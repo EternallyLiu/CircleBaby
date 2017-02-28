@@ -60,11 +60,14 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
 
     boolean fragmentShow = false;
     boolean userFragmentShow = false;
+    boolean canBack = false;
 //    boolean locationMapShow = false;
     @Bind(R.id.tv_content_type)
     TextView tvContentType;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.tv_content)
+    TextView tvContent;
 
     ServerPhotoFragment timePhotoFragment;//按时间
 //    ServerPhotoFragment userPhotoFragment;//按发布人
@@ -261,6 +264,15 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if(canBack){
+            tvContent.setVisibility(View.GONE);
+            tvContentType.setVisibility(View.VISIBLE);
+        }
+        super.onBackPressed();
+    }
+
     /**
      * 按时间筛选照片
      */
@@ -347,6 +359,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     Fragment currentFragment = null;
 
     public void showContent(Fragment fragment, boolean canBack) {
+        this.canBack = canBack;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (currentFragment != null) {
@@ -401,6 +414,9 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
             case R.id.ll_root:
                 if(userFragmentShow)setSelectUserFragmentHide();
                 UserWrapObj userWrapObj = (UserWrapObj) view.getTag(R.string.tag_obj);
+                tvContentType.setVisibility(View.GONE);
+                tvContent.setVisibility(View.VISIBLE);
+                tvContent.setText(userWrapObj.getUserInfo().getRelationName());
 
                 //已经加载
                 if(userPhotoFragmentMap.containsKey(userWrapObj.getUserInfo().getUserId())){
@@ -454,6 +470,9 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                             locationPhotoFragmentMap.put(city, locationFragment);
                                             showContent(locationFragment, true);
                                         }
+                                        tvContent.setVisibility(View.VISIBLE);
+                                        tvContentType.setVisibility(View.GONE);
+                                        tvContent.setText(city);
                                     } else {
                                         ToastUtil.showToast(response.info);
                                     }
@@ -463,7 +482,5 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                 }
                         )
         );
-
-
     }
 }

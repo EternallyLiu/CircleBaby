@@ -90,6 +90,7 @@
                             android:layout_marginRight="6dp"
                             android:background="@drawable/shape_number_input_bg"
                             android:gravity="center"
+                            android:imeOptions="actionDone"
                             android:inputType="numberSigned"
                             android:padding="5dp"
                             android:text="1"

@@ -115,6 +115,7 @@
                 android:paddingStart="@dimen/size_12">
 
                 <TextView
+                    android:textColor="@color/white"
                     android:id="@+id/tv_edit"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -124,6 +125,7 @@
                     android:gravity="center"/>
 
                 <TextView
+                    android:visibility="gone"
                     android:enabled="true"
                     android:clickable="true"
                     android:id="@+id/tv_print"
@@ -135,6 +137,7 @@
                     android:gravity="center"/>
 
                 <TextView
+                    android:visibility="gone"
                     android:enabled="true"
                     android:clickable="true"
                     android:id="@+id/tv_delete"

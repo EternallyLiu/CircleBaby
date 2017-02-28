@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.calendar.bean;
 
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel_Table;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 
@@ -7,6 +8,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+
+import static android.R.attr.value;
 
 /**
  * Created by JieGuo on 16/11/10.
@@ -33,12 +36,11 @@ public class UploadedPhotoTemplate extends TFOResourceObj {
         if (TextUtils.isEmpty(value)) {
             return null;
         }
-        return null;
-//        return SQLite.select()
-//                .from(PhotoModel.class)
-//                .where(PhotoModel_Table.photo_id.is(value))
-//                .or(PhotoModel_Table.local_path.is(value))
-//                .or(PhotoModel_Table.url.is(value))
-//                .querySingle();
+        return SQLite.select()
+                .from(PhotoModel.class)
+                .where(PhotoModel_Table.photo_id.is(value))
+                .or(PhotoModel_Table.local_path.is(value))
+                .or(PhotoModel_Table.url.is(value))
+                .querySingle();
     }
 }

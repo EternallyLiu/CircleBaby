@@ -3,6 +3,8 @@ package cn.timeface.circle.baby.support.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -11,6 +13,7 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  * author: rayboot  Created on 15/12/3.
  * email : sy0725work@gmail.com
  */
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class UserObj extends BaseObj implements Parcelable {
     String avatar;
     BabyObj babyObj;

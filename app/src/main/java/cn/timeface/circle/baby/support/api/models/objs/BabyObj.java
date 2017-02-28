@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -25,6 +26,7 @@ import rx.functions.Func0;
 /**
  * Created by lidonglin on 2016/4/28.
  */
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 @Table(database = AppDatabase.class)
 public class BabyObj extends BaseModel implements Parcelable {
     private static volatile BabyObj currentBabyObj = null;
