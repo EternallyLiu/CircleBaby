@@ -36,6 +36,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -232,8 +233,17 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         LinearLayout llRecode = ViewHolder.getView(contentView, R.id.ll_recode);
         TextView picCount = ViewHolder.getView(contentView, R.id.pic_count);
         RelativeLayout rlPicCount = ViewHolder.getView(contentView, R.id.rl_pic_count);
+        TextView tvMilestonename = ViewHolder.getView(contentView, R.id.tv_milestonename);
+        View milestoneLine = ViewHolder.getView(contentView, R.id.milestone_line);
 
-
+        milestoneLine.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(item.getMilestone()))
+            tvMilestonename.setVisibility(View.GONE);
+        else {
+            milestoneLine.setVisibility(View.VISIBLE);
+            tvMilestonename.setText(item.getMilestone());
+            tvMilestonename.setVisibility(View.VISIBLE);
+        }
         //设置基本信息 内容 作者 时间 是否点赞 评论个数 点赞个数
         if (TextUtils.isEmpty(item.getContent()))
             tvContent.setVisibility(View.GONE);
@@ -437,7 +447,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                             TimeLineObj item = getItem(allDetailsListPosition);
                             item.setAllDetailsListPosition(allDetailsListPosition);
                             if (item != null)
-                                FragmentBridgeActivity.openBigimageFragment(v.getContext(), item.getAllDetailsListPosition(), item.getMediaArray(), item.getUrls(), position, true, false);
+                                FragmentBridgeActivity.openBigimageFragment(v.getContext(), item.getAllDetailsListPosition(), item.getMediaArray(), item.getUrls(), position, true, item.getAuthor().equals(FastData.getUserInfo()));
                         }, throwable -> {
                             LogUtil.showError(throwable);
                         });

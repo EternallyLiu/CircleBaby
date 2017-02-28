@@ -37,6 +37,7 @@ import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.babyInfo.beans.BabyChanged;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class InviteCodeActivity extends BaseAppCompatActivity implements View.OnClickListener, DeleteDialog.SubmitListener, DeleteDialog.CloseListener {
@@ -121,16 +122,10 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
         apiService.queryBabyFamilyLoginInfoList().compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(familyListResponse -> {
                     if (familyListResponse.success()) {
-                        ForegroundColorSpan colorSpan;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                            colorSpan = new ForegroundColorSpan(getColor(R.color.sea_buckthorn));
-                        } else {
-                            colorSpan = new ForegroundColorSpan(getResources().getColor(R.color.sea_buckthorn));
-                        }
-                        ForegroundColorSpan babyColorSpan = new ForegroundColorSpan(Color.RED);
+                        ForegroundColorSpan colorSpan= SpannableUtils.getTextColor(this,R.color.sea_buckthorn);
+                        ForegroundColorSpan babyColorSpan = SpannableUtils.getTextColor(this,R.color.sea_buckthorn);
                         StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
                         SpannableStringBuilder builder = new SpannableStringBuilder();
-                        AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan((int) getResources().getDimension(R.dimen.text_large));
                         builder.append(String.format("欢迎 %s 加入！", relativeName)).append("\n");
                         builder.append("你将和");
                         int beginIndex = builder.length();
@@ -143,7 +138,6 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
                         builder.append("一起来记录").append("\n");
                         builder.append(String.format("见证 %s 的成长~", babyObj.getNickName()));
                         String content = builder.toString();
-                        builder.setSpan(sizeSpan, content.indexOf(relativeName), content.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                         builder.setSpan(colorSpan, content.indexOf(relativeName), content.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                         builder.setSpan(styleSpan, content.indexOf(relativeName), content.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                         builder.setSpan(babyColorSpan, content.indexOf(babyObj.getNickName()), content.indexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);

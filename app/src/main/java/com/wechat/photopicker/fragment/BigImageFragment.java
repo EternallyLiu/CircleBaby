@@ -31,6 +31,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
@@ -396,7 +397,9 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     public void click(View view, int type) {
         switch (type) {
             case 2:
-
+                int currentItem = mViewPager.getCurrentItem();
+                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(mMedias.get(currentItem), allDetailsListPosition, currentItem));
+                getActivity().finish();
                 break;
             case 3:
                 saveImage();
@@ -411,7 +414,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         LogUtil.showLog(mMedias == null ? "null" : mMedias.size() + "----" + currentPosition);
         MediaObj mediaObj = mMedias.get(currentPosition);
         tvLikeCount.setText("+ " + mediaObj.getFavoritecount());
-        if (mediaObj.getFavoritecount() > 0) tvLikeCount.setTextColor(getResources().getColor(R.color.sea_buckthorn));
+        if (mediaObj.getFavoritecount() > 0)
+            tvLikeCount.setTextColor(getResources().getColor(R.color.sea_buckthorn));
         else tvLikeCount.setTextColor(getResources().getColor(R.color.aluminum));
         ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
     }

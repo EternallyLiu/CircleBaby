@@ -378,6 +378,16 @@ public interface ApiService {
     @GET("babyTime/delTime")
     Observable<BaseResponse> delTime(@Query("timeId") int timeId);
 
+    /**
+     * 删除时光里面的照片
+     * @param mediaId
+     * @param timeId
+     * @return
+     */
+    @POST("babyTime/delTimeOfMedia")
+    Observable<BaseResponse> delTimeOfMedia(@Query("mediaId") int mediaId,
+                                            @Query("timeId") int timeId);
+
     //点赞/取消点赞
     @GET("babyTime/like")
     Observable<BaseResponse> like(@Query("timeId") int timeId,

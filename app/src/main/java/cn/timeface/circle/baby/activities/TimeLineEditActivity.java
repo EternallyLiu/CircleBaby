@@ -59,6 +59,7 @@ import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
 import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
+import rx.Observable;
 
 public class TimeLineEditActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
@@ -174,7 +175,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
                         FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, allDetailsListPosition, timelimeobj.getMediaArray(),
-                                (ArrayList<String>) adapter.getData(), position, true, false);
+                                (ArrayList<String>) adapter.getData(), position, true, true);
                     }
                 });
             } else {
@@ -479,6 +480,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             tvLocation.setText("不显示位置");
         } else tvLocation.setText(timelimeobj.getLocationInfo().getArea());
     }
+
 
     @Subscribe
     public void onEvent(TimeEditPhotoDeleteEvent event) {

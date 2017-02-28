@@ -38,6 +38,7 @@ import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -168,7 +169,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
             String title = FastData.getBabyName() + "成长里程碑";
             String content = FastData.getBabyName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑";
             String url = BuildConfig.API_URL+getString(R.string.share_url_milestone,FastData.getBabyId());
-            new ShareDialog(this).share(title, content, imgUrl, url);
+            new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this,R.drawable.ic_laucher_quadrate), url);
         }
         return super.onOptionsItemSelected(item);
     }

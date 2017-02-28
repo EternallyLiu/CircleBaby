@@ -42,6 +42,11 @@ public class MediaObj extends BaseObj implements Parcelable {
     public MediaObj() {
     }
 
+    public MediaObj(String imgUrl, String localPath) {
+        this.imgUrl = imgUrl;
+        this.localPath = localPath;
+    }
+
     //图片
     public MediaObj(String content, String imgUrl, int w, int h, long photographTime) {
         this.content = content;

@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
@@ -20,17 +21,19 @@ import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 
 /**
  * Created by lidonglin on 2016/5/4.
  */
 public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
+    private int paddingSize=24;
     private View.OnClickListener onClickListener;
 
     public MilestoneInfoAdapter(Context mContext, List<TimeLineObj> listData) {
         super(mContext, listData);
-
+        paddingSize= (int) mContext.getResources().getDimension(R.dimen.size_12);
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
@@ -50,13 +53,19 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         TimeLineObj item = getItem(position);
         holder.timeLineObj = item;
         holder.context = mContext;
-        int width = Remember.getInt("width", 0) * 3;
         ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = (int) (width * 0.6);
+        if (item.getMediaList().get(0).getH()<=0||item.getMediaList().get(0).getW()<=0){
+            int width = Remember.getInt("width", 0) * 3;
+            layoutParams.width = width;
+            layoutParams.height = (int) (width * 0.6);
+        }else {
+            int width = App.mScreenWidth - paddingSize - paddingSize;
+            layoutParams.width = width;
+            layoutParams.height = item.getMediaList().get(0).getH() * width / item.getMediaList().get(0).getW();
+        }
         holder.ivCover.setLayoutParams(layoutParams);
         holder.rlMilestone.setLayoutParams(layoutParams);
-        holder.tvTime.setText(DateUtil.getYear2(item.getDate()));
+        holder.tvTime.setText(DateUtil.formatDate("yyyy年MM月dd日",item.getDate()));
         GlideUtil.displayImage(item.getMediaList().get(0).getImgUrl(), holder.ivCover);
         if(item.getType()==1){
             holder.ivVideo.setVisibility(View.VISIBLE);
@@ -99,7 +108,8 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         @Override
         public void onClick(View v) {
-            TimeLineDetailActivity.open(context,timeLineObj);
+            TimeFaceDetailFragment.open(v.getContext(),timeLineObj,false);
+//            TimeLineDetailActivity.open(context,timeLineObj);
         }
     }
 }
