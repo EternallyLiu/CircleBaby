@@ -147,7 +147,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     AppBarLayout appbar;
     @Bind(R.id.tv_progress)
     TextView mTvprogress;
-    @Bind(R.id.empty_view)
     EmptyDataView emptyView;
 
     private boolean rlCommentShow;
@@ -641,7 +640,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             upload.setOnClickListener(this);
             imageView.setList(list);
             adapter.removeHeader(picChangeView);
-            adapter.addHeader(picChangeView);
+            adapter.addHeader(0, picChangeView);
             adapter.notifyDataSetChanged();
             contentRecyclerView.scrollToPosition(0);
         }
@@ -802,8 +801,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     @Override
     public void loadfinish(int code) {
         tfptrListViewHelper.finishTFPTRRefresh();
+        if (emptyView != null) adapter.removeHeader(emptyView);
         LogUtil.showLog("size===" + adapter.getRealItemSize() + "----code===" + code);
-        emptyView.setVisibility(View.GONE);
         if (code == 19999) showGuide();
         if (code == BaseAdapter.UPDATE_DATA_ADD_LIST_CENTER) {
             if (currentTimeId > 0)
@@ -831,12 +830,22 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                     return Observable.just(builder);
                 }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(spannableStringBuilder -> {
+                    if (emptyView == null)
+                        emptyView = new EmptyDataView(getActivity());
+                    ViewGroup.LayoutParams layoutParams = emptyView.getLayoutParams();
+                    if (layoutParams == null)
+                        layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    emptyView.setPadding(0, DeviceUtil.dpToPx(getResources(), 100), 0, 0);
+                    emptyView.setLayoutParams(layoutParams);
                     emptyView.getErrorTitle().setText(spannableStringBuilder);
                     emptyView.getEmptyIcon().setVisibility(View.GONE);
                     emptyView.setRetry(true);
                     emptyView.setErrorRetryText("导入手机里的照片");
                     emptyView.setEmptyCallBack(this);
                     emptyView.setVisibility(View.VISIBLE);
+                    adapter.addHeader(emptyView);
+                    adapter.notifyDataSetChanged();
                 }, throwable -> LogUtil.showError(throwable));
             }
         }

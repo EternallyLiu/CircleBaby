@@ -132,6 +132,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     public void removeHeader(View view) {
         if (mHeaders.contains(view)) {
             mHeaders.remove(view);
+            notifyDataSetChanged();
         }
     }
 
@@ -144,6 +145,10 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     public void addHeader(@NonNull View view) {
         if (!mHeaders.contains(view))
             mHeaders.add(view);
+    }
+    public void addHeader(int position,@NonNull View view) {
+        if (!mHeaders.contains(view))
+            mHeaders.add(position,view);
     }
 
     public void addFooter(@NonNull View view) {

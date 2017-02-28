@@ -23,19 +23,19 @@
         android:text="@string/order_null"
         android:textColor="#999999"
         android:gravity="center"
-        android:textSize="20sp"
+        android:textSize="@dimen/text_normal"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/error_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_space_large"
+        android:layout_marginTop="@dimen/size_12"
         android:background="@drawable/selector_common_btn"
         android:gravity="center_horizontal"
-        android:minWidth="200dp"
+        android:minWidth="@dimen/size_120"
         android:padding="8dp"
         android:text="去下单"
         android:textColor="@color/white"
-        android:textSize="20sp" />
+        android:textSize="@dimen/text_normal" />
 </LinearLayout>

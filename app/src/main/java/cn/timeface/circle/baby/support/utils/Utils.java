@@ -863,6 +863,8 @@ public class Utils {
      * @return
      */
     public static int getByteSize(String text) {
+        if (TextUtils.isEmpty(text))
+            return 0;
         int count = 0;
         char[] c = text.toCharArray();
         for (int i = 0; i < c.length; i++) {
