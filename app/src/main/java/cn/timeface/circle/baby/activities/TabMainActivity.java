@@ -263,6 +263,10 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         return true;
     }
 
+    public View getSendTimeface(){
+        return sendTimeface;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

@@ -61,6 +61,8 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     private int paddingImage = 4;
     private static final int MAX_ROW_COUNT = 2;
 
+    private View tipView;
+
     public TimeLineGroupListAdapter(Context activity) {
         super(activity);
         largeSize = (int) context().getResources().getDimension(R.dimen.text_large);
@@ -388,7 +390,9 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         String month = DateUtil.getMonth(item.getDate());
         String day = DateUtil.getDay(item.getDate());
         String year = DateUtil.getDateYear(item.getDate());
-
+        RelativeLayout rlCalendar=ViewHolder.getView(contentView,R.id.rl_calendar);
+        if (position < 2)
+            setTipView(rlCalendar);
         //设置日历日期
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(day).append("\n").append(year).append(".").append(month);
@@ -529,5 +533,16 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         }
         if (getLoadDataFinish() != null)
             getLoadDataFinish().loadfinish(msg.what);
+    }
+
+    public void setTipView(View tipView) {
+        this.tipView = tipView;
+        if (getLoadDataFinish()!=null){
+            getLoadDataFinish().loadfinish(19999);
+        }
+    }
+
+    public View getTipView() {
+        return tipView;
     }
 }
