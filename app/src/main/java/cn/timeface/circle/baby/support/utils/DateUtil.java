@@ -44,7 +44,7 @@ public class DateUtil {
     }
 
     public static String getYear2(long timeInMillis) {
-        String format = "yyyy.MM.dd";
+        String format = "yyyy-MM-dd";
 
         return formatDate(format, timeInMillis);
     }

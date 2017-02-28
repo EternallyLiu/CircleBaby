@@ -42,7 +42,7 @@ public class UsersAdapter extends BaseRecyclerAdapter<UserWrapObj> {
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         final UserWrapObj userWrapObj = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.tvUserName.setText(userWrapObj.getUserInfo().getNickName());
+        holder.tvUserName.setText(userWrapObj.getUserInfo().getRelationName());
         holder.tvPhotoCount.setText(userWrapObj.getUserImageCount() + "张");
         Glide.with(mContext)
                 .load(userWrapObj.getUserInfo().getAvatar())

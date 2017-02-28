@@ -131,7 +131,19 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
         switch (bookType) {
             //精装照片书
             case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
-                SelectThemeActivity.open(this);
+                addSubscription(
+                        apiService.getDefaultTheme(bookType)
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .subscribe(
+                                        response -> {
+                                            if(response.success()){
+                                                SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
+                                            }
+                                        },
+                                        throwable -> {
+                                            Log.e(TAG, throwable.getLocalizedMessage());
+                                        }
+                                ));
                 break;
             //成长纪念册
             case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:

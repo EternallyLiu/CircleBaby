@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
 import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.calendar.CalendarPreviewActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 
@@ -106,7 +107,19 @@ public class BookListActivity extends ProductionListActivity implements BookPres
             switch (bookType) {
                 //精装照片书
                 case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
-                    SelectThemeActivity.open(this);
+                    addSubscription(
+                            apiService.getDefaultTheme(bookType)
+                                    .compose(SchedulersCompat.applyIoSchedulers())
+                                    .subscribe(
+                                            response -> {
+                                                if(response.success()){
+                                                    SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
+                                                }
+                                            },
+                                            throwable -> {
+                                                Log.e(TAG, throwable.getLocalizedMessage());
+                                            }
+                                    ));
                     break;
                 //绘画集
                 case BookModel.BOOK_TYPE_PAINTING:
@@ -135,7 +148,19 @@ public class BookListActivity extends ProductionListActivity implements BookPres
             //精装照片书
             case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
                 if (hasPic) {
-                    SelectThemeActivity.open(this);
+                    addSubscription(
+                            apiService.getDefaultTheme(bookType)
+                                    .compose(SchedulersCompat.applyIoSchedulers())
+                                    .subscribe(
+                                            response -> {
+                                                if(response.success()){
+                                                    SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
+                                                }
+                                            },
+                                            throwable -> {
+                                                Log.e(TAG, throwable.getLocalizedMessage());
+                                            }
+                                    ));
                 } else {
                     PublishActivity.open(this, PublishActivity.PHOTO);
                 }

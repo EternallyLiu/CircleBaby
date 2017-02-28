@@ -24,6 +24,7 @@ import java.util.TreeMap;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.dialogs.TFDialog;
+import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.exception.ResultException;
 import cn.timeface.circle.baby.support.api.models.TFUploadFile;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
@@ -404,6 +405,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
                 CalendarPreviewActivity.open(view.getCurrentActivity(),
                         bookModel.getBookId(), String.valueOf(BookModel.BOOK_TYPE_CALENDAR), response.dataId);
                 if (view instanceof CalendarActivity) {
+                    EventBus.getDefault().post(new BookOptionEvent());
                     // 关闭这个界面
                     ((CalendarActivity) view).finish();
                 }

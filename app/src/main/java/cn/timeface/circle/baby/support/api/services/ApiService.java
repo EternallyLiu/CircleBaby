@@ -984,45 +984,13 @@ public interface ApiService {
     @GET("openBook/get")
     Observable<GeneralBookItemResponse> sdkBookGet(@Query("id") String id);
 
-//    @POST("openBook/update")
-//    @FormUrlEncoded
-//    @Deprecated
-//    Observable<cn.timeface.circle.baby.support.mvp.response.bases.BaseResponse> sdkBookUpdate(
-//            @Field("id") String remoteId,
-//            @Field("book_id") String bookId,
-//            @Field("book_type") String bookType,
-//            @Field("book_cover") String bookCover,
-//            @Field("book_author") String bookAuthor,
-//            @Field("author_avatar") String authorAvatar,
-//            @Field("book_title") String bookTitle,
-//            @Field("book_summary") String bookSummary,
-//            @Field("days") String commemorations,
-//            @Field("extra") String extra
-//    );
-//
-//    @POST("openBook/update")
-//    @FormUrlEncoded
-//    Observable<cn.timeface.circle.baby.support.mvp.response.bases.BaseResponse> sdkBookUpdate(
-//            @Field("id") String remoteId,
-//            @Field("book_id") String bookId,
-//            @Field("type") String type,
-//            @Field("book_type") String bookType,
-//            @Field("book_cover") String bookCover,
-//            @Field("book_author") String bookAuthor,
-//            @Field("author_avatar") String authorAvatar,
-//            @Field("book_title") String bookTitle,
-//            @Field("book_summary") String bookSummary,
-//            @Field("days") String commemorations,
-//            @Field("extra") String extra
-//    );
-
     /**
      * 我的首页
      */
     @GET("member/index")
     Observable<MineResponse> queryMine();
 
-    @GET("")
+    @GET("printGrowth/getBookThemeId")
     Observable<GetThemeResponse> getDefaultTheme(@Query("bookType") int bookType);
 
 }
