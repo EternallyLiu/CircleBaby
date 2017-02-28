@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
+import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
@@ -45,7 +46,7 @@ import rx.functions.Func1;
 public class RecognizeCardListActivity extends ProductionListActivity implements CardPresentation.RecognizeCardView, View.OnClickListener, IEventBus {
     RecognizeCardListAdapter cardListAdapter;
     CardPresenter cardPresenter;
-    List<KnowledgeCardObj> selectCards;
+    List<KnowledgeCardObj> selectCards = new ArrayList<>();
     int bookPage = 8;
     TFDialog tougueDialog;
 
@@ -67,7 +68,6 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
         btnAskPrint.setText("申请印刷");
         tvTip.setText(" 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
 
-        selectCards = new ArrayList<>();
         rvBooks.setPadding(
                 getResources().getDimensionPixelOffset(R.dimen.size_16),
                 0,
@@ -305,5 +305,11 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                 }
             }
         }
+    }
+
+    @Subscribe
+    public void publishRefreshEvent(PublishRefreshEvent refreshEvent){
+        selectCards.addAll(refreshEvent.getDataList());
+        cardPresenter.loadRecognizeCard();
     }
 }

@@ -50,7 +50,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
     String coverTitle;
     int bookPage;
     int bookSizeId;
-    List<CardObj> selectCards;
+    List<CardObj> selectCards = new ArrayList<>();
     TFDialog tougueDialog;
 
     public static void open(Context context){
@@ -107,6 +107,9 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
             diaryCardListAdapter = new DiaryCardListAdapter(this, diaryCardObjs, canSelect, this);
             rvBooks.setAdapter(diaryCardListAdapter);
         } else {
+            for(DiaryCardObj diaryCardObj : diaryCardObjs){
+                diaryCardObj.setSelect(selectCards.contains(diaryCardObj) ? 1 : 0);
+            }
             diaryCardListAdapter.setListData(diaryCardObjs);
             diaryCardListAdapter.notifyDataSetChanged();
         }
@@ -114,12 +117,10 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
         if (diaryCardListAdapter.getListData().isEmpty()) {
             tvTip.setVisibility(View.GONE);
             btnAskPrint.setVisibility(View.GONE);
-
             llEmpty.setVisibility(View.VISIBLE);
             setupEmptyViewContent(false);
         } else {
             llEmpty.setVisibility(View.GONE);
-
             btnAskPrint.setVisibility(View.VISIBLE);
             //just 展示列表
             if (!canSelect) {
@@ -127,7 +128,6 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
                 tvTip.setVisibility(View.GONE);
                 //可以选择卡片申请印刷
             } else {
-                if (selectCards == null) selectCards = new ArrayList<>();
                 btnAskPrint.setText("申请印刷");
                 tvTip.setVisibility(View.VISIBLE);
                 tvTip.setText(coverTitle + " 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
@@ -284,6 +284,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
     @Subscribe
     public void onEvent(DiaryPublishEvent event) {
         if (cardPresenter != null) {
+            selectCards.add(event.getDiaryCardObj());
             cardPresenter.loadDiaryCard();
         }
     }

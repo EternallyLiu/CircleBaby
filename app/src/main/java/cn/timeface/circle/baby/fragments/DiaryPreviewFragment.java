@@ -46,6 +46,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.api.models.objs.TemplateAreaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TemplateImage;
 import cn.timeface.circle.baby.support.api.models.objs.TemplateObj;
+import cn.timeface.circle.baby.support.api.models.responses.DiaryComposedResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
@@ -56,6 +57,7 @@ import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import uk.co.senab.photoview.PhotoView;
 
@@ -334,17 +336,17 @@ public class DiaryPreviewFragment extends BaseFragment {
                         }
                     })
                     .subscribe(diaryComposedResponse -> {
-                                if (diaryComposedResponse.success()) {
+                        if (diaryComposedResponse.success()) {
 //                                    DiaryCardObj diaryCardObj = diaryComposedResponse.getDiaryCardObj();
 //                                    diaryCardObj.getMedia().setPhotographTime(System.currentTimeMillis());
-                                    tfProgressDialog.dismiss();
+                            tfProgressDialog.dismiss();
 //                                    PublishActivity.open(getContext(), diaryCardObj);
-                                    getActivity().finish();
-                                    EventBus.getDefault().post(new DiaryPublishEvent());
-                                } else {
-                                    ToastUtil.showToast(diaryComposedResponse.getInfo());
-                                }
-                            }
+                            DiaryPreviewFragment.this.getActivity().finish();
+                            EventBus.getDefault().post(new DiaryPublishEvent(diaryComposedResponse.getDiaryCardObj()));
+                        } else {
+                            ToastUtil.showToast(diaryComposedResponse.getInfo());
+                        }
+                    }
                             , throwable -> {
                                 Log.e(TAG, "diaryPublish:");
                             });
