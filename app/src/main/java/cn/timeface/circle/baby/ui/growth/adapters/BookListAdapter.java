@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -97,20 +95,23 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
 
         if(bookObj.getBookType() != BookModel.BOOK_TYPE_CALENDAR){
             holder.ivMask.setVisibility(View.VISIBLE);
-            holder.llPage.setVisibility(View.VISIBLE);
+            holder.tvPagenum.setVisibility(View.VISIBLE);
+            holder.tvAuthor.setVisibility(View.VISIBLE);
             Glide.with(mContext)
                     .load(bookObj.getBookCover())
                     .into(holder.ivBookCover);
-            holder.tvCreateTimeLabel.setText("创建时间: ");
+            holder.tvCreattime.setText("创建时间: " + DateUtil.getYear2(bookObj.getCreateTime()));
         } else {
+            holder.tvAuthor.setVisibility(View.GONE);
             holder.ivMask.setVisibility(View.GONE);
-            holder.llPage.setVisibility(View.GONE);
-            holder.tvCreateTimeLabel.setText("最后编辑: ");
+            holder.tvPagenum.setVisibility(View.GONE);
+            holder.tvCreattime.setText("最后编辑: " + DateUtil.getYear2(bookObj.getCreateTime()));
         }
+
         holder.tvTitle.setText(bookObj.getBookName());
         holder.tvPagenum.setText("页      数: "+String.valueOf(bookObj.getPageNum()));
         holder.tvAuthor.setText("作      者: " + (bookObj.getAuthor() != null ? bookObj.getAuthor().getNickName() : ""));
-        holder.tvCreattime.setText("创建时间: : " + DateUtil.getYear2(bookObj.getCreateTime()));
+
         if (clickListener != null) {
             holder.ivMenu.setOnClickListener(clickListener);
             holder.tvPrint.setOnClickListener(clickListener);
@@ -155,10 +156,6 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         RatioFrameLayout flBookCover;
         @Bind(R.id.iv_front_mask)
         ImageView ivMask;
-        @Bind(R.id.tv_create_time_label)
-        TextView tvCreateTimeLabel;
-        @Bind(R.id.ll_page)
-        LinearLayout llPage;
 
         ViewHolder(View view) {
             super(view);

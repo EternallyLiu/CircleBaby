@@ -42,19 +42,12 @@
                 android:src="@drawable/bg_default_holder_img" />
 
             <ImageView
+                android:id="@+id/iv_front_mask"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:src="@drawable/book_front_mask" />
         </com.github.rayboot.widget.ratioview.RatioFrameLayout>
-        <ImageView
-            android:id="@+id/iv_front_mask"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/book_front_mask" />
-
-    </com.github.rayboot.widget.ratioview.RatioFrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,22 +64,15 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_toLeftOf="@+id/iv_menu"
                     android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/text"
                     android:textSize="16sp"
                     tools:text="小CC的精装照片书" />
-            <TextView
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:layout_toLeftOf="@+id/iv_menu"
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text"
-                android:textSize="16sp"
-                tools:text="小CC的精装照片书" />
 
                 <ImageView
                     android:id="@+id/iv_menu"
@@ -95,13 +81,6 @@
                     android:layout_alignParentRight="true"
                     android:src="@drawable/ic_menu" />
             </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_page"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/view_space_normal"
-            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_pagenum"
@@ -121,7 +100,6 @@
 
             <TextView
                 android:id="@+id/tv_creattime"
-                android:id="@+id/tv_create_time_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_2"
