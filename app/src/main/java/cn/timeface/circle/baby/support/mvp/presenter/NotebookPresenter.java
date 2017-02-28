@@ -137,7 +137,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
 
                     // 存一下扩展信息
                     String extra = response.getData().getExtra();
-                    String bookId = response.getData().getBookId();
+                    String bookId = response.getData().getBook_id();
 
                     try {
                         if (!TextUtils.isEmpty(extra)) {
@@ -204,7 +204,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
 
                             // 存一下扩展信息
                             String extra = response.getData().getExtra();
-                            String bookId = response.getData().getBookId();
+                            String bookId = response.getData().getBook_id();
 
                             try {
                                 if (!TextUtils.isEmpty(extra)) {
@@ -633,7 +633,7 @@ public class NotebookPresenter extends BasePresenter<NotebookPresentation.View, 
 
                             if (remoteBook != null) {
                                 //baseResponse.getData().setId(remoteBook.getId());
-                                response.dataId = remoteBook.getBookId();
+                                response.dataId = remoteBook.getBook_id();
                             } else {
                                 response.dataId = String.valueOf(baseResponse.getData().getId());
                             }

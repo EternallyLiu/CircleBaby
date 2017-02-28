@@ -17,25 +17,25 @@ public class GeneralBookObj implements Parcelable {
     private long id;
 
     @JsonField(name = "book_id")
-    private String bookId;
+    private String book_id;
 
     @JsonField(name = "book_cover")
-    private String bookCover;
+    private String book_cover;
 
     @JsonField(name = "book_author")
-    private String bookAuthor;
+    private String book_author;
 
     @JsonField(name = "author_avatar")
-    private String authorAvatar;
+    private String author_avatar;
 
     @JsonField(name = "book_title")
-    private String bookTitle;
+    private String book_title;
 
     @JsonField(name = "book_summary")
-    private String bookSummary;
+    private String book_summary;
 
     @JsonField(name = "book_type")
-    private int bookType;
+    private int book_type;
 
     @JsonField(name = "year")
     private String year;
@@ -47,7 +47,7 @@ public class GeneralBookObj implements Parcelable {
     private String extra;
 
     @JsonField(name = "book_date")
-    private Long date;
+    private Long book_date;
 
     /**
      * 3 已上架 2 审核中 其他的值 都为下架状态
@@ -63,60 +63,68 @@ public class GeneralBookObj implements Parcelable {
         this.id = id;
     }
 
-    public String getBookId() {
-        return bookId;
+    public String getBook_id() {
+        return book_id;
     }
 
-    public void setBookId(String bookId) {
-        this.bookId = bookId;
+    public void setBook_id(String book_id) {
+        this.book_id = book_id;
     }
 
-    public String getBookCover() {
-        return bookCover;
+    public String getBook_cover() {
+        return book_cover;
     }
 
-    public void setBookCover(String bookCover) {
-        this.bookCover = bookCover;
+    public void setBook_cover(String book_cover) {
+        this.book_cover = book_cover;
     }
 
-    public String getBookAuthor() {
-        return bookAuthor;
+    public String getBook_author() {
+        return book_author;
     }
 
-    public void setBookAuthor(String bookAuthor) {
-        this.bookAuthor = bookAuthor;
+    public void setBook_author(String book_author) {
+        this.book_author = book_author;
     }
 
-    public String getAuthorAvatar() {
-        return authorAvatar;
+    public String getAuthor_avatar() {
+        return author_avatar;
     }
 
-    public void setAuthorAvatar(String authorAvatar) {
-        this.authorAvatar = authorAvatar;
+    public void setAuthor_avatar(String author_avatar) {
+        this.author_avatar = author_avatar;
     }
 
-    public String getBookTitle() {
-        return bookTitle;
+    public String getBook_title() {
+        return book_title;
     }
 
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
+    public void setBook_title(String book_title) {
+        this.book_title = book_title;
     }
 
-    public String getBookSummary() {
-        return bookSummary;
+    public String getBook_summary() {
+        return book_summary;
     }
 
-    public void setBookSummary(String bookSummary) {
-        this.bookSummary = bookSummary;
+    public void setBook_summary(String book_summary) {
+        this.book_summary = book_summary;
     }
 
-    public int getBookType() {
-        return bookType;
+    public int getBook_type() {
+        return book_type;
     }
 
-    public void setBookType(int bookType) {
-        this.bookType = bookType;
+    public void setBook_type(int book_type) {
+        this.book_type = book_type;
+    }
+
+    public Long getBook_date() {
+        return book_date;
+    }
+
+    public void setBook_date(Long book_date) {
+        this.book_date = book_date;
     }
 
     public String getYear() {
@@ -143,14 +151,6 @@ public class GeneralBookObj implements Parcelable {
         this.extra = extra;
     }
 
-    public Long getDate() {
-        return date;
-    }
-
-    public void setDate(Long date) {
-        this.date = date;
-    }
-
     public int getBookShelve() {
         return bookShelve;
     }
@@ -170,33 +170,33 @@ public class GeneralBookObj implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.id);
-        dest.writeString(this.bookId);
-        dest.writeString(this.bookCover);
-        dest.writeString(this.bookAuthor);
-        dest.writeString(this.authorAvatar);
-        dest.writeString(this.bookTitle);
-        dest.writeString(this.bookSummary);
-        dest.writeInt(this.bookType);
+        dest.writeString(this.book_id);
+        dest.writeString(this.book_cover);
+        dest.writeString(this.book_author);
+        dest.writeString(this.author_avatar);
+        dest.writeString(this.book_title);
+        dest.writeString(this.book_summary);
+        dest.writeInt(this.book_type);
         dest.writeString(this.year);
         dest.writeString(this.days);
         dest.writeString(this.extra);
-        dest.writeValue(this.date);
+        dest.writeValue(this.book_date);
         dest.writeInt(this.bookShelve);
     }
 
     protected GeneralBookObj(Parcel in) {
         this.id = in.readLong();
-        this.bookId = in.readString();
-        this.bookCover = in.readString();
-        this.bookAuthor = in.readString();
-        this.authorAvatar = in.readString();
-        this.bookTitle = in.readString();
-        this.bookSummary = in.readString();
-        this.bookType = in.readInt();
+        this.book_id = in.readString();
+        this.book_cover = in.readString();
+        this.book_author = in.readString();
+        this.author_avatar = in.readString();
+        this.book_title = in.readString();
+        this.book_summary = in.readString();
+        this.book_type = in.readInt();
         this.year = in.readString();
         this.days = in.readString();
         this.extra = in.readString();
-        this.date = (Long) in.readValue(Long.class.getClassLoader());
+        this.book_date = (Long) in.readValue(Long.class.getClassLoader());
         this.bookShelve = in.readInt();
     }
 

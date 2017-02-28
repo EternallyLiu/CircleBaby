@@ -3,10 +3,13 @@ package cn.timeface.circle.baby.ui.growth.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +24,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.mvp.model.CalendarModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 
@@ -71,13 +75,38 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
                     mContext.getResources(),
                     130);
             holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 680, 524);
+        //台历
+        } else if(bookObj.getBookType() == BookModel.BOOK_TYPE_CALENDAR){
+            holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
+            //横板台历
+            if(bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL){
+                Glide.with(mContext)
+                        .load(R.drawable.bg_calendar_horizontal)
+                        .into(holder.ivBookCover);
+            //竖版台历
+            } else if(bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_VERTICAL){
+                Glide.with(mContext)
+                        .load(R.drawable.bg_calendar_vertical)
+                        .into(holder.ivBookCover);
+            } else {
+                Log.e("台历", "无法识别的台历类型");
+            }
         } else {
             holder.flBookCover.setRatio(RatioFixMode.FIX_WIDTH, 1, 1);
         }
 
-        Glide.with(mContext)
-                .load(bookObj.getBookCover())
-                .into(holder.ivBookCover);
+        if(bookObj.getBookType() != BookModel.BOOK_TYPE_CALENDAR){
+            holder.ivMask.setVisibility(View.VISIBLE);
+            holder.llPage.setVisibility(View.VISIBLE);
+            Glide.with(mContext)
+                    .load(bookObj.getBookCover())
+                    .into(holder.ivBookCover);
+            holder.tvCreateTimeLabel.setText("创建时间: ");
+        } else {
+            holder.ivMask.setVisibility(View.GONE);
+            holder.llPage.setVisibility(View.GONE);
+            holder.tvCreateTimeLabel.setText("最后编辑: ");
+        }
         holder.tvTitle.setText(bookObj.getBookName());
         holder.tvPagenum.setText("页      数: "+String.valueOf(bookObj.getPageNum()));
         holder.tvAuthor.setText("作      者: " + (bookObj.getAuthor() != null ? bookObj.getAuthor().getNickName() : ""));
@@ -124,6 +153,12 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         TextView tvTitle;
         @Bind(R.id.fl_book_cover)
         RatioFrameLayout flBookCover;
+        @Bind(R.id.iv_front_mask)
+        ImageView ivMask;
+        @Bind(R.id.tv_create_time_label)
+        TextView tvCreateTimeLabel;
+        @Bind(R.id.ll_page)
+        LinearLayout llPage;
 
         ViewHolder(View view) {
             super(view);

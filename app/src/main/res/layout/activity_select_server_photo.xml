@@ -21,7 +21,6 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <TextView
-                android:paddingRight="@dimen/view_space_normal"
                 android:id="@+id/tv_content_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,7 +28,17 @@
                 android:drawableEnd="@drawable/icon_arrow_down"
                 android:drawablePadding="5dp"
                 android:drawableRight="@drawable/icon_arrow_down"
+                android:paddingRight="@dimen/view_space_normal"
                 android:text="按时间"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:paddingRight="@dimen/view_space_normal"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </android.support.v7.widget.Toolbar>
 

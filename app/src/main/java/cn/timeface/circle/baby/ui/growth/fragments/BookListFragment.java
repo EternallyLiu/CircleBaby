@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
 import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
@@ -237,7 +238,19 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                 //精装照片书
                 case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
                     if (hasPic) {
-                        SelectThemeActivity.open(getContext());
+                        addSubscription(
+                                apiService.getDefaultTheme(bookType)
+                                        .compose(SchedulersCompat.applyIoSchedulers())
+                                        .subscribe(
+                                                response -> {
+                                                    if(response.success()){
+                                                        SelectServerPhotoActivity.open(getActivity(), BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
+                                                    }
+                                                },
+                                                throwable -> {
+                                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                                }
+                                        ));
                     } else {
                         PublishActivity.open(getContext(), PublishActivity.PHOTO);
                     }
