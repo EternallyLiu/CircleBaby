@@ -101,7 +101,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     private Milestone milestone;
     private List<ImgObj> selImages = new ArrayList<>();
     private TimeLineObj timelimeobj;
-    private List<MediaObj> mediaList=new ArrayList<>(0);
+    private List<MediaObj> mediaList = new ArrayList<>(0);
     private int milestoneId;
     private String time;
     private List<String> urls = new ArrayList<>();
@@ -198,7 +198,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 case PICTURE:
                     imgObjs = data.getParcelableArrayListExtra("result_select_image_list");
                     urls.clear();
-                    if (mediaList.size()>0){
+                    if (mediaList.size() > 0) {
                         timelimeobj.getMediaList().removeAll(mediaList);
                         mediaList.clear();
                     }
@@ -265,17 +265,11 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     private void editTime() {
         String value = etContent.getText().toString();
-        if (imageUrls.size() < 1 && timelimeobj.getType() != 4 && timelimeobj.getType() != 1) {
+        if (timelimeobj.getMediaList().size() < 1 && timelimeobj.getType() != 4 && timelimeobj.getType() != 1) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
-//        if (imgObjs.size() > 0) {
-//            for (ImgObj img : imgObjs) {
-//                MediaObj mediaObj = img.getMediaObj();
-//                mediaList.add(mediaObj);
-//            }
-//        }
-        String s = new Gson().toJson(timelimeobj.getMediaList());
+        String s = JSONUtils.parse2JSONString(timelimeobj.getMediaList());
         String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
         long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
         String locationInfo = JSONUtils.parse2JSONString(timelimeobj.getLocationInfo());
