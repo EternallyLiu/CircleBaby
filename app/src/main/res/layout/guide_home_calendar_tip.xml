@@ -5,20 +5,31 @@
 
     <ImageView
         android:id="@+id/cut"
-        android:layout_alignParentLeft="true"
         android:layout_width="72dp"
         android:layout_height="20dp"
-        android:layout_marginTop="@dimen/size_6"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/size_6"
         android:scaleType="fitCenter"
         android:src="@drawable/guide_home_calendar_cut" />
 
     <ImageView
         android:id="@+id/tip"
-        android:layout_toRightOf="@+id/cut"
-        android:layout_marginLeft="@dimen/size_6"
         android:layout_width="159dp"
         android:layout_height="46dp"
+        android:layout_marginLeft="@dimen/size_6"
+        android:layout_toRightOf="@+id/cut"
         android:scaleType="fitCenter"
         android:src="@drawable/guide_home_calendar_tip" />
+
+    <ImageView
+        android:id="@+id/next"
+        android:layout_width="159dp"
+        android:layout_height="46dp"
+        android:layout_below="@+id/tip"
+        android:layout_marginLeft="@dimen/size_6"
+        android:layout_marginTop="@dimen/size_6"
+        android:layout_toRightOf="@+id/cut"
+        android:scaleType="fitCenter"
+        android:src="@drawable/guide_next" />
 </RelativeLayout>

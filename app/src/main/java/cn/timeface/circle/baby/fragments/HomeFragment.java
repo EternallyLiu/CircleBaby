@@ -777,7 +777,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         if (adapter.getTipView() == null)
             return null;
         View view = getLayoutInflater().inflate(R.layout.guide_home_calendar_tip, null);
-//        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
         GuideHelper.TipData calendarTip = new GuideHelper.TipData(view, Gravity.CENTER_VERTICAL | Gravity.RIGHT, adapter.getTipView());
         calendarTip.setLocation(Gravity.CENTER_VERTICAL | Gravity.RIGHT, 0, (int) -adapter.getTipView().getY());
         return calendarTip;
@@ -787,7 +787,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
             return;
         }
-        Observable.defer(() -> Observable.just(getChangeBaby(), getSendTimeTip(), initCalendarTip()))
+        Observable.defer(() -> Observable.just(getChangeBaby(), initCalendarTip(), getSendTimeTip()))
                 .filter(tipData -> tipData != null)
                 .toList()
                 .doOnNext(

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +40,8 @@ import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.guides.GuideHelper;
+import cn.timeface.circle.baby.ui.guides.GuideUtils;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.images.views.FlipImageView;
@@ -46,6 +49,8 @@ import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import cn.timeface.common.utils.DeviceUtil;
+import rx.Observable;
 
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_PHOTO_PATHS;
 import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SELECTOR_POSITION;
@@ -118,7 +123,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
         if (mPaths.size() > 0 && mPaths != null) {
             mPhotoPagerAdapter = new PhotoPagerAdapter(getActivity(), mPaths);
         }
@@ -133,6 +137,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         tag.setOnClickListener(this);
         love.setOnClickListener(this);
         initListener();
+        showGuide();
         return view;
     }
 
@@ -187,7 +192,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         } else {
             llTagList.setVisibility(View.GONE);
         }
-        ivTagAdd.changeStatus(R.drawable.tag_clicl_add);
+        ivTagAdd.changeStatus(R.drawable.tag_click_added);
     }
 
     private int deletePostion = -1;
@@ -464,6 +469,43 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                 addLike();
                 break;
         }
+    }
+
+    private GuideHelper guideHelper = null;
+
+    private GuideHelper.TipData getTagTipData() {
+        if (inflate==null)inflate=LayoutInflater.from(getActivity());
+        View view = inflate.inflate(R.layout.guide_bigimage_tag_tip, null);
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, tag);
+        tipData.setLocation(Gravity.TOP | Gravity.CENTER_HORIZONTAL, DeviceUtil.dpToPx(getResources(), 80), -DeviceUtil.dpToPx(getResources(), 5));
+        return tipData;
+    }
+    private GuideHelper.TipData getLikeTipData() {
+        if (inflate==null)inflate=LayoutInflater.from(getActivity());
+        View view = inflate.inflate(R.layout.guide_bigimage_like_tip, null);
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, love);
+        tipData.setLocation(Gravity.TOP | Gravity.LEFT, DeviceUtil.dpToPx(getResources(), 80), -DeviceUtil.dpToPx(getResources(), 5));
+        return tipData;
+    }
+
+    private void initGuideHelper(List<GuideHelper.TipData> list) {
+        if (guideHelper == null)
+            guideHelper = new GuideHelper(getActivity());
+        for (GuideHelper.TipData tipData : list)
+            guideHelper.addPage(false, tipData);
+    }
+
+    private void showGuide() {
+//        if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
+//            return;
+//        }
+        Observable.defer(() -> Observable.just(getTagTipData(),getLikeTipData())).filter(tipData -> tipData != null)
+                .toList().doOnNext(tipDatas -> initGuideHelper(tipDatas))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(list -> guideHelper.show(false), throwable -> LogUtil.showError(throwable));
+
     }
 
     @Override
