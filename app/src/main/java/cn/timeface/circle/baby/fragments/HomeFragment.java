@@ -788,14 +788,21 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             return;
         }
         Observable.defer(() -> Observable.just(getChangeBaby(), getSendTimeTip(), initCalendarTip()))
-                .filter(tipData -> tipData != null).toList().doOnNext(tipDatas -> {
-            if (guideHelper == null) guideHelper = new GuideHelper(getActivity());
-            if (tipDatas != null && tipDatas.size() > 0) {
-                for (int i = 0; i < tipDatas.size(); i++) {
-                    guideHelper.addPage(tipDatas.get(i));
-                }
-            }
-        }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(tipDatas -> guideHelper.show(false), throwable -> LogUtil.showError(throwable));
+                .filter(tipData -> tipData != null)
+                .toList()
+                .doOnNext(
+                        tipDatas -> {
+                            if (guideHelper == null) guideHelper = new GuideHelper(getActivity());
+                            if (tipDatas != null && tipDatas.size() > 0) {
+                                for (int i = 0; i < tipDatas.size(); i++) {
+                                    guideHelper.addPage(tipDatas.get(i));
+                                }
+                            }
+                        })
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        tipDatas -> guideHelper.show(false),
+                        throwable -> LogUtil.showError(throwable));
     }
 
     @Override
