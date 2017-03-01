@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,6 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
-import cn.timeface.circle.baby.activities.SelectThemeActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
@@ -69,10 +69,12 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
     @Bind(R.id.content_book_list)
     RelativeLayout contentBookList;
 
-    int bookType;
-    BookListAdapter bookListAdapter;
-    BookPresenter bookPresenter;
-    ProductionMenuDialog productionMenuDialog;
+    private int bookType;
+    private BookListAdapter bookListAdapter;
+    private BookPresenter bookPresenter;
+    private ProductionMenuDialog productionMenuDialog;
+
+    private boolean hasPic;
 
     public static BookListFragment newInstance(int bookType) {
         BookListFragment fragment = new BookListFragment();
@@ -108,7 +110,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
         switch (view.getId()) {
             case R.id.iv_menu:
                 if (productionMenuDialog == null) {
-                    ProductionMenuDialog productionMenuDialog = ProductionMenuDialog.newInstance(
+                    productionMenuDialog = ProductionMenuDialog.newInstance(
                             bookType,
                             String.valueOf(bookObj.getBookId()),
                             bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
@@ -192,6 +194,11 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
             bookListAdapter.notifyDataSetChanged();
         }
 
+        this.hasPic = hasPic;
+        updateEmptyView();
+    }
+
+    private void updateEmptyView() {
         if (bookListAdapter.getListData().isEmpty()) {
             llEmpty.setVisibility(View.VISIBLE);
             setupEmptyView(hasPic);
@@ -243,7 +250,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                                         .compose(SchedulersCompat.applyIoSchedulers())
                                         .subscribe(
                                                 response -> {
-                                                    if(response.success()){
+                                                    if (response.success()) {
                                                         SelectServerPhotoActivity.open(getActivity(), BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
                                                     }
                                                 },
@@ -294,15 +301,15 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
         if (optionEvent.getBookType() == bookType) {
             //删除书籍操作
             if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
-                int index = -1;
-                for (BookObj bookObj : bookListAdapter.getListData()) {
-                    index++;
-                    if (bookObj.getBookId() == bookObj.getBookId()) {
-                        bookListAdapter.notifyItemRemoved(index);
-                        productionMenuDialog.dismiss();
+                for (int i = 0; i < bookListAdapter.getListData().size(); i++) {
+                    BookObj bookObj = bookListAdapter.getListData().get(i);
+                    if (TextUtils.equals(optionEvent.getBookId(), String.valueOf(bookObj.getBookId()))) {
+                        bookListAdapter.getListData().remove(i);
+                        bookListAdapter.notifyItemRemoved(i);
                         break;
                     }
                 }
+                updateEmptyView();
             }
         }
     }
