@@ -276,6 +276,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     @Override
     public void onBackPressed() {
         if(canBack){
+            canBack = false;
             tvContent.setVisibility(View.GONE);
             tvContentType.setVisibility(View.VISIBLE);
             flContainerEx.setVisibility(View.GONE);

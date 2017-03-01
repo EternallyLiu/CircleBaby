@@ -5,10 +5,10 @@ package cn.timeface.circle.baby.events;
  * @from 2016/3/23
  * @TODO
  */
-public class PhotoSelectEvent {
+public class PhotoSelectCountEvent {
     public int count;
 
-    public PhotoSelectEvent(int count) {
+    public PhotoSelectCountEvent(int count) {
         this.count = count;
     }
 }

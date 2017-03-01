@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.constants.TypeConstant;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.PhotoGroupItem;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -214,7 +214,7 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
                     doUnSelImg(dataIndex, item);
                 }
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selImgs.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selImgs.size()));
             notifyDataSetChanged();*/
         }
     };
@@ -235,7 +235,7 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
             } else {
                 doUnSelImg(dataIndex, img);
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selImgs.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selImgs.size()));
         }
     };
 
