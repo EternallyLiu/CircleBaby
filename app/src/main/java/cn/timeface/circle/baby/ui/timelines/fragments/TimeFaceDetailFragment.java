@@ -316,13 +316,16 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     @OnClick(R.id.add_like)
     public void like(View view) {
+        view.setClickable(false);
         apiService.like(currentTimeLineObj.getTimeId(), (currentTimeLineObj.getLike() + 1) % 2)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
                         reqData();
                     }
+                    view.setClickable(true);
                 }, error -> {
+                    view.setClickable(true);
                     LogUtil.showError(error);
                 });
     }

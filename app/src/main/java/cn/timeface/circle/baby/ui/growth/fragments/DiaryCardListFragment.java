@@ -77,7 +77,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
     String coverTitle;
     int bookPage;
     int bookSizeId;
-    List<CardObj> selectCards;
+    List<CardObj> selectCards = new ArrayList<>();
     TFDialog tougueDialog;
 
     public static DiaryCardListFragment newInstance() {
@@ -239,6 +239,9 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
             diaryCardListAdapter = new DiaryCardListAdapter(getContext(), diaryCardObjs, canSelect, this);
             rvBooks.setAdapter(diaryCardListAdapter);
         } else {
+            for(DiaryCardObj diaryCardObj : diaryCardObjs){
+                diaryCardObj.setSelect(selectCards.contains(diaryCardObj) ? 1 : 0);
+            }
             diaryCardListAdapter.setListData(diaryCardObjs);
             diaryCardListAdapter.notifyDataSetChanged();
         }
@@ -259,7 +262,6 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                 tvTip.setVisibility(View.GONE);
                 //可以选择卡片申请印刷
             } else {
-                if (selectCards == null) selectCards = new ArrayList<>();
                 btnAskForPrint.setText("申请印刷");
                 tvTip.setVisibility(View.VISIBLE);
                 tvTip.setText(coverTitle + " 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
@@ -303,6 +305,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
     @Subscribe
     public void onEvent(DiaryPublishEvent event) {
         if (cardPresenter != null) {
+            selectCards.add(event.getDiaryCardObj());
             cardPresenter.loadDiaryCard();
         }
     }

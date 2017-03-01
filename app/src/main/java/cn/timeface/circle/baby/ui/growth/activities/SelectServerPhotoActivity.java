@@ -59,9 +59,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         SelectContentTypeDialog.SelectTypeListener, View.OnClickListener, IEventBus, PhotoMapFragment.SelectLocation {
 
     boolean fragmentShow = false;
-    boolean userFragmentShow = false;
     boolean canBack = false;
-//    boolean locationMapShow = false;
     @Bind(R.id.tv_content_type)
     TextView tvContentType;
     @Bind(R.id.toolbar)
@@ -70,7 +68,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     TextView tvContent;
 
     ServerPhotoFragment timePhotoFragment;//按时间
-//    ServerPhotoFragment userPhotoFragment;//按发布人
     HashMap<String, ServerPhotoFragment> userPhotoFragmentMap = new HashMap<>();//存储下来所有用户的fragment
     ServerPhotoFragment labelPhotoFragment;//按标签
     PhotoMapFragment locationPhotoFragment;//按地点
@@ -136,6 +133,15 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                             }
                     );
         }
+
+        //绘画集默认 按标签
+        if(bookType == BookModel.BOOK_TYPE_PAINTING){
+           selectTypeLabel();
+        //其他作品默认 按时间
+        } else {
+            selectTypeTime();
+        }
+        onClick(tvContentType);
     }
 
     @Override
@@ -205,7 +211,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                             }
 
 
-
                                             List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
                                             TFOContentObj tfoContentObj;
                                             tfoContentObj = new TFOContentObj("", tfoResourceObjs);
@@ -258,9 +263,11 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                             )
             );
             return true;
-        } else {
+        } else if(item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -269,6 +276,8 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         if(canBack){
             tvContent.setVisibility(View.GONE);
             tvContentType.setVisibility(View.VISIBLE);
+        } else {
+            finish();
         }
         super.onBackPressed();
     }
@@ -278,7 +287,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
      */
     @Override
     public void selectTypeTime() {
-        if(userFragmentShow)setSelectUserFragmentHide();
         tvContentType.setText("按时间");
         if(timePhotoFragment == null){
             if(TextUtils.isEmpty(bookId)){
@@ -297,24 +305,10 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     @Override
     public void selectTypeUser() {
         tvContentType.setText("按发布人");
-
-        //展示选择发布人页面
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        if (userFragmentShow) {
-            transaction.hide(selectUserFragment);
-            userFragmentShow = false;
-        } else {
-            if (selectUserFragment == null) {
-                selectUserFragment = SelectUserFragment.newInstance(this);
-                transaction.add(R.id.fl_container_user, selectUserFragment);
-            } else {
-                transaction.show(selectUserFragment);
-            }
-            userFragmentShow = true;
+        if (selectUserFragment == null) {
+            selectUserFragment = SelectUserFragment.newInstance(this);
         }
-        transaction.commit();
+        showContent(selectUserFragment, false);
         onClick(tvContentType);
     }
 
@@ -324,12 +318,10 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     @Override
     public void selectTypeLocation() {
         tvContentType.setText("按地点");
-        if(userFragmentShow)setSelectUserFragmentHide();
-
         if (locationPhotoFragment == null) {
             locationPhotoFragment = PhotoMapFragment.newInstance(this);
         }
-        showContent(locationPhotoFragment, true);
+        showContent(locationPhotoFragment, false);
         onClick(tvContentType);
     }
 
@@ -338,7 +330,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
      */
     @Override
     public void selectTypeLabel() {
-        if(userFragmentShow)setSelectUserFragmentHide();
         tvContentType.setText("按标签");
         if(labelPhotoFragment == null){
             if(TextUtils.isEmpty(bookId)){
@@ -357,7 +348,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     }
 
     Fragment currentFragment = null;
-
     public void showContent(Fragment fragment, boolean canBack) {
         this.canBack = canBack;
         FragmentManager fm = getSupportFragmentManager();
@@ -371,21 +361,11 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
             ft.add(R.id.fl_container, fragment);
         }
         currentFragment = fragment;
-
         if(canBack){
             ft.addToBackStack(null);
         }
         ft.commitAllowingStateLoss();
         invalidateOptionsMenu();
-    }
-
-    private void setSelectUserFragmentHide(){
-        userFragmentShow = false;
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-        transaction.hide(selectUserFragment);
-        transaction.commit();
     }
 
     @Override
@@ -400,7 +380,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                     fragmentShow = false;
                 } else {
                     if (selectContentTypeDialog == null) {
-                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_PHOTO);
+                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_PHOTO, bookType);
                         transaction.add(R.id.fl_container_type, selectContentTypeDialog);
                     } else {
                         transaction.show(selectContentTypeDialog);
@@ -412,7 +392,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
 
             //点击选择用户操作
             case R.id.ll_root:
-                if(userFragmentShow)setSelectUserFragmentHide();
                 UserWrapObj userWrapObj = (UserWrapObj) view.getTag(R.string.tag_obj);
                 tvContentType.setVisibility(View.GONE);
                 tvContent.setVisibility(View.VISIBLE);

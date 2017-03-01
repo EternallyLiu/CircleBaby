@@ -310,6 +310,8 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                     }
                 }
                 updateEmptyView();
+            } else {
+                bookPresenter.loadData(bookType);
             }
         }
     }

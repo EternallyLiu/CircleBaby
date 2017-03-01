@@ -40,6 +40,7 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.images.views.FlowLayout;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
@@ -227,6 +228,8 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     }
 
     private void addView(String tag) {
+        if (TextUtils.isEmpty(tag))
+            return;
         tag = Utils.getLengthString(24, tag.trim());
         addView(new MediaTipObj(tag));
     }
@@ -266,6 +269,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     @Override
     public void afterTextChanged(Editable s) {
         String tag = s.toString();
+        if (!TextUtils.isEmpty(tag)) tag = tag.trim();
         if (!TextUtils.isEmpty(tag) && (tag.endsWith("\n") || Utils.getByteSize(tag) >= 24)) {
             addView(s.toString());
             input.setText("");
@@ -273,22 +277,18 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     }
 
     private void save() {
+        String inputText = input.getText().toString();
+        if (inputText != null && !TextUtils.isEmpty(inputText.trim())) {
+            selectList.add(new MediaTipObj(inputText));
+        }
         if (selectList == null || selectList.size() <= 0) {
             ToastUtil.showToast(getString(R.string.tag_save_null_tip));
             return;
         }
-        String json = null;
-        try {
-            json = LoganSquare.serialize(selectList, MediaTipObj.class);
-            LogUtil.showLog("json:" + json);
-        } catch (IOException e) {
-            LogUtil.showLog("异常!");
-            e.printStackTrace();
-        }
+        String json = JSONUtils.parse2JSONString(selectList);
         if (TextUtils.isEmpty(json))
             return;
-        if (currentMediaObj.getId()<=0)
-        {
+        if (currentMediaObj.getId() <= 0) {
             currentMediaObj.setTips(selectList);
             EventBus.getDefault().post(currentMediaObj);
             getActivity().finish();
@@ -314,6 +314,10 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
         MediaTipObj tipObj = (MediaTipObj) parent.getTag(R.id.tag_add);
         switch (v.getId()) {
             case R.id.tag_name:
+                if (selectList.size() >= 5) {
+                    ToastUtil.showToast("对不起！最多只能添加5个标签");
+                    return;
+                }
                 if (!selectList.contains(tipObj))
                     addView(tipObj);
                 break;
