@@ -35,13 +35,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
 import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.support.api.models.objs.DiaryCardObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.api.models.objs.TemplateAreaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TemplateImage;
@@ -334,17 +331,17 @@ public class DiaryPreviewFragment extends BaseFragment {
                         }
                     })
                     .subscribe(diaryComposedResponse -> {
-                                if (diaryComposedResponse.success()) {
+                        if (diaryComposedResponse.success()) {
 //                                    DiaryCardObj diaryCardObj = diaryComposedResponse.getDiaryCardObj();
 //                                    diaryCardObj.getMedia().setPhotographTime(System.currentTimeMillis());
-                                    tfProgressDialog.dismiss();
+                            tfProgressDialog.dismiss();
 //                                    PublishActivity.open(getContext(), diaryCardObj);
-                                    getActivity().finish();
-                                    EventBus.getDefault().post(new DiaryPublishEvent());
-                                } else {
-                                    ToastUtil.showToast(diaryComposedResponse.getInfo());
-                                }
-                            }
+                            DiaryPreviewFragment.this.getActivity().finish();
+                            EventBus.getDefault().post(new DiaryPublishEvent(diaryComposedResponse.getDiaryCardObj()));
+                        } else {
+                            ToastUtil.showToast(diaryComposedResponse.getInfo());
+                        }
+                    }
                             , throwable -> {
                                 Log.e(TAG, "diaryPublish:");
                             });

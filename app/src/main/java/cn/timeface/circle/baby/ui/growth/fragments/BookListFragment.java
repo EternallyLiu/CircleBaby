@@ -291,19 +291,20 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
 
     @Subscribe
     public void bookOptionEvent(BookOptionEvent optionEvent) {
-        if (optionEvent.getBookType() == bookType) {
-            //删除书籍操作
-            if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
-                int index = -1;
-                for (BookObj bookObj : bookListAdapter.getListData()) {
-                    index++;
-                    if (bookObj.getBookId() == bookObj.getBookId()) {
-                        bookListAdapter.notifyItemRemoved(index);
-                        productionMenuDialog.dismiss();
-                        break;
-                    }
-                }
-            }
-        }
+        bookPresenter.loadData(bookType);
+//        if(optionEvent.getBookType() == bookType){
+//            //删除书籍操作
+//            if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE){
+//                int index = -1;
+//                for(BookObj bookObj : bookListAdapter.getListData()){
+//                    index++;
+//                    if(bookObj.getBookId() == bookObj.getBookId()\){
+//                        bookListAdapter.notifyItemRemoved(index);
+//                        productionMenuDialog.dismiss();
+//                        break;
+//                    }
+//                }
+//            }
+//        }
     }
 }

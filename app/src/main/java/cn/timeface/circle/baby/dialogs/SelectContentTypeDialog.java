@@ -11,6 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 
 /**
  * 选择照片/时光筛选条件（按时间，按发布人，按地点，按标签）
@@ -35,6 +36,7 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
     public static int CONTENT_TYPE_TIME = 1;//选择时光（只有按时间/按发布人）
     SelectTypeListener selectTypeListener;
     int contentType;
+    int bookType;
 
     public interface SelectTypeListener{
         void selectTypeTime();
@@ -44,10 +46,11 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
         void setTypeText(String title);//设置标题名称
     }
 
-    public static SelectContentTypeDialog newInstance(SelectTypeListener selectTypeListener, int contentType){
+    public static SelectContentTypeDialog newInstance(SelectTypeListener selectTypeListener, int contentType, int bookType){
         SelectContentTypeDialog selectContentTypeDialog = new SelectContentTypeDialog();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
+        bundle.putInt("book_type", bookType);
         selectContentTypeDialog.setSelectTypeListener(selectTypeListener);
         selectContentTypeDialog.setArguments(bundle);
         return selectContentTypeDialog;
@@ -66,11 +69,18 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
         tvTypeLabel.setOnClickListener(this);
 
         contentType = getArguments().getInt("content_type", CONTENT_TYPE_PHOTO);
+        bookType = getArguments().getInt("book_type", 0);
         if(contentType == CONTENT_TYPE_TIME){
             tvTypeLocation.setVisibility(View.INVISIBLE);
             tvTypeLabel.setVisibility(View.INVISIBLE);
         }
-        tvTypeTime.setSelected(true);
+        //绘画集 默认按标签
+        if(bookType == BookModel.BOOK_TYPE_PAINTING){
+            tvTypeLabel.setSelected(true);
+        //其他 默认按时间
+        } else {
+            tvTypeTime.setSelected(true);
+        }
         return view;
     }
 
