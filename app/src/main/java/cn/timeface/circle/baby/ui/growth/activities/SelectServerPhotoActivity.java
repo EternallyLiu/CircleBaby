@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -66,6 +67,8 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     Toolbar toolbar;
     @Bind(R.id.tv_content)
     TextView tvContent;
+    @Bind(R.id.fl_container_ex)
+    FrameLayout flContainerEx;
 
     ServerPhotoFragment timePhotoFragment;//按时间
     HashMap<String, ServerPhotoFragment> userPhotoFragmentMap = new HashMap<>();//存储下来所有用户的fragment
@@ -275,10 +278,10 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         if(canBack){
             tvContent.setVisibility(View.GONE);
             tvContentType.setVisibility(View.VISIBLE);
+            flContainerEx.setVisibility(View.GONE);
         } else {
-            finish();
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
     /**
@@ -294,7 +297,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                 timePhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), allSelectMedias, bookType);
             }
         }
-        showContent(timePhotoFragment, false);
+        showContent(timePhotoFragment);
         onClick(tvContentType);
     }
 
@@ -307,7 +310,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         if (selectUserFragment == null) {
             selectUserFragment = SelectUserFragment.newInstance(this);
         }
-        showContent(selectUserFragment, false);
+        showContent(selectUserFragment);
         onClick(tvContentType);
     }
 
@@ -320,7 +323,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         if (locationPhotoFragment == null) {
             locationPhotoFragment = PhotoMapFragment.newInstance(this);
         }
-        showContent(locationPhotoFragment, false);
+        showContent(locationPhotoFragment);
         onClick(tvContentType);
     }
 
@@ -337,7 +340,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                 labelPhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_LABEL, FastData.getUserId(), allSelectMedias, bookType);
             }
         }
-        showContent(labelPhotoFragment, false);
+        showContent(labelPhotoFragment);
         onClick(tvContentType);
     }
 
@@ -347,8 +350,8 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     }
 
     Fragment currentFragment = null;
-    public void showContent(Fragment fragment, boolean canBack) {
-        this.canBack = canBack;
+    public void showContent(Fragment fragment) {
+        canBack = false;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (currentFragment != null) {
@@ -360,11 +363,26 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
             ft.add(R.id.fl_container, fragment);
         }
         currentFragment = fragment;
-        if(canBack){
-            ft.addToBackStack(null);
-        }
         ft.commitAllowingStateLoss();
         invalidateOptionsMenu();
+    }
+
+    Fragment currentFragmentEx = null;
+    public void showContentEx(Fragment fragment){
+        flContainerEx.setVisibility(View.VISIBLE);
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (currentFragmentEx != null) {
+            ft.hide(currentFragmentEx);
+        }
+        if(fragment.isAdded()){
+            ft.show(fragment);
+        } else {
+            ft.add(R.id.fl_container_ex, fragment);
+        }
+        currentFragmentEx = fragment;
+        ft.commitAllowingStateLoss();
+        canBack = true;
     }
 
     @Override
@@ -398,7 +416,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
 
                 //已经加载
                 if(userPhotoFragmentMap.containsKey(userWrapObj.getUserInfo().getUserId())){
-                    showContent(userPhotoFragmentMap.get(userWrapObj.getUserInfo().getUserId()), true);
+                    showContentEx(userPhotoFragmentMap.get(userWrapObj.getUserInfo().getUserId()));
                 } else {
                     ServerPhotoFragment serverPhotoFragment;
                     if(TextUtils.isEmpty(bookId)){
@@ -407,7 +425,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                         serverPhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), allSelectMedias, bookType);
                     }
                     userPhotoFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverPhotoFragment);
-                    showContent(serverPhotoFragment, true);
+                    showContentEx(serverPhotoFragment);
                 }
                 break;
         }
@@ -436,7 +454,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
 
                                         String city = response.getLocationInfo().getCity();
                                         if (locationPhotoFragmentMap.containsKey(city)) {
-                                            showContent(locationPhotoFragmentMap.get(city), true);
+                                            showContentEx(locationPhotoFragmentMap.get(city));
                                         } else {
                                             ServerPhotoFragment locationFragment;
                                             if (TextUtils.isEmpty(bookId)) {
@@ -446,7 +464,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                             }
 
                                             locationPhotoFragmentMap.put(city, locationFragment);
-                                            showContent(locationFragment, true);
+                                            showContentEx(locationFragment);
                                         }
                                         tvContent.setVisibility(View.VISIBLE);
                                         tvContentType.setVisibility(View.GONE);
