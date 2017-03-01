@@ -108,8 +108,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
 
         //新建一本
         if(TextUtils.isEmpty(bookId)){
-            timePhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId());
-            showContent(timePhotoFragment, false);
+            timePhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
         //编辑一本
         } else {
             apiService.bookMedias(bookId)
@@ -121,9 +120,9 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                     timePhotoFragment = ServerPhotoFragment.newInstanceEdit(
                                             TypeConstants.PHOTO_TYPE_TIME,
                                             FastData.getUserId(),
-                                            response.getDataList()
+                                            response.getDataList(),
+                                            bookType
                                     );
-                                    showContent(timePhotoFragment, false);
                                 } else {
                                     ToastUtil.showToast(response.info);
                                 }
@@ -290,9 +289,9 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         tvContentType.setText("按时间");
         if(timePhotoFragment == null){
             if(TextUtils.isEmpty(bookId)){
-                timePhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId());
+                timePhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
             } else {
-                timePhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), allSelectMedias);
+                timePhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), allSelectMedias, bookType);
             }
         }
         showContent(timePhotoFragment, false);
@@ -333,9 +332,9 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         tvContentType.setText("按标签");
         if(labelPhotoFragment == null){
             if(TextUtils.isEmpty(bookId)){
-                labelPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LABEL, FastData.getUserId());
+                labelPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LABEL, FastData.getUserId(), bookType);
             } else {
-                labelPhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_LABEL, FastData.getUserId(), allSelectMedias);
+                labelPhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_LABEL, FastData.getUserId(), allSelectMedias, bookType);
             }
         }
         showContent(labelPhotoFragment, false);
@@ -403,9 +402,9 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                 } else {
                     ServerPhotoFragment serverPhotoFragment;
                     if(TextUtils.isEmpty(bookId)){
-                        serverPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId());
+                        serverPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType);
                     } else {
-                        serverPhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), allSelectMedias);
+                        serverPhotoFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), allSelectMedias, bookType);
                     }
                     userPhotoFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverPhotoFragment);
                     showContent(serverPhotoFragment, true);
@@ -441,9 +440,9 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                         } else {
                                             ServerPhotoFragment locationFragment;
                                             if (TextUtils.isEmpty(bookId)) {
-                                                locationFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), response.getLocationInfo().getCity(), mediaWrapObjs);
+                                                locationFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), response.getLocationInfo().getCity(), mediaWrapObjs, bookType);
                                             } else {
-                                                locationFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), allSelectMedias, mediaWrapObjs);
+                                                locationFragment = ServerPhotoFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), allSelectMedias, mediaWrapObjs, bookType);
                                             }
 
                                             locationPhotoFragmentMap.put(city, locationFragment);
