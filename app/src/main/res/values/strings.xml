@@ -695,7 +695,7 @@
     <string name="bind_phone_skip">暂不绑定</string>
     <string name="bind_phone_title">绑定手机号</string>
     <string name="bind_phone_back">返回</string>
-    <string name="bind_phone_tip_note">成长印记需要您【验证手机号】才能进行下一步哦~验证成功还可获得积分奖励。</string>
+    <string name="bind_phone_tip_note">成长印记需要您【验证手机号】才能进行下一步哦~</string>
     <string name="bind_phone_tip_rule">手机号验证后，可获得100个积分奖励哦~</string>
 
     <string name="settings_notify_password">修改密碼</string>
@@ -816,4 +816,5 @@
 
     <string name="delete_name">删除</string>
     <string name="bind_phone_get_code">发送验证码</string>
+    <string name="next">下一步</string>
 </resources>

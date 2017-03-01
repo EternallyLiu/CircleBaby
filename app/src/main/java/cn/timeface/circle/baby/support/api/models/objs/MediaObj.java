@@ -78,6 +78,8 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public int getFavoritecount() {
+        if (favoritecount < 0)
+            favoritecount = 0;
         return favoritecount;
     }
 
@@ -223,7 +225,7 @@ public class MediaObj extends BaseObj implements Parcelable {
         this.videoUrl = videoUrl;
     }
 
-    public boolean select(){
+    public boolean select() {
         return selected == 1;
     }
 

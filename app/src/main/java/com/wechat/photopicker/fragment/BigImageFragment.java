@@ -443,9 +443,9 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                     }, throwable -> {
                     }));
         } else if (mediaObj != null) {
-            mediaObj.setFavoritecount(mediaObj.getFavoritecount() + 1);
             mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
             ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
+            mediaObj.setFavoritecount(mediaObj.getIsFavorite() == 1 ? mediaObj.getFavoritecount() + 1 : mediaObj.getFavoritecount() - 1);
             tvLikeCount.setText("+ " + mediaObj.getFavoritecount());
             if (allDetailsListPosition >= 0) {
                 EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));

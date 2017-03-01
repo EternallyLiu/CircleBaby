@@ -146,9 +146,10 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         if (!mHeaders.contains(view))
             mHeaders.add(view);
     }
-    public void addHeader(int position,@NonNull View view) {
+
+    public void addHeader(int position, @NonNull View view) {
         if (!mHeaders.contains(view))
-            mHeaders.add(position,view);
+            mHeaders.add(position, view);
     }
 
     public void addFooter(@NonNull View view) {
@@ -294,26 +295,35 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                 for (int k = count; k < item.getMediaList().size(); k++) {
                     count++;
                     MediaObj mediaObj = item.getMediaList().get(k);
-                    if (mediaObj.getH() <= 0 || mediaObj.getW() <= 0)
+                    if (mediaObj.getH() <= 0 || mediaObj.getW() <= 0) {
+                        LogUtil.showLog("continue==" + k);
                         continue;
+                    }
                     if (mediaObj.getH() > height)
                         width += ((mediaObj.getW() * height) / mediaObj.getH());
                     else {
                         if (width <= 0) {
                             height = mediaObj.getH();
+                            width = mediaObj.getW();
+                        } else if (mediaObj.getH() == height) {
+                            height = mediaObj.getH();
                             width += (mediaObj.getW());
                         } else {
-                            width = (width * mediaObj.getH()) / width;
+                            width = width * mediaObj.getH() / height;
+//                            width = (width * mediaObj.getH()) / width;
                             height = mediaObj.getH();
                             width += (mediaObj.getW());
                         }
                     }
-                    if (width > App.mScreenWidth)
+                    LogUtil.showLog("width==" + width + "----height==" + height + "---k=" + k + "--w==" + mediaObj.getW() + "--h==" + mediaObj.getH());
+                    if (width > App.mScreenWidth) {
                         break;
-                    else continue;
+                    } else continue;
                 }
+                LogUtil.showLog("width==" + width + "----height==" + height);
                 height = (App.mScreenWidth * height) / width;
                 width = App.mScreenWidth;
+                LogUtil.showLog("width==" + width + "----height==" + height);
                 rowParams.height = height;
                 rowView.setLayoutParams(rowParams);
                 for (int j = startIndex; j < count; j++) {
@@ -326,6 +336,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                     rowView.addView(view);
                 }
                 startIndex = count;
+                LogUtil.showLog("index==" + i + "---startIndex==" + startIndex + "---rowCount==" + rowView.getChildCount());
                 gv.addView(rowView);
             }
             if (count < item.getMediaList().size()) {
@@ -395,7 +406,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         String month = DateUtil.getMonth(item.getDate());
         String day = DateUtil.getDay(item.getDate());
         String year = DateUtil.getDateYear(item.getDate());
-        RelativeLayout rlCalendar=ViewHolder.getView(contentView,R.id.rl_calendar);
+        RelativeLayout rlCalendar = ViewHolder.getView(contentView, R.id.rl_calendar);
         if (position < 2)
             setTipView(rlCalendar);
         //设置日历日期
@@ -542,7 +553,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
     public void setTipView(View tipView) {
         this.tipView = tipView;
-        if (getLoadDataFinish()!=null){
+        if (getLoadDataFinish() != null) {
             getLoadDataFinish().loadfinish(19999);
         }
     }

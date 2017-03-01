@@ -98,7 +98,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
         phoneNumber = FastData.getUserInfo().getPhoneNumber();
         currentPhone.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
-        codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
+        codeTipRed.setVisibility(View.GONE);
         title.setText(TextUtils.isEmpty(phoneNumber) ? "验证手机号" : "修改手机号");
         if (!TextUtils.isEmpty(phoneNumber)) {
             String replace = phoneNumber.substring(3, 7);
@@ -106,7 +106,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
             tvGetCode.setText(R.string.bind_phone_get_code);
         }else {
             tvGetCode.setText(R.string.bind_phone_get_code);
-            btnSubmit.setText("下一步");
+            btnSubmit.setText(R.string.next);
         }
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
         codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
