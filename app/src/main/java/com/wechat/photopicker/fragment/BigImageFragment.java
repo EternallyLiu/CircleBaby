@@ -486,7 +486,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         View view = inflate.inflate(R.layout.guide_bigimage_like_tip, null);
         view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
         GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, love);
-        tipData.setLocation(Gravity.TOP | Gravity.LEFT, DeviceUtil.dpToPx(getResources(), 80), -DeviceUtil.dpToPx(getResources(), 5));
+        tipData.setLocation(Gravity.TOP | Gravity.CENTER_HORIZONTAL, DeviceUtil.dpToPx(getResources(), 80), -DeviceUtil.dpToPx(getResources(), 5));
         return tipData;
     }
 
@@ -498,9 +498,9 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     }
 
     private void showGuide() {
-//        if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
-//            return;
-//        }
+        if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
+            return;
+        }
         Observable.defer(() -> Observable.just(getTagTipData(),getLikeTipData())).filter(tipData -> tipData != null)
                 .toList().doOnNext(tipDatas -> initGuideHelper(tipDatas))
                 .compose(SchedulersCompat.applyIoSchedulers())
