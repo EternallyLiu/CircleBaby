@@ -13,6 +13,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,8 +26,10 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
+import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
@@ -36,6 +41,7 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.CardPreviewActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.RecognizeCardListAdapter;
+import cn.timeface.circle.baby.ui.growth.events.CardEditEvent;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
 import rx.functions.Func1;
@@ -45,7 +51,7 @@ import rx.functions.Func1;
  * author : YW.SUN Created on 2017/2/13
  * email : sunyw10@gmail.com
  */
-public class RecognizeCardListFragment extends BasePresenterFragment implements CardPresentation.RecognizeCardView, View.OnClickListener {
+public class RecognizeCardListFragment extends BasePresenterFragment implements CardPresentation.RecognizeCardView, View.OnClickListener, IEventBus {
 
     @Bind(R.id.tv_tip)
     TextView tvTip;
@@ -66,7 +72,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
 
     RecognizeCardListAdapter cardListAdapter;
     CardPresenter cardPresenter;
-    List<KnowledgeCardObj> selectCards;
+    List<KnowledgeCardObj> selectCards = new ArrayList<>();
     int bookPage = 8;
     TFDialog tougueDialog;
 
@@ -87,8 +93,6 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
         btnAskForPrint.setOnClickListener(this);
         btnAskForPrint.setText("申请印刷");
         tvTip.setText(" 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
-
-        selectCards = new ArrayList<>();
 
         rvBooks.setPadding(
                 getResources().getDimensionPixelOffset(R.dimen.size_16),
@@ -289,5 +293,30 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Subscribe
+    public void CardSelectEvent(CardEditEvent event) {
+        if (cardListAdapter != null && !cardListAdapter.getListData().isEmpty()) {
+            for (KnowledgeCardObj cardObj : cardListAdapter.getListData()) {
+                if (cardObj.getCardId() == event.getCardId()) {
+                    cardObj.setSelect(event.getSelect());
+
+                    if (cardObj.select() && !selectCards.contains(cardObj)) {
+                        selectCards.add(cardObj);
+                    }
+
+                    if (!cardObj.select() && selectCards.contains(cardObj)) {
+                        selectCards.remove(cardObj);
+                    }
+                }
+            }
+        }
+    }
+
+    @Subscribe
+    public void publishRefreshEvent(PublishRefreshEvent refreshEvent){
+        selectCards.addAll(refreshEvent.getDataList());
+        cardPresenter.loadRecognizeCard();
     }
 }

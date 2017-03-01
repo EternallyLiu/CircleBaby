@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,7 @@ import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.adapters.MineBookAdapterV2;
 import cn.timeface.circle.baby.ui.growth.fragments.BookListFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.DiaryCardListFragment;
@@ -70,7 +72,19 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
         if (item.getItemId() == R.id.action_add) {
             switch (viewPager.getCurrentItem()) {
                 case 0: //精装照片书
-                    SelectThemeActivity.open(this);
+                    addSubscription(
+                            apiService.getDefaultTheme(BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK)
+                                    .compose(SchedulersCompat.applyIoSchedulers())
+                                    .subscribe(
+                                            response -> {
+                                                if (response.success()) {
+                                                    SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
+                                                }
+                                            },
+                                            throwable -> {
+                                                Log.e(TAG, throwable.getLocalizedMessage());
+                                            }
+                                    ));
                     break;
                 case 1: //成长纪念册
                     SelectServerTimeActivity.open(this, BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
