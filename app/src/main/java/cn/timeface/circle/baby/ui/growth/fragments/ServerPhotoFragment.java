@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -42,6 +44,10 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     TFStateView stateView;
     @Bind(R.id.ll_empty)
     LinearLayout llEmpty;
+    @Bind(R.id.tv_recommend_count)
+    TextView tvRecommendCount;
+    @Bind(R.id.tv_sel_count)
+    TextView tvSelectCount;
 
     int contentType;
     String userId;
@@ -49,6 +55,7 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     String addressName;
     List<MediaWrapObj> mediaWrapObjs;
     List<MediaObj> mediaObjs;
+    int bookType;
 
     /**
      * 地图上选择照片后（已经包含照片信息）
@@ -58,13 +65,14 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param mediaWrapObjs
      * @return
      */
-    public static ServerPhotoFragment newInstance(int contentType, String userId, String addressName, List<MediaWrapObj> mediaWrapObjs){
+    public static ServerPhotoFragment newInstance(int contentType, String userId, String addressName, List<MediaWrapObj> mediaWrapObjs, int bookType){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putString("user_id", userId);
         bundle.putString("address_name", addressName);
         bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
+        bundle.putInt("book_type", bookType);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -75,8 +83,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param userId
      * @return
      */
-    public static ServerPhotoFragment newInstance(int contentType, String userId){
-        return newInstance(contentType, userId, "", null);
+    public static ServerPhotoFragment newInstance(int contentType, String userId, int bookType){
+        return newInstance(contentType, userId, "", null, bookType);
     }
 
     /**
@@ -87,13 +95,14 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param mediaWrapObjs
      * @return
      */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs){
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs, int bookType){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putString("user_id", userId);
         bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
         bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
+        bundle.putInt("book_type", bookType);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -105,8 +114,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param selectedMedias
      * @return
      */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias){
-        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>());
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, int bookType){
+        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>(), bookType);
     }
 
     public ServerPhotoFragment() {}
@@ -121,6 +130,7 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         this.addressName = getArguments().getString("address_name");
         this.mediaWrapObjs = getArguments().getParcelableArrayList("media_wrap_objs");
         this.mediaObjs = getArguments().getParcelableArrayList("media_objs");
+        this.bookType = getArguments().getInt("book_type");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
         if(contentType != TypeConstants.PHOTO_TYPE_LOCATION){
             reqData();
@@ -128,7 +138,12 @@ public class ServerPhotoFragment extends BasePresenterFragment {
             stateView.setVisibility(View.GONE);
             setListData(mediaWrapObjs);
         }
+        initTips();
         return view;
+    }
+
+    private void initTips(){
+        tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "80~200"));
     }
 
     private void reqData(){
