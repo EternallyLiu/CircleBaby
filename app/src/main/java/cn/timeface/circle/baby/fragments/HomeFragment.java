@@ -4,6 +4,8 @@ package cn.timeface.circle.baby.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -303,6 +305,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                             ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
                     animatorSet.playTogether(anim);
                     animatorSet.start();
+                    if (getActivity() instanceof TabMainActivity){
+                        ((TabMainActivity)getActivity()).getSendTimeface().setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -317,6 +322,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                             0);
                     animatorSet.playTogether(anim3);
                     animatorSet.start();
+                    if (getActivity() instanceof TabMainActivity){
+                        ((TabMainActivity)getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+                    }
                 }
             }
         };
@@ -327,6 +335,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
         contentRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
+
 
     private void reqData(int page) {
         LogUtil.showLog("page===" + page);
@@ -756,6 +765,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
      * @return
      */
     private GuideHelper.TipData getSendTimeTip() {
+        if (getActivity() instanceof TabMainActivity){
+            ((TabMainActivity)getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+        }
         View view = getLayoutInflater().inflate(R.layout.guide_home_send_tip, null);
         view.findViewById(R.id.next).setOnClickListener(v -> {
             new PublishDialog(getActivity()).show();

@@ -106,7 +106,7 @@ public class TimeLineDetailAdapter extends BaseAdapter {
         layoutParams.width = Remember.getInt("width", 0);
         layoutParams.height = Remember.getInt("width", 0);
         ivVideo.setLayoutParams(layoutParams);
-        GlideUtil.setImage(mediaObj.getImgUrl(),ivVideo,R.drawable.bg_default_holder_img);
+        GlideUtil.setImage(mediaObj.getImgUrl(), ivVideo, R.drawable.bg_default_holder_img);
     }
 
 
@@ -131,18 +131,18 @@ public class TimeLineDetailAdapter extends BaseAdapter {
             params.width = width == 0 ? RecyclerView.LayoutParams.MATCH_PARENT : width;
             params.height = height == 0 ? RecyclerView.LayoutParams.WRAP_CONTENT : height;
         }
-        LogUtil.showLog("width:" + width + "----height:" + height);
         contentView.setLayoutParams(params);
         ImageView icon = ViewHolder.getView(contentView, R.id.icon);
         LogUtil.showLog(position + "---" + mediaObj.getImgUrl());
-        GlideUtil.setImage(mediaObj.getImgUrl(),icon,R.drawable.bg_default_holder_img);
+        GlideUtil.setImage(mediaObj.getImgUrl(), icon, R.drawable.bg_default_holder_img);
     }
 
     private void doCommentObj(View contentView, CommentObj comment) {
         TextView tvComment = ViewHolder.getView(contentView, R.id.tv_comment);
         TextView tvTime = ViewHolder.getView(contentView, R.id.tv_time);
-        SpannableStringBuilder msb = new SpannableStringBuilder();
+        TextView tvRelative = ViewHolder.getView(contentView, R.id.tv_relative);
         String relationName = comment.getUserInfo().getRelationName();
+        SpannableStringBuilder msb = new SpannableStringBuilder();
         msb.append(relationName)
                 .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), 0, relationName.length(),
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//第一个人名
@@ -151,8 +151,8 @@ public class TimeLineDetailAdapter extends BaseAdapter {
             msb.append(comment.getToUserInfo().getRelationName())
                     .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), msb.length() - comment.getToUserInfo().getRelationName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
-        msb.append("\n").append(comment.getContent());
-        tvComment.setText(msb);
+        tvRelative.setText(msb);
+        tvComment.setText(comment.getContent());
         tvTime.setText(DateUtil.formatDate("MM月dd日 HH:mm", comment.getCommentDate()));
     }
 
