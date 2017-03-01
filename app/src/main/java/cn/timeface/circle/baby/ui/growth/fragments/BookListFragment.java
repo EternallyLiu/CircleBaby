@@ -40,6 +40,7 @@ import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
 import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.calendar.CalendarPreviewActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
@@ -132,24 +133,32 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                         CartPrintPropertyDialog.REQUEST_CODE_BOOK_LIST).reqPrintStatus();
                 break;
 
-            case R.id.fl_book_cover:
-                //跳转POD预览
-                ArrayList<String> keys = new ArrayList<>();
-                ArrayList<String> values = new ArrayList<>();
-                keys.add("book_author");
-                keys.add("book_title");
-                values.add(FastData.getUserName());
-                values.add(FastData.getBabyName() + "的照片书");
-                MyPODActivity.open(
-                        getActivity(),
-                        String.valueOf(bookObj.getBookId()),
-                        String.valueOf(bookObj.getOpenBookId()),
-                        bookObj.getBookType(),
-                        bookObj.getOpenBookType(),
-                        null,
-                        "",
-                        false,
-                        bookObj.getBaby().getBabyId(), keys, values, 0);
+            case R.id.rl_book_cover:
+                if (bookType == BookModel.BOOK_TYPE_CALENDAR) {
+                    CalendarPreviewActivity.open(
+                            getContext(),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            String.valueOf(bookObj.getBookType()),
+                            String.valueOf(bookObj.getBookId()));
+                } else {
+                    //跳转POD预览
+                    ArrayList<String> keys = new ArrayList<>();
+                    ArrayList<String> values = new ArrayList<>();
+                    keys.add("book_author");
+                    keys.add("book_title");
+                    values.add(FastData.getUserName());
+                    values.add(FastData.getBabyName() + "的照片书");
+                    MyPODActivity.open(
+                            getContext(),
+                            String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            bookObj.getBookType(),
+                            bookObj.getOpenBookType(),
+                            null,
+                            "",
+                            false,
+                            bookObj.getBaby().getBabyId(), keys, values, 0);
+                }
                 break;
 
             case R.id.tv_edit:

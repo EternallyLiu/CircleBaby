@@ -225,7 +225,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                         CartPrintPropertyDialog.REQUEST_CODE_BOOK_LIST).reqPrintStatus();
                 break;
 
-            case R.id.fl_book_cover:
+            case R.id.rl_book_cover:
                 if(bookType == BookModel.BOOK_TYPE_CALENDAR){
                     CalendarPreviewActivity.open(
                             this,

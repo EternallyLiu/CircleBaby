@@ -7,6 +7,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -108,12 +109,15 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
             List<TimeLineObj> imgs = getLineImgObj(position);
             if(imgs.size() > 0){
                 final TimeLineObj timeLineObj = imgs.get(0);//只会有一条数据
-                if(timeLineObj.getMediaList().size() > 0){
+                if (timeLineObj.getMediaList().size() > 0) {
                     Glide.with(mContext)
                             .load(timeLineObj.getMediaList().get(0).getImgUrl())
                             .centerCrop()
                             .placeholder(R.drawable.bg_default_holder_img)
                             .into(holder.ivImage);
+                    holder.flImage.setVisibility(View.VISIBLE);
+                } else {
+                    holder.flImage.setVisibility(View.GONE);
                 }
                 DateUtils.formatDateTime(mContext, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_WEEKDAY);
                 holder.tvTitle.setText(DateUtils.formatDateTime(mContext, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_DATE)
@@ -206,6 +210,8 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         ImageView ivImage;
         @Bind(R.id.tv_title)
         TextView tvTitle;
+        @Bind(R.id.fl_image)
+        FrameLayout flImage;
         @Bind(R.id.cb_select)
         CheckBox cbSelect;
         @Bind(R.id.tv_content)
