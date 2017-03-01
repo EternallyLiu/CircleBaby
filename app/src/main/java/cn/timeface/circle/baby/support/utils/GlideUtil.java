@@ -89,12 +89,16 @@ public class GlideUtil {
                     .using(new TFStringUrlLoader(imageView.getContext()))
                     .load(url)
                     .asBitmap()
+                    .error(rid)
+                    .placeholder(rid)
                     .transform(new CircleTransform(context))
                     .into(imageView);
         } else
             Glide.with(imageView.getContext())
                     .load(url)
                     .asBitmap()
+                    .error(rid)
+                    .placeholder(rid)
                     .transform(new CircleTransform(context))
                     .into(imageView);
     }

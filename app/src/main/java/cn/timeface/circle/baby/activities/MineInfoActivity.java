@@ -79,7 +79,7 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
     }
 
     private void initData() {
-        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar, R.drawable.ic_launcher);
+        GlideUtil.displayImageCircle(FastData.getAvatar(), R.drawable.ic_launcher, ivAvatar);
         tvNickname.setText(FastData.getUserName());
         if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
             rlChangepsw.setVisibility(View.VISIBLE);
@@ -142,7 +142,7 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     }
                     tfProgressDialog.setTvMessage("加载中…");
                     tfProgressDialog.show(getSupportFragmentManager(), "");
-                    GlideUtil.displayImage(outFile.getAbsolutePath(), ivAvatar);
+                    GlideUtil.displayImageCircle(outFile.getAbsolutePath(), R.drawable.ic_launcher, ivAvatar);
                     uploadImage(outFile.getAbsolutePath());
                     break;
             }

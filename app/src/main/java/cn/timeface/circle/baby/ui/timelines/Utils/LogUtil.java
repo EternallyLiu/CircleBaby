@@ -18,9 +18,19 @@ public class LogUtil {
             Log.d(TAG, text);
     }
 
+    public static void showLog(String tag, String text) {
+        if (BuildConfig.SHOW_LOG)
+            Log.d(tag, text);
+    }
+
     public static void showError(Throwable e) {
         if (BuildConfig.SHOW_LOG)
             Log.e(TAG, e.getMessage(), e);
+
+    }
+    public static void showError(String tag,Throwable e) {
+        if (BuildConfig.SHOW_LOG)
+            Log.e(tag, e.getMessage(), e);
 
     }
 }
