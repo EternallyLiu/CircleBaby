@@ -289,7 +289,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_more) {
-            new TimeLineActivityMenuDialog(getActivity()).setAllDetailsListPosition(allDetailsListPosition).editeor(isEditor).share(currentTimeLineObj);
+            new TimeLineActivityMenuDialog(getActivity()).setAllDetailsListPosition(allDetailsListPosition).share(currentTimeLineObj);
         } else if (item.getItemId() == R.id.action_smail_image) {
             lookup.setShowSmail(!lookup.isShowSmail());
             adapter.notifyDataSetChanged();

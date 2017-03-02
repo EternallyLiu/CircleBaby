@@ -15,13 +15,50 @@
         android:text="2016.05.22"
         android:padding="@dimen/size_6" />
 
-    <GridView
+    <LinearLayout
         android:id="@+id/gv"
         android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_pic_count"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:horizontalSpacing="@dimen/size_2"
-        android:numColumns="3"
-        android:verticalSpacing="@dimen/size_2"></GridView>
+        android:gravity="center"
+        android:padding="@dimen/size_6"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/pic_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/size_4"
+            android:text="共9张图片  "
+            android:textColor="@color/sea_buckthorn"
+            android:textSize="@dimen/text_medium"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/iv_pic_count"
+            android:layout_width="@dimen/size_15"
+            android:layout_height="@dimen/size_9"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/pic_count"
+            android:scaleType="fitCenter"
+            android:src="@drawable/home_pic_count" />
+    </RelativeLayout>
+    <!---->
+    <!--<GridView-->
+        <!--android:id="@+id/gv"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:horizontalSpacing="@dimen/size_2"-->
+        <!--android:numColumns="3"-->
+        <!--android:verticalSpacing="@dimen/size_2"></GridView>-->
 
     <ImageView
         android:id="@+id/iv_cover"

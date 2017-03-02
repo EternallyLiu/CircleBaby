@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,6 +31,7 @@ import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.managers.receivers.SmsReceiver;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.common.utils.CheckedUtil;
+import rx.Observable;
 import rx.Subscription;
 
 public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEventBus {
@@ -71,19 +73,28 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
                     Toast.makeText(this, "请输入正确的手机号码", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                timeRun();
                 if (!TextUtils.isEmpty(phone) && CheckedUtil.isMobileNum(phone)) {
                     registerSMSReceiver();// 注册接收短信，获取的手机验证码并自动填充
 
-                    s = apiService.getVeriCode(phone,2)
+                    s = apiService.getVeriCode(phone, 2)
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 Toast.makeText(this, response.getInfo(), Toast.LENGTH_SHORT).show();
-                                if(response.getStatus()==1){
-                                    timeRun();
+                                if (response.success()) {
                                     etCode.requestFocus();
+                                } else {
+                                    if (tvGetCode != null) {
+                                        tvGetCode.setText("获取验证码");
+                                        tvGetCode.setEnabled(true);
+                                    }
                                 }
                             }, error -> {
                                 Toast.makeText(this, "获取验证码失败", Toast.LENGTH_SHORT).show();
+                                if (tvGetCode != null) {
+                                    tvGetCode.setText("获取验证码");
+                                    tvGetCode.setEnabled(true);
+                                }
                             });
                 }
                 break;
@@ -119,39 +130,26 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
     }
 
     private void timeRun() {
-        tvGetCode.setEnabled(false);
-        final int[] sec = {60};
 
-        Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (sec[0] > 0) {
-                    sec[0] = sec[0] - 1;
-                    if (tvGetCode != null)
-                    tvGetCode.setText(sec[0] + "秒后再次获取");
-                } else {
-                    if (tvGetCode != null){
+        tvGetCode.setEnabled(false);
+        tvGetCode.setText(60 + "秒后再次获取");
+        Observable.interval(1, TimeUnit.SECONDS)
+                .takeWhile(aLong -> aLong <= 59 && !tvGetCode.isEnabled())
+                .map(aLong -> 59 - aLong)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(aLong -> {
+                    if (aLong > 0 && tvGetCode != null)
+                        tvGetCode.setText(aLong + "秒后再次获取");
+                    else if (aLong <= 0 && tvGetCode != null) {
                         tvGetCode.setText("获取验证码");
                         tvGetCode.setEnabled(true);
                     }
-                    timer.cancel();
-                    task.cancel();
-                }
-
-                super.handleMessage(msg);
-            }
-        };
-        timer = new Timer();
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                Message msg = new Message();
-                msg.what = 1;
-                handler.sendMessage(msg);
-            }
-        };
-
-        timer.schedule(task, 0, 1000);
+                }, throwable -> {
+                    if (tvGetCode != null) {
+                        tvGetCode.setText("获取验证码");
+                        tvGetCode.setEnabled(true);
+                    }
+                });
     }
 
 

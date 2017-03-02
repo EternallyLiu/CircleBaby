@@ -150,7 +150,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         if (baby > 0)
             objectKey = s.substring(baby);
 
-        GlideUtil.displayImageCircle(this.babyObj.getAvatar(), ivAvatar);
+        GlideUtil.displayImageCircle(this.babyObj.getAvatar(),R.drawable.ic_launcher, ivAvatar);
         tvName.setText(this.babyObj.getName());
         tvRealName.setText(this.babyObj.getRealName());
 
@@ -250,7 +250,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     } else {
                         outFile = new File(outPath);
                     }
-                    GlideUtil.displayImageCircle(outFile.getAbsolutePath(), ivAvatar);
+                    GlideUtil.displayImageCircle(outFile.getAbsolutePath(),R.drawable.ic_launcher, ivAvatar);
                     uploadImage(outFile.getAbsolutePath());
                     break;
             }

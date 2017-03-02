@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -41,6 +42,7 @@ import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.common.utils.CheckedUtil;
+import rx.Observable;
 import rx.Subscription;
 
 public class BindPhoneFragment extends BaseFragment implements View.OnClickListener {
@@ -98,15 +100,15 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
         phoneNumber = FastData.getUserInfo().getPhoneNumber();
         currentPhone.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
-        codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
+        codeTipRed.setVisibility(View.GONE);
         title.setText(TextUtils.isEmpty(phoneNumber) ? "验证手机号" : "修改手机号");
         if (!TextUtils.isEmpty(phoneNumber)) {
             String replace = phoneNumber.substring(3, 7);
             currentPhone.setText(getString(R.string.bind_current_phone_tip) + phoneNumber.replace(replace, "****"));
             tvGetCode.setText(R.string.bind_phone_get_code);
-        }else {
+        } else {
             tvGetCode.setText(R.string.bind_phone_get_code);
-            btnSubmit.setText("下一步");
+            btnSubmit.setText(R.string.next);
         }
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
         codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
@@ -177,6 +179,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
             Toast.makeText(getActivity(), "请输入正确的手机号码", Toast.LENGTH_SHORT).show();
             return;
         }
+        timeRun();
         if (!TextUtils.isEmpty(phone) && CheckedUtil.isMobileNum(phone)) {
             registerSMSReceiver();// 注册接收短信，获取的手机验证码并自动填充
 
@@ -184,12 +187,20 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(response -> {
                         Toast.makeText(getActivity(), response.getInfo(), Toast.LENGTH_SHORT).show();
-                        if (response.getStatus() == 1) {
-                            timeRun();
+                        if (response.success()) {
                             etCode.requestFocus();
+                        } else {
+                            if (tvGetCode != null) {
+                                tvGetCode.setText("发送验证码");
+                                tvGetCode.setEnabled(true);
+                            }
                         }
                     }, error -> {
                         Toast.makeText(getActivity(), "获取验证码失败", Toast.LENGTH_SHORT).show();
+                        if (tvGetCode != null) {
+                            tvGetCode.setText("发送验证码");
+                            tvGetCode.setEnabled(true);
+                        }
                     });
         }
     }
@@ -204,38 +215,24 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
 
     private void timeRun() {
         tvGetCode.setEnabled(false);
-        final int[] sec = {60};
-
-        Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (sec[0] > 0) {
-                    sec[0] = sec[0] - 1;
-                    if (tvGetCode != null)
-                        tvGetCode.setText(sec[0] + "秒后再次获取");
-                } else {
-                    if (tvGetCode != null) {
-                        tvGetCode.setText("获取验证码");
+        tvGetCode.setText(60 + "秒后再次获取");
+        Observable.interval(1, TimeUnit.SECONDS)
+                .takeWhile(aLong -> aLong <= 59 && !tvGetCode.isEnabled())
+                .map(aLong -> 59 - aLong)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(aLong -> {
+                    if (aLong > 0 && tvGetCode != null)
+                        tvGetCode.setText(aLong + "秒后再次获取");
+                    else if (aLong <= 0 && tvGetCode != null) {
+                        tvGetCode.setText("发送验证码");
                         tvGetCode.setEnabled(true);
                     }
-                    timer.cancel();
-                    task.cancel();
-                }
-
-                super.handleMessage(msg);
-            }
-        };
-        timer = new Timer();
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                Message msg = new Message();
-                msg.what = 1;
-                handler.sendMessage(msg);
-            }
-        };
-
-        timer.schedule(task, 0, 1000);
+                }, throwable -> {
+                    if (tvGetCode != null) {
+                        tvGetCode.setText("发送验证码");
+                        tvGetCode.setEnabled(true);
+                    }
+                });
     }
 
     @Override

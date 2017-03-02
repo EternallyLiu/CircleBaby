@@ -148,7 +148,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar, R.drawable.ic_launcher);
+        GlideUtil.displayImageCircle(FastData.getAvatar(), R.drawable.ic_launcher, ivAvatar);
         tvName.setText(FastData.getUserName());
         initUnreadMessage();
     }
@@ -168,7 +168,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             babyImageLayoutParams.rightMargin = 10;
         }
         imageView.setLayoutParams(babyImageLayoutParams);
-        GlideUtil.displayImageCircle(babyObj.getAvatar(), imageView);
+        GlideUtil.displayImageCircle(babyObj.getAvatar(), R.drawable.ic_launcher, imageView);
         return imageView;
 
     }
@@ -185,8 +185,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                         }
                     }
                 }, error -> {
-                    Log.e(TAG, "noReadMsg:");
-                    error.printStackTrace();
+                    LogUtil.showError(error);
                 });
     }
 

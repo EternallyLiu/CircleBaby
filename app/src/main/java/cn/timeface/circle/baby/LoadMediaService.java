@@ -28,6 +28,8 @@ import rx.functions.Func1;
  * email : wangs1992321@gmail.com
  */
 public class LoadMediaService extends IntentService {
+    private static final String TAG = "LoadMediaService";
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      */
@@ -39,13 +41,6 @@ public class LoadMediaService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         loadVideo();
         EventBus.getDefault().post(new MediaLoadComplete(1));
-        VideoInfo.getAllVideos().doOnNext(list -> {
-            for (VideoInfo videoInfo:list){
-                LogUtil.showLog("video objectkey=="+videoInfo.getVideoObjectKey());
-            }
-        }).subscribe(list -> {
-            VideoInfo.saveAll(list);
-        },throwable -> {LogUtil.showError(throwable);});
     }
 
     private void loadVideo() {
@@ -63,7 +58,7 @@ public class LoadMediaService extends IntentService {
         ContentResolver cr = this.getContentResolver();
 
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            LogUtil.showLog("有sd卡的情况");
+            LogUtil.showLog(TAG, "有sd卡的情况");
             //有sd卡的情况
             Cursor cursor = cr.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, progress, null, null, null);
             while (cursor.moveToNext()) {
@@ -81,8 +76,15 @@ public class LoadMediaService extends IntentService {
                 videoInfo.setDuration(durantion);
                 videoInfo.setSize(size);
                 if (videos.contains(videoInfo)) {
-                    if (videos.get(videos.indexOf(videoInfo)).isThumbmail())
+                    VideoInfo info = videos.get(videos.indexOf(videoInfo));
+                    if (info.isThumbmail()) {
+                        info.setDate(date);
+                        info.setSize(size);
+                        info.setDuration(durantion);
+                        info.setType(0);
+                        info.save();
                         continue;
+                    }
                 }
                 Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
                 String thumbPath = null;
@@ -95,7 +97,7 @@ public class LoadMediaService extends IntentService {
             }
             cursor.close();
         }
-        LogUtil.showLog("不论是否有sd卡都要查询手机内存");
+        LogUtil.showLog(TAG, "不论是否有sd卡都要查询手机内存");
         //不论是否有sd卡都要查询手机内存
         Cursor cursor = cr.query(MediaStore.Video.Media.INTERNAL_CONTENT_URI, progress, null, null, null);
         while (cursor.moveToNext()) {
@@ -113,8 +115,15 @@ public class LoadMediaService extends IntentService {
             videoInfo.setDuration(durantion);
             videoInfo.setSize(size);
             if (videos.contains(videoInfo)) {
-                if (videos.get(videos.indexOf(videoInfo)).isThumbmail())
+                VideoInfo info = videos.get(videos.indexOf(videoInfo));
+                if (info.isThumbmail()) {
+                    info.setDate(date);
+                    info.setSize(size);
+                    info.setDuration(durantion);
+                    info.setType(0);
+                    info.save();
                     continue;
+                }
             }
             Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
             String thumbPath = null;

@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/size_6"
-        android:text="自定义"
+        android:text="+\n自定义"
         android:textSize="@dimen/text_medium"
         android:gravity="center"
         android:layout_alignParentRight="true"

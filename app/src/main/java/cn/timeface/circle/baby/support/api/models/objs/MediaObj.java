@@ -78,6 +78,8 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public int getFavoritecount() {
+        if (favoritecount < 0)
+            favoritecount = 0;
         return favoritecount;
     }
 
@@ -223,12 +225,12 @@ public class MediaObj extends BaseObj implements Parcelable {
         this.videoUrl = videoUrl;
     }
 
-    public boolean select(){
+    public boolean select() {
         return selected == 1;
     }
 
     public ImgObj getImgObj() {
-        ImgObj imgObj = new ImgObj(getImgUrl(), getLocalPath());
+        ImgObj imgObj = new ImgObj(getLocalPath(),getImgUrl());
         imgObj.setDateMills(getPhotographTime());
         imgObj.setId(getLocalIdentifier());
         imgObj.setContent(getContent());

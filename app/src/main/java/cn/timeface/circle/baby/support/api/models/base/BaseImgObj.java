@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +26,7 @@ import cn.timeface.circle.baby.support.utils.ImageUtil;
 /**
  * Created by zhsheng on 2016/6/7.
  */
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class BaseImgObj extends BaseObj implements Parcelable {
     @JsonIgnore
     static final int MINI_THUMBNAIL_SIZE = 300;
@@ -248,15 +250,4 @@ public class BaseImgObj extends BaseObj implements Parcelable {
         this.dateMills = in.readLong();
     }
 
-    public static final Creator<BaseImgObj> CREATOR = new Creator<BaseImgObj>() {
-        @Override
-        public BaseImgObj createFromParcel(Parcel source) {
-            return new BaseImgObj(source);
-        }
-
-        @Override
-        public BaseImgObj[] newArray(int size) {
-            return new BaseImgObj[size];
-        }
-    };
 }

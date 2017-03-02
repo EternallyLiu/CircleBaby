@@ -4,12 +4,15 @@ package cn.timeface.circle.baby.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -48,6 +51,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -96,6 +100,7 @@ import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.PhotoCameraRequest;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
 import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
@@ -286,7 +291,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             public void onTFPullUpToRefresh(View refreshView) {
                 if (currentPage <= 1)
                     currentPage = 1;
-                if (adapter.getRealItemSize() < PAGE_SIZE * currentPage) {
+                if (currentPage != 1 && adapter.getRealItemSize() < PAGE_SIZE * currentPage) {
                     reqData(currentPage);
                 } else
                     reqData(++currentPage);
@@ -303,6 +308,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                             ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
                     animatorSet.playTogether(anim);
                     animatorSet.start();
+                    if (getActivity() instanceof TabMainActivity) {
+                        ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -317,6 +325,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                             0);
                     animatorSet.playTogether(anim3);
                     animatorSet.start();
+                    if (getActivity() instanceof TabMainActivity) {
+                        ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+                    }
                 }
             }
         };
@@ -327,6 +338,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
         contentRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
+
 
     private void reqData(int page) {
         LogUtil.showLog("page===" + page);
@@ -648,7 +660,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Subscribe
     public void onEvent(PicSaveCompleteEvent pic) {
-        PhotoModel.getAllPhotoId().flatMap(s -> apiService.mediaBackup(s))
+        PhotoModel.getAllPhotoId().flatMap(s -> apiService.mediaBackup(Uri.encode(s)))
                 .map(mediaIdResponse -> {
                     ArrayList<String> arrayList = new ArrayList<String>();
                     if (mediaIdResponse.success()) {
@@ -756,6 +768,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
      * @return
      */
     private GuideHelper.TipData getSendTimeTip() {
+        if (getActivity() instanceof TabMainActivity) {
+            ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+        }
         View view = getLayoutInflater().inflate(R.layout.guide_home_send_tip, null);
         view.findViewById(R.id.next).setOnClickListener(v -> {
             new PublishDialog(getActivity()).show();
@@ -777,7 +792,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         if (adapter.getTipView() == null)
             return null;
         View view = getLayoutInflater().inflate(R.layout.guide_home_calendar_tip, null);
-//        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
         GuideHelper.TipData calendarTip = new GuideHelper.TipData(view, Gravity.CENTER_VERTICAL | Gravity.RIGHT, adapter.getTipView());
         calendarTip.setLocation(Gravity.CENTER_VERTICAL | Gravity.RIGHT, 0, (int) -adapter.getTipView().getY());
         return calendarTip;
@@ -787,7 +802,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
             return;
         }
-        Observable.defer(() -> Observable.just(getChangeBaby(), getSendTimeTip(), initCalendarTip()))
+        Observable.defer(() -> Observable.just(getChangeBaby(), initCalendarTip(), getSendTimeTip()))
                 .filter(tipData -> tipData != null)
                 .toList()
                 .doOnNext(

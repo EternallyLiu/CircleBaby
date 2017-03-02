@@ -77,7 +77,7 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     @Bind(R.id.ll_video)
     LinearLayout llVideo;
     private PhotoGridAdapter adapter;
-    private HashSet<String> imageUrls = new HashSet<>();
+    private ArrayList<String> imageUrls = new ArrayList<>();
     private final int PICTURE = 0;
     private final int MILESTONE = 1;
     private final int TIME = 2;

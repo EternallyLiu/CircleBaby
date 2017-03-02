@@ -66,6 +66,10 @@
         android:hint="@string/bind_phone_hint_code"
         android:inputType="number"
         android:padding="@dimen/size_12" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_color3" />
 
 
     <TextView
@@ -87,6 +91,7 @@
         android:gravity="center|left"
         android:paddingLeft="@dimen/size_12"
         android:paddingRight="@dimen/size_12"
+        android:visibility="gone"
         android:paddingTop="@dimen/size_10"
         android:text="@string/bind_phone_tip_rule"
         android:textColor="@color/lust"

@@ -1,17 +1,25 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_commment_menu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingRight="@dimen/size_4"
-    android:paddingTop="@dimen/size_4"
-    android:paddingLeft="@dimen/size_4">
+    android:padding="@dimen/size_6"
+    >
+
+    <TextView
+        android:id="@+id/tv_relative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/comment_content"
+        android:textSize="@dimen/text_normal" />
 
     <TextView
         android:id="@+id/tv_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_relative"
+        android:layout_marginTop="@dimen/size_6"
+        android:lineSpacingExtra="@dimen/size_6"
         android:textColor="@color/comment_content"
         android:textSize="@dimen/text_normal" />
 
@@ -19,8 +27,10 @@
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/tv_relative"
         android:layout_gravity="right|end"
         android:text="04-23 22:51"
         android:textColor="@color/comment_time"
         android:textSize="@dimen/text_small" />
-</LinearLayout>
+</RelativeLayout>

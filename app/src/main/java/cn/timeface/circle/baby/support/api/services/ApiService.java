@@ -76,12 +76,14 @@ import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
+import cn.timeface.circle.baby.ui.timelines.beans.PhotoCameraRequest;
 import cn.timeface.circle.baby.ui.timelines.beans.QueryLocationInfoResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.SendTimeLineResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeOfPageResponse;
 import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -815,8 +817,9 @@ public interface ApiService {
             @Field("openBookType") int openBookType,
             @Field("pageNum") int pageNum);
 
+    @FormUrlEncoded
     @POST("mediaID/backup")
-    Observable<MediaIdResponse> mediaBackup(@Query("identifiers") String identifiers);
+    Observable<MediaIdResponse> mediaBackup(@Field("identifiers") String identifiers);
     /**
      * 按时间查询所有图片
      * @param babyId
