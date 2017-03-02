@@ -51,16 +51,18 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         switch (bookObj.getBookType()) {
             case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK://精装照片书
             case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS://成长语录
-            case BookModel.BOOK_TYPE_CALENDAR://台历
-                imageWidth = DeviceUtil.dpToPx(mContext.getResources(),
-                        bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL ?
-                                120 : 100);
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 120);
                 break;
             case BookModel.BOOK_TYPE_PAINTING://绘画集
                 imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 130);
                 break;
             case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK://成长纪念册
                 imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 100);
+                break;
+            case BookModel.BOOK_TYPE_CALENDAR://台历
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(),
+                        bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL ?
+                                100 : 80);
                 break;
         }
 
