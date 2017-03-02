@@ -1,41 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:padding="@dimen/size_6">
 
-    <com.github.rayboot.widget.ratioview.RatioFrameLayout
-        android:id="@+id/fl_book_cover"
-        android:layout_width="@dimen/size_80"
+    <RelativeLayout
+        android:id="@+id/rl_book_cover"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:clickable="true"
-        app:fixRatio="fixWidth"
-        app:heightRatio="25"
-        app:widthRatio="18">
+        android:clickable="true">
+
         <ImageView
-            android:id="@+id/iv_bookbg"
+            android:id="@+id/iv_book_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxWidth="100dp"
+            android:paddingBottom="5px"
+            android:paddingLeft="2px"
+            android:paddingTop="2px"
+            android:scaleType="fitXY"
+            android:src="@drawable/book_default_bg" />
+
+        <ImageView
+            android:id="@+id/iv_front_mask"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_alignBottom="@id/iv_book_cover"
+            android:layout_alignLeft="@id/iv_book_cover"
+            android:layout_alignRight="@id/iv_book_cover"
+            android:layout_alignTop="@id/iv_book_cover"
+            android:scaleType="fitXY"
             android:src="@drawable/book_front_mask" />
-
-        <ImageView
-            android:id="@+id/iv_book"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/size_2"/>
-
-    </com.github.rayboot.widget.ratioview.RatioFrameLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/size_12"
-        android:layout_toRightOf="@+id/fl_book_cover"
+        android:layout_toRightOf="@+id/rl_book_cover"
         android:orientation="vertical">
 
         <TextView
@@ -44,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_12"
             android:text=""
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" />
 
         <LinearLayout
             android:layout_width="wrap_content"

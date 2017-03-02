@@ -73,12 +73,12 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:layout_marginTop="@dimen/size_12"
         android:background="@color/bg_color6" />
 
@@ -110,7 +110,7 @@
             android:layout_marginLeft="@dimen/size_6"
             android:layout_centerVertical="true"
             android:src="@drawable/shape_dot_red"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_count_msg"
@@ -135,7 +135,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
     <RelativeLayout
         android:id="@+id/ll_mine_product"
@@ -178,7 +178,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
 
     <RelativeLayout
@@ -222,7 +222,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
 
     <RelativeLayout
@@ -267,7 +267,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
 
     <RelativeLayout
@@ -300,7 +300,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
 
 </LinearLayout>

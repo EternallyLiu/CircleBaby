@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 import com.wechat.photopicker.PickerPhotoActivity2;
 
 import java.util.ArrayList;
@@ -28,14 +28,15 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
-import cn.timeface.circle.baby.support.managers.listeners.OnClickListener;
-import cn.timeface.circle.baby.support.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintParamObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintParamResponse;
+import cn.timeface.circle.baby.support.managers.listeners.OnClickListener;
+import cn.timeface.circle.baby.support.managers.listeners.OnItemClickListener;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -75,25 +76,38 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         holder.obj = obj;
         holder.supportFragmentManager = supportFragmentManager;
         holder.context = mContext;
-        GlideUtil.displayImage(obj.getBookCover(), holder.ivBook);
+
+        int imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 110);
+        switch (obj.getBookType()) {
+            case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK://精装照片书
+            case BookModel.BOOK_TYPE_PAINTING://绘画集
+            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS://成长语录
+            case BookModel.BOOK_TYPE_CALENDAR://台历
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 110);
+                break;
+            case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK://成长纪念册
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 90);
+                break;
+        }
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                imageWidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        holder.ivBookCover.setLayoutParams(lp);
+        holder.ivBookCover.setMaxWidth(imageWidth);
+
+        GlideUtil.displayImage(obj.getBookCover(), holder.ivBookCover);
+
         holder.tvTitle.setText(obj.getBookName());
-        holder.tvPageNum.setText(obj.getPageNum()+"");
-        if(obj.getBookType()==TypeConstant.BOOK_TYPE_DIARY){
+        holder.tvPageNum.setText(obj.getPageNum() + "");
+        if (obj.getBookType() == TypeConstant.BOOK_TYPE_DIARY) {
             holder.llType.setVisibility(View.VISIBLE);
             holder.tvType.setText(obj.getCoverTitle());
         }
         holder.tvCreattime.setText(DateUtil.getYear2(obj.getUpdateTime()));
-        if (obj.getBookType() != 2) {
-            holder.ivBookbg.setImageResource(R.drawable.book_front_mask2);
-        }else{
-            holder.ivBookbg.setImageResource(R.drawable.book_front_mask);
-        }
-        holder.flBookCover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.clickItem(obj);
-                }
+
+        holder.rlBookCover.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.clickItem(obj);
             }
         });
 
@@ -111,10 +125,10 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.iv_book)
-        ImageView ivBook;
-        @Bind(R.id.iv_bookbg)
-        ImageView ivBookbg;
+        @Bind(R.id.iv_book_cover)
+        ImageView ivBookCover;
+        @Bind(R.id.rl_book_cover)
+        ImageView rlBookCover;
         @Bind(R.id.tv_title)
         TextView tvTitle;
         @Bind(R.id.tv_pagenum)
@@ -131,9 +145,6 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         LinearLayout llType;
         @Bind(R.id.tv_type)
         TextView tvType;
-        @Bind(R.id.fl_book_cover)
-        RatioFrameLayout flBookCover;
-
 
         Context context;
         FragmentManager supportFragmentManager;
@@ -188,10 +199,10 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                             .subscribe(response -> {
                                 if (response.success()) {
                                     List<ImageInfoListObj> dataList = response.getDataList();
-                                    if(obj.getBookType()==5){
+                                    if (obj.getBookType() == 5) {
                                         //编辑照片书
                                         startTimeBookPhotoPick(dataList);
-                                    }else{
+                                    } else {
                                         //编辑日记书和识图卡片书
                                         startPhotoPick(dataList);
                                     }
@@ -260,20 +271,19 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                         if (paramListResponse.success()) {
                             List<PrintParamObj> valueList1 = new ArrayList<PrintParamObj>();
                             List<PrintParamResponse> dataList = paramListResponse.getDataList();
-                            for (PrintParamResponse printParamResponse : dataList){
-                                if(printParamResponse.getKey().equals("size")){
+                            for (PrintParamResponse printParamResponse : dataList) {
+                                if (printParamResponse.getKey().equals("size")) {
                                     List<PrintParamObj> valueList = printParamResponse.getValueList();
-                                    for(PrintParamObj printParamObj : valueList){
-                                        if(printParamObj.getValue().equals(obj.getBookSizeId()+"")){
+                                    for (PrintParamObj printParamObj : valueList) {
+                                        if (printParamObj.getValue().equals(obj.getBookSizeId() + "")) {
                                             valueList1.add(printParamObj);
                                         }
                                     }
-                                    if(valueList1.size()>0){
+                                    if (valueList1.size() > 0) {
                                         printParamResponse.setValueList(valueList1);
                                     }
                                 }
                             }
-
 
 
                             CartPrintPropertyDialog dialog = CartPrintPropertyDialog.getInstance(null,
@@ -287,7 +297,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                                     TypeConstant.FROM_PHONE,
                                     obj.getPageNum(),
                                     obj.getBookName(),
-                                    String.valueOf(obj.getUpdateTime()),context);
+                                    String.valueOf(obj.getUpdateTime()), context);
                             dialog.show(supportFragmentManager, "dialog");
                         }
                     }, error -> {
@@ -299,11 +309,11 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         private void startPhotoPick(List<ImageInfoListObj> dataList) {
             Intent intent = new Intent(context, PickerPhotoActivity2.class);
             intent.putExtra("bookType", obj.getBookType());
-            intent.putExtra("bookId",obj.getBookId());
-            intent.putExtra("openBookId",obj.getOpenBookId());
-            intent.putExtra("openBookType",obj.getOpenBookType());
-            intent.putExtra("coverTitle",obj.getCoverTitle());
-            intent.putExtra("bookPage",obj.getBookPage());
+            intent.putExtra("bookId", obj.getBookId());
+            intent.putExtra("openBookId", obj.getOpenBookId());
+            intent.putExtra("openBookType", obj.getOpenBookType());
+            intent.putExtra("coverTitle", obj.getCoverTitle());
+            intent.putExtra("bookPage", obj.getBookPage());
             intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
             context.startActivity(intent);
@@ -312,10 +322,10 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
         private void startTimeBookPhotoPick(List<ImageInfoListObj> dataList) {
             Intent intent = new Intent(context, TimeBookPickerPhotoActivity.class);
             intent.putExtra("bookType", obj.getBookType());
-            intent.putExtra("bookId",obj.getBookId());
-            intent.putExtra("openBookId",obj.getOpenBookId());
-            intent.putExtra("openBookType",obj.getOpenBookType());
-            intent.putExtra("coverTitle",obj.getCoverTitle());
+            intent.putExtra("bookId", obj.getBookId());
+            intent.putExtra("openBookId", obj.getOpenBookId());
+            intent.putExtra("openBookType", obj.getOpenBookType());
+            intent.putExtra("coverTitle", obj.getCoverTitle());
             intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivityForResult(intent, 10);
             context.startActivity(intent);
