@@ -59,7 +59,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     private int dayColor;   //日历中几号的字体颜色
     private int maxImageHeight = 240;
     private int paddingImage = 4;
-    private static final int MAX_ROW_COUNT = 2;
+    public static final int MAX_ROW_COUNT = 2;
 
     private View tipView;
 
@@ -273,8 +273,8 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
         //处理图片
         rlSingle.setVisibility(View.GONE);
-        gv.setVisibility(View.GONE);
         rlPicCount.setVisibility(View.GONE);
+        gv.setVisibility(View.GONE);
         if (gv.getChildCount() > 0)
             gv.removeAllViews();
         if (item.getType() != 1) {

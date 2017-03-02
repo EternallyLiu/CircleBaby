@@ -32,6 +32,7 @@ public class GlideUtil {
     }
 
     public static void displayImage(String url, ImageView imageView) {
+        LogUtil.showLog("url===" + url);
         if (TextUtils.isEmpty(url) || imageView == null) {
             imageView.setImageResource(R.drawable.ic_launcher);
             return;
@@ -51,6 +52,8 @@ public class GlideUtil {
             Glide.with(imageView.getContext())
                     .load(url)
                     .asBitmap()
+                    .error(R.drawable.ic_launcher)
+                    .placeholder(R.drawable.ic_launcher)
                     .into(imageView);
     }
 
@@ -189,6 +192,7 @@ public class GlideUtil {
     }
 
     public static void displayImage(String url, ImageView imageView, boolean fitCenter) {
+        LogUtil.showLog("url==="+url);
         if (url.startsWith("http")) {
             if (fitCenter)
                 Glide.with(imageView.getContext())

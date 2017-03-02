@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcel;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.amap.api.maps2d.model.Text;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
@@ -232,16 +234,44 @@ public class ImgObj extends BaseImgObj {
 
     @Override
     public boolean equals(Object o) {
-        ImgObj other = (ImgObj) o;
-        if (id != null) {
-            return id.equals(other.getId());
-        } else {
-            return ((url != null && url.equals(other.url))
-                    || (localPath != null && localPath.equals(other.localPath)))
-                    && width == other.width
-                    && height == other.height;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ImgObj imgObj = (ImgObj) o;
+
+        if (!TextUtils.isEmpty(id) && id.equals(imgObj.getId())) return true;
+        if (!TextUtils.isEmpty(url) && url.equals(imgObj.getUrl())) return true;
+        if (!TextUtils.isEmpty(localPath) && localPath.equals(imgObj.getLocalPath())) return true;
+        return false;
     }
+
+    @Override
+    public int hashCode() {
+        int result = mState;
+        result = 31 * result + (mFullUri != null ? mFullUri.hashCode() : 0);
+        result = 31 * result + (mFullUriString != null ? mFullUriString.hashCode() : 0);
+        result = 31 * result + (originalPath != null ? originalPath.hashCode() : 0);
+        result = 31 * result + (int) (size ^ (size >>> 32));
+        result = 31 * result + compressRate;
+        result = 31 * result + selected;
+        result = 31 * result + primaryColor;
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (remark != null ? remark.hashCode() : 0);
+        return result;
+    }
+
+    //    @Override
+//    public boolean equals(Object o) {
+//        ImgObj other = (ImgObj) o;
+//        if (id != null) {
+//            return id.equals(other.getId());
+//        } else {
+//            return ((url != null && url.equals(other.url))
+//                    || (localPath != null && localPath.equals(other.localPath)))
+//                    && width == other.width
+//                    && height == other.height;
+//        }
+//    }
 
     /**
      * 获取一个完整的图片url地址，省去阿里云所有参数
@@ -263,6 +293,34 @@ public class ImgObj extends BaseImgObj {
      */
     public String getAliKey() {
         return url.replace("http://img1.timeface.cn/", "");
+    }
+
+    public MediaObj getMediaObj() {
+        MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
+        mediaObj.setLocalIdentifier(getId());
+        mediaObj.setLocalPath(getLocalPath());
+        mediaObj.setLocation(new LocationObj(getLat(), getLng()));
+        return mediaObj;
+    }
+
+
+    public void setUrl() {
+        this.url = TypeConstants.UPLOAD_FOLDER
+                + "/"
+                + getMd5()
+                + localPath.substring(localPath.lastIndexOf("."));
+        System.out.println("ImgObj.setUrl()  =============  " + url);
+    }
+
+    public void setObjectKey() {
+        this.objectKey = TypeConstants.UPLOAD_FOLDER
+                + "/"
+                + getMd5()
+                + localPath.substring(localPath.lastIndexOf("."));
+    }
+
+    public void setMd5() {
+        this.md5 = MD5.encode(new File(localPath));
     }
 
     @Override
@@ -310,31 +368,4 @@ public class ImgObj extends BaseImgObj {
             return new ImgObj[size];
         }
     };
-
-    public MediaObj getMediaObj() {
-        MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
-        mediaObj.setLocalIdentifier(getId());
-        mediaObj.setLocation(new LocationObj(getLat(), getLng()));
-        return mediaObj;
-    }
-
-
-    public void setUrl() {
-        this.url = TypeConstants.UPLOAD_FOLDER
-                + "/"
-                + getMd5()
-                + localPath.substring(localPath.lastIndexOf("."));
-        System.out.println("ImgObj.setUrl()  =============  " + url);
-    }
-
-    public void setObjectKey() {
-        this.objectKey = TypeConstants.UPLOAD_FOLDER
-                + "/"
-                + getMd5()
-                + localPath.substring(localPath.lastIndexOf("."));
-    }
-
-    public void setMd5() {
-        this.md5 = MD5.encode(new File(localPath));
-    }
 }

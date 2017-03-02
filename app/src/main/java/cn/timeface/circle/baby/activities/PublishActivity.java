@@ -330,13 +330,28 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Subscribe
     public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
-        if (mediaUpdateEvent.getAllDetailsListPosition() >= 0)
-            return;
-        if (mediaUpdateEvent.getIndex() >= 0 && mediaObjs.get(mediaUpdateEvent.getIndex()).getLocalIdentifier().equals(mediaUpdateEvent.getMediaObj().getLocalIdentifier())) {
-            mediaObjs.get(mediaUpdateEvent.getIndex()).setTips(mediaUpdateEvent.getMediaObj().getTips());
-            mediaObjs.get(mediaUpdateEvent.getIndex()).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
-            mediaObjs.get(mediaUpdateEvent.getIndex()).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+        MediaObj mediaObj = null;
+        if (mediaObjs.contains(mediaUpdateEvent.getMediaObj())) {
+            mediaObj = mediaObjs.get(mediaObjs.indexOf(mediaUpdateEvent.getMediaObj()));
+            if (mediaObj != null) {
+                mediaObj.setTips(mediaUpdateEvent.getMediaObj().getTips());
+                mediaObj.setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
+                mediaObj.setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+            }
         }
+        for (int i = 0; i < photoRecodes.size(); i++) {
+            ArrayList<MediaObj> list = photoRecodes.get(i).getMediaObjList();
+            if (list.contains(mediaUpdateEvent.getMediaObj())) {
+                MediaObj obj = list.get(list.indexOf(mediaUpdateEvent.getMediaObj()));
+
+                obj.setTips(mediaUpdateEvent.getMediaObj().getTips());
+                obj.setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
+                obj.setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+                publishPhotoAdapter.setListData(photoRecodes);
+                publishPhotoAdapter.notifyDataSetChanged();
+            }
+        }
+
     }
 
     private void selectImages() {
@@ -752,16 +767,27 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             adapter.notifyDataSetChanged();
         } else if (event instanceof TimeEditPhotoDeleteEvent) {
             int position = ((TimeEditPhotoDeleteEvent) event).getPosition();
-            List<String> data = adapter.getData();
-            if (data.size() > position) {
-                data.remove(position);
-                selImages.remove(position);
-                adapter.setData(data);
-                adapter.notifyDataSetChanged();
-                if (photoRecodes.size() == 1) {
-                    List<ImgObj> imgObjList = photoRecodes.get(0).getImgObjList();
-                    if (imgObjList.size() > position) {
-                        imgObjList.remove(position);
+            if (photoRecodes.size() <= 1) {
+                List<String> data = adapter.getData();
+                if (data.size() > position) {
+                    data.remove(position);
+                    selImages.remove(position);
+                    adapter.setData(data);
+                    adapter.notifyDataSetChanged();
+                    if (photoRecodes.size() == 1) {
+                        List<ImgObj> imgObjList = photoRecodes.get(0).getImgObjList();
+                        if (imgObjList.size() > position) {
+                            imgObjList.remove(position);
+                        }
+                    }
+                }
+            } else {
+                MediaObj obj = ((TimeEditPhotoDeleteEvent) event).getMediaObj();
+                for (int i = 0; i < photoRecodes.size(); i++) {
+                    if (photoRecodes.get(i).getMediaObjList().contains(obj)) {
+                        photoRecodes.get(i).getMediaObjList().remove(obj);
+                        photoRecodes.get(i).getImgObjList().remove(obj.getImgObj());
+                        publishPhotoAdapter.notifyDataSetChanged();
                     }
                 }
             }

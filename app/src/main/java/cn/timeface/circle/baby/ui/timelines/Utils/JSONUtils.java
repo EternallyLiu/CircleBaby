@@ -5,6 +5,8 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import java.io.IOException;
 import java.util.List;
 
+import cn.timeface.circle.baby.support.api.models.PhotoRecode;
+
 
 /**
  * author : wangshuai Created on 2017/2/13
@@ -12,8 +14,18 @@ import java.util.List;
  */
 public class JSONUtils {
 
-    public static String parse2JSONString(Object object){
-        if (object==null)return "";
+    public static <T extends Object> T parse2Object(String json, Class jsonObjectClass) {
+        try {
+            return (T) LoganSquare.parse(json, jsonObjectClass);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public static String parse2JSONString(Object object) {
+        if (object == null) return "";
         String json = null;
         try {
             json = LoganSquare.serialize(object);
@@ -24,8 +36,9 @@ public class JSONUtils {
         }
         return json;
     }
-    public static String parse2JSONString(List list){
-        if (list==null)return "";
+
+    public static String parse2JSONString(List list) {
+        if (list == null) return "";
         String json = null;
         try {
             json = LoganSquare.serialize(list);

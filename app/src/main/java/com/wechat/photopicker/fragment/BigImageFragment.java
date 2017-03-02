@@ -279,7 +279,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_timeline_detail, menu);
+        if (delete || download)
+            inflater.inflate(R.menu.menu_timeline_detail, menu);
 //        save = menu.findItem(R.id.save);
 //        if (delete) {
 //            save.setTitle("删除");
@@ -474,15 +475,16 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private GuideHelper guideHelper = null;
 
     private GuideHelper.TipData getTagTipData() {
-        if (inflate==null)inflate=LayoutInflater.from(getActivity());
+        if (inflate == null) inflate = LayoutInflater.from(getActivity());
         View view = inflate.inflate(R.layout.guide_bigimage_tag_tip, null);
         view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
         GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, tag);
         tipData.setLocation(Gravity.TOP | Gravity.CENTER_HORIZONTAL, DeviceUtil.dpToPx(getResources(), 80), -DeviceUtil.dpToPx(getResources(), 5));
         return tipData;
     }
+
     private GuideHelper.TipData getLikeTipData() {
-        if (inflate==null)inflate=LayoutInflater.from(getActivity());
+        if (inflate == null) inflate = LayoutInflater.from(getActivity());
         View view = inflate.inflate(R.layout.guide_bigimage_like_tip, null);
         view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
         GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, love);
@@ -501,7 +503,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
             return;
         }
-        Observable.defer(() -> Observable.just(getTagTipData(),getLikeTipData())).filter(tipData -> tipData != null)
+        Observable.defer(() -> Observable.just(getTagTipData(), getLikeTipData())).filter(tipData -> tipData != null)
                 .toList().doOnNext(tipDatas -> initGuideHelper(tipDatas))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(list -> guideHelper.show(false), throwable -> LogUtil.showError(throwable));
