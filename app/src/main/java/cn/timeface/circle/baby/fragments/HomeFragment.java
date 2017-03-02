@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -50,6 +51,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -98,6 +100,7 @@ import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.PhotoCameraRequest;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
 import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
@@ -657,7 +660,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Subscribe
     public void onEvent(PicSaveCompleteEvent pic) {
-        PhotoModel.getAllPhotoId().flatMap(s -> apiService.mediaBackup(s))
+        PhotoModel.getAllPhotoId().flatMap(s -> apiService.mediaBackup(Uri.encode(s)))
                 .map(mediaIdResponse -> {
                     ArrayList<String> arrayList = new ArrayList<String>();
                     if (mediaIdResponse.success()) {
