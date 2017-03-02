@@ -111,15 +111,15 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                     if (tfStateView != null) {
                         tfStateView.showException(throwable);
                     }
-                    Log.e(TAG, "queryBabyInfoList:",throwable);
+                    Log.e(TAG, "queryBabyInfoList:", throwable);
                 });
 
     }
 
     private void setDataList(List<UserObj> dataList) {
         ArrayList<UserObj> userObjs = new ArrayList<>();
-        for (UserObj user : dataList){
-            if(!TextUtils.isEmpty(user.getUserId()) && user.getBabyObj().getBabyId()!=0){
+        for (UserObj user : dataList) {
+            if (!TextUtils.isEmpty(user.getUserId()) && user.getBabyObj().getBabyId() != 0) {
                 userObjs.add(user);
             }
         }
@@ -131,7 +131,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_createbaby:
-                CreateBabyActivity.open(this,false);
+                CreateBabyActivity.open(this, false);
 //                FragmentBridgeActivity.open(this, CreateBabyFragment.class.getSimpleName());
                 break;
             case R.id.tv_focusbaby:
@@ -150,7 +150,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     Remember.putBoolean("showtimelinehead", true);
-                    EventBus.getDefault().post(new HomeRefreshEvent());
+                    EventBus.getDefault().post(new HomeRefreshEvent().setType(1001));
                     EventBus.getDefault().post(new ConfirmRelationEvent());
                     EventBus.getDefault().post(new UnreadMsgEvent());
                     initOpen();
@@ -177,21 +177,21 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     @Override
     public void onBackPressed() {
         int babyId = FastData.getBabyId();
-        if(babyId == 0 && babyInfoListResponse != null){
+        if (babyId == 0 && babyInfoListResponse != null) {
             int size = babyInfoListResponse.getDataList().size();
-            if(size>0){
+            if (size > 0) {
                 UserObj userObj = babyInfoListResponse.getDataList().get(0);
                 changeBaby(userObj);
-            }else{
+            } else {
                 ToastUtil.showToast("你还没有宝宝，请先创建或关注一个宝宝");
             }
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
 
     @Subscribe
-    public void onEvent(BabyChanged changed){
+    public void onEvent(BabyChanged changed) {
         changeBaby(changed.getUserObj());
         EventBus.getDefault().post(new BabyAttentionEvent(changed.getBuilder()));
     }
