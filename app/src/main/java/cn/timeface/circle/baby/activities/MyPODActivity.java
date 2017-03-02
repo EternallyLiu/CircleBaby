@@ -62,8 +62,6 @@ public class MyPODActivity extends PODActivity {
     public void createBookInfo(TFOBookModel bookModel) {
         Log.d(TAG,"createBookInfo:");
         if(edit){
-//            createBook(bookModel.getBookAuthor(), dataList, bookModel.getBookCover(), bookModel.getBookTitle(), 5, bookModel.getBookTotalPage(), bookModel.getBookId(), bookType);
-
             createBook(
                     bookModel.getBookAuthor(),
                     bookModel.getBookCover(),
@@ -83,24 +81,6 @@ public class MyPODActivity extends PODActivity {
     public void editCover(TFOBookModel bookModel) {
         editCover(bookModel.getBookAuthor(),bookModel.getBookTitle(),bookModel.getBookTitle(),bookModel.getBookCover());
     }
-
-//    public void editCover(String openBookId) {
-//        OpenApiFactory.getOpenApi().getApiService().bookcover(openBookId)
-//                .compose(SchedulersCompat.applyIoSchedulers())
-//                .subscribe(new Action1<BaseResponse<BookCoverInfo>>() {
-//                               @Override
-//                               public void call(BaseResponse<BookCoverInfo> bookCoverInfoBaseResponse) {
-//                                   BookCoverInfo data = bookCoverInfoBaseResponse.getData();
-//                                   List<String> book_cover = data.getBook_cover();
-//                                   Log.d(TAG,"book_cover ======= "+book_cover);
-//                               }
-//                           }
-//                        , new Action1<Throwable>() {
-//                            @Override
-//                            public void call(Throwable throwable) {
-//                            }
-//                        });
-//    }
 
     @Override
     public void editContent(TFOBookContentModel left, TFOBookContentModel right) {
