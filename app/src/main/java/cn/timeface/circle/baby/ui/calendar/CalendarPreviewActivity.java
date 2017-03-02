@@ -378,11 +378,11 @@ public class CalendarPreviewActivity extends BasePresenterAppCompatActivity impl
 		).observeOn(Schedulers.computation()
 		).flatMap(contentModel -> {
 			String text = "";
-			if (content.getContentType() == TFOBookContentModel.CONTENT_TYPE_COVER_1
-							|| content.getContentType() == TFOBookContentModel.CONTENT_TYPE_COVER_2
-							|| content.getContentType() == TFOBookContentModel.CONTENT_TYPE_COVER_3) {
+			if (content.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG1
+							|| content.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG2
+							|| content.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG3) {
 				text = "封面";
-			} else if (content.getContentType() == TFOBookContentModel.CONTENT_TYPE_COVER_4) {
+			} else if (content.getContentType() == TFOBookContentModel.CONTENT_TYPE_FENG4) {
 				text = "封底";
 			} else if (!TextUtils.isEmpty(content.getTemplateFileName())) {
 				String fileName = content.getTemplateFileName();
