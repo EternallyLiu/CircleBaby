@@ -106,7 +106,7 @@ public class SplashActivity extends BaseAppCompatActivity {
         firstRun();
         showGuide();
         startService(new Intent(this, LoadMediaService.class));
-        requestCheckUpdate();
+//        requestCheckUpdate();
 
     }
 

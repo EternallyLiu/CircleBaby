@@ -41,7 +41,7 @@
         android:drawableTop="@drawable/home_note"
         android:gravity="center"
         android:text="语录"
-        android:translationX="-6dp" />
+        android:translationX="6dp" />
 
     <TextView
         android:id="@+id/tv_card"

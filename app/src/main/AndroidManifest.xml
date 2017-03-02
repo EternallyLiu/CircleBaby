@@ -370,7 +370,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.MyPODActivity"
-            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.TransparentActivity.FullScreen" />
         <activity
             android:name=".activities.MileStoneActivity"

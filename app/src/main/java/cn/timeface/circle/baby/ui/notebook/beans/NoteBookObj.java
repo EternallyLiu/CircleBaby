@@ -34,7 +34,7 @@ public class NoteBookObj extends TFOBookModel {
         setTotalPage(tfoBookModel.getTotalPage());
         setBookOrientation(tfoBookModel.getBookOrientation());
         setTemplateId(tfoBookModel.getTemplateId());
-        setMyViewScale(tfoBookModel.getMyViewScale());
+        setBookTypeScale(tfoBookModel.getBookTypeScale());
         setContentList(new ArrayList<>(tfoBookModel.getContentList()));
     }
 

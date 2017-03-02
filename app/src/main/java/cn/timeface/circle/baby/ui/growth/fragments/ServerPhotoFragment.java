@@ -5,12 +5,16 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +23,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -36,7 +42,7 @@ import rx.Observable;
  * author : YW.SUN Created on 2017/2/14
  * email : sunyw10@gmail.com
  */
-public class ServerPhotoFragment extends BasePresenterFragment {
+public class ServerPhotoFragment extends BasePresenterFragment implements IEventBus {
 
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
@@ -48,6 +54,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     TextView tvRecommendCount;
     @Bind(R.id.tv_sel_count)
     TextView tvSelectCount;
+    @Bind(R.id.rl_photo_tip)
+    RelativeLayout rlPhotoTip;
 
     int contentType;
     String userId;
@@ -143,7 +151,13 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     }
 
     private void initTips(){
-        tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "80~200"));
+        if(bookType == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK){
+            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "60~200"));
+        } else if(bookType == BookModel.BOOK_TYPE_PAINTING){
+            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "40~200"));
+        } else {
+            tvRecommendCount.setVisibility(View.GONE);
+        }
     }
 
     private void reqData(){
@@ -188,6 +202,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         }
 
         llEmpty.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
+        rlPhotoTip.setVisibility(llEmpty.isShown() ? View.GONE : View.VISIBLE);
+        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(serverPhotosAdapter.getSelImgs().size()))));
     }
 
     public List<MediaObj> getSelectedMedias(){
@@ -196,6 +212,11 @@ public class ServerPhotoFragment extends BasePresenterFragment {
 
     public int getContentType() {
         return contentType;
+    }
+
+    @Subscribe
+    public void photoCountEvent(PhotoSelectCountEvent countEvent){
+        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(countEvent.count))));
     }
 
     @Override

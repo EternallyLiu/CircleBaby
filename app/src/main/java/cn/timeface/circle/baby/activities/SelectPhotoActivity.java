@@ -35,7 +35,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.SelectPhotosAdapter;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.events.PicSaveCompleteEvent;
 import cn.timeface.circle.baby.fragments.PhotoCategoryFragment;
 import cn.timeface.circle.baby.support.managers.PhotoDataSave;
@@ -355,7 +355,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     }
 
     @Subscribe
-    public void onEvent(PhotoSelectEvent event) {
+    public void onEvent(PhotoSelectCountEvent event) {
         changeSelCount(event.count);
         if(event.count == maxCount && maxCount == 1){
             clickDone();

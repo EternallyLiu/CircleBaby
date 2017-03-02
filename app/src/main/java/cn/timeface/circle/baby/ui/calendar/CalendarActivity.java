@@ -276,11 +276,11 @@ public class CalendarActivity extends BasePresenterAppCompatActivity
         bookPodView.setupPodData(getSupportFragmentManager(),
                 calendarPresenter.getFrontSide(), true);
 
-        calendarPresenter.getOriginalModel().setPageScale(
-                calendarPresenter.getFrontSide().getMyViewScale()
+        calendarPresenter.getOriginalModel().setBookTypeScale(
+                calendarPresenter.getFrontSide().getBookTypeScale()
         );
-        calendarPresenter.getBackSide().setPageScale(
-                calendarPresenter.getFrontSide().getMyViewScale()
+        calendarPresenter.getBackSide().setBookTypeScale(
+                calendarPresenter.getFrontSide().getBookTypeScale()
         );
         bookPodView.notifyDataSetChanged();
         tvMonth.setText("1月");

@@ -23,7 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
@@ -247,7 +247,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                     doUnSelImg(dataIndex, item);
                 }
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selTimeLines.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
             notifyDataSetChanged();
         }
     };
@@ -268,7 +268,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
             } else {
                 doUnSelImg(dataIndex, img);
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selTimeLines.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
         }
     };
 

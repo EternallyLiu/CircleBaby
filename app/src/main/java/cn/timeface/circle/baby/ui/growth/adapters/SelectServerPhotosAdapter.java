@@ -18,14 +18,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.adapters.SelectPhotosAdapter;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
-import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
-import cn.timeface.circle.baby.support.api.models.objs.PhotoGroupItem;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
 
@@ -217,7 +214,7 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
                     doUnSelImg(dataIndex, item);
                 }
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selMedias.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selMedias.size()));
             notifyDataSetChanged();
         }
     };
@@ -238,7 +235,7 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
             } else {
                 doUnSelImg(dataIndex, img);
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selMedias.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selMedias.size()));
         }
     };
 

@@ -818,5 +818,5 @@
     <string name="bind_phone_get_code">发送验证码</string>
     <string name="next">下一步</string>
     <string name="select_server_photo_recommend_count">%s张照片效果最佳</string>
-    <string name="select_server_photo_select_count"><![CDATA[合计: <font color = "#ff0000">已选 s% 张</font>]]></string>
+    <string name="select_server_photo_select_count"><![CDATA[已选<font color = "#F79646"> %s </font>张]]></string>
 </resources>
