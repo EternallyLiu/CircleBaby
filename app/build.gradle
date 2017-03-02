@@ -86,7 +86,7 @@ def dbflow_version = "3.1.1"
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile(name: 'library-0.9.9', ext: 'aar')
-//    compile(name: 'open-release', ext: 'aar')
+    compile(name: 'open-release', ext: 'aar')
 //    compile(name: 'open-debug', ext: 'aar')
     compile(name: 'refreshload-release', ext: 'aar')
     compile(name: 'timeface-common-release', ext: 'aar')
@@ -98,8 +98,8 @@ dependencies {
 //    compile project(':timeface-common')
 //    compile project(':refreshload')
 //    compile project(':open')
-    releaseCompile project(path: ':open', configuration: 'release')
-    debugCompile project(path: ':open', configuration: 'debug')
+//    releaseCompile project(path: ':open', configuration: 'release')
+//    debugCompile project(path: ':open', configuration: 'debug')
 
     compile 'com.android.support:support-v4:25.1.0'
     compile 'com.android.support:appcompat-v7:25.1.0'
