@@ -373,7 +373,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
 
     @Override
     public void save() {
-        float viewScale = bookModel.getMyViewScale();
+        float viewScale = bookModel.getBookTypeScale();
         Subscription s = Observable.just(viewScale
         ).doOnSubscribe(() -> {
 
