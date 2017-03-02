@@ -288,7 +288,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             public void onTFPullUpToRefresh(View refreshView) {
                 if (currentPage <= 1)
                     currentPage = 1;
-                if (adapter.getRealItemSize() < PAGE_SIZE * currentPage) {
+                if (currentPage != 1 && adapter.getRealItemSize() < PAGE_SIZE * currentPage) {
                     reqData(currentPage);
                 } else
                     reqData(++currentPage);
@@ -305,8 +305,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                             ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
                     animatorSet.playTogether(anim);
                     animatorSet.start();
-                    if (getActivity() instanceof TabMainActivity){
-                        ((TabMainActivity)getActivity()).getSendTimeface().setVisibility(View.GONE);
+                    if (getActivity() instanceof TabMainActivity) {
+                        ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.GONE);
                     }
                 }
             }
@@ -322,8 +322,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                             0);
                     animatorSet.playTogether(anim3);
                     animatorSet.start();
-                    if (getActivity() instanceof TabMainActivity){
-                        ((TabMainActivity)getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+                    if (getActivity() instanceof TabMainActivity) {
+                        ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -765,8 +765,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
      * @return
      */
     private GuideHelper.TipData getSendTimeTip() {
-        if (getActivity() instanceof TabMainActivity){
-            ((TabMainActivity)getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+        if (getActivity() instanceof TabMainActivity) {
+            ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
         }
         View view = getLayoutInflater().inflate(R.layout.guide_home_send_tip, null);
         view.findViewById(R.id.next).setOnClickListener(v -> {

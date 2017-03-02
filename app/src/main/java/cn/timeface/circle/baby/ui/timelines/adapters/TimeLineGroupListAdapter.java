@@ -114,6 +114,18 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         deleteItem(timeLineObj);
     }
 
+    @Override
+    public void deleteItem(Object item) {
+        if (containObj(item)) {
+            int index = list.indexOf(item);
+            deleteItem(index, 1);
+            if (index > 0) {
+                int viewType = getViewType(index - 1);
+                if (viewType == 1) deleteItem(index - 1, 1);
+            }
+        }
+    }
+
     public int findPosition(int timeId) {
         if (timeId <= 0) return 0;
         TimeLineObj timeLineObj = new TimeLineObj();
