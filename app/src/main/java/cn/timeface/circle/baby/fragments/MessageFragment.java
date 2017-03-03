@@ -90,7 +90,7 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         tfStateView.setOnRetryListener(() -> reqData());
         tfStateView.loading();
         helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefresh);
-        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
+        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.DISABLED)
                 .tfPtrListener(this);
         reqData();
         return view;
