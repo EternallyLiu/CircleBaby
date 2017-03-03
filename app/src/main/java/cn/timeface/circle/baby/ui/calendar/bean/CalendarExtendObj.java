@@ -35,7 +35,7 @@ public class CalendarExtendObj extends TFOBookModel {
         setTotalPage(tfoBookModel.getTotalPage());
         setBookOrientation(tfoBookModel.getBookOrientation());
         setTemplateId(tfoBookModel.getTemplateId());
-        setMyViewScale(tfoBookModel.getMyViewScale());
+        setBookTypeScale(tfoBookModel.getBookTypeScale());
         setContentList(tfoBookModel.getContentList());
     }
 
@@ -56,7 +56,7 @@ public class CalendarExtendObj extends TFOBookModel {
         newModel.setTotalPage(getTotalPage());
         newModel.setBookOrientation(getBookOrientation());
         newModel.setTemplateId(getTemplateId());
-        newModel.setMyViewScale(getMyViewScale());
+        newModel.setBookTypeScale(getBookTypeScale());
         newModel.setContentList(new LinkedList<>());
 
     }

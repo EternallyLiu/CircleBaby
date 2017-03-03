@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_main">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@+id/ll_empty"
@@ -18,21 +19,21 @@
         android:visibility="gone">
 
         <ImageView
-            android:src="@drawable/nodata"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:src="@drawable/nodata" />
 
         <TextView
-            android:layout_marginTop="@dimen/view_space_medium"
-            android:layout_marginBottom="@dimen/view_space_medium"
-            android:paddingLeft="@dimen/view_space_medium"
-            android:paddingRight="@dimen/view_space_medium"
             android:id="@+id/tv_empty_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/view_space_medium"
+            android:layout_marginTop="@dimen/view_space_medium"
             android:gravity="center"
-            android:textColor="@color/text_color_hint"
-            android:text="天啦噜！内容是空的，你看不到我了！" />
+            android:paddingLeft="@dimen/view_space_medium"
+            android:paddingRight="@dimen/view_space_medium"
+            android:text="天啦噜！内容是空的，你看不到我了！"
+            android:textColor="@color/text_color_hint" />
     </LinearLayout>
 
     <cn.timeface.circle.baby.views.TFStateView

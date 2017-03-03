@@ -13,9 +13,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 
 import java.util.List;
 
@@ -26,6 +25,8 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.support.api.models.PrintCartItem;
 import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 
 /**
@@ -57,138 +58,153 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int i) {
         final PrintPropertyPriceObj obj = listData.get(i);
-        ((ViewHolder) viewHolder).mIvRadio.setSelected(true);
-        ((ViewHolder) viewHolder).mTvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
+
+        ViewHolder holder = ((ViewHolder) viewHolder);
+
+        holder.mIvRadio.setSelected(true);
+        holder.mTvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
         String size = cartItem.getPropertyShow("size", String.valueOf(obj.getSize()));
         size = TextUtils.isEmpty(size) || !size.contains(",") ? size : size.substring(0, size.indexOf(","));
         if (cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_LESS
                 || cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_MORE
                 || cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE) {
-            ((ViewHolder) viewHolder).mIvRadio.setSelected(false);
+            holder.mIvRadio.setSelected(false);
         } else {
-            ((ViewHolder) viewHolder).mIvRadio.setSelected(obj.isSelect());
+            holder.mIvRadio.setSelected(obj.isSelect());
         }
 
-        ((ViewHolder) viewHolder).etNumber.setText(String.valueOf(obj.getNum()));
-        ((ViewHolder) viewHolder).etNumber.setSelection(String.valueOf(obj.getNum()).length());
+        holder.etNumber.setText(String.valueOf(obj.getNum()));
+        holder.etNumber.setSelection(String.valueOf(obj.getNum()).length());
         if (obj.getNum() < 99 && obj.getNum() > 1) {
-            ((ViewHolder) viewHolder).ibPlus.setBackgroundResource(R.drawable.shape_number_input_bg);
-            ((ViewHolder) viewHolder).ibMinus.setBackgroundResource(R.drawable.shape_number_input_bg);
+            holder.ibPlus.setBackgroundResource(R.drawable.shape_number_input_bg);
+            holder.ibMinus.setBackgroundResource(R.drawable.shape_number_input_bg);
         } else {
-            ((ViewHolder) viewHolder).ibPlus.setBackgroundResource(R.drawable.shape_grey_border_bg);
-            ((ViewHolder) viewHolder).ibMinus.setBackgroundResource(R.drawable.shape_grey_border_bg);
+            holder.ibPlus.setBackgroundResource(R.drawable.shape_grey_border_bg);
+            holder.ibMinus.setBackgroundResource(R.drawable.shape_grey_border_bg);
         }
 
         switch (propertyState) {
             case PROPERTY_STATE_NOMAL:
-                ((ViewHolder) viewHolder).llPriceNo.setVisibility(View.VISIBLE);
-                ((ViewHolder) viewHolder).tvDelete.setVisibility(View.GONE);
-                ((ViewHolder) viewHolder).mTvColor.setCompoundDrawables(null, null, null, null);
-                ((ViewHolder) viewHolder).mTvColor.setClickable(false);
-                ((ViewHolder) viewHolder).llPaperPackLayout.setVisibility(View.VISIBLE);
-                ((ViewHolder) viewHolder).llPlusMinusLayout.setVisibility(View.GONE);
+                holder.llPriceNo.setVisibility(View.VISIBLE);
+                holder.tvDelete.setVisibility(View.GONE);
+                holder.mTvColor.setCompoundDrawables(null, null, null, null);
+                holder.mTvColor.setClickable(false);
+                holder.llPaperPackLayout.setVisibility(View.VISIBLE);
+                holder.llPlusMinusLayout.setVisibility(View.GONE);
                 break;
 
             case PROPERTY_STATE_EDIT:
-                ((ViewHolder) viewHolder).llPriceNo.setVisibility(View.GONE);
-                ((ViewHolder) viewHolder).tvDelete.setVisibility(View.VISIBLE);
+                holder.llPriceNo.setVisibility(View.GONE);
+                holder.tvDelete.setVisibility(View.VISIBLE);
                 Drawable drawable = mContext.getResources().getDrawable(R.drawable.selector_btn_pull_down);
                 drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                ((ViewHolder) viewHolder).mTvColor.setCompoundDrawables(null, null, drawable, null);
-                ((ViewHolder) viewHolder).mTvColor.setClickable(true);
-                ((ViewHolder) viewHolder).llPaperPackLayout.setVisibility(View.GONE);
-                ((ViewHolder) viewHolder).llPlusMinusLayout.setVisibility(View.VISIBLE);
+                holder.mTvColor.setCompoundDrawables(null, null, drawable, null);
+                holder.mTvColor.setClickable(true);
+                holder.llPaperPackLayout.setVisibility(View.GONE);
+                holder.llPlusMinusLayout.setVisibility(View.VISIBLE);
                 break;
         }
 
         if (i < getItemCount() - 1) {
-            ((ViewHolder) viewHolder).ivDivider.setVisibility(View.VISIBLE);
+            holder.ivDivider.setVisibility(View.VISIBLE);
         } else {
-            ((ViewHolder) viewHolder).ivDivider.setVisibility(View.GONE);
+            holder.ivDivider.setVisibility(View.GONE);
         }
 
-        if (cartItem.getBookType() != 2) {
-            ((ViewHolder) viewHolder).ivBookbg.setImageResource(R.drawable.book_front_mask2);
-        } else {
-            ((ViewHolder) viewHolder).ivBookbg.setImageResource(R.drawable.book_front_mask);
+        int imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 120);
+        switch (cartItem.getBookType()) {
+            case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK://精装照片书
+            case BookModel.BOOK_TYPE_PAINTING://绘画集
+            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS://成长语录
+            case BookModel.BOOK_TYPE_CALENDAR://台历
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 120);
+                break;
+            case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK://成长纪念册
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 100);
+                break;
         }
 
-        GlideUtil.displayImage(cartItem.getCoverImage(), ((ViewHolder) viewHolder).ivBookCover);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                imageWidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        holder.ivBookCover.setLayoutParams(lp);
+        holder.ivBookCover.setMaxWidth(imageWidth);
+
+        GlideUtil.displayImage(cartItem.getCoverImage(), holder.ivBookCover);
 
         //台历数据
 //        if (TypeConstant.BOOK_TYPE_DESK_CALENDAR == cartItem.getBookType()) {
 //            String calendar = cartItem.getPropertyShow("calendar", obj.getCalendar());
-////            ((ViewHolder) viewHolder).llPaperPackLayout.setVisibility(View.GONE);
-//            ((ViewHolder) viewHolder).mTvColor.setCompoundDrawables(null, null, null, null);
-//            ((ViewHolder) viewHolder).mTvSize.setText("规格:" + calendar);
-//            ((ViewHolder) viewHolder).mTvColor.setVisibility(View.GONE);
-//            ((ViewHolder) viewHolder).mTvColor.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
+////            holder.llPaperPackLayout.setVisibility(View.GONE);
+//            holder.mTvColor.setCompoundDrawables(null, null, null, null);
+//            holder.mTvSize.setText("规格:" + calendar);
+//            holder.mTvColor.setVisibility(View.GONE);
+//            holder.mTvColor.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
 //        } else {
-//            ((ViewHolder) viewHolder).llPaperPackLayout.setVisibility(View.VISIBLE);
-        ((ViewHolder) viewHolder).mTvColor.setVisibility(View.VISIBLE);
-        ((ViewHolder) viewHolder).mTvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
-        ((ViewHolder) viewHolder).mTvSize.setText(mContext.getString(R.string.cart_print_property_size, size));
-        ((ViewHolder) viewHolder).tvPaper.setText(mContext.getString(R.string.cart_print_property_paper,
+//            holder.llPaperPackLayout.setVisibility(View.VISIBLE);
+        holder.mTvColor.setVisibility(View.VISIBLE);
+        holder.mTvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
+        holder.mTvSize.setText(mContext.getString(R.string.cart_print_property_size, size));
+        holder.tvPaper.setText(mContext.getString(R.string.cart_print_property_paper,
                 cartItem.getPropertyShow("paper", String.valueOf(obj.getPaper()))));
-        ((ViewHolder) viewHolder).mTvColor.setText(mContext.getString(R.string.cart_print_property_color,
+        holder.mTvColor.setText(mContext.getString(R.string.cart_print_property_color,
                 cartItem.getPropertyShow("color", String.valueOf(obj.getColor()))));
-        ((ViewHolder) viewHolder).mTvPack.setText(mContext.getString(R.string.cart_print_property_pack,
+        holder.mTvPack.setText(mContext.getString(R.string.cart_print_property_pack,
                 cartItem.getPropertyShow("pack", String.valueOf(obj.getPack()))));
 
 //        }
 
-        ((ViewHolder) viewHolder).ivBookCover.setTag(R.string.tag_obj, cartItem);
-        ((ViewHolder) viewHolder).mIvRadio.setTag(R.string.tag_obj, obj);
-        ((ViewHolder) viewHolder).mIvRadio.setTag(R.string.tag_ex, cartItem);
-        ((ViewHolder) viewHolder).mTvColor.setTag(R.string.tag_ex, cartItem);
-        ((ViewHolder) viewHolder).mTvColor.setTag(R.string.tag_obj, obj);
-//        ((ViewHolder) viewHolder).mTvSize.setTextAndEvent(mContext.getString(R.string.cart_print_property_size, size));
-        ((ViewHolder) viewHolder).mTvPrice.setText(mContext.getString(R.string.total_price, obj.getPrice()));
-        ((ViewHolder) viewHolder).ibMinus.setTag(R.string.tag_ex, Integer.parseInt(((ViewHolder) viewHolder).etNumber.getText().toString()));
-        ((ViewHolder) viewHolder).ibMinus.setTag(R.string.tag_obj, obj);
-        ((ViewHolder) viewHolder).ibPlus.setTag(R.string.tag_ex, Integer.parseInt(((ViewHolder) viewHolder).etNumber.getText().toString()));
-        ((ViewHolder) viewHolder).ibPlus.setTag(R.string.tag_obj, obj);
-        ((ViewHolder) viewHolder).etNumber.setTag(R.string.tag_obj, obj);
-        ((ViewHolder) viewHolder).tvDelete.setTag(R.string.tag_index, i);
-        ((ViewHolder) viewHolder).tvDelete.setTag(R.string.tag_ex, sPosition);
-//        ((ViewHolder) viewHolder).mIvPullDown.setTag(R.string.tag_obj, obj);
-//        ((ViewHolder) viewHolder).mIvPullDown.setTag(R.string.tag_ex, cartItem);
+        holder.ivBookCover.setTag(R.string.tag_obj, cartItem);
+        holder.mIvRadio.setTag(R.string.tag_obj, obj);
+        holder.mIvRadio.setTag(R.string.tag_ex, cartItem);
+        holder.mTvColor.setTag(R.string.tag_ex, cartItem);
+        holder.mTvColor.setTag(R.string.tag_obj, obj);
+//        holder.mTvSize.setTextAndEvent(mContext.getString(R.string.cart_print_property_size, size));
+        holder.mTvPrice.setText(mContext.getString(R.string.total_price, obj.getPrice()));
+        holder.ibMinus.setTag(R.string.tag_ex, Integer.parseInt(holder.etNumber.getText().toString()));
+        holder.ibMinus.setTag(R.string.tag_obj, obj);
+        holder.ibPlus.setTag(R.string.tag_ex, Integer.parseInt(holder.etNumber.getText().toString()));
+        holder.ibPlus.setTag(R.string.tag_obj, obj);
+        holder.etNumber.setTag(R.string.tag_obj, obj);
+        holder.tvDelete.setTag(R.string.tag_index, i);
+        holder.tvDelete.setTag(R.string.tag_ex, sPosition);
+//        holder.mIvPullDown.setTag(R.string.tag_obj, obj);
+//        holder.mIvPullDown.setTag(R.string.tag_ex, cartItem);
 
-        ((ViewHolder) viewHolder).ibMinus.setOnClickListener(minusClickListener);
-        ((ViewHolder) viewHolder).ibPlus.setOnClickListener(plusClickListener);
-        ((ViewHolder) viewHolder).etNumber.addTextChangedListener(new EditTextWatcher(((ViewHolder) viewHolder).etNumber, 99));
+        holder.ibMinus.setOnClickListener(minusClickListener);
+        holder.ibPlus.setOnClickListener(plusClickListener);
+        holder.etNumber.addTextChangedListener(new EditTextWatcher(holder.etNumber, 99));
 
         //处理printcode
         switch (cartItem.getPrintCode()) {
             case TypeConstant.PRINT_CODE_LIMIT_LESS:
 //                holder.mBtnPrintAgain.setVisibility(View.GONE);
-                ((ViewHolder) viewHolder).tvLimitInfo.setVisibility(View.VISIBLE);
-                ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_less_2));
+                holder.tvLimitInfo.setVisibility(View.VISIBLE);
+                holder.tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_less_2));
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_MORE:
 //                holder.mBtnPrintAgain.setVisibility(View.GONE);
-                ((ViewHolder) viewHolder).tvLimitInfo.setVisibility(View.VISIBLE);
-                ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_more_2));
+                holder.tvLimitInfo.setVisibility(View.VISIBLE);
+                holder.tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_more_2));
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK:
-                ((ViewHolder) viewHolder).tvLimitInfo.setVisibility(View.VISIBLE);
-                ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_soft_pack));
+                holder.tvLimitInfo.setVisibility(View.VISIBLE);
+                holder.tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_soft_pack));
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_HAD_DELETE:
 //                holder.mBtnPrintAgain.setVisibility(View.GONE);
-                ((ViewHolder) viewHolder).tvLimitInfo.setVisibility(View.VISIBLE);
+                holder.tvLimitInfo.setVisibility(View.VISIBLE);
 //                if(cartItem.getBookType() == TypeConstant.BOOK_TYPE_DESK_CALENDAR){
-//                    ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete_calendar));
+//                    holder.tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete_calendar));
 //                } else {
-                ((ViewHolder) viewHolder).tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete));
+                holder.tvLimitInfo.setText(mContext.getString(R.string.cart_print_code_limit_had_delete));
 //                }
                 break;
 
             default:
-                ((ViewHolder) viewHolder).tvLimitInfo.setVisibility(View.GONE);
+                holder.tvLimitInfo.setVisibility(View.GONE);
                 break;
         }
     }
@@ -244,12 +260,8 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_radio)
         ImageView mIvRadio;
-        @Bind(R.id.iv_bookbg)
-        ImageView ivBookbg;
         @Bind(R.id.iv_book_cover)
         ImageView ivBookCover;
-        @Bind(R.id.fl_book_cover)
-        RatioFrameLayout flBookCover;
         @Bind(R.id.tv_size)
         TextView mTvSize;
         @Bind(R.id.tv_color)

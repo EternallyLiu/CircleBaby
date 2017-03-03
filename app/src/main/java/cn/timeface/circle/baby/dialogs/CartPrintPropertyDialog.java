@@ -30,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -54,15 +53,16 @@ import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.CartPropertyChangeEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
-import cn.timeface.circle.baby.support.api.services.ApiService;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.PrintCartItem;
 import cn.timeface.circle.baby.support.api.models.base.BasePrintProperty;
 import cn.timeface.circle.baby.support.api.models.objs.PrintParamObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintParamResponse;
 import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyPriceObj;
 import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyTypeObj;
+import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -105,18 +105,14 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     EditText mBookPrintNumberEt;
     @Bind(R.id.book_print_number_plus_ib)
     ImageButton mBookPrintNumberPlusIb;
-    @Bind(R.id.iv_bookbg)
-    ImageView ivBookbg;
-    @Bind(R.id.iv_book)
-    ImageView ivBook;
-    @Bind(R.id.fl_book_cover)
-    RatioFrameLayout flBookCover;
+    @Bind(R.id.iv_book_cover)
+    ImageView ivBookCover;
+    @Bind(R.id.rl_book_cover)
+    RelativeLayout rlBookCover;
     @Bind(R.id.iv_book_tag)
     ImageView mIvBookTag;
     @Bind(R.id.rl_cover)
     RelativeLayout mRlCover;
-    @Bind(R.id.rl_header_cover)
-    RelativeLayout rlHeaderCover;
     @Bind(R.id.gv_book_size)
     NoScrollGridView mGvBookSize;
     @Bind(R.id.gv_print_color)
@@ -169,7 +165,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                                       int original,
                                                       int pageNum,
                                                       String bookName,
-                                                      String createTime,Context context) {
+                                                      String createTime, Context context) {
         CartPrintPropertyDialog dialog = new CartPrintPropertyDialog(context);
         Bundle bundle = new Bundle();
         bundle.putSerializable("cart_item", printCartItem);
@@ -188,7 +184,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         return dialog;
     }
 
-    public CartPrintPropertyDialog() {}
+    public CartPrintPropertyDialog() {
+    }
 
     public CartPrintPropertyDialog(Context context) {
         this.context = context;
@@ -290,12 +287,27 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
     private void setupLayout() {
         mBookPrintNumberEt.addTextChangedListener(new EditTextWatcher(mBookPrintNumberEt, 99, false));
-        GlideUtil.displayImage(bookCover, ivBook);
-        if (Integer.valueOf(bookType) != 2) {
-            ivBookbg.setImageResource(R.drawable.book_front_mask2);
-        } else {
-            ivBookbg.setImageResource(R.drawable.book_front_mask);
+
+        int imageWidth = DeviceUtil.dpToPx(getContext().getResources(), 120);
+        switch (Integer.valueOf(bookType)) {
+            case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK://精装照片书
+            case BookModel.BOOK_TYPE_PAINTING://绘画集
+            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS://成长语录
+            case BookModel.BOOK_TYPE_CALENDAR://台历
+                imageWidth = DeviceUtil.dpToPx(getContext().getResources(), 120);
+                break;
+            case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK://成长纪念册
+                imageWidth = DeviceUtil.dpToPx(getContext().getResources(), 100);
+                break;
         }
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                imageWidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ivBookCover.setLayoutParams(lp);
+        ivBookCover.setMaxWidth(imageWidth);
+
+        GlideUtil.displayImage(bookCover, ivBookCover);
+
         for (PrintParamResponse paramResponse : paramList) {
             if (PrintParamResponse.KEY_SIZE.equals(paramResponse.getKey())) {
                 sizeList = paramResponse.getValueList();
@@ -556,9 +568,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             Toast.makeText(getActivity(), "价格查询失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        if(getActivity() instanceof BaseAppCompatActivity){
+        if (getActivity() instanceof BaseAppCompatActivity) {
             ((BaseAppCompatActivity) getActivity()).addSubscription(s);
-        } else if(getActivity() instanceof BasePresenterAppCompatActivity){
+        } else if (getActivity() instanceof BasePresenterAppCompatActivity) {
             ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
         }
     }
@@ -590,20 +602,20 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                 } else {
                                     EventBus.getDefault().post(new CartAddClickEvent());
 //                                    Toast.makeText(getActivity(), "恭喜，已添加到印刷车", Toast.LENGTH_LONG).show();
-                                   new AlertDialog.Builder(getActivity())
-                                           .setMessage("已添加到印刷车")
-                                           .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                               @Override
-                                               public void onClick(DialogInterface dialog, int which) {
-                                                   dialog.dismiss();
-                                               }
-                                           }).setPositiveButton("去查看", new DialogInterface.OnClickListener() {
-                                       @Override
-                                       public void onClick(DialogInterface dialog, int which) {
-                                           dialog.dismiss();
-                                           CartActivity.open(context);
-                                       }
-                                   }).show();
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage("已添加到印刷车")
+                                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }).setPositiveButton("去查看", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            CartActivity.open(context);
+                                        }
+                                    }).show();
                                 }
                             } else {
                                 Toast.makeText(getActivity(), response.getInfo(), Toast.LENGTH_SHORT).show();
@@ -614,9 +626,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             Toast.makeText(getActivity(), "服务器返回失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        if(getActivity() instanceof BaseAppCompatActivity){
+        if (getActivity() instanceof BaseAppCompatActivity) {
             ((BaseAppCompatActivity) getActivity()).addSubscription(s);
-        } else if(getActivity() instanceof BasePresenterAppCompatActivity){
+        } else if (getActivity() instanceof BasePresenterAppCompatActivity) {
             ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
         }
     }
@@ -655,7 +667,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         baseObj.setAddressId(0);
         baseObj.setBookCover(bookCover);
         baseObj.setBookName(URLEncoder.encode(bookName));
-        baseObj.setCreateTime(Long.valueOf(createTime)/1000);
+        baseObj.setCreateTime(Long.valueOf(createTime) / 1000);
         baseObj.setExpressId(1);
         baseObjs.add(baseObj);
 
@@ -680,9 +692,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             Toast.makeText(getActivity(), "服务器返回失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        if(getActivity() instanceof BaseAppCompatActivity){
+        if (getActivity() instanceof BaseAppCompatActivity) {
             ((BaseAppCompatActivity) getActivity()).addSubscription(s);
-        } else if(getActivity() instanceof BasePresenterAppCompatActivity){
+        } else if (getActivity() instanceof BasePresenterAppCompatActivity) {
             ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
         }
     }

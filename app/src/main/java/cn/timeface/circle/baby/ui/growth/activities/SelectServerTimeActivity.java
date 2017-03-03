@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -65,6 +66,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     TextView tvContentType;
     @Bind(R.id.tv_content)
     TextView tvContent;
+    @Bind(R.id.fl_container_ex)
+    FrameLayout flContainerEx;
 
     boolean fragmentShow = false;
     boolean canBack = false;
@@ -106,7 +109,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         //新建一本
         if(TextUtils.isEmpty(bookId)){
             timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
-            showContent(timeFragment, false);
+            showContent(timeFragment);
         //编辑一本
         } else {
             apiService.bookMedias(bookId)
@@ -120,7 +123,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                             FastData.getUserId(),
                                             bookType,
                                             response.getDataList());
-                                    showContent(timeFragment, false);
+                                    showContent(timeFragment);
                                 } else {
                                     ToastUtil.showToast(response.info);
                                 }
@@ -240,21 +243,27 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                             }
 
                                             //拼接所有图片的id，作为保存书籍接口使用
-                                            StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                            StringBuffer sb = new StringBuffer("{\"mediaIds\":[");
+                                            StringBuffer sbTime = new StringBuffer("\"timeIds\":[");
                                             for (TimeLineObj timeLineObj : selectedMedias) {
                                                 if (timeLineObj != null) {
+                                                    sbTime.append(timeLineObj.getTimeId());
+                                                    sbTime.append(",");
+
                                                     if (!timeLineObj.getMediaList().isEmpty()) {
                                                         for (MediaObj mediaObj : timeLineObj.getMediaList()) {
                                                             sb.append(mediaObj.getId());
                                                             sb.append(",");
                                                         }
 
-                                                        sb.replace(sb.lastIndexOf(","), sb.length(), "]}");
+                                                        sb.replace(sb.lastIndexOf(","), sb.length(), "]");
                                                     } else {
-                                                        sb.append("]}");
+                                                        sb.append("]");
                                                     }
                                                 }
                                             }
+                                            sbTime.replace(sbTime.lastIndexOf(","), sbTime.length(), "]");
+                                            sb.append(",").append(sbTime).append("}");
 
                                             finish();
                                             MyPODActivity.open(this, bookId, openBookId, bookType, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
@@ -277,15 +286,16 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     @Override
     public void onBackPressed() {
         if(canBack){
+            canBack = false;
             tvContent.setVisibility(View.GONE);
             tvContentType.setVisibility(View.VISIBLE);
+            flContainerEx.setVisibility(View.GONE);
         } else {
-            finish();
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
-
     /**
+
      * 按时间筛选照片
      */
     @Override
@@ -298,7 +308,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                 timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias);
             }
         }
-        showContent(timeFragment, false);
+        showContent(timeFragment);
         onClick(tvContentType);
     }
 
@@ -311,7 +321,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         if (selectUserFragment == null) {
             selectUserFragment = SelectUserFragment.newInstance(this);
         }
-        showContent(selectUserFragment, false);
+        showContent(selectUserFragment);
         onClick(tvContentType);
     }
 
@@ -337,8 +347,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
     Fragment currentFragment = null;
 
-    public void showContent(Fragment fragment, boolean canBack) {
-        this.canBack = canBack;
+    public void showContent(Fragment fragment) {
+        canBack = false;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (currentFragment != null) {
@@ -350,11 +360,26 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             ft.add(R.id.fl_container, fragment);
         }
         currentFragment = fragment;
-        if(canBack){
-            ft.addToBackStack(null);
-        }
         ft.commitAllowingStateLoss();
         invalidateOptionsMenu();
+    }
+
+    Fragment currentFragmentEx = null;
+    public void showContentEx(Fragment fragment){
+        flContainerEx.setVisibility(View.VISIBLE);
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        if (currentFragmentEx != null) {
+            ft.hide(currentFragmentEx);
+        }
+        if(fragment.isAdded()){
+            ft.show(fragment);
+        } else {
+            ft.add(R.id.fl_container_ex, fragment);
+        }
+        currentFragmentEx = fragment;
+        ft.commitAllowingStateLoss();
+        canBack = true;
     }
 
     @Override
@@ -386,7 +411,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                 tvContent.setVisibility(View.VISIBLE);
                 tvContent.setText(userWrapObj.getUserInfo().getRelationName());
                 if(userFragmentMap.containsKey(userWrapObj.getUserInfo().getUserId())){
-                    showContent(userFragmentMap.get(userWrapObj.getUserInfo().getUserId()), true);
+                    showContentEx(userFragmentMap.get(userWrapObj.getUserInfo().getUserId()));
                 } else {
                     ServerTimeFragment serverTimeFragment;
                     if(TextUtils.isEmpty(bookId)){
@@ -396,7 +421,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                     }
 
                     userFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverTimeFragment);
-                    showContent(serverTimeFragment, true);
+                    showContentEx(serverTimeFragment);
                 }
 
                 break;

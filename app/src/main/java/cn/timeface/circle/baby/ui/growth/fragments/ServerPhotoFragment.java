@@ -5,11 +5,16 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +23,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -34,7 +42,7 @@ import rx.Observable;
  * author : YW.SUN Created on 2017/2/14
  * email : sunyw10@gmail.com
  */
-public class ServerPhotoFragment extends BasePresenterFragment {
+public class ServerPhotoFragment extends BasePresenterFragment implements IEventBus {
 
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
@@ -42,6 +50,12 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     TFStateView stateView;
     @Bind(R.id.ll_empty)
     LinearLayout llEmpty;
+    @Bind(R.id.tv_recommend_count)
+    TextView tvRecommendCount;
+    @Bind(R.id.tv_sel_count)
+    TextView tvSelectCount;
+    @Bind(R.id.rl_photo_tip)
+    RelativeLayout rlPhotoTip;
 
     int contentType;
     String userId;
@@ -49,6 +63,7 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     String addressName;
     List<MediaWrapObj> mediaWrapObjs;
     List<MediaObj> mediaObjs;
+    int bookType;
 
     /**
      * 地图上选择照片后（已经包含照片信息）
@@ -58,13 +73,14 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param mediaWrapObjs
      * @return
      */
-    public static ServerPhotoFragment newInstance(int contentType, String userId, String addressName, List<MediaWrapObj> mediaWrapObjs){
+    public static ServerPhotoFragment newInstance(int contentType, String userId, String addressName, List<MediaWrapObj> mediaWrapObjs, int bookType){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putString("user_id", userId);
         bundle.putString("address_name", addressName);
         bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
+        bundle.putInt("book_type", bookType);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -75,8 +91,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param userId
      * @return
      */
-    public static ServerPhotoFragment newInstance(int contentType, String userId){
-        return newInstance(contentType, userId, "", null);
+    public static ServerPhotoFragment newInstance(int contentType, String userId, int bookType){
+        return newInstance(contentType, userId, "", null, bookType);
     }
 
     /**
@@ -87,13 +103,14 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param mediaWrapObjs
      * @return
      */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs){
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs, int bookType){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putString("user_id", userId);
         bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
         bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
+        bundle.putInt("book_type", bookType);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -105,8 +122,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
      * @param selectedMedias
      * @return
      */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias){
-        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>());
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, int bookType){
+        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>(), bookType);
     }
 
     public ServerPhotoFragment() {}
@@ -121,6 +138,7 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         this.addressName = getArguments().getString("address_name");
         this.mediaWrapObjs = getArguments().getParcelableArrayList("media_wrap_objs");
         this.mediaObjs = getArguments().getParcelableArrayList("media_objs");
+        this.bookType = getArguments().getInt("book_type");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
         if(contentType != TypeConstants.PHOTO_TYPE_LOCATION){
             reqData();
@@ -128,7 +146,18 @@ public class ServerPhotoFragment extends BasePresenterFragment {
             stateView.setVisibility(View.GONE);
             setListData(mediaWrapObjs);
         }
+        initTips();
         return view;
+    }
+
+    private void initTips(){
+        if(bookType == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK){
+            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "60~200"));
+        } else if(bookType == BookModel.BOOK_TYPE_PAINTING){
+            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "40~200"));
+        } else {
+            tvRecommendCount.setVisibility(View.GONE);
+        }
     }
 
     private void reqData(){
@@ -173,6 +202,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         }
 
         llEmpty.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
+        rlPhotoTip.setVisibility(llEmpty.isShown() ? View.GONE : View.VISIBLE);
+        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(serverPhotosAdapter.getSelImgs().size()))));
     }
 
     public List<MediaObj> getSelectedMedias(){
@@ -181,6 +212,11 @@ public class ServerPhotoFragment extends BasePresenterFragment {
 
     public int getContentType() {
         return contentType;
+    }
+
+    @Subscribe
+    public void photoCountEvent(PhotoSelectCountEvent countEvent){
+        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(countEvent.count))));
     }
 
     @Override

@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.TimeBookPickerPhotoAdapter;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
@@ -157,7 +157,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
     }
 
     @Subscribe
-    public void onEvent(PhotoSelectEvent event) {
+    public void onEvent(PhotoSelectCountEvent event) {
         changeSelCount(event.count);
     }
 

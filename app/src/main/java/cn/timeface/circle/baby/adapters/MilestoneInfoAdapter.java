@@ -54,19 +54,22 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder.timeLineObj = item;
         holder.context = mContext;
         ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
-        if (item.getMediaList().get(0).getH()<=0||item.getMediaList().get(0).getW()<=0){
-            int width = Remember.getInt("width", 0) * 3;
-            layoutParams.width = width;
-            layoutParams.height = (int) (width * 0.6);
-        }else {
-            int width = App.mScreenWidth - paddingSize - paddingSize;
-            layoutParams.width = width;
-            layoutParams.height = item.getMediaList().get(0).getH() * width / item.getMediaList().get(0).getW();
+        if(item.getMediaList() != null && !item.getMediaList().isEmpty()){
+            if (item.getMediaList().get(0).getH()<=0||item.getMediaList().get(0).getW()<=0){
+                int width = Remember.getInt("width", 0) * 3;
+                layoutParams.width = width;
+                layoutParams.height = (int) (width * 0.6);
+            }else {
+                int width = App.mScreenWidth - paddingSize - paddingSize;
+                layoutParams.width = width;
+                layoutParams.height = item.getMediaList().get(0).getH() * width / item.getMediaList().get(0).getW();
+            }
+            GlideUtil.displayImage(item.getMediaList().get(0).getImgUrl(), holder.ivCover);
         }
         holder.ivCover.setLayoutParams(layoutParams);
         holder.rlMilestone.setLayoutParams(layoutParams);
         holder.tvTime.setText(DateUtil.formatDate("yyyy年MM月dd日",item.getDate()));
-        GlideUtil.displayImage(item.getMediaList().get(0).getImgUrl(), holder.ivCover);
+
         if(item.getType()==1){
             holder.ivVideo.setVisibility(View.VISIBLE);
         }else{
