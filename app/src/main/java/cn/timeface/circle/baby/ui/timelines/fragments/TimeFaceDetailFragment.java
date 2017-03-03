@@ -81,6 +81,8 @@ import rx.functions.Func1;
 public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.LoadDataFinish, BaseAdapter.OnItemClickLister, View.OnClickListener, TextView.OnEditorActionListener, View.OnFocusChangeListener {
 
 
+    @Bind(R.id.back_up)
+    ImageView backUp;
     @Bind(R.id.title)
     TextView title;
     @Bind(R.id.toolbar)

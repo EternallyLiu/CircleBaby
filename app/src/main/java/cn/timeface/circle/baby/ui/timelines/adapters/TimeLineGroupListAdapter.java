@@ -400,6 +400,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         imageView.setTag(R.id.icon, groupIndex);
         imageView.setTag(R.id.recycler_item_click_tag, index);
         imageView.setOnClickListener(this);
+        LogUtil.showLog("oritation==="+mediaObj.getImageOrientation());
         GlideUtil.displayImage(mediaObj.getImgUrl(), imageView);
         return view;
     }

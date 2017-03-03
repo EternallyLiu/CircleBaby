@@ -65,6 +65,8 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     protected final int PHOTO_COUNT_MAX = 100;
 
+    private static final String TIME_FORMAT="yyyy-MM-dd";
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.gv_grid_view)
@@ -252,9 +254,9 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
-                time_shot = DateUtil.formatDate("yyyy.MM.dd", timelimeobj.getDotime());
+                time_shot = DateUtil.formatDate(TIME_FORMAT, timelimeobj.getDotime());
                 if (TextUtils.isEmpty(time_shot)) {
-                    time_shot = DateUtil.formatDate("yyyy.MM.dd", timelimeobj.getDate());
+                    time_shot = DateUtil.formatDate(TIME_FORMAT, timelimeobj.getDate());
                 }
                 intent1.putExtra("time_shot", time_shot);
                 intent1.putExtra("time_now", tvTime.getText().toString());
@@ -270,8 +272,8 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             return;
         }
         String s = JSONUtils.parse2JSONString(timelimeobj.getMediaList());
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+        long time = DateUtil.getTime(t, "yyyy-MM-dd HH:mm");
         String locationInfo = JSONUtils.parse2JSONString(timelimeobj.getLocationInfo());
         apiService.editTime(URLEncoder.encode(locationInfo), URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, time, timelimeobj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())

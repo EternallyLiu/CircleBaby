@@ -116,7 +116,7 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                         if (d.length() == 1) {
                             d = "0" + d;
                         }
-                        time = year + "." + m + "." + d;
+                        time = year + "-" + m + "-" + d;
                         tvTimeSet.setText(time);
 
                         if(DateUtil.getTime(time,"yyyy.MM.dd") > System.currentTimeMillis()){
