@@ -2,13 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/bg_color2"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_color2">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/head" />
-
 
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -31,6 +30,17 @@
         android:layout_above="@+id/rl_bottom"
         android:visibility="gone" />
 
+    <ImageView
+        android:id="@+id/back_up"
+        android:layout_width="@dimen/size_60"
+        android:layout_height="@dimen/size_60"
+        android:layout_alignBottom="@+id/swipe_refresh"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        android:scaleType="fitCenter"
+        android:src="@drawable/back_up" />
+
     <RelativeLayout
         android:id="@+id/rl_botton"
         android:layout_width="match_parent"
@@ -44,13 +54,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/size_6"
-            android:imeOptions="actionSend"
-            android:singleLine="true"
             android:layout_toLeftOf="@+id/add_like"
             android:background="@drawable/shape_milestone_bg"
             android:gravity="center_vertical"
             android:hint="我也说一句"
+            android:imeOptions="actionSend"
             android:padding="@dimen/view_space_normal"
+            android:singleLine="true"
             android:textSize="@dimen/text_normal" />
 
         <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
