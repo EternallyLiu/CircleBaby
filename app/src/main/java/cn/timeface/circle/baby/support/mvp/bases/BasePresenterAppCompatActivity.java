@@ -11,11 +11,17 @@ import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.presentations.BasePresenterView;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.open.TFOpen;
+import cn.timeface.open.TFOpenConfig;
+import cn.timeface.open.api.bean.obj.TFOUserObj;
 import ly.count.android.sdk.Countly;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -42,6 +48,16 @@ public abstract class BasePresenterAppCompatActivity extends RxAppCompatActivity
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
         }
+        //初始化开放平台
+        TFOUserObj tfoUserObj = new TFOUserObj();
+        tfoUserObj.setAvatar(FastData.getAvatar());
+        tfoUserObj.setGender(FastData.getBabyGender());
+        tfoUserObj.setNick_name(FastData.getBabyName());
+        tfoUserObj.setPhone(FastData.getAccount());
+        tfoUserObj.setUserId(FastData.getUserId());
+        TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
+                .debug(BuildConfig.DEBUG).build()
+        );
     }
 
     @Override

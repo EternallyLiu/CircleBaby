@@ -71,6 +71,7 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
         holder.ivBookCover.setLayoutParams(lp);
         holder.ivBookCover.setMaxWidth(imageWidth);
 
+
         if (bookObj.getBookType() == BookModel.BOOK_TYPE_CALENDAR) {
             Glide.with(mContext)
                     .load(bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL
@@ -87,7 +88,7 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
                     .into(holder.ivBookCover);
             holder.ivMask.setVisibility(View.VISIBLE);
             holder.tvPagenum.setVisibility(View.VISIBLE);
-            holder.tvAuthor.setVisibility(View.VISIBLE);
+            holder.tvAuthor.setVisibility(bookObj.showAuthor() ? View.VISIBLE : View.GONE);
             holder.tvCreattime.setText("创建时间: " + DateUtil.getYear2(bookObj.getCreateTime()));
         }
 
