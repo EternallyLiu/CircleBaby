@@ -657,13 +657,6 @@ public interface ApiService {
                                       @Query("userId") String userId);
 
     /**
-     * pod中更换除封底和封面的图片
-     */
-    @GET("babyBook/updateTimeInfoForOpenApi")
-    Observable<BaseResponse> updateTimeInfoForOpenApi(@Query("mediaId") String mediaId,
-                                                      @Query("url") String url);
-
-    /**
      * 支付宝支付
      */
     @POST("babyOrder/alipay")
@@ -815,6 +808,28 @@ public interface ApiService {
             @Field("extra") String extra,
             @Field("openBookId") String openBookId,
             @Field("openBookType") int openBookType,
+            @Field("pageNum") int pageNum);
+
+    /**
+     * 编辑作品
+     * @param bookId 作品id
+     * @param babyId baby id
+     * @param bookCover 作品封面
+     * @param author 作者
+     * @param bookName 书名
+     * @param description 作品描述
+     * @param pageNum  作品页数
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("openBook/save")
+    Observable<EditBookResponse> editProduction(
+            @Field("bookId") String bookId,
+            @Field("babyId") int babyId,
+            @Field("bookCover") String bookCover,
+            @Field("author") String author,
+            @Field("bookName") String bookName,
+            @Field("description") String description,
             @Field("pageNum") int pageNum);
 
     @FormUrlEncoded
@@ -1005,5 +1020,13 @@ public interface ApiService {
 
     @GET("printGrowth/getBookThemeId")
     Observable<GetThemeResponse> getDefaultTheme(@Query("bookType") int bookType);
+
+    /**
+     * 更新输编辑时间
+     * @param bookId
+     * @return
+     */
+    @GET("printGrowth/updateBookTime")
+    Observable<BaseResponse> updateBookTime(@Query("bookId") String bookId);
 
 }
