@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,15 +9,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bigkoo.convenientbanner.ConvenientBanner;
-import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
-import com.bigkoo.convenientbanner.holder.Holder;
-import com.bumptech.glide.Glide;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,12 +17,10 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
-import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.responses.ProductionIntroListResponse;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.growth.activities.RecognizeCardCreateActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
 
@@ -38,14 +29,11 @@ import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
  * @from 2017/2/21
  * 产品介绍页面
  */
+@SuppressLint("SetJavaScriptEnabled")
 public class ProductionIntroActivity extends BaseAppCompatActivity {
-
-    private static final String ENCODING_UTF_8 = "UTF-8";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.view_banner)
-    ConvenientBanner viewBanner;
     @Bind(R.id.web_view)
     WebView webView;
     @Bind(R.id.tv_create)
@@ -74,13 +62,13 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
     }
 
     private void setupWebView() {
-        webView.getSettings().setJavaScriptEnabled(false);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setAllowFileAccess(false);
+        webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setAppCacheEnabled(true);
+
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setDefaultTextEncodingName(ENCODING_UTF_8);
     }
 
     private void reqProductionIntro() {
@@ -101,30 +89,9 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
     }
 
     private void setupData(ProductionIntroListResponse response) {
-        if (response.getDataList() != null && response.getDataList().size() > 0) {
-            setupBanner(response.getDataList());
-        }
         if (!TextUtils.isEmpty(response.getHtml())) {
-            webView.loadData(response.getHtml(), "text/html", ENCODING_UTF_8);
+            webView.loadUrl(response.getHtml());
         }
-    }
-
-    private void setupBanner(List<MediaObj> dataList) {
-        viewBanner.setPages(
-                new CBViewHolderCreator<NetworkImageHolderView>() {
-                    @Override
-                    public NetworkImageHolderView createHolder() {
-                        return new NetworkImageHolderView();
-                    }
-                }, dataList) //设置需要切换的View
-                .startTurning(3000)//设置自动切换（同时设置了切换时间间隔）
-                .setPointViewVisible(true)    //设置指示器是否可见
-                .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
-                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL);
-
-        viewBanner.setCanLoop(true);
-        viewBanner.setManualPageable(true); //设置手动影响（设置了该项无法手动切换）
-        viewBanner.setcurrentitem(0);
     }
 
     public void clickCreate(View v) {
@@ -136,7 +103,7 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                                 .compose(SchedulersCompat.applyIoSchedulers())
                                 .subscribe(
                                         response -> {
-                                            if(response.success()){
+                                            if (response.success()) {
                                                 SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
                                             }
                                         },
@@ -175,22 +142,4 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
         }
     }
 
-    public class NetworkImageHolderView implements Holder<MediaObj> {
-        private ImageView imageView;
-
-        @Override
-        public View createView(Context context) {
-            imageView = new ImageView(context);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            return imageView;
-        }
-
-        @Override
-        public void UpdateUI(Context context, int position, MediaObj data) {
-            Glide.with(context)
-                    .load(data.getImgUrl())
-                    .centerCrop()
-                    .into(imageView);
-        }
-    }
 }

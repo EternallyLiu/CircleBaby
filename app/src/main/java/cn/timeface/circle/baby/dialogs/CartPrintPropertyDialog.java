@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,6 +40,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -63,6 +65,7 @@ import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.mvp.model.CalendarModel;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -76,6 +79,10 @@ import rx.Subscription;
  * @TODO
  */
 public class CartPrintPropertyDialog extends DialogFragment implements IEventBus {
+
+    public final static int BOOK_MAX_COUNT = 99;
+    public final static int CALENDAR_MAX_COUNT = 999;
+
     public final static int TYPE_ADD_CART = 0;
     public final static int TYPE_BUY_NOW = 1;
     public final static int TYPE_NORMAL = 2;
@@ -131,6 +138,13 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     Button btnOk;
     @Bind(R.id.ll_btn_ok)
     LinearLayout llBtnOk;
+    @Bind(R.id.ll_content)
+    LinearLayout llContent;
+    @Bind(R.id.tv_max_amount)
+    TextView tvMaxAmount;
+    @Bind(R.id.iv_front_mask)
+    ImageView ivMask;
+
     private PrintCartItem cartItem;
     private PrintPropertyPriceObj propertyObj;
     private List<PrintParamResponse> paramList;
@@ -141,6 +155,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     private float bookPrice;
     private String bookId;
     private String bookType;
+    private int openBookType;
     private TFProgressDialog tfProgressDialog;
     private int requestCode;
     private String printId = "";
@@ -152,6 +167,8 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     private String bookName;
     private String createTime;
     private Context context;
+    private int limit = BOOK_MAX_COUNT;
+
     private final ApiService apiService = ApiFactory.getApi().getApiService();
 
     public static CartPrintPropertyDialog getInstance(PrintCartItem printCartItem,
@@ -159,6 +176,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                                       List<PrintParamResponse> responseList,
                                                       String bookId,
                                                       String bookType,
+                                                      int openBookType,
                                                       int requestCode,
                                                       int printCode,
                                                       String bookCover,
@@ -173,6 +191,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         bundle.putParcelableArrayList("param_response", (ArrayList<? extends Parcelable>) responseList);
         bundle.putString("book_id", bookId);
         bundle.putString("book_type", bookType);
+        bundle.putInt("open_book_type", openBookType);
         bundle.putInt("request_code", requestCode);
         bundle.putInt("print_code", printCode);
         bundle.putString("book_cover", bookCover);
@@ -216,6 +235,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         propertyObj = (PrintPropertyPriceObj) getArguments().getSerializable("print_property");
         bookId = getArguments().getString("book_id");
         bookType = getArguments().getString("book_type");
+        openBookType = getArguments().getInt("open_book_type", -1);
         requestCode = getArguments().getInt("request_code", REQUEST_CODE_MINETIME);
         printCode = getArguments().getInt("print_code", TypeConstant.PRINT_CODE_NORMAL);
         bookCover = getArguments().getString("book_cover");
@@ -286,8 +306,6 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     }
 
     private void setupLayout() {
-        mBookPrintNumberEt.addTextChangedListener(new EditTextWatcher(mBookPrintNumberEt, 99, false));
-
         int imageWidth = DeviceUtil.dpToPx(getContext().getResources(), 120);
         switch (Integer.valueOf(bookType)) {
             case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK://精装照片书
@@ -306,7 +324,26 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         ivBookCover.setLayoutParams(lp);
         ivBookCover.setMaxWidth(imageWidth);
 
-        GlideUtil.displayImage(bookCover, ivBookCover);
+        if (TextUtils.equals(bookType, String.valueOf(BookModel.BOOK_TYPE_CALENDAR))) {
+            limit = CALENDAR_MAX_COUNT;
+            llContent.setVisibility(View.GONE);
+            ivMask.setVisibility(View.GONE);
+
+            Glide.with(getContext())
+                    .load(openBookType == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL
+                            ? R.drawable.bg_calendar_horizontal : R.drawable.bg_calendar_vertical)
+                    .into(ivBookCover);
+        } else {
+            limit = BOOK_MAX_COUNT;
+            llContent.setVisibility(View.VISIBLE);
+            ivMask.setVisibility(View.VISIBLE);
+
+            GlideUtil.displayImage(bookCover, ivBookCover);
+        }
+
+        tvMaxAmount.setText(String.format(Locale.CHINESE, "(上限%s本)", limit));
+
+        mBookPrintNumberEt.addTextChangedListener(new EditTextWatcher(mBookPrintNumberEt, limit, false));
 
         for (PrintParamResponse paramResponse : paramList) {
             if (PrintParamResponse.KEY_SIZE.equals(paramResponse.getKey())) {
@@ -429,7 +466,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         switch (view.getId()) {
             case R.id.book_print_number_plus_ib:
                 int num = Integer.parseInt(mBookPrintNumberEt.getText().toString());
-                if (num < 99) {
+                if (num < limit) {
                     mBookPrintNumberEt.setText(String.valueOf(num + 1));
                     num += 1;
                 }
@@ -468,7 +505,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                 obj.getPack() == Integer.parseInt(getPackSelect()) &&
                                 obj.getColor() == Integer.parseInt(getColorSelect()) &&
                                 obj.getPaper() == Integer.parseInt(getPaperSelect()) &&
-                                obj.getNum() >= 99) {
+                                obj.getNum() >= limit) {
                             Toast.makeText(getActivity(), "印刷数量不可超过上限！", Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -946,7 +983,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             } else {
                 int num = Integer.parseInt(str);
                 if (num > maxNum) {
-                    s.replace(0, s.length(), "99");
+                    s.replace(0, s.length(), String.valueOf(limit));
                 }
 
                 if (num >= maxNum) {
