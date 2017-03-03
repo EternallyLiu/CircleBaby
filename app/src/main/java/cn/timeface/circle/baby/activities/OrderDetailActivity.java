@@ -198,15 +198,15 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                 switch (payType) {
                     // 支付宝
                     case 1:
-                        orderPrice = 0.01f;//一分钱测试支付
+//                        orderPrice = 0.01f;//一分钱测试支付
 //                            if (isUsePoint || !TextUtils.isEmpty(getUseCouponId())) {
 //                                //4混合支付(支付宝)
 //                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
 //                            } else {
 //                                //2支付宝支付
 //                        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
-                        Subscription subscription = new AliPay().payV2(orderId, OrderDetailActivity.this);
-                        addSubscription((subscription));
+
+                        addSubscription(new AliPay().payV2(orderId, OrderDetailActivity.this));
 //                            }
                         break;
 
@@ -217,11 +217,6 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                             } else {
                                 new WxUtil(MyOrderConfirmActivity.this, orderId, FastData.getUserId(), "1").pay();
                             }
-                            break;*/
-
-                    //翼支付
-//                        case 3:
-                           /* new EPayUtil(MyOrderConfirmActivity.this, orderId).pay();
                             break;*/
                 }
             }
@@ -260,13 +255,13 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
             progressDialog.dismiss();
         }
 
-        if (event.type != null && (event.type).equals(PayResultEvent.PayType.WX)) {
-            if ((event.resultCode).equals("-1")) {
-                Toast.makeText(this, getString(R.string.pay_fail), Toast.LENGTH_SHORT).show();
-            } else if ((event.resultCode).equals("-2")) {
-                Toast.makeText(this, getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if (event.type != null && (event.type).equals(PayResultEvent.PayType.WX)) {
+//            if ((event.resultCode).equals("-1")) {
+//                Toast.makeText(this, getString(R.string.pay_fail), Toast.LENGTH_SHORT).show();
+//            } else if ((event.resultCode).equals("-2")) {
+//                Toast.makeText(this, getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
         if (event.paySuccess()) {
             Toast.makeText(this, getString(R.string.pay_success), Toast.LENGTH_SHORT).show();

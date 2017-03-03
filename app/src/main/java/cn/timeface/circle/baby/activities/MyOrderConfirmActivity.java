@@ -972,8 +972,8 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //                            } else {
 //                                //2支付宝支付
 //                        new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
-                        Subscription subscription = new AliPay().payV2(orderId, MyOrderConfirmActivity.this);
-                        addSubscription((subscription));
+
+                        addSubscription(new AliPay().payV2(orderId, MyOrderConfirmActivity.this));
 //                            }
                         break;
 
@@ -984,11 +984,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                             } else {
                                 new WxUtil(MyOrderConfirmActivity.this, orderId, FastData.getUserId(), "1").pay();
                             }
-                            break;*/
-
-                    //翼支付
-//                        case 3:
-                           /* new EPayUtil(MyOrderConfirmActivity.this, orderId).pay();
                             break;*/
                 }
             }
@@ -1111,13 +1106,13 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
             progressDialog.dismiss();
         }
 
-        if (event.type != null && (event.type).equals(PayResultEvent.PayType.WX)) {
-            if ((event.resultCode).equals("-1")) {
-                Toast.makeText(this, getString(R.string.pay_fail), Toast.LENGTH_SHORT).show();
-            } else if ((event.resultCode).equals("-2")) {
-                Toast.makeText(this, getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if (event.type != null && (event.type).equals(PayResultEvent.PayType.WX)) {
+//            if ((event.resultCode).equals("-1")) {
+//                Toast.makeText(this, getString(R.string.pay_fail), Toast.LENGTH_SHORT).show();
+//            } else if ((event.resultCode).equals("-2")) {
+//                Toast.makeText(this, getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
         if (event.paySuccess()) {
             Toast.makeText(this, getString(R.string.pay_success), Toast.LENGTH_SHORT).show();
