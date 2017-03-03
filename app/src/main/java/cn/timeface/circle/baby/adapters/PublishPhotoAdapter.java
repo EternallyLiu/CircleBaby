@@ -254,14 +254,19 @@ public class PublishPhotoAdapter extends BaseRecyclerAdapter<PhotoRecode> implem
                     }
                 }
                 LogUtil.showLog(TAG, "width==" + width + "---height==" + height + "---w==" + mediaObj.getWidth() + "----h==" + mediaObj.getHeight());
-                if (width > App.mScreenWidth) {
-                    break;
-                } else continue;
+                if (list.size() - count == 1) {
+                    continue;
+                } else {
+                    if (width > App.mScreenWidth || count - startIndex >= TimeLineGroupListAdapter.ROW_MAX_COUNT) {
+                        break;
+                    } else continue;
+                }
             }
             LogUtil.showLog(TAG, "width==" + width + "---height==" + height);
             height = (App.mScreenWidth * height) / width;
             width = App.mScreenWidth;
             rowParams.height = height;
+            rowView.setPadding(0, paddingImage, 0, 0);
             rowView.setLayoutParams(rowParams);
             for (int j = startIndex; j < count; j++) {
                 View view = getView(groupIndex, j, rowView, list.get(j));

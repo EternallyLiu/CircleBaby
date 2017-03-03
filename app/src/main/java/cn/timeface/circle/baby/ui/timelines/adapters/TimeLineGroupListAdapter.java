@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.timelines.adapters;
 
 import android.content.Context;
+import android.media.ExifInterface;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -62,6 +63,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     public static final int MAX_ROW_COUNT = 2;
 
     private View tipView;
+    public static final int ROW_MAX_COUNT = 3;
 
     public TimeLineGroupListAdapter(Context activity) {
         super(activity);
@@ -328,9 +330,13 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                         }
                     }
                     LogUtil.showLog("width==" + width + "----height==" + height + "---k=" + k + "--w==" + mediaObj.getW() + "--h==" + mediaObj.getH());
-                    if (width > App.mScreenWidth) {
-                        break;
-                    } else continue;
+                    if (item.getMediaList().size() - count == 1) {
+                        continue;
+                    } else {
+                        if (width > App.mScreenWidth || count - startIndex >= ROW_MAX_COUNT) {
+                            break;
+                        } else continue;
+                    }
                 }
                 LogUtil.showLog("width==" + width + "----height==" + height);
                 height = (App.mScreenWidth * height) / width;
@@ -338,6 +344,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                 LogUtil.showLog("width==" + width + "----height==" + height);
                 rowParams.height = height;
                 rowView.setLayoutParams(rowParams);
+                rowView.setPadding(0,paddingImage,0,0);
                 for (int j = startIndex; j < count; j++) {
                     View view = getView(position, j, rowView, item.getMediaList().get(j));
                     if (j >= startIndex && j < count - 1) {
@@ -400,7 +407,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         imageView.setTag(R.id.icon, groupIndex);
         imageView.setTag(R.id.recycler_item_click_tag, index);
         imageView.setOnClickListener(this);
-        LogUtil.showLog("oritation==="+mediaObj.getImageOrientation());
+        LogUtil.showLog("oritation===" + mediaObj.getImageOrientation());
         GlideUtil.displayImage(mediaObj.getImgUrl(), imageView);
         return view;
     }
