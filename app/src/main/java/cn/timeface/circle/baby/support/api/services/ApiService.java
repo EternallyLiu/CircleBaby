@@ -20,6 +20,7 @@ import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLocation
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByTimeResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByUserResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryProductionExtraResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QuerySelectedPhotoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UsersInfoResponse;
@@ -1029,4 +1030,6 @@ public interface ApiService {
     @GET("printGrowth/updateBookTime")
     Observable<BaseResponse> updateBookTime(@Query("bookId") String bookId);
 
+    @GET("openBook/getExtra")
+    Observable<QueryProductionExtraResponse> getProductionExtra(@Query("bookId") String bookId);
 }
