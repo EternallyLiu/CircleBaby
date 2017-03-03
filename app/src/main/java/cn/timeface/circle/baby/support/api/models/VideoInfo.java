@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ColumnIgnore;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -30,6 +31,7 @@ import rx.functions.Func0;
 /**
  * Created by lidonglin on 2016/5/10.
  */
+@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 @Table(database = AppDatabase.class)
 public class VideoInfo extends BaseModel implements Parcelable {
     @PrimaryKey
@@ -61,6 +63,12 @@ public class VideoInfo extends BaseModel implements Parcelable {
     public VideoInfo() {
     }
 
+    public VideoInfo(String path, String videoObjectKey) {
+        this.path = path;
+        this.videoObjectKey = videoObjectKey;
+        setType(1);
+    }
+
     public VideoInfo(long duration, String imgObjectKey, String path, long date) {
         this.duration = duration;
         this.imgObjectKey = imgObjectKey;
@@ -90,6 +98,14 @@ public class VideoInfo extends BaseModel implements Parcelable {
 
     public void setImgObjectKey(String imgObjectKey) {
         this.imgObjectKey = imgObjectKey;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
     }
 
     public String getVideoObjectKey() {
@@ -175,8 +191,16 @@ public class VideoInfo extends BaseModel implements Parcelable {
      * @return
      */
     public static Observable<VideoInfo> findVideo(String url) {
+        return Observable.defer(() -> Observable.just(SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.videoUrl.eq(url)).querySingle()))
+                .map(videoInfo -> {
+                    if (videoInfo == null)
+                        videoInfo = SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.videoObjectKey.eq(url.substring(url.lastIndexOf("baby/")))).querySingle();
+                    return videoInfo;
+                });
+    }
 
-        return Observable.just(SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.videoObjectKey.eq(url)).querySingle());
+    public static Observable<VideoInfo> updateVideo(String path) {
+        return Observable.defer(() -> Observable.just(SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.path.eq(path)).querySingle()));
     }
 
     @Override
@@ -260,6 +284,7 @@ public class VideoInfo extends BaseModel implements Parcelable {
         dest.writeString(this.videoObjectKey);
         dest.writeLong(this.Date);
         dest.writeInt(this.type);
+        dest.writeString(this.videoUrl);
     }
 
     protected VideoInfo(Parcel in) {
@@ -274,6 +299,7 @@ public class VideoInfo extends BaseModel implements Parcelable {
         this.videoObjectKey = in.readString();
         this.Date = in.readLong();
         this.type = in.readInt();
+        this.videoUrl = in.readString();
     }
 
     public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {

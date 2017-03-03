@@ -64,10 +64,12 @@
         android:gravity="center_vertical|left"
         android:lineSpacingExtra="@dimen/size_4"
         android:lines="1"
-        android:padding="@dimen/size_4"
+        android:paddingLeft="@dimen/size_4"
+        android:paddingRight="@dimen/size_4"
+        android:paddingBottom="@dimen/size_4"
         android:text="叔叔"
         android:textColor="@color/aluminum"
-        android:textSize="@dimen/text_normal" />
+        android:textSize="@dimen/text_small" />
 
     <TextView
         android:id="@+id/send_pic_count"
@@ -79,10 +81,11 @@
         android:gravity="center_vertical|left"
         android:lineSpacingExtra="@dimen/size_4"
         android:lines="1"
-        android:padding="@dimen/size_4"
+        android:paddingRight="@dimen/size_4"
+        android:paddingBottom="@dimen/size_4"
         android:text="叔叔"
         android:textColor="@color/aluminum"
-        android:textSize="@dimen/text_normal" />
+        android:textSize="@dimen/text_small" />
 
 
 </RelativeLayout>

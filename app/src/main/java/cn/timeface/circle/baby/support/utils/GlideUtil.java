@@ -137,6 +137,49 @@ public class GlideUtil {
                     .into(imageView);
         }
     }
+    public static void setImage(String url, ImageView imageView, int id,boolean fitCenter) {
+        if (TextUtils.isEmpty(url) || imageView == null) {
+            imageView.setImageResource(id);
+            return;
+        }
+        if (url.startsWith("http")) {
+            if (fitCenter){
+                Glide.with(imageView.getContext())
+                        .using(new TFStringUrlLoader(imageView.getContext()))
+                        .load(url)
+                        .error(id)
+                        .crossFade()
+                        .placeholder(id)
+                        .fitCenter()
+                        .into(imageView);
+
+            }else {
+                Glide.with(imageView.getContext())
+                        .using(new TFStringUrlLoader(imageView.getContext()))
+                        .load(url)
+                        .error(id)
+                        .crossFade()
+                        .placeholder(id)
+                        .centerCrop()
+                        .into(imageView);
+
+            }
+        } else {
+            if (fitCenter)
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .error(id)
+                    .crossFade()
+                    .placeholder(id).fitCenter()
+                    .into(imageView);
+            else Glide.with(imageView.getContext())
+                    .load(url)
+                    .error(id)
+                    .crossFade()
+                    .placeholder(id).centerCrop()
+                    .into(imageView);
+        }
+    }
 
     public static String getCacheDir() {
         return Glide.getPhotoCacheDir(context).toString();

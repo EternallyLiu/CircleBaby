@@ -8,18 +8,22 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.events.MediaLoadComplete;
 import cn.timeface.circle.baby.support.api.models.VideoInfo;
+import cn.timeface.circle.baby.support.api.models.VideoInfo_Table;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -45,7 +49,6 @@ public class LoadMediaService extends IntentService {
 
     private void loadVideo() {
         ArrayList<VideoInfo> list = new ArrayList<>();
-        List<VideoInfo> videos = VideoInfo.getVideoList();
         String progress[] = {
 
                 MediaStore.Video.Media.DISPLAY_NAME,//视频的名字
@@ -75,24 +78,12 @@ public class LoadMediaService extends IntentService {
                 videoInfo.setPath(data);
                 videoInfo.setDuration(durantion);
                 videoInfo.setSize(size);
-                if (videos.contains(videoInfo)) {
-                    VideoInfo info = videos.get(videos.indexOf(videoInfo));
-                    if (info.isThumbmail()) {
-                        info.setDate(date);
-                        info.setSize(size);
-                        info.setDuration(durantion);
-                        info.setType(0);
-                        info.save();
-                        continue;
-                    }
-                }
                 Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
                 String thumbPath = null;
                 if (thumbnail != null)
                     thumbPath = ImageFactory.saveImageCache(thumbnail);
                 videoInfo.setThumbmailLocalUrl(thumbPath);
                 videoInfo.setDate(date);
-                videoInfo.save();
                 list.add(videoInfo);
             }
             cursor.close();
@@ -114,17 +105,6 @@ public class LoadMediaService extends IntentService {
             videoInfo.setVedioName(name);
             videoInfo.setDuration(durantion);
             videoInfo.setSize(size);
-            if (videos.contains(videoInfo)) {
-                VideoInfo info = videos.get(videos.indexOf(videoInfo));
-                if (info.isThumbmail()) {
-                    info.setDate(date);
-                    info.setSize(size);
-                    info.setDuration(durantion);
-                    info.setType(0);
-                    info.save();
-                    continue;
-                }
-            }
             Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(data, MediaStore.Video.Thumbnails.MINI_KIND);
             String thumbPath = null;
             if (thumbnail != null)
@@ -132,10 +112,24 @@ public class LoadMediaService extends IntentService {
             videoInfo.setThumbnail(thumbnail);
             videoInfo.setThumbmailLocalUrl(thumbPath);
             videoInfo.setDate(date);
-            videoInfo.save();
             list.add(videoInfo);
         }
         cursor.close();
-        VideoInfo.saveAll(list);
+        Observable.defer(() -> Observable.from(list))
+                .map(videoInfo -> {
+                    VideoInfo info = SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.path.eq(videoInfo.getPath())).querySingle();
+                    if (info != null) {
+                        if (!TextUtils.isEmpty(info.getThumbmailLocalUrl()) && !info.getThumbmailLocalUrl().equals(videoInfo.getThumbmailLocalUrl())) {
+                            File file = new File(info.getThumbmailLocalUrl());
+                            if (file.exists()) file.delete();
+                        }
+                        info.setDate(videoInfo.getDate());
+                        info.setType(0);
+                        info.setThumbmailLocalUrl(videoInfo.getThumbmailLocalUrl());
+                        info.setSize(videoInfo.getSize());
+                        info.setDuration(videoInfo.getDuration());
+                        return info;
+                    } else return videoInfo;
+                }).filter(videoInfo -> videoInfo != null).subscribe(videoInfo -> videoInfo.save());
     }
 }

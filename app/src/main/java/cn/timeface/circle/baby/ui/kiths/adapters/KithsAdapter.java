@@ -65,7 +65,7 @@ public class KithsAdapter extends BaseAdapter implements View.OnClickListener {
         ImageView icon = ViewHolder.getView(view, R.id.icon);
         TextView content = ViewHolder.getView(view, R.id.content);
         Button invite = ViewHolder.getView(view, R.id.invite);
-        GlideUtil.displayImageCircle(R.drawable.familyavatar, icon);
+        GlideUtil.displayImageCircle(R.drawable.baby_avater, icon);
         int nameLength = info.getUserInfo().getRelationName().length() + 1;
         builder.append(info.getUserInfo().getRelationName()).append("\n").append("未加入");
         builder.setSpan(sizeSpan, 0, nameLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);

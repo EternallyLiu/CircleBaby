@@ -125,13 +125,13 @@ public class TimeLineSelectAdapter extends BaseAdapter {
             image2.setVisibility(View.GONE);
         } else if (item.getMedias().size() == 1) {
             image1.setVisibility(View.VISIBLE);
-            GlideUtil.displayImage(item.getMedias().get(0).getImgUrl(), image1);
+            GlideUtil.displayImage(item.getMedias().get(0).getImgUrl(), image1,false);
             image2.setVisibility(View.GONE);
         } else {
             image1.setVisibility(View.VISIBLE);
             image2.setVisibility(View.VISIBLE);
-            GlideUtil.displayImage(item.getMedias().get(0).getImgUrl(), image1);
-            GlideUtil.displayImage(item.getMedias().get(1).getImgUrl(), image2);
+            GlideUtil.displayImage(item.getMedias().get(0).getImgUrl(), image1,false);
+            GlideUtil.displayImage(item.getMedias().get(1).getImgUrl(), image2,false);
 
         }
     }

@@ -17,6 +17,7 @@ import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import org.greenrobot.eventbus.EventBus;
 
 import cn.timeface.circle.baby.events.UploadEvent;
+import cn.timeface.circle.baby.support.api.models.VideoInfo;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
@@ -94,6 +95,9 @@ public class UploadVideoService extends IntentService {
 
                                 LogUtil.showLog("onSuccess");
                                 EventBus.getDefault().post(new UploadEvent(100, timeId, true));
+                                VideoInfo.updateVideo(path).map(videoInfo -> videoInfo = videoInfo == null ? new VideoInfo(path, uploadFileObj.getObjectKey()) : videoInfo)
+                                        .doOnNext(videoInfo -> videoInfo.setVideoObjectKey(uploadFileObj.getObjectKey()))
+                                        .subscribe(videoInfo -> videoInfo.save(), throwable -> LogUtil.showError(throwable));
                             }
 
                             @Override
@@ -104,6 +108,9 @@ public class UploadVideoService extends IntentService {
                     } else {
                         LogUtil.showLog("sucess");
                         EventBus.getDefault().post(new UploadEvent(100, timeId, true));
+                        VideoInfo.updateVideo(path).map(videoInfo -> videoInfo = videoInfo == null ? new VideoInfo(path, uploadFileObj.getObjectKey()) : videoInfo)
+                                .doOnNext(videoInfo -> videoInfo.setVideoObjectKey(uploadFileObj.getObjectKey()))
+                                .subscribe(videoInfo -> videoInfo.save(), throwable -> LogUtil.showError(throwable));
                     }
                 } catch (Exception e) {
                     LogUtil.showError(e);

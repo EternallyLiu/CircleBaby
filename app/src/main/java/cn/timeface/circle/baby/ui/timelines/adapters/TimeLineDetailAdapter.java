@@ -35,8 +35,11 @@ import cn.timeface.circle.baby.ui.timelines.views.GridStaggerLookup;
 public class TimeLineDetailAdapter extends BaseAdapter {
     private GridStaggerLookup lookup;
 
+    private int imagePadding = 8;
+
     public TimeLineDetailAdapter(Context activity) {
         super(activity);
+        imagePadding = (int) context().getResources().getDimension(R.dimen.size_4);
     }
 
     @Override
@@ -118,11 +121,9 @@ public class TimeLineDetailAdapter extends BaseAdapter {
         LogUtil.showLog(JSONUtils.parse2JSONString(mediaObj));
         int width = Remember.getInt("width", 0);
         if (mediaObj.getW() > 0)
-            width = lookup.getSpanSize(position) * columWidth;
-        int height = Remember.getInt("width", 0);
-        ;
-        if (mediaObj.getH() > 0)
-            height = (mediaObj.getH() * width) / mediaObj.getW();
+            width = lookup.isShowSmail() ? lookup.getSpanSize(position) * columWidth : App.mScreenWidth;
+        int height = lookup.isShowSmail() ? width : mediaObj.getH() > 0 ? width * mediaObj.getH() / mediaObj.getW() : Remember.getInt("width", 0);
+
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) contentView.getLayoutParams();
         if (params == null) {
             params = new RecyclerView.LayoutParams(width == 0 ? RecyclerView.LayoutParams.MATCH_PARENT : width,
@@ -132,9 +133,12 @@ public class TimeLineDetailAdapter extends BaseAdapter {
             params.height = height == 0 ? RecyclerView.LayoutParams.WRAP_CONTENT : height;
         }
         contentView.setLayoutParams(params);
+        if (lookup.isShowSmail())
+            contentView.setPadding(0, 0, position % lookup.getColumCount() == lookup.getColumCount() - 1 ? 0 : imagePadding, imagePadding);
+        else contentView.setPadding(0, 0, 0, imagePadding);
         ImageView icon = ViewHolder.getView(contentView, R.id.icon);
         LogUtil.showLog(position + "---" + mediaObj.getImgUrl());
-        GlideUtil.setImage(mediaObj.getImgUrl(), icon, R.drawable.bg_default_holder_img);
+        GlideUtil.setImage(mediaObj.getImgUrl(), icon, R.drawable.bg_default_holder_img,true);
     }
 
     private void doCommentObj(View contentView, CommentObj comment) {

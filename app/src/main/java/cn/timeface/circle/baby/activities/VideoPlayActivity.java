@@ -86,11 +86,15 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         }
 
         url = getIntent().getStringExtra("url");
-        objectKey = url.substring(url.lastIndexOf("/baby/"));
-        LogUtil.showLog("objectKey==" + objectKey);
-        VideoInfo.findVideo(objectKey).compose(SchedulersCompat.applyIoSchedulers())
+        VideoInfo.findVideo(url).compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(videoInfo -> {
+                    LogUtil.showLog("url==="+url);
+                    LogUtil.showLog(videoInfo==null?"null":videoInfo.getPath());
                     if (videoInfo != null && !TextUtils.isEmpty(videoInfo.getPath())) {
+                        if (TextUtils.isEmpty(videoInfo.getVideoUrl())) {
+                            videoInfo.setVideoUrl(url);
+                            videoInfo.save();
+                        }
                         url = videoInfo.getPath();
                         init();
                     } else init();
@@ -102,7 +106,7 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
     }
 
     private void init() {
-        LogUtil.showLog("url:"+url);
+        LogUtil.showLog("url:" + url);
         MediaController mc = new MediaController(this);
         videoview.setMediaController(mc);
         videoview.setVideoPath(url);

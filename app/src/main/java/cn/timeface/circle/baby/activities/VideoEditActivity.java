@@ -161,8 +161,10 @@ public class VideoEditActivity extends BaseAppCompatActivity {
                         EventBus.getDefault().post(new ClipVideoSuccessEvent(path, i));
                     } else {
                         String s = ClipUtil.clipVideo(path, min, max);
+                        LogUtil.showLog("s==="+s);
                         EventBus.getDefault().post(new ClipVideoSuccessEvent(s, i));
                     }
+                    LogUtil.showLog("clip finish");
                     tfProgressDialog.dismiss();
                     finish();
                 } catch (IOException e) {

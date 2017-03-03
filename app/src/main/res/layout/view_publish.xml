@@ -31,7 +31,7 @@
         android:drawableTop="@drawable/home_vedio"
         android:gravity="center"
         android:text="视频"
-        android:translationX="@dimen/size_6" />
+        />
 
     <TextView
         android:id="@+id/tv_diary"
@@ -41,7 +41,7 @@
         android:drawableTop="@drawable/home_note"
         android:gravity="center"
         android:text="语录"
-        android:translationX="-6dp" />
+         />
 
     <TextView
         android:id="@+id/tv_card"
