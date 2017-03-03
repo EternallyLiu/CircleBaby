@@ -53,7 +53,7 @@ public class TFProgressDialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(getDialog() != null){
+        if(getDialog() != null && getDialog().getWindow() != null){
             getDialog().getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
         }
     }
