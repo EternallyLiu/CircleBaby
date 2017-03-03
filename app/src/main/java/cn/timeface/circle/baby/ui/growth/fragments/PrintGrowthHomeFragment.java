@@ -12,12 +12,16 @@ import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.BookListActivity;
@@ -30,7 +34,7 @@ import cn.timeface.circle.baby.ui.growth.beans.PrintGrowthHomeObj;
  * author : YW.SUN Created on 2017/1/11
  * email : sunyw10@gmail.com
  */
-public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClickListener {
+public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClickListener, IEventBus {
 
     @Bind(R.id.rv_books)
     RecyclerView rvBooks;
@@ -93,6 +97,14 @@ public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClic
         if(view.getId() == R.id.rl_root){
             PrintGrowthHomeObj printGrowthHomeObj = (PrintGrowthHomeObj) view.getTag(R.string.tag_obj);
             ProductionListActivityDelegate.dispatchProductionList(getActivity(), printGrowthHomeObj.getBookType());
+        }
+    }
+
+    @Subscribe
+    public void homeRefreshEvent(HomeRefreshEvent refreshEvent){
+        //切换宝宝操作
+        if(refreshEvent.getType() == 1001){
+            growthHomeAdapter.notifyDataSetChanged();
         }
     }
 }
