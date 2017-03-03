@@ -22,6 +22,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
@@ -51,14 +52,23 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
     }
 
     private void setupData() {
+
         int size = listData.size();
         lineEnd = new int[size];
         everyGroupUnSelImgSize = new int[size];
 
+        //重新组装下数据
+        for(MediaWrapObj wrapObj : listData){
+            MediaTipObj tipObj = wrapObj.getTip();
+            for(MediaObj mediaObj : wrapObj.getMediaList()){
+                mediaObj.setTip(tipObj);
+            }
+        }
+
+
         for (int i = 0; i < size; i++) {
             int imgCount = listData.get(i).getMediaList().size();
             everyGroupUnSelImgSize[i] = imgCount;//默认所有都没有选中
-
             for (MediaObj mediaObj : selMedias) {
                 if (listData.get(i).getMediaList().contains(mediaObj)) {
                     everyGroupUnSelImgSize[i]--;

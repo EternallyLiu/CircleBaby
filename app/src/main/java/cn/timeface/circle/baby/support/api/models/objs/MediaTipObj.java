@@ -50,13 +50,12 @@ public class MediaTipObj extends BaseObj implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
 
-        MediaTipObj tipObj = (MediaTipObj) o;
-
-        return tipName != null ? tipName.equals(tipObj.tipName) : tipObj.tipName == null;
-
+        if(o instanceof MediaTipObj){
+            MediaTipObj tipObj = (MediaTipObj) o;
+            return getTipName().equals(tipObj.getTipName()) && getTipId() == tipObj.getTipId();
+        }
+        return false;
     }
 
     @Override

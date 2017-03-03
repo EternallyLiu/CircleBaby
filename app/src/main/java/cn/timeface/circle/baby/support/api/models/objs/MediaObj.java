@@ -38,6 +38,7 @@ public class MediaObj extends BaseObj implements Parcelable {
     private String localIdentifier;
     private LocationObj location;
     private List<MediaTipObj> tips;
+    private MediaTipObj tip;//当前所属哪个标签
 
     public MediaObj() {
     }
@@ -229,6 +230,14 @@ public class MediaObj extends BaseObj implements Parcelable {
         return selected == 1;
     }
 
+    public MediaTipObj getTip() {
+        return tip;
+    }
+
+    public void setTip(MediaTipObj tip) {
+        this.tip = tip;
+    }
+
     public ImgObj getImgObj() {
         ImgObj imgObj = new ImgObj(getLocalPath(),getImgUrl());
         imgObj.setDateMills(getPhotographTime());
@@ -279,23 +288,33 @@ public class MediaObj extends BaseObj implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
 
-        MediaObj mediaObj = (MediaObj) o;
+//        MediaObj mediaObj = (MediaObj) o;
 
-        if (id != 0 && id == mediaObj.id) return true;
-        else if (!TextUtils.isEmpty(getImgUrl()) && getImgUrl().equals(mediaObj.getImgUrl()))
-            return true;
-        else if (!TextUtils.isEmpty(getVideoUrl()) && getVideoUrl().equals(mediaObj.getVideoUrl()))
-            return true;
-        else if (!TextUtils.isEmpty(getLocalIdentifier()) && getLocalIdentifier().equals(mediaObj.getLocalIdentifier()))
-            return true;
-        else if (!TextUtils.isEmpty(getLocalPath()) && getLocalPath().equals(mediaObj.getLocalPath()))
-            return true;
+        //mediaid 一样并且 标签也一致才相同
+//        return (id != 0 && id == mediaObj.id
+//                && (getTips() != null && mediaObj.getTips() != null && getTips().containsAll(mediaObj.getTips()) && mediaObj.getTips().containsAll(getTips())));
+//        else if (!TextUtils.isEmpty(getImgUrl()) && getImgUrl().equals(mediaObj.getImgUrl()))
+//            return true;
+//        else if (!TextUtils.isEmpty(getVideoUrl()) && getVideoUrl().equals(mediaObj.getVideoUrl()))
+//            return true;
+//        else if (!TextUtils.isEmpty(getLocalIdentifier()) && getLocalIdentifier().equals(mediaObj.getLocalIdentifier()))
+//            return true;
+//        else if (!TextUtils.isEmpty(getLocalPath()) && getLocalPath().equals(mediaObj.getLocalPath()))
+//            return true;
+//        else if(getTips() != null && mediaObj.getTips() != null && getTips().containsAll(mediaObj.getTips()) && mediaObj.getTips().containsAll(getTips())){
+//            return true;
+//        }
+//        return false;
 
+        if(o instanceof MediaObj){
+            MediaObj mediaObj = (MediaObj) o;
+            //mediaid 一样并且 标签也一致才相同
+            return (getId() != 0 && getId() == mediaObj.getId()) && getTip().equals(mediaObj.getTip());
+        }
         return false;
-
     }
 
     @Override
@@ -329,6 +348,7 @@ public class MediaObj extends BaseObj implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeString(this.content);
         dest.writeInt(this.h);
         dest.writeInt(this.w);
@@ -347,10 +367,12 @@ public class MediaObj extends BaseObj implements Parcelable {
         dest.writeInt(this.isFavorite);
         dest.writeString(this.localIdentifier);
         dest.writeParcelable(this.location, flags);
-        dest.writeList(this.tips);
+        dest.writeTypedList(this.tips);
+        dest.writeParcelable(this.tip, flags);
     }
 
     protected MediaObj(Parcel in) {
+        super(in);
         this.content = in.readString();
         this.h = in.readInt();
         this.w = in.readInt();
@@ -369,8 +391,8 @@ public class MediaObj extends BaseObj implements Parcelable {
         this.isFavorite = in.readInt();
         this.localIdentifier = in.readString();
         this.location = in.readParcelable(LocationObj.class.getClassLoader());
-        this.tips = new ArrayList<MediaTipObj>();
-        in.readList(this.tips, MediaTipObj.class.getClassLoader());
+        this.tips = in.createTypedArrayList(MediaTipObj.CREATOR);
+        this.tip = in.readParcelable(MediaObj.class.getClassLoader());
     }
 
     public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {

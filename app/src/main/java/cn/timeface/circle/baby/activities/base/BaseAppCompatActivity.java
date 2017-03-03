@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.activities.base;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -46,16 +47,18 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
 
-        //初始化开放平台
-        TFOUserObj tfoUserObj = new TFOUserObj();
-        tfoUserObj.setAvatar(FastData.getAvatar());
-        tfoUserObj.setGender(FastData.getBabyGender());
-        tfoUserObj.setNick_name(FastData.getBabyName());
-        tfoUserObj.setPhone(FastData.getAccount());
-        tfoUserObj.setUserId(FastData.getUserId());
-        TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
-                .debug(BuildConfig.DEBUG).build()
-        );
+        if(!TextUtils.isEmpty(FastData.getUserId())){
+            //初始化开放平台
+            TFOUserObj tfoUserObj = new TFOUserObj();
+            tfoUserObj.setAvatar(FastData.getAvatar());
+            tfoUserObj.setGender(FastData.getBabyGender());
+            tfoUserObj.setNick_name(FastData.getBabyName());
+            tfoUserObj.setPhone(FastData.getAccount());
+            tfoUserObj.setUserId(FastData.getUserId());
+            TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
+                    .debug(BuildConfig.DEBUG).build()
+            );
+        }
     }
 
     @Override
