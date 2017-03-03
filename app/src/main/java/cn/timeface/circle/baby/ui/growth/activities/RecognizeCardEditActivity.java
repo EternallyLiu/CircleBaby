@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.growth.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,6 +56,12 @@ public class RecognizeCardEditActivity extends CardPreviewActivity implements Vi
         Intent intent = new Intent(context, RecognizeCardEditActivity.class);
         intent.putExtra("recognize_card", cardObj);
         context.startActivity(intent);
+    }
+
+    public static void open4Result(Context context, CardObj cardObj, int reqCode){
+        Intent intent = new Intent(context, RecognizeCardEditActivity.class);
+        intent.putExtra("recognize_card", cardObj);
+        ((Activity) context).startActivityForResult(intent, reqCode);
     }
 
     @Override
@@ -128,6 +135,10 @@ public class RecognizeCardEditActivity extends CardPreviewActivity implements Vi
                         if (knowledgeComposedResponse.success()) {
                             MediaObj mediaObj = knowledgeComposedResponse.getKnowledgeCardObj().getMedia();
                             mediaObj.setPhotographTime(createTime);
+
+                            Intent intent = new Intent();
+                            intent.putExtra("card_obj", knowledgeComposedResponse.getKnowledgeCardObj());
+                            setResult(RESULT_OK, intent);
                             finish();
                         } else {
                             ToastUtil.showToast(knowledgeComposedResponse.getInfo());

@@ -66,6 +66,7 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
 
     private CardObj cardObj;
     private TFProgressDialog tfProgressDialog;
+    private final int REQUEST_CODE_EDIT_CARD = 100;
 
     public static void open(Context context, CardObj cardObj){
         Intent intent = new Intent(context, CardPreviewActivity.class);
@@ -106,7 +107,7 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
             //编辑
             case R.id.action_edit:
                 if(cardObj instanceof KnowledgeCardObj){
-                    RecognizeCardEditActivity.open(this, cardObj);
+                    RecognizeCardEditActivity.open4Result(this, cardObj, REQUEST_CODE_EDIT_CARD);
                 } else {
                     Log.e(TAG, "只有识图卡片可以编辑");
                 }
@@ -188,5 +189,16 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
             ivSelect.setSelected(cardObj.select());
             EventBus.getDefault().post(new CardEditEvent(cardObj.getCardId(), cardObj.getSelect()));
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data == null || resultCode != RESULT_OK){
+            return;
+        }
+
+        this.cardObj = data.getParcelableExtra("card_obj");
+        if(cardObj != null)initView();
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

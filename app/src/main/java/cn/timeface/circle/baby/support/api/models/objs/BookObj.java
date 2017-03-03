@@ -23,7 +23,7 @@ public class BookObj extends BaseObj implements Parcelable {
     private String bookName;//书名
     private int bookType;//书类型
     private long createTime;//创建时间
-    private int isCustom;//1-系统推荐 2-用户自己创建的
+    private int isCustom;//0-系统推荐 1-用户自己创建的
     private long openBookId;//开放平台bookid
     private int pageNum;//书的总页数
     private int openBookType;//
@@ -119,6 +119,10 @@ public class BookObj extends BaseObj implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public boolean showAuthor(){
+        return isCustom == 1;
     }
 
     @Override
