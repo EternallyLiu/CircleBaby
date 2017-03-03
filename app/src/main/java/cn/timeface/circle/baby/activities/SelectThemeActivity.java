@@ -65,9 +65,14 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
     private ArrayList<ImageInfoListObj> dataList;
     private TFOBaseResponse<List<TFOBookType>> listBaseResponse;
     private int cloudAlbum;
+    private String bookId = "";
+    private String openBookId = "";
 
-    public static void open(Context context) {
+    public static void open(Context context, String bookId, String openBookId, List<ImageInfoListObj> dataList) {
         Intent intent = new Intent(context, SelectThemeActivity.class);
+        intent.putExtra("book_id", bookId);
+        intent.putExtra("open_book_id", openBookId);
+        intent.putParcelableArrayListExtra("data_list", (ArrayList<? extends Parcelable>) dataList);
         context.startActivity(intent);
     }
 
@@ -81,7 +86,9 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
-        dataList = intent.getParcelableArrayListExtra("dataList");
+        dataList = intent.getParcelableArrayListExtra("data_list");
+        this.bookId = getIntent().getStringExtra("book_id");
+        this.openBookId = getIntent().getStringExtra("open_book_id");
         cloudAlbum = intent.getIntExtra("cloudAlbum", 0);
         tfStateView.setOnRetryListener(() -> reqData());
         reqData();
@@ -137,11 +144,11 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.complete){
-            if (cloudAlbum == 1) {
-                creatBook();
-            } else {
-                startPhotoPick();
-            }
+//            if (cloudAlbum == 1) {
+                creatBook(bookId, openBookId);
+//            } else {
+//                startPhotoPick();
+//            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -166,7 +173,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
         SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, "", "");
     }
 
-    private void creatBook() {
+    private void creatBook(String bookId, String openBookId) {
         ArrayList<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
         for (ImageInfoListObj obj : dataList) {
             for (MediaObj media : obj.getMediaList()) {
@@ -189,7 +196,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
         values.add(FastData.getUserName());
         values.add(FastData.getBabyName()+"的照片书");
 
-        MyPODActivity.open(this, "","", BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true, FastData.getBabyId(),keys,values,1);
+        MyPODActivity.open(this, bookId, openBookId, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true, FastData.getBabyId(),keys,values,1);
         finish();
     }
 

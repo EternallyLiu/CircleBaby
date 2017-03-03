@@ -312,7 +312,7 @@ public class MediaObj extends BaseObj implements Parcelable {
         if(o instanceof MediaObj){
             MediaObj mediaObj = (MediaObj) o;
             //mediaid 一样并且 标签也一致才相同
-            return (getId() != 0 && getId() == mediaObj.getId()) && getTip().equals(mediaObj.getTip());
+            return mediaObj != null && (getId() != 0 && getId() == mediaObj.getId()) && getTip() !=null && mediaObj.getTip() != null && getTip().equals(mediaObj.getTip());
         }
         return false;
     }

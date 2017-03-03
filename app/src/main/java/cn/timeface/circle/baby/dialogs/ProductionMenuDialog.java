@@ -46,15 +46,17 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
 
     ApiService apiService = ApiFactory.getApi().getApiService();
     String bookId;
+    String openBookId;
     int bookType;
     boolean changeTheme;
 
-    public static ProductionMenuDialog newInstance(int bookType, String bookId, boolean changeTheme) {
+    public static ProductionMenuDialog newInstance(int bookType, String bookId, boolean changeTheme, String openBookId) {
         ProductionMenuDialog productionMenuDialog = new ProductionMenuDialog();
         Bundle bundle = new Bundle();
         bundle.putInt("book_type", bookType);
         bundle.putString("book_id", bookId);
         bundle.putBoolean("change_theme", changeTheme);
+        bundle.putString("open_book_id", openBookId);
         productionMenuDialog.setArguments(bundle);
         return productionMenuDialog;
     }
@@ -78,6 +80,7 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
         ButterKnife.bind(this, view);
 
         bookId = getArguments().getString("book_id");
+        openBookId = getArguments().getString("open_book_id");
         bookType = getArguments().getInt("book_type");
         changeTheme = getArguments().getBoolean("change_theme");
         tvChangeTheme.setOnClickListener(this);
@@ -110,9 +113,10 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
                                 }
                             }
                             //照片书，进入选择主题界面
-                            Intent intent = new Intent(getActivity(), SelectThemeActivity.class);
-                            intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
-                            startActivity(intent);
+//                            Intent intent = new Intent(getActivity(), SelectThemeActivity.class);
+//                            intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
+//                            startActivity(intent);
+                            SelectThemeActivity.open(getActivity(), bookId, openBookId, dataList);
                         } else {
                             ToastUtil.showToast(response.getInfo());
                         }

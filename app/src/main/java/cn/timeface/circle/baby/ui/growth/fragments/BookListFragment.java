@@ -114,7 +114,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                     productionMenuDialog = ProductionMenuDialog.newInstance(
                             bookType,
                             String.valueOf(bookObj.getBookId()),
-                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
+                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, String.valueOf(bookObj.getOpenBookId()));
                     productionMenuDialog.show(getChildFragmentManager(), "");
                 }
                 break;
