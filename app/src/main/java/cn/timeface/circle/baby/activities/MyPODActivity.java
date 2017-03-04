@@ -15,6 +15,7 @@ import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
+import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -71,7 +72,7 @@ public class MyPODActivity extends PODActivity {
                     bookId,
                     bookModel.getBookTitle(),
                     localBookType,
-                    "des",
+                    bookModel.getBookSummary(),
                     dataList,
                     bookModel.getBookId(),
                     (int)bookModel.getBookType(),
@@ -82,7 +83,51 @@ public class MyPODActivity extends PODActivity {
 
     @Override
     protected void editBook(TFOBookModel bookModel) {
-        editBookInfo(bookId, babyId, bookModel.getBookCover(), bookModel.getBookAuthor(), bookModel.getBookTitle(), bookModel.getBookSummary(), bookModel.getBookTotalPage());
+        addSubscription(
+                ApiFactory.getApi().getApiService().saveProduction(
+                        babyId,
+                        bookModel.getBookAuthor(),
+                        bookModel.getBookCover(),
+                        bookId,
+                        bookModel.getBookTitle(),
+                        localBookType,
+                        bookModel.getBookSummary(),
+                        dataList,
+                        bookModel.getBookId(),
+                        (int) bookModel.getBookType(),
+                        bookModel.getBookTotalPage())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .filter(editBookResponse -> {
+                            //编辑成功 更新编辑时间
+                            return editBookResponse.success();
+                        })
+                        .flatMap(new Func1<EditBookResponse, Observable<BaseResponse>>() {
+                            @Override
+                            public Observable<BaseResponse> call(EditBookResponse editBookResponse) {
+                                if (editBookResponse.success()) {
+                                    EventBus.getDefault().post(new BookOptionEvent());
+                                } else {
+                                    ToastUtil.showToast(editBookResponse.getInfo());
+                                }
+                                return ApiFactory.getApi().getApiService().updateBookTime(bookId);
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                response -> {
+                                    if (!response.success()) {
+                                        Log.e(TAG, response.info);
+                                    }
+                                },
+                                throwable -> {
+                                    Log.e(TAG, "editBookCover:");
+                                    throwable.printStackTrace();
+                                }
+                        ));
+
+//        editBookInfo(bookId, babyId, bookModel.getBookCover(), bookModel.getBookAuthor(), bookModel.getBookTitle(), bookModel.getBookSummary(), bookModel.getBookTotalPage());
     }
 
     private void createBook(String author, String bookCover, String bookId, String bookName, int bookType, String des, String extra, String openBookId, int openBookType, int pageNum){
@@ -119,6 +164,7 @@ public class MyPODActivity extends PODActivity {
     private void editBookInfo(String bookId, int babyId, String bookCover, String author, String bookName, String des, int pageNum) {
         Log.d("pod中更换封面", "bookCover ======= " + bookCover);
         addSubscription(
+
                 ApiFactory.getApi().getApiService().editProduction(bookId, babyId, bookCover, author, bookName, des, pageNum)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

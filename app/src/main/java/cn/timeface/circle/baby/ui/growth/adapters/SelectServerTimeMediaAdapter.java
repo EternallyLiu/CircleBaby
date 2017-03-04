@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -24,8 +25,11 @@ import cn.timeface.circle.baby.views.PhotoSelectImageView;
  * email : sunyw10@gmail.com
  */
 public class SelectServerTimeMediaAdapter extends BaseRecyclerAdapter<MediaObj> {
-    public SelectServerTimeMediaAdapter(Context mContext, List<MediaObj> listData) {
+    private List<MediaObj> selMedias = new ArrayList<>();
+
+    public SelectServerTimeMediaAdapter(Context mContext, List<MediaObj> listData, List<MediaObj> selMedias) {
         super(mContext, listData);
+        this.selMedias = selMedias;
     }
 
     @Override
@@ -39,7 +43,8 @@ public class SelectServerTimeMediaAdapter extends BaseRecyclerAdapter<MediaObj> 
         final MediaObj mediaObj = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.ivImg.setContent(mediaObj);
-        holder.ivImg.setChecked(mediaObj.select());
+//        holder.ivImg.setChecked(mediaObj.select());
+        holder.ivImg.setChecked(selMedias.contains(mediaObj));
         holder.ivImg.getCbSel().setTag(R.string.tag_obj, mediaObj);
         holder.ivImg.setOnCheckedListener(onCheckedListener);
     }
@@ -58,8 +63,8 @@ public class SelectServerTimeMediaAdapter extends BaseRecyclerAdapter<MediaObj> 
         @Override
         public void onClick(View view) {
             MediaObj mediaObj = (MediaObj) view.getTag(R.string.tag_obj);
-            mediaObj.setSelected(mediaObj.select() ? 0 : 1);
             EventBus.getDefault().post(new SelectMediaEvent(mediaObj.select(), mediaObj));
+            mediaObj.setSelected(mediaObj.select() ? 0 : 1);
         }
     };
 

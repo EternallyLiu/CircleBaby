@@ -116,7 +116,7 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
 //                            Intent intent = new Intent(getActivity(), SelectThemeActivity.class);
 //                            intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //                            startActivity(intent);
-                            SelectThemeActivity.open(getActivity(), bookId, openBookId, dataList);
+                            SelectThemeActivity.open(getActivity(), bookId, openBookId);
                         } else {
                             ToastUtil.showToast(response.getInfo());
                         }

@@ -106,10 +106,10 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
                 holder.tvTitle.setText(item.getAddress());
             } else {
                 holder.tvTitle.setText(TextUtils.isEmpty(item.getDate()) ? item.getTip().getTipName() + " " + item.getMediaCount() + "张照片" : item.getDate());
-                holder.cbAllSel.setTag(R.string.tag_index, position);
+                holder.cbTitleAllSel.setTag(R.string.tag_index, position);
             }
 
-            holder.cbAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
+            holder.cbTitleAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
         } else if (viewType == TYPE_PHOTOS) {
             SelectServerPhotosAdapter.PhotosViewHolder holder = ((SelectServerPhotosAdapter.PhotosViewHolder) viewHolder);
             List<MediaObj> imgs = getLineImgObj(position);
@@ -182,13 +182,13 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
     class TitleViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_title)
         TextView tvTitle;
-        @Bind(R.id.cb_all_sel)
-        CheckBox cbAllSel;
+        @Bind(R.id.cb_title_all_sel)
+        CheckBox cbTitleAllSel;
 
         TitleViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            cbAllSel.setOnClickListener(onCheckedAllListener);
+            cbTitleAllSel.setOnClickListener(onCheckedAllListener);
         }
     }
 

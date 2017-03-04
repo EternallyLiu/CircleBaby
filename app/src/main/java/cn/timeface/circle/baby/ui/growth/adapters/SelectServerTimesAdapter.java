@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -24,6 +25,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
+import cn.timeface.circle.baby.events.TimeSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
@@ -55,21 +57,34 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         this.maxCount = maxCount;
         this.clickListener = clickListener;
         this.selMedias = mediaObjs;
-        setupData();
+        setupData(false);
     }
 
-    private void setupData() {
+    private void setupData(boolean allSelect) {
         int size = listData.size();
         lineEnd = new int[size];
         everyGroupUnSelImgSize = new int[size];
 
+        if(allSelect){
+            for(TimeLineWrapObj timeLineWrapObj : listData){
+                for(TimeLineObj timeLineObj : timeLineWrapObj.getTimelineList()){
+                    if(!selTimeLines.contains(timeLineObj))selTimeLines.add(timeLineObj);
+                }
+            }
+        } else {
+            selTimeLines.clear();
+        }
+
         for (int i = 0; i < size; i++) {
             int imgCount = listData.get(i).getTimelineList().size();
-            everyGroupUnSelImgSize[i] = imgCount;//默认所有都没有选中
-
-            for (TimeLineObj timeLineObj : selTimeLines) {
-                if (listData.get(i).getTimelineList().contains(timeLineObj)) {
-                    everyGroupUnSelImgSize[i]--;
+            if(allSelect){
+                everyGroupUnSelImgSize[i] = 0;
+            } else {
+                everyGroupUnSelImgSize[i] = imgCount;//默认所有都没有选中
+                for (TimeLineObj timeLineObj : selTimeLines) {
+                    if (listData.get(i).getTimelineList().contains(timeLineObj)) {
+                        everyGroupUnSelImgSize[i]--;
+                    }
                 }
             }
 
@@ -81,6 +96,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 lineEnd[i] += lineEnd[i - 1];
             }
         }
+        Log.e("timesAdapter : ", String.valueOf(lineEnd[lineEnd.length - 1]));
     }
 
     @Override
@@ -101,9 +117,9 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         if (viewType == TYPE_TITLE) {
             SelectServerTimesAdapter.TitleViewHolder holder = ((SelectServerTimesAdapter.TitleViewHolder) viewHolder);
             holder.tvTitle.setText(item.getDate());
-            holder.cbAllSel.setTag(R.string.tag_index, position);
+            holder.cbTitleAllSel.setTag(R.string.tag_index, position);
 
-            holder.cbAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
+            holder.cbTitleAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
         } else if (viewType == TYPE_TIMES) {
             SelectServerTimesAdapter.TimesViewHolder holder = ((SelectServerTimesAdapter.TimesViewHolder) viewHolder);
             List<TimeLineObj> imgs = getLineImgObj(position);
@@ -195,13 +211,13 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
     class TitleViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_title)
         TextView tvTitle;
-        @Bind(R.id.cb_all_sel)
-        CheckBox cbAllSel;
+        @Bind(R.id.cb_title_all_sel)
+        CheckBox cbTitleAllSel;
 
         TitleViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            cbAllSel.setOnClickListener(onCheckedAllListener);
+            cbTitleAllSel.setOnClickListener(onCheckedAllListener);
         }
     }
 
@@ -247,7 +263,8 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                     doUnSelImg(dataIndex, item);
                 }
             }
-            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
+//            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
+            EventBus.getDefault().post(new TimeSelectCountEvent(selTimeLines.size()));
             notifyDataSetChanged();
         }
     };
@@ -268,7 +285,8 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
             } else {
                 doUnSelImg(dataIndex, img);
             }
-            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
+//            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
+            EventBus.getDefault().post(new TimeSelectCountEvent(selTimeLines.size()));
         }
     };
 
@@ -284,17 +302,28 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         if (!selTimeLines.contains(img)) {
             //选中上传
 //            UploadAllPicService.addUrgent(App.getInstance(), img);
-            for(MediaObj mediaObj : img.getMediaList()){
-                mediaObj.setSelected(1);
-            }
             selTimeLines.add(img);
             everyGroupUnSelImgSize[dataIndex] -= 1;
             if (everyGroupUnSelImgSize[dataIndex] == 0) {
                 //全选
-
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
             }
         }
+
+        //处理照片选中状态
+        if(!selMedias.containsAll(img.getMediaList())){
+            selMedias.addAll(img.getMediaList());
+        }
+    }
+
+    public void doAllSelImg(){
+        setupData(true);
+        notifyDataSetChanged();
+    }
+
+    public void doAllUnSelImg(){
+        setupData(false);
+        notifyDataSetChanged();
     }
 
     private void doUnSelImg(int dataIndex, TimeLineObj img) {
@@ -311,6 +340,11 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
             }
         }
+
+        //处理照片选中状态
+        if(selMedias.containsAll(img.getMediaList())){
+            selMedias.removeAll(img.getMediaList());
+        }
     }
 
     public List<TimeLineObj> getSelImgs() {
@@ -319,6 +353,6 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
 
     public void setSelImgs(ArrayList<TimeLineObj> imgs) {
         this.selTimeLines = imgs;
-        setupData();
+        setupData(false);
     }
 }

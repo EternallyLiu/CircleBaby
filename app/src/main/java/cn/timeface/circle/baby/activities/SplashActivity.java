@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -40,6 +42,7 @@ import cn.timeface.circle.baby.support.managers.receivers.DownloadCompleteReceiv
 import cn.timeface.circle.baby.support.api.models.PushItem;
 import cn.timeface.circle.baby.support.api.models.responses.PushResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
+import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.NotificationUtil;
 import cn.timeface.circle.baby.support.utils.Once;
@@ -105,7 +108,13 @@ public class SplashActivity extends BaseAppCompatActivity {
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
         firstRun();
 //        showGuide();
-        startService(new Intent(this, LoadMediaService.class));
+
+        new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {
+                        startService(new Intent(this, LoadMediaService.class));
+                    }
+                });
         requestCheckUpdate();
 
     }
