@@ -291,6 +291,7 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                                     dataList,
                                     obj.getBookId(),
                                     String.valueOf(obj.getBookType()),
+                                    obj.getOpenBookType(),
                                     CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
                                     obj.getPrintCode(),
                                     obj.getBookCover(),
