@@ -202,6 +202,7 @@ public class BookPrintHelper {
                                         dataList,
                                         bookId,
                                         String.valueOf(bookType),
+                                        openBookType,
                                         reqCode,
                                         printCode,
                                         bookCover,

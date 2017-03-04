@@ -96,10 +96,15 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
             case PROPERTY_STATE_EDIT:
                 holder.llPriceNo.setVisibility(View.GONE);
                 holder.tvDelete.setVisibility(View.VISIBLE);
-                Drawable drawable = mContext.getResources().getDrawable(R.drawable.selector_btn_pull_down);
-                drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-                holder.mTvColor.setCompoundDrawables(null, null, drawable, null);
-                holder.mTvColor.setClickable(true);
+                if (cartItem.getBookType() == BookModel.BOOK_TYPE_CALENDAR) {
+                    holder.mTvColor.setCompoundDrawables(null, null, null, null);
+                    holder.mTvColor.setClickable(false);
+                } else {
+                    Drawable drawable = mContext.getResources().getDrawable(R.drawable.selector_btn_pull_down);
+                    drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+                    holder.mTvColor.setCompoundDrawables(null, null, drawable, null);
+                    holder.mTvColor.setClickable(true);
+                }
                 holder.llPaperPackLayout.setVisibility(View.GONE);
                 holder.llPlusMinusLayout.setVisibility(View.VISIBLE);
                 break;

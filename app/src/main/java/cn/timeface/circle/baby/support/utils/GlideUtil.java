@@ -47,6 +47,8 @@ public class GlideUtil {
                     .using(new TFStringUrlLoader(imageView.getContext()))
                     .load(url)
                     .asBitmap()
+                    .error(R.drawable.bg_default_holder_img)
+                    .placeholder(R.drawable.bg_default_holder_img)
                     .into(imageView);
         } else
             Glide.with(imageView.getContext())

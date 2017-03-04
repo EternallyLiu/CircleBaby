@@ -8,17 +8,11 @@
         android:id="@+id/toolbar_layout"
         layout="@layout/layout_toolbar" />
 
-    <com.bigkoo.convenientbanner.ConvenientBanner
-        android:id="@+id/view_banner"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@id/toolbar_layout" />
-
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/view_banner" />
+        android:layout_below="@id/toolbar_layout" />
 
     <TextView
         android:id="@+id/tv_create"

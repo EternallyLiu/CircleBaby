@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.support.api.models.objs;
 
+import android.media.ExifInterface;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -163,6 +164,8 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public int getH() {
+        if (imageOrientation == ExifInterface.ORIENTATION_ROTATE_90||imageOrientation == ExifInterface.ORIENTATION_ROTATE_270)
+            return w;
         return h;
     }
 
@@ -171,6 +174,8 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public int getW() {
+        if (imageOrientation == ExifInterface.ORIENTATION_ROTATE_90||imageOrientation == ExifInterface.ORIENTATION_ROTATE_270)
+            return h;
         return w;
     }
 
@@ -239,7 +244,7 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public ImgObj getImgObj() {
-        ImgObj imgObj = new ImgObj(getLocalPath(),getImgUrl());
+        ImgObj imgObj = new ImgObj(getLocalPath(), getImgUrl());
         imgObj.setDateMills(getPhotographTime());
         imgObj.setId(getLocalIdentifier());
         imgObj.setContent(getContent());
