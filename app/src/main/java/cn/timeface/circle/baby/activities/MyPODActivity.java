@@ -35,6 +35,7 @@ public class MyPODActivity extends PODActivity {
     private String bookId;
     private int babyId;
     private int localBookType;
+    boolean hasCreate = false;
 
     public static void open(Context context, String bookId , String openBookId,int localBookType, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values, int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
@@ -65,7 +66,9 @@ public class MyPODActivity extends PODActivity {
     @Override
     public void createBookInfo(TFOBookModel bookModel) {
         Log.d(TAG,"createBookInfo:");
+        if(hasCreate) return;
         if(edit){
+            hasCreate = true;
             createBook(
                     bookModel.getBookAuthor(),
                     bookModel.getBookCover(),
@@ -83,7 +86,7 @@ public class MyPODActivity extends PODActivity {
 
     @Override
     protected void editBook(TFOBookModel bookModel) {
-        addSubscription(
+//        addSubscription(
                 ApiFactory.getApi().getApiService().saveProduction(
                         babyId,
                         bookModel.getBookAuthor(),
@@ -125,13 +128,13 @@ public class MyPODActivity extends PODActivity {
                                     Log.e(TAG, "editBookCover:");
                                     throwable.printStackTrace();
                                 }
-                        ));
+                        );
 
 //        editBookInfo(bookId, babyId, bookModel.getBookCover(), bookModel.getBookAuthor(), bookModel.getBookTitle(), bookModel.getBookSummary(), bookModel.getBookTotalPage());
     }
 
     private void createBook(String author, String bookCover, String bookId, String bookName, int bookType, String des, String extra, String openBookId, int openBookType, int pageNum){
-        addSubscription(
+//        addSubscription(
                 ApiFactory.getApi().getApiService().saveProduction(
                         FastData.getBabyId(),
                         author,
@@ -157,7 +160,7 @@ public class MyPODActivity extends PODActivity {
                                 throwable -> {
                                     Log.e(TAG, throwable.getLocalizedMessage());
                                 }
-                        ));
+                        );
     }
 
     //编辑pod book info
