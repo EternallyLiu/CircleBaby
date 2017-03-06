@@ -122,17 +122,19 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
         apiService.queryBabyFamilyLoginInfoList().compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(familyListResponse -> {
                     if (familyListResponse.success()) {
-                        ForegroundColorSpan colorSpan= SpannableUtils.getTextColor(this,R.color.sea_buckthorn);
-                        ForegroundColorSpan babyColorSpan = SpannableUtils.getTextColor(this,R.color.sea_buckthorn);
+                        ForegroundColorSpan colorSpan = SpannableUtils.getTextColor(this, R.color.sea_buckthorn);
+                        ForegroundColorSpan babyColorSpan = SpannableUtils.getTextColor(this, R.color.sea_buckthorn);
                         StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
                         SpannableStringBuilder builder = new SpannableStringBuilder();
                         builder.append(String.format("欢迎 %s 加入！", relativeName)).append("\n");
                         builder.append("你将和");
                         int beginIndex = builder.length();
                         for (int i = 0; i < familyListResponse.getDataList().size(); i++) {
-                            builder.append(familyListResponse.getDataList().get(i).getUserInfo().getRelationName());
-                            if (i < familyListResponse.getDataList().size() - 1)
+                            if (i != 0 && i < familyListResponse.getDataList().size() - 1)
                                 builder.append("、");
+                            if (!FastData.getUserId().equals(familyListResponse.getDataList().get(i).getUserInfo().getUserId())) {
+                                builder.append(familyListResponse.getDataList().get(i).getUserInfo().getRelationName());
+                            }
                         }
                         int endIndex = builder.length();
                         builder.append("一起来记录").append("\n");
@@ -147,7 +149,7 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
                         hideProgress();
                         submit();
                     }
-                },error->{
+                }, error -> {
                     hideProgress();
                 });
     }

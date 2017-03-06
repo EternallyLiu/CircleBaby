@@ -113,6 +113,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     private boolean isEditor;
     private boolean commentable = false;
+    private GridLayoutManager layoutmanager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -168,6 +169,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                 reqData();
             }
         });
+        backUp.setOnClickListener(this);
         reqData();
         return contentView;
     }
@@ -240,17 +242,29 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         if (adapter == null) {
             adapter = new TimeLineDetailAdapter(getActivity());
             int columCount = 4;
-            GridLayoutManager manager = new GridLayoutManager(getActivity(), columCount);
+            layoutmanager = new GridLayoutManager(getActivity(), columCount);
 //        if (currentTimeLineObj.getMediaList() != null && currentTimeLineObj.getMediaList().size() > 0) {
             lookup = new GridStaggerLookup(currentTimeLineObj.getMediaList().size(), adapter.getItemCount(), columCount);
 //        }
             adapter.setItemClickLister(this);
             adapter.setLoadDataFinish(this);
             adapter.setLookup(lookup);
-            manager.setSpanSizeLookup(lookup);
-            contentRecyclerView.setLayoutManager(manager);
+            layoutmanager.setSpanSizeLookup(lookup);
+            contentRecyclerView.setLayoutManager(layoutmanager);
             contentRecyclerView.setAdapter(adapter);
         }
+        contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int firstVisibleItemPosition = layoutmanager.findFirstVisibleItemPosition();
+                if (lookup.isShowSmail()) {
+                    if (firstVisibleItemPosition / lookup.getColumCount() > 1) {
+                        backUp.setVisibility(View.GONE);
+                    } else backUp.setVisibility(View.VISIBLE);
+                } else
+                    backUp.setVisibility(firstVisibleItemPosition > 0 ? View.VISIBLE : View.GONE);
+            }
+        });
         ArrayList<Object> contentList = new ArrayList<>();
         contentList.addAll(currentTimeLineObj.getMediaList());
         if (!TextUtils.isEmpty(currentTimeLineObj.getContent()))
@@ -406,6 +420,10 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.back_up:
+                if (contentRecyclerView != null && adapter.getRealItemSize() > 0)
+                    contentRecyclerView.scrollToPosition(0);
+                break;
             case R.id.rl_cancel:
                 dialog.dismiss();
                 break;

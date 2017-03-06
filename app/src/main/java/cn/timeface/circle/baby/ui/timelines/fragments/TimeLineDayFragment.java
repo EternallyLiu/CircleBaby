@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -53,7 +54,11 @@ import cn.timeface.circle.baby.ui.timelines.views.MySuperRefreshLayout;
 
 public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.LoadDataFinish, IPTRRecyclerListener, EmptyDataView.EmptyCallBack {
 
-    @Bind(R.id.toolbar)
+
+    @Bind(R.id.back_up)
+    ImageView backUp;
+
+    @Bind(R.id.ll_menu)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
@@ -121,6 +126,10 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
         helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout);
         helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
         helper.tfPtrListener(this);
+        backUp.setOnClickListener(v -> {
+            if (contentRecyclerView != null && adapter.getRealItemSize() > 0)
+                contentRecyclerView.scrollToPosition(0);
+        });
         return view;
     }
 
@@ -201,12 +210,12 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
 
     @Override
     public void onScrollUp(int firstVisibleItem) {
-
+        backUp.setVisibility(firstVisibleItem > 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void onScrollDown(int firstVisibleItem) {
-
+        backUp.setVisibility(firstVisibleItem > 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -242,6 +251,7 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
             adapter.deleteTimeLine(event.getTimeId());
         }
     }
+
     @Subscribe
     public void onEvent(TimeLineObj timeLineObj) {
         adapter.updateItem(timeLineObj);

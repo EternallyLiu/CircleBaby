@@ -143,6 +143,14 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         return viewType >= FOOTER_VIEW_TYPE && viewType < (FOOTER_VIEW_TYPE + mFooters.size());
     }
 
+    public void removeHeaaer(int headerPosition) {
+        if (headerPosition < mHeaders.size() && headerPosition >= 0) {
+            mHeaders.remove(headerPosition);
+            notifyDataSetChanged();
+        }
+
+    }
+
     public void removeHeader(View view) {
         if (mHeaders.contains(view)) {
             mHeaders.remove(view);
@@ -167,7 +175,16 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     }
 
     public void addFooter(@NonNull View view) {
-        mFooters.add(view);
+        if (!mFooters.contains(view))
+            mFooters.add(view);
+    }
+
+    public void clearFooter() {
+        if (mFooters != null && mFooters.size() > 0) {
+            mFooters.clear();
+            notifyDataSetChanged();
+        }
+
     }
 
     public int getHeaderCount() {
@@ -344,7 +361,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                 LogUtil.showLog("width==" + width + "----height==" + height);
                 rowParams.height = height;
                 rowView.setLayoutParams(rowParams);
-                rowView.setPadding(0,paddingImage,0,0);
+                rowView.setPadding(0, paddingImage, 0, 0);
                 for (int j = startIndex; j < count; j++) {
                     View view = getView(position, j, rowView, item.getMediaList().get(j));
                     if (j >= startIndex && j < count - 1) {
@@ -529,6 +546,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
     @Override
     protected void handleMsg(Message msg) {
+        clearFooter();
         switch (msg.what) {
             case DELETE_ALL:
                 if (list != null && list.size() > 0) {

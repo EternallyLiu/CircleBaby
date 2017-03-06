@@ -32,10 +32,12 @@ public class BabyObj extends BaseModel implements Parcelable {
     private static volatile BabyObj currentBabyObj = null;
 
 
-    private String realName;//大名
-    private int showRealName;//是否展示真实姓名
     @PrimaryKey
     int babyId;
+    @Column
+    private String realName;//大名
+    @Column
+    private int showRealName;//是否展示真实姓名
     @Column
     String age;
     @Column(name = "icon")

@@ -430,8 +430,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.close:
-                adapter.removeHeader(picChangeView);
-                adapter.notifyDataSetChanged();
+                adapter.removeHeaaer(0);
                 break;
             case R.id.upload:
                 adapter.removeHeader(picChangeView);
@@ -866,7 +865,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     emptyView.setErrorRetryText("导入手机里的照片");
                     emptyView.setEmptyCallBack(this);
                     emptyView.setVisibility(View.VISIBLE);
-                    adapter.addHeader(emptyView);
+                    adapter.addFooter(emptyView);
                     adapter.notifyDataSetChanged();
                 }, throwable -> LogUtil.showError(throwable));
             }

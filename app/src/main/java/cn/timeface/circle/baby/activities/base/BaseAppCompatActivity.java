@@ -47,7 +47,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
 
-        if(!TextUtils.isEmpty(FastData.getUserId())){
+        if (!TextUtils.isEmpty(FastData.getUserId()) && FastData.getBabyObj() != null) {
             //初始化开放平台
             TFOUserObj tfoUserObj = new TFOUserObj();
             tfoUserObj.setAvatar(FastData.getAvatar());
@@ -62,15 +62,13 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         Countly.sharedInstance().onStart(this);
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         Countly.sharedInstance().onStop();
         super.onStop();
     }

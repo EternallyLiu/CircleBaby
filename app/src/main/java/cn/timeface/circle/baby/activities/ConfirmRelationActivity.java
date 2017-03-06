@@ -179,9 +179,11 @@ public class ConfirmRelationActivity extends BaseAppCompatActivity implements Vi
                         builder.append("你将和");
                         int beginIndex = builder.length();
                         for (int i = 0; i < familyListResponse.getDataList().size(); i++) {
-                            builder.append(familyListResponse.getDataList().get(i).getUserInfo().getRelationName());
-                            if (i < familyListResponse.getDataList().size() - 1)
+                            if (i != 0 && i < familyListResponse.getDataList().size() - 1)
                                 builder.append("、");
+                            if (!FastData.getUserId().equals(familyListResponse.getDataList().get(i).getUserInfo().getUserId())) {
+                                builder.append(familyListResponse.getDataList().get(i).getUserInfo().getRelationName());
+                            }
                         }
                         int endIndex = builder.length();
                         builder.append("一起来记录").append("\n");
