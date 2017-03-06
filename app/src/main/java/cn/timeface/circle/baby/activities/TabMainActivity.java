@@ -39,6 +39,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstant;
@@ -152,6 +153,12 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         int type = getIntent().getIntExtra("type", 0);
         if (type == 1)
             onEvent(new BabyAttentionEvent(-1));
+        new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {
+                        startService(new Intent(this, LoadMediaService.class));
+                    }
+                });
     }
 
     @Override

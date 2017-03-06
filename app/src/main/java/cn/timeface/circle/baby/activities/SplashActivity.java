@@ -109,12 +109,6 @@ public class SplashActivity extends BaseAppCompatActivity {
         firstRun();
 //        showGuide();
 
-        new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE)
-                .subscribe(aBoolean -> {
-                    if (aBoolean) {
-                        startService(new Intent(this, LoadMediaService.class));
-                    }
-                });
         requestCheckUpdate();
 
     }
