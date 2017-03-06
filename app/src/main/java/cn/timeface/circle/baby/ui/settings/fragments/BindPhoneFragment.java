@@ -112,7 +112,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
             btnSubmit.setText(R.string.next);
         }
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
-        codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
+//        codeTipRed.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.VISIBLE : View.GONE);
 
         tvGetCode.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);

@@ -42,6 +42,7 @@ import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 import cn.timeface.circle.baby.views.TFStateView;
 
 public class MessageFragment extends BaseFragment implements View.OnClickListener, IEventBus, IPTRRecyclerListener {
@@ -164,7 +165,8 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         if (msg.getTimeInfo().getTimeId() == 0) {
                             ToastUtil.showToast("时光已删除");
                         } else {
-                            TimeLineDetailActivity.open(getActivity(), msg.getTimeInfo());
+//                            TimeLineDetailActivity.open(getActivity(), msg.getTimeInfo());
+                            TimeFaceDetailFragment.open(getActivity(), msg.getTimeInfo());
                         }
                         break;
                     case 4://新成员加入，跳转亲友圈

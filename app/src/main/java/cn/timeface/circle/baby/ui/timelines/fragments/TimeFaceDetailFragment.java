@@ -290,15 +290,14 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
             currentMenu.findItem(R.id.action_smail_image).setVisible(true);
         else if (currentMenu != null)
             currentMenu.findItem(R.id.action_smail_image).setVisible(false);
+        currentMenu.findItem(R.id.action_more).setVisible(isEditor);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (isEditor) {
-            inflater.inflate(R.menu.menu_timeline_detail, menu);
-            currentMenu = menu;
-            doMenu();
-        }
+        inflater.inflate(R.menu.menu_timeline_detail, menu);
+        currentMenu = menu;
+        doMenu();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
