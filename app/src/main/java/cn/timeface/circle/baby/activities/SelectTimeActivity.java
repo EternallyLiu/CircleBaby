@@ -123,9 +123,9 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                             ToastUtil.showToast("选择的时间不能超过当前时间");
                             return;
                         }
-                        if (DateUtil.getTime(time, "yyyy.MM.dd") < FastData.getBabyBithday()) {
-                            ToastUtil.showToast("您选择的时间在宝宝生日之前，时光列表中将看不到哦~");
-                        }
+//                        if (DateUtil.getTime(time, "yyyy.MM.dd") < FastData.getBabyBithday()) {
+//                            ToastUtil.showToast(getString(R.string.publish_select_date_min));
+//                        }
 
                         Intent intent = new Intent();
                         intent.putExtra("time", time);
