@@ -20,6 +20,7 @@ import java.util.List;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.api.models.base.BaseImgObj;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ImageUtil;
 import cn.timeface.circle.baby.support.utils.MD5;
@@ -300,6 +301,7 @@ public class ImgObj extends BaseImgObj {
         mediaObj.setLocalIdentifier(getId());
         mediaObj.setLocalPath(getLocalPath());
         mediaObj.setLocation(new LocationObj(getLat(), getLng()));
+        mediaObj.setImageOrientation(PhotoModel.getPhotoModel(getId(), getLocalPath(), getUrl()).getOrientation());
         return mediaObj;
     }
 

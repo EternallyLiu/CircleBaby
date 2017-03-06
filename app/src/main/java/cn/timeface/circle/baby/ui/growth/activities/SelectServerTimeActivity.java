@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +28,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
-import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.SelectContentTypeDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
@@ -47,7 +44,6 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.fragments.SelectUserFragment;
-import cn.timeface.circle.baby.ui.growth.fragments.ServerPhotoFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
@@ -175,22 +171,22 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.save){
-            List<TimeLineObj> selectedMedias = new ArrayList<>();
+            List<TimeLineObj> selectedTimeLines = new ArrayList<>();
             if(timeFragment != null){
-                selectedMedias.addAll(timeFragment.getSelectedMedias());
+                selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
             }
 
             Iterator iteratorFragment = userFragmentMap.entrySet().iterator();
             while (iteratorFragment.hasNext()){
                 Map.Entry entry = (Map.Entry) iteratorFragment.next();
                 ServerTimeFragment timeFragment = (ServerTimeFragment) entry.getValue();
-                selectedMedias.addAll(timeFragment.getSelectedMedias());
+                selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
             }
 
 
-            int pageNum = selectedMedias.size();
+            int pageNum = selectedTimeLines.size();
             if(pageNum == 0){
-                ToastUtil.showToast("请选择至少一张照片");
+                ToastUtil.showToast("请选择至少一条时光");
                 return true;
             }
 
@@ -209,7 +205,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
                                             //按月份分组时光
                                             HashMap<String, List<TimeLineObj>> timelineMap = new HashMap<>();
-                                            for (TimeLineObj timeLineObj : selectedMedias) {
+                                            for (TimeLineObj timeLineObj : selectedTimeLines) {
                                                 String key = DateUtil.formatDate("yyyy-MM", timeLineObj.getDate());
                                                 if (timelineMap.containsKey(key)) {
                                                     timelineMap.get(key).add(timeLineObj);
@@ -232,8 +228,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                                 List<TimeLineObj> timeLineObjs = (List<TimeLineObj>) entry.getValue();
 
                                                 //content list，代表一个时光
-                                                List<TFOContentObj> tfoContentObjs = new ArrayList<>(selectedMedias.size());
-                                                for (TimeLineObj timeLineObj : selectedMedias) {
+                                                List<TFOContentObj> tfoContentObjs = new ArrayList<>(selectedTimeLines.size());
+                                                for (TimeLineObj timeLineObj : selectedTimeLines) {
                                                     tfoContentObjs.add(timeLineObj.toTFOContentObj());
                                                 }
 
@@ -275,7 +271,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                             //拼接所有图片的id，作为保存书籍接口使用
                                             StringBuffer sb = new StringBuffer("{\"mediaIds\":[");
                                             StringBuffer sbTime = new StringBuffer("\"timeIds\":[");
-                                            for (TimeLineObj timeLineObj : selectedMedias) {
+                                            for (TimeLineObj timeLineObj : selectedTimeLines) {
                                                 if (timeLineObj != null) {
                                                     sbTime.append(timeLineObj.getTimeId());
                                                     sbTime.append(",");
@@ -288,8 +284,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                                     }
                                                 }
                                             }
-                                            sb.replace(sb.lastIndexOf(","), sb.length(), "]");
-                                            sbTime.replace(sbTime.lastIndexOf(","), sbTime.length(), "]");
+                                            if(sb.lastIndexOf(",") > -1)sb.replace(sb.lastIndexOf(","), sb.length(), "]");
+                                            if(sbTime.lastIndexOf(",") > -1)sbTime.replace(sbTime.lastIndexOf(","), sbTime.length(), "]");
                                             sb.append(",").append(sbTime).append("}");
 
                                             finish();
