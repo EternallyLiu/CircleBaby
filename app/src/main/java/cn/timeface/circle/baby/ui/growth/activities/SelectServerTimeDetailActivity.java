@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.growth.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -26,7 +28,8 @@ import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.ui.growth.adapters.SelectServerTimeMediaAdapter;
 import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
-import cn.timeface.circle.baby.ui.growth.events.ServerTimePhotoAllSelectEvent;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaListEvent;
+import cn.timeface.circle.baby.ui.growth.events.SelectTimeLineEvent;
 
 /**
  * 选择时光详情页面
@@ -53,13 +56,14 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
     LinearLayout contentSelectServerTimeDetail;
 
 
-    SelectServerTimeMediaAdapter serverPhotosAdapter;
+    SelectServerTimeMediaAdapter serverTimesAdapter;
     TimeLineObj timeLineObj;
-    boolean allSelect = true;
+    List<MediaObj> selMedias;
 
-    public static void open(Context context, TimeLineObj timeLineObj) {
+    public static void open(Context context, TimeLineObj timeLineObj, List<MediaObj> selMedias) {
         Intent intent = new Intent(context, SelectServerTimeDetailActivity.class);
         intent.putExtra("time_line_obj", timeLineObj);
+        intent.putParcelableArrayListExtra("medias", (ArrayList<? extends Parcelable>) selMedias);
         context.startActivity(intent);
     }
 
@@ -71,30 +75,25 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
         setSupportActionBar(toolbar);
 
         timeLineObj = getIntent().getParcelableExtra("time_line_obj");
+        selMedias = getIntent().getParcelableArrayListExtra("medias");
         tvDate.setText(DateUtil.formatDate("MM月dd日", timeLineObj.getDate()) + DateUtils.formatDateTime(this, timeLineObj.getDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
         tvTitle.setText(timeLineObj.getContent());
         tvCancel.setOnClickListener(this);
         tvSelectAll.setOnClickListener(this);
         tvFinish.setOnClickListener(this);
 
-        for(MediaObj mediaObj : timeLineObj.getMediaList()){
-            if(!mediaObj.select()){
-                allSelect = false;
-                break;
-            }
-        }
-        tvSelectAll.setText(allSelect ? "取消全选" : "全选");
+        tvSelectAll.setText(isAllSelect() ? "取消全选" : "全选");
         setData(timeLineObj.getMediaList());
     }
 
     private void setData(List<MediaObj> mediaObjs) {
-        if (serverPhotosAdapter == null) {
-            serverPhotosAdapter = new SelectServerTimeMediaAdapter(this, mediaObjs);
+        if (serverTimesAdapter == null) {
+            serverTimesAdapter = new SelectServerTimeMediaAdapter(this, mediaObjs, selMedias);
             rvContent.setLayoutManager(new GridLayoutManager(this, 3));
-            rvContent.setAdapter(serverPhotosAdapter);
+            rvContent.setAdapter(serverTimesAdapter);
         } else {
-            serverPhotosAdapter.setListData(mediaObjs);
-            serverPhotosAdapter.notifyDataSetChanged();
+            serverTimesAdapter.setListData(mediaObjs);
+            serverTimesAdapter.notifyDataSetChanged();
         }
     }
 
@@ -106,11 +105,21 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
                 break;
 
             case R.id.tv_select_all:
-                tvSelectAll.setText(tvSelectAll.getText().toString().equals("全选") ? "取消全选" : "全选");
-                for(MediaObj mediaObj : timeLineObj.getMediaList()){
-                    mediaObj.setSelected(mediaObj.select() ? 0 : 1);
+                if(tvSelectAll.getText().toString().equals("全选")){
+                    if(!selMedias.containsAll(timeLineObj.getMediaList())){
+                        selMedias.addAll(timeLineObj.getMediaList());
+                    }
+                    EventBus.getDefault().post(new SelectMediaListEvent(true, timeLineObj.getMediaList()));
+                    tvSelectAll.setText("取消全选");
+                } else {
+                    if(selMedias.containsAll(timeLineObj.getMediaList())){
+                        selMedias.removeAll(timeLineObj.getMediaList());
+                    }
+                    tvSelectAll.setText("全选");
+                    EventBus.getDefault().post(new SelectMediaListEvent(false, timeLineObj.getMediaList()));
                 }
-                serverPhotosAdapter.notifyDataSetChanged();
+                EventBus.getDefault().post(new SelectTimeLineEvent(isTimeSelect(), timeLineObj));
+                serverTimesAdapter.notifyDataSetChanged();
                 break;
 
             case R.id.tv_finish:
@@ -122,20 +131,13 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
     public void clickPhotoView(View view){}
 
     private boolean isAllSelect(){
-        boolean isAllSelect = true;
-        for(MediaObj mediaObj : timeLineObj.getMediaList()){
-            if(!mediaObj.select()){
-                isAllSelect = false;
-                break;
-            }
-        }
-        return isAllSelect;
+        return selMedias.containsAll(timeLineObj.getMediaList());
     }
 
     private boolean isTimeSelect(){
         boolean isTimeSelect = false;
         for(MediaObj mediaObj : timeLineObj.getMediaList()){
-            if(mediaObj.select()){
+            if(selMedias.contains(mediaObj)){
                 isTimeSelect = true;
                 break;
             }
@@ -145,17 +147,23 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
 
     @Subscribe
     public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
-        if(!selectMediaEvent.getSelect()){
-            allSelect = false;
-            tvSelectAll.setText("全选");
-            EventBus.getDefault().post(new ServerTimePhotoAllSelectEvent(timeLineObj, allSelect));
-        } else {
-            allSelect = isAllSelect();
-            if(allSelect){
-                tvSelectAll.setText("取消全选");
-                EventBus.getDefault().post(new ServerTimePhotoAllSelectEvent(timeLineObj, allSelect));
+        //选中
+        if(selectMediaEvent.getSelect()){
+            if(!selMedias.contains(selectMediaEvent.getMediaObj())){
+                selMedias.add(selectMediaEvent.getMediaObj());
             }
-            EventBus.getDefault().post(new ServerTimePhotoAllSelectEvent(timeLineObj, allSelect, true));
+        } else {
+            if(selMedias.contains(selectMediaEvent.getMediaObj())){
+                selMedias.remove(selectMediaEvent.getMediaObj());
+            }
         }
+
+        if(isAllSelect()){
+            tvSelectAll.setText("取消全选");
+        } else {
+            tvSelectAll.setText("全选");
+        }
+
+        EventBus.getDefault().post(new SelectTimeLineEvent(isTimeSelect(), timeLineObj));
     }
 }

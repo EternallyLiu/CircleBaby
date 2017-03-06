@@ -3,7 +3,6 @@ package cn.timeface.circle.baby.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -27,10 +26,10 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter3;
 import cn.timeface.circle.baby.events.BookOptionEvent;
-import cn.timeface.circle.baby.support.api.ApiFactory;
-import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionCustomDataObj;
+import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionRemarkObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -39,7 +38,6 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.circle.baby.views.TFStateView;
-import cn.timeface.open.TFOpen;
 import cn.timeface.open.api.bean.base.TFOBaseResponse;
 import cn.timeface.open.api.bean.obj.TFOBookType;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
@@ -67,12 +65,13 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
     private int cloudAlbum;
     private String bookId = "";
     private String openBookId = "";
+//    private int openBookType;
 
-    public static void open(Context context, String bookId, String openBookId, List<ImageInfoListObj> dataList) {
+    public static void open(Context context, String bookId, String openBookId ) {
         Intent intent = new Intent(context, SelectThemeActivity.class);
         intent.putExtra("book_id", bookId);
         intent.putExtra("open_book_id", openBookId);
-        intent.putParcelableArrayListExtra("data_list", (ArrayList<? extends Parcelable>) dataList);
+//        intent.putExtra("open_book_type", openBookType);
         context.startActivity(intent);
     }
 
@@ -89,6 +88,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
         dataList = intent.getParcelableArrayListExtra("data_list");
         this.bookId = getIntent().getStringExtra("book_id");
         this.openBookId = getIntent().getStringExtra("open_book_id");
+//        this.openBookType = getIntent().getIntExtra("open_book_type", 0);
         cloudAlbum = intent.getIntExtra("cloudAlbum", 0);
         tfStateView.setOnRetryListener(() -> reqData());
         reqData();
@@ -174,30 +174,57 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
     }
 
     private void creatBook(String bookId, String openBookId) {
-        ArrayList<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
-        for (ImageInfoListObj obj : dataList) {
-            for (MediaObj media : obj.getMediaList()) {
-                    TFOResourceObj tfoResourceObj = media.toTFOResourceObj();
-                    tfoResourceObjs.add(tfoResourceObj);
-            }
-        }
-        TFOContentObj tfoContentObj = new TFOContentObj("", tfoResourceObjs);
-        List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
-        tfoContentObjs1.add(tfoContentObj);
-        TFOPublishObj tfoPublishObj = new TFOPublishObj("", tfoContentObjs1);
-        List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
-        tfoPublishObjs.add(tfoPublishObj);
+        addSubscription(
+                apiService.bookMedias(bookId)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(
+                                response -> {
+                                    if(response.success()){
+                                        //跳转开放平台POD接口；
+                                        String bookName = FastData.getBabyName() + "的精装照片书";
+                                        List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+                                        StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                        int index = 0;
+                                        for(MediaObj mediaObj : response.getDataList()){
+                                            index++;
+                                            TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
+                                            tfoResourceObjs.add(tfoResourceObj);
+                                            sb.append(mediaObj.getId());
+                                            if (index < response.getDataList().size()) {
+                                                sb.append(",");
+                                            } else {
+                                                sb.append("]}");
+                                            }
+                                        }
 
 
-        ArrayList<String> keys = new ArrayList<>();
-        ArrayList<String> values = new ArrayList<>();
-        keys.add("book_author");
-        keys.add("book_title");
-        values.add(FastData.getUserName());
-        values.add(FastData.getBabyName()+"的照片书");
+                                        List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+                                        TFOContentObj tfoContentObj;
+                                        tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+                                        tfoContentObjs1.add(tfoContentObj);
 
-        MyPODActivity.open(this, bookId, openBookId, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, tfoPublishObjs, new Gson().toJson(dataList),true, FastData.getBabyId(),keys,values,1);
-        finish();
+                                        ArrayList<String> keys = new ArrayList<>();
+                                        ArrayList<String> values = new ArrayList<>();
+                                        keys.add("book_author");
+                                        keys.add("book_title");
+
+                                        values.add(FastData.getUserName());
+                                        values.add(bookName);
+
+
+                                        TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
+                                        List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+                                        tfoPublishObjs.add(tfoPublishObj);
+
+                                        MyPODActivity.open(this, bookId, openBookId, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, tfoPublishObjs, sb.toString(),true,FastData.getBabyId(),keys,values,1);
+                                        finish();
+                                    }
+                                },
+                                throwable -> {
+                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                }
+                        )
+        );
     }
 
     @Subscribe

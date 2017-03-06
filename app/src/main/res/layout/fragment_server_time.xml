@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_main">
@@ -35,6 +36,38 @@
             android:text="天啦噜！内容是空的，你看不到我了！"
             android:textColor="@color/text_color_hint" />
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_photo_tip"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/tran_80_black"
+        android:paddingLeft="@dimen/view_space_medium"
+        android:paddingRight="@dimen/view_space_medium">
+
+        <CheckBox
+            android:id="@+id/cb_all_sel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:button="@drawable/selector_item_photo_select"
+            android:paddingLeft="@dimen/view_space_normal"
+            android:paddingRight="@dimen/view_space_normal"
+            android:text="全选"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/tv_sel_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            tools:text="已选6条记录" />
+
+    </RelativeLayout>
 
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"

@@ -34,6 +34,7 @@ public class MyPODActivity extends PODActivity {
     private String bookId;
     private int babyId;
     private int localBookType;
+    boolean hasCreate;
 
     public static void open(Context context, String bookId , String openBookId,int localBookType, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values, int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
@@ -59,22 +60,26 @@ public class MyPODActivity extends PODActivity {
         bookId = getIntent().getStringExtra("bookId");
         babyId = getIntent().getIntExtra("babyId", 0);
         this.localBookType = getIntent().getIntExtra("local_book_type", 0);
+        hasCreate = FastData.getBoolean("hasCreate", false);//屏幕旋转会调用两次，so，先存下来该值
     }
 
     @Override
     public void createBookInfo(TFOBookModel bookModel) {
-        Log.d(TAG,"createBookInfo:");
-        if(edit){
+        Log.d(TAG, "createBookInfo:");
+        if (hasCreate) return;
+        if (edit) {
+            hasCreate = true;
+            FastData.putBoolean("hasCreate", hasCreate);
             createBook(
                     bookModel.getBookAuthor(),
                     bookModel.getBookCover(),
                     bookId,
                     bookModel.getBookTitle(),
                     localBookType,
-                    "des",
+                    bookModel.getBookSummary(),
                     dataList,
                     bookModel.getBookId(),
-                    (int)bookModel.getBookType(),
+                    (int) bookModel.getBookType(),
                     bookModel.getBookTotalPage()
             );
         }
@@ -82,7 +87,49 @@ public class MyPODActivity extends PODActivity {
 
     @Override
     protected void editBook(TFOBookModel bookModel) {
-        editBookInfo(bookId, babyId, bookModel.getBookCover(), bookModel.getBookAuthor(), bookModel.getBookTitle(), bookModel.getBookSummary(), bookModel.getBookTotalPage());
+        addSubscription(
+                ApiFactory.getApi().getApiService().saveProduction(
+                        babyId,
+                        bookModel.getBookAuthor(),
+                        bookModel.getBookCover(),
+                        bookId,
+                        bookModel.getBookTitle(),
+                        localBookType,
+                        bookModel.getBookSummary(),
+                        dataList,
+                        bookModel.getBookId(),
+                        (int) bookModel.getBookType(),
+                        bookModel.getBookTotalPage())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .filter(editBookResponse -> {
+                            //编辑成功 更新编辑时间
+                            return editBookResponse.success();
+                        })
+                        .flatMap(new Func1<EditBookResponse, Observable<BaseResponse>>() {
+                            @Override
+                            public Observable<BaseResponse> call(EditBookResponse editBookResponse) {
+                                if (editBookResponse.success()) {
+                                    EventBus.getDefault().post(new BookOptionEvent());
+                                } else {
+                                    ToastUtil.showToast(editBookResponse.getInfo());
+                                }
+                                return ApiFactory.getApi().getApiService().updateBookTime(bookId);
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                response -> {
+                                    if (!response.success()) {
+                                        Log.e(TAG, response.info);
+                                    }
+                                },
+                                throwable -> {
+                                    Log.e(TAG, "editBookCover:");
+                                    throwable.printStackTrace();
+                                }
+                        ));
     }
 
     private void createBook(String author, String bookCover, String bookId, String bookName, int bookType, String des, String extra, String openBookId, int openBookType, int pageNum){
@@ -115,41 +162,9 @@ public class MyPODActivity extends PODActivity {
                         ));
     }
 
-    //编辑pod book info
-    private void editBookInfo(String bookId, int babyId, String bookCover, String author, String bookName, String des, int pageNum) {
-        Log.d("pod中更换封面", "bookCover ======= " + bookCover);
-        addSubscription(
-                ApiFactory.getApi().getApiService().editProduction(bookId, babyId, bookCover, author, bookName, des, pageNum)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .filter(editBookResponse -> {
-                            //编辑成功 更新编辑时间
-                            return editBookResponse.success();
-                        })
-                        .flatMap(new Func1<EditBookResponse, Observable<BaseResponse>>() {
-                            @Override
-                            public Observable<BaseResponse> call(EditBookResponse editBookResponse) {
-                                if (editBookResponse.success()) {
-                                    EventBus.getDefault().post(new BookOptionEvent());
-                                } else {
-                                    ToastUtil.showToast(editBookResponse.getInfo());
-                                }
-                                return ApiFactory.getApi().getApiService().updateBookTime(bookId);
-                            }
-                        })
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                response -> {
-                                    if(!response.success()){
-                                        Log.e(TAG, response.info);
-                                    }
-                                },
-                                throwable -> {
-                                    Log.e(TAG, "editBookCover:");
-                                    throwable.printStackTrace();
-                                }
-                        )
-        );
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FastData.putBoolean("hasCreate", false);
     }
 }

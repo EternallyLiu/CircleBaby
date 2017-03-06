@@ -62,13 +62,15 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart() {
+    public void onStart()
+    {
         super.onStart();
         Countly.sharedInstance().onStart(this);
     }
 
     @Override
-    public void onStop() {
+    public void onStop()
+    {
         Countly.sharedInstance().onStop();
         super.onStop();
     }

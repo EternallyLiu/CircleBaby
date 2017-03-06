@@ -215,6 +215,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
                 null,
                 cartItem.getBookId(),
                 String.valueOf(cartItem.getBookType()),
+                cartItem.getOpenBookType(),
                 CartPrintPropertyDialog.REQUEST_CODE_MINETIME,
                 cartItem.getPrintCode(),
                 cartItem.getCoverImage(),

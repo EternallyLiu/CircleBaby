@@ -49,7 +49,7 @@ public abstract class BasePresenterAppCompatActivity extends RxAppCompatActivity
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
         }
-        if(!TextUtils.isEmpty(FastData.getUserId())){
+        if(!TextUtils.isEmpty(FastData.getUserId()) && FastData.getBabyObj() != null){
             //初始化开放平台
             TFOUserObj tfoUserObj = new TFOUserObj();
             tfoUserObj.setAvatar(FastData.getAvatar());

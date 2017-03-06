@@ -2,9 +2,11 @@ package cn.timeface.circle.baby.support.api.models.responses;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
 
 /**
@@ -37,6 +39,14 @@ public class QueryTimeLineResponse extends BaseResponse {
 
     public List<TimeLineWrapObj> getDataList() {
         return dataList;
+    }
+
+    public List<TimeLineObj> getTimeLineObjs(){
+        List<TimeLineObj> timeLineObjs = new ArrayList<>();
+        for(TimeLineWrapObj timeLineWrapObj : dataList){
+            timeLineObjs.addAll(timeLineWrapObj.getTimelineList());
+        }
+        return timeLineObjs;
     }
 
     public void setDataList(List<TimeLineWrapObj> dataList) {
