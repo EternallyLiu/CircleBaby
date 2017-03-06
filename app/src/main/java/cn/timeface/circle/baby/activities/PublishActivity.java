@@ -517,6 +517,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     layoutParams.height = width;
                     ivVideo.setLayoutParams(layoutParams);
                     time_shot = DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate());
+                    LogUtil.showLog("time=="+videoInfo.getDate());
                     tvTime.setText(time_shot);
                     tvVideotime.setText("时长：" + DateUtil.getTime4(videoInfo.getDuration() * 1000));
                     MediaObj mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());

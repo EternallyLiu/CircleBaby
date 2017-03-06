@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -15,13 +16,16 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import cn.timeface.circle.baby.events.MediaLoadComplete;
 import cn.timeface.circle.baby.support.api.models.VideoInfo;
 import cn.timeface.circle.baby.support.api.models.VideoInfo_Table;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import rx.Observable;
 import rx.functions.Action1;
@@ -55,7 +59,9 @@ public class LoadMediaService extends IntentService {
                 MediaStore.Video.Media.SIZE,//大小
                 MediaStore.Video.Media.DURATION,//长度
                 MediaStore.Video.Media.DATA,//播放地址
-                MediaStore.Video.Media.DATE_ADDED//时间
+                MediaStore.Video.Media.DATE_ADDED,//时间
+                MediaStore.Video.Media.DATE_MODIFIED,
+                MediaStore.Video.Media.DATE_TAKEN
         };
         //获取数据提供者,this是上下文
         ContentResolver cr = this.getContentResolver();
@@ -71,6 +77,10 @@ public class LoadMediaService extends IntentService {
                 long durantion = cursor.getLong(2);//得到视频的时间长度
                 String data = cursor.getString(3);//得到视频的路径，可以转化为uri进行视频播放
                 long date = cursor.getLong(4);
+                long modified_date = cursor.getLong(5);
+                long taken_date = cursor.getLong(6);
+                File file = new File(data);
+                date = file.lastModified();
                 //使用静态方法获取视频的缩略图
                 VideoInfo videoInfo = new VideoInfo();
                 //创建视频信息对象
@@ -84,6 +94,8 @@ public class LoadMediaService extends IntentService {
                     thumbPath = ImageFactory.saveImageCache(thumbnail);
                 videoInfo.setThumbmailLocalUrl(thumbPath);
                 videoInfo.setDate(date);
+                videoInfo.setModifiedDate(modified_date);
+                videoInfo.setTakenDate(taken_date);
                 list.add(videoInfo);
             }
             cursor.close();
@@ -98,6 +110,12 @@ public class LoadMediaService extends IntentService {
             long durantion = cursor.getLong(2);//得到视频的时间长度
             String data = cursor.getString(3);//得到视频的路径，可以转化为uri进行视频播放
             long date = cursor.getLong(4);
+            long modified_date = cursor.getLong(5);
+            long taken_date = cursor.getLong(6);
+
+
+            File file = new File(data);
+            date = file.lastModified();
             //使用静态方法获取视频的缩略图
             VideoInfo videoInfo = new VideoInfo();
             //创建视频信息对象
@@ -112,12 +130,15 @@ public class LoadMediaService extends IntentService {
             videoInfo.setThumbnail(thumbnail);
             videoInfo.setThumbmailLocalUrl(thumbPath);
             videoInfo.setDate(date);
+            videoInfo.setModifiedDate(modified_date);
+            videoInfo.setTakenDate(taken_date);
             list.add(videoInfo);
         }
         cursor.close();
         Observable.defer(() -> Observable.from(list))
                 .map(videoInfo -> {
                     VideoInfo info = SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.path.eq(videoInfo.getPath())).querySingle();
+                    LogUtil.showLog(TAG, "video info json===" + JSONUtils.parse2JSONString(info));
                     if (info != null) {
                         if (!TextUtils.isEmpty(info.getThumbmailLocalUrl()) && !info.getThumbmailLocalUrl().equals(videoInfo.getThumbmailLocalUrl())) {
                             File file = new File(info.getThumbmailLocalUrl());

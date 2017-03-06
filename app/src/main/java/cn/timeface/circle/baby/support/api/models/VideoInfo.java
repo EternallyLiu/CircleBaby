@@ -59,6 +59,10 @@ public class VideoInfo extends BaseModel implements Parcelable {
     @Column
     String videoUrl;    //远程地址
 
+    @Column
+    long modifiedDate;
+    @Column
+    long takenDate;
 
     public VideoInfo() {
     }
@@ -203,6 +207,22 @@ public class VideoInfo extends BaseModel implements Parcelable {
         return Observable.defer(() -> Observable.just(SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.path.eq(path)).querySingle()));
     }
 
+    public long getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(long modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public long getTakenDate() {
+        return takenDate;
+    }
+
+    public void setTakenDate(long takenDate) {
+        this.takenDate = takenDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -285,6 +305,8 @@ public class VideoInfo extends BaseModel implements Parcelable {
         dest.writeLong(this.Date);
         dest.writeInt(this.type);
         dest.writeString(this.videoUrl);
+        dest.writeLong(this.modifiedDate);
+        dest.writeLong(this.takenDate);
     }
 
     protected VideoInfo(Parcel in) {
@@ -300,6 +322,8 @@ public class VideoInfo extends BaseModel implements Parcelable {
         this.Date = in.readLong();
         this.type = in.readInt();
         this.videoUrl = in.readString();
+        this.modifiedDate = in.readLong();
+        this.takenDate = in.readLong();
     }
 
     public static final Creator<VideoInfo> CREATOR = new Creator<VideoInfo>() {
