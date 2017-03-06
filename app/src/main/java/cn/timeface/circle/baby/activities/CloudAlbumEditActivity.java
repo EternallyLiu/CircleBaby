@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IdRes;
@@ -50,6 +52,7 @@ import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.StatusBarUtil;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog2;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
@@ -99,7 +102,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private int type;
     private int indexofHead;
 
-    public static void open(Activity activity, String albumId, int type,String title) {
+    public static void open(Activity activity, String albumId, int type, String title) {
         Intent intent = new Intent(activity, CloudAlbumEditActivity.class);
         intent.putExtra("albumId", albumId);
         intent.putExtra("type", type);
@@ -113,7 +116,9 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_album_edit);
         ButterKnife.bind(this);
-        String titleStr =  getIntent().getStringExtra("title");
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+            StatusBarUtil.setColor(this, Color.BLACK);
+        String titleStr = getIntent().getStringExtra("title");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -151,9 +156,9 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                             dataList.addAll(obj.getMediaList());
                         }
                         mediaObjHeader = null;
-                        for(int i =0;i<dataList.size();i++){
+                        for (int i = 0; i < dataList.size(); i++) {
                             MediaObj mediaObj = dataList.get(i);
-                            if(mediaObj.getIsCover() == 1){
+                            if (mediaObj.getIsCover() == 1) {
                                 mediaObjHeader = mediaObj;
                                 indexofHead = i;
                                 break;
@@ -199,7 +204,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 BottomMenuDialog menuDialog = BottomMenuDialog.getInstance();
                 menuDialog.setOnMenuClick(this);
                 menuDialog.show(getSupportFragmentManager(), "");
-            }else if(type == 1){
+            } else if (type == 1) {
                 BottomMenuDialog2 menuDialog2 = BottomMenuDialog2.getInstance();
                 menuDialog2.setOnMenuClick(this);
                 menuDialog2.show(getSupportFragmentManager(), "");
@@ -254,9 +259,9 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     }
 
     private void completeEdit() {
-        if(mediaObjs.size()>indexofHead){
-            mediaObjs.add(indexofHead,mediaObjHeader);
-        }else{
+        if (mediaObjs.size() > indexofHead) {
+            mediaObjs.add(indexofHead, mediaObjHeader);
+        } else {
             mediaObjs.add(mediaObjHeader);
         }
 
@@ -392,7 +397,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         }
     }
 
-    public void deleteNotify(){
+    public void deleteNotify() {
         new AlertDialog.Builder(this)
                 .setTitle("提示")
                 .setMessage("相册里有图片，不能删除哦~")
@@ -456,7 +461,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                         if (media.getImgUrl().equals(mediaObj.getImgUrl())) {
                             media.setIsCover(1);
                             GlideUtil.displayImage(mediaObj.getImgUrl(), ivHeader);
-                        }else{
+                        } else {
                             media.setIsCover(0);
                         }
                     }
