@@ -104,7 +104,7 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
             case R.id.ll_time_set:
                 setChecked(2);
                 Calendar cal = Calendar.getInstance();
-                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         monthOfYear = monthOfYear + 1;
@@ -119,11 +119,11 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                         time = year + "-" + m + "-" + d;
                         tvTimeSet.setText(time);
 
-                        if(DateUtil.getTime(time,"yyyy.MM.dd") > System.currentTimeMillis()){
+                        if (DateUtil.getTime(time, "yyyy.MM.dd") > System.currentTimeMillis()) {
                             ToastUtil.showToast("选择的时间不能超过当前时间");
                             return;
                         }
-                        if(DateUtil.getTime(time,"yyyy.MM.dd") < FastData.getBabyBithday()){
+                        if (DateUtil.getTime(time, "yyyy.MM.dd") < FastData.getBabyBithday()) {
                             ToastUtil.showToast("您选择的时间在宝宝生日之前，时光列表中将看不到哦~");
                         }
 
@@ -132,7 +132,9 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                         setResult(RESULT_OK, intent);
                         finish();
                     }
-                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                dialog.show();
                 break;
         }
     }
