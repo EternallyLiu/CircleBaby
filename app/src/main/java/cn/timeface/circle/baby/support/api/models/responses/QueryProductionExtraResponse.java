@@ -17,4 +17,12 @@ public class QueryProductionExtraResponse extends BaseResponse {
     public void setExtra(String extra) {
         this.extra = extra;
     }
+
+    public String[] getTimeIds(){
+        if(!extra.contains("timeIds")) throw new NullPointerException();
+        String[] contents = extra.split("timeIds");//被timeIds分为两部分，去后面一部分
+        String content = contents[1];
+        String strTimeIds = content.substring(content.indexOf("[") + 1, content.indexOf("]"));
+        return strTimeIds.split(",");
+    }
 }

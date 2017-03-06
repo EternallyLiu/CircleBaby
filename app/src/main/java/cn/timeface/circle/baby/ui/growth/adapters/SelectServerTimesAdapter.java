@@ -48,18 +48,41 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
     View.OnClickListener clickListener;
 
-    public SelectServerTimesAdapter(Context mContext, List<TimeLineWrapObj> listData, int maxCount, List<MediaObj> mediaObjs) {
-        this(mContext, listData, maxCount, null, mediaObjs);
-    }
-
-    public SelectServerTimesAdapter(Context mContext, List<TimeLineWrapObj> listData, int maxCount, View.OnClickListener clickListener, List<MediaObj> mediaObjs) {
+    public SelectServerTimesAdapter(Context mContext, List<TimeLineWrapObj> listData, int maxCount, View.OnClickListener clickListener, List<MediaObj> mediaObjs, List<TimeLineObj> timeLineObjs) {
         super(mContext, listData);
         this.maxCount = maxCount;
         this.clickListener = clickListener;
         this.selMedias = mediaObjs;
-        setupData(false);
+        this.selTimeLines = timeLineObjs;
+        setupData();
     }
 
+    private void setupData() {
+        int size = listData.size();
+        lineEnd = new int[size];
+        everyGroupUnSelImgSize = new int[size];
+
+        for (int i = 0; i < size; i++) {
+            int imgCount = listData.get(i).getTimelineList().size();
+            everyGroupUnSelImgSize[i] = imgCount;//默认所有都没有选中
+            for (TimeLineObj timeLineObj : selTimeLines) {
+                if (listData.get(i).getTimelineList().contains(timeLineObj)) {
+                    everyGroupUnSelImgSize[i]--;
+                }
+            }
+
+            //每个PhotoGroupItem需要多少行
+            lineEnd[i] = imgCount / COLUMN_NUM + (imgCount % COLUMN_NUM > 0 ? 1 : 0) + 1;
+
+            //每个PhotoGroupItem的最大行号
+            if (i > 0) {
+                lineEnd[i] += lineEnd[i - 1];
+            }
+        }
+        Log.e("timesAdapter : ", String.valueOf(lineEnd[lineEnd.length - 1]));
+    }
+
+    //处理全部选中/全部不选中
     private void setupData(boolean allSelect) {
         int size = listData.size();
         lineEnd = new int[size];
@@ -143,18 +166,21 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 holder.cbSelect.setTag(R.string.tag_ex, dataPosition);
                 holder.cbSelect.setTag(R.string.tag_obj, timeLineObj);
 
-                if(selMedias.isEmpty()){
+//                if(selMedias.isEmpty()){
                     holder.cbSelect.setChecked(selTimeLines.contains(timeLineObj));
-                } else {
-                    boolean isTimeLineSelect = false;
-                    for(MediaObj mediaObj : timeLineObj.getMediaList()){
-                        if(selMedias.contains(mediaObj)){
-                            isTimeLineSelect = true;
-                            break;
-                        }
-                    }
-                    holder.cbSelect.setChecked(isTimeLineSelect);
-                }
+//                } else {
+//
+//                    if(timeLineObj.getMediaList() != null && !timeLineObj.getMediaList().isEmpty()){
+//                        boolean isTimeLineSelect = false;
+//                        for(MediaObj mediaObj : timeLineObj.getMediaList()){
+//                            if(selMedias.contains(mediaObj)){
+//                                isTimeLineSelect = true;
+//                                break;
+//                            }
+//                        }
+//                        holder.cbSelect.setChecked(isTimeLineSelect);
+//                    }
+//                }
                 if(clickListener != null) holder.llRoot.setOnClickListener(clickListener);
                 holder.llRoot.setTag(R.string.tag_obj, timeLineObj);
             }
@@ -317,11 +343,21 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
     }
 
     public void doAllSelImg(){
+        selTimeLines.clear();
+        selMedias.clear();
+        for(TimeLineWrapObj timeLineWrapObj : listData){
+            selTimeLines.addAll(timeLineWrapObj.getTimelineList());
+            for(TimeLineObj timeLineObj : timeLineWrapObj.getTimelineList()){
+                selMedias.addAll(timeLineObj.getMediaList());
+            }
+        }
         setupData(true);
         notifyDataSetChanged();
     }
 
     public void doAllUnSelImg(){
+        selTimeLines.clear();
+        selMedias.clear();
         setupData(false);
         notifyDataSetChanged();
     }
@@ -353,6 +389,6 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
 
     public void setSelImgs(ArrayList<TimeLineObj> imgs) {
         this.selTimeLines = imgs;
-        setupData(false);
+        setupData();
     }
 }

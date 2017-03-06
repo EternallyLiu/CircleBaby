@@ -20,6 +20,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +37,8 @@ import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserWrapObj;
+import cn.timeface.circle.baby.support.api.models.responses.QueryProductionExtraResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QuerySelectedPhotoResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
@@ -49,6 +52,10 @@ import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 选择时光界面（从服务器拉取数据）
@@ -81,6 +88,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     String openBookId;
 
     List<MediaObj> allSelectMedias = new ArrayList<>();
+    List<TimeLineObj> allSelectTimeLines = new ArrayList<>();
+    List<String> allSelectTimeIds = new ArrayList<>();
 
     public static void open(Context context,int bookType, int openBookType, String bookId, String openBookId) {
         Intent intent = new Intent(context, SelectServerTimeActivity.class);
@@ -112,28 +121,49 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             showContent(timeFragment);
         //编辑一本
         } else {
-            apiService.bookMedias(bookId)
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(
-                            response -> {
-                                if(response.success()){
-                                    this.allSelectMedias = response.getDataList();
-                                    timeFragment = ServerTimeFragment.newInstanceEdit(
-                                            TypeConstants.PHOTO_TYPE_TIME,
-                                            FastData.getUserId(),
-                                            bookType,
-                                            response.getDataList());
-                                    showContent(timeFragment);
-                                } else {
-                                    ToastUtil.showToast(response.info);
+            //先查取扩展信息，解析出来哪些time被选中了
+            addSubscription(
+                    apiService.getProductionExtra(bookId)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .filter(
+                                    extraResponse -> {
+                                        if (extraResponse.success() && extraResponse.getExtra().contains("timeIds")){
+                                            for(String s : extraResponse.getTimeIds()){
+                                                allSelectTimeIds.add(s);
+                                            }
+                                        }
+                                        return extraResponse.success();
+                                    }
+                            )
+                            .observeOn(Schedulers.io())
+                            .flatMap(new Func1<QueryProductionExtraResponse, Observable<QuerySelectedPhotoResponse>>() {
+                                @Override
+                                public Observable<QuerySelectedPhotoResponse> call(QueryProductionExtraResponse extraResponse) {
+                                    return apiService.bookMedias(bookId);
                                 }
-                            },
-                            throwable -> {
-                                Log.e(TAG, throwable.getLocalizedMessage());
-                            }
-                    );
+                            })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    response -> {
+                                        if (response.success()) {
+                                            this.allSelectMedias = response.getDataList();
+                                            timeFragment = ServerTimeFragment.newInstanceEdit(
+                                                    TypeConstants.PHOTO_TYPE_TIME,
+                                                    FastData.getUserId(),
+                                                    bookType,
+                                                    response.getDataList(), allSelectTimeIds);
+                                            showContent(timeFragment);
+                                        } else {
+                                            ToastUtil.showToast(response.info);
+                                        }
+                                    },
+                                    throwable -> {
+                                        Log.e(TAG, throwable.getLocalizedMessage());
+                                    }
+                            )
+            );
         }
-
     }
 
     @Override
@@ -255,13 +285,10 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                                             sb.append(mediaObj.getId());
                                                             sb.append(",");
                                                         }
-
-                                                        sb.replace(sb.lastIndexOf(","), sb.length(), "]");
-                                                    } else {
-                                                        sb.append("]");
                                                     }
                                                 }
                                             }
+                                            sb.replace(sb.lastIndexOf(","), sb.length(), "]");
                                             sbTime.replace(sbTime.lastIndexOf(","), sbTime.length(), "]");
                                             sb.append(",").append(sbTime).append("}");
 
@@ -305,7 +332,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             if(TextUtils.isEmpty(bookId)){
                 timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
             } else {
-                timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias);
+                timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias, allSelectTimeIds);
             }
         }
         showContent(timeFragment);
@@ -417,7 +444,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                     if(TextUtils.isEmpty(bookId)){
                         serverTimeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType);
                     } else {
-                        serverTimeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType, allSelectMedias);
+                        serverTimeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType, allSelectMedias, allSelectTimeIds);
                     }
 
                     userFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverTimeFragment);

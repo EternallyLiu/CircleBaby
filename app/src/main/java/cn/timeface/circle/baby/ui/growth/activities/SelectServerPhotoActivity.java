@@ -112,6 +112,14 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         //新建一本
         if(TextUtils.isEmpty(bookId)){
             timePhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
+            //绘画集默认 按标签
+            if(bookType == BookModel.BOOK_TYPE_PAINTING){
+                selectTypeLabel();
+                //其他作品默认 按时间
+            } else {
+                selectTypeTime();
+            }
+            onClick(tvContentType);
         //编辑一本
         } else {
             apiService.bookMedias(bookId)
@@ -126,6 +134,14 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                             response.getDataList(),
                                             bookType
                                     );
+                                    //绘画集默认 按标签
+                                    if(bookType == BookModel.BOOK_TYPE_PAINTING){
+                                        selectTypeLabel();
+                                        //其他作品默认 按时间
+                                    } else {
+                                        selectTypeTime();
+                                    }
+                                    onClick(tvContentType);
                                 } else {
                                     ToastUtil.showToast(response.info);
                                 }
@@ -135,15 +151,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                             }
                     );
         }
-
-        //绘画集默认 按标签
-        if(bookType == BookModel.BOOK_TYPE_PAINTING){
-           selectTypeLabel();
-        //其他作品默认 按时间
-        } else {
-            selectTypeTime();
-        }
-        onClick(tvContentType);
     }
 
     @Override

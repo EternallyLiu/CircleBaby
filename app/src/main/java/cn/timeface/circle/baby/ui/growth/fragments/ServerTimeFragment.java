@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,8 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeDetailActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.SelectServerTimesAdapter;
 import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaListEvent;
+import cn.timeface.circle.baby.ui.growth.events.SelectTimeLineEvent;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
 
@@ -62,7 +65,9 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     int bookType;
     String userId;
     SelectServerTimesAdapter serverTimesAdapter;
-    List<MediaObj> mediaObjs;//选中的照片
+    List<MediaObj> mediaObjs = new ArrayList<>();//选中的照片
+    List<String> timeIds = new ArrayList<>();//选中的时光id
+    List<TimeLineObj> timeLineObjs = new ArrayList<>();//选中的时光
 
     public static ServerTimeFragment newInstance(int contentType, String userId, int bookType){
         ServerTimeFragment fragment = new ServerTimeFragment();
@@ -81,13 +86,14 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
      * @param selectedMedias
      * @return
      */
-    public static ServerTimeFragment newInstanceEdit(int contentType, String userId, int bookType, List<MediaObj> selectedMedias){
+    public static ServerTimeFragment newInstanceEdit(int contentType, String userId, int bookType, List<MediaObj> selectedMedias, List<String> selectedTimeIds){
         ServerTimeFragment fragment = new ServerTimeFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putInt("book_type", bookType);
         bundle.putString("user_id", userId);
         bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
+        bundle.putStringArrayList("time_ids", (ArrayList<String>) selectedTimeIds);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -103,7 +109,9 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         this.userId = getArguments().getString("user_id");
         this.bookType = getArguments().getInt("book_type", 0);
         this.mediaObjs = getArguments().getParcelableArrayList("media_objs");
+        this.timeIds = getArguments().getStringArrayList("time_ids");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
+        if(timeIds == null) timeIds = new ArrayList<>();
         cbAllSel.setOnClickListener(this);
 
         initSelectCount(0);
@@ -122,6 +130,13 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
                 .subscribe(
                         response -> {
                             if(response.success()){
+                                for(TimeLineObj timeLineObj : response.getTimeLineObjs()){
+                                    if(timeIds.contains(String.valueOf(timeLineObj.getTimeId())) && !timeLineObjs.contains(timeLineObj)){
+                                        timeLineObjs.add(timeLineObj);
+                                    } else if(!timeIds.contains(timeLineObj.getTimeId()) && timeLineObjs.contains(timeLineObj)){
+                                        timeLineObjs.remove(timeLineObj);
+                                    }
+                                }
                                 setListData(response.getDataList());
                             } else {
                                 ToastUtil.showToast(response.info);
@@ -136,7 +151,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     private void setListData(List<TimeLineWrapObj> data){
         if (serverTimesAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99, this, mediaObjs);
+            serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99, this, mediaObjs, timeLineObjs);
             rvContent.setAdapter(serverTimesAdapter);
         } else {
             serverTimesAdapter.setListData(data);
@@ -192,34 +207,8 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         }
     }
 
-//    @Subscribe
-//    public void timePhotoAllSelectEvent(ServerTimePhotoAllSelectEvent allSelectEvent){
-//        //全选
-//        if(allSelectEvent.getAllSelect()){
-//            if(!serverTimesAdapter.getSelImgs().contains(allSelectEvent.getTimeLineObj())){
-//                serverTimesAdapter.getSelImgs().add(allSelectEvent.getTimeLineObj());
-//            }
-//        //全不选
-//        } else {
-//            //还是选中
-//            if(allSelectEvent.getTimeLineSelect()){
-//                if(!serverTimesAdapter.getSelImgs().contains(allSelectEvent.getTimeLineObj())){
-//                    serverTimesAdapter.getSelImgs().add(allSelectEvent.getTimeLineObj());
-//                }
-//            //没有选中
-//            } else {
-//                if(serverTimesAdapter.getSelImgs().contains(allSelectEvent.getTimeLineObj())){
-//                    serverTimesAdapter.getSelImgs().remove(allSelectEvent.getTimeLineObj());
-//                }
-//            }
-//        }
-//
-//        serverTimesAdapter.notifyDataSetChanged();
-//    }
-
     @Subscribe
     public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
-
         //选中
         if(selectMediaEvent.getSelect()){
             if(!mediaObjs.contains(selectMediaEvent.getMediaObj())){
@@ -230,15 +219,36 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
                 mediaObjs.remove(selectMediaEvent.getMediaObj());
             }
         }
-//        for(TimeLineWrapObj timeLineWrapObj : serverTimesAdapter.getListData()){
-//            for(TimeLineObj timeLineObj : timeLineWrapObj.getTimelineList()){
-//                for(MediaObj mediaObj : timeLineObj.getMediaList()){
-//                    if(mediaObj.equals(selectMediaEvent.getMediaObj())){
-//                        mediaObj.setSelected(selectMediaEvent.getSelect() ? 1 : 0);
-//                    }
-//                }
-//            }
-//        }
+    }
+
+    @Subscribe
+    public void selectMediaListEvent(SelectMediaListEvent mediaListEvent){
+        //选中
+        if(mediaListEvent.isSelect()){
+            if(!mediaObjs.containsAll(mediaListEvent.getMediaObjList())){
+                mediaObjs.addAll(mediaListEvent.getMediaObjList());
+            }
+        } else {
+            if(mediaObjs.containsAll(mediaListEvent.getMediaObjList())){
+                mediaObjs.removeAll(mediaListEvent.getMediaObjList());
+            }
+        }
+    }
+
+    @Subscribe
+    public void selectTimeLineEvent(SelectTimeLineEvent selectTimeLineEvent){
+        //选中
+        if(selectTimeLineEvent.isSelect()){
+            if(!serverTimesAdapter.getSelImgs().contains(selectTimeLineEvent.getTimeLineObj())){
+                serverTimesAdapter.getSelImgs().add(selectTimeLineEvent.getTimeLineObj());
+            }
+        } else {
+            if(serverTimesAdapter.getSelImgs().contains(selectTimeLineEvent.getTimeLineObj())){
+                serverTimesAdapter.getSelImgs().remove(selectTimeLineEvent.getTimeLineObj());
+            }
+        }
+
+        serverTimesAdapter.notifyDataSetChanged();
     }
 
     @Subscribe
