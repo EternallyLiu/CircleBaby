@@ -65,7 +65,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     protected final int PHOTO_COUNT_MAX = 100;
 
-    private static final String TIME_FORMAT="yyyy-MM-dd";
+    private static final String TIME_FORMAT = "yyyy-MM-dd";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -189,7 +189,13 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     }
 
     private void selectImages() {
-        SelectPhotoActivity.openForResult(this, imgObjs, PHOTO_COUNT_MAX, PICTURE);
+        if (timelimeobj.getType() == 4) {
+            if (timelimeobj.getMediaList().size() >= 9) {
+                ToastUtil.showToast("您的照片超过9张啦，不能再添加了");
+                return;
+            }
+        }
+        SelectPhotoActivity.openForResult(this, imgObjs, timelimeobj.getType() == 4 ? 9 - timelimeobj.getMediaList().size() : PHOTO_COUNT_MAX, PICTURE);
     }
 
     @Override
@@ -269,6 +275,10 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         String value = etContent.getText().toString();
         if (timelimeobj.getMediaList().size() < 1 && timelimeobj.getType() != 4 && timelimeobj.getType() != 1) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (timelimeobj.getType() == 4 && timelimeobj.getMediaList().size() > 9) {
+            ToastUtil.showToast("对不起，您选择的图片已超过9张啦");
             return;
         }
         String s = JSONUtils.parse2JSONString(timelimeobj.getMediaList());
