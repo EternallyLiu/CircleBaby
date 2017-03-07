@@ -293,26 +293,6 @@ public class MediaObj extends BaseObj implements Parcelable {
 
     @Override
     public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-
-//        MediaObj mediaObj = (MediaObj) o;
-
-        //mediaid 一样并且 标签也一致才相同
-//        return (id != 0 && id == mediaObj.id
-//                && (getTips() != null && mediaObj.getTips() != null && getTips().containsAll(mediaObj.getTips()) && mediaObj.getTips().containsAll(getTips())));
-//        else if (!TextUtils.isEmpty(getImgUrl()) && getImgUrl().equals(mediaObj.getImgUrl()))
-//            return true;
-//        else if (!TextUtils.isEmpty(getVideoUrl()) && getVideoUrl().equals(mediaObj.getVideoUrl()))
-//            return true;
-//        else if (!TextUtils.isEmpty(getLocalIdentifier()) && getLocalIdentifier().equals(mediaObj.getLocalIdentifier()))
-//            return true;
-//        else if (!TextUtils.isEmpty(getLocalPath()) && getLocalPath().equals(mediaObj.getLocalPath()))
-//            return true;
-//        else if(getTips() != null && mediaObj.getTips() != null && getTips().containsAll(mediaObj.getTips()) && mediaObj.getTips().containsAll(getTips())){
-//            return true;
-//        }
-//        return false;
 
         if(o instanceof MediaObj){
             MediaObj mediaObj = (MediaObj) o;

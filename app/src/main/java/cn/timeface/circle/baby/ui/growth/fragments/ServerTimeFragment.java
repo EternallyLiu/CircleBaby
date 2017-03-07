@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -60,6 +61,8 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     TextView tvSelectCount;
     @Bind(R.id.cb_all_sel)
     CheckBox cbAllSel;
+    @Bind(R.id.rl_photo_tip)
+    RelativeLayout rlPhotoTip;
 
     int contentType;
     int bookType;
@@ -68,6 +71,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     List<MediaObj> mediaObjs = new ArrayList<>();//选中的照片
     List<String> timeIds = new ArrayList<>();//选中的时光id
     List<TimeLineObj> timeLineObjs = new ArrayList<>();//选中的时光
+    int babyId;
 
     public static ServerTimeFragment newInstance(int contentType, String userId, int bookType){
         ServerTimeFragment fragment = new ServerTimeFragment();
@@ -75,6 +79,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         bundle.putInt("content_type", contentType);
         bundle.putInt("book_type", bookType);
         bundle.putString("user_id", userId);
+        bundle.putInt("baby_id", FastData.getBabyId());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -86,7 +91,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
      * @param selectedMedias
      * @return
      */
-    public static ServerTimeFragment newInstanceEdit(int contentType, String userId, int bookType, List<MediaObj> selectedMedias, List<String> selectedTimeIds){
+    public static ServerTimeFragment newInstanceEdit(int contentType, String userId, int bookType, List<MediaObj> selectedMedias, List<String> selectedTimeIds, int babyId){
         ServerTimeFragment fragment = new ServerTimeFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
@@ -94,6 +99,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         bundle.putString("user_id", userId);
         bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
         bundle.putStringArrayList("time_ids", (ArrayList<String>) selectedTimeIds);
+        bundle.putInt("baby_id", babyId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -110,6 +116,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         this.bookType = getArguments().getInt("book_type", 0);
         this.mediaObjs = getArguments().getParcelableArrayList("media_objs");
         this.timeIds = getArguments().getStringArrayList("time_ids");
+        this.babyId = getArguments().getInt("baby_id");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
         if(timeIds == null) timeIds = new ArrayList<>();
         cbAllSel.setOnClickListener(this);
@@ -122,7 +129,12 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     private void reqData(){
         stateView.setVisibility(View.VISIBLE);
         stateView.loading();
-        Observable<QueryTimeLineResponse> timeResponseObservable = apiService.queryTimeLine(FastData.getBabyId(), userId, getQueryType());
+        Observable<QueryTimeLineResponse> timeResponseObservable = null;
+        if(contentType == TypeConstants.PHOTO_TYPE_TIME){
+            timeResponseObservable = apiService.queryTimeLine(babyId, FastData.getUserId(), getQueryType());
+        } else {
+            timeResponseObservable = apiService.queryTimeLine(babyId, userId, getQueryType());
+        }
 
         if(timeResponseObservable == null) return;
         timeResponseObservable.compose(SchedulersCompat.applyIoSchedulers())
@@ -158,10 +170,11 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
             serverTimesAdapter.notifyDataSetChanged();
         }
         llEmpty.setVisibility(serverTimesAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
+        rlPhotoTip.setVisibility(serverTimesAdapter.getListData().size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     public List<TimeLineObj> getSelectedTimeLines(){
-        return serverTimesAdapter.getSelImgs();
+        return (serverTimesAdapter == null || serverTimesAdapter.getSelImgs() == null) ? new ArrayList<>() : serverTimesAdapter.getSelImgs();
     }
 
     public int getQueryType(){

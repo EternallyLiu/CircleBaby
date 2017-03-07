@@ -64,6 +64,7 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MileStoneActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
@@ -452,6 +453,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case R.id.tv_relative:
                 FragmentBridgeActivity.open(getActivity(), KithFragment.class.getSimpleName());
+                CountlyEventHelper.getInstance().inviteEvent(FastData.getUserId());
                 break;
             case R.id.iv_avatar:
                 BabyInfoActivity.open(getActivity());
@@ -773,6 +775,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         }
         View view = getLayoutInflater().inflate(R.layout.guide_home_send_tip, null);
         view.findViewById(R.id.next).setOnClickListener(v -> {
+            CountlyEventHelper.getInstance().publishEvent(FastData.getUserId());
             new PublishDialog(getActivity()).show();
             guideHelper.nextPage();
         });
@@ -871,6 +874,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 }, throwable -> LogUtil.showError(throwable));
             }
         }
+    }
+
+    public boolean isBottomMenuShow() {
+        return bottomMenuShow;
     }
 
     @Override

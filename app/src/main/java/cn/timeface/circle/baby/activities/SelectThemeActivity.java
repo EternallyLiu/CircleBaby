@@ -65,12 +65,14 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
     private int cloudAlbum;
     private String bookId = "";
     private String openBookId = "";
+    private int babyId;
 //    private int openBookType;
 
-    public static void open(Context context, String bookId, String openBookId ) {
+    public static void open(Context context, String bookId, String openBookId, int babyId) {
         Intent intent = new Intent(context, SelectThemeActivity.class);
         intent.putExtra("book_id", bookId);
         intent.putExtra("open_book_id", openBookId);
+        intent.putExtra("baby_id", babyId);
 //        intent.putExtra("open_book_type", openBookType);
         context.startActivity(intent);
     }
@@ -90,6 +92,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
         this.openBookId = getIntent().getStringExtra("open_book_id");
 //        this.openBookType = getIntent().getIntExtra("open_book_type", 0);
         cloudAlbum = intent.getIntExtra("cloudAlbum", 0);
+        babyId = intent.getIntExtra("baby_id", 0);
         tfStateView.setOnRetryListener(() -> reqData());
         reqData();
 
@@ -170,7 +173,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
 //        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //        startActivity(intent);
 //        finish();
-        SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, "", "");
+        SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, "", "", babyId);
     }
 
     private void creatBook(String bookId, String openBookId) {

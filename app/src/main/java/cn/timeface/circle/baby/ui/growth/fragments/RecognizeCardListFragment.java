@@ -24,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CardPublishActivity;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
@@ -254,6 +255,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
                                         FastData.getBabyName() + "的识图卡片",
                                         System.currentTimeMillis(),
                                         CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD).reqPrintStatus();
+                                CountlyEventHelper.getInstance().printEvent(FastData.getUserId(), response.getDataId());
                             } else {
                                 ToastUtil.showToast(response.getInfo());
                             }

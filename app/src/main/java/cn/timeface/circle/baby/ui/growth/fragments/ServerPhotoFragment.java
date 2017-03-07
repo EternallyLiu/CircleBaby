@@ -64,6 +64,7 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
     List<MediaWrapObj> mediaWrapObjs;
     List<MediaObj> mediaObjs;
     int bookType;
+    int babyId;
 
     /**
      * 地图上选择照片后（已经包含照片信息）
@@ -81,6 +82,7 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
         bundle.putString("address_name", addressName);
         bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
         bundle.putInt("book_type", bookType);
+        bundle.putInt("baby_id", FastData.getBabyId());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -103,7 +105,7 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
      * @param mediaWrapObjs
      * @return
      */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs, int bookType){
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs, int bookType, int babyId){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
@@ -111,6 +113,7 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
         bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
         bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
         bundle.putInt("book_type", bookType);
+        bundle.putInt("baby_id", babyId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -122,8 +125,8 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
      * @param selectedMedias
      * @return
      */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, int bookType){
-        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>(), bookType);
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, int bookType, int babyId){
+        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>(), bookType, babyId);
     }
 
     public ServerPhotoFragment() {}
@@ -139,6 +142,7 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
         this.mediaWrapObjs = getArguments().getParcelableArrayList("media_wrap_objs");
         this.mediaObjs = getArguments().getParcelableArrayList("media_objs");
         this.bookType = getArguments().getInt("book_type");
+        this.babyId = getArguments().getInt("baby_id");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
         if(contentType != TypeConstants.PHOTO_TYPE_LOCATION){
             reqData();
@@ -152,9 +156,9 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
 
     private void initTips(){
         if(bookType == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK){
-            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "60~200"));
+            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "60~120"));
         } else if(bookType == BookModel.BOOK_TYPE_PAINTING){
-            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "40~200"));
+            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "40~120"));
         } else {
             tvRecommendCount.setVisibility(View.GONE);
         }
@@ -165,11 +169,11 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
         stateView.loading();
         Observable<QueryPhotoResponse> photoResponseObservable = null;
         if (contentType == TypeConstants.PHOTO_TYPE_TIME) {
-            photoResponseObservable = apiService.queryPhotoByTime(FastData.getBabyId());
+            photoResponseObservable = apiService.queryPhotoByTime(babyId);
         } else if(contentType == TypeConstants.PHOTO_TYPE_USER){
-            photoResponseObservable = apiService.queryPhotoByUser(FastData.getBabyId(), userId);
+            photoResponseObservable = apiService.queryPhotoByUser(babyId, userId);
         } else if(contentType == TypeConstants.PHOTO_TYPE_LABEL){
-            photoResponseObservable = apiService.queryPhotoByLabel(FastData.getBabyId());
+            photoResponseObservable = apiService.queryPhotoByLabel(babyId);
         }
 
         if(photoResponseObservable == null) return;
@@ -202,12 +206,12 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
         }
 
         llEmpty.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
-        rlPhotoTip.setVisibility(llEmpty.isShown() ? View.GONE : View.VISIBLE);
+        rlPhotoTip.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.VISIBLE : View.GONE);
         tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(serverPhotosAdapter.getSelImgs().size()))));
     }
 
     public List<MediaObj> getSelectedMedias(){
-        return serverPhotosAdapter.getSelImgs();
+        return (serverPhotosAdapter == null || serverPhotosAdapter.getSelImgs() == null) ? new ArrayList<>() : serverPhotosAdapter.getSelImgs();
     }
 
     public int getContentType() {

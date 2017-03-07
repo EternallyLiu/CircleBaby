@@ -31,6 +31,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.activities.VideoPlayActivity;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
@@ -499,6 +500,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                 break;
             case R.id.calendar:
                 FragmentBridgeActivity.open(context(), "TimeLineFragment");
+                CountlyEventHelper.getInstance().calendarEvent(FastData.getUserId());
                 break;
             case R.id.icon_comment:
                 Observable.defer(() -> Observable.just((int) v.getTag(R.id.recycler_item_click_tag)))

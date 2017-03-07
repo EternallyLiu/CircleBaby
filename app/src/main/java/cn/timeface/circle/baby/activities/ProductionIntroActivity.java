@@ -19,6 +19,7 @@ import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
 import cn.timeface.circle.baby.support.api.models.responses.ProductionIntroListResponse;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
@@ -104,7 +105,7 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                                 .subscribe(
                                         response -> {
                                             if (response.success()) {
-                                                SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
+                                                SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "", FastData.getBabyId());
                                             }
                                         },
                                         throwable -> {
@@ -114,15 +115,15 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                 break;
             //成长纪念册
             case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
-                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "");
+                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "", FastData.getBabyId());
                 break;
             //绘画集
             case BookModel.BOOK_TYPE_PAINTING:
-                SelectServerPhotoActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING, "", "");
+                SelectServerPhotoActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING, "", "", FastData.getBabyId());
                 break;
             //成长语录
             case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
-                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "");
+                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "", FastData.getBabyId());
                 break;
             //识图卡片
             case BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD:

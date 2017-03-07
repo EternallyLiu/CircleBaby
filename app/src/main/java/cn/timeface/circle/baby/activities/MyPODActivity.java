@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -150,6 +151,7 @@ public class MyPODActivity extends PODActivity {
                                     if (response.success()) {
                                         this.bookId = response.getDataId();
                                         EventBus.getDefault().post(new BookOptionEvent(BookOptionEvent.BOOK_OPTION_CREATE, localBookType, bookId));
+                                        CountlyEventHelper.getInstance().printEvent(FastData.getUserId(), bookId);
                                     } else {
                                         ToastUtil.showToast(response.info);
                                     }

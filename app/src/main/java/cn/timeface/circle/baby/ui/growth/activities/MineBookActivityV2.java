@@ -21,7 +21,6 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
-import cn.timeface.circle.baby.activities.SelectThemeActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
@@ -30,6 +29,7 @@ import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.adapters.MineBookAdapterV2;
 import cn.timeface.circle.baby.ui.growth.fragments.BookListFragment;
@@ -78,7 +78,7 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
                                     .subscribe(
                                             response -> {
                                                 if (response.success()) {
-                                                    SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "");
+                                                    SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "", FastData.getBabyId());
                                                 }
                                             },
                                             throwable -> {
@@ -88,15 +88,15 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
                     break;
                 case 1: //成长纪念册
                     SelectServerTimeActivity.open(this, BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
-                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "");
+                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "", FastData.getBabyId());
                     break;
                 case 2: //绘画集
                     SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_PAINTING,
-                            TypeConstants.OPEN_BOOK_TYPE_PAINTING, "", "");
+                            TypeConstants.OPEN_BOOK_TYPE_PAINTING, "", "", FastData.getBabyId());
                     break;
                 case 3: //成长语录
                     SelectServerTimeActivity.open(this, BookModel.BOOK_TYPE_GROWTH_QUOTATIONS,
-                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "");
+                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "", FastData.getBabyId());
                     break;
                 case 4: //识图卡片
                     CardPublishActivity.open(this);

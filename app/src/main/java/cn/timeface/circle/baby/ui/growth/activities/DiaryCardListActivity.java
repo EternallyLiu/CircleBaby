@@ -19,6 +19,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
@@ -240,6 +241,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
                                                 FastData.getBabyName() + "的日记卡片",
                                                 System.currentTimeMillis(),
                                                 CartPrintPropertyDialog.REQUEST_CODE_DIARY_CARD).reqPrintStatus();
+                                        CountlyEventHelper.getInstance().printEvent(FastData.getUserId(), response.getDataId());
                                     } else {
                                         showToast(response.getInfo());
                                     }
@@ -285,6 +287,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
     public void onEvent(DiaryPublishEvent event) {
         if (cardPresenter != null) {
             selectCards.add(event.getDiaryCardObj());
+            btnAskPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
             cardPresenter.loadDiaryCard();
         }
     }
