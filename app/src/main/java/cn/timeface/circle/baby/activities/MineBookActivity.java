@@ -231,9 +231,10 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                 apiService.deleteBook(obj.getBookId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            ToastUtil.showToast(response.getInfo());
                             if (response.success()) {
                                 EventBus.getDefault().post(new BookOptionEvent());
+                            } else {
+                                ToastUtil.showToast(response.getInfo());
                             }
                         }, error -> {
                             Log.e(TAG, "deleteBook:");

@@ -131,9 +131,10 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .doOnUnsubscribe(()->dismiss())
                             .subscribe(response -> {
-                                ToastUtil.showToast(response.getInfo());
                                 if (response.success()) {
                                     EventBus.getDefault().post(new BookOptionEvent(BookOptionEvent.BOOK_OPTION_DELETE, bookType, bookId));
+                                } else {
+                                    ToastUtil.showToast(response.getInfo());
                                 }
                             }, error -> {
                                 Log.e(ProductionMenuDialog.class.getSimpleName(), "deleteBook:");

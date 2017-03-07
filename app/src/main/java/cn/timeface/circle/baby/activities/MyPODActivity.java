@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
@@ -31,10 +32,9 @@ public class MyPODActivity extends PODActivity {
 
     private String dataList;
     private boolean edit;
-    private String bookId;
+    private String bookId;//localBookId
     private int babyId;
     private int localBookType;
-    boolean hasCreate;
 
     public static void open(Context context, String bookId , String openBookId,int localBookType, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values, int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
@@ -57,19 +57,15 @@ public class MyPODActivity extends PODActivity {
         super.onCreate(savedInstanceState);
         dataList = getIntent().getStringExtra("dataList");
         edit = getIntent().getBooleanExtra("edit", false);
-        bookId = getIntent().getStringExtra("bookId");
         babyId = getIntent().getIntExtra("babyId", 0);
         this.localBookType = getIntent().getIntExtra("local_book_type", 0);
-        hasCreate = FastData.getBoolean("hasCreate", false);//屏幕旋转会调用两次，so，先存下来该值
+        bookId = getIntent().getStringExtra("bookId");
     }
 
     @Override
     public void createBookInfo(TFOBookModel bookModel) {
         Log.d(TAG, "createBookInfo:");
-        if (hasCreate) return;
         if (edit) {
-            hasCreate = true;
-            FastData.putBoolean("hasCreate", hasCreate);
             createBook(
                     bookModel.getBookAuthor(),
                     bookModel.getBookCover(),
@@ -87,7 +83,8 @@ public class MyPODActivity extends PODActivity {
 
     @Override
     protected void editBook(TFOBookModel bookModel) {
-        addSubscription(
+        if(TextUtils.isEmpty(bookId)) return;
+//        addSubscription(
                 ApiFactory.getApi().getApiService().saveProduction(
                         babyId,
                         bookModel.getBookAuthor(),
@@ -129,11 +126,12 @@ public class MyPODActivity extends PODActivity {
                                     Log.e(TAG, "editBookCover:");
                                     throwable.printStackTrace();
                                 }
-                        ));
+                        );
+//        );
     }
 
     private void createBook(String author, String bookCover, String bookId, String bookName, int bookType, String des, String extra, String openBookId, int openBookType, int pageNum){
-        addSubscription(
+//        addSubscription(
                 ApiFactory.getApi().getApiService().saveProduction(
                         FastData.getBabyId(),
                         author,
@@ -159,12 +157,7 @@ public class MyPODActivity extends PODActivity {
                                 throwable -> {
                                     Log.e(TAG, throwable.getLocalizedMessage());
                                 }
-                        ));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        FastData.putBoolean("hasCreate", false);
+                        );
+//        );
     }
 }

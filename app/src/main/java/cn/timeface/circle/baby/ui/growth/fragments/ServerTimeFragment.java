@@ -160,7 +160,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         llEmpty.setVisibility(serverTimesAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
     }
 
-    public List<TimeLineObj> getSelectedMedias(){
+    public List<TimeLineObj> getSelectedTimeLines(){
         return serverTimesAdapter.getSelImgs();
     }
 
