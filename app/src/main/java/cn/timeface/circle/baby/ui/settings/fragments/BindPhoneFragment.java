@@ -31,6 +31,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.ChangeBabyActivity;
 import cn.timeface.circle.baby.activities.CreateBabyActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
@@ -140,11 +141,14 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void next() {
-        if (FastData.getBabyCount() == 0) {
+        if (FastData.getBabyCount() < 1) {
 //            FragmentBridgeActivity.open(getActivity(), CreateBabyFragment.class.getSimpleName());
             CreateBabyActivity.open(getActivity(), true);
         } else if (type == 0) {
-            startActivity(new Intent(getActivity(), TabMainActivity.class));
+            if (FastData.getBabyObj() == null)
+                ChangeBabyActivity.open(getActivity());
+            else
+                startActivity(new Intent(getActivity(), TabMainActivity.class));
         }
         EventBus.getDefault().post(new UpdatePhone());
         getActivity().finish();

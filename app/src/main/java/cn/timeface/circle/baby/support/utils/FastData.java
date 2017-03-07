@@ -333,6 +333,7 @@ public class FastData extends Remember {
             setUserId(userObj.getUserId());
             setAvatar(userObj.getAvatar());
             setBabyObj(userObj.getBabyObj());
+            setBabyCount(userObj.getBabycount());
             setRelationName(userObj.getRelationName());
             setIsCreator(userObj.getIsCreator());
             setPhoneNumber(userObj.getPhoneNumber());

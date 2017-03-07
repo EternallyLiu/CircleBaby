@@ -133,11 +133,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
     private void showPhone() {
         phoneNumber = FastData.getUserInfo().getPhoneNumber();
-        String replace = phoneNumber.substring(3, 7);
 
         if (!TextUtils.isEmpty(phoneNumber)) {
+            String replace = phoneNumber.substring(3, 7);
             tvPhoneNumber.setText(phoneNumber.replace(replace, "****"));
-        }
+        }else tvPhoneNumber.setText("");
     }
 
     private void initData() {

@@ -40,6 +40,7 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.login.LoginApi;
 import cn.timeface.circle.baby.support.utils.login.OnLoginListener;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.encode.AES;
@@ -308,6 +309,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                            String openid,
                            String platId,
                            String unionid, Context context) {
+        LogUtil.showLog("avatar==" + avatar);
         tfProgressDialog.setTvMessage("登录中…");
         tfProgressDialog.show(getSupportFragmentManager(), "");
         apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
