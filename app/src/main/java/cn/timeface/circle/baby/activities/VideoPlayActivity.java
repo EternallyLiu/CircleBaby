@@ -88,14 +88,15 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         url = getIntent().getStringExtra("url");
         VideoInfo.findVideo(url).compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(videoInfo -> {
-                    LogUtil.showLog("url==="+url);
-                    LogUtil.showLog(videoInfo==null?"null":videoInfo.getPath());
+                    LogUtil.showLog("url===" + url);
+                    LogUtil.showLog(videoInfo == null ? "null" : videoInfo.getPath());
                     if (videoInfo != null && !TextUtils.isEmpty(videoInfo.getPath())) {
                         if (TextUtils.isEmpty(videoInfo.getVideoUrl())) {
                             videoInfo.setVideoUrl(url);
                             videoInfo.save();
                         }
-                        url = videoInfo.getPath();
+                        if (new File(videoInfo.getPath()).exists())
+                            url = videoInfo.getPath();
                         init();
                     } else init();
                 }, throwable -> {
