@@ -18,6 +18,8 @@ import cn.timeface.circle.baby.BuildConfig;
  */
 
 public class TFStringUrlLoader extends BaseGlideUrlLoader<String> {
+    private static final String IMAGE_BASE_URL = "http://img1.timeface.cn/";
+
     public TFStringUrlLoader(Context context) {
         super(context);
     }
@@ -32,10 +34,7 @@ public class TFStringUrlLoader extends BaseGlideUrlLoader<String> {
         String imageUrl = model;
 
         if (!imageUrl.contains("http")
-                || imageUrl.contains("http://www.")
-                || imageUrl.contains("qqapp.qlogo.cn")
-                || imageUrl.contains("q.qlogo.cn")
-                ) {
+                || !imageUrl.contains(IMAGE_BASE_URL)){
             return imageUrl;
         } else if (imageUrl.contains("http") && imageUrl.contains("@ex")) {
             exConfig = "_" + imageUrl.substring(imageUrl.lastIndexOf("@ex") + 3);

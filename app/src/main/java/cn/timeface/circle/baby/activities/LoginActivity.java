@@ -291,7 +291,8 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                             plat.getDb().getUserName(),
                             plat.getDb().get("openid"),
                             plat.getDb().getUserId(),
-                            plat.getDb().get("unionid"), outer);
+                            plat.getDb().get("unionid"),
+                            outer);
                 } else if (msg.what == 3) {
                     Toast.makeText(outer, "登录取消", Toast.LENGTH_SHORT).show();
                 } else if (msg.what == 4) {
@@ -311,7 +312,6 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                            String openid,
                            String platId,
                            String unionid, Context context) {
-        LogUtil.showLog("avatar==" + avatar);
         tfProgressDialog.setTvMessage("登录中…");
         tfProgressDialog.show(getSupportFragmentManager(), "");
         apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
