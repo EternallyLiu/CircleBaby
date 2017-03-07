@@ -141,6 +141,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void next() {
+        LogUtil.showLog("count==="+FastData.getBabyCount());
         if (FastData.getBabyCount() < 1) {
 //            FragmentBridgeActivity.open(getActivity(), CreateBabyFragment.class.getSimpleName());
             CreateBabyActivity.open(getActivity(), true);

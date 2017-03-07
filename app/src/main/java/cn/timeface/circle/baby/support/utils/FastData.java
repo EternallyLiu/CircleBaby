@@ -216,10 +216,18 @@ public class FastData extends Remember {
     public static String BABY_COUNT = "baby_count";
 
     public static int getBabyCount() {
-        return getInt(BABY_COUNT, 0);
+        int count = getInt(BABY_COUNT, 0);
+        if (count <= 0 && !TextUtils.isEmpty(FastData.getUniId()))
+            count = (int) BabyObj.getCurrentUserBabyCount();
+        return count;
     }
 
     public static void setBabyCount(int count) {
+        if (count <= 0) {
+            if (!TextUtils.isEmpty(FastData.getUserId())) {
+                count = (int) BabyObj.getCurrentUserBabyCount();
+            }
+        }
         putInt(BABY_COUNT, count);
     }
 
@@ -334,7 +342,6 @@ public class FastData extends Remember {
             setUserId(userObj.getUserId());
             setAvatar(userObj.getAvatar());
             setBabyObj(userObj.getBabyObj());
-            setBabyCount(userObj.getBabycount());
             setRelationName(userObj.getRelationName());
             setIsCreator(userObj.getIsCreator());
             setPhoneNumber(userObj.getPhoneNumber());

@@ -230,6 +230,11 @@ public class BabyObj extends BaseModel implements Parcelable {
         return getInstance(babyId);
     }
 
+    public static long getCurrentUserBabyCount(){
+        return SQLite.select().from(BabyObj.class).where(BabyObj_Table.user_id.eq(FastData.getUserId()))
+                .count();
+    }
+
     public static Observable<BabyObj> getCurrentUserBabyObjs() {
         return Observable.defer(new Func0<Observable<BabyObj>>() {
             @Override

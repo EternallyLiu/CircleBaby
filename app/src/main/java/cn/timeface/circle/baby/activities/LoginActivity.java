@@ -185,6 +185,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
                         FastData.setAccount(account);
                         FastData.setPassword(psw);
+                        FastData.setBabyCount(loginResponse.getBabycount());
                         if (loginResponse.getBabycount() == 0) {
                             CreateBabyActivity.open(this, true);
                         } else {
@@ -322,6 +323,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                     if (loginResponse.success()) {
                         FastData.setUserInfo(loginResponse.getUserInfo());
                         FastData.setUserFrom(from);
+                        FastData.setBabyCount(loginResponse.getBabycount());
                         if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
                             Bundle bundle = new Bundle();
                             bundle.putInt("type", 0);
