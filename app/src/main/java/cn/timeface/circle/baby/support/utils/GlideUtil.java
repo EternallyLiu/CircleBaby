@@ -78,6 +78,7 @@ public class GlideUtil {
     }
 
     public static void displayImageCircle(String url, @DrawableRes int rid, ImageView imageView) {
+        LogUtil.showLog("avatar==="+url);
         if (imageView == null) return;
         if (TextUtils.isEmpty(url)) {
             Glide.with(imageView.getContext()).load(rid).asBitmap().transform(new CircleTransform(context))
@@ -85,11 +86,6 @@ public class GlideUtil {
             return;
         }
         if (url.startsWith("http") || url.startsWith("www")) {
-            if (url.endsWith("@.jpg")) {
-                url = url.replace("@.jpg", "@600w_600h_1l_1o");
-            } else {
-                url = url + "@600w_600h_1l_1o";
-            }
             Glide.with(imageView.getContext())
                     .using(new TFStringUrlLoader(imageView.getContext()))
                     .load(url)

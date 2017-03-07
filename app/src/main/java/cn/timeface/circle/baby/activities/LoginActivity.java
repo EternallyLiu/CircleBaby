@@ -274,15 +274,17 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 if (msg.what == 1) {
                     Platform plat = (Platform) msg.obj;
                     int type = 1;
+                    String avatar = plat.getDb().getUserIcon();
                     if (plat.getName().equals(SinaWeibo.NAME)) {
                         type = 1;
                     } else if (plat.getName().equals(QQ.NAME)) {
                         type = 2;
+                        avatar = plat.getDb().get("figureurl_qq_2");
                     } else if (plat.getName().equals(Wechat.NAME)) {
                         type = 3;
                     }
                     thirdLogin(plat.getDb().getToken(),
-                            plat.getDb().getUserIcon(),
+                            avatar,
                             plat.getDb().getExpiresIn(),
                             type,
                             "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
