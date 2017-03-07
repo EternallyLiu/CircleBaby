@@ -49,14 +49,16 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
     String openBookId;
     int bookType;
     boolean changeTheme;
+    int babyId;
 
-    public static ProductionMenuDialog newInstance(int bookType, String bookId, boolean changeTheme, String openBookId) {
+    public static ProductionMenuDialog newInstance(int bookType, String bookId, boolean changeTheme, String openBookId, int babyId) {
         ProductionMenuDialog productionMenuDialog = new ProductionMenuDialog();
         Bundle bundle = new Bundle();
         bundle.putInt("book_type", bookType);
         bundle.putString("book_id", bookId);
         bundle.putBoolean("change_theme", changeTheme);
         bundle.putString("open_book_id", openBookId);
+        bundle.putInt("baby_id", babyId);
         productionMenuDialog.setArguments(bundle);
         return productionMenuDialog;
     }
@@ -83,6 +85,7 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
         openBookId = getArguments().getString("open_book_id");
         bookType = getArguments().getInt("book_type");
         changeTheme = getArguments().getBoolean("change_theme");
+        babyId = getArguments().getInt("baby_id");
         tvChangeTheme.setOnClickListener(this);
         tvDelete.setOnClickListener(this);
         tvChangeTheme.setVisibility(changeTheme ? View.VISIBLE : View.GONE);
@@ -116,7 +119,7 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
 //                            Intent intent = new Intent(getActivity(), SelectThemeActivity.class);
 //                            intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
 //                            startActivity(intent);
-                            SelectThemeActivity.open(getActivity(), bookId, openBookId);
+                            SelectThemeActivity.open(getActivity(), bookId, openBookId, babyId);
                         } else {
                             ToastUtil.showToast(response.getInfo());
                         }

@@ -25,6 +25,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.DiaryPublishActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
@@ -176,6 +177,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                                                 FastData.getBabyName() + "的日记卡片",
                                                 System.currentTimeMillis(),
                                                 CartPrintPropertyDialog.REQUEST_CODE_DIARY_CARD).reqPrintStatus();
+                                        CountlyEventHelper.getInstance().printEvent(FastData.getUserId(), response.getDataId());
                                     } else {
                                         ToastUtil.showToast(response.getInfo());
                                     }

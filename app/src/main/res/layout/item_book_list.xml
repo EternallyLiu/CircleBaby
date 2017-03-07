@@ -70,12 +70,10 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:layout_toLeftOf="@+id/iv_menu"
                     android:id="@+id/tv_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/iv_menu"
                     android:textColor="@color/text"
                     android:textSize="16sp"
                     tools:text="小CC的精装照片书" />

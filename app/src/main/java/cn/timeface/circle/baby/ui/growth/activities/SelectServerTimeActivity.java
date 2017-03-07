@@ -82,17 +82,19 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     int bookType;
     String bookId;
     String openBookId;
+    int babyId;
 
     List<MediaObj> allSelectMedias = new ArrayList<>();
     List<TimeLineObj> allSelectTimeLines = new ArrayList<>();
     List<String> allSelectTimeIds = new ArrayList<>();
 
-    public static void open(Context context,int bookType, int openBookType, String bookId, String openBookId) {
+    public static void open(Context context,int bookType, int openBookType, String bookId, String openBookId, int babyId) {
         Intent intent = new Intent(context, SelectServerTimeActivity.class);
         intent.putExtra("open_book_type", openBookType);
         intent.putExtra("book_type", bookType);
         intent.putExtra("book_id", bookId);
         intent.putExtra("open_book_id", openBookId);
+        intent.putExtra("baby_id", babyId);
         context.startActivity(intent);
     }
 
@@ -110,6 +112,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         this.bookType = getIntent().getIntExtra("book_type", 0);
         this.bookId = getIntent().getStringExtra("book_id");
         this.openBookId = getIntent().getStringExtra("open_book_id");
+        this.babyId = getIntent().getIntExtra("baby_id", 0);
 
         //新建一本
         if(TextUtils.isEmpty(bookId)){
@@ -148,7 +151,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                                     TypeConstants.PHOTO_TYPE_TIME,
                                                     FastData.getUserId(),
                                                     bookType,
-                                                    response.getDataList(), allSelectTimeIds);
+                                                    response.getDataList(), allSelectTimeIds, babyId);
                                             showContent(timeFragment);
                                         } else {
                                             ToastUtil.showToast(response.info);
@@ -328,7 +331,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             if(TextUtils.isEmpty(bookId)){
                 timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
             } else {
-                timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias, allSelectTimeIds);
+                timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias, allSelectTimeIds, babyId);
             }
         }
         showContent(timeFragment);
@@ -440,7 +443,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                     if(TextUtils.isEmpty(bookId)){
                         serverTimeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType);
                     } else {
-                        serverTimeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType, allSelectMedias, allSelectTimeIds);
+                        serverTimeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType, allSelectMedias, allSelectTimeIds, babyId);
                     }
 
                     userFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverTimeFragment);

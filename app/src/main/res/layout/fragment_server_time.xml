@@ -8,7 +8,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="42dp" />
 
     <LinearLayout
         android:id="@+id/ll_empty"
@@ -44,7 +46,8 @@
         android:layout_alignParentBottom="true"
         android:background="@color/tran_80_black"
         android:paddingLeft="@dimen/view_space_medium"
-        android:paddingRight="@dimen/view_space_medium">
+        android:paddingRight="@dimen/view_space_medium"
+        android:visibility="gone">
 
         <CheckBox
             android:id="@+id/cb_all_sel"

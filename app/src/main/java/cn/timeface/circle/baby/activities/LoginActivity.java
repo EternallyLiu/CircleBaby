@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,12 +30,17 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.wechat.friends.Wechat;
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.CountlyEventConstant;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.EventTabMainWake;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.DeviceUuidFactory;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.NetUtils;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.login.LoginApi;
@@ -44,6 +50,7 @@ import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.encode.AES;
+import ly.count.android.sdk.Countly;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -191,6 +198,10 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         } else {
                             startActivity(new Intent(this, TabMainActivity.class));
                         }
+                        //统计登录行为事件
+                        CountlyEventHelper.getInstance().loginEvent(
+                                loginResponse.getUserInfo().getUserId(),
+                                CountlyEventConstant.LOGIN_EVENT_FROM_TIME_FACE);
                     }
 
                 }, throwable -> {
@@ -334,6 +345,23 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                             } else {
                                 startActivity(new Intent(this, TabMainActivity.class));
                             }
+                        }
+                        switch (from){
+                            case TypeConstants.USER_FROM_LOCAL:
+                                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_TIME_FACE);
+                                break;
+
+                            case TypeConstants.USER_FROM_QQ:
+                                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_QQ);
+                                break;
+
+                            case TypeConstants.USER_FROM_SINA:
+                                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_WEIBO);
+                                break;
+
+                            case TypeConstants.USER_FROM_WECHAT:
+                                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_WECHAT);
+                                break;
                         }
                     }
                 }, error -> {

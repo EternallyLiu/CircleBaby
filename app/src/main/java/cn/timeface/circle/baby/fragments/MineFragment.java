@@ -1,6 +1,9 @@
 package cn.timeface.circle.baby.fragments;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,6 +25,7 @@ import cn.timeface.circle.baby.activities.CartActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MineInfoActivity;
 import cn.timeface.circle.baby.activities.OrderListActivity;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
@@ -101,6 +105,18 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         llMineInfo.setOnClickListener(this);
         llMineOrder.setOnClickListener(this);
         llMessage.setOnClickListener(this);
+
+//        AnimatorSet animatorSet = new AnimatorSet();
+//        Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
+//                "translationY",
+//                ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
+//                0);
+//        animatorSet.playTogether(anim3);
+//        animatorSet.start();
+//        if (getActivity() instanceof TabMainActivity) {
+//            ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+//        }
+
         return view;
     }
 

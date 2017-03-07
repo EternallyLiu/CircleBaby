@@ -42,6 +42,7 @@ import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
@@ -183,6 +184,10 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     public void clickTab(View view) {
 
+        if(currentFragment instanceof HomeFragment && !((HomeFragment) currentFragment).isBottomMenuShow()){
+            return;
+        }
+
         switch (view.getId()) {
             //时光轴
             case R.id.menu_home_tv:
@@ -281,6 +286,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         switch (v.getId()) {
             case R.id.send_timeface:
                 new PublishDialog(this).show();
+                CountlyEventHelper.getInstance().publishEvent(FastData.getUserId());
                 break;
             case R.id.iv_publish:
                 new PublishDialog(this).show();
