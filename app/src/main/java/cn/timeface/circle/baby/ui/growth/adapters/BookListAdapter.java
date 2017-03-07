@@ -60,9 +60,7 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
                 imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 100);
                 break;
             case BookModel.BOOK_TYPE_CALENDAR://台历
-                imageWidth = DeviceUtil.dpToPx(mContext.getResources(),
-                        bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL ?
-                                100 : 80);
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 100);
                 break;
         }
 
@@ -73,10 +71,8 @@ public class BookListAdapter extends BaseRecyclerAdapter<BookObj> {
 
 
         if (bookObj.getBookType() == BookModel.BOOK_TYPE_CALENDAR) {
-            Glide.with(mContext)
-                    .load(bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL
-                            ? R.drawable.bg_calendar_horizontal : R.drawable.bg_calendar_vertical)
-                    .into(holder.ivBookCover);
+            holder.ivBookCover.setImageResource(bookObj.getOpenBookType() == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL
+                    ? R.drawable.bg_calendar_horizontal : R.drawable.bg_calendar_vertical);
 
             holder.ivMask.setVisibility(View.GONE);
             holder.tvPagenum.setVisibility(View.GONE);

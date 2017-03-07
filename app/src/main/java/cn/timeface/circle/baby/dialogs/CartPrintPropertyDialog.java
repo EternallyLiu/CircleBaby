@@ -274,19 +274,19 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                 if (pageNum >= 12 && pageNum <= 20) {
                     mTvPack.setText("(照片书12-20页，只支持平装)");
                     if(obj.getShow().equals("平装")){
-                        obj.setIsActive(true);
+                        obj.setActive(true);
                     }else{
-                        obj.setIsActive(false);
+                        obj.setActive(false);
                     }
                 } else if (pageNum > 20 && pageNum <= 60) {
                     mTvPack.setText("");
-                    obj.setIsActive(true);
+                    obj.setActive(true);
                 } else if (pageNum > 60) {
                     mTvPack.setText("(照片书大于页，只支持平装)");
                     if(obj.getShow().equals("平装")){
-                        obj.setIsActive(true);
+                        obj.setActive(true);
                     }else{
-                        obj.setIsActive(false);
+                        obj.setActive(false);
                     }
                 }
         }*/
@@ -392,21 +392,16 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         }
 
         if (propertyObj == null) {
-            sizeList.get(0).setIsSelect(true);
-            colorList.get(0).setIsSelect(true);
             packList.get(0).setIsSelect(true);
-            if (paperList.size() > 0) paperList.get(0).setIsSelect(true);
 
-            for (PrintParamObj obj : packList) {
-                if (printCode == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
-                    mTvPack.setText(getString(R.string.cart_print_code_limit_soft_pack_2));
-                    if (obj.getShow().equals("平装")) {
-                        obj.setIsActive(true);
-                    } else {
-                        obj.setIsActive(false);
-                    }
-                }
-            }
+            // 选中装订方式中对应的可选颜色
+            selectAvailableList(colorList, packList.get(0).getColorList());
+
+            // 选中装订方式中对应的可选纸张类别
+            selectAvailableList(paperList, packList.get(0).getPaperList());
+
+            // 选中装订方式中对应的可选尺寸
+            selectAvailableList(sizeList, packList.get(0).getSizeList());
         } else {
             mBookPrintNumberEt.setText(String.valueOf(propertyObj.getNum()));
             for (PrintParamObj obj : sizeList) {
@@ -430,9 +425,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                 if (cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
                     mTvPack.setText(getString(R.string.cart_print_code_limit_soft_pack_2));
                     if (obj.getShow().equals("平装")) {
-                        obj.setIsActive(true);
+                        obj.setActive(true);
                     } else {
-                        obj.setIsActive(false);
+                        obj.setActive(false);
                     }
                 }
             }
@@ -445,6 +440,60 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
         }
 
+//        if (propertyObj == null) {
+//            sizeList.get(0).setIsSelect(true);
+//            colorList.get(0).setIsSelect(true);
+//            packList.get(0).setIsSelect(true);
+//            if (paperList.size() > 0) paperList.get(0).setIsSelect(true);
+//
+//            for (PrintParamObj obj : packList) {
+//                if (printCode == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
+//                    mTvPack.setText(getString(R.string.cart_print_code_limit_soft_pack_2));
+//                    if (obj.getShow().equals("平装")) {
+//                        obj.setActive(true);
+//                    } else {
+//                        obj.setActive(false);
+//                    }
+//                }
+//            }
+//        } else {
+//            mBookPrintNumberEt.setText(String.valueOf(propertyObj.getNum()));
+//            for (PrintParamObj obj : sizeList) {
+//                if (obj.getValue().equals(propertyObj.getSize())) {
+//                    obj.setIsSelect(true);
+//                }
+//            }
+//
+//            for (PrintParamObj obj : colorList) {
+//                if (obj.getValue().equals(String.valueOf(propertyObj.getColor()))) {
+//                    obj.setIsSelect(true);
+//                }
+//            }
+//
+//            for (PrintParamObj obj : packList) {
+//                if (obj.getValue().equals(String.valueOf(propertyObj.getPack()))) {
+//                    obj.setIsSelect(true);
+//                }
+//
+//                //12-90页只可以软装
+//                if (cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
+//                    mTvPack.setText(getString(R.string.cart_print_code_limit_soft_pack_2));
+//                    if (obj.getShow().equals("平装")) {
+//                        obj.setActive(true);
+//                    } else {
+//                        obj.setActive(false);
+//                    }
+//                }
+//            }
+//
+//            for (PrintParamObj obj : paperList) {
+//                if (obj.getValue().equals(String.valueOf(propertyObj.getPaper()))) {
+//                    obj.setIsSelect(true);
+//                }
+//            }
+//
+//        }
+
         sizeAdapter = new CartPrintPropertyGvAdapter(getActivity(), sizeList, PrintParamResponse.KEY_SIZE);
         colorAdapter = new CartPrintPropertyGvAdapter(getActivity(), colorList, PrintParamResponse.KEY_COLOR);
         packAdapter = new CartPrintPropertyGvAdapter(getActivity(), packList, PrintParamResponse.KEY_PACK);
@@ -453,6 +502,34 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         mGvPrintColor.setAdapter(colorAdapter);
         mGvPack.setAdapter(packAdapter);
         mGvPaper.setAdapter(paperAdapter);
+    }
+
+    private void selectAvailableList(List<PrintParamObj> dataList, List<String> selectableList) {
+        if (selectableList != null && selectableList.size() > 0) {
+            for (PrintParamObj obj : dataList) {
+                if (obj.getValue().equals(selectableList.get(0))) {
+                    obj.setIsSelect(true);
+                    break;
+                }
+            }
+        } else {
+            dataList.get(0).setIsSelect(true); // 默认选中第一条
+        }
+    }
+
+    private void selectAvailableList2(List<PrintParamObj> dataList, List<String> selectableList) {
+        if (selectableList != null && selectableList.size() > 0) {
+            PrintParamObj selectedObj = null;
+            for (PrintParamObj obj : dataList) {
+                if (obj.getValue().equals(selectableList.get(0))) {
+                    selectedObj = obj;
+                }
+                obj.setIsSelect(false);
+            }
+            if (selectedObj != null) {
+                selectedObj.setIsSelect(true);
+            }
+        }
     }
 
     @OnClick({
@@ -840,7 +917,14 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         obj.setIsSelect(false);
                     }
                     paramObj.setIsSelect(true);
-                    sizeAdapter.notifyDataSetChanged();
+
+                    // 选中尺寸中对应的可选颜色
+                    selectAvailableList2(colorList, paramObj.getColorList());
+                    // 选中尺寸中对应的可选纸张类别
+                    selectAvailableList2(paperList, paramObj.getPaperList());
+                    // 选中尺寸中对应的可选装订方式
+                    selectAvailableList2(packList, paramObj.getPackList());
+
                     break;
 
                 case PrintParamResponse.KEY_COLOR:
@@ -852,7 +936,15 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         obj.setIsSelect(false);
                     }
                     paramObj.setIsSelect(true);
-                    colorAdapter.notifyDataSetChanged();
+//                    colorAdapter.notifyDataSetChanged();
+
+                    // 选中颜色中对应的可选尺寸
+                    selectAvailableList2(sizeList, paramObj.getSizeList());
+                    // 选中颜色中对应的可选纸张类别
+                    selectAvailableList2(paperList, paramObj.getPaperList());
+                    // 选中颜色中对应的可选装订方式
+                    selectAvailableList2(packList, paramObj.getPackList());
+
                     break;
 
                 case PrintParamResponse.KEY_PACK:
@@ -867,7 +959,15 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         obj.setIsSelect(false);
                     }
                     paramObj.setIsSelect(true);
-                    packAdapter.notifyDataSetChanged();
+//                    packAdapter.notifyDataSetChanged();
+
+                    // 选中装订方式中对应的可选颜色
+                    selectAvailableList2(colorList, paramObj.getColorList());
+                    // 选中装订方式中对应的可选尺寸
+                    selectAvailableList2(sizeList, paramObj.getSizeList());
+                    // 选中装订方式中对应的可选纸张类别
+                    selectAvailableList2(paperList, paramObj.getPaperList());
+
                     break;
 
                 case PrintParamResponse.KEY_PAPER:
@@ -887,25 +987,25 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             //铜版纸 只能平装
                             if (index == 0) {
                                 if (packIndex == 0) {
-                                    printParamObj.setIsActive(true);
+                                    printParamObj.setActive(true);
                                     printParamObj.setIsSelect(true);
                                 } else {
                                     printParamObj.setIsSelect(false);
-                                    printParamObj.setIsActive(false);
+                                    printParamObj.setActive(false);
                                 }
 
                                 //卡纸 不能平装
                             } else if (index == 1) {
                                 if (packIndex == 0) {
-                                    printParamObj.setIsActive(false);
-                                    printParamObj.setIsActive(false);
+                                    printParamObj.setActive(false);
+                                    printParamObj.setActive(false);
                                 } else {
                                     if(packIndex == 1){
                                         printParamObj.setIsSelect(true);
                                     } else {
                                         printParamObj.setIsSelect(false);
                                     }
-                                    printParamObj.setIsActive(true);
+                                    printParamObj.setActive(true);
                                 }
                             }
                             packAdapter.notifyDataSetChanged();
@@ -913,9 +1013,23 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                     }*/
 
                     paramObj.setIsSelect(true);
-                    paperAdapter.notifyDataSetChanged();
+//                    paperAdapter.notifyDataSetChanged();
+
+                    // 选中纸张类别中对应的可选颜色
+                    selectAvailableList2(colorList, paramObj.getColorList());
+                    // 选中纸张类别中对应的可选尺寸
+                    selectAvailableList2(sizeList, paramObj.getSizeList());
+                    // 选中纸张类别中对应的可选装订方式
+                    selectAvailableList2(packList, paramObj.getPackList());
+
                     break;
             }
+
+            sizeAdapter.notifyDataSetChanged();
+            colorAdapter.notifyDataSetChanged();
+            paperAdapter.notifyDataSetChanged();
+            packAdapter.notifyDataSetChanged();
+
             queryBookPrice();
         }
     }

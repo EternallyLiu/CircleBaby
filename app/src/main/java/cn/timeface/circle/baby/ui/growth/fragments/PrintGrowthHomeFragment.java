@@ -19,6 +19,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
@@ -89,6 +90,15 @@ public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClic
         } else {
             growthHomeAdapter.setListData(growthHomeObjs);
             growthHomeAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 解决某些异常情况导致FootMenu消失
+        if (getActivity() instanceof TabMainActivity) {
+            ((TabMainActivity) getActivity()).showFootMenu();
         }
     }
 

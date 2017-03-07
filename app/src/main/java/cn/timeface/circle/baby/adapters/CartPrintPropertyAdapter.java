@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -291,10 +292,12 @@ public class CartPrintPropertyAdapter extends BaseRecyclerAdapter<PrintPropertyP
         TextView mTvNumber;
         @Bind(R.id.ll_price_number)
         LinearLayout llPriceNo;
-        @Bind(R.id.tv_delete)
-        TextView tvDelete;
+//        @Bind(R.id.tv_delete)
+//        TextView tvDelete;
+        @Bind(R.id.fl_delete)
+        FrameLayout tvDelete;
         @Bind(R.id.ll_root)
-        LinearLayout llRoot;
+        RelativeLayout llRoot;
         @Bind(R.id.tv_print_limit_info)
         TextView tvLimitInfo;
         @Bind(R.id.cart_property_divider)

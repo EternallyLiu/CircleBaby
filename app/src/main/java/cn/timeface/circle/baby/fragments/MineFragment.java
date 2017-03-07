@@ -22,6 +22,7 @@ import cn.timeface.circle.baby.activities.CartActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MineInfoActivity;
 import cn.timeface.circle.baby.activities.OrderListActivity;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
@@ -121,6 +122,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                         llBaby.addView(getBabyImageView(list.get(i)));
                     }
                 }));
+        // 解决某些异常情况导致FootMenu消失
+        if (getActivity() instanceof TabMainActivity) {
+            ((TabMainActivity) getActivity()).showFootMenu();
+        }
         super.onResume();
     }
 
