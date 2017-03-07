@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
+    android:gravity="center_vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/view_space_small"
-        android:layout_marginTop="@dimen/view_space_small"
-        android:orientation="horizontal">
+        android:paddingBottom="@dimen/view_space_small"
+        android:paddingTop="@dimen/view_space_small">
 
         <ImageView
             android:id="@+id/iv_radio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:onClick="clickProperty"
@@ -28,6 +27,8 @@
             android:id="@+id/rl_book_cover"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_radio"
             android:clickable="true">
 
             <ImageView
@@ -57,8 +58,10 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/view_space_medium"
+            android:layout_toRightOf="@+id/rl_book_cover"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -157,8 +160,10 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
 
             <LinearLayout
                 android:id="@+id/ll_price_number"
@@ -184,34 +189,70 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:layout_marginBottom="@dimen/view_space_small"
-                    android:layout_marginTop="@dimen/view_space_small"
+                    android:layout_marginTop="@dimen/view_space_medium"
                     android:textAppearance="?android:attr/textAppearance"
                     android:textColor="@color/text_color9"
                     tools:text="X1" />
             </LinearLayout>
 
-            <TextView
+           <!--<TextView
                 android:id="@+id/tv_delete"
                 android:layout_width="@dimen/size_56"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:layout_gravity="right"
                 android:background="@color/red"
                 android:clickable="true"
                 android:gravity="center"
                 android:onClick="clickDeleteItem"
                 android:text="删除"
                 android:textColor="@color/white"
-                android:visibility="visible" />
+                android:visibility="gone" />-->
 
         </RelativeLayout>
-    </LinearLayout>
+
+    </RelativeLayout>
+
+    <!--<TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="@dimen/size_56"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ll_root"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/ll_root"
+        android:background="@color/red"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="clickDeleteItem"
+        android:text="删除"
+        android:textColor="@color/white"
+        android:visibility="visible" />-->
+
+    <!-- 这里有套路 -->
+    <FrameLayout
+        android:id="@+id/fl_delete"
+        android:layout_width="@dimen/size_56"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ll_root"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/ll_root"
+        android:background="@color/red"
+        android:clickable="true"
+        android:onClick="clickDeleteItem"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="删除"
+            android:textColor="@color/white" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_print_limit_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_root"
         android:layout_marginBottom="@dimen/view_space_medium"
         android:layout_marginLeft="48dp"
         android:textColor="@color/red"
@@ -222,8 +263,9 @@
         android:id="@+id/cart_property_divider"
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_below="@+id/tv_print_limit_info"
         android:layout_gravity="bottom"
         android:layout_marginLeft="@dimen/view_space_medium"
         android:background="@color/divider"
         android:visibility="gone" />
-</LinearLayout>
+</RelativeLayout>

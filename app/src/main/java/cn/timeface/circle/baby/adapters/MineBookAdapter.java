@@ -263,8 +263,6 @@ public class MineBookAdapter extends BaseRecyclerAdapter<MineBookObj> {
                 realBookType = obj.getBookType();
             }
 
-            Log.d("-------->", "-------->queryParamList:  OpenBookType:" + obj.getOpenBookType()
-                    + "  BookType:" + obj.getBookType());
             BaseAppCompatActivity.apiService.queryParamList(realBookType/*obj.getBookType()*/, obj.getPageNum())
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(paramListResponse -> {

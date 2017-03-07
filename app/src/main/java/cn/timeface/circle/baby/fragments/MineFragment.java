@@ -137,6 +137,10 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                         llBaby.addView(getBabyImageView(list.get(i)));
                     }
                 }));
+        // 解决某些异常情况导致FootMenu消失
+        if (getActivity() instanceof TabMainActivity) {
+            ((TabMainActivity) getActivity()).showFootMenu();
+        }
         super.onResume();
     }
 

@@ -1,6 +1,8 @@
 package cn.timeface.circle.baby.activities;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,9 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -33,12 +32,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.App;
-import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
@@ -63,13 +60,9 @@ import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
 import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
-import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.CommonUtil;
-import cn.timeface.open.TFOpen;
-import cn.timeface.open.TFOpenConfig;
-import cn.timeface.open.api.bean.obj.TFOUserObj;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func1;
@@ -184,10 +177,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     public void clickTab(View view) {
 
-        if(currentFragment instanceof HomeFragment && !((HomeFragment) currentFragment).isBottomMenuShow()){
-            return;
-        }
-
         switch (view.getId()) {
             //时光轴
             case R.id.menu_home_tv:
@@ -204,6 +193,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 menuMimeTv.setSelected(true);
                 menuGrowthTv.setSelected(false);
                 showContent(TAB2);
+                showFootMenu();
                 break;
             //印成长
             case R.id.menu_growth_up_tv:
@@ -212,6 +202,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 menuMimeTv.setSelected(false);
                 menuGrowthTv.setSelected(true);
                 showContent(TAB3);
+                showFootMenu();
                 break;
         }
     }
@@ -253,6 +244,14 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         }
         ft.commitAllowingStateLoss();
         currentFragment = fragment;
+    }
+
+    // 解决某些异常情况导致FootMenu消失
+    public void showFootMenu() {
+        if (footMenu.getTranslationY() != 0) {
+            Animator animator = ObjectAnimator.ofFloat(footMenu, "translationY", footMenu.getTranslationY(), 0);
+            animator.start();
+        }
     }
 
     @Override
