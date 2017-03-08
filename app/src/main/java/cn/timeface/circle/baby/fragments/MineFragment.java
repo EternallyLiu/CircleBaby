@@ -1,9 +1,6 @@
 package cn.timeface.circle.baby.fragments;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -170,7 +167,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private void initData() {
         GlideUtil.displayImageCircle(FastData.getAvatar(), R.drawable.ic_launcher, ivAvatar);
         tvName.setText(FastData.getUserName());
-        initUnreadMessage();
+//        initUnreadMessage();
+        reqMine();
     }
 
     private LinearLayout.LayoutParams babyImageLayoutParams = null;
@@ -193,16 +191,14 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
     }
 
+    // 已废弃，建议使用 reqMine()
+    @Deprecated
     private void initUnreadMessage() {
         apiService.noReadMsg()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(unReadMsgResponse -> {
                     if (unReadMsgResponse.success()) {
-                        if (unReadMsgResponse.getUnreadMessageCount() > 0) {
-                            ivDot.setVisibility(View.VISIBLE);
-                        } else {
-                            ivDot.setVisibility(View.GONE);
-                        }
+                        setupUnReadMessage(unReadMsgResponse.getUnreadMessageCount());
                     }
                 }, error -> {
                     LogUtil.showError(error);
@@ -215,12 +211,8 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
-                        ivDot.setVisibility(response.getMessagecount() > 0 ?
-                                View.VISIBLE : View.GONE);
+                        setupUnReadMessage(response.getMessagecount());
 
-                        tvCountMsg.setVisibility(response.getMessagecount() > 0 ?
-                                View.VISIBLE : View.GONE);
-                        tvCountMsg.setText(String.valueOf(response.getMessagecount()));
                         tvCountProduction.setVisibility(response.getWorkcount() > 0 ?
                                 View.VISIBLE : View.GONE);
                         tvCountProduction.setText(String.valueOf(response.getWorkcount()));
@@ -238,9 +230,25 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         addSubscription(s);
     }
 
+    private void setupUnReadMessage(int unReadMsgCount) {
+        if (unReadMsgCount > 0) {
+            ivDot.setVisibility(View.VISIBLE);
+            tvCountMsg.setVisibility(View.VISIBLE);
+            tvCountMsg.setText(String.valueOf(unReadMsgCount));
+        } else {
+            ivDot.setVisibility(View.GONE);
+            tvCountMsg.setVisibility(View.GONE);
+        }
+    }
+
     @Subscribe
     public void onEvent(UnreadMsgEvent event) {
-        initUnreadMessage();
+        if (event.unReadMsgCount > 0) {
+            setupUnReadMessage(event.unReadMsgCount);
+        } else {
+//            initUnreadMessage();
+            reqMine();
+        }
     }
 
     @Override
