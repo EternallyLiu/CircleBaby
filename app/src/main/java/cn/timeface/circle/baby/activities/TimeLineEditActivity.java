@@ -66,7 +66,7 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     protected final int PHOTO_COUNT_MAX = 100;
 
-    private static final String TIME_FORMAT = "yyyy-MM-dd";
+    public static final String TIME_FORMAT = "yyyy-MM-dd";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;

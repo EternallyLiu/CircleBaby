@@ -21,7 +21,9 @@ import java.io.FileNotFoundException;
 
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.ImageUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
  * Created by zhsheng on 2016/6/7.
@@ -42,6 +44,24 @@ public class BaseImgObj extends BaseObj implements Parcelable {
     protected String md5;
     protected String content;
     protected String date;
+    protected long dateTimeMills;
+
+    public long getDateTimeMills() {
+        if (dateTimeMills <= 0)
+            dateTimeMills = dateMills;
+        if (dateTimeMills <= 0)
+            if (date.indexOf(".") >= 0)
+                dateTimeMills = DateUtil.getTime(date, "yyyy.MM.dd");
+            else if (date.indexOf(",") >= 0)
+                dateTimeMills = DateUtil.getTime(date, "yyyy,MM,dd");
+            else if (date.indexOf("-") >= 0) dateTimeMills = DateUtil.getTime(date, "yyyy-MM-dd");
+        return dateTimeMills;
+    }
+
+    public void setDateTimeMills(long dateTimeMills) {
+        this.dateTimeMills = dateTimeMills;
+    }
+
 
     public String getObjectKey() {
         return objectKey;

@@ -353,13 +353,14 @@ public interface ApiService {
     Observable<TimeDetailResponse> queryBabyTimeDetail(@Query("timeId") int timeId);
 
     //编辑时光
-    @GET("babyTime/editTime")
-    Observable<BaseResponse> editTime(@Query("locationInfo") String locationInfo,
-                                      @Query("content") String content,
-                                      @Query("mediaList") String mediaList,
-                                      @Query("milestone") int milestone,
-                                      @Query("time") long time,
-                                      @Query("timeId") int timeId);
+    @FormUrlEncoded
+    @POST("babyTime/editTime")
+    Observable<BaseResponse> editTime(@Field("locationInfo") String locationInfo,
+                                      @Field("content") String content,
+                                      @Field("mediaList") String mediaList,
+                                      @Field("milestone") int milestone,
+                                      @Field("time") long time,
+                                      @Field("timeId") int timeId);
 
     //回复评论
     @GET("babyTime/comment")
