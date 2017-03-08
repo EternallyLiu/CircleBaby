@@ -142,27 +142,6 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         initRecyclerView();
         etCommment.setOnEditorActionListener(this);
         etCommment.setOnFocusChangeListener(this);
-//        helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefresh);
-//        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
-//                .tfPtrListener(new IPTRRecyclerListener() {
-//                    @Override
-//                    public void onTFPullDownToRefresh(View refreshView) {
-//                        reqData();
-//                    }
-//
-//                    @Override
-//                    public void onTFPullUpToRefresh(View refreshView) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onScrollUp(int firstVisibleItem) {
-//                    }
-//
-//                    @Override
-//                    public void onScrollDown(int firstVisibleItem) {
-//                    }
-//                });
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -234,7 +213,6 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                     swipeRefresh.setRefreshing(false);
                     Log.e("TimeLineDetailActivity", "queryBabyTimeDetail:");
                     error.printStackTrace();
-//                    helper.finishTFPTRRefresh();
                 });
     }
 

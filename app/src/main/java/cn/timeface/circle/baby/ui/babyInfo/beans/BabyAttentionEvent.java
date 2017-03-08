@@ -8,6 +8,8 @@ import android.text.SpannableStringBuilder;
  */
 public class BabyAttentionEvent {
 
+    public static final int TYPE_CREATE_BABY=-9999;
+
     private SpannableStringBuilder builder = null;
     private int type = 0;
 

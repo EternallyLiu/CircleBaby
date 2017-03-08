@@ -174,7 +174,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
 //                                    }
                                     if (userLoginResponse.getUserInfo().getBabycount() <= 1)
                                         TabMainActivity.open(this, 1);
-                                    else EventBus.getDefault().post(new BabyAttentionEvent(-1));
+                                    else EventBus.getDefault().post(new BabyAttentionEvent(BabyAttentionEvent.TYPE_CREATE_BABY));
                                     FastData.setUserInfo(userLoginResponse.getUserInfo());
                                     finish();
                                 } else {

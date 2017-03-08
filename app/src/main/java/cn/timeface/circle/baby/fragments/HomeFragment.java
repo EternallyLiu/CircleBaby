@@ -529,7 +529,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             initData();
             currentPage = 1;
             reqData(currentPage);
-
         }
     }
 
@@ -835,23 +834,24 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         } else if (code != BaseAdapter.DELETE_ALL && adapter.getRealItemSize() <= 0) {
             if (tfStateView == null || tfStateView.getVisibility() != View.VISIBLE) {
                 Observable.defer(() -> {
-                    String relativeName = FastData.getRelationName();
                     BabyObj babyObj = FastData.getBabyObj();
                     StringBuilder sb = new StringBuilder();
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    sb.append(String.format("%s 还没有成长记录哦", babyObj.getNickName()));
-                    builder.append(String.format("%s 还没有成长记录哦", babyObj.getNickName()));
-                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    sb.append(String.format("%s已经%s了", babyObj.getNickName(),babyObj.getAge()));
+                    builder.append(String.format("%s已经%s了", babyObj.getNickName(),babyObj.getAge()));
+                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getAge()), sb.lastIndexOf(babyObj.getAge()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getAge()) + babyObj.getAge().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
-                    sb.append(String.format("\n %s 赶紧导入 %s 的照片了", relativeName, babyObj.getNickName()));
-                    builder.append(String.format("\n %s 赶紧导入 %s 的照片了", relativeName, babyObj.getNickName()));
-                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    sb.append("\n马上导入宝宝的照片吧");
+                    builder.append("\n马上导入宝宝的照片吧");
+//                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
-                    builder.setSpan(SpannableUtils.getTextSize(getActivity(), R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    builder.setSpan(SpannableUtils.getTextSize(getActivity(), R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                     return Observable.just(builder);
                 }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(spannableStringBuilder -> {
                     if (emptyView == null)
@@ -865,7 +865,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     emptyView.getErrorTitle().setText(spannableStringBuilder);
                     emptyView.getEmptyIcon().setVisibility(View.GONE);
                     emptyView.setRetry(true);
-                    emptyView.setErrorRetryText("导入手机里的照片");
+                    emptyView.setErrorRetryText("立即导入");
                     emptyView.setEmptyCallBack(this);
                     emptyView.setVisibility(View.VISIBLE);
                     adapter.addFooter(emptyView);

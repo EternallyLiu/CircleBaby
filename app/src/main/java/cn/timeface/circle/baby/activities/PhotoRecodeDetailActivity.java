@@ -40,6 +40,8 @@ import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
 import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
@@ -223,6 +225,10 @@ public class PhotoRecodeDetailActivity extends BaseAppCompatActivity implements 
     private void postRecord() {
         String value = etContent.getText().toString();
 
+        if (Utils.getByteSize(value) > PublishActivity.INPUT_PIC_MAX_LENGTH) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), PublishActivity.INPUT_PIC_MAX_LENGTH));
+            return;
+        }
         photoRecode.setContent(value);
 
         if (imageUrls.size() < 1) {

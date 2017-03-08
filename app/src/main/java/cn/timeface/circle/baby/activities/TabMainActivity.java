@@ -146,7 +146,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 //        );
         int type = getIntent().getIntExtra("type", 0);
         if (type == 1)
-            onEvent(new BabyAttentionEvent(-1));
+            onEvent(new BabyAttentionEvent(BabyAttentionEvent.TYPE_CREATE_BABY));
         new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {
@@ -406,28 +406,25 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     public void onEvent(BabyAttentionEvent attentionEvent) {
         if (attentionEvent.getType() == 1 && attentionEvent.getBuilder() != null)
             showDialog(attentionEvent.getType(), attentionEvent.getBuilder());
-        else if (attentionEvent.getType() == -1) {
-            String relativeName = FastData.getRelationName();
+        else if (attentionEvent.getType() == BabyAttentionEvent.TYPE_CREATE_BABY) {
             BabyObj babyObj = FastData.getBabyObj();
             StringBuilder sb = new StringBuilder();
             SpannableStringBuilder builder = new SpannableStringBuilder();
-            sb.append(String.format("%s 创建成功", babyObj.getNickName()));
-            builder.append(String.format("%s 创建成功", babyObj.getNickName()));
-            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            sb.append(String.format("%s创建成功", babyObj.getNickName()));
+            builder.append(String.format("%s创建成功", babyObj.getNickName()));
+            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextSize(this, R.dimen.text_large), 0, babyObj.getNickName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
-            sb.append(String.format("\n %s 可以导入 %s 的照片了", relativeName, babyObj.getNickName())).append("\n");
-            builder.append(String.format("\n %s 可以导入 %s 的照片了", relativeName, babyObj.getNickName())).append("\n");
-            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            sb.append(String.format("\n %s已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
+            builder.append(String.format("\n %s已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
+            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            sb.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName())).append("\n");
-            builder.append(String.format(" 回顾 %s 的成长吧！", babyObj.getNickName()));
-            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            sb.append("马上导入宝宝照片，").append("\n");
+            builder.append("马上导入宝宝照片，").append("\n");
+            sb.append(String.format(" 回顾宝宝的成长吧！", babyObj.getNickName())).append("\n");
+            builder.append(String.format(" 回顾宝宝的成长吧！", babyObj.getNickName()));
 
-            builder.setSpan(SpannableUtils.getTextSize(this, R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             showDialog(attentionEvent.getType(), builder);
         }
     }

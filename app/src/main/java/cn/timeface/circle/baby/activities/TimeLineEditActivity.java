@@ -53,6 +53,7 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -273,6 +274,10 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     private void editTime() {
         String value = etContent.getText().toString();
+        if (Utils.getByteSize(value) > (timelimeobj.getType() == 4 ? PublishActivity.INPUT_VOICE_MAX_LENGTH : PublishActivity.INPUT_PIC_MAX_LENGTH)) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), timelimeobj.getType() == 4 ? PublishActivity.INPUT_VOICE_MAX_LENGTH : PublishActivity.INPUT_PIC_MAX_LENGTH));
+            return;
+        }
         if (timelimeobj.getMediaList().size() < 1 && timelimeobj.getType() != 4 && timelimeobj.getType() != 1) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
