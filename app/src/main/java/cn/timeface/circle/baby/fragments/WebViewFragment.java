@@ -18,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
  * Created by Tao on 3/3/16.
@@ -71,6 +72,7 @@ public class WebViewFragment extends BaseFragment {
                 return super.onJsAlert(view, url, message, result);
             }
         });
+        LogUtil.showLog("url==="+url);
         webView.loadUrl(url);
     }
 

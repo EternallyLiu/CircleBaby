@@ -67,6 +67,6 @@ public class AboutActivity extends BaseAppCompatActivity {
      * 点击跳转至->服务条款
      */
     public void clickClause(View v) {
-        FragmentBridgeActivity.openWebViewFragment(this, "http://dev1.v5time.net/baby/serviceProvision.html", "服务条款");
+        FragmentBridgeActivity.openWebViewFragment(this, BuildConfig.API_URL+"serviceProvision.html", "服务条款");
     }
 }
