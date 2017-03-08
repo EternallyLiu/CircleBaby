@@ -413,12 +413,11 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             sb.append(String.format("%s创建成功", babyObj.getNickName()));
             builder.append(String.format("%s创建成功", babyObj.getNickName()));
             builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            int length=sb.length();
-            builder.setSpan(SpannableUtils.getTextSize(this,R.dimen.text_large), 0, length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            builder.setSpan(SpannableUtils.getTextSize(this, R.dimen.text_large), 0, babyObj.getNickName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
-            sb.append(String.format("\n %s已经%s了", babyObj.getNickName(),babyObj.getAge())).append("\n");
-            builder.append(String.format("\n %s已经%s了", babyObj.getNickName(),babyObj.getAge())).append("\n");
+            sb.append(String.format("\n %s已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
+            builder.append(String.format("\n %s已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
             builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             sb.append("马上导入宝宝照片，").append("\n");

@@ -90,6 +90,10 @@ import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
+    public static final int INPUT_PIC_MAX_LENGTH = 400;
+    public static final int INPUT_VOICE_MAX_LENGTH = 1200;
+    public static final int INPUT_VIDEO_MAX_LENGTH = 400;
+
     public static final int NOMAL = 0;
     public static final int PHOTO = 1;
     public static final int VIDEO = 2;
@@ -574,6 +578,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布识图卡片
     private void publishCard() {
         String content = etContent.getText().toString();
+        if (Utils.getByteSize(content) > (type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH)) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH));
+            return;
+        }
         if (cardObjs.size() == 0) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             isPublish = false;
@@ -614,6 +622,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布日记
     private void publishDiary() {
         String content = etContent.getText().toString();
+        if (Utils.getByteSize(content) > (type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH)) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH));
+            return;
+        }
         if (cardObj == null) {
             if (type == 1) {
                 Toast.makeText(this, "请选择视频~", Toast.LENGTH_SHORT).show();
@@ -669,6 +681,10 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布照片
     private void postRecord() {
         String value = etContent.getText().toString();
+        if (Utils.getByteSize(value) > (type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH)) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH));
+            return;
+        }
         long time = 0;
         if (imageUrls.size() < 1 && type != 4) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();

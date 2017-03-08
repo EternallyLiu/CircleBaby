@@ -529,7 +529,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             initData();
             currentPage = 1;
             reqData(currentPage);
-
         }
     }
 
