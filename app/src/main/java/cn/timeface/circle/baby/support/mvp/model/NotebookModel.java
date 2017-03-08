@@ -150,7 +150,8 @@ public class NotebookModel extends BasePresenterModel implements NotebookPresent
         contents.add(bookModel.getContentList().get(0));
         contents.add(bookModel.getContentList().get(bookModel.getContentList().size() - 1));
 
-        return openApi.templateInfo(bookModel.getBookId(),templateId, contents, "");
+//        return openApi.templateInfo(bookModel.getBookId(),templateId, contents, "");
+        return Observable.empty();
     }
 
     @Override
