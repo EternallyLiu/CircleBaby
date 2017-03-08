@@ -30,6 +30,9 @@ import cn.timeface.circle.baby.support.utils.FastData;
  * Created by lidonglin on 2016/6/28.
  */
 public class MiPushMessageReceiver extends PushMessageReceiver {
+
+    private static final String MSG_COUNT_CHANGED = "msgCount"; // 通过透传消息更新未读消息数量
+
     private String mRegId;
     private long mResultCode = -1;
     private String mReason;
@@ -43,7 +46,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
     private static String mToastInfo;
 
 
-
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
         System.out.println("===== onReceivePassThroughMessage ====");
@@ -52,6 +54,11 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
             mTopic = message.getTopic();
         } else if (!TextUtils.isEmpty(message.getAlias())) {
             mAlias = message.getAlias();
+        }
+
+        if (TextUtils.equals(mMessage, MSG_COUNT_CHANGED)) {
+            // 未读消息数量变化
+            EventBus.getDefault().post(new UnreadMsgEvent());
         }
     }
 

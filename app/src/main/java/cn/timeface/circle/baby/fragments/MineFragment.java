@@ -200,8 +200,11 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                     if (unReadMsgResponse.success()) {
                         if (unReadMsgResponse.getUnreadMessageCount() > 0) {
                             ivDot.setVisibility(View.VISIBLE);
+                            tvCountMsg.setVisibility(View.VISIBLE);
+                            tvCountMsg.setText(String.valueOf(unReadMsgResponse.getUnreadMessageCount()));
                         } else {
                             ivDot.setVisibility(View.GONE);
+                            tvCountMsg.setVisibility(View.GONE);
                         }
                     }
                 }, error -> {
