@@ -63,6 +63,8 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     private int paddingImage = 4;
     public static final int MAX_ROW_COUNT = 2;
 
+    private boolean isIntentCalender = true;
+
     private View tipView;
     public static final int ROW_MAX_COUNT = 3;
 
@@ -516,8 +518,10 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                 VideoPlayActivity.open(context(), v.getTag(R.id.rl_single).toString());
                 break;
             case R.id.calendar:
-                FragmentBridgeActivity.open(context(), "TimeLineFragment");
-                CountlyEventHelper.getInstance().calendarEvent(FastData.getUserId());
+                if (isIntentCalender()) {
+                    FragmentBridgeActivity.open(context(), "TimeLineFragment");
+                    CountlyEventHelper.getInstance().calendarEvent(FastData.getUserId());
+                }
                 break;
             case R.id.icon_comment:
                 Observable.defer(() -> Observable.just((int) v.getTag(R.id.recycler_item_click_tag)))
@@ -589,6 +593,14 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         }
         if (getLoadDataFinish() != null)
             getLoadDataFinish().loadfinish(msg.what);
+    }
+
+    public boolean isIntentCalender() {
+        return isIntentCalender;
+    }
+
+    public void setIntentCalender(boolean intentCalender) {
+        isIntentCalender = intentCalender;
     }
 
     public void setTipView(View tipView) {

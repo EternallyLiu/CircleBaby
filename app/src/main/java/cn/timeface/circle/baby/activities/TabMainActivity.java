@@ -145,6 +145,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 //                .debug(BuildConfig.DEBUG).build()
 //        );
         int type = getIntent().getIntExtra("type", 0);
+        getIntent().putExtra("type", 0);
         if (type == 1)
             onEvent(new BabyAttentionEvent(BabyAttentionEvent.TYPE_CREATE_BABY));
         new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE)

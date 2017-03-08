@@ -90,6 +90,9 @@ import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
+    public static final String TIME_FORMAT = "yyyy-MM-dd";
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
+
     public static final int INPUT_PIC_MAX_LENGTH = 400;
     public static final int INPUT_VOICE_MAX_LENGTH = 1200;
     public static final int INPUT_VIDEO_MAX_LENGTH = 400;
@@ -244,7 +247,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             gvGridView.setVisibility(View.GONE);
             ivCard.setVisibility(View.VISIBLE);
             GlideUtil.displayImage(cardObj.getMedia().getImgUrl(), ivCard);
-            time_shot = DateUtil.formatDate("yyyy.MM.dd", cardObj.getMedia().getPhotographTime());
+            time_shot = DateUtil.formatDate(TIME_FORMAT, cardObj.getMedia().getPhotographTime());
             tvTime.setText(time_shot);
         }
         if (cardObjs != null) {
@@ -261,9 +264,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             adapter.setData(list);
             adapter.notifyDataSetChanged();
             if (cardObjs.get(0).getMedia().getPhotographTime() == 0) {
-                time_shot = DateUtil.formatDate("yyyy.MM.dd", System.currentTimeMillis());
+                time_shot = DateUtil.formatDate(TIME_FORMAT, System.currentTimeMillis());
             } else {
-                time_shot = DateUtil.formatDate("yyyy.MM.dd", cardObjs.get(0).getMedia().getPhotographTime());
+                time_shot = DateUtil.formatDate(TIME_FORMAT, cardObjs.get(0).getMedia().getPhotographTime());
             }
             tvTime.setText(time_shot);
         }
@@ -376,8 +379,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         titles.clear();
         for (ImgObj item : selImages) {
             imageUrls.add(item.getLocalPath());
-            String title = item.getDate();
-
+            String title = DateUtil.formatDate(TIME_FORMAT, item.getDateTimeMills());
+            LogUtil.showLog("title===" + title+"-----"+item.getDateTimeMills());
             if (!titles.contains(title)) {
                 titles.add(title);
             }
@@ -391,7 +394,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             list = new ArrayList<>(0);
             imagelLists[i] = new ArrayList<>();
             for (int index = 0; index < selImages.size(); index++) {
-                if (titles.get(i).equals(selImages.get(index).getDate())) {
+                if (titles.get(i).equals(DateUtil.formatDate(TIME_FORMAT, selImages.get(index).getDateTimeMills()))) {
                     imagelLists[i].add(selImages.get(index));
                     list.add(mediaObjs.get(index));
                 }
@@ -520,7 +523,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     layoutParams.width = width;
                     layoutParams.height = width;
                     ivVideo.setLayoutParams(layoutParams);
-                    time_shot = DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate());
+                    time_shot = DateUtil.formatDate(TIME_FORMAT, videoInfo.getDate());
                     LogUtil.showLog("time==" + videoInfo.getDate());
                     tvTime.setText(time_shot);
                     tvVideotime.setText("时长：" + DateUtil.getTime4(videoInfo.getDuration() * 1000));
@@ -589,8 +592,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         }
         tfProgressDialog.setTvMessage("发布中");
         tfProgressDialog.show(getSupportFragmentManager(), "");
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+        long time = DateUtil.getTime(t, DATETIME_FORMAT);
 
         SendTimeFace data = new SendTimeFace(0);
         data.getDataList().add(new TimeConttent(null, content, mediaObjs, milestone == null ? 0 : milestone.getId(), time));
@@ -638,8 +641,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         }
         tfProgressDialog.setTvMessage("发布中");
         tfProgressDialog.show(getSupportFragmentManager(), "");
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+        long time = DateUtil.getTime(t, DATETIME_FORMAT);
         List<TimeConttent> datalist = new ArrayList<>();
         ArrayList<MediaObj> cardObjs = new ArrayList<>();
         cardObjs.add(cardObj.getMedia());
@@ -698,8 +701,9 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         }
 
         if (photoRecodes.size() == 1) {
-            String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-            time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+            String t = tvTime.getText().toString() + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+            LogUtil.showLog("t==="+t);
+            time = DateUtil.getTime(t, DATETIME_FORMAT);
         }
         tfProgressDialog.setTvMessage("发布中");
         tfProgressDialog.show(getSupportFragmentManager(), "");
@@ -713,8 +717,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         for (PhotoRecode photoRecode : photoRecodes) {
             if (photoRecodes.size() > 1) {
                 String title = photoRecode.getTitle();
-                String t = title + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-                time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+                String t = title + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+                time = DateUtil.getTime(t, DATETIME_FORMAT);
             }
             String content = photoRecode.getContent();
             Milestone mileStone = photoRecode.getMileStone();
@@ -744,8 +748,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
-        Log.v(TAG, s);
-
+        LogUtil.showLog("time==="+time);
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {

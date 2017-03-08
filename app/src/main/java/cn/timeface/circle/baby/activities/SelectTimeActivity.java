@@ -22,6 +22,7 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 public class SelectTimeActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
@@ -126,7 +127,7 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
 //                        if (DateUtil.getTime(time, "yyyy.MM.dd") < FastData.getBabyBithday()) {
 //                            ToastUtil.showToast(getString(R.string.publish_select_date_min));
 //                        }
-
+                        LogUtil.showLog("time==="+time);
                         Intent intent = new Intent();
                         intent.putExtra("time", time);
                         setResult(RESULT_OK, intent);

@@ -210,7 +210,8 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                     swipeRefresh.setRefreshing(false);
 //                    helper.finishTFPTRRefresh();
                 }, error -> {
-                    swipeRefresh.setRefreshing(false);
+                    if (swipeRefresh != null)
+                        swipeRefresh.setRefreshing(false);
                     Log.e("TimeLineDetailActivity", "queryBabyTimeDetail:");
                     error.printStackTrace();
                 });

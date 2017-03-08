@@ -110,6 +110,7 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
         }
         title.setText(FastData.getBabyObj().getNickName() + "的成长记录");
         adapter = new TimeLineGroupListAdapter(getActivity());
+        adapter.setIntentCalender(false);
         adapter.setLoadDataFinish(this);
         contentRecyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -123,6 +124,8 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
         empty.setErrorRetryText("重新加载");
         empty.setErrorText("对不起！没有加载到数据！");
         empty.setEmptyCallBack(this);
+        empty.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout);
         helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
         helper.tfPtrListener(this);
@@ -154,7 +157,8 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
                             currentPage++;
                     } else adapter.error();
                 }, error -> {
-                    adapter.error();
+                    if (adapter != null)
+                        adapter.error();
                 });
     }
 
@@ -220,13 +224,14 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
 
     @Override
     public void loadfinish(int code) {
-        helper.finishTFPTRRefresh();
+        if (helper != null)
+            helper.finishTFPTRRefresh();
         if (adapter.getRealItemSize() <= 0) {
-            empty.setVisibility(View.VISIBLE);
-            swipeRefreshLayout.setVisibility(View.GONE);
+            if (empty!=null)empty.setVisibility(View.VISIBLE);
+            if (swipeRefreshLayout!=null)swipeRefreshLayout.setVisibility(View.GONE);
         } else {
-            empty.setVisibility(View.GONE);
-            swipeRefreshLayout.setVisibility(View.VISIBLE);
+            if (empty!=null)empty.setVisibility(View.GONE);
+            if (swipeRefreshLayout!=null)swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
     }
 
