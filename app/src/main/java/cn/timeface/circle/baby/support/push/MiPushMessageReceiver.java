@@ -9,6 +9,8 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
@@ -23,6 +25,7 @@ import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.activities.LoginActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
+import cn.timeface.circle.baby.support.api.models.objs.MiPushMsgObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 
 /**
@@ -30,8 +33,6 @@ import cn.timeface.circle.baby.support.utils.FastData;
  * Created by lidonglin on 2016/6/28.
  */
 public class MiPushMessageReceiver extends PushMessageReceiver {
-
-    private static final String MSG_COUNT_CHANGED = "msgCount"; // 通过透传消息更新未读消息数量
 
     private String mRegId;
     private long mResultCode = -1;
@@ -50,15 +51,28 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
         System.out.println("===== onReceivePassThroughMessage ====");
         mMessage = message.getContent();
+        Log.i("-------->", "-------->onReceivePassThroughMessage mMessage: " +mMessage);
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
         } else if (!TextUtils.isEmpty(message.getAlias())) {
             mAlias = message.getAlias();
         }
 
-        if (TextUtils.equals(mMessage, MSG_COUNT_CHANGED)) {
-            // 未读消息数量变化
-            EventBus.getDefault().post(new UnreadMsgEvent());
+        if (!TextUtils.isEmpty(mMessage)) {
+            MiPushMsgObj pushMsgObj = null;
+            try {
+                pushMsgObj = new Gson().fromJson(mMessage, MiPushMsgObj.class);
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+            if (pushMsgObj != null) {
+                if (pushMsgObj.getMsgChange() != null
+                        // 这里判断UserID是个坑，服务端不能按照DeviceID推送，后期需要优化
+                        && TextUtils.equals(pushMsgObj.getMsgChange().getUserId(), FastData.getUserId())) {
+                    // 未读消息数量变化
+                    EventBus.getDefault().post(new UnreadMsgEvent(pushMsgObj.getMsgChange().getUnReadMsgCount()));
+                }
+            }
         }
     }
 
