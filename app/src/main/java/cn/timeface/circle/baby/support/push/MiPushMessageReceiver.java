@@ -51,7 +51,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
         System.out.println("===== onReceivePassThroughMessage ====");
         mMessage = message.getContent();
-        Log.i("-------->", "-------->onReceivePassThroughMessage mMessage: " +mMessage);
+        Log.d("-------->", "-------->onReceivePassThroughMessage mMessage: " + mMessage);
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
         } else if (!TextUtils.isEmpty(message.getAlias())) {
@@ -168,10 +168,10 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 //                DynamicDetailActivity.open(FireApp.getApp(), Intent.FLAG_ACTIVITY_NEW_TASK, s);
 //            } else if (msg.what == MESSAGE) {
             if (isAppForground(context)) {
-                Log.v("MiPushMessageReceiver","在前台");
+                Log.v("MiPushMessageReceiver", "在前台");
 //                Toast.makeText(context, mToastInfo, Toast.LENGTH_LONG).show();
             } else {
-                Log.v("MiPushMessageReceiver","不在前台");
+                Log.v("MiPushMessageReceiver", "不在前台");
                 if (!TextUtils.isEmpty(FastData.getUserId())) {
                     Intent intent = new Intent(context, TabMainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
