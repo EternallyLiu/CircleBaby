@@ -56,4 +56,5 @@
     <dimen name="size_14">14dp</dimen>
     <dimen name="size_120">120dp</dimen>
     <dimen name="size_9">9dp</dimen>
+    <dimen name="size_8">8dp</dimen>
 </resources>

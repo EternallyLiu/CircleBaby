@@ -117,7 +117,7 @@ public class TimeLineSelectAdapter extends BaseAdapter {
         ImageView image1 = ViewHolder.getView(view, R.id.image_1);
         ImageView image2 = ViewHolder.getView(view, R.id.image_2);
         MonthRecord item = getItem(position);
-        month.setText(item.getMoth() + "月份");
+        month.setText(item.getMoth() + "月");
         babyAge.setText(item.getBabyAge());
         count.setText("共" + item.getRecordcount() + "条");
         if (item.getMedias() == null || item.getMedias().size() <= 0) {

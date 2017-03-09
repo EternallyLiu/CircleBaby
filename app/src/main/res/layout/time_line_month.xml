@@ -4,7 +4,9 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     android:paddingLeft="@dimen/size_12"
-    android:paddingRight="@dimen/size_6">
+    android:paddingRight="@dimen/size_6"
+    android:paddingTop="@dimen/size_14"
+    android:paddingBottom="@dimen/size_14">
 
     <TextView
         android:id="@+id/month"
@@ -15,7 +17,7 @@
         android:gravity="center_vertical|left"
         android:text="@string/time_line_select_month"
         android:textColor="@color/sea_buckthorn"
-        android:textSize="@dimen/text_large" />
+        android:textSize="@dimen/text_normal" />
 
     <TextView
         android:id="@+id/baby_age"
@@ -27,32 +29,33 @@
         android:gravity="center_vertical|left"
         android:text="@string/time_line_select_baby_age"
         android:textColor="@color/aluminum"
-        android:textSize="@dimen/text_medium" />
+        android:textSize="@dimen/text_small" />
 
     <ImageView
         android:id="@+id/cat"
-        android:layout_width="@dimen/size_12"
-        android:layout_height="@dimen/size_24"
+        android:layout_width="@dimen/size_8"
+        android:layout_height="@dimen/size_16"
+        android:layout_marginLeft="@dimen/size_4"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:src="@drawable/time_line_gointo" />
 
     <ImageView
         android:id="@+id/image_1"
-        android:layout_width="@dimen/size_80"
-        android:layout_height="@dimen/size_80"
+        android:layout_width="@dimen/size_48"
+        android:layout_height="@dimen/size_48"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/cat"
-        android:padding="@dimen/size_2"
+        android:padding="@dimen/size_4"
         android:scaleType="fitCenter" />
 
     <ImageView
         android:id="@+id/image_2"
-        android:layout_width="@dimen/size_80"
-        android:layout_height="@dimen/size_80"
+        android:layout_width="@dimen/size_48"
+        android:layout_height="@dimen/size_48"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/image_1"
-        android:padding="@dimen/size_2"
+        android:padding="@dimen/size_4"
         android:scaleType="fitCenter" />
 
     <TextView
@@ -65,6 +68,6 @@
         android:gravity="center"
         android:text="@string/time_line_select_pic_count"
         android:textColor="@color/aluminum"
-        android:textSize="@dimen/text_medium" />
+        android:textSize="@dimen/text_small" />
 
 </RelativeLayout>
