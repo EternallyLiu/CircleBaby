@@ -886,7 +886,7 @@ public interface ApiService {
     @GET("printGrowth/getTimeLineByTime")
     Observable<QueryTimeLineResponse> queryTimeLineByTime(
             @Query("babyId") int babyId,
-            @Query("type") int type);
+            @Query("type") String type);
 
     /**
      * 按发布人查询所有时光

@@ -55,6 +55,12 @@ import cn.timeface.open.api.bean.obj.TFOResourceObj;
  * 选择服务器照片（已经上传的图片）
  * author : YW.SUN Created on 2017/2/14
  * email : sunyw10@gmail.com
+ *
+ *这个页面是这样的总共三层fragment，1：筛选条件（各种按）fragment 2：筛选条件或内容fragment 3：个别情况下的第三季页面
+ * fl_container_type:第一层fragment，用来展示各种按（时间，发布人，地点，标签）fragment
+ * fl_container:第二层fragment，
+ * fl_container_ex:第三层夫人啊哥们他， canback为true的时候
+ *
  */
 public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity implements
         SelectContentTypeDialog.SelectTypeListener, View.OnClickListener, IEventBus, PhotoMapFragment.SelectLocation {

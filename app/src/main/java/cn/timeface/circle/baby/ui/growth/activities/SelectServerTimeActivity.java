@@ -7,11 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,11 +33,13 @@ import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.SelectContentTypeDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
+import cn.timeface.circle.baby.events.TimeSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryProductionExtraResponse;
 import cn.timeface.circle.baby.support.api.models.responses.QuerySelectedPhotoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
@@ -48,18 +52,26 @@ import cn.timeface.circle.baby.ui.growth.events.SelectMediaListEvent;
 import cn.timeface.circle.baby.ui.growth.events.SelectTimeLineEvent;
 import cn.timeface.circle.baby.ui.growth.fragments.SelectUserFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
+import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
- * 选择时光界面（从服务器拉取数据）
- * author : YW.SUN Created on 2017/2/15
+ * 选择服务器照片（已经上传的图片）
+ * author : YW.SUN Created on 2017/2/14
  * email : sunyw10@gmail.com
+ *
+ * 这个页面是这样的总共三层fragment，1：筛选条件（各种按）fragment 2：筛选条件或内容fragment 3：个别情况下的第三季页面
+ * fl_container_type:第一层fragment，用来展示各种按（时间，发布人，地点，标签）fragment
+ * fl_container:第二层fragment，
+ * fl_container_ex:第三层fragment，canback为true的时候
+ *
  */
 public class SelectServerTimeActivity extends BasePresenterAppCompatActivity implements
         SelectContentTypeDialog.SelectTypeListener, View.OnClickListener, IEventBus {
@@ -74,6 +86,14 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     TextView tvContent;
     @Bind(R.id.fl_container_ex)
     FrameLayout flContainerEx;
+    @Bind(R.id.tv_sel_count)
+    TextView tvSelectCount;
+    @Bind(R.id.cb_all_sel)
+    CheckBox cbAllSel;
+    @Bind(R.id.rl_photo_tip)
+    RelativeLayout rlPhotoTip;
+    @Bind(R.id.tf_stateView)
+    TFStateView stateView;
 
     boolean fragmentShow = false;
     boolean canBack = false;
@@ -116,13 +136,19 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         this.bookId = getIntent().getStringExtra("book_id");
         this.openBookId = getIntent().getStringExtra("open_book_id");
         this.babyId = getIntent().getIntExtra("baby_id", 0);
+        cbAllSel.setOnClickListener(this);
 
         //新建一本
         if(TextUtils.isEmpty(bookId)){
-            timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
+            stateView.setVisibility(View.GONE);
+            timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias, allSelectTimeIds, babyId, allSelectTimeLines);
+            timeFragment.setTimeLineObjs(allSelectTimeLines);
+            timeFragment.setMediaObjs(allSelectMedias);
             showContent(timeFragment);
         //编辑一本
         } else {
+            stateView.setVisibility(View.VISIBLE);
+            stateView.loading();
             //先查取扩展信息，解析出来哪些time被选中了
             addSubscription(
                     apiService.getProductionExtra(bookId)
@@ -139,12 +165,30 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                     }
                             )
                             .observeOn(Schedulers.io())
-                            .flatMap(new Func1<QueryProductionExtraResponse, Observable<QuerySelectedPhotoResponse>>() {
+                            //获取所有的时光
+                            .flatMap(new Func1<QueryProductionExtraResponse, Observable<QueryTimeLineResponse>>() {
                                 @Override
-                                public Observable<QuerySelectedPhotoResponse> call(QueryProductionExtraResponse extraResponse) {
-                                    return apiService.bookMedias(bookId);
+                                public Observable<QueryTimeLineResponse> call(QueryProductionExtraResponse queryProductionExtraResponse) {
+                                    return apiService.queryTimeLineByTime(babyId, "-1");
                                 }
                             })
+                            .filter(queryTimeLineResponse -> queryTimeLineResponse.success())
+                            .observeOn(Schedulers.io())
+                            .flatMap(
+                                    new Func1<QueryTimeLineResponse, Observable<QuerySelectedPhotoResponse>>() {
+                                        @Override
+                                        public Observable<QuerySelectedPhotoResponse> call(QueryTimeLineResponse queryTimeLineResponse) {
+                                            allSelectTimeLines.clear();
+
+                                            for(TimeLineObj timeLineObj : queryTimeLineResponse.getTimeLineObjs()){
+                                                if(allSelectTimeIds.contains(String.valueOf(timeLineObj.getTimeId()))){
+                                                    allSelectTimeLines.add(timeLineObj);
+                                                }
+                                            }
+                                            return apiService.bookMedias(bookId);
+                                        }
+                                    }
+                            )
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     response -> {
@@ -154,13 +198,17 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                                     TypeConstants.PHOTO_TYPE_TIME,
                                                     FastData.getUserId(),
                                                     bookType,
-                                                    response.getDataList(), allSelectTimeIds, babyId);
-                                            showContent(timeFragment);
+                                                    response.getDataList(), allSelectTimeIds, babyId, allSelectTimeLines);
+                                            timeFragment.setTimeLineObjs(allSelectTimeLines);
+                                            timeFragment.setMediaObjs(allSelectMedias);
                                         } else {
                                             ToastUtil.showToast(response.info);
                                         }
+                                        showContent(timeFragment);
+                                        stateView.finish();
                                     },
                                     throwable -> {
+                                        stateView.showException(throwable);
                                         Log.e(TAG, throwable.getLocalizedMessage());
                                     }
                             )
@@ -177,29 +225,29 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.save){
-            List<TimeLineObj> selectedTimeLines = new ArrayList<>();
-            List<MediaObj> selectedMedias = new ArrayList<>();
-            //新建
-            if(TextUtils.isEmpty(bookId)){
-                if(timeFragment != null){
-                    selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
-                    selectedMedias.addAll(timeFragment.getSelectedMedias());
-                }
+//            List<TimeLineObj> selectedTimeLines = new ArrayList<>();
+//            List<MediaObj> selectedMedias = new ArrayList<>();
+//            //新建
+//            if(TextUtils.isEmpty(bookId)){
+//                if(timeFragment != null){
+//                    selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
+//                    selectedMedias.addAll(timeFragment.getSelectedMedias());
+//                }
+//
+//                Iterator iteratorFragment = userFragmentMap.entrySet().iterator();
+//                while (iteratorFragment.hasNext()){
+//                    Map.Entry entry = (Map.Entry) iteratorFragment.next();
+//                    ServerTimeFragment timeFragment = (ServerTimeFragment) entry.getValue();
+//                    selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
+//                    selectedMedias.addAll(timeFragment.getSelectedMedias());
+//                }
+//            //编辑
+//            } else {
+//                selectedTimeLines.addAll(allSelectTimeLines);
+//                selectedMedias.addAll(allSelectMedias);
+//            }
 
-                Iterator iteratorFragment = userFragmentMap.entrySet().iterator();
-                while (iteratorFragment.hasNext()){
-                    Map.Entry entry = (Map.Entry) iteratorFragment.next();
-                    ServerTimeFragment timeFragment = (ServerTimeFragment) entry.getValue();
-                    selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
-                    selectedMedias.addAll(timeFragment.getSelectedMedias());
-                }
-            //编辑
-            } else {
-                selectedTimeLines.addAll(allSelectTimeLines);
-                selectedMedias.addAll(allSelectMedias);
-            }
-
-            int pageNum = selectedTimeLines.size();
+            int pageNum = allSelectTimeLines.size();
             if(pageNum == 0){
                 ToastUtil.showToast("请选择至少一条时光");
                 return true;
@@ -220,7 +268,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
                                             //按月份分组时光
                                             HashMap<String, List<TimeLineObj>> timelineMap = new HashMap<>();
-                                            for (TimeLineObj timeLineObj : selectedTimeLines) {
+                                            for (TimeLineObj timeLineObj : allSelectTimeLines) {
                                                 String key = DateUtil.formatDate("yyyy-MM", timeLineObj.getDate());
                                                 if (timelineMap.containsKey(key)) {
                                                     timelineMap.get(key).add(timeLineObj);
@@ -243,8 +291,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                                 List<TimeLineObj> timeLineObjs = (List<TimeLineObj>) entry.getValue();
 
                                                 //content list，代表一个时光
-                                                List<TFOContentObj> tfoContentObjs = new ArrayList<>(selectedTimeLines.size());
-                                                for (TimeLineObj timeLineObj : selectedTimeLines) {
+                                                List<TFOContentObj> tfoContentObjs = new ArrayList<>(allSelectTimeLines.size());
+                                                for (TimeLineObj timeLineObj : allSelectTimeLines) {
                                                     tfoContentObjs.add(timeLineObj.toTFOContentObj());
                                                 }
 
@@ -286,14 +334,14 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                             //拼接所有图片的id，作为保存书籍接口使用
                                             StringBuffer sb = new StringBuffer("{\"mediaIds\":[");
                                             StringBuffer sbTime = new StringBuffer("\"timeIds\":[");
-                                            for (TimeLineObj timeLineObj : selectedTimeLines) {
+                                            for (TimeLineObj timeLineObj : allSelectTimeLines) {
                                                 if (timeLineObj != null) {
                                                     sbTime.append(timeLineObj.getTimeId());
                                                     sbTime.append(",");
 
                                                     if (!timeLineObj.getMediaList().isEmpty()) {
                                                         for (MediaObj mediaObj : timeLineObj.getMediaList()) {
-                                                            if(selectedMedias.contains(mediaObj)){
+                                                            if(allSelectMedias.contains(mediaObj)){
                                                                 sb.append(mediaObj.getId());
                                                                 sb.append(",");
                                                             }
@@ -328,6 +376,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             tvContent.setVisibility(View.GONE);
             tvContentType.setVisibility(View.VISIBLE);
             flContainerEx.setVisibility(View.GONE);
+            rlPhotoTip.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }
@@ -340,14 +389,17 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     public void selectTypeTime() {
         tvContentType.setText("按时间");
         if(timeFragment == null){
-            if(TextUtils.isEmpty(bookId)){
-                timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
-            } else {
-                timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias, allSelectTimeIds, babyId);
-            }
+//            if(TextUtils.isEmpty(bookId)){
+//                timeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType);
+//            } else {
+                timeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_TIME, FastData.getUserId(), bookType, allSelectMedias, allSelectTimeIds, babyId, allSelectTimeLines);
+//            }
         }
+        timeFragment.setTimeLineObjs(allSelectTimeLines);
+        timeFragment.setMediaObjs(allSelectMedias);
         showContent(timeFragment);
         onClick(tvContentType);
+        rlPhotoTip.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -398,12 +450,21 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             ft.add(R.id.fl_container, fragment);
         }
         currentFragment = fragment;
+
+        if(currentFragment instanceof ServerTimeFragment){
+//            rlPhotoTip.setVisibility(View.VISIBLE);
+            initAllSelectView(((ServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
+        } else {
+            rlPhotoTip.setVisibility(View.GONE);
+        }
+
         ft.commitAllowingStateLoss();
     }
 
     Fragment currentFragmentEx = null;
     public void showContentEx(Fragment fragment){
         flContainerEx.setVisibility(View.VISIBLE);
+        rlPhotoTip.setVisibility(View.GONE);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (currentFragmentEx != null) {
@@ -415,6 +476,13 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             ft.add(R.id.fl_container_ex, fragment);
         }
         currentFragmentEx = fragment;
+
+        if(currentFragmentEx instanceof ServerTimeFragment){
+//            rlPhotoTip.setVisibility(View.VISIBLE);
+            initAllSelectView(((ServerTimeFragment) currentFragmentEx).isAllSelect(), allSelectTimeLines.size());
+        } else {
+            rlPhotoTip.setVisibility(View.GONE);
+        }
         ft.commitAllowingStateLoss();
         canBack = true;
     }
@@ -448,25 +516,66 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                 tvContent.setVisibility(View.VISIBLE);
                 tvContent.setText(userWrapObj.getUserInfo().getRelationName());
                 if(userFragmentMap.containsKey(userWrapObj.getUserInfo().getUserId())){
+                    userFragmentMap.get(userWrapObj.getUserInfo().getUserId()).setTimeLineObjs(allSelectTimeLines);
+                    userFragmentMap.get(userWrapObj.getUserInfo().getUserId()).setMediaObjs(allSelectMedias);
                     showContentEx(userFragmentMap.get(userWrapObj.getUserInfo().getUserId()));
+                    rlPhotoTip.setVisibility(View.VISIBLE);
                 } else {
                     ServerTimeFragment serverTimeFragment;
-                    if(TextUtils.isEmpty(bookId)){
-                        serverTimeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType);
-                    } else {
-                        serverTimeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType, allSelectMedias, allSelectTimeIds, babyId);
-                    }
+//                    if(TextUtils.isEmpty(bookId)){
+//                        serverTimeFragment = ServerTimeFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType);
+//                    } else {
+                        serverTimeFragment = ServerTimeFragment.newInstanceEdit(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType, allSelectMedias, allSelectTimeIds, babyId, allSelectTimeLines);
+//                    }
 
                     userFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverTimeFragment);
+                    userFragmentMap.get(userWrapObj.getUserInfo().getUserId()).setTimeLineObjs(allSelectTimeLines);
+                    userFragmentMap.get(userWrapObj.getUserInfo().getUserId()).setMediaObjs(allSelectMedias);
                     showContentEx(serverTimeFragment);
                 }
+                break;
 
+
+            //全选
+            case R.id.cb_all_sel:
+                if(cbAllSel.isChecked()){
+                    if(canBack){
+                        ((ServerTimeFragment) currentFragmentEx).doAllSelImg();
+                    } else {
+                        ((ServerTimeFragment) currentFragment).doAllSelImg();
+                    }
+                    if(allSelectTimeLines.size() > 0){
+                        //处理全选照片处理
+                        for(TimeLineObj timeLineObj : allSelectTimeLines){
+                            allSelectMedias.addAll(timeLineObj.getMediaList());
+                        }
+                    }
+                    cbAllSel.setChecked(false);
+                } else {
+                    if(canBack){
+                        ((ServerTimeFragment) currentFragmentEx).doAllUnSelImg();
+                    } else {
+                        ((ServerTimeFragment) currentFragment).doAllUnSelImg();
+                    }
+                    cbAllSel.setChecked(true);
+                    allSelectMedias.clear();
+                }
+
+                initAllSelectView(!cbAllSel.isChecked(), allSelectTimeLines.size());
                 break;
         }
     }
 
-    public void setAllSelectTimeLines(List<TimeLineObj> allSelectTimeLines) {
-        this.allSelectTimeLines = allSelectTimeLines;
+    private void initAllSelectView(boolean allSelect, int selectCount){
+        cbAllSel.setChecked(allSelect);
+        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_time_select_count), String.valueOf(selectCount))));
+    }
+
+    public void setPhotoTipVisibility(int visibility){
+        rlPhotoTip.setVisibility(visibility);
+        if(currentFragment instanceof ServerTimeFragment) {
+            initAllSelectView(((ServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
+        }
     }
 
     @Subscribe
@@ -478,7 +587,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
     @Subscribe
     public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
-        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
+//        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
         //选中
         if(selectMediaEvent.getSelect()){
             if(!allSelectMedias.contains(selectMediaEvent.getMediaObj())){
@@ -493,7 +602,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
     @Subscribe
     public void selectMediaListEvent(SelectMediaListEvent mediaListEvent){
-        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
+//        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
         //选中
         if(mediaListEvent.isSelect()){
             if(!allSelectMedias.containsAll(mediaListEvent.getMediaObjList())){
@@ -508,18 +617,30 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
     @Subscribe
     public void selectTimeLineEvent(SelectTimeLineEvent selectTimeLineEvent){
-        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
+//        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
         //选中
         if(selectTimeLineEvent.isSelect()){
-            if(!allSelectTimeIds.contains(selectTimeLineEvent.getTimeLineObj().getTimeId())){
+            if(!allSelectTimeLines.contains(selectTimeLineEvent.getTimeLineObj())){
                 allSelectTimeIds.add(String.valueOf(selectTimeLineEvent.getTimeLineObj().getTimeId()));
                 allSelectTimeLines.add(selectTimeLineEvent.getTimeLineObj());
             }
         } else {
-            if(allSelectTimeIds.contains(selectTimeLineEvent.getTimeLineObj())){
+            if(allSelectTimeLines.contains(selectTimeLineEvent.getTimeLineObj())){
                 allSelectTimeIds.remove(selectTimeLineEvent.getTimeLineObj().getTimeId());
                 allSelectTimeLines.remove(selectTimeLineEvent.getTimeLineObj());
             }
         }
+
+        if(canBack && currentFragmentEx instanceof ServerTimeFragment){
+            initAllSelectView(((ServerTimeFragment) currentFragmentEx).isAllSelect(), allSelectTimeLines.size());
+        } else if(currentFragment instanceof ServerTimeFragment) {
+            initAllSelectView(((ServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
+        }
+
+    }
+
+    @Subscribe
+    public void photoCountEvent(TimeSelectCountEvent countEvent){
+//        initSelectCount(countEvent.count);
     }
 }
