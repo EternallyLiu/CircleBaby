@@ -197,8 +197,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
@@ -235,12 +234,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     private void updateLoginInfo() {
-        apiService.updateLoginInfo()
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
-                }, throwable -> {
-                    Log.e(TAG, "updateLoginInfo:");
-                });
+        apiService.updateLoginInfo().compose(SchedulersCompat.applyIoSchedulers()).subscribe(response -> {
+        }, throwable -> {
+            Log.e(TAG, "updateLoginInfo:");
+        });
     }
 
 
@@ -290,12 +287,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
             @Override
             public void onTFPullUpToRefresh(View refreshView) {
-                if (currentPage <= 1)
-                    currentPage = 1;
+                if (currentPage <= 1) currentPage = 1;
                 if (currentPage != 1 && adapter.getRealItemSize() < PAGE_SIZE * currentPage) {
                     reqData(currentPage);
-                } else
-                    reqData(++currentPage);
+                } else reqData(++currentPage);
             }
 
             @Override
@@ -303,10 +298,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 appbar.setExpanded(false);
                 if (enableAnimation && bottomMenuShow) {
                     bottomMenuShow = false;
-                    ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
-                            "translationY",
-                            0,
-                            ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
+                    ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(), "translationY", 0, ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
                     animatorSet.playTogether(anim);
                     animatorSet.start();
                     if (getActivity() instanceof TabMainActivity) {
@@ -320,10 +312,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 appbar.setExpanded(true);
                 if (enableAnimation && !bottomMenuShow) {
                     bottomMenuShow = true;
-                    Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
-                            "translationY",
-                            ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
-                            0);
+                    Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(), "translationY", ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(), 0);
                     animatorSet.playTogether(anim3);
                     animatorSet.start();
                     if (getActivity() instanceof TabMainActivity) {
@@ -333,75 +322,64 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             }
         };
 
-        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
-                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
-                .tfPtrListener(ptrListener);
+        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout).setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH).tfPtrListener(ptrListener);
         contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
         contentRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
 
     private void reqData(int page) {
-        LogUtil.showLog("page===" + page);
-        apiService.timeline(page, PAGE_SIZE)
-                .map(timelineResponse -> timelineResponse.getDataList())
-                .map(timeLineGroupObjs -> {
-                    ArrayList<BaseObj> list = new ArrayList<>();
-                    for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
-                        TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
-                        if (!adapter.containObj(bean) || currentPage == 1)
-                            list.add(bean);
-                        for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
-                            if (!adapter.containObj(timeLineObj) || currentPage == 1)
-                                list.add(timeLineObj);
-                        }
-                    }
-                    LogUtil.showLog("list size==" + list.size());
-                    if (currentPage == 1) adapter.addList(true, list);
-                    else adapter.addList(list);
-                    return list;
-                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
-            if (tfStateView != null) {
-                tfStateView.finish();
-            }
-            tfptrListViewHelper.finishTFPTRRefresh();
-            LogUtil.showLog("finish==" + adapter.getRealItemSize());
-        }, throwable -> {
-            LogUtil.showError(throwable);
-            if (tfStateView != null) {
-                tfStateView.showException(throwable);
-            }
-            tfptrListViewHelper.finishTFPTRRefresh();
-            adapter.error();
-        });
+       addSubscription( apiService.timeline(page, PAGE_SIZE).map(timelineResponse -> timelineResponse.getDataList()).map(timeLineGroupObjs -> {
+           ArrayList<BaseObj> list = new ArrayList<>();
+           for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
+               TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+               if (!adapter.containObj(bean) || currentPage == 1) list.add(bean);
+               for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                   if (!adapter.containObj(timeLineObj) || currentPage == 1) list.add(timeLineObj);
+               }
+           }
+           if (currentPage == 1) adapter.addList(true, list);
+           else adapter.addList(list);
+           return list;
+       }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
+           if (tfStateView != null) {
+               tfStateView.finish();
+           }
+           tfptrListViewHelper.finishTFPTRRefresh();
+       }, throwable -> {
+           LogUtil.showError(throwable);
+           if (tfStateView != null) {
+               tfStateView.showException(throwable);
+           }
+           tfptrListViewHelper.finishTFPTRRefresh();
+           adapter.error();
+       }));
     }
 
     private void reqData(int page, int pageSize) {
-        apiService.timeline(page, pageSize)
-                .map(timelineResponse -> timelineResponse.getDataList())
-                .map(timeLineGroupObjs -> {
-                    ArrayList<BaseObj> list = new ArrayList<>();
-                    for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
-                        TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
-                        list.add(bean);
-                        for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
-                            list.add(timeLineObj);
-                        }
-                    }
-                    adapter.addList(true, list);
-                    return list;
-                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
-            if (tfStateView != null) {
-                tfStateView.finish();
-            }
-            tfptrListViewHelper.finishTFPTRRefresh();
-        }, throwable -> {
-            if (tfStateView != null) {
-                tfStateView.showException(throwable);
-            }
-            tfptrListViewHelper.finishTFPTRRefresh();
-            adapter.error();
-        });
+       addSubscription( apiService.timeline(page, pageSize).map(timelineResponse -> timelineResponse.getDataList()).map(timeLineGroupObjs -> {
+           ArrayList<BaseObj> list = new ArrayList<>();
+           for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
+               TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+               list.add(bean);
+               for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                   list.add(timeLineObj);
+               }
+           }
+           adapter.addList(true, list);
+           return list;
+       }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
+           if (tfStateView != null) {
+               tfStateView.finish();
+           }
+           tfptrListViewHelper.finishTFPTRRefresh();
+       }, throwable -> {
+           if (tfStateView != null) {
+               tfStateView.showException(throwable);
+           }
+           tfptrListViewHelper.finishTFPTRRefresh();
+           adapter.error();
+       }));
     }
 
 
@@ -439,7 +417,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 PublishActivity.open(getActivity(), PublishActivity.PHOTO);
                 break;
             case R.id.toolbar:
-                LogUtil.showLog("clicl toolbar");
                 if (System.currentTimeMillis() - clickToolBarLastTime <= 500 && adapter.getRealItemSize() > 0)
                     contentRecyclerView.scrollToPosition(0);
                 clickToolBarLastTime = System.currentTimeMillis();
@@ -523,8 +500,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Subscribe
     public void onEvent(HomeRefreshEvent event) {
-        if (event.getTimeId() > 0)
-            timeLineUpdate(event.getTimeId());
+        if (event.getTimeId() > 0) timeLineUpdate(event.getTimeId());
         else {
             initData();
             currentPage = 1;
@@ -550,14 +526,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     public void onEvent(UploadEvent event) {
         int progress = event.getProgress();
         mTvprogress.setText("上传中 " + progress + "%");
-        if (tvProgress != null)
-            tvProgress.setText(progress + "%");
+        if (tvProgress != null) tvProgress.setText(progress + "%");
         if (progress == 100) {
             mTvprogress.setVisibility(View.GONE);
-            if (progressDialog != null)
-                progressDialog.dismiss();
-            if (event.isComplete() && event.getTimeId() > 0)
-                timeLineUpdate(event.getTimeId());
+            if (progressDialog != null) progressDialog.dismiss();
+            if (event.isComplete() && event.getTimeId() > 0) timeLineUpdate(event.getTimeId());
             else {
                 currentPage = 1;
                 reqData(currentPage);
@@ -570,7 +543,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 progressDialog.dismiss();
             }
             if (event.isComplete() && event.getTimeId() > 0) {
-                LogUtil.showLog("event currentTimeId=====" + event.getTimeId());
                 timeLineUpdate(event.getTimeId());
             } else {
                 currentPage = 1;
@@ -613,11 +585,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
      */
     @Subscribe
     public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
-        if (mediaUpdateEvent.getAllDetailsListPosition() < 0)
-            return;
+        if (mediaUpdateEvent.getAllDetailsListPosition() < 0) return;
         TimeLineObj timeLineObj = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
         boolean flag = timeLineObj.getMediaList().contains(mediaUpdateEvent.getMediaObj());
-        LogUtil.showLog("flag:" + flag);
         if (flag) {
             int index = timeLineObj.getMediaList().indexOf(mediaUpdateEvent.getMediaObj());
             timeLineObj.getMediaList().get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
@@ -633,7 +603,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
      */
     private void initPicChange(List<String> list) {
         if (list != null && list.size() > 0) {
-            LogUtil.showLog("change:" + JSONUtils.parse2JSONString(list));
             if (picChangeView == null)
                 picChangeView = View.inflate(getActivity(), R.layout.home_header_photo_added, null);
             TimerImageView imageView = (TimerImageView) picChangeView.findViewById(R.id.pic_array);
@@ -643,7 +612,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             imageView1.setOnClickListener(this);
             String count = list.size() + "";
             String content = String.format("手机新增了 %s 张照片！", count);
-            LogUtil.showLog("content:" + content);
             SpannableStringBuilder builder = new SpannableStringBuilder();
             builder.append(content);
             ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#F59650"));
@@ -660,18 +628,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Subscribe
     public void onEvent(PicSaveCompleteEvent pic) {
-        PhotoModel.getAllPhotoId().flatMap(s -> apiService.mediaBackup(Uri.encode(s)))
-                .map(mediaIdResponse -> {
-                    ArrayList<String> arrayList = new ArrayList<String>();
-                    if (mediaIdResponse.success()) {
-                        List<PhotoModel> models = SQLite.select().from(PhotoModel.class).where(PhotoModel_Table.photo_id.in(mediaIdResponse.getDataList()))
-                                .queryList();
-                        for (int i = 0; i < models.size(); i++) {
-                            arrayList.add(models.get(i).getLocalPath());
-                        }
-                    }
-                    return arrayList;
-                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> initPicChange(list), throwable -> LogUtil.showError(throwable));
+        addSubscription(PhotoModel.getAllPhotoId().flatMap(s -> apiService.mediaBackup(Uri.encode(s))).map(mediaIdResponse -> {
+            ArrayList<String> arrayList = new ArrayList<String>();
+            if (mediaIdResponse.success()) {
+                List<PhotoModel> models = SQLite.select().from(PhotoModel.class).where(PhotoModel_Table.photo_id.in(mediaIdResponse.getDataList())).queryList();
+                for (int i = 0; i < models.size(); i++) {
+                    arrayList.add(models.get(i).getLocalPath());
+                }
+            }
+            return arrayList;
+        }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> initPicChange(list), throwable -> LogUtil.showError(throwable)));
+        addSubscription(apiService.localList(FastData.getUserId()).flatMap(mediaIdResponse -> PhotoModel.findPhotos(mediaIdResponse.getDataList())).filter(photoModel -> photoModel != null).doOnNext(photoModel -> photoModel.setNeedUpload(false)).doOnNext(photoModel -> photoModel.update()).toList().compose(SchedulersCompat.applyIoSchedulers()).subscribe(photoModels -> LogUtil.showLog("uploaded size==" + photoModels.size()), throwable -> LogUtil.showError(throwable)));
     }
 
     /**
@@ -685,17 +652,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
      * @param timeId
      */
     private void timeLineUpdate(int timeId) {
-        LogUtil.showLog("timeLineUpdate timeId===" + timeId);
-        apiService.timeOfpage(PAGE_SIZE, timeId)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
-                    if (response.success()) {
-                        currentTimeId = timeId;
-                        LogUtil.showLog("timeLineUpdate currentTimeId===" + currentTimeId);
-                        currentPage = 1;
-                        reqData(currentPage, response.getPageNo() * PAGE_SIZE);
-                    }
-                });
+        addSubscription(apiService.timeOfpage(PAGE_SIZE, timeId).compose(SchedulersCompat.applyIoSchedulers()).subscribe(response -> {
+            if (response.success()) {
+                currentTimeId = timeId;
+                currentPage = 1;
+                reqData(currentPage, response.getPageNo() * PAGE_SIZE);
+            }
+        }));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -707,7 +670,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(TimeLineObj timeLineObj) {
-        LogUtil.showLog("event timeLineObj----" + adapter.getPosition(timeLineObj));
         adapter.updateItem(timeLineObj);
     }
 
@@ -730,20 +692,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             Observable.defer(() -> Observable.just(event)).map(event1 -> {
                 if (event.getMediaObj() != null) return event.getMediaObj();
                 else return new MediaObj(event.getUrl(), event.getUrl());
-            })
-                    .filter(mediaObj -> currentTimeLineObj.getMediaList().contains(mediaObj))
-                    .map(mediaObj -> currentTimeLineObj.getMediaList().get(currentTimeLineObj.getMediaList().indexOf(mediaObj)))
-                    .flatMap(mediaObj -> {
-                        event.setMediaObj(mediaObj);
-                        return apiService.delTimeOfMedia(mediaObj.getId(), currentTimeLineObj.getTimeId());
-                    })
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(baseResponse -> {
-                        if (baseResponse.success()) {
-                            currentTimeLineObj.getMediaList().remove(event.getMediaObj());
-                            adapter.updateItem(currentTimeLineObj);
-                        }
-                    }, throwable -> LogUtil.showError(throwable));
+            }).filter(mediaObj -> currentTimeLineObj.getMediaList().contains(mediaObj)).map(mediaObj -> currentTimeLineObj.getMediaList().get(currentTimeLineObj.getMediaList().indexOf(mediaObj))).flatMap(mediaObj -> {
+                event.setMediaObj(mediaObj);
+                return apiService.delTimeOfMedia(mediaObj.getId(), currentTimeLineObj.getTimeId());
+            }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(baseResponse -> {
+                if (baseResponse.success()) {
+                    currentTimeLineObj.getMediaList().remove(event.getMediaObj());
+                    adapter.updateItem(currentTimeLineObj);
+                }
+            }, throwable -> LogUtil.showError(throwable));
     }
 
     private GuideHelper guideHelper = null;
@@ -784,14 +741,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     public LayoutInflater getLayoutInflater() {
-        if (inflater == null)
-            inflater = LayoutInflater.from(getActivity());
+        if (inflater == null) inflater = LayoutInflater.from(getActivity());
         return inflater;
     }
 
     private GuideHelper.TipData initCalendarTip() {
-        if (adapter.getTipView() == null)
-            return null;
+        if (adapter.getTipView() == null) return null;
         View view = getLayoutInflater().inflate(R.layout.guide_home_calendar_tip, null);
         view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
         GuideHelper.TipData calendarTip = new GuideHelper.TipData(view, Gravity.CENTER_VERTICAL | Gravity.RIGHT, adapter.getTipView());
@@ -803,29 +758,20 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
             return;
         }
-        Observable.defer(() -> Observable.just(getChangeBaby(), initCalendarTip(), getSendTimeTip()))
-                .filter(tipData -> tipData != null)
-                .toList()
-                .doOnNext(
-                        tipDatas -> {
-                            if (guideHelper == null) guideHelper = new GuideHelper(getActivity());
-                            if (tipDatas != null && tipDatas.size() > 0) {
-                                for (int i = 0; i < tipDatas.size(); i++) {
-                                    guideHelper.addPage(tipDatas.get(i));
-                                }
-                            }
-                        })
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(
-                        tipDatas -> guideHelper.show(false),
-                        throwable -> LogUtil.showError(throwable));
+        Observable.defer(() -> Observable.just(getChangeBaby(), initCalendarTip(), getSendTimeTip())).filter(tipData -> tipData != null).toList().doOnNext(tipDatas -> {
+            if (guideHelper == null) guideHelper = new GuideHelper(getActivity());
+            if (tipDatas != null && tipDatas.size() > 0) {
+                for (int i = 0; i < tipDatas.size(); i++) {
+                    guideHelper.addPage(tipDatas.get(i));
+                }
+            }
+        }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(tipDatas -> guideHelper.show(false), throwable -> LogUtil.showError(throwable));
     }
 
     @Override
     public void loadfinish(int code) {
         tfptrListViewHelper.finishTFPTRRefresh();
         if (emptyView != null) adapter.removeHeader(emptyView);
-        LogUtil.showLog("size===" + adapter.getRealItemSize() + "----code===" + code);
         if (code == 19999) showGuide();
         if (code == BaseAdapter.UPDATE_DATA_ADD_LIST_CENTER) {
             if (currentTimeId > 0)
@@ -837,8 +783,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     BabyObj babyObj = FastData.getBabyObj();
                     StringBuilder sb = new StringBuilder();
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    sb.append(String.format("%s 已经 %s 了", babyObj.getNickName(),babyObj.getAge()));
-                    builder.append(String.format("%s 已经 %s 了", babyObj.getNickName(),babyObj.getAge()));
+                    sb.append(String.format("%s 已经 %s 了", babyObj.getNickName(), babyObj.getAge()));
+                    builder.append(String.format("%s 已经 %s 了", babyObj.getNickName(), babyObj.getAge()));
                     builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                     builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                     builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getAge()), sb.lastIndexOf(babyObj.getAge()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -854,8 +800,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 //                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                     return Observable.just(builder);
                 }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(spannableStringBuilder -> {
-                    if (emptyView == null)
-                        emptyView = new EmptyDataView(getActivity());
+                    if (emptyView == null) emptyView = new EmptyDataView(getActivity());
                     ViewGroup.LayoutParams layoutParams = emptyView.getLayoutParams();
                     if (layoutParams == null)
                         layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

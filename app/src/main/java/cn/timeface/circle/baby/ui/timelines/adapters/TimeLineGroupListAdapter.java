@@ -231,7 +231,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         } else if (position < (mHeaders.size() + getCount())) {
             BaseObj item = getItem(position);
             if (item == null) {
-                LogUtil.showLog("position===" + position + "----");
                 return;
             }
             switch (item.getBaseType()) {
@@ -330,7 +329,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                     count++;
                     MediaObj mediaObj = item.getMediaList().get(k);
                     if (mediaObj.getH() <= 0 || mediaObj.getW() <= 0) {
-                        LogUtil.showLog("continue==" + k);
                         continue;
                     }
                     if (mediaObj.getH() > height)
@@ -349,7 +347,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                             width += (mediaObj.getW());
                         }
                     }
-                    LogUtil.showLog("width==" + width + "----height==" + height + "---k=" + k + "--w==" + mediaObj.getW() + "--h==" + mediaObj.getH());
                     if (item.getMediaList().size() - count == 1) {
                         continue;
                     } else {
@@ -358,10 +355,8 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                         } else continue;
                     }
                 }
-                LogUtil.showLog("width==" + width + "----height==" + height);
                 height = (App.mScreenWidth * height) / width;
                 width = App.mScreenWidth;
-                LogUtil.showLog("width==" + width + "----height==" + height);
                 rowParams.height = height;
                 rowView.setLayoutParams(rowParams);
                 rowView.setPadding(0, paddingImage, 0, 0);
@@ -375,7 +370,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                     rowView.addView(view);
                 }
                 startIndex = count;
-                LogUtil.showLog("index==" + i + "---startIndex==" + startIndex + "---rowCount==" + rowView.getChildCount());
                 gv.addView(rowView);
             }
             if (count < item.getMediaList().size()) {
@@ -427,7 +421,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         imageView.setTag(R.id.icon, groupIndex);
         imageView.setTag(R.id.recycler_item_click_tag, index);
         imageView.setOnClickListener(this);
-        LogUtil.showLog("oritation===" + mediaObj.getImageOrientation());
         GlideUtil.displayImage(mediaObj.getImgUrl(), imageView);
         return view;
     }
@@ -457,7 +450,6 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(dayColor);
         builder.setSpan(colorSpan, 0, day.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         calendar.setText(builder);
-        LogUtil.showLog("builder==" + builder);
 
         tvDateex.setText(item.getDateEx());
         tvAge.setText(item.getAge());

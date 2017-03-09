@@ -32,7 +32,6 @@ public class GlideUtil {
     }
 
     public static void displayImage(String url, ImageView imageView) {
-        LogUtil.showLog("url===" + url);
         if (TextUtils.isEmpty(url) || imageView == null) {
             imageView.setImageResource(R.drawable.ic_launcher);
             return;
@@ -78,7 +77,6 @@ public class GlideUtil {
     }
 
     public static void displayImageCircle(String url, @DrawableRes int rid, ImageView imageView) {
-        LogUtil.showLog("avatar==="+url);
         if (imageView == null) return;
         if (TextUtils.isEmpty(url)) {
             Glide.with(imageView.getContext()).load(rid).asBitmap().transform(new CircleTransform(context))

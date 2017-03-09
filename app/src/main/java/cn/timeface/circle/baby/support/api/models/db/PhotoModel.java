@@ -601,6 +601,10 @@ public class PhotoModel extends BaseModel implements Parcelable {
         });
     }
 
+    public static Observable<PhotoModel> findPhotos(List<String> list){
+        return Observable.defer(()->Observable.from(SQLite.select().from(PhotoModel.class).where(PhotoModel_Table.photo_id.in(list)).queryList()));
+    }
+
     public static Observable<String> getAllPhotoId() {
         return Observable.defer(new Func0<Observable<String>>() {
             @Override
