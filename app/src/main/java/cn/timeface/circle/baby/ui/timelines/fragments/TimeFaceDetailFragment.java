@@ -238,8 +238,8 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                 int firstVisibleItemPosition = layoutmanager.findFirstVisibleItemPosition();
                 if (lookup.isShowSmail()) {
                     if (firstVisibleItemPosition / lookup.getColumCount() > 1) {
-                        backUp.setVisibility(View.GONE);
-                    } else backUp.setVisibility(View.VISIBLE);
+                        backUp.setVisibility(View.VISIBLE);
+                    } else backUp.setVisibility(View.GONE);
                 } else
                     backUp.setVisibility(firstVisibleItemPosition > 0 ? View.VISIBLE : View.GONE);
             }
