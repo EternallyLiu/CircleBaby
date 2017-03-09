@@ -5,6 +5,7 @@ import java.util.Map;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.support.api.models.db.LocationResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.CloudAlbumDownloadImageResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.api.models.responses.GetThemeResponse;
@@ -428,6 +429,10 @@ public interface ApiService {
     //删除相册照片
     @GET("babyCloudAlbums/deleteSingleImage")
     Observable<BaseResponse> deleteSingleImage(@Query("mediaId") String cloudAlbumId);
+
+    //识图卡片下载 platform:1 iOS 2 Android
+    @GET("babyCloudAlbums/imageUpload?platform=2")
+    Observable<CloudAlbumDownloadImageResponse> downloadCloudAlbumImage(@Query("mediaId") int mediaId);
 
     //获取收货地址列表
     @GET("babyOrder/getAddressList")
