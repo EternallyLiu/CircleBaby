@@ -56,10 +56,6 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
     private CloudAlbumListAdapter albumListAdapter;
     private boolean showGuide;
 
-    public static void open(Activity activity) {
-        activity.startActivity(new Intent(activity, CloudAlbumActivity.class));
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +68,17 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
         setupAlbumView();
         tfStateView.setOnRetryListener(this::reqCloudAlbumImages);
         tfStateView.loading();
+//        reqCloudAlbumImages();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         reqCloudAlbumImages();
+    }
+
+    public static void open(Activity activity) {
+        activity.startActivity(new Intent(activity, CloudAlbumActivity.class));
     }
 
 

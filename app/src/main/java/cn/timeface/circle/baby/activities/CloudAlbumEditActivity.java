@@ -102,14 +102,6 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private int type;
     private int indexofHead;
 
-    public static void open(Activity activity, String albumId, int type, String title) {
-        Intent intent = new Intent(activity, CloudAlbumEditActivity.class);
-        intent.putExtra("albumId", albumId);
-        intent.putExtra("type", type);
-        intent.putExtra("title", title);
-        activity.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -131,6 +123,14 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         loadingDialog = LoadingDialog.getInstance();
         loadingDialog.show(getSupportFragmentManager(), "");
         reqCloudAlbumDetail(albumId);
+    }
+
+    public static void open(Activity activity, String albumId, int type, String title) {
+        Intent intent = new Intent(activity, CloudAlbumEditActivity.class);
+        intent.putExtra("albumId", albumId);
+        intent.putExtra("type", type);
+        intent.putExtra("title", title);
+        activity.startActivity(intent);
     }
 
     private void setupRecyclerView() {
@@ -509,7 +509,8 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 .subscribe(baseResponse -> {
                     if (baseResponse.success()) {
                         ToastUtil.showToast("添加成功");
-                        albumDetailAdapter.notifyDataSetChanged();
+//                        albumDetailAdapter.notifyDataSetChanged();
+                        reqCloudAlbumDetail(albumId);
                         EventBus.getDefault().post(new HomeRefreshEvent());
                     }
 

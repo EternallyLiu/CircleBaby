@@ -76,7 +76,6 @@ public class CloudAlbumDetailAdapter extends BaseRecyclerAdapter<MediaObj> {
                 @Override
                 public void onClick(View v) {
                     if(!TextUtils.isEmpty(detailObj.getVideoUrl())){
-                        System.out.println("detailObj.getVideoUrl() ============ "+detailObj.getVideoUrl());
                         VideoPlayActivity.open(mContext,detailObj.getVideoUrl());
                     }
                 }
