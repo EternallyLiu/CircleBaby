@@ -378,10 +378,12 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             dialog = new DeleteDialog(this);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dialog.getSubmit().getLayoutParams();
             if (params == null) {
-                params = new LinearLayout.LayoutParams(App.mScreenWidth / 2, ViewGroup.LayoutParams.WRAP_CONTENT);
-            } else params.width = App.mScreenWidth / 2;
+                params = new LinearLayout.LayoutParams(params.width = LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            } else params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
             params.weight = 0;
             dialog.getSubmit().setLayoutParams(params);
+            int padding = (int) getResources().getDimension(R.dimen.size_4);
+            dialog.getSubmit().setPadding(padding * 3, padding, padding * 3, padding);
             dialog.hideCacelButton();
             dialog.setMessageGravity(Gravity.CENTER_HORIZONTAL);
             dialog.setCloseListener(this);
@@ -389,11 +391,12 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             dialog.showClose(true);
             dialog.setSubmitListener(this);
         }
-        if (type == -1) {
+        if (type == BabyAttentionEvent.TYPE_CREATE_BABY) {
             dialog.setTitle(new SpannableStringBuilder("创建成功！ "));
             dialog.getTitle().setVisibility(View.VISIBLE);
             dialog.getTitle().setGravity(Gravity.CENTER);
             dialog.getTitle().setTextColor(Color.BLACK);
+            if (dialog.getTitleLine() != null) dialog.getTitleLine().setVisibility(View.GONE);
         } else dialog.getTitle().setVisibility(View.GONE);
         dialog.getSubmit().setText(type == 1 ? "立即查看" : "立即导入");
         dialog.setType(type);
@@ -411,16 +414,12 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             BabyObj babyObj = FastData.getBabyObj();
             StringBuilder sb = new StringBuilder();
             SpannableStringBuilder builder = new SpannableStringBuilder();
-            sb.append(String.format("%s创建成功", babyObj.getNickName()));
-            builder.append(String.format("%s创建成功", babyObj.getNickName()));
-            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            builder.setSpan(SpannableUtils.getTextSize(this, R.dimen.text_large), 0, babyObj.getNickName().length() + 3, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//            sb.append(String.format("创建成功\n"));
+//            builder.append(String.format("创建成功\n"));
 
-            sb.append(String.format("\n %s已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
-            builder.append(String.format("\n %s已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
+            sb.append(String.format("%s 已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
+            builder.append(String.format("%s 已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
             builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             sb.append("马上导入宝宝照片，").append("\n");
             builder.append("马上导入宝宝照片，").append("\n");
             sb.append(String.format(" 回顾宝宝的成长吧！", babyObj.getNickName())).append("\n");

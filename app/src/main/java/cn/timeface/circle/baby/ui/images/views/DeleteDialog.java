@@ -68,6 +68,10 @@ public class DeleteDialog extends BaseDialog implements View.OnClickListener {
         return title;
     }
 
+    public View getTitleLine() {
+        return titleLine;
+    }
+
     public DeleteDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         init();

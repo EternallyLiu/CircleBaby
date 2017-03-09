@@ -447,14 +447,14 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     ForegroundColorSpan colorSpan = SpannableUtils.getTextColor(this, R.color.sea_buckthorn);
                     builder.append(" ").append(this.babyObj.getNickName()).append(" ");
                     builder.append("吗？").append("\n");
-                    int largeLength = builder.length();
+//                    int largeLength = builder.length();
                     builder.append("这会导致你不能继续查看宝宝相关").append("\n").append("的内容。");
-                    //标红宝宝名字
-                    builder.setSpan(colorSpan, contentMessage.length() + 1, contentMessage.length() + 1 + this.babyObj.getNickName().length() + 1,
-                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                    //关键提示语加粗
-                    StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
-                    builder.setSpan(styleSpan, 0, largeLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    //标红宝宝名字
+//                    builder.setSpan(colorSpan, contentMessage.length() + 1, contentMessage.length() + 1 + this.babyObj.getNickName().length() + 1,
+//                            Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    //关键提示语加粗
+//                    StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
+//                    builder.setSpan(styleSpan, 0, largeLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
 
 
                     deleteDialog.setMessage(builder);

@@ -837,8 +837,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     BabyObj babyObj = FastData.getBabyObj();
                     StringBuilder sb = new StringBuilder();
                     SpannableStringBuilder builder = new SpannableStringBuilder();
-                    sb.append(String.format("%s已经%s了", babyObj.getNickName(),babyObj.getAge()));
-                    builder.append(String.format("%s已经%s了", babyObj.getNickName(),babyObj.getAge()));
+                    sb.append(String.format("%s 已经 %s 了", babyObj.getNickName(),babyObj.getAge()));
+                    builder.append(String.format("%s 已经 %s 了", babyObj.getNickName(),babyObj.getAge()));
                     builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                     builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                     builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getAge()), sb.lastIndexOf(babyObj.getAge()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -865,7 +865,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     emptyView.getErrorTitle().setText(spannableStringBuilder);
                     emptyView.getEmptyIcon().setVisibility(View.GONE);
                     emptyView.setRetry(true);
-                    emptyView.setErrorRetryText("立即导入");
+                    emptyView.setErrorRetryText("导入手机照片");
                     emptyView.setEmptyCallBack(this);
                     emptyView.setVisibility(View.VISIBLE);
                     adapter.addFooter(emptyView);
