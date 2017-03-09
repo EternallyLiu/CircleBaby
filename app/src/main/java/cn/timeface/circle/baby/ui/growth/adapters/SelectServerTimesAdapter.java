@@ -30,6 +30,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.growth.events.SelectTimeLineEvent;
 
 /**
  * 选择时光adapter
@@ -194,6 +195,20 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 Math.min((innerLine + 1) * COLUMN_NUM, imgCount));
     }
 
+    public List<TimeLineObj> getTimeLines(){
+        List<TimeLineObj> timeLineObjList = new ArrayList<>();
+        for(TimeLineWrapObj timeLineWrapObj : getListData()){
+            timeLineObjList.addAll(timeLineWrapObj.getTimelineList());
+        }
+        return timeLineObjList;
+    }
+
+    public boolean isAllSelect(){
+        List<TimeLineObj> timeLineObjList = getTimeLines();
+        return timeLineObjList.containsAll(selTimeLines)
+                && selTimeLines.containsAll(timeLineObjList);
+    }
+
     @Override
     public int getItemType(int position) {
         if (position == 0) {
@@ -298,6 +313,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
             }
 //            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
             EventBus.getDefault().post(new TimeSelectCountEvent(selTimeLines.size()));
+            EventBus.getDefault().post(new SelectTimeLineEvent(((CheckBox) v).isChecked(), img));
         }
     };
 
