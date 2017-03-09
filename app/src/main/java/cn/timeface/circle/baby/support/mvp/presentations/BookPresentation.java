@@ -24,13 +24,13 @@ public interface BookPresentation {
          * @param bookType book type
          * @return production list
          */
-        Observable<BookListResponse> productionList(int bookType);
+        Observable<BookListResponse> productionList(int bookType, int permissionType);
 
         /**
          * 成长纪念册列表
          * @return book list
          */
-        Observable<BookListResponse> commemorationBookList();
+        Observable<BookListResponse> commemorationBookList(int permissionType);
 
         /**
          * 日记卡片
@@ -48,31 +48,31 @@ public interface BookPresentation {
          * 台历
          * @return book list
          */
-        Observable<BookListResponse> calendarBookList();
+        Observable<BookListResponse> calendarBookList(int permissionType);
 
         /**
          * 精装照片书
          * @return book list
          */
-        Observable<BookListResponse> hardcoverPhotoBookList();
+        Observable<BookListResponse> hardcoverPhotoBookList(int permissionType);
 
         /**
          * 成长语录
          * @return book list
          */
-        Observable<BookListResponse> growthQuotationBookList();
+        Observable<BookListResponse> growthQuotationBookList(int permissionType);
 
         /**
          * 记事本
          * @return book list
          */
-        Observable<BookListResponse> noteBookList();
+        Observable<BookListResponse> noteBookList(int permissionType);
 
         /**
          * 绘画集
          * @return book list
          */
-        Observable<BookListResponse> paintBookList();
+        Observable<BookListResponse> paintBookList(int permissionType);
 
         /**
          * 删除作品
@@ -88,7 +88,7 @@ public interface BookPresentation {
          */
         void create();
 
-        void loadData(int bookType);
+        void loadData(int bookType, int permissionType);
 
         /**
          * 编辑书作品

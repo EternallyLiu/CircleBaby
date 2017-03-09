@@ -79,7 +79,6 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 lineEnd[i] += lineEnd[i - 1];
             }
         }
-        Log.e("timesAdapter : ", String.valueOf(lineEnd[lineEnd.length - 1]));
     }
 
     //处理全部选中/全部不选中
@@ -166,21 +165,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 holder.cbSelect.setTag(R.string.tag_ex, dataPosition);
                 holder.cbSelect.setTag(R.string.tag_obj, timeLineObj);
 
-//                if(selMedias.isEmpty()){
-                    holder.cbSelect.setChecked(selTimeLines.contains(timeLineObj));
-//                } else {
-//
-//                    if(timeLineObj.getMediaList() != null && !timeLineObj.getMediaList().isEmpty()){
-//                        boolean isTimeLineSelect = false;
-//                        for(MediaObj mediaObj : timeLineObj.getMediaList()){
-//                            if(selMedias.contains(mediaObj)){
-//                                isTimeLineSelect = true;
-//                                break;
-//                            }
-//                        }
-//                        holder.cbSelect.setChecked(isTimeLineSelect);
-//                    }
-//                }
+                holder.cbSelect.setChecked(selTimeLines.contains(timeLineObj));
                 if(clickListener != null) holder.llRoot.setOnClickListener(clickListener);
                 holder.llRoot.setTag(R.string.tag_obj, timeLineObj);
             }
@@ -385,6 +370,10 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
 
     public List<TimeLineObj> getSelImgs() {
         return selTimeLines;
+    }
+
+    public List<MediaObj> getSelMedias() {
+        return selMedias;
     }
 
     public void setSelImgs(ArrayList<TimeLineObj> imgs) {

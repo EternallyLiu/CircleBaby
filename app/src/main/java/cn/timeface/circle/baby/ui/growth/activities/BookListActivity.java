@@ -61,7 +61,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
         super.onCreate(savedInstanceState);
         tvTip.setVisibility(View.GONE);
         bookPresenter = new BookPresenter(this);
-        bookPresenter.loadData(bookType);
+        bookPresenter.loadData(bookType, 1);
         btnAskPrint.setVisibility(View.GONE);
         getSupportActionBar().setTitle(FastData.getBabyName() + "的" + BookModel.getGrowthBookName(bookType));
     }
@@ -284,7 +284,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
 
     @Subscribe
     public void bookOptionEvent(BookOptionEvent optionEvent) {
-        bookPresenter.loadData(bookType);
+        bookPresenter.loadData(bookType, 1);
 //        if(optionEvent.getBookType() == bookType){
 //            //删除书籍操作
 //            if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE){

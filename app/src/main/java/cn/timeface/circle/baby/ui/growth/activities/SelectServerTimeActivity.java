@@ -43,6 +43,9 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaListEvent;
+import cn.timeface.circle.baby.ui.growth.events.SelectTimeLineEvent;
 import cn.timeface.circle.baby.ui.growth.fragments.SelectUserFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
@@ -175,17 +178,26 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.save){
             List<TimeLineObj> selectedTimeLines = new ArrayList<>();
-            if(timeFragment != null){
-                selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
-            }
+            List<MediaObj> selectedMedias = new ArrayList<>();
+            //新建
+            if(TextUtils.isEmpty(bookId)){
+                if(timeFragment != null){
+                    selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
+                    selectedMedias.addAll(timeFragment.getSelectedMedias());
+                }
 
-            Iterator iteratorFragment = userFragmentMap.entrySet().iterator();
-            while (iteratorFragment.hasNext()){
-                Map.Entry entry = (Map.Entry) iteratorFragment.next();
-                ServerTimeFragment timeFragment = (ServerTimeFragment) entry.getValue();
-                selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
+                Iterator iteratorFragment = userFragmentMap.entrySet().iterator();
+                while (iteratorFragment.hasNext()){
+                    Map.Entry entry = (Map.Entry) iteratorFragment.next();
+                    ServerTimeFragment timeFragment = (ServerTimeFragment) entry.getValue();
+                    selectedTimeLines.addAll(timeFragment.getSelectedTimeLines());
+                    selectedMedias.addAll(timeFragment.getSelectedMedias());
+                }
+            //编辑
+            } else {
+                selectedTimeLines.addAll(allSelectTimeLines);
+                selectedMedias.addAll(allSelectMedias);
             }
-
 
             int pageNum = selectedTimeLines.size();
             if(pageNum == 0){
@@ -281,8 +293,10 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
                                                     if (!timeLineObj.getMediaList().isEmpty()) {
                                                         for (MediaObj mediaObj : timeLineObj.getMediaList()) {
-                                                            sb.append(mediaObj.getId());
-                                                            sb.append(",");
+                                                            if(selectedMedias.contains(mediaObj)){
+                                                                sb.append(mediaObj.getId());
+                                                                sb.append(",");
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -295,9 +309,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                             MyPODActivity.open(this, bookId, openBookId, bookType, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
                                         }
                                     },
-                                    throwable -> {
-                                        Log.e(TAG, throwable.getLocalizedMessage());
-                                    }
+                                    throwable -> Log.e(TAG, throwable.getLocalizedMessage())
                             ));
 
             return true;
@@ -320,8 +332,8 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
             super.onBackPressed();
         }
     }
-    /**
 
+    /**
      * 按时间筛选照片
      */
     @Override
@@ -387,7 +399,6 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         }
         currentFragment = fragment;
         ft.commitAllowingStateLoss();
-        invalidateOptionsMenu();
     }
 
     Fragment currentFragmentEx = null;
@@ -454,6 +465,10 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         }
     }
 
+    public void setAllSelectTimeLines(List<TimeLineObj> allSelectTimeLines) {
+        this.allSelectTimeLines = allSelectTimeLines;
+    }
+
     @Subscribe
     public void bookOptionEvent(BookOptionEvent optionEvent){
         if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_CREATE){
@@ -461,4 +476,50 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         }
     }
 
+    @Subscribe
+    public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
+        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
+        //选中
+        if(selectMediaEvent.getSelect()){
+            if(!allSelectMedias.contains(selectMediaEvent.getMediaObj())){
+                allSelectMedias.add(selectMediaEvent.getMediaObj());
+            }
+        } else {
+            if(allSelectMedias.contains(selectMediaEvent.getMediaObj())){
+                allSelectMedias.remove(selectMediaEvent.getMediaObj());
+            }
+        }
+    }
+
+    @Subscribe
+    public void selectMediaListEvent(SelectMediaListEvent mediaListEvent){
+        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
+        //选中
+        if(mediaListEvent.isSelect()){
+            if(!allSelectMedias.containsAll(mediaListEvent.getMediaObjList())){
+                allSelectMedias.addAll(mediaListEvent.getMediaObjList());
+            }
+        } else {
+            if(allSelectMedias.containsAll(mediaListEvent.getMediaObjList())){
+                allSelectMedias.removeAll(mediaListEvent.getMediaObjList());
+            }
+        }
+    }
+
+    @Subscribe
+    public void selectTimeLineEvent(SelectTimeLineEvent selectTimeLineEvent){
+        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
+        //选中
+        if(selectTimeLineEvent.isSelect()){
+            if(!allSelectTimeIds.contains(selectTimeLineEvent.getTimeLineObj().getTimeId())){
+                allSelectTimeIds.add(String.valueOf(selectTimeLineEvent.getTimeLineObj().getTimeId()));
+                allSelectTimeLines.add(selectTimeLineEvent.getTimeLineObj());
+            }
+        } else {
+            if(allSelectTimeIds.contains(selectTimeLineEvent.getTimeLineObj())){
+                allSelectTimeIds.remove(selectTimeLineEvent.getTimeLineObj().getTimeId());
+                allSelectTimeLines.remove(selectTimeLineEvent.getTimeLineObj());
+            }
+        }
+    }
 }

@@ -749,11 +749,12 @@ public interface ApiService {
 
     /**
      * 获取书的列表数据
-     *
-     * @return book list response
+     * @param bookType 书类型
+     * @param permissionType 1,表示查询当前给宝宝的所有作品（包括创建者和关注者）2,表示查询当前用户的所有作品（包括其关注和创建的所有宝宝）
+     * @return
      */
     @GET("printGrowth/getBookListByBookType")
-    Observable<BookListResponse> bookList(@Query("bookType") int bookType);
+    Observable<BookListResponse> bookList(@Query("bookType") int bookType, @Query("permissionType") int permissionType);
 
     /**
      * 获取识图卡片列表
@@ -877,14 +878,25 @@ public interface ApiService {
             @Query("userId") String userId);
 
     /**
-     * 查询所有时光
+     * 按时间查询所有时光
+     * @param babyId
+     * @param type
+     * @return
+     */
+    @GET("printGrowth/getTimeLineByTime")
+    Observable<QueryTimeLineResponse> queryTimeLineByTime(
+            @Query("babyId") int babyId,
+            @Query("type") int type);
+
+    /**
+     * 按发布人查询所有时光
      * @param babyId
      * @param userId
      * @param type
      * @return
      */
-    @GET("printGrowth/getTimeLineByTime")
-    Observable<QueryTimeLineResponse> queryTimeLine(
+    @GET("printGrowth/getTimeLineByTimeByMember")
+    Observable<QueryTimeLineResponse> queryTimeLineByMember(
             @Query("babyId") int babyId,
             @Query("memberId") String userId,
             @Query("type") int type);

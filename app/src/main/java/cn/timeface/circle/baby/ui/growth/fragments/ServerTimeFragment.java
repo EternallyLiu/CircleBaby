@@ -36,6 +36,7 @@ import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeDetailActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.SelectServerTimesAdapter;
 import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
@@ -131,9 +132,9 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         stateView.loading();
         Observable<QueryTimeLineResponse> timeResponseObservable = null;
         if(contentType == TypeConstants.PHOTO_TYPE_TIME){
-            timeResponseObservable = apiService.queryTimeLine(babyId, FastData.getUserId(), getQueryType());
+            timeResponseObservable = apiService.queryTimeLineByTime(babyId, getQueryType());
         } else {
-            timeResponseObservable = apiService.queryTimeLine(babyId, userId, getQueryType());
+            timeResponseObservable = apiService.queryTimeLineByMember(babyId, userId, getQueryType());
         }
 
         if(timeResponseObservable == null) return;
@@ -161,6 +162,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     }
 
     private void setListData(List<TimeLineWrapObj> data){
+        ((SelectServerTimeActivity) getActivity()).setAllSelectTimeLines(timeLineObjs);
         if (serverTimesAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99, this, mediaObjs, timeLineObjs);
@@ -175,6 +177,10 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
 
     public List<TimeLineObj> getSelectedTimeLines(){
         return (serverTimesAdapter == null || serverTimesAdapter.getSelImgs() == null) ? new ArrayList<>() : serverTimesAdapter.getSelImgs();
+    }
+
+    public List<MediaObj> getSelectedMedias(){
+        return (serverTimesAdapter == null || serverTimesAdapter.getSelMedias() == null) ? new ArrayList<>() : serverTimesAdapter.getSelMedias();
     }
 
     public int getQueryType(){
