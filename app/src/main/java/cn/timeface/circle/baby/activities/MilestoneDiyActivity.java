@@ -67,17 +67,16 @@ public class MilestoneDiyActivity extends BaseAppCompatActivity {
                     return;
                 }
 
-                apiService.addMilestone(URLEncoder.encode(milestoneName))
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(milestoneResponse -> {
-                            if (milestoneResponse.success()) {
-                                Intent intent = new Intent();
-                                setResult(RESULT_OK, intent);
-                                finish();
-                            }
-                        }, throwable -> {
-                            LogUtil.showError(throwable);
-                        });
+                btnCreat.setEnabled(false);
+                apiService.addMilestone(URLEncoder.encode(milestoneName)).compose(SchedulersCompat.applyIoSchedulers()).doOnNext(milestoneResponse -> btnCreat.setEnabled(true)).subscribe(milestoneResponse -> {
+                    if (milestoneResponse.success()) {
+                        Intent intent = new Intent();
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                }, throwable -> {
+                    LogUtil.showError(throwable);
+                });
             }
         });
     }

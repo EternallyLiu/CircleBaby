@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.support.utils;
 
+import android.content.Context;
 import android.widget.Toast;
 
 import cn.timeface.circle.baby.App;
@@ -11,11 +12,25 @@ import cn.timeface.circle.baby.App;
  */
 public class ToastUtil {
 
+    private static long lastToastTime = 0;
+    private static final long TOAST_SKIP_TIME = 1000;
+
+    public static void showToast(Context context, String info) {
+        if (System.currentTimeMillis() - lastToastTime > TOAST_SKIP_TIME) {
+            Toast.makeText(context, info, Toast.LENGTH_SHORT).show();
+            lastToastTime = System.currentTimeMillis();
+        }
+    }
+
     public static void showToast(String info) {
-        Toast.makeText(App.getInstance(), info, Toast.LENGTH_SHORT).show();
+        showToast(App.getInstance(), info);
     }
 
     public static void showToast(int strId) {
-        Toast.makeText(App.getInstance(), App.getInstance().getText(strId), Toast.LENGTH_SHORT).show();
+        showToast(App.getInstance(), App.getInstance().getString(strId));
+    }
+
+    public static void showToast(Context context, int strId) {
+        showToast(context, context.getString(strId));
     }
 }
