@@ -25,10 +25,10 @@ public class BookPresenter extends BasePresenter<BookPresentation.View, BookMode
     }
 
     @Override
-    public void loadData(int bookType) {
+    public void loadData(int bookType, int permissionType) {
         view.setStateView(true);
         view.addSubscription(
-                model.productionList(bookType)
+                model.productionList(bookType, permissionType)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(
                                 response -> {

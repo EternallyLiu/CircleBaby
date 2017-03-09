@@ -68,8 +68,8 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
     }
 
     @Override
-    public Observable<BookListResponse> productionList(int bookType) {
-        return apiService.bookList(bookType);
+    public Observable<BookListResponse> productionList(int bookType, int permissionType) {
+        return apiService.bookList(bookType, permissionType);
     }
 
     /**
@@ -77,8 +77,8 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
      * @return bookListResponse
      */
     @Override
-    public Observable<BookListResponse> commemorationBookList(){
-        return apiService.bookList(BOOK_TYPE_GROWTH_COMMEMORATION_BOOK);
+    public Observable<BookListResponse> commemorationBookList(int permissionType){
+        return apiService.bookList(BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, permissionType);
     }
 
     /**
@@ -104,8 +104,8 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
      * @return bookListResponse
      */
     @Override
-    public Observable<BookListResponse> calendarBookList(){
-        return apiService.bookList(BOOK_TYPE_CALENDAR);
+    public Observable<BookListResponse> calendarBookList(int permissionType){
+        return apiService.bookList(BOOK_TYPE_CALENDAR, permissionType);
     }
 
     /**
@@ -113,8 +113,8 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
      * @return bookListResponse
      */
     @Override
-    public Observable<BookListResponse> hardcoverPhotoBookList(){
-        return apiService.bookList(BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
+    public Observable<BookListResponse> hardcoverPhotoBookList(int permissionType){
+        return apiService.bookList(BOOK_TYPE_HARDCOVER_PHOTO_BOOK, permissionType);
     }
 
     /**
@@ -122,8 +122,8 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
      * @return bookListResponse
      */
     @Override
-    public Observable<BookListResponse> growthQuotationBookList(){
-        return apiService.bookList(BOOK_TYPE_GROWTH_QUOTATIONS);
+    public Observable<BookListResponse> growthQuotationBookList(int permissionType){
+        return apiService.bookList(BOOK_TYPE_GROWTH_QUOTATIONS, permissionType);
     }
 
     /**
@@ -131,8 +131,8 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
      * @return bookListResponse
      */
     @Override
-    public Observable<BookListResponse> noteBookList(){
-        return apiService.bookList(BOOK_TYPE_NOTEBOOK);
+    public Observable<BookListResponse> noteBookList(int permissionType){
+        return apiService.bookList(BOOK_TYPE_NOTEBOOK, permissionType);
     }
 
     /**
@@ -140,8 +140,8 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
      * @return bookListResponse
      */
     @Override
-    public Observable<BookListResponse> paintBookList(){
-        return apiService.bookList(BOOK_TYPE_PAINTING);
+    public Observable<BookListResponse> paintBookList(int permissionType){
+        return apiService.bookList(BOOK_TYPE_PAINTING, permissionType);
     }
 
     /**

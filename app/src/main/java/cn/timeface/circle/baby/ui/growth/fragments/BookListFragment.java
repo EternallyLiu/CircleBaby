@@ -93,7 +93,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
         this.bookType = getArguments().getInt("book_type", 0);
         tvTip.setVisibility(View.GONE);
         bookPresenter = new BookPresenter(this);
-        bookPresenter.loadData(bookType);
+        bookPresenter.loadData(bookType, 2);
         btnAskForPrint.setVisibility(View.GONE);
         return view;
     }
@@ -320,7 +320,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                 }
                 updateEmptyView();
             } else {
-                bookPresenter.loadData(bookType);
+                bookPresenter.loadData(bookType, 2);
             }
         }
     }

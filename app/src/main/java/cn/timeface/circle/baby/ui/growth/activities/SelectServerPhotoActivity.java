@@ -376,7 +376,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         }
         currentFragment = fragment;
         ft.commitAllowingStateLoss();
-        invalidateOptionsMenu();
     }
 
     Fragment currentFragmentEx = null;

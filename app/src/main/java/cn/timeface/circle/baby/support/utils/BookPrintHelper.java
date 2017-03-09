@@ -110,7 +110,7 @@ public class BookPrintHelper {
             case TypeConstant.PRINT_CODE_LIMIT_LESS:
                 progressDialog.dismiss();
                 tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
-                        + "页数为" + pageNum + "页，低于20页的最低印刷限制，请添加内容后再提交印刷。");
+                        + "页数为" + pageNum + "页，低于24页的最低印刷限制，请添加内容后再提交印刷。");
                 tougueDialog.show(context.getSupportFragmentManager(), "dialog");
                 break;
 
