@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
     android:padding="@dimen/view_space_normal">
 
     <RelativeLayout
         android:id="@+id/rl_book_cover"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:clickable="true">
 
         <ImageView
@@ -41,8 +40,9 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/view_space_medium"
+        android:layout_toRightOf="@+id/rl_book_cover"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
@@ -94,7 +94,8 @@
         android:id="@+id/ll_price_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:orientation="vertical"
         android:visibility="visible">
 
@@ -119,4 +120,4 @@
             android:textSize="@dimen/text_normal"
             tools:text="X1" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

@@ -43,7 +43,7 @@ public class PrintItemView extends LinearLayout {
     @Bind(R.id.ll_price_number)
     LinearLayout llPriceNumber;
     @Bind(R.id.ll_root)
-    LinearLayout llRoot;
+    RelativeLayout llRoot;
 
     public PrintItemView(Context context) {
         super(context);
