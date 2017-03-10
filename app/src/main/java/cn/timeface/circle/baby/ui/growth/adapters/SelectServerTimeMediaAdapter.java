@@ -63,7 +63,7 @@ public class SelectServerTimeMediaAdapter extends BaseRecyclerAdapter<MediaObj> 
         @Override
         public void onClick(View view) {
             MediaObj mediaObj = (MediaObj) view.getTag(R.string.tag_obj);
-            EventBus.getDefault().post(new SelectMediaEvent(((CheckBox)view).isChecked(), mediaObj));
+            EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_TIME_MEDIA, ((CheckBox)view).isChecked(), mediaObj));
         }
     };
 

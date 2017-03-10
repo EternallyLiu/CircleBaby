@@ -26,6 +26,7 @@ import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
@@ -33,6 +34,7 @@ import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.SelectServerPhotosAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
@@ -42,7 +44,7 @@ import rx.Observable;
  * author : YW.SUN Created on 2017/2/14
  * email : sunyw10@gmail.com
  */
-public class ServerPhotoFragment extends BasePresenterFragment implements IEventBus {
+public class ServerPhotoFragment extends BasePresenterFragment {
 
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
@@ -50,12 +52,12 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
     TFStateView stateView;
     @Bind(R.id.ll_empty)
     LinearLayout llEmpty;
-    @Bind(R.id.tv_recommend_count)
-    TextView tvRecommendCount;
-    @Bind(R.id.tv_sel_count)
-    TextView tvSelectCount;
-    @Bind(R.id.rl_photo_tip)
-    RelativeLayout rlPhotoTip;
+//    @Bind(R.id.tv_recommend_count)
+//    TextView tvRecommendCount;
+//    @Bind(R.id.tv_sel_count)
+//    TextView tvSelectCount;
+//    @Bind(R.id.rl_photo_tip)
+//    RelativeLayout rlPhotoTip;
 
     int contentType;
     String userId;
@@ -74,7 +76,7 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
      * @param mediaWrapObjs
      * @return
      */
-    public static ServerPhotoFragment newInstance(int contentType, String userId, String addressName, List<MediaWrapObj> mediaWrapObjs, int bookType){
+    public ServerPhotoFragment newInstance(int contentType, String userId, String addressName, List<MediaWrapObj> mediaWrapObjs, int bookType){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
@@ -93,7 +95,7 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
      * @param userId
      * @return
      */
-    public static ServerPhotoFragment newInstance(int contentType, String userId, int bookType){
+    public ServerPhotoFragment newInstance(int contentType, String userId, int bookType){
         return newInstance(contentType, userId, "", null, bookType);
     }
 
@@ -105,11 +107,12 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
      * @param mediaWrapObjs
      * @return
      */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs, int bookType, int babyId){
+    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, String addressName, List<MediaObj> selectedMedias, List<MediaWrapObj> mediaWrapObjs, int bookType, int babyId){
         ServerPhotoFragment fragment = new ServerPhotoFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putString("user_id", userId);
+        bundle.putString("address_name", addressName);
         bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
         bundle.putParcelableArrayList("media_wrap_objs", (ArrayList<? extends Parcelable>) mediaWrapObjs);
         bundle.putInt("book_type", bookType);
@@ -118,16 +121,16 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
         return fragment;
     }
 
-    /**
-     * 编辑状态
-     * @param contentType
-     * @param userId
-     * @param selectedMedias
-     * @return
-     */
-    public static ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, int bookType, int babyId){
-        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>(), bookType, babyId);
-    }
+//    /**
+//     * 编辑状态
+//     * @param contentType
+//     * @param userId
+//     * @param selectedMedias
+//     * @return
+//     */
+//    public ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, int bookType, int babyId){
+//        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>(), bookType, babyId);
+//    }
 
     public ServerPhotoFragment() {}
 
@@ -150,18 +153,8 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
             stateView.setVisibility(View.GONE);
             setListData(mediaWrapObjs);
         }
-        initTips();
+        if(getActivity() instanceof SelectServerPhotoActivity) ((SelectServerPhotoActivity) getActivity()).initTips();
         return view;
-    }
-
-    private void initTips(){
-        if(bookType == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK){
-            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "60~120"));
-        } else if(bookType == BookModel.BOOK_TYPE_PAINTING){
-            tvRecommendCount.setText(String.format(getString(R.string.select_server_photo_recommend_count), "40~120"));
-        } else {
-            tvRecommendCount.setVisibility(View.GONE);
-        }
     }
 
     private void reqData(){
@@ -206,8 +199,7 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
         }
 
         llEmpty.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
-        rlPhotoTip.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.VISIBLE : View.GONE);
-        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(serverPhotosAdapter.getSelImgs().size()))));
+        if(getActivity() instanceof SelectServerPhotoActivity) ((SelectServerPhotoActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
     }
 
     public List<MediaObj> getSelectedMedias(){
@@ -218,9 +210,21 @@ public class ServerPhotoFragment extends BasePresenterFragment implements IEvent
         return contentType;
     }
 
-    @Subscribe
-    public void photoCountEvent(PhotoSelectCountEvent countEvent){
-        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(countEvent.count))));
+//    @Subscribe
+//    public void photoCountEvent(PhotoSelectCountEvent countEvent){
+//        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(countEvent.count))));
+//    }
+
+    /**
+     * 设置选中的图片
+     * @param mediaObjs
+     */
+    public void setMediaObjs(List<MediaObj> mediaObjs){
+        this.mediaObjs = mediaObjs;
+        if(serverPhotosAdapter != null){
+            serverPhotosAdapter.setSelImgs((ArrayList<MediaObj>) mediaObjs);
+            serverPhotosAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
