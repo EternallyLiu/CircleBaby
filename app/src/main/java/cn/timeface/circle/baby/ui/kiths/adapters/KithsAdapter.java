@@ -59,7 +59,6 @@ public class KithsAdapter extends BaseAdapter implements View.OnClickListener {
 
     private void unJoin(View view, FamilyMemberInfo info) {
         AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(largeSize);
-        StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.BLACK);
         SpannableStringBuilder builder = new SpannableStringBuilder();
         ImageView icon = ViewHolder.getView(view, R.id.icon);
@@ -69,7 +68,6 @@ public class KithsAdapter extends BaseAdapter implements View.OnClickListener {
         int nameLength = info.getUserInfo().getRelationName().length() + 1;
         builder.append(info.getUserInfo().getRelationName()).append("\n").append("未加入");
         builder.setSpan(sizeSpan, 0, nameLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        builder.setSpan(styleSpan, 0, nameLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         builder.setSpan(colorSpan, 0, nameLength, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         content.setText(builder);
 
@@ -88,9 +86,7 @@ public class KithsAdapter extends BaseAdapter implements View.OnClickListener {
         createState.setVisibility(info.getUserInfo().getIsCreator() == 1 ? View.VISIBLE : View.GONE);
         GlideUtil.displayImageCircle(info.getUserInfo().getAvatar(), icon);
         familyMe.setVisibility(info.getUserInfo().getUserId().equals(FastData.getUserId()) ? View.VISIBLE : View.GONE);
-        StyleSpan styleSpan = new StyleSpan(Typeface.BOLD);
         SpannableString ss = new SpannableString(info.getUserInfo().getRelationName());
-        ss.setSpan(styleSpan, 0, ss.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         content.setText(ss);
 
         message.setText(String.format("来过%d次  最近：%s", info.getCount(), DateUtil.formatDate(info.getTime())));
