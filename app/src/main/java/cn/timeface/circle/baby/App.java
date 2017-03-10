@@ -57,7 +57,12 @@ public class App extends MultiDexApplication {
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
 
         //友盟key
-        MobclickAgent.startWithConfigure(new MobclickAgent.UMAnalyticsConfig(this, "570b24bbe0f55a4fc7000c00", ChannelUtil.getChannel(this)));
+        MobclickAgent.startWithConfigure(
+                new MobclickAgent.UMAnalyticsConfig(this,
+                        "570b24bbe0f55a4fc7000c00",
+                        ChannelUtil.getChannel(this),
+                        MobclickAgent.EScenarioType.E_UM_NORMAL)
+        );
         MobclickAgent.setDebugMode(BuildConfig.DEBUG);
 
         //初始化util
