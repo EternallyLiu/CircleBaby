@@ -55,10 +55,8 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     TextView tvContent;
     @Bind(R.id.ll_single_date)
     LinearLayout llSingleDate;
-    @Bind(R.id.sv)
-    ScrollView sv;
+
     private List<ImgObj> selImages = new ArrayList<>();
-    private boolean showGuide;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, DiaryPublishActivity.class);
