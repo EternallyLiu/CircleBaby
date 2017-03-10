@@ -25,6 +25,8 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaListEvent;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
 
 /**
@@ -269,6 +271,7 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
             }
         }
+        EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_MEDIA_MEDIA, true, img));
     }
 
     private void doUnSelImg(int dataIndex, MediaObj img) {
@@ -282,6 +285,7 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
             }
         }
+        EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_MEDIA_MEDIA, false, img));
     }
 
     public List<MediaObj> getSelImgs() {

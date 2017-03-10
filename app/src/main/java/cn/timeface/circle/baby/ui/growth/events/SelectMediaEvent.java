@@ -8,12 +8,20 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
  * email : sunyw10@gmail.com
  */
 public class SelectMediaEvent {
+    public final static int TYPE_TIME_MEDIA = 1;
+    public final static int TYPE_MEDIA_MEDIA = 2;
+    private int type;//1:选择时光下面的照片 2：选择照片
     private boolean select;
     private MediaObj mediaObj;
 
-    public SelectMediaEvent(boolean select, MediaObj mediaObj) {
+    public SelectMediaEvent(int type, boolean select, MediaObj mediaObj) {
         this.select = select;
         this.mediaObj = mediaObj;
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
     }
 
     public boolean getSelect() {

@@ -39,36 +39,6 @@
             android:textColor="@color/text_color_hint" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_photo_tip"
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/tran_80_black"
-        android:paddingLeft="@dimen/view_space_medium"
-        android:paddingRight="@dimen/view_space_medium"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/tv_recommend_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textColor="@color/white"
-            tools:text="80~200张照片效果最佳" />
-
-        <TextView
-            android:id="@+id/tv_sel_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="已选6张" />
-
-    </RelativeLayout>
-
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"
         android:layout_width="match_parent"

@@ -109,14 +109,14 @@ public class SelectServerTimeDetailActivity extends BasePresenterAppCompatActivi
                     if(!selMedias.containsAll(timeLineObj.getMediaList())){
                         selMedias.addAll(timeLineObj.getMediaList());
                     }
-                    EventBus.getDefault().post(new SelectMediaListEvent(true, timeLineObj.getMediaList()));
+                    EventBus.getDefault().post(new SelectMediaListEvent(SelectMediaListEvent.TYPE_TIME_MEDIA, true, timeLineObj.getMediaList()));
                     tvSelectAll.setText("取消全选");
                 } else {
                     if(selMedias.containsAll(timeLineObj.getMediaList())){
                         selMedias.removeAll(timeLineObj.getMediaList());
                     }
                     tvSelectAll.setText("全选");
-                    EventBus.getDefault().post(new SelectMediaListEvent(false, timeLineObj.getMediaList()));
+                    EventBus.getDefault().post(new SelectMediaListEvent(SelectMediaListEvent.TYPE_TIME_MEDIA, false, timeLineObj.getMediaList()));
                 }
                 EventBus.getDefault().post(new SelectTimeLineEvent(isTimeSelect(), timeLineObj));
                 serverTimesAdapter.notifyDataSetChanged();
