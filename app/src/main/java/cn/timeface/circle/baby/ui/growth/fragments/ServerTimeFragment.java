@@ -203,6 +203,10 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         }
     }
 
+    /**
+     * 设置选中的图片
+     * @param mediaObjs
+     */
     public void setMediaObjs(List<MediaObj> mediaObjs){
         this.mediaObjs = mediaObjs;
         if(serverTimesAdapter != null){

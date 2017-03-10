@@ -58,7 +58,6 @@ import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -587,7 +586,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
     @Subscribe
     public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
-//        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
+        if(selectMediaEvent.getType() != SelectMediaEvent.TYPE_TIME_MEDIA) return;
         //选中
         if(selectMediaEvent.getSelect()){
             if(!allSelectMedias.contains(selectMediaEvent.getMediaObj())){
@@ -602,7 +601,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
     @Subscribe
     public void selectMediaListEvent(SelectMediaListEvent mediaListEvent){
-//        if(TextUtils.isEmpty(bookId)) return;//新建作品选择的数据存储在相关fragment中，此处只处理编辑的相关数据
+        if(mediaListEvent.getType() != SelectMediaListEvent.TYPE_TIME_MEDIA) return;
         //选中
         if(mediaListEvent.isSelect()){
             if(!allSelectMedias.containsAll(mediaListEvent.getMediaObjList())){
