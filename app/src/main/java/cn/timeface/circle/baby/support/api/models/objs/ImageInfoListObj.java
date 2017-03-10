@@ -4,6 +4,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -72,5 +73,4 @@ public class ImageInfoListObj extends BaseObj implements Parcelable {
             return new ImageInfoListObj[size];
         }
     };
-
 }

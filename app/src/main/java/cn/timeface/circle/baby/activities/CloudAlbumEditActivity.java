@@ -46,21 +46,33 @@ import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionCustomDataObj;
+import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionRemarkObj;
+import cn.timeface.circle.baby.support.api.models.responses.GetThemeResponse;
+import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.timelines.Utils.StatusBarUtil;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog2;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 public class CloudAlbumEditActivity extends BaseAppCompatActivity implements BottomMenuDialog.OnMenuClickListener, BottomMenuDialog2.OnMenuClickListener {
 
@@ -101,6 +113,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private List<ImageInfoListObj> imageInfoList;
     private int type;
     private int indexofHead;
+    private int openBookType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -383,10 +396,81 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 break;
             case R.id.rl_book_pre:
                 //进入POD预览
-                Intent intent = new Intent(this, SelectThemeActivity.class);
-                intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) imageInfoList);
-                intent.putExtra("cloudAlbum", 1);
-                startActivity(intent);
+//                Intent intent = new Intent(this, SelectThemeActivity.class);
+//                intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) imageInfoList);
+//                intent.putExtra("cloudAlbum", 1);
+//                startActivity(intent);
+
+                List<MediaObj> allSelectMedias = new ArrayList<>();
+                for(ImageInfoListObj imageInfoListObj : imageInfoList){
+                    allSelectMedias.addAll(imageInfoListObj.getMediaList());
+                }
+                addSubscription(
+                        apiService.getDefaultTheme(BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK)
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .filter(new Func1<GetThemeResponse, Boolean>() {
+                                    @Override
+                                    public Boolean call(GetThemeResponse getThemeResponse) {
+                                        return getThemeResponse.success();
+                                    }
+                                })
+                                .observeOn(Schedulers.io())
+                                .flatMap(new Func1<GetThemeResponse, Observable<ImageExInfoResponse>>() {
+                                    @Override
+                                    public Observable<ImageExInfoResponse> call(GetThemeResponse getThemeResponse) {
+                                        openBookType = getThemeResponse.getId();
+                                        return apiService.queryImageInfo(FastData.getBabyAvatar());
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        response -> {
+                                            if (response.success()) {
+                                                //跳转开放平台POD接口；
+                                                String bookName = FastData.getBabyName() + "的精装照片书";
+                                                List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+                                                StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                                int index = 0;
+                                                for (MediaObj mediaObj : allSelectMedias) {
+                                                    index++;
+                                                    TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
+                                                    tfoResourceObjs.add(tfoResourceObj);
+                                                    sb.append(mediaObj.getId());
+                                                    if (index < allSelectMedias.size()) {
+                                                        sb.append(",");
+                                                    } else {
+                                                        sb.append("]}");
+                                                    }
+                                                }
+
+                                                List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+                                                TFOContentObj tfoContentObj;
+                                                tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+                                                tfoContentObjs1.add(tfoContentObj);
+
+                                                ArrayList<String> keys = new ArrayList<>();
+                                                ArrayList<String> values = new ArrayList<>();
+                                                keys.add("book_author");
+                                                keys.add("book_title");
+
+                                                values.add(FastData.getUserName());
+                                                values.add(bookName);
+
+                                                TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
+                                                List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+                                                tfoPublishObjs.add(tfoPublishObj);
+
+                                                MyPODActivity.open(this, "", "", BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
+                                                finish();
+                                            }
+                                        },
+                                        throwable -> {
+                                            Log.e(TAG, throwable.getLocalizedMessage());
+                                        }
+                                )
+                );
+
+
                 break;
             case R.id.rl_delete_album:
                 //删除相册
