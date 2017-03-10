@@ -83,6 +83,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                         if (msg.arg2 == 1) list.add(msg.arg1, msg.obj);
                         else list.addAll(msg.arg1, (Collection<Object>) msg.obj);
                         notifyItemRangeInserted(msg.arg1, msg.arg2);
+                        if (msg.arg1 != getRealItemSize())
+                            notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
                     }
                 }
                 break;
