@@ -114,7 +114,7 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
         @Bind(R.id.ll_price_number)
         LinearLayout llPriceNumber;
         @Bind(R.id.ll_root)
-        LinearLayout llRoot;
+        RelativeLayout llRoot;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
