@@ -202,13 +202,15 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
         public void onClick(View v) {
             int line = (int) v.getTag(R.string.tag_index);
             int dataIndex = getDataPosition(line);
-            if (selImgs.size() + listData.get(dataIndex).getImgList().size() > maxCount) {
-                ToastUtil.showToast("最多只能选" + maxCount + "张照片");
-                ((CheckBox) v).setChecked(false);
-                return;
+            boolean isChecked = ((CheckBox) v).isChecked();
+            if(isChecked){
+                if (selImgs.size() + listData.get(dataIndex).getImgList().size() > maxCount) {
+                    ToastUtil.showToast("最多只能选" + maxCount + "张照片");
+                    ((CheckBox) v).setChecked(false);
+                    return;
+                }
             }
 
-            boolean isChecked = ((CheckBox) v).isChecked();
             for (PhotoModel item : listData.get(dataIndex).getImgList()) {
                 if (isChecked) {
                     doSelImg(dataIndex, item);

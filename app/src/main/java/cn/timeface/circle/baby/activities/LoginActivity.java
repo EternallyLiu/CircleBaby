@@ -193,10 +193,11 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                         FastData.setAccount(account);
                         FastData.setPassword(psw);
                         FastData.setBabyCount(loginResponse.getBabycount());
+
                         if (loginResponse.getBabycount() == 0) {
                             CreateBabyActivity.open(this, true);
                         } else {
-                            startActivity(new Intent(this, TabMainActivity.class));
+                            TabMainActivity.open(this);
                         }
                         //统计登录行为事件
                         CountlyEventHelper.getInstance().loginEvent(
@@ -343,7 +344,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                             if (loginResponse.getBabycount() == 0) {
                                 CreateBabyActivity.open(this, true);
                             } else {
-                                startActivity(new Intent(this, TabMainActivity.class));
+                                TabMainActivity.open(this);
                             }
                         }
                         switch (from){

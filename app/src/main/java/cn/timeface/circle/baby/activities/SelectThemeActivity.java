@@ -184,7 +184,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
                                 response -> {
                                     if(response.success()){
                                         //跳转开放平台POD接口；
-                                        String bookName = FastData.getBabyName() + "的精装照片书";
+                                        String bookName = FastData.getBabyName() + "的照片书";
                                         List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
                                         StringBuffer sb = new StringBuffer("{\"dataList\":[");
                                         int index = 0;

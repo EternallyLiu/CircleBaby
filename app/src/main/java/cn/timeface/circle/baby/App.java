@@ -3,6 +3,7 @@ package cn.timeface.circle.baby;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -70,7 +71,11 @@ public class App extends MultiDexApplication {
 
 //        pushSetting();
         MiPushUtil.init(this);
-        ShareSDK.initSDK(this);
+        try {
+            ShareSDK.initSDK(this);
+        } catch (Exception e){
+            Log.e("App", "ShareSDK init error!");
+        }
         UploadService.setRecorder(new SimpleUploadRecorder());
 
         GlideUtil.init(this);

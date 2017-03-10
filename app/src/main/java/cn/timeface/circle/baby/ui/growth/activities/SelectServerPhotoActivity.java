@@ -173,7 +173,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                     //绘画集默认 按标签
                                     if(bookType == BookModel.BOOK_TYPE_PAINTING){
                                         selectTypeLabel();
-                                        //其他作品默认 按时间
+                                    //其他作品默认 按时间
                                     } else {
                                         selectTypeTime();
                                     }
@@ -248,7 +248,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                     response -> {
                                         if(response.success()){
                                             //跳转开放平台POD接口；
-                                            String bookName = FastData.getBabyName() + "的精装照片书";
+                                            String bookName = FastData.getBabyName() + "的照片书";
                                             if(bookType == BookModel.BOOK_TYPE_PAINTING){
                                                 bookName = FastData.getBabyName() + "的绘画集";
                                             }

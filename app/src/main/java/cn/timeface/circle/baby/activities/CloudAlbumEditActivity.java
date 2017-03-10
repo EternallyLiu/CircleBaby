@@ -395,12 +395,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 goEditState();
                 break;
             case R.id.rl_book_pre:
-                //进入POD预览
-//                Intent intent = new Intent(this, SelectThemeActivity.class);
-//                intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) imageInfoList);
-//                intent.putExtra("cloudAlbum", 1);
-//                startActivity(intent);
-
+                //直接做书，不给用户选择主题
                 List<MediaObj> allSelectMedias = new ArrayList<>();
                 for(ImageInfoListObj imageInfoListObj : imageInfoList){
                     allSelectMedias.addAll(imageInfoListObj.getMediaList());
@@ -427,7 +422,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                                         response -> {
                                             if (response.success()) {
                                                 //跳转开放平台POD接口；
-                                                String bookName = FastData.getBabyName() + "的精装照片书";
+                                                String bookName = FastData.getBabyName() + "的照片书";
                                                 List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
                                                 StringBuffer sb = new StringBuffer("{\"dataList\":[");
                                                 int index = 0;
