@@ -132,17 +132,17 @@ public class CalendarPreviewActivity extends BasePresenterAppCompatActivity impl
 		isCrowdfunding = getIntent().getBooleanExtra("isCrowdfunding", false);
 
 		toolbar.setTitle("台历预览");
-		toolbar.inflateMenu(R.menu.menu_share);
+//		toolbar.inflateMenu(R.menu.menu_share);
 		toolbar.setNavigationOnClickListener(v -> finish());
-		toolbar.setOnMenuItemClickListener(item -> {
-			try {
-				share();
-			} catch (Exception e) {
-				showToast("数据错误");
-				Log.e(TAG, "error", e);
-			}
-			return false;
-		});
+//		toolbar.setOnMenuItemClickListener(item -> {
+//			try {
+//				share();
+//			} catch (Exception e) {
+//				showToast("数据错误");
+//				Log.e(TAG, "error", e);
+//			}
+//			return false;
+//		});
 		bookPodView.setHasCoverTop(true);
 
 		stateView.setOnRetryListener(this::loadData);
@@ -420,11 +420,11 @@ public class CalendarPreviewActivity extends BasePresenterAppCompatActivity impl
 		updateMonthText();
 	}
 
-	private void share() throws Exception {
-		//UmsAgent.onEvent(this, LogConstant.BOOK_SHARE, id);
-
-		presenter.createShareUrl();
-	}
+//	private void share() throws Exception {
+//		//UmsAgent.onEvent(this, LogConstant.BOOK_SHARE, id);
+//
+//		presenter.createShareUrl();
+//	}
 
 //    @Override
 //    public void refreshTimeBookTagList(List<BookTagItem> dataList) {
