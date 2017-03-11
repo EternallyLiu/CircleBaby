@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 
@@ -64,6 +65,9 @@ public class WebViewFragment extends BaseFragment {
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
         //添加网页对话框的提示
         webView.setWebChromeClient(new WebChromeClient() {

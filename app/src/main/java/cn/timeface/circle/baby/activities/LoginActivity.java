@@ -181,35 +181,34 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         tfProgressDialog.setTvMessage("登录中…");
         tfProgressDialog.show(getSupportFragmentManager(), "");
         Subscription s;
-        s = apiService.login(Uri.encode(account), Uri.encode(psw), type)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(loginResponse -> {
-                    tfProgressDialog.dismiss();
-                    ToastUtil.showToast(loginResponse.getInfo());
-                    if (loginResponse.success()) {
-                        FastData.setUserInfo(loginResponse.getUserInfo());
-                        FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
-                        FastData.setAccount(account);
-                        FastData.setPassword(psw);
-                        FastData.setBabyCount(loginResponse.getBabycount());
-                        if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this, true);
-                        } else {
-                            startActivity(new Intent(this, TabMainActivity.class));
-                        }
-                        //统计登录行为事件
-                        CountlyEventHelper.getInstance().loginEvent(
-                                loginResponse.getUserInfo().getUserId(),
-                                CountlyEventConstant.LOGIN_EVENT_FROM_TIME_FACE);
-                    }
+        s = apiService.login(Uri.encode(account), Uri.encode(psw), type).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(loginResponse -> {
+            tfProgressDialog.dismiss();
+            ToastUtil.showToast(loginResponse.getInfo());
+            if (loginResponse.success()) {
+                FastData.setUserInfo(loginResponse.getUserInfo());
+                FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
+                FastData.setAccount(account);
+                FastData.setPassword(psw);
+                FastData.setBabyCount(loginResponse.getBabycount());
+                if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    FragmentBridgeActivity.open(this, BindPhoneFragment.class.getSimpleName(), bundle);
+                } else if (loginResponse.getBabycount() == 0) {
+                    CreateBabyActivity.open(this, true);
+                } else {
+                    startActivity(new Intent(this, TabMainActivity.class));
+                }
+                //统计登录行为事件
+                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_TIME_FACE);
+            }
 
-                }, throwable -> {
-                    tfProgressDialog.dismiss();
-                    Log.e(TAG, "login:", throwable);
-                    throwable.printStackTrace();
-                    ToastUtil.showToast("服务器异常，请稍后重试");
-                });
+        }, throwable -> {
+            tfProgressDialog.dismiss();
+            Log.e(TAG, "login:", throwable);
+            throwable.printStackTrace();
+            ToastUtil.showToast("服务器异常，请稍后重试");
+        });
         return s;
     }
 
@@ -234,15 +233,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 FastData.setUserFrom(from);
                 Platform plat = ShareSDK.getPlatform(platform);
                 final int finalFrom = from;
-                thirdLogin(plat.getDb().getToken(),
-                        plat.getDb().getUserIcon(),
-                        plat.getDb().getExpiresIn(),
-                        from,
-                        "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
-                        plat.getDb().getUserName(),
-                        plat.getDb().get("openid"),
-                        plat.getDb().getUserId(),
-                        plat.getDb().get("unionid"), LoginActivity.this);
+                thirdLogin(plat.getDb().getToken(), plat.getDb().getUserIcon(), plat.getDb().getExpiresIn(), from, "m".equals(plat.getDb().getUserGender()) ? 1 : 0, plat.getDb().getUserName(), plat.getDb().get("openid"), plat.getDb().getUserId(), plat.getDb().get("unionid"), LoginActivity.this);
             }
 
             @Override
@@ -295,16 +286,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                     } else if (plat.getName().equals(Wechat.NAME)) {
                         type = 3;
                     }
-                    thirdLogin(plat.getDb().getToken(),
-                            avatar,
-                            plat.getDb().getExpiresIn(),
-                            type,
-                            "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
-                            plat.getDb().getUserName(),
-                            plat.getDb().get("openid"),
-                            plat.getDb().getUserId(),
-                            plat.getDb().get("unionid"),
-                            outer);
+                    thirdLogin(plat.getDb().getToken(), avatar, plat.getDb().getExpiresIn(), type, "m".equals(plat.getDb().getUserGender()) ? 1 : 0, plat.getDb().getUserName(), plat.getDb().get("openid"), plat.getDb().getUserId(), plat.getDb().get("unionid"), outer);
                 } else if (msg.what == 3) {
                     Toast.makeText(outer, "登录取消", Toast.LENGTH_SHORT).show();
                 } else if (msg.what == 4) {
@@ -315,60 +297,49 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
     }
 
-    public void thirdLogin(String accessToken,
-                           String avatar,
-                           long expiry_in,
-                           int from,
-                           int gender,
-                           String nickName,
-                           String openid,
-                           String platId,
-                           String unionid, Context context) {
+    public void thirdLogin(String accessToken, String avatar, long expiry_in, int from, int gender, String nickName, String openid, String platId, String unionid, Context context) {
         tfProgressDialog.setTvMessage("登录中…");
         tfProgressDialog.show(getSupportFragmentManager(), "");
-        apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(loginResponse -> {
-                    tfProgressDialog.dismiss();
-                    if (loginResponse.success()) {
-                        FastData.setUserInfo(loginResponse.getUserInfo());
-                        FastData.setUserFrom(from);
-                        FastData.setBabyCount(loginResponse.getBabycount());
-                        if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
-                            Bundle bundle = new Bundle();
-                            bundle.putInt("type", 0);
-                            FragmentBridgeActivity.open(this, BindPhoneFragment.class.getSimpleName(), bundle);
-                        } else {
-                            if (loginResponse.getBabycount() == 0) {
-                                CreateBabyActivity.open(this, true);
-                            } else {
-                                startActivity(new Intent(this, TabMainActivity.class));
-                            }
-                        }
-                        switch (from){
-                            case TypeConstants.USER_FROM_LOCAL:
-                                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_TIME_FACE);
-                                break;
-
-                            case TypeConstants.USER_FROM_QQ:
-                                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_QQ);
-                                break;
-
-                            case TypeConstants.USER_FROM_SINA:
-                                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_WEIBO);
-                                break;
-
-                            case TypeConstants.USER_FROM_WECHAT:
-                                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_WECHAT);
-                                break;
-                        }
+        apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(loginResponse -> {
+            tfProgressDialog.dismiss();
+            if (loginResponse.success()) {
+                FastData.setUserInfo(loginResponse.getUserInfo());
+                FastData.setUserFrom(from);
+                FastData.setBabyCount(loginResponse.getBabycount());
+                if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    FragmentBridgeActivity.open(this, BindPhoneFragment.class.getSimpleName(), bundle);
+                } else {
+                    if (loginResponse.getBabycount() == 0) {
+                        CreateBabyActivity.open(this, true);
+                    } else {
+                        startActivity(new Intent(this, TabMainActivity.class));
                     }
-                }, error -> {
-                    tfProgressDialog.dismiss();
-                    Log.e(TAG, "vendorLogin:", error);
-                    error.printStackTrace();
-                });
+                }
+                switch (from) {
+                    case TypeConstants.USER_FROM_LOCAL:
+                        CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_TIME_FACE);
+                        break;
+
+                    case TypeConstants.USER_FROM_QQ:
+                        CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_QQ);
+                        break;
+
+                    case TypeConstants.USER_FROM_SINA:
+                        CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_WEIBO);
+                        break;
+
+                    case TypeConstants.USER_FROM_WECHAT:
+                        CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_WECHAT);
+                        break;
+                }
+            }
+        }, error -> {
+            tfProgressDialog.dismiss();
+            Log.e(TAG, "vendorLogin:", error);
+            error.printStackTrace();
+        });
     }
 
 }

@@ -436,7 +436,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public void submit() {
-        if (dialog != null && dialog.getType() == -1) {
+        if (dialog != null && dialog.getType() == BabyAttentionEvent.TYPE_CREATE_BABY) {
             PublishActivity.open(this, PublishActivity.PHOTO);
         } else FragmentBridgeActivity.open(this, KithFragment.class.getSimpleName());
     }
