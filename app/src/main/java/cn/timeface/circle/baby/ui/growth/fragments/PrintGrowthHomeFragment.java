@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.ui.growth.activities.BookListActivity;
 import cn.timeface.circle.baby.ui.growth.activities.ProductionListActivityDelegate;
 import cn.timeface.circle.baby.ui.growth.adapters.PrintGrowthHomeAdapter;
 import cn.timeface.circle.baby.ui.growth.beans.PrintGrowthHomeObj;
+import cn.timeface.circle.baby.views.TFStateView;
 
 /**
  * 印成长首页
@@ -39,6 +40,8 @@ public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClic
 
     @Bind(R.id.rv_books)
     RecyclerView rvBooks;
+    @Bind(R.id.tf_stateView)
+    TFStateView stateView;
 
     PrintGrowthHomeAdapter growthHomeAdapter;
 
@@ -56,6 +59,8 @@ public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClic
     }
 
     private void reqPrintGrowthDHome() {
+        stateView.setVisibility(View.VISIBLE);
+        stateView.loading();
         addSubscription(
                 apiService.printGrowthHome()
                         .compose(SchedulersCompat.applyIoSchedulers())
@@ -66,8 +71,10 @@ public class PrintGrowthHomeFragment extends BaseFragment implements View.OnClic
                                     } else {
                                         Toast.makeText(getActivity(), response.info, Toast.LENGTH_SHORT).show();
                                     }
+                                    stateView.finish();
                                 },
                                 throwable -> {
+                                    stateView.showException(throwable);
                                     Log.e(TAG, throwable.getLocalizedMessage());
                                 }
                         )

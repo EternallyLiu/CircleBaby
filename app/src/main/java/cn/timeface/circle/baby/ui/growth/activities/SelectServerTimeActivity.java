@@ -600,17 +600,23 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     }
 
     @Subscribe
-    public void selectMediaListEvent(SelectMediaListEvent mediaListEvent){
-        if(mediaListEvent.getType() != SelectMediaListEvent.TYPE_TIME_MEDIA) return;
+    public void selectMediaListEvent(SelectMediaListEvent mediaListEvent) {
+        if (mediaListEvent.getType() != SelectMediaListEvent.TYPE_TIME_MEDIA) return;
         //选中
-        if(mediaListEvent.isSelect()){
-            if(!allSelectMedias.containsAll(mediaListEvent.getMediaObjList())){
-                allSelectMedias.addAll(mediaListEvent.getMediaObjList());
+        if (mediaListEvent.isSelect()) {
+            for (MediaObj mediaObj : mediaListEvent.getMediaObjList()) {
+                if (!allSelectMedias.contains(mediaObj)) {
+                    allSelectMedias.add(mediaObj);
+                }
             }
+
         } else {
-            if(allSelectMedias.containsAll(mediaListEvent.getMediaObjList())){
-                allSelectMedias.removeAll(mediaListEvent.getMediaObjList());
+            for (MediaObj mediaObj : mediaListEvent.getMediaObjList()) {
+                if (allSelectMedias.contains(mediaObj)) {
+                    allSelectMedias.remove(mediaObj);
+                }
             }
+
         }
     }
 
@@ -632,8 +638,10 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
 
         if(canBack && currentFragmentEx instanceof ServerTimeFragment){
             initAllSelectView(((ServerTimeFragment) currentFragmentEx).isAllSelect(), allSelectTimeLines.size());
+            ((ServerTimeFragment) currentFragmentEx).setTimeLineObjs(allSelectTimeLines);
         } else if(currentFragment instanceof ServerTimeFragment) {
             initAllSelectView(((ServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
+            ((ServerTimeFragment) currentFragment).setTimeLineObjs(allSelectTimeLines);
         }
 
     }

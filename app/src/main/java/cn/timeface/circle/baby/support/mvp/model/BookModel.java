@@ -40,7 +40,7 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
                 return "台历";
 
             case BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
-                return "精装照片书";
+                return "照片书";
 
             case BOOK_TYPE_GROWTH_QUOTATIONS:
                 return "成长语录";
