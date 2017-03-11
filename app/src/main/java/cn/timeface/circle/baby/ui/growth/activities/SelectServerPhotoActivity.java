@@ -179,12 +179,14 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                     }
                                     onClick(tvContentType);
                                 } else {
+                                    rlPhotoTip.setVisibility(View.GONE);
                                     ToastUtil.showToast(response.info);
                                 }
                                 stateView.finish();
                             },
                             throwable -> {
                                 stateView.showException(throwable);
+                                rlPhotoTip.setVisibility(View.GONE);
                                 Log.e(TAG, throwable.getLocalizedMessage());
                             }
                     );

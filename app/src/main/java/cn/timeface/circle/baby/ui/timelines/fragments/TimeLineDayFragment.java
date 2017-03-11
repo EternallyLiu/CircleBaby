@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+import com.yqritc.recyclerviewflexibledivider.VerticalDividerItemDecoration;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -115,7 +118,11 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
         contentRecyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         contentRecyclerView.setLayoutManager(layoutManager);
-        contentRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        contentRecyclerView.addItemDecoration(
+                new HorizontalDividerItemDecoration.Builder(getActivity())
+                        .color(getResources().getColor(R.color.bg30))
+                        .sizeResId(R.dimen.view_space_normal).build());
+        contentRecyclerView.getItemAnimator().setChangeDuration(0);//fix 列表闪烁
         reqData(currentPage);
 //        if (mMonthRecord != null)
 //            tvCount.setText(mMonthRecord.getRecordcount() + "条");

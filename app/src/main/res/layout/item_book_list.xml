@@ -41,7 +41,7 @@
                 android:paddingLeft="2px"
                 android:paddingTop="2px"
                 android:scaleType="fitXY"
-                android:src="@drawable/book_default_bg" />
+                android:src="@drawable/bg_default_holder_img" />
 
             <ImageView
                 android:id="@+id/iv_front_mask"

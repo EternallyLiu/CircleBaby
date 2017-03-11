@@ -322,9 +322,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             }
         };
 
-        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout).setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH).tfPtrListener(ptrListener);
-        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
-        contentRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        tfptrListViewHelper = new TFPTRRecyclerViewHelper(
+                getActivity(),
+                contentRecyclerView,
+                swipeRefreshLayout).setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH).tfPtrListener(ptrListener);
+        contentRecyclerView.addItemDecoration(
+                new HorizontalDividerItemDecoration.Builder(getActivity())
+                        .color(getResources().getColor(R.color.bg30))
+                        .sizeResId(R.dimen.view_space_normal).build());
+        contentRecyclerView.getItemAnimator().setChangeDuration(0);
     }
 
 

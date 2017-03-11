@@ -179,9 +179,11 @@ public class ServerPhotoFragment extends BasePresenterFragment {
                                         setListData(response.getDataList());
                                     } else {
                                         ToastUtil.showToast(response.info);
+                                        if(getActivity() instanceof SelectServerPhotoActivity) ((SelectServerPhotoActivity) getActivity()).setPhotoTipVisibility(View.GONE);
                                     }
                                 },
                                 throwable -> {
+                                    if(getActivity() instanceof SelectServerPhotoActivity) ((SelectServerPhotoActivity) getActivity()).setPhotoTipVisibility(View.GONE);
                                     Log.e(TAG, throwable.getLocalizedMessage());
                                 }
                         )
@@ -199,7 +201,8 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         }
 
         llEmpty.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
-        if(getActivity() instanceof SelectServerPhotoActivity) ((SelectServerPhotoActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
+        if(getActivity() instanceof SelectServerPhotoActivity)
+            ((SelectServerPhotoActivity) getActivity()).setPhotoTipVisibility(llEmpty.isShown() ? View.GONE : View.VISIBLE);
     }
 
     public List<MediaObj> getSelectedMedias(){
