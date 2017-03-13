@@ -40,8 +40,8 @@
         android:lines="1"
         android:padding="@dimen/size_4"
         android:text="叔叔"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_medium" />
+        android:textColor="#666666"
+        android:textSize="@dimen/text_normal" />
 
     <ImageView
         android:id="@+id/family_me"

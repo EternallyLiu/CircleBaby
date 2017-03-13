@@ -150,7 +150,7 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     }
 
     private void reqData() {
-        apiService.queryBabyFamilyLoginInfoList()
+        addSubscription(apiService.queryBabyFamilyLoginInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(familyListResponse -> {
                     if (familyListResponse.success()) {
@@ -161,7 +161,7 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
                 }, throwable -> {
                     helper.finishTFPTRRefresh();
                     empty();
-                });
+                }));
     }
 
     private void empty() {

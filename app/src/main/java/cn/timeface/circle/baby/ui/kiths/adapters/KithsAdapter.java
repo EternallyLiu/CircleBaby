@@ -9,7 +9,6 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -37,7 +36,7 @@ public class KithsAdapter extends BaseAdapter implements View.OnClickListener {
     public KithsAdapter(Context activity) {
         super(activity);
         resources = activity.getResources();
-        largeSize = (int) resources.getDimension(R.dimen.text_medium);
+        largeSize = (int) resources.getDimension(R.dimen.text_normal);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class KithsAdapter extends BaseAdapter implements View.OnClickListener {
 
     private void unJoin(View view, FamilyMemberInfo info) {
         AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(largeSize);
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.BLACK);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#666666"));
         SpannableStringBuilder builder = new SpannableStringBuilder();
         ImageView icon = ViewHolder.getView(view, R.id.icon);
         TextView content = ViewHolder.getView(view, R.id.content);

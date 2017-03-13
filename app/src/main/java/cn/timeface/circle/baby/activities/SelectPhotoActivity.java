@@ -27,6 +27,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tbruyelle.rxpermissions.RxPermissions;
+import com.tbruyelle.rxpermissions.RxPermissionsFragment;
+
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
@@ -52,6 +55,7 @@ import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ImageUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.mediastore.MediaStoreBucket;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
 import cn.timeface.common.utils.DateUtil;
 import cn.timeface.common.utils.StorageUtil;
@@ -491,19 +495,8 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         adapter.notifyDataSetChanged();
         changeSelCount(photoModels.size());
     }
-
-    public void clickCamera(View view) {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
-                    CAMERA_REQUEST_CODE);
-        }else{
-//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            mPhotoFile = StorageUtil.genSystemPhotoFile();
-//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
-//            startActivityForResult(takePictureIntent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
-
-
+    private void intentCamera(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mPhotoFile = StorageUtil.genSystemPhotoFile();
             if (!mPhotoFile.getParentFile().exists()) {
                 mPhotoFile.getParentFile().mkdirs();
@@ -516,7 +509,24 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//将拍取的照片保存到指定URI
             startActivityForResult(intent,PHOTO_SELECT_CAMERA_REQUEST_CODE);
+        }else {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            mPhotoFile = StorageUtil.genSystemPhotoFile();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
+            startActivityForResult(takePictureIntent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
         }
+    }
+
+    public void clickCamera(View view) {
+        new RxPermissions(this).request(Manifest.permission.CAMERA)
+                .subscribe(permission->{if (permission)intentCamera();},throwable -> LogUtil.showError(throwable));
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+//                    CAMERA_REQUEST_CODE);
+//        }else{
+//            intentCamera();
+//        }
     }
 
 
