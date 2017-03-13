@@ -3,12 +3,10 @@ package cn.timeface.circle.baby.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -16,23 +14,18 @@ import android.view.MenuItem;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
-
 import java.io.File;
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.adapters.RelationshipAdapter;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ImageFactory;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.Utils;
-import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.circle.baby.support.api.models.VideoInfo;
+import cn.timeface.circle.baby.support.utils.ImageFactory;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class VideoPlayActivity extends BaseAppCompatActivity {
@@ -45,6 +38,8 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
     private MenuItem save;
     private String url;
     private TFProgressDialog tfProgressDialog;
+
+    private String objectKey;
 
     public static void open(Context context, String url) {
         Intent intent = new Intent(context, VideoPlayActivity.class);
@@ -91,12 +86,33 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
         }
 
         url = getIntent().getStringExtra("url");
+        VideoInfo.findVideo(url).compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(videoInfo -> {
+                    LogUtil.showLog("url===" + url);
+                    LogUtil.showLog(videoInfo == null ? "null" : videoInfo.getPath());
+                    if (videoInfo != null && !TextUtils.isEmpty(videoInfo.getPath())) {
+                        if (TextUtils.isEmpty(videoInfo.getVideoUrl())) {
+                            videoInfo.setVideoUrl(url);
+                            videoInfo.save();
+                        }
+                        if (new File(videoInfo.getPath()).exists())
+                            url = videoInfo.getPath();
+                        init();
+                    } else init();
+                }, throwable -> {
+                    LogUtil.showError(throwable);
+                    init();
+                });
+
+    }
+
+    private void init() {
+        LogUtil.showLog("url:" + url);
         MediaController mc = new MediaController(this);
         videoview.setMediaController(mc);
         videoview.setVideoPath(url);
         videoview.requestFocus();
         videoview.start();
-
     }
 
     @Override
@@ -137,9 +153,9 @@ public class VideoPlayActivity extends BaseAppCompatActivity {
             return;
         }
         ToastUtil.showToast("保存视频…");
-        tfProgressDialog = new TFProgressDialog(this);
-        tfProgressDialog.setMessage("保存视频中…");
-        tfProgressDialog.show();
+        tfProgressDialog = TFProgressDialog.getInstance("");
+        tfProgressDialog.setTvMessage("保存视频中…");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         new Thread(new Runnable() {
             @Override
             public void run() {

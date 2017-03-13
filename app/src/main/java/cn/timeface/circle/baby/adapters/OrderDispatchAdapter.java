@@ -14,7 +14,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
+import cn.timeface.circle.baby.support.api.models.objs.PrintParamObj;
 
 /**
  * @author YW.SUN

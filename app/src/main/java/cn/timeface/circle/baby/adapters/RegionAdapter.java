@@ -12,7 +12,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.api.models.DistrictModel;
 
 /**
  * @author SunYanwei (QQ:707831837)
@@ -59,7 +59,7 @@ public class RegionAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = infalter.inflate(R.layout.item_region, null);
+            convertView = infalter.inflate(R.layout.item_region, parent, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {

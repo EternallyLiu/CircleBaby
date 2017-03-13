@@ -3,8 +3,6 @@ package cn.timeface.circle.baby.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -38,8 +36,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,15 +44,6 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.MyOrderConfirmAdapter;
 import cn.timeface.circle.baby.adapters.OrderDispatchAdapter;
-import cn.timeface.circle.baby.api.models.AddressItem;
-import cn.timeface.circle.baby.api.models.CouponItem;
-import cn.timeface.circle.baby.api.models.DistrictModel;
-import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
-import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
-import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyTypeObj;
-import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
-import cn.timeface.circle.baby.api.models.responses.PrintFullSiteCouponObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.constants.URLConstant;
 import cn.timeface.circle.baby.dialogs.SelectPayWayDialog;
@@ -63,16 +51,26 @@ import cn.timeface.circle.baby.events.AddAddressFinishEvent;
 import cn.timeface.circle.baby.events.CartCouponCodeEvent;
 import cn.timeface.circle.baby.events.OrderCancelEvent;
 import cn.timeface.circle.baby.events.PayResultEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.payment.alipay.AliPay;
-import cn.timeface.circle.baby.utils.DeviceUtil;
-import cn.timeface.circle.baby.utils.Utils;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.AddressItem;
+import cn.timeface.circle.baby.support.api.models.CouponItem;
+import cn.timeface.circle.baby.support.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.support.api.models.objs.PrintParamObj;
+import cn.timeface.circle.baby.support.api.models.objs.PrintParamResponse;
+import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyTypeObj;
+import cn.timeface.circle.baby.support.api.models.responses.MyOrderConfirmListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.PrintFullSiteCouponObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.payment.alipay.AliPay;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.ErrorViewContent;
 import cn.timeface.circle.baby.views.HttpStatusCodes;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -169,29 +167,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 
     private int orderStatus;//订单状态
     private String orderSummary = "";//订单描述
-    private Timer timer = new Timer(true);
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    if (progressDialog != null) progressDialog.dismiss();
-                    PaySuccessActivity.open(MyOrderConfirmActivity.this, orderId,
-                            orderPrice, orderStatus, orderSummary);
-                    finish();
-                    break;
-                case 2:
-                    if (orderStatus == TypeConstant.STATUS_CHECKING) {
-                        timer.cancel();
-                        progressDialog.dismiss();
-                        PaySuccessActivity.open(MyOrderConfirmActivity.this, orderId,
-                                orderPrice, orderStatus, orderSummary);
-                        finish();
-                    }
-                    break;
-            }
-        }
-    };
+
     private List<PrintPropertyTypeObj> baseObjs;
     private int expressId;
 
@@ -237,7 +213,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         original = getIntent().getIntExtra("original", 0);
         baseObjs = (List<PrintPropertyTypeObj>) getIntent().getSerializableExtra("baseObjs");
         Log.i("-------->", "orderId:" + orderId);
-        progressDialog = new TFProgressDialog(this);
+        progressDialog = TFProgressDialog.getInstance("");
 
         setupHeaderAndFooter();
 
@@ -551,7 +527,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                     @Override
                     public View getDropDownView(int position, View convertView, ViewGroup parent) {
                         convertView = LayoutInflater.from(MyOrderConfirmActivity.this)
-                                .inflate(R.layout.item_spinner_dropdown_print_coupon, null);
+                                .inflate(R.layout.item_spinner_dropdown_print_coupon, parent, false);
                         ((TextView) convertView).setText(list.get(position));
                         return convertView;
                     }
@@ -680,8 +656,8 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 
     private void reqExpressFee() {
         if (!TextUtils.isEmpty(addressId) && dataList != null) {
-            progressDialog.setMessage(getString(R.string.loading));
-            progressDialog.show();
+            progressDialog.setTvMessage(getString(R.string.loading));
+            progressDialog.show(getSupportFragmentManager(), "");
 
             Subscription s = apiService.queryDispatchList(orderId, addressId)
                     .compose(SchedulersCompat.applyIoSchedulers())
@@ -946,8 +922,8 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
 //        }
         expressId = Integer.valueOf(mRvDispatchAdapter.getDataList().get(dispatchPosition).getValue());
 
-        progressDialog.setMessage(getString(R.string.apply_order));
-        progressDialog.show();
+        progressDialog.setTvMessage(getString(R.string.apply_order));
+        progressDialog.show(getSupportFragmentManager(), "");
 
 //        for(PrintPropertyTypeObj baseObj : baseObjs){
 //            baseObj.setAddressId(Integer.valueOf(addressId));
@@ -975,7 +951,7 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
      * 支付
      */
     private void doPay() {
-        progressDialog.setMessage(R.string.begin_payoff);
+        progressDialog.setTvMessage(getString(R.string.begin_payoff));
         Log.i("------->", "orderPrice:" + orderPrice + "-->getPayTitle:" + getPayTitle());
 //        if (orderPrice == 0) {//积分支付
 //            reqPayByPoint();
@@ -985,19 +961,19 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
             @Override
             public void okClick(int payType) {
                 dialog.dismiss();
-                progressDialog.show();
+                progressDialog.show(getSupportFragmentManager(), "");
                 switch (payType) {
                     // 支付宝
                     case 1:
-                        orderPrice = 0.01f;//一分钱测试支付
+//                        orderPrice = 0.01f;//一分钱测试支付
 //                            if (isUsePoint || !TextUtils.isEmpty(getUseCouponId())) {
 //                                //4混合支付(支付宝)
 //                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
 //                            } else {
 //                                //2支付宝支付
 //                        new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
-                        Subscription subscription = new AliPay().payV2(orderId, MyOrderConfirmActivity.this);
-                        addSubscription((subscription));
+
+                        addSubscription(new AliPay().payV2(orderId, MyOrderConfirmActivity.this));
 //                            }
                         break;
 
@@ -1008,11 +984,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
                             } else {
                                 new WxUtil(MyOrderConfirmActivity.this, orderId, FastData.getUserId(), "1").pay();
                             }
-                            break;*/
-
-                    //翼支付
-//                        case 3:
-                           /* new EPayUtil(MyOrderConfirmActivity.this, orderId).pay();
                             break;*/
                 }
             }
@@ -1063,25 +1034,33 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
      * 确认订单支付结果
      */
     private void reqConfirmOrder() {
-        progressDialog.setMessage(getString(R.string.pay_result_confirm_begin));
-        progressDialog.show();
+        progressDialog.setTvMessage(getString(R.string.pay_result_confirm_begin));
+        progressDialog.show(getSupportFragmentManager(), "");
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Subscription s = apiService.findOrderDetail(orderId)
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(response -> {
+        Subscription s = Observable.interval(1, 1, TimeUnit.SECONDS) //延时1s ，每间隔1s，时间单位
+                .flatMap(aLong -> apiService.findOrderDetail(orderId))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
                             if (response.success()) {
 //                                    orderDetail = response;
                                 orderStatus = response.getOrderStatus();
                                 orderSummary = response.getSummary();
-                                mHandler.sendEmptyMessage(2);
+
+                                if (orderStatus == TypeConstant.STATUS_CHECKING) {
+                                    if (progressDialog != null) {
+                                        progressDialog.dismiss();
+                                    }
+                                    PaySuccessActivity.open(this, orderId, orderPrice, orderStatus, orderSummary);
+                                    finish();
+                                }
                             }
-                        });
-                addSubscription(s);
-            }
-        }, 0, 2 * 1000);
+                        },
+                        throwable -> {
+                            Log.e(TAG, "reqConfirmOrder: ", throwable);
+                        }
+                );
+        addSubscription(s);
     }
 
     private void setupAddressLayout(AddressItem addressModule) {
@@ -1127,13 +1106,13 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
             progressDialog.dismiss();
         }
 
-        if (event.type != null && (event.type).equals(PayResultEvent.PayType.WX)) {
-            if ((event.resultCode).equals("-1")) {
-                Toast.makeText(this, getString(R.string.pay_fail), Toast.LENGTH_SHORT).show();
-            } else if ((event.resultCode).equals("-2")) {
-                Toast.makeText(this, getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if (event.type != null && (event.type).equals(PayResultEvent.PayType.WX)) {
+//            if ((event.resultCode).equals("-1")) {
+//                Toast.makeText(this, getString(R.string.pay_fail), Toast.LENGTH_SHORT).show();
+//            } else if ((event.resultCode).equals("-2")) {
+//                Toast.makeText(this, getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
         if (event.paySuccess()) {
             Toast.makeText(this, getString(R.string.pay_success), Toast.LENGTH_SHORT).show();

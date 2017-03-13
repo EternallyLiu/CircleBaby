@@ -2,7 +2,6 @@ package cn.timeface.circle.baby.adapters;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,20 +12,17 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.TemplateObj;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.api.models.objs.TemplateObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 
 public class HorizontalListViewAdapter2 extends BaseAdapter {
-    private Context mContext;
     private LayoutInflater mInflater;
-    Bitmap iconBitmap;
     private int selectIndex = -1;
     private List<TemplateObj> list;
 
     public HorizontalListViewAdapter2(Context context, List<TemplateObj> list) {
-        this.mContext = context;
         this.list = list;
-        mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);//LayoutInflater.from(mContext);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);//LayoutInflater.from(mContext);
     }
 
     public void setList(List<TemplateObj> list) {
@@ -58,7 +54,7 @@ public class HorizontalListViewAdapter2 extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.item_horizontal_listview, null);
+            convertView = mInflater.inflate(R.layout.item_horizontal_listview, parent, false);
             holder.mImage = (ImageView) convertView.findViewById(R.id.img_list_item);
             holder.mTitle = (TextView) convertView.findViewById(R.id.text_list_item);
             convertView.setTag(holder);

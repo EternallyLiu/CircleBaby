@@ -14,8 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.support.utils.Remember;
 
 public class SettingMsgFragment extends BaseFragment implements View.OnClickListener {
 

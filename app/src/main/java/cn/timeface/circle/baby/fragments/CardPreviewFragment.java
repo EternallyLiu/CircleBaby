@@ -25,22 +25,25 @@ import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioRelativeLayout;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
-import cn.timeface.circle.baby.api.models.objs.TemplateImage;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.oss.OSSManager;
-import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.Pinyin4jUtil;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.Utils;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.support.api.models.objs.TemplateImage;
+import cn.timeface.circle.baby.support.oss.OSSManager;
+import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.Pinyin4jUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.ui.growth.events.RecognizeCardCreateEvent;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -89,7 +92,7 @@ public class CardPreviewFragment extends BaseFragment {
             actionBar.setTitle("识图卡片");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        tfProgressDialog = new TFProgressDialog(getActivity());
+        tfProgressDialog =TFProgressDialog.getInstance("");
         url = imgObj.getLocalPath();
 
         uploadImageObservable(imgObj.getLocalPath())
@@ -176,25 +179,26 @@ public class CardPreviewFragment extends BaseFragment {
                         String imageInfo = new Gson().toJson(templateImage);
                         return imageInfo;
                     })
-                    .flatMap(imageInfo -> apiService.cardComposed(URLEncoder.encode(content), imageInfo, py))
+                    .flatMap(imageInfo -> apiService.cardComposed("", URLEncoder.encode(content), imageInfo, py))
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(() -> {
-                        tfProgressDialog.setMessage("合成卡片中…");
-                        tfProgressDialog.show();
+                        tfProgressDialog.setTvMessage("合成卡片中…");
+                        tfProgressDialog.show(getChildFragmentManager(), "");
                     })
                     .doOnTerminate(() -> {
-                        if (tfProgressDialog != null && tfProgressDialog.isShowing()) {
+                        if (tfProgressDialog != null && tfProgressDialog.isVisible()) {
                             tfProgressDialog.dismiss();
                         }
                     })
-                    .subscribe(diaryComposeResponse -> {
+                    .subscribe(knowledgeComposedResponse -> {
                         tfProgressDialog.dismiss();
-                        if (diaryComposeResponse.success()) {
-                            MediaObj mediaObj = diaryComposeResponse.getMediaObj();
+                        if (knowledgeComposedResponse.success()) {
+                            MediaObj mediaObj = knowledgeComposedResponse.getKnowledgeCardObj().getMedia();
                             mediaObj.setPhotographTime(createTime);
-                            getActivity().finish();
+                            EventBus.getDefault().post(new RecognizeCardCreateEvent(knowledgeComposedResponse.getKnowledgeCardObj()));
+                            CardPreviewFragment.this.getActivity().finish();
                         } else {
-                            ToastUtil.showToast(diaryComposeResponse.getInfo());
+                            ToastUtil.showToast(knowledgeComposedResponse.getInfo());
                         }
                     }, throwable -> {
                         Log.e(TAG, "diaryPublish:");

@@ -3,19 +3,21 @@ package cn.timeface.circle.baby.views;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 
 /**
  * author : YW.SUN Created on 2016/4/11
@@ -55,11 +57,11 @@ public class PhotoSelectImageView extends RatioFrameLayout implements Checkable 
     }
 
     public void setContent(PhotoModel img) {
-        Glide.with(getContext())
-                .load(img.getUri())
-                .thumbnail(0.1f)
-                .centerCrop()
-                .into(ivPhoto);
+        GlideUtil.displayImagePick(!TextUtils.isEmpty(img.getLocalPath()) ? img.getLocalPath() : !TextUtils.isEmpty(img.getUrl()) ? img.getUrl() : null, ivPhoto);
+    }
+
+    public void setContent(MediaObj img) {
+        GlideUtil.displayImagePick(img.getImgUrl(),ivPhoto);
     }
 
     @Override

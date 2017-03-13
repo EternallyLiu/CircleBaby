@@ -10,9 +10,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,20 +23,24 @@ import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
-import cn.timeface.circle.baby.api.models.objs.UserObj;
-import cn.timeface.circle.baby.api.models.responses.BabyInfoListResponse;
-import cn.timeface.circle.baby.api.services.OpenUploadServices;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.support.api.models.responses.BabyInfoListResponse;
+import cn.timeface.circle.baby.support.api.services.OpenUploadServices;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
+import cn.timeface.circle.baby.ui.babyInfo.beans.BabyChanged;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import cn.timeface.circle.baby.views.TFStateView;
-import cn.timeface.open.GlobalSetting;
-import cn.timeface.open.api.models.objs.TFOUserObj;
+import cn.timeface.open.TFOpen;
+import cn.timeface.open.TFOpenConfig;
+import cn.timeface.open.api.bean.obj.TFOUserObj;
 
 public class ChangeBabyActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
@@ -54,16 +58,12 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     private ChangebabyAdapter adapter;
     private BabyInfoListResponse babyInfoListResponse;
 
-    public static void open(Context context) {
-        Intent intent = new Intent(context, ChangeBabyActivity.class);
-        context.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_changebaby);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -86,6 +86,18 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         super.onResume();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
+    }
+
+    public static void open(Context context) {
+        Intent intent = new Intent(context, ChangeBabyActivity.class);
+        context.startActivity(intent);
+    }
+
     private void reqData() {
         apiService.queryBabyInfoList()
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -99,15 +111,15 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                     if (tfStateView != null) {
                         tfStateView.showException(throwable);
                     }
-                    Log.e(TAG, "queryBabyInfoList:",throwable);
+                    Log.e(TAG, "queryBabyInfoList:", throwable);
                 });
 
     }
 
     private void setDataList(List<UserObj> dataList) {
         ArrayList<UserObj> userObjs = new ArrayList<>();
-        for (UserObj user : dataList){
-            if(!TextUtils.isEmpty(user.getUserId()) && user.getBabyObj().getBabyId()!=0){
+        for (UserObj user : dataList) {
+            if (!TextUtils.isEmpty(user.getUserId()) && user.getBabyObj().getBabyId() != 0) {
                 userObjs.add(user);
             }
         }
@@ -116,16 +128,11 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_createbaby:
-                CreateBabyActivity.open(this,false);
+                CreateBabyActivity.open(this, false);
+//                FragmentBridgeActivity.open(this, CreateBabyFragment.class.getSimpleName());
                 break;
             case R.id.tv_focusbaby:
                 InviteCodeActivity.open(this);
@@ -143,7 +150,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     Remember.putBoolean("showtimelinehead", true);
-                    EventBus.getDefault().post(new HomeRefreshEvent());
+                    EventBus.getDefault().post(new HomeRefreshEvent().setType(1001));
                     EventBus.getDefault().post(new ConfirmRelationEvent());
                     EventBus.getDefault().post(new UnreadMsgEvent());
                     initOpen();
@@ -160,23 +167,33 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         tfoUserObj.setNick_name(FastData.getBabyName());
         tfoUserObj.setPhone(FastData.getAccount());
         tfoUserObj.setUserId(FastData.getUserId());
-        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);
-        GlobalSetting.getInstance().setUploadServices(new OpenUploadServices());
+//        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);
+//        GlobalSetting.getInstance().setUploadServices(new OpenUploadServices());
+        TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
+                .debug(BuildConfig.DEBUG).build()
+        );
     }
 
     @Override
     public void onBackPressed() {
         int babyId = FastData.getBabyId();
-        if(babyId == 0 && babyInfoListResponse != null){
+        if (babyId == 0 && babyInfoListResponse != null) {
             int size = babyInfoListResponse.getDataList().size();
-            if(size>0){
+            if (size > 0) {
                 UserObj userObj = babyInfoListResponse.getDataList().get(0);
                 changeBaby(userObj);
-            }else{
+            } else {
                 ToastUtil.showToast("你还没有宝宝，请先创建或关注一个宝宝");
             }
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
+
+    @Subscribe
+    public void onEvent(BabyChanged changed) {
+        changeBaby(changed.getUserObj());
+        EventBus.getDefault().post(new BabyAttentionEvent(changed.getBuilder()));
+    }
+
 }

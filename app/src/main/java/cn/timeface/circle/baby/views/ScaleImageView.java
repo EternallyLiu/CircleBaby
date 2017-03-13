@@ -16,13 +16,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.utils.ImageFactory;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.utils.ImageFactory;
 
 /**
  * Created by lidonglin on 2016/5/23.

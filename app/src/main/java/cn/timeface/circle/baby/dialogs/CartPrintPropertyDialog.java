@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.github.rayboot.widget.ratioview.RatioFrameLayout;
+import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,6 +40,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,21 +49,26 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CartActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CartPrintPropertyGvAdapter;
-import cn.timeface.circle.baby.api.models.PrintCartItem;
-import cn.timeface.circle.baby.api.models.objs.BasePrintProperty;
-import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
-import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyTypeObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.events.CartAddClickEvent;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.CartPropertyChangeEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.DeviceUtil;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.models.PrintCartItem;
+import cn.timeface.circle.baby.support.api.models.base.BasePrintProperty;
+import cn.timeface.circle.baby.support.api.models.objs.PrintParamObj;
+import cn.timeface.circle.baby.support.api.models.objs.PrintParamResponse;
+import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyTypeObj;
+import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.mvp.model.CalendarModel;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.NoScrollGridView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Subscription;
@@ -72,6 +79,10 @@ import rx.Subscription;
  * @TODO
  */
 public class CartPrintPropertyDialog extends DialogFragment implements IEventBus {
+
+    public final static int BOOK_MAX_COUNT = 99;
+    public final static int CALENDAR_MAX_COUNT = 999;
+
     public final static int TYPE_ADD_CART = 0;
     public final static int TYPE_BUY_NOW = 1;
     public final static int TYPE_NORMAL = 2;
@@ -80,6 +91,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     public final static int REQUEST_CODE_QQ = 2;
     public final static int REQUEST_CODE_POD = 3;
     public final static int REQUEST_CODE_SPLIT = 4;
+    public final static int REQUEST_CODE_DIARY_CARD = 5;
+    public final static int REQUEST_CODE_RECOGNIZE_CARD = 6;
+    public final static int REQUEST_CODE_BOOK_LIST = 7;
 
     List<PrintParamObj> sizeList = new ArrayList<>();
     List<PrintParamObj> colorList = new ArrayList<>();
@@ -98,18 +112,14 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     EditText mBookPrintNumberEt;
     @Bind(R.id.book_print_number_plus_ib)
     ImageButton mBookPrintNumberPlusIb;
-    @Bind(R.id.iv_bookbg)
-    ImageView ivBookbg;
-    @Bind(R.id.iv_book)
-    ImageView ivBook;
-    @Bind(R.id.fl_book_cover)
-    RatioFrameLayout flBookCover;
+    @Bind(R.id.iv_book_cover)
+    ImageView ivBookCover;
+    @Bind(R.id.rl_book_cover)
+    RelativeLayout rlBookCover;
     @Bind(R.id.iv_book_tag)
     ImageView mIvBookTag;
     @Bind(R.id.rl_cover)
     RelativeLayout mRlCover;
-    @Bind(R.id.rl_header_cover)
-    RelativeLayout rlHeaderCover;
     @Bind(R.id.gv_book_size)
     NoScrollGridView mGvBookSize;
     @Bind(R.id.gv_print_color)
@@ -128,6 +138,13 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     Button btnOk;
     @Bind(R.id.ll_btn_ok)
     LinearLayout llBtnOk;
+    @Bind(R.id.ll_content)
+    LinearLayout llContent;
+    @Bind(R.id.tv_max_amount)
+    TextView tvMaxAmount;
+    @Bind(R.id.iv_front_mask)
+    ImageView ivMask;
+
     private PrintCartItem cartItem;
     private PrintPropertyPriceObj propertyObj;
     private List<PrintParamResponse> paramList;
@@ -138,6 +155,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     private float bookPrice;
     private String bookId;
     private String bookType;
+    private int openBookType;
     private TFProgressDialog tfProgressDialog;
     private int requestCode;
     private String printId = "";
@@ -149,19 +167,23 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     private String bookName;
     private String createTime;
     private Context context;
+    private int limit = BOOK_MAX_COUNT;
+
+    private final ApiService apiService = ApiFactory.getApi().getApiService();
 
     public static CartPrintPropertyDialog getInstance(PrintCartItem printCartItem,
                                                       PrintPropertyPriceObj obj,
                                                       List<PrintParamResponse> responseList,
                                                       String bookId,
                                                       String bookType,
+                                                      int openBookType,
                                                       int requestCode,
                                                       int printCode,
                                                       String bookCover,
                                                       int original,
                                                       int pageNum,
                                                       String bookName,
-                                                      String createTime,Context context) {
+                                                      String createTime, Context context) {
         CartPrintPropertyDialog dialog = new CartPrintPropertyDialog(context);
         Bundle bundle = new Bundle();
         bundle.putSerializable("cart_item", printCartItem);
@@ -169,6 +191,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         bundle.putParcelableArrayList("param_response", (ArrayList<? extends Parcelable>) responseList);
         bundle.putString("book_id", bookId);
         bundle.putString("book_type", bookType);
+        bundle.putInt("open_book_type", openBookType);
         bundle.putInt("request_code", requestCode);
         bundle.putInt("print_code", printCode);
         bundle.putString("book_cover", bookCover);
@@ -178,6 +201,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         bundle.putString("createTime", createTime);
         dialog.setArguments(bundle);
         return dialog;
+    }
+
+    public CartPrintPropertyDialog() {
     }
 
     public CartPrintPropertyDialog(Context context) {
@@ -204,11 +230,12 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        tfProgressDialog = new TFProgressDialog(getActivity());
+        tfProgressDialog = TFProgressDialog.getInstance("");
         cartItem = (PrintCartItem) getArguments().getSerializable("cart_item");
         propertyObj = (PrintPropertyPriceObj) getArguments().getSerializable("print_property");
         bookId = getArguments().getString("book_id");
         bookType = getArguments().getString("book_type");
+        openBookType = getArguments().getInt("open_book_type", -1);
         requestCode = getArguments().getInt("request_code", REQUEST_CODE_MINETIME);
         printCode = getArguments().getInt("print_code", TypeConstant.PRINT_CODE_NORMAL);
         bookCover = getArguments().getString("book_cover");
@@ -247,19 +274,19 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                 if (pageNum >= 12 && pageNum <= 20) {
                     mTvPack.setText("(照片书12-20页，只支持平装)");
                     if(obj.getShow().equals("平装")){
-                        obj.setIsActive(true);
+                        obj.setActive(true);
                     }else{
-                        obj.setIsActive(false);
+                        obj.setActive(false);
                     }
                 } else if (pageNum > 20 && pageNum <= 60) {
                     mTvPack.setText("");
-                    obj.setIsActive(true);
+                    obj.setActive(true);
                 } else if (pageNum > 60) {
                     mTvPack.setText("(照片书大于页，只支持平装)");
                     if(obj.getShow().equals("平装")){
-                        obj.setIsActive(true);
+                        obj.setActive(true);
                     }else{
-                        obj.setIsActive(false);
+                        obj.setActive(false);
                     }
                 }
         }*/
@@ -279,13 +306,45 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
     }
 
     private void setupLayout() {
-        mBookPrintNumberEt.addTextChangedListener(new EditTextWatcher(mBookPrintNumberEt, 99, false));
-        GlideUtil.displayImage(bookCover, ivBook);
-        if (Integer.valueOf(bookType) != 2) {
-            ivBookbg.setImageResource(R.drawable.book_front_mask2);
-        } else {
-            ivBookbg.setImageResource(R.drawable.book_front_mask);
+        int imageWidth = DeviceUtil.dpToPx(getContext().getResources(), 120);
+        switch (Integer.valueOf(bookType)) {
+            case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK://精装照片书
+            case BookModel.BOOK_TYPE_PAINTING://绘画集
+            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS://成长语录
+            case BookModel.BOOK_TYPE_CALENDAR://台历
+                imageWidth = DeviceUtil.dpToPx(getContext().getResources(), 120);
+                break;
+            case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK://成长纪念册
+                imageWidth = DeviceUtil.dpToPx(getContext().getResources(), 100);
+                break;
         }
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                imageWidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ivBookCover.setLayoutParams(lp);
+        ivBookCover.setMaxWidth(imageWidth);
+
+        if (TextUtils.equals(bookType, String.valueOf(BookModel.BOOK_TYPE_CALENDAR))) {
+            limit = CALENDAR_MAX_COUNT;
+            llContent.setVisibility(View.GONE);
+            ivMask.setVisibility(View.GONE);
+
+            Glide.with(getContext())
+                    .load(openBookType == CalendarModel.BOOK_TYPE_CALENDAR_HORIZONTAL
+                            ? R.drawable.bg_calendar_horizontal : R.drawable.bg_calendar_vertical)
+                    .into(ivBookCover);
+        } else {
+            limit = BOOK_MAX_COUNT;
+            llContent.setVisibility(View.VISIBLE);
+            ivMask.setVisibility(View.VISIBLE);
+
+            GlideUtil.displayImage(bookCover, ivBookCover);
+        }
+
+        tvMaxAmount.setText(String.format(Locale.CHINESE, "(上限%s本)", limit));
+
+        mBookPrintNumberEt.addTextChangedListener(new EditTextWatcher(mBookPrintNumberEt, limit, false));
+
         for (PrintParamResponse paramResponse : paramList) {
             if (PrintParamResponse.KEY_SIZE.equals(paramResponse.getKey())) {
                 sizeList = paramResponse.getValueList();
@@ -333,21 +392,16 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         }
 
         if (propertyObj == null) {
-            sizeList.get(0).setIsSelect(true);
-            colorList.get(0).setIsSelect(true);
             packList.get(0).setIsSelect(true);
-            if (paperList.size() > 0) paperList.get(0).setIsSelect(true);
 
-            for (PrintParamObj obj : packList) {
-                if (printCode == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
-                    mTvPack.setText(getString(R.string.cart_print_code_limit_soft_pack_2));
-                    if (obj.getShow().equals("平装")) {
-                        obj.setIsActive(true);
-                    } else {
-                        obj.setIsActive(false);
-                    }
-                }
-            }
+            // 选中装订方式中对应的可选颜色
+            selectAvailableList(colorList, packList.get(0).getColorList());
+
+            // 选中装订方式中对应的可选纸张类别
+            selectAvailableList(paperList, packList.get(0).getPaperList());
+
+            // 选中装订方式中对应的可选尺寸
+            selectAvailableList(sizeList, packList.get(0).getSizeList());
         } else {
             mBookPrintNumberEt.setText(String.valueOf(propertyObj.getNum()));
             for (PrintParamObj obj : sizeList) {
@@ -371,9 +425,9 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                 if (cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
                     mTvPack.setText(getString(R.string.cart_print_code_limit_soft_pack_2));
                     if (obj.getShow().equals("平装")) {
-                        obj.setIsActive(true);
+                        obj.setActive(true);
                     } else {
-                        obj.setIsActive(false);
+                        obj.setActive(false);
                     }
                 }
             }
@@ -386,6 +440,60 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
 
         }
 
+//        if (propertyObj == null) {
+//            sizeList.get(0).setIsSelect(true);
+//            colorList.get(0).setIsSelect(true);
+//            packList.get(0).setIsSelect(true);
+//            if (paperList.size() > 0) paperList.get(0).setIsSelect(true);
+//
+//            for (PrintParamObj obj : packList) {
+//                if (printCode == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
+//                    mTvPack.setText(getString(R.string.cart_print_code_limit_soft_pack_2));
+//                    if (obj.getShow().equals("平装")) {
+//                        obj.setActive(true);
+//                    } else {
+//                        obj.setActive(false);
+//                    }
+//                }
+//            }
+//        } else {
+//            mBookPrintNumberEt.setText(String.valueOf(propertyObj.getNum()));
+//            for (PrintParamObj obj : sizeList) {
+//                if (obj.getValue().equals(propertyObj.getSize())) {
+//                    obj.setIsSelect(true);
+//                }
+//            }
+//
+//            for (PrintParamObj obj : colorList) {
+//                if (obj.getValue().equals(String.valueOf(propertyObj.getColor()))) {
+//                    obj.setIsSelect(true);
+//                }
+//            }
+//
+//            for (PrintParamObj obj : packList) {
+//                if (obj.getValue().equals(String.valueOf(propertyObj.getPack()))) {
+//                    obj.setIsSelect(true);
+//                }
+//
+//                //12-90页只可以软装
+//                if (cartItem.getPrintCode() == TypeConstant.PRINT_CODE_LIMIT_SOFT_PACK) {
+//                    mTvPack.setText(getString(R.string.cart_print_code_limit_soft_pack_2));
+//                    if (obj.getShow().equals("平装")) {
+//                        obj.setActive(true);
+//                    } else {
+//                        obj.setActive(false);
+//                    }
+//                }
+//            }
+//
+//            for (PrintParamObj obj : paperList) {
+//                if (obj.getValue().equals(String.valueOf(propertyObj.getPaper()))) {
+//                    obj.setIsSelect(true);
+//                }
+//            }
+//
+//        }
+
         sizeAdapter = new CartPrintPropertyGvAdapter(getActivity(), sizeList, PrintParamResponse.KEY_SIZE);
         colorAdapter = new CartPrintPropertyGvAdapter(getActivity(), colorList, PrintParamResponse.KEY_COLOR);
         packAdapter = new CartPrintPropertyGvAdapter(getActivity(), packList, PrintParamResponse.KEY_PACK);
@@ -394,6 +502,34 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         mGvPrintColor.setAdapter(colorAdapter);
         mGvPack.setAdapter(packAdapter);
         mGvPaper.setAdapter(paperAdapter);
+    }
+
+    private void selectAvailableList(List<PrintParamObj> dataList, List<String> selectableList) {
+        if (selectableList != null && selectableList.size() > 0) {
+            for (PrintParamObj obj : dataList) {
+                if (obj.getValue().equals(selectableList.get(0))) {
+                    obj.setIsSelect(true);
+                    break;
+                }
+            }
+        } else {
+            dataList.get(0).setIsSelect(true); // 默认选中第一条
+        }
+    }
+
+    private void selectAvailableList2(List<PrintParamObj> dataList, List<String> selectableList) {
+        if (selectableList != null && selectableList.size() > 0) {
+            PrintParamObj selectedObj = null;
+            for (PrintParamObj obj : dataList) {
+                if (obj.getValue().equals(selectableList.get(0))) {
+                    selectedObj = obj;
+                }
+                obj.setIsSelect(false);
+            }
+            if (selectedObj != null) {
+                selectedObj.setIsSelect(true);
+            }
+        }
     }
 
     @OnClick({
@@ -407,7 +543,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         switch (view.getId()) {
             case R.id.book_print_number_plus_ib:
                 int num = Integer.parseInt(mBookPrintNumberEt.getText().toString());
-                if (num < 99) {
+                if (num < limit) {
                     mBookPrintNumberEt.setText(String.valueOf(num + 1));
                     num += 1;
                 }
@@ -446,7 +582,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                 obj.getPack() == Integer.parseInt(getPackSelect()) &&
                                 obj.getColor() == Integer.parseInt(getColorSelect()) &&
                                 obj.getPaper() == Integer.parseInt(getPaperSelect()) &&
-                                obj.getNum() >= 99) {
+                                obj.getNum() >= limit) {
                             Toast.makeText(getActivity(), "印刷数量不可超过上限！", Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -516,7 +652,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         btnBuyNow.setClickable(false);
         btnOk.setClickable(false);
 
-        Subscription s = BaseAppCompatActivity.apiService.queryBookPrice(getParams(1))
+        Subscription s = apiService.queryBookPrice(getParams(1))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -541,17 +677,23 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             btnAddCart.setClickable(true);
                             btnBuyNow.setClickable(true);
                             btnOk.setClickable(true);
+                            isQuery = false;
+                            Log.e(CartPrintPropertyDialog.class.getSimpleName(), throwable.getLocalizedMessage());
+                            Toast.makeText(getActivity(), "价格查询失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        if (getActivity() instanceof BaseAppCompatActivity) {
+            ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        } else if (getActivity() instanceof BasePresenterAppCompatActivity) {
+            ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
+        }
     }
 
     private void addToCart() {
-        tfProgressDialog.show();
+        tfProgressDialog.show(getChildFragmentManager(), "");
         HashMap<String, String> params = getParams(0);
-        tfProgressDialog.show();
 
-        Subscription s = BaseAppCompatActivity.apiService.addCartItem(params)
+        Subscription s = apiService.addCartItem(params)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -574,20 +716,20 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                                 } else {
                                     EventBus.getDefault().post(new CartAddClickEvent());
 //                                    Toast.makeText(getActivity(), "恭喜，已添加到印刷车", Toast.LENGTH_LONG).show();
-                                   new AlertDialog.Builder(getActivity())
-                                           .setMessage("已添加到印刷车")
-                                           .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                               @Override
-                                               public void onClick(DialogInterface dialog, int which) {
-                                                   dialog.dismiss();
-                                               }
-                                           }).setPositiveButton("去查看", new DialogInterface.OnClickListener() {
-                                       @Override
-                                       public void onClick(DialogInterface dialog, int which) {
-                                           dialog.dismiss();
-                                           CartActivity.open(context);
-                                       }
-                                   }).show();
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage("已添加到印刷车")
+                                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            }).setPositiveButton("去查看", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            CartActivity.open(context);
+                                        }
+                                    }).show();
                                 }
                             } else {
                                 Toast.makeText(getActivity(), response.getInfo(), Toast.LENGTH_SHORT).show();
@@ -598,7 +740,11 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             Toast.makeText(getActivity(), "服务器返回失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        if (getActivity() instanceof BaseAppCompatActivity) {
+            ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        } else if (getActivity() instanceof BasePresenterAppCompatActivity) {
+            ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
+        }
     }
 
     private void doAddOrder() throws IOException {
@@ -635,15 +781,15 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
         baseObj.setAddressId(0);
         baseObj.setBookCover(bookCover);
         baseObj.setBookName(URLEncoder.encode(bookName));
-        baseObj.setCreateTime(Long.valueOf(createTime));
+        baseObj.setCreateTime(Long.valueOf(createTime) / 1000);
         baseObj.setExpressId(1);
         baseObjs.add(baseObj);
 
-        tfProgressDialog.show();
+        tfProgressDialog.show(getChildFragmentManager(), "");
 
         btnOk.setBackgroundResource(R.drawable.shape_grey_btn_bg);
         btnOk.setClickable(false);
-        Subscription s = BaseAppCompatActivity.apiService.addOrder("", LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), TypeConstant.APP_ID)
+        Subscription s = apiService.addOrder(LoganSquare.serialize(baseObjs, PrintPropertyTypeObj.class), TypeConstant.APP_ID)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -660,7 +806,11 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             Toast.makeText(getActivity(), "服务器返回失败", Toast.LENGTH_SHORT).show();
                         }
                 );
-        ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        if (getActivity() instanceof BaseAppCompatActivity) {
+            ((BaseAppCompatActivity) getActivity()).addSubscription(s);
+        } else if (getActivity() instanceof BasePresenterAppCompatActivity) {
+            ((BasePresenterAppCompatActivity) getActivity()).addSubscription(s);
+        }
     }
 
     /**
@@ -767,7 +917,14 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         obj.setIsSelect(false);
                     }
                     paramObj.setIsSelect(true);
-                    sizeAdapter.notifyDataSetChanged();
+
+                    // 选中尺寸中对应的可选颜色
+                    selectAvailableList2(colorList, paramObj.getColorList());
+                    // 选中尺寸中对应的可选纸张类别
+                    selectAvailableList2(paperList, paramObj.getPaperList());
+                    // 选中尺寸中对应的可选装订方式
+                    selectAvailableList2(packList, paramObj.getPackList());
+
                     break;
 
                 case PrintParamResponse.KEY_COLOR:
@@ -779,7 +936,15 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         obj.setIsSelect(false);
                     }
                     paramObj.setIsSelect(true);
-                    colorAdapter.notifyDataSetChanged();
+//                    colorAdapter.notifyDataSetChanged();
+
+                    // 选中颜色中对应的可选尺寸
+                    selectAvailableList2(sizeList, paramObj.getSizeList());
+                    // 选中颜色中对应的可选纸张类别
+                    selectAvailableList2(paperList, paramObj.getPaperList());
+                    // 选中颜色中对应的可选装订方式
+                    selectAvailableList2(packList, paramObj.getPackList());
+
                     break;
 
                 case PrintParamResponse.KEY_PACK:
@@ -794,7 +959,15 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         obj.setIsSelect(false);
                     }
                     paramObj.setIsSelect(true);
-                    packAdapter.notifyDataSetChanged();
+//                    packAdapter.notifyDataSetChanged();
+
+                    // 选中装订方式中对应的可选颜色
+                    selectAvailableList2(colorList, paramObj.getColorList());
+                    // 选中装订方式中对应的可选尺寸
+                    selectAvailableList2(sizeList, paramObj.getSizeList());
+                    // 选中装订方式中对应的可选纸张类别
+                    selectAvailableList2(paperList, paramObj.getPaperList());
+
                     break;
 
                 case PrintParamResponse.KEY_PAPER:
@@ -814,25 +987,25 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             //铜版纸 只能平装
                             if (index == 0) {
                                 if (packIndex == 0) {
-                                    printParamObj.setIsActive(true);
+                                    printParamObj.setActive(true);
                                     printParamObj.setIsSelect(true);
                                 } else {
                                     printParamObj.setIsSelect(false);
-                                    printParamObj.setIsActive(false);
+                                    printParamObj.setActive(false);
                                 }
 
                                 //卡纸 不能平装
                             } else if (index == 1) {
                                 if (packIndex == 0) {
-                                    printParamObj.setIsActive(false);
-                                    printParamObj.setIsActive(false);
+                                    printParamObj.setActive(false);
+                                    printParamObj.setActive(false);
                                 } else {
                                     if(packIndex == 1){
                                         printParamObj.setIsSelect(true);
                                     } else {
                                         printParamObj.setIsSelect(false);
                                     }
-                                    printParamObj.setIsActive(true);
+                                    printParamObj.setActive(true);
                                 }
                             }
                             packAdapter.notifyDataSetChanged();
@@ -840,9 +1013,23 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                     }*/
 
                     paramObj.setIsSelect(true);
-                    paperAdapter.notifyDataSetChanged();
+//                    paperAdapter.notifyDataSetChanged();
+
+                    // 选中纸张类别中对应的可选颜色
+                    selectAvailableList2(colorList, paramObj.getColorList());
+                    // 选中纸张类别中对应的可选尺寸
+                    selectAvailableList2(sizeList, paramObj.getSizeList());
+                    // 选中纸张类别中对应的可选装订方式
+                    selectAvailableList2(packList, paramObj.getPackList());
+
                     break;
             }
+
+            sizeAdapter.notifyDataSetChanged();
+            colorAdapter.notifyDataSetChanged();
+            paperAdapter.notifyDataSetChanged();
+            packAdapter.notifyDataSetChanged();
+
             queryBookPrice();
         }
     }
@@ -910,7 +1097,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
             } else {
                 int num = Integer.parseInt(str);
                 if (num > maxNum) {
-                    s.replace(0, s.length(), "99");
+                    s.replace(0, s.length(), String.valueOf(limit));
                 }
 
                 if (num >= maxNum) {

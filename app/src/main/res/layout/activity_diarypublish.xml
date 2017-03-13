@@ -1,6 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color8">
@@ -12,101 +11,56 @@
         android:background="@color/colorAccent"
         android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:theme="@style/ToolbarColor" >
-        <LinearLayout
-            android:id="@+id/ll_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="宝宝日记"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_large"
-                android:layout_gravity="center_horizontal"
-                />
-            <ImageView
-                android:id="@+id/iv_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/down"
-                android:layout_gravity="center_horizontal"
-                />
-        </LinearLayout>
-
-    </android.support.v7.widget.Toolbar>
-
-    <LinearLayout
-        android:id="@+id/ll_single_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:layout_below="@id/toolbar" >
-
-        <ImageView
-            android:id="@+id/iv_diary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_margin="@dimen/size_24"
-            android:src="@drawable/card_add"
-            android:layout_gravity="center_horizontal"
-            android:scaleType="centerInside"/>
-
-        <EditText
-            android:id="@+id/et_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/size_12"
-            android:layout_marginRight="@dimen/size_12"
-            android:background="@drawable/shape_dash_bg"
-            android:hint="标题"
-            android:singleLine="true"
-            android:padding="@dimen/size_12" />
-
-
-        <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/size_12"
-            android:layout_marginRight="@dimen/size_12"
-            android:layout_marginTop="@dimen/size_12"
-            android:background="@drawable/shape_dash_bg"
-            android:hint="日记卡片配文"
-            android:padding="@dimen/size_12" />
-
-    </LinearLayout>
+        app:theme="@style/ToolbarColor" />
 
     <ScrollView
-        android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:background="@color/bg_color8"
-        android:visibility="gone">
+        android:layout_below="@id/toolbar">
+
         <LinearLayout
+            android:id="@+id/ll_single_date"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/view_space_medium"
+            android:paddingTop="@dimen/view_space_medium">
+
             <ImageView
+                android:id="@+id/iv_diary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/size_24"
+                android:scaleType="centerInside"
+                android:src="@drawable/card_add" />
+
+            <EditText
+                android:id="@+id/et_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/diray_guide1"/>
-            <ImageView
+                android:layout_marginLeft="@dimen/size_12"
+                android:layout_marginRight="@dimen/size_12"
+                android:background="@drawable/shape_dash_bg"
+                android:hint="标题"
+                android:maxLength="10"
+                android:padding="@dimen/size_12"
+                android:singleLine="true" />
+
+
+            <TextView
+                android:id="@+id/tv_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/diray_guide2"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/diray_guide3"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/diray_guide4"/>
+                android:layout_marginLeft="@dimen/size_12"
+                android:layout_marginRight="@dimen/size_12"
+                android:layout_marginTop="@dimen/size_12"
+                android:background="@drawable/shape_dash_bg"
+                android:hint="日记卡片配文"
+                android:padding="@dimen/size_12" />
+
         </LinearLayout>
     </ScrollView>
 

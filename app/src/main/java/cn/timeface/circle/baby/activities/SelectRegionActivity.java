@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.RegionAdapter;
-import cn.timeface.circle.baby.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.api.models.DistrictModel;
 
 /**
  * @author SunYanwei (QQ:707831837)

@@ -20,11 +20,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.PhotoGroupItem;
 import cn.timeface.circle.baby.constants.TypeConstant;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.PhotoGroupItem;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
 import cn.timeface.common.utils.MD5;
 
@@ -42,7 +42,6 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
     //用于存储所有选中的图片
     List<ImgObj> selImgs = new ArrayList<>(10);
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
-    private TitleViewHolder holder;
 
     public CircleSelectPhotosAdapter(Context mContext, List<PhotoGroupItem> listData, int maxCount) {
         super(mContext, listData);
@@ -96,11 +95,11 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
         int dataPosition = getDataPosition(position);
         PhotoGroupItem item = getItem(dataPosition);
         if (viewType == TYPE_TITLE) {
-            holder = ((TitleViewHolder) viewHolder);
+            TitleViewHolder holder = ((TitleViewHolder) viewHolder);
             holder.tvTitle.setText(item.getTitle());
-            holder.cbAllSel.setTag(R.string.tag_index, position);
+            holder.cbTitleAllSel.setTag(R.string.tag_index, position);
 
-            holder.cbAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
+            holder.cbTitleAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
         } else if (viewType == TYPE_PHOTOS) {
             PhotosViewHolder holder = ((PhotosViewHolder) viewHolder);
             List<ImgObj> imgs = getLineImgObj(position);
@@ -173,13 +172,13 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
     class TitleViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_title)
         TextView tvTitle;
-        @Bind(R.id.cb_all_sel)
-        CheckBox cbAllSel;
+        @Bind(R.id.cb_title_all_sel)
+        CheckBox cbTitleAllSel;
 
         TitleViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            cbAllSel.setOnClickListener(onCheckedAllListener);
+            cbTitleAllSel.setOnClickListener(onCheckedAllListener);
         }
     }
 
@@ -215,7 +214,7 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
                     doUnSelImg(dataIndex, item);
                 }
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selImgs.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selImgs.size()));
             notifyDataSetChanged();*/
         }
     };
@@ -236,7 +235,7 @@ public class CircleSelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupIte
             } else {
                 doUnSelImg(dataIndex, img);
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selImgs.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selImgs.size()));
         }
     };
 

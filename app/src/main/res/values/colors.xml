@@ -9,8 +9,18 @@
     <color name="white">#ffffff</color>
     <color name="trans">#00000000</color>
 
+    <color name="text">#333333</color>
+
     <color name="tran_50_white">#DDffffff</color>
     <color name="tran_30_black">#4C000000</color>
+    <color name="tran_60_black">#9a000000</color>
+    <color name="tran_70_black">#b3000000</color>
+    <color name="tran_80_black">#cd000000</color>
+
+
+    <color name="text_color5">#f44336</color>
+    <color name="text_color29">#B4B4B4</color>
+    <color name="text_color30">#1D1D1D</color>
 
     <color name="bg_color1">#F79646</color>
     <color name="bg_color2">#FAFAFA</color>
@@ -25,7 +35,7 @@
     <color name="bg_color11">#43C668</color>
     <color name="bg_color12">#F0F0F0</color>
     <color name="bg_color13">#F2F3F5</color>
-
+    <color name="bg_tag_color">#EEEEEE</color>
 
     <color name="bg0">#41b7f0</color>
     <color name="bg1">#a282f3</color>
@@ -84,6 +94,7 @@
     <color name="text_color25">#945700</color>
     <color name="text_color26">#f0f0f0</color>
     <color name="text_color27">#c9c9c9</color>
+    <color name="text_color28">#818181</color>
 
     <color name="text_color_hint">#ffA8A8A8</color>
 
@@ -117,5 +128,34 @@
     <color name="comment_relation">#ff727272</color>
     <color name="comment_content">#ff333333</color>
 
+    <color name="lust">#F31B25</color>
+    <color name="sea_buckthorn">#F59650</color>
+    <color name="aluminum">#999999</color>
+    <color name="alabaster">#FAFAFA</color>
+    <color name="mercury">#E4E4E4</color>
 
+    <color name="bg_trans_70">#b2ffffff</color>
+    <color name="bg_trans_80">#ccffffff</color>
+    <color name="bg_trans_50">#80ffffff</color>
+    <color name="bg_trans_60">#99ffffff</color>
+    <color name="bg_record_music">#483841</color>
+    <color name="bg_trans_70_black">#b2000000</color>
+    <color name="bg_trans_30">#4cffffff</color>
+    <color name="bg_trans_20_black">#33000000</color>
+    <color name="bg_trans_30_black">#4c000000</color>
+    <color name="login_blue">#069bf2</color>
+    <color name="login_blue_50">#80069bf2</color>
+    <color name="guide_back">#0584CE</color>
+    <color name="item_delete">#FF3B30</color>
+    <color name="selected_item_color">#069BF2</color>
+
+    <color name="edit_textcolor">#373535</color>
+    <color name="divider_scan">#ececec</color>
+    <color name="divider_main">#f2f2f2</color>
+    <color name="divider1">#4b8cdf</color>
+    <color name="white_50">#80ffffff</color>
+    <color name="stroke">#dddddd</color>
+
+    <color name="color_367ff9">#367ff9</color>
+    <color name="color_eceff4">#eceff4</color>
 </resources>

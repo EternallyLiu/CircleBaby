@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 
@@ -18,7 +19,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
  * Created by Tao on 3/3/16.
@@ -64,6 +65,9 @@ public class WebViewFragment extends BaseFragment {
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
         //添加网页对话框的提示
         webView.setWebChromeClient(new WebChromeClient() {
@@ -72,6 +76,7 @@ public class WebViewFragment extends BaseFragment {
                 return super.onJsAlert(view, url, message, result);
             }
         });
+        LogUtil.showLog("url==="+url);
         webView.loadUrl(url);
     }
 

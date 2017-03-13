@@ -13,8 +13,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseListAdapter;
-import cn.timeface.circle.baby.api.models.AddressItem;
-import cn.timeface.circle.baby.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.api.models.AddressItem;
+import cn.timeface.circle.baby.support.api.models.DistrictModel;
 
 public class SelectAddressAdapter extends BaseListAdapter<AddressItem> {
     private String addressId;
@@ -27,7 +27,7 @@ public class SelectAddressAdapter extends BaseListAdapter<AddressItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.item_select_address, null);
+            convertView = mLayoutInflater.inflate(R.layout.item_select_address, parent, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {

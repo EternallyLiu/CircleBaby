@@ -15,7 +15,7 @@ import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.views.widget.photoview.PhotoView;
 
 /**

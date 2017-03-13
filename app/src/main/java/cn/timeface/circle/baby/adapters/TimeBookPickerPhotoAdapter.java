@@ -18,11 +18,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.views.TimeBookPhotoSelectImageView;
 
 
@@ -103,9 +103,9 @@ public class TimeBookPickerPhotoAdapter extends BaseRecyclerAdapter<ImageInfoLis
         if (viewType == TYPE_TITLE) {
             TitleViewHolder holder = ((TitleViewHolder) viewHolder);
             holder.tvTitle.setText(DateUtil.getDate2(item.getDate()));
-            holder.cbAllSel.setTag(R.string.tag_index, position);
+            holder.cbTitleAllSel.setTag(R.string.tag_index, position);
 
-            holder.cbAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
+            holder.cbTitleAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
         } else if (viewType == TYPE_PHOTOS) {
             PhotosViewHolder holder = ((PhotosViewHolder) viewHolder);
             List<MediaObj> imgs = getLineImgObj(position);
@@ -177,13 +177,13 @@ public class TimeBookPickerPhotoAdapter extends BaseRecyclerAdapter<ImageInfoLis
     class TitleViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_title)
         TextView tvTitle;
-        @Bind(R.id.cb_all_sel)
-        CheckBox cbAllSel;
+        @Bind(R.id.cb_title_all_sel)
+        CheckBox cbTitleAllSel;
 
         TitleViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            cbAllSel.setOnClickListener(onCheckedAllListener);
+            cbTitleAllSel.setOnClickListener(onCheckedAllListener);
         }
     }
 
@@ -219,7 +219,7 @@ public class TimeBookPickerPhotoAdapter extends BaseRecyclerAdapter<ImageInfoLis
                     doUnSelImg(dataIndex, item);
                 }
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selImgs.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selImgs.size()));
             notifyDataSetChanged();
         }
     };
@@ -241,7 +241,7 @@ public class TimeBookPickerPhotoAdapter extends BaseRecyclerAdapter<ImageInfoLis
             } else {
                 doUnSelImg(dataIndex, img);
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selImgs.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selImgs.size()));
         }
     };
 

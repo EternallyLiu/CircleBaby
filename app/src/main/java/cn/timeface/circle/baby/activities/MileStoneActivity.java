@@ -19,30 +19,29 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.sharesdk.framework.ShareSDK;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
-import cn.timeface.circle.baby.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.dialogs.MilestoneMenuDialog;
-import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.events.MilestoneRefreshEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.DeviceUtil;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.api.models.objs.MilestoneTimeObj;
+import cn.timeface.circle.baby.support.api.models.responses.MilestoneTimeResponse;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.TFStateView;
-import cn.timeface.common.utils.ShareSdkUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MileStoneActivity extends BaseAppCompatActivity implements IEventBus{
@@ -169,8 +168,8 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
             }
             String title = FastData.getBabyName() + "成长里程碑";
             String content = FastData.getBabyName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑";
-            String url = getString(R.string.share_url_milestone,FastData.getBabyId());
-            new ShareDialog(this).share(title, content, imgUrl, url);
+            String url = BuildConfig.API_URL+getString(R.string.share_url_milestone,FastData.getBabyId());
+            new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this,R.drawable.ic_laucher_quadrate), url);
         }
         return super.onOptionsItemSelected(item);
     }

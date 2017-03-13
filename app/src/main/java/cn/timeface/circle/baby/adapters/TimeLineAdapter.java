@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
@@ -39,22 +38,23 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.ApiFactory;
-import cn.timeface.circle.baby.api.models.base.BaseResponse;
-import cn.timeface.circle.baby.api.models.objs.CommentObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
-import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
-import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.events.ActionCallBackEvent;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.IconCommentClickEvent;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.functions.Func1;
 
@@ -111,14 +111,15 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         if (item.getMediaList().size() == 1) {
             holder.gv.setVisibility(View.GONE);
-            String url = item.getMediaList().get(0).getImgUrl();
+            MediaObj mediaObj = item.getMediaList().get(0);
+            String url = mediaObj.getImgUrl();
             GlideUtil.displayImage(url, holder.ivCover);
             int width = Remember.getInt("width", 0) * 3;
             ViewGroup.LayoutParams layoutParams = holder.ivCover.getLayoutParams();
             layoutParams.width = width;
             layoutParams.height = width;
-            if(item.getType() == 2){
-                layoutParams.height = (int) (width*1.4);
+            if (item.getType() == 2) {
+                layoutParams.height = (int) (width * 1.4);
             }
             holder.ivCover.setLayoutParams(layoutParams);
             holder.ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -127,8 +128,10 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                     @Override
                     public void onClick(View v) {
                         ArrayList<String> strings = new ArrayList<>();
+                        ArrayList<MediaObj> medias = new ArrayList<>();
                         strings.add(url);
-                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0, true, false);
+                        medias.add(mediaObj);
+                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition, medias, strings, 0, true, false);
                     }
                 });
             }
@@ -139,11 +142,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         if (item.getMediaList().size() > 1) {
             holder.gv.setVisibility(View.VISIBLE);
             List<MediaObj> imgObjList = item.getMediaList();
-            ArrayList<String> urls = new ArrayList<>();
-            for (MediaObj mediaObj : imgObjList) {
-                urls.add(mediaObj.getImgUrl());
-            }
-            MyAdapter myAdapter = new MyAdapter(context, urls);
+            MyAdapter myAdapter = new MyAdapter(context, imgObjList);
             holder.gv.setAdapter(myAdapter);
             ViewGroup.LayoutParams layoutParams = holder.gv.getLayoutParams();
             layoutParams.height = Remember.getInt("width", 0);
@@ -195,7 +194,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             for (UserObj u : item.getLikeList()) {
                 ImageView imageView = initPraiseItem();
                 holder.llGoodListUsersBar.addView(imageView);
-                GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
+                GlideUtil.displayImage(u.getAvatar(), imageView, R.drawable.ic_launcher);
             }
         } else {
             holder.hsv.setVisibility(View.GONE);
@@ -371,7 +370,8 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             switch (v.getId()) {
                 case R.id.ll_recode:
 //                    TimeLineDetailActivity.open(context, timeLineObj);
-                    TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
+                    TimeFaceDetailFragment.open(context, allDetailsPosition, timeLineObj);
+//                    TimeLineDetailActivity.open(context, timeLineObj, allDetailsPosition, position);
                     break;
                 case R.id.icon_like:
                 case R.id.tv_likecount:
@@ -406,7 +406,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
                                         ImageView imageView = initPraiseItem();
                                         llGoodListUsersBar.addView(imageView);
-                                        GlideUtil.displayImage(FastData.getAvatar(), imageView,R.drawable.ic_launcher);
+                                        GlideUtil.displayImage(FastData.getAvatar(), imageView, R.drawable.ic_launcher);
                                     } else {
 
                                         listData.get(position).setLike(0);
@@ -439,7 +439,7 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
                                                 if (!u.getUserId().equals(FastData.getUserId())) {
                                                     llGoodListUsersBar.addView(imageView);
                                                 }
-                                                GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
+                                                GlideUtil.displayImage(u.getAvatar(), imageView, R.drawable.ic_launcher);
                                             }
                                         }
                                     }
@@ -564,20 +564,41 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
     }
 
     private class MyAdapter extends BaseAdapter {
+        public ArrayList<String> getUrls() {
+            if (urls == null || urls.size() < medias.size()) {
+                urls = new ArrayList<>();
+                for (int i = 0; i < getCount(); i++) {
+                    MediaObj mediaObj = (MediaObj) this.getItem(i);
+                    urls.add(mediaObj.getImgUrl());
+                }
+            }
+            return urls;
+        }
+
         ArrayList<String> urls;
 
-        public MyAdapter(Context context, ArrayList<String> urls) {
-            this.urls = urls;
+        private void setMedias(List<MediaObj> urls) {
+            if (medias == null)
+                medias = new ArrayList<>();
+            if (medias.size() > 0)
+                medias.clear();
+            medias.addAll(urls);
+        }
+
+        ArrayList<MediaObj> medias;
+
+        public MyAdapter(Context context, List<MediaObj> urls) {
+            setMedias(urls);
         }
 
         @Override
         public int getCount() {
-            return urls.size() > 9 ? 9 : urls.size();
+            return medias.size() > 9 ? 9 : medias.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return urls.get(position);
+            return medias.get(position);
         }
 
         @Override
@@ -590,22 +611,22 @@ public class TimeLineAdapter extends BaseRecyclerAdapter<TimeLineObj> {
             View view = View.inflate(context, R.layout.item_image_and_count, null);
             ImageView iv = (ImageView) view.findViewById(R.id.iv_image);
             TextView tvCount = (TextView) view.findViewById(R.id.tv_count);
-            if (position == 8 && urls.size() > 9) {
+            if (position == 8 && medias.size() > 9) {
                 tvCount.setVisibility(View.VISIBLE);
-                tvCount.setText(urls.size() - 9 + "+");
+                tvCount.setText(medias.size() - 9 + "+");
             }
             int width = Remember.getInt("width", 0);
-            if (urls.size() == 2) {
+            if (medias.size() == 2) {
                 width = Remember.getInt("width", 0) * 3 / 2;
             }
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, width);
             iv.setLayoutParams(params);
             tvCount.setLayoutParams(params);
-            GlideUtil.displayImage(urls.get(position), iv);
+            GlideUtil.displayImage(medias.get(position).getImgUrl(), iv);
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position, true, false);
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), allDetailsListPosition, medias, getUrls(), position, true, false);
                 }
             });
             return view;

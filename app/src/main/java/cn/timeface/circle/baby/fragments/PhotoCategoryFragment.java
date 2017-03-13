@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.PhotoCategoryAdapter;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.mediastore.MediaStoreBucket;
+import cn.timeface.circle.baby.support.utils.mediastore.MediaStoreBucket;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 
 /**

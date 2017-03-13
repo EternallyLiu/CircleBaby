@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.wechat.photopicker.PickerPhotoActivity;
 import com.wechat.photopicker.endity.PhotoDirectory;
 import com.wechat.photopicker.event.OnItemCheckListener2;
@@ -18,14 +17,13 @@ import com.wechat.photopicker.event.Selectable2;
 import com.wechat.photopicker.event.SingeSelectable;
 import com.wechat.photopicker.utils.MediaStoreHelper;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 
 /**
  * 选择图片adapter

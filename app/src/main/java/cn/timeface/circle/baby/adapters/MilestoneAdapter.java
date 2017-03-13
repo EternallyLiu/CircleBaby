@@ -14,20 +14,17 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.Milestone;
-import cn.timeface.circle.baby.api.models.objs.MilestoneTimeObj;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.support.api.models.objs.MilestoneTimeObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
 
 /**
  * Created by lidonglin on 2016/5/4.
  */
 public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
 
-    private ViewHolder holder;
     private View.OnClickListener onClickListener;
 
     public MilestoneAdapter(Context mContext, List<MilestoneTimeObj> listData) {
@@ -48,7 +45,7 @@ public class MilestoneAdapter extends BaseRecyclerAdapter<MilestoneTimeObj> {
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        holder = (ViewHolder) viewHolder;
+        ViewHolder holder = (ViewHolder) viewHolder;
         MilestoneTimeObj item = getItem(position);
         holder.milestoneobj = item;
         holder.context = mContext;

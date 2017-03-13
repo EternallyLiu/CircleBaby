@@ -19,7 +19,7 @@ package cn.timeface.circle.baby.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 
 public class PhotoSelectionAddedEvent {
 

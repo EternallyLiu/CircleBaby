@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/size_4">
+
+    <LinearLayout
+        android:id="@+id/ll_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/cancel"
+        android:background="@drawable/location_search_input"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/size_6">
+
+        <ImageView
+            android:layout_width="@dimen/size_14"
+            android:layout_height="@dimen/size_14"
+            android:scaleType="fitCenter"
+            android:src="@drawable/location_search" />
+
+        <cn.timeface.circle.baby.views.ClearableEditText
+            android:id="@+id/input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="搜索附近的位置"
+            android:imeOptions="actionSearch"
+            android:singleLine="true"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ll_input"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/ll_input"
+        android:background="@color/white"
+        android:text="取消"
+        android:textColor="@color/sea_buckthorn" />
+
+</RelativeLayout>

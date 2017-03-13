@@ -3,7 +3,6 @@ package com.wechat.photopicker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.OrientationHelper;
@@ -17,27 +16,21 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.wechat.photopicker.adapter.PhotoSelectorAdapter2;
-import com.wechat.photopicker.event.OnPhotoClickListener;
 import com.wechat.photopicker.utils.ImageCaptureManager;
 import com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CardPublishActivity;
 import cn.timeface.circle.baby.activities.DiaryPublishActivity;
-import cn.timeface.circle.baby.activities.PublishActivity;
-import cn.timeface.circle.baby.api.ApiFactory;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.NewPickerAdapterEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 
 import static com.wechat.photopicker.PickerPhotoActivity2.MAX_SELECTOR_SIZE;
 

@@ -53,18 +53,28 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" />
+    <!-- 蓝牙分享所需的权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:hardwareAccelerated="false"
-        android:icon="@drawable/ic_launcher"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
-            android:name="cn.timeface.circle.baby.utils.glide.TFGlideModule"
+            android:name="cn.timeface.circle.baby.support.utils.glide.TFGlideModule"
             android:value="GlideModule" />
 
         <!-- ************************ALI START*************** -->
@@ -79,9 +89,9 @@
             android:name="ALI_BUCKET"
             android:value="timeface-image01" />
         <!-- ************************ALI END*************** -->
-        <service android:name=".managers.services.SavePicInfoService" />
-        <service android:name=".managers.services.UploadAllPicService" />
-        <service android:name=".managers.services.UploadService" />
+        <service android:name=".support.managers.services.SavePicInfoService" />
+        <service android:name=".support.managers.services.UploadAllPicService" />
+        <service android:name=".support.managers.services.UploadService" />
 
         <activity
             android:name="com.mob.tools.MobUIShell"
@@ -143,7 +153,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".push.MiPushMessageReceiver"
+            android:name=".support.push.MiPushMessageReceiver"
             android:exported="true">
 
             <!-- 这里com.xiaomi.mipushdemo.DemoMessageRreceiver改成app中定义的完整类名 -->
@@ -159,7 +169,7 @@
         </receiver>
         <!-- 小米推送end -->
 
-        <receiver android:name=".managers.receivers.DownloadCompleteReceiver">
+        <receiver android:name=".support.managers.receivers.DownloadCompleteReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
@@ -177,7 +187,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
@@ -186,18 +195,13 @@
             android:name=".activities.base.BaseRecyclerViewActivity"
             android:label="@string/title_activity_base_recycler_view" />
         <activity
-            android:name="cn.timeface.circle.baby.activities.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
-
-        </activity>
-
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.GuideActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.TransparentActivity.FullScreen">
-
-        </activity>
+            android:theme="@style/AppTheme.TransparentActivity.FullScreen" />
         <activity
             android:name=".activities.TabMainActivity"
             android:screenOrientation="portrait" />
@@ -241,7 +245,7 @@
             android:name=".activities.DiaryPublishActivity"
             android:label="宝宝日记"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".activities.CardPublishActivity"
             android:label="识图卡片"
@@ -261,7 +265,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.FragmentBridgeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan"/>
         <activity
             android:name=".activities.SelectTimeActivity"
             android:label="记录时间"
@@ -368,7 +373,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.MyPODActivity"
-            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.TransparentActivity.FullScreen" />
         <activity
             android:name=".activities.MileStoneActivity"
@@ -385,7 +389,6 @@
             android:name=".activities.CloudAlbumPhotoSelectActivity"
             android:label="@string/picker_photo"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activities.ChangeBabyActivity"
             android:screenOrientation="portrait" />
@@ -396,15 +399,13 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
-
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
         <activity
             android:name=".activities.CropPicActivity"
             android:hardwareAccelerated="false"
@@ -418,8 +419,114 @@
             android:name=".activities.BabyInfoActivity"
             android:label="宝宝信息"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.babyInfo.activity.BigNameActivity"
+            android:label="@string/baby_real_name_title"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.growth.activities.ProductionListActivity"
+            android:label="@string/title_activity_book_list"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.growth.activities.BookListActivity" />
+        <activity android:name=".ui.growth.activities.DiaryCardListActivity" />
+        <activity android:name=".ui.growth.activities.RecognizeCardListActivity" />
+        <activity android:name=".ui.growth.activities.CardListActivity" />
+        <activity
+            android:name=".activities.ProductionIntroActivity"
+            android:label="@string/title_activity_production_intro"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.growth.activities.CardPreviewActivity"
+            android:label="@string/title_activity_card_preview"
+            android:theme="@style/AppTheme" />
 
+        <service android:name=".LoadMediaService" />
 
+        <!-- ***********************BAIDU LOC SDK START************************ -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2" />
+            </intent-filter>
+        </service>
+        <!-- meta-data需要写在application中 -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="1s2n546GzyP7un7GFvUeqi4ZR8kcDPaA" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <!-- ***********************BAIDU LOC SDK END************************ -->
+        <activity android:name=".ui.growth.activities.RecognizeCardEditActivity" />
+        <activity
+            android:name=".ui.growth.activities.MineBookActivityV2"
+            android:label="@string/title_activity_mine_book_v2"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.growth.activities.RecognizeCardCreateActivity"
+            android:label="@string/title_activity_recognize_card_create"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.growth.activities.SelectServerPhotoActivity"
+            android:label="@string/title_activity_select_server_photo"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.growth.activities.SelectServerTimeActivity"
+            android:label="@string/title_activity_select_time"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.growth.activities.SelectServerTimeDetailActivity"
+            android:label="@string/title_activity_select_server_time_detail"
+            android:theme="@style/AppTheme"></activity>
+
+        <!-- 台历相关 -->
+        <activity
+            android:name=".ui.calendar.CalendarActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.CalendarPreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.CommemorationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.calendar.UpdateCommemorationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/TimeFaceTheme.DayNight" />
+        <service android:name=".ui.timelines.services.UploadVideoService"/>
+
+        //-----------------------countly----------------------------------
+        <service android:name="org.openudid.OpenUDID_service">
+            <intent-filter>
+                <action android:name="org.openudid.GETUDID" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name="ly.count.android.sdk.ReferrerReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+        //------------------------countly---------------------------------
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="cn.timeface.circle.baby.fileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 </manifest>

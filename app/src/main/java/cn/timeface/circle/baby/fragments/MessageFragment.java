@@ -4,6 +4,8 @@ package cn.timeface.circle.baby.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,17 +32,20 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.adapters.MessageAdapter;
-import cn.timeface.circle.baby.api.models.objs.Msg;
-import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.DeleteSystenMsgEvent;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.objs.Msg;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
+import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 import cn.timeface.circle.baby.views.TFStateView;
 
-public class MessageFragment extends BaseFragment implements View.OnClickListener,IEventBus {
+public class MessageFragment extends BaseFragment implements View.OnClickListener, IEventBus, IPTRRecyclerListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -49,7 +55,14 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
     LinearLayout llNoData;
     @Bind(R.id.tf_stateView)
     TFStateView tfStateView;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.swipe_refresh)
+    SwipeRefreshLayout swipeRefresh;
+    @Bind(R.id.error_title)
+    TextView errorTitle;
     private MessageAdapter adapter;
+    private TFPTRRecyclerViewHelper helper;
 
     public MessageFragment() {
     }
@@ -77,14 +90,25 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         contentRecyclerView.setAdapter(adapter);
         tfStateView.setOnRetryListener(() -> reqData());
         tfStateView.loading();
+        helper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefresh);
+        helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.DISABLED)
+                .tfPtrListener(this);
         reqData();
-
         return view;
+    }
+
+    private void finishLoading() {
+        helper.finishTFPTRRefresh();
+        if (tfStateView != null) {
+            tfStateView.finish();
+            tfStateView.setVisibility(View.GONE);
+        }
     }
 
     private void reqData() {
         apiService.queryMsgList()
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(msgListResponse -> finishLoading())
                 .subscribe(msgListResponse -> {
                     if (tfStateView != null)
                         tfStateView.finish();
@@ -92,10 +116,10 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         setDataList(msgListResponse.getDataList());
                     }
                 }, error -> {
+                    LogUtil.showLog("error message list");
+                    LogUtil.showError(error);
                     if (tfStateView != null)
                         tfStateView.showException(error);
-                    Log.e(TAG, "queryMsgList:");
-                    error.printStackTrace();
                 });
 
     }
@@ -107,14 +131,14 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
             showNoDataView(true);
         }
         Msg systemMsg = null;
-        for(Msg msg : dataList){
-            if(msg.getType() == 0){
+        for (Msg msg : dataList) {
+            if (msg.getType() == 0) {
                 systemMsg = msg;
             }
         }
-        if(systemMsg!=null){
+        if (systemMsg != null) {
             dataList.remove(systemMsg);
-            dataList.add(0,systemMsg);
+            dataList.add(0, systemMsg);
         }
         adapter.setListData(dataList);
         adapter.notifyDataSetChanged();
@@ -141,7 +165,8 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
                         if (msg.getTimeInfo().getTimeId() == 0) {
                             ToastUtil.showToast("时光已删除");
                         } else {
-                            TimeLineDetailActivity.open(getActivity(), msg.getTimeInfo());
+//                            TimeLineDetailActivity.open(getActivity(), msg.getTimeInfo());
+                            TimeFaceDetailFragment.open(getActivity(), msg.getTimeInfo());
                         }
                         break;
                     case 4://新成员加入，跳转亲友圈
@@ -225,4 +250,23 @@ public class MessageFragment extends BaseFragment implements View.OnClickListene
         reqData();
     }
 
+    @Override
+    public void onTFPullDownToRefresh(View refreshView) {
+        reqData();
+    }
+
+    @Override
+    public void onTFPullUpToRefresh(View refreshView) {
+
+    }
+
+    @Override
+    public void onScrollUp(int firstVisibleItem) {
+
+    }
+
+    @Override
+    public void onScrollDown(int firstVisibleItem) {
+
+    }
 }

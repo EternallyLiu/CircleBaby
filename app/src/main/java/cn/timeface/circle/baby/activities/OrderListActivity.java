@@ -27,21 +27,21 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.OrderListAdapter;
-import cn.timeface.circle.baby.api.models.PrintCartItem;
-import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
-import cn.timeface.circle.baby.api.models.objs.OrderObj;
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyTypeObj;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.events.OrderListRefreshEvent;
 import cn.timeface.circle.baby.events.PayResultEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.support.api.models.objs.OrderObj;
+import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyTypeObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.MineBookActivityV2;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
 
-public class OrderListActivity extends BaseAppCompatActivity implements View.OnClickListener ,IEventBus{
+public class OrderListActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
     public static final int START_PAGE = 1;
     public int currentPage = 1;
     @Bind(R.id.toolbar)
@@ -105,31 +105,31 @@ public class OrderListActivity extends BaseAppCompatActivity implements View.OnC
     private void iniListener() {
         orderListAdapter.setOnItemClickListener(orderObj -> {
             Log.d(TAG, "setupView: " + orderObj.getOrderId());
-            if(TypeConstant.STATUS_NOT_CONFIRM == orderObj.getOrderStatus()){
+            if (TypeConstant.STATUS_NOT_CONFIRM == orderObj.getOrderStatus()) {
 
                 List<PrintPropertyTypeObj> baseObjs = new ArrayList<>();
                 for (MyOrderBookItem bookItem : orderObj.getBookList()) {
                     for (PrintPropertyPriceObj obj : bookItem.getPrintList()) {
-                            PrintPropertyTypeObj baseObj = new PrintPropertyTypeObj();
-                            baseObj.setBookId(bookItem.getBookId());
-                            baseObj.setBookType(bookItem.getBookType());
-                            baseObj.setPrintId(obj.getPrintId());
-                            baseObj.setSize(obj.getSize());
-                            baseObj.setPack(obj.getPack());
-                            baseObj.setPaper(obj.getPaper());
-                            baseObj.setNum(obj.getNum());
-                            baseObj.setColor(obj.getColor());
+                        PrintPropertyTypeObj baseObj = new PrintPropertyTypeObj();
+                        baseObj.setBookId(bookItem.getBookId());
+                        baseObj.setBookType(bookItem.getBookType());
+                        baseObj.setPrintId(obj.getPrintId());
+                        baseObj.setSize(obj.getSize());
+                        baseObj.setPack(obj.getPack());
+                        baseObj.setPaper(obj.getPaper());
+                        baseObj.setNum(obj.getNum());
+                        baseObj.setColor(obj.getColor());
 //                            baseObj.setPageNum(item.getTotalPage());
-                            baseObj.setBookCover(bookItem.getCoverImage());
-                            baseObj.setAddressId(0);
-                            baseObj.setBookName(URLEncoder.encode(bookItem.getBookName()));
-                            baseObj.setCreateTime(Long.valueOf(bookItem.getLastdate()));
-                            baseObj.setExpressId(1);
-                            baseObjs.add(baseObj);
+                        baseObj.setBookCover(bookItem.getCoverImage());
+                        baseObj.setAddressId(0);
+                        baseObj.setBookName(URLEncoder.encode(bookItem.getBookName()));
+                        baseObj.setCreateTime(Long.valueOf(bookItem.getLastdate()));
+                        baseObj.setExpressId(1);
+                        baseObjs.add(baseObj);
                     }
                 }
-                MyOrderConfirmActivity.open(OrderListActivity.this, orderObj.getOrderId(),baseObjs);
-            }else{
+                MyOrderConfirmActivity.open(OrderListActivity.this, orderObj.getOrderId(), baseObjs);
+            } else {
                 OrderDetailActivity.open(OrderListActivity.this, orderObj.getOrderId());
             }
         });
@@ -171,9 +171,10 @@ public class OrderListActivity extends BaseAppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.error_retry:
-                MineBookActivity.open(this);
+//                MineBookActivity.open(this);
+                MineBookActivityV2.open(this);
                 finish();
                 break;
         }

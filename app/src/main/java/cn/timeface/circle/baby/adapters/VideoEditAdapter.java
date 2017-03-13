@@ -8,13 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.TemplateObj;
-import cn.timeface.circle.baby.utils.GlideUtil;
 
 public class VideoEditAdapter extends BaseAdapter {
     private Context mContext;
@@ -57,7 +54,7 @@ public class VideoEditAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = mInflater.inflate(R.layout.item_videobitmap, null);
+            convertView = mInflater.inflate(R.layout.item_videobitmap, parent, false);
             holder.mImage = (ImageView) convertView.findViewById(R.id.iv_videobitmap);
             convertView.setTag(holder);
         } else {

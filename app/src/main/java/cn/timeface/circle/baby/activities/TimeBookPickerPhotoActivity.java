@@ -1,8 +1,10 @@
 package cn.timeface.circle.baby.activities;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,17 +15,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.google.gson.Gson;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,20 +30,16 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.TimeBookPickerPhotoAdapter;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.events.BookOptionEvent;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.ShareDialog;
-import cn.timeface.common.utils.ShareSdkUtil;
-import cn.timeface.open.api.models.objs.TFOContentObj;
-import cn.timeface.open.api.models.objs.TFOPublishObj;
-import cn.timeface.open.api.models.objs.TFOResourceObj;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
  * 新建照片书
@@ -94,6 +88,13 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
     private String notifyString = "";
     private String coverTitle;
     private TimeBookPickerPhotoAdapter adapter;
+
+    public static void open(Context context, int bookType, List<ImageInfoListObj> dataList){
+        Intent intent = new Intent(context, TimeBookPickerPhotoActivity.class);
+        intent.putExtra("bookType", bookType);
+        intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
+        context.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -156,7 +157,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
     }
 
     @Subscribe
-    public void onEvent(PhotoSelectEvent event) {
+    public void onEvent(PhotoSelectCountEvent event) {
         changeSelCount(event.count);
     }
 
@@ -207,7 +208,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             values.add(FastData.getUserName());
             values.add(FastData.getBabyName()+"的照片书");
 
-            MyPODActivity.open(this, bookId, openBookId, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
+            MyPODActivity.open(this, bookId, openBookId, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
             finish();
         }
         return super.onOptionsItemSelected(item);

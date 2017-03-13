@@ -30,6 +30,8 @@ public class SelectPayWayDialog extends DialogFragment {
     private ClickListener listener;
     private int from = 0;
 
+    public SelectPayWayDialog() {}
+
     public SelectPayWayDialog(int from) {
         Bundle bundle = new Bundle();
         bundle.putInt("from", from);

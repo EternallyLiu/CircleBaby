@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog"
+        android:orientation="vertical"
+        android:padding="@dimen/view_space_normal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:text="选择样式"
+                android:paddingLeft="@dimen/view_space_normal"
+                android:textColor="@color/text_color3"
+                android:textSize="@dimen/text_normal"/>
+
+            <cn.timeface.circle.baby.views.IconText
+                android:visibility="gone"
+                android:layout_width="@dimen/size_48"
+                android:layout_height="@dimen/size_48"
+                android:textColor="@color/text_color4"
+                android:textSize="26sp"
+                android:gravity="center"
+                android:text="@string/ic_plus"
+                android:rotation="45"/>
+
+            <ImageView
+                android:id="@+id/ic_close"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_title_close"/>
+        </LinearLayout>
+
+        <RadioGroup
+            android:gravity="bottom|center_horizontal"
+            android:id="@+id/rg_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:backgroundTint="@color/colorPrimary"
+            android:layout_gravity="bottom"
+            android:paddingRight="15dp">
+
+            <RadioButton
+                android:id="@+id/rb_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="横版:￥36.00"
+                android:checked="true"
+                android:drawableTop="@drawable/bg_calendar_horizontal"
+                android:gravity="bottom"
+                android:drawablePadding="10dp"
+                android:textColor="@color/text_color3"
+                android:paddingBottom="8dp"/>
+            <android.support.v4.widget.Space
+                android:layout_width="10dp"
+                android:layout_height="match_parent"/>
+            <RadioButton
+                android:id="@+id/rb_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/bg_calendar_vertical"
+                android:text="竖版:￥28.00"
+                android:gravity="bottom"
+                android:drawablePadding="10dp"
+                android:textColor="@color/text_color3"
+                android:paddingBottom="8dp"/>
+
+        </RadioGroup>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_create_now"
+            style="@style/TimeFaceTheme.IOS.Button"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/size_12"
+            android:layout_marginTop="@dimen/size_12"
+            android:clickable="true"
+            android:text="开始制作" />
+    </LinearLayout>
+</FrameLayout>

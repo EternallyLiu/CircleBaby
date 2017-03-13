@@ -21,14 +21,11 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.AddressListAdapter;
-import cn.timeface.circle.baby.adapters.MineBookAdapter;
-import cn.timeface.circle.baby.api.models.AddressItem;
-import cn.timeface.circle.baby.api.models.objs.AddressObj;
-import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.AddressItem;
+import cn.timeface.circle.baby.support.api.models.objs.AddressObj;
+import cn.timeface.circle.baby.support.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 
 public class SelectAddressFragment extends BaseFragment implements View.OnClickListener {
 

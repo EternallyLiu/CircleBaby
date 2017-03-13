@@ -9,15 +9,13 @@ import android.widget.CheckBox;
 import android.widget.Checkable;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioFrameLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.db.PhotoModel;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 
 /**
  * author : YW.SUN Created on 2016/4/11

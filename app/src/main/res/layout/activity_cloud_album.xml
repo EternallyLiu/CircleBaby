@@ -7,37 +7,8 @@
     android:background="@color/bg_main"
     tools:context="cn.timeface.circle.baby.activities.CloudAlbumActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:minHeight="?attr/actionBarSize"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:theme="@style/ToolbarColor" >
-        <LinearLayout
-            android:id="@+id/ll_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="云相册"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_large"
-                android:layout_gravity="center_horizontal"
-                />
-            <ImageView
-                android:id="@+id/iv_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/down"
-                android:layout_gravity="center_horizontal"
-                />
-        </LinearLayout>
+    <include layout="@layout/head"/>
 
-    </android.support.v7.widget.Toolbar>
 
     <com.timeface.refreshload.PullRefreshLoadRecyclerView
         android:id="@+id/recyclerView"

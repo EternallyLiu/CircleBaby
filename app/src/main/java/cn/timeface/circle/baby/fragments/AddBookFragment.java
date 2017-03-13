@@ -30,14 +30,14 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.SelectThemeActivity;
-import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 
 public class AddBookFragment extends BaseFragment implements View.OnClickListener {
 
@@ -57,7 +57,6 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
     ImageView ivCreatbook;
     private BookTypeListObj bookTypeListObj;
     private List<MediaObj> imgList;
-    private ConvenientBanner banner;
 
     public AddBookFragment() {
     }
@@ -98,7 +97,7 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
 
         ivCreatbook.setOnClickListener(this);
 
-        banner = new ConvenientBanner(getActivity(), true);
+        ConvenientBanner banner = new ConvenientBanner(getActivity(), true);
         banner.startTurning(3000);
         banner.setMinimumHeight((int) (Remember.getInt("width", 0)*1.8));
         flAd.addView(banner);
@@ -136,7 +135,7 @@ public class AddBookFragment extends BaseFragment implements View.OnClickListene
                                     }
                                     if (bookTypeListObj.getType() == 2) {
                                         //日记卡片书，进入选择size界面
-                                        FragmentBridgeActivity.openBookSizeListFragment(getContext(), dataList);
+                                        FragmentBridgeActivity.openBookSizeListFragment(getContext());
                                     } else if (bookTypeListObj.getType() == 5) {
                                         //照片书，进入选择主题界面
                                         Intent intent = new Intent(getActivity(), SelectThemeActivity.class);

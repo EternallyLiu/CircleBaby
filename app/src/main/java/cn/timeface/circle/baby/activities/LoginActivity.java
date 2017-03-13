@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,19 +30,27 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.wechat.friends.Wechat;
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.CountlyEventConstant;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.EventTabMainWake;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.login.LoginApi;
-import cn.timeface.circle.baby.utils.login.OnLoginListener;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.DeviceUuidFactory;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.NetUtils;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.login.LoginApi;
+import cn.timeface.circle.baby.support.utils.login.OnLoginListener;
+import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.encode.AES;
+import ly.count.android.sdk.Countly;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -82,7 +91,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
         setSupportActionBar(toolBar);
         ShareSDK.initSDK(this);
         Remember.putBoolean("showtimelinehead", true);
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
 
         /*if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
             //上次登录为手机号登录
@@ -169,33 +178,37 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
 
     private Subscription login(String account, String psw, int type) {
-        tfProgressDialog.setMessage("登录中…");
-        tfProgressDialog.show();
+        tfProgressDialog.setTvMessage("登录中…");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         Subscription s;
-        s = apiService.login(Uri.encode(account), Uri.encode(psw), type)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(loginResponse -> {
-                    tfProgressDialog.dismiss();
-                    ToastUtil.showToast(loginResponse.getInfo());
-                    if (loginResponse.success()) {
-                        FastData.setUserInfo(loginResponse.getUserInfo());
-                        FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
-                        FastData.setAccount(account);
-                        FastData.setPassword(psw);
-                        if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this, true);
-                        } else {
-                            startActivity(new Intent(this, TabMainActivity.class));
-                        }
-                    }
+        s = apiService.login(Uri.encode(account), Uri.encode(psw), type).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(loginResponse -> {
+            tfProgressDialog.dismiss();
+            ToastUtil.showToast(loginResponse.getInfo());
+            if (loginResponse.success()) {
+                FastData.setUserInfo(loginResponse.getUserInfo());
+                FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
+                FastData.setAccount(account);
+                FastData.setPassword(psw);
+                FastData.setBabyCount(loginResponse.getBabycount());
+                if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    FragmentBridgeActivity.open(this, BindPhoneFragment.class.getSimpleName(), bundle);
+                } else if (loginResponse.getBabycount() == 0) {
+                    CreateBabyActivity.open(this, true);
+                } else {
+                    startActivity(new Intent(this, TabMainActivity.class));
+                }
+                //统计登录行为事件
+                CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_TIME_FACE);
+            }
 
-                }, throwable -> {
-                    tfProgressDialog.dismiss();
-                    Log.e(TAG, "login:", throwable);
-                    throwable.printStackTrace();
-                    ToastUtil.showToast("服务器异常，请稍后重试");
-                });
+        }, throwable -> {
+            tfProgressDialog.dismiss();
+            Log.e(TAG, "login:", throwable);
+            throwable.printStackTrace();
+            ToastUtil.showToast("服务器异常，请稍后重试");
+        });
         return s;
     }
 
@@ -220,15 +233,7 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 FastData.setUserFrom(from);
                 Platform plat = ShareSDK.getPlatform(platform);
                 final int finalFrom = from;
-                thirdLogin(plat.getDb().getToken(),
-                        plat.getDb().getUserIcon(),
-                        plat.getDb().getExpiresIn(),
-                        from,
-                        "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
-                        plat.getDb().getUserName(),
-                        plat.getDb().get("openid"),
-                        plat.getDb().getUserId(),
-                        plat.getDb().get("unionid"), LoginActivity.this);
+                thirdLogin(plat.getDb().getToken(), plat.getDb().getUserIcon(), plat.getDb().getExpiresIn(), from, "m".equals(plat.getDb().getUserGender()) ? 1 : 0, plat.getDb().getUserName(), plat.getDb().get("openid"), plat.getDb().getUserId(), plat.getDb().get("unionid"), LoginActivity.this);
             }
 
             @Override
@@ -272,22 +277,16 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 if (msg.what == 1) {
                     Platform plat = (Platform) msg.obj;
                     int type = 1;
+                    String avatar = plat.getDb().getUserIcon();
                     if (plat.getName().equals(SinaWeibo.NAME)) {
                         type = 1;
                     } else if (plat.getName().equals(QQ.NAME)) {
                         type = 2;
+                        avatar = plat.getDb().get("figureurl_qq_2");
                     } else if (plat.getName().equals(Wechat.NAME)) {
                         type = 3;
                     }
-                    thirdLogin(plat.getDb().getToken(),
-                            plat.getDb().getUserIcon(),
-                            plat.getDb().getExpiresIn(),
-                            type,
-                            "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
-                            plat.getDb().getUserName(),
-                            plat.getDb().get("openid"),
-                            plat.getDb().getUserId(),
-                            plat.getDb().get("unionid"), outer);
+                    thirdLogin(plat.getDb().getToken(), avatar, plat.getDb().getExpiresIn(), type, "m".equals(plat.getDb().getUserGender()) ? 1 : 0, plat.getDb().getUserName(), plat.getDb().get("openid"), plat.getDb().getUserId(), plat.getDb().get("unionid"), outer);
                 } else if (msg.what == 3) {
                     Toast.makeText(outer, "登录取消", Toast.LENGTH_SHORT).show();
                 } else if (msg.what == 4) {
@@ -298,36 +297,49 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
 
     }
 
-    public void thirdLogin(String accessToken,
-                           String avatar,
-                           long expiry_in,
-                           int from,
-                           int gender,
-                           String nickName,
-                           String openid,
-                           String platId,
-                           String unionid, Context context) {
-        tfProgressDialog.setMessage("登录中…");
-        tfProgressDialog.show();
-        apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(loginResponse -> {
-                    tfProgressDialog.dismiss();
-                    if (loginResponse.success()) {
-                        FastData.setUserInfo(loginResponse.getUserInfo());
-                        FastData.setUserFrom(from);
-                        if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this, true);
-                        } else {
-                            startActivity(new Intent(this, TabMainActivity.class));
-                        }
+    public void thirdLogin(String accessToken, String avatar, long expiry_in, int from, int gender, String nickName, String openid, String platId, String unionid, Context context) {
+        tfProgressDialog.setTvMessage("登录中…");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
+        apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(loginResponse -> {
+            tfProgressDialog.dismiss();
+            if (loginResponse.success()) {
+                FastData.setUserInfo(loginResponse.getUserInfo());
+                FastData.setUserFrom(from);
+                FastData.setBabyCount(loginResponse.getBabycount());
+                if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 0);
+                    FragmentBridgeActivity.open(this, BindPhoneFragment.class.getSimpleName(), bundle);
+                } else {
+                    if (loginResponse.getBabycount() == 0) {
+                        CreateBabyActivity.open(this, true);
+                    } else {
+                        startActivity(new Intent(this, TabMainActivity.class));
                     }
-                }, error -> {
-                    tfProgressDialog.dismiss();
-                    Log.e(TAG, "vendorLogin:", error);
-                    error.printStackTrace();
-                });
+                }
+                switch (from) {
+                    case TypeConstants.USER_FROM_LOCAL:
+                        CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_TIME_FACE);
+                        break;
+
+                    case TypeConstants.USER_FROM_QQ:
+                        CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_QQ);
+                        break;
+
+                    case TypeConstants.USER_FROM_SINA:
+                        CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_WEIBO);
+                        break;
+
+                    case TypeConstants.USER_FROM_WECHAT:
+                        CountlyEventHelper.getInstance().loginEvent(loginResponse.getUserInfo().getUserId(), CountlyEventConstant.LOGIN_EVENT_FROM_WECHAT);
+                        break;
+                }
+            }
+        }, error -> {
+            tfProgressDialog.dismiss();
+            Log.e(TAG, "vendorLogin:", error);
+            error.printStackTrace();
+        });
     }
 
 }

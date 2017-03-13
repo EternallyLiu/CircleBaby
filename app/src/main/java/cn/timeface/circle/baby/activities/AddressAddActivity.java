@@ -22,12 +22,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.AddressItem;
-import cn.timeface.circle.baby.api.models.DistrictModel;
-import cn.timeface.circle.baby.api.models.responses.AddAddressResponse;
 import cn.timeface.circle.baby.events.AddAddressFinishEvent;
-import cn.timeface.circle.baby.utils.Utils;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.AddressItem;
+import cn.timeface.circle.baby.support.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.api.models.responses.AddAddressResponse;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.CheckedUtil;
@@ -79,7 +80,7 @@ public class AddressAddActivity extends BaseAppCompatActivity {
         this.type = getIntent().getIntExtra("type", AddAddressFinishEvent.TYPE_ADD);
         this.module = (AddressItem) getIntent().getSerializableExtra("address");
 
-        progressDialog = new TFProgressDialog(this);
+        progressDialog = TFProgressDialog.getInstance("");
 
         switch (type) {
             case AddAddressFinishEvent.TYPE_ADD:
@@ -163,7 +164,8 @@ public class AddressAddActivity extends BaseAppCompatActivity {
 
         // 收货人姓名
         if (TextUtils.isEmpty(mReceiverName.getText().toString())) {
-            Toast.makeText(this, getString(R.string.please_input_receiver_name), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, getString(R.string.please_input_receiver_name), Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(this,getString(R.string.please_input_receiver_name));
             return;
         } else {
             params.put("contacts", Uri.encode(mReceiverName.getText().toString()));
@@ -171,10 +173,12 @@ public class AddressAddActivity extends BaseAppCompatActivity {
 
         // 收货人手机号码
         if (TextUtils.isEmpty(mReceiverPhone.getText().toString())) {
-            Toast.makeText(this, getString(R.string.please_input_receiver_phone), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, getString(R.string.please_input_receiver_phone), Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(this,R.string.please_input_receiver_phone);
             return;
         } else if (!CheckedUtil.isMobileNum(mReceiverPhone.getText().toString())) {
-            Toast.makeText(this, getString(R.string.err_user_phoneNo_format), Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(this,R.string.err_user_phoneNo_format);
+//            Toast.makeText(this, getString(R.string.err_user_phoneNo_format), Toast.LENGTH_SHORT).show();
             return;
         } else {
             params.put("contactsPhone", mReceiverPhone.getText().toString());
@@ -182,7 +186,8 @@ public class AddressAddActivity extends BaseAppCompatActivity {
 
         // 收货人详细地址
         if (TextUtils.isEmpty(mAddDetail.getText().toString())) {
-            Toast.makeText(this, getString(R.string.please_input_receiver_add_detail), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, getString(R.string.please_input_receiver_add_detail), Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(this,R.string.please_input_receiver_add_detail);
             return;
         } else {
             params.put("address", Uri.encode(mAddDetail.getText().toString()));
@@ -190,14 +195,15 @@ public class AddressAddActivity extends BaseAppCompatActivity {
 
         // 行政区域
         if (TextUtils.isEmpty(provId)) {
-            Toast.makeText(this, getString(R.string.please_input_receiver_region), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, getString(R.string.please_input_receiver_region), Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(this,R.string.please_input_receiver_region);
             return;
         } else {
             params.put("prov", provId);
             if (!TextUtils.isEmpty(cityId)) params.put("city", cityId);
             if (!TextUtils.isEmpty(districtId)) params.put("area", districtId);
         }
-        progressDialog.show();
+        progressDialog.show(getSupportFragmentManager(), "");
 
 
         Subscription s = apiService.changeAdd(params)

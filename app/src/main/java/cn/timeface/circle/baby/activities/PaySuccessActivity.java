@@ -2,12 +2,9 @@ package cn.timeface.circle.baby.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,8 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.dialogs.PopBottomDialog;
-import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.ui.growth.activities.MineBookActivityV2;
 
 /**
  * @author SUN
@@ -76,12 +72,13 @@ public class PaySuccessActivity extends BaseAppCompatActivity {
         switch (view.getId()) {
             case R.id.payresult_toorder:
                 /*OrderDetailCartActivity.open(this, orderId, orderStatus);*/
-                OrderDetailActivity.open(this,orderId);
+                OrderDetailActivity.open(this, orderId);
                 finish();
                 break;
             case R.id.payresult_tobookshelf:
                 /*MineTimeBookActivity.open(this, FastData.getUserId(), FastData.getUserName());*/
-                MineBookActivity.open(this);
+//                MineBookActivity.open(this);
+                MineBookActivityV2.open(this);
                 finish();
                 break;
         }

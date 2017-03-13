@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/size_12"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/size_4"
+    android:paddingRight="@dimen/size_4"
+    android:paddingTop="@dimen/size_4">
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="状态内容"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_medium" />
+
+</LinearLayout>

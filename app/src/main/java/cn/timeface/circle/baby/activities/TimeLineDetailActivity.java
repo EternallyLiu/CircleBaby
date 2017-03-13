@@ -50,22 +50,25 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.base.BaseResponse;
-import cn.timeface.circle.baby.api.models.objs.CommentObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
-import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.events.TimelineEditEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 import cn.timeface.circle.baby.views.InputMethodRelative;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.functions.Func1;
@@ -136,6 +139,29 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     public static Activity activity;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_timelinedetail);
+
+        activity = this;
+
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        normalColor = getResources().getColor(R.color.gray_normal);
+        etCommment.clearFocus();
+        initView();
+        changeInputMethodSize();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
     public static void open(Context context, TimeLineObj item, int replacePos, int position) {
         Intent intent = new Intent(context, TimeLineDetailActivity.class);
         intent.putExtra("timelineobj", item);
@@ -166,23 +192,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timelinedetail);
-
-        activity = this;
-
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        normalColor = getResources().getColor(R.color.gray_normal);
-        etCommment.clearFocus();
-        initView();
-        changeInputMethodSize();
-
-    }
-
     private void initView() {
         timelineobj = getIntent().getParcelableExtra("timelineobj");
         replacePosition = getIntent().getIntExtra("replacePos", -1);
@@ -207,8 +216,8 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             ViewGroup.LayoutParams layoutParams = ivCover.getLayoutParams();
             layoutParams.width = width;
             layoutParams.height = width;
-            if(timelineobj.getType() == 2){
-                layoutParams.height = (int) (width*1.4);
+            if (timelineobj.getType() == 2) {
+                layoutParams.height = (int) (width * 1.4);
             }
             ivCover.setLayoutParams(layoutParams);
             ivCover.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -217,8 +226,10 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                     @Override
                     public void onClick(View v) {
                         ArrayList<String> strings = new ArrayList<>();
+                        ArrayList<MediaObj> mediaObjs = new ArrayList<>();
                         strings.add(url);
-                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), strings, 0, true, false);
+                        mediaObjs.add(timelineobj.getMediaList().get(0));
+                        FragmentBridgeActivity.openBigimageFragment(v.getContext(), mediaObjs, strings, 0, true, false);
                     }
                 });
             }
@@ -229,11 +240,13 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         if (timelineobj.getMediaList().size() > 1) {
             gv.setVisibility(View.VISIBLE);
             List<MediaObj> imgObjList = timelineobj.getMediaList();
+            ArrayList<MediaObj> mediaObjs = new ArrayList<>();
             ArrayList<String> urls = new ArrayList<>();
             for (MediaObj mediaObj : imgObjList) {
                 urls.add(mediaObj.getImgUrl());
+                mediaObjs.add(mediaObj);
             }
-            MyAdapter myAdapter = new MyAdapter(this, urls);
+            MyAdapter myAdapter = new MyAdapter(this, urls, mediaObjs);
             gv.setAdapter(myAdapter);
             ViewGroup.LayoutParams layoutParams = gv.getLayoutParams();
             layoutParams.height = Remember.getInt("width", 0);
@@ -264,7 +277,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             for (UserObj u : timelineobj.getLikeList()) {
                 ImageView imageView = initPraiseItem();
                 llGoodListUsersBar.addView(imageView);
-                GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
+                GlideUtil.displayImage(u.getAvatar(), imageView, R.drawable.ic_launcher);
             }
         } else {
             llGoodListUsersBar.removeAllViews();
@@ -383,12 +396,6 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_send:
@@ -466,7 +473,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
                                     EventBus.getDefault().post(new CommentSubmit(replacePosition, listPos, timelineobj));
 
-                                    GlideUtil.displayImage(FastData.getAvatar(), imageView,R.drawable.ic_launcher);
+                                    GlideUtil.displayImage(FastData.getAvatar(), imageView, R.drawable.ic_launcher);
                                 } else {//之前已点赞
 
                                     timelineobj.setLike(0);
@@ -502,7 +509,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
                                             if (!u.getUserId().equals(FastData.getUserId())) {
                                                 llGoodListUsersBar.addView(imageView);
                                             }
-                                            GlideUtil.displayImage(u.getAvatar(), imageView,R.drawable.ic_launcher);
+                                            GlideUtil.displayImage(u.getAvatar(), imageView, R.drawable.ic_launcher);
                                         }
                                     }
                                 }
@@ -596,9 +603,11 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
 
     private class MyAdapter extends BaseAdapter {
         ArrayList<String> urls;
+        ArrayList<MediaObj> mediaObjs;
 
-        public MyAdapter(Context context, ArrayList<String> urls) {
+        public MyAdapter(Context context, ArrayList<String> urls, ArrayList<MediaObj> mediaObjs) {
             this.urls = urls;
+            this.mediaObjs = mediaObjs;
         }
 
         @Override
@@ -636,7 +645,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), urls, position, true, false);
+                    FragmentBridgeActivity.openBigimageFragment(v.getContext(), mediaObjs, urls, position, true, false);
                 }
             });
             return view;
@@ -690,6 +699,19 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
             if (timelineobj.getLikeCount() == 0) {
                 ll_commentLikeWrapper.setVisibility(View.GONE);
             }
+        }
+    }
+
+    @Subscribe
+    public void onEvent(MediaUpdateEvent event) {
+        if (event.getAllDetailsListPosition() < 0)
+            return;
+        if (timelineobj.getMediaList().contains(event.getMediaObj())) {
+            List<MediaObj> mediaList = timelineobj.getMediaList();
+            int indexOf = mediaList.indexOf(event.getMediaObj());
+            mediaList.get(indexOf).setTips(event.getMediaObj().getTips());
+            mediaList.get(indexOf).setFavoritecount(event.getMediaObj().getFavoritecount());
+            mediaList.get(indexOf).setIsFavorite(event.getMediaObj().getIsFavorite());
         }
     }
 

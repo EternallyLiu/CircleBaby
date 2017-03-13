@@ -6,20 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.ChangebabyAdapter;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.views.ClearableEditText;
 
 public class ChangeInfoFragment extends BaseFragment {
@@ -57,7 +57,10 @@ public class ChangeInfoFragment extends BaseFragment {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 //        tvTitle.setText(title);
-        cet.setText(info);
+        cet.setHint("请输入" + title);
+        if (!TextUtils.isEmpty(info)) {
+            cet.setText(info);
+        }
 
         return view;
     }

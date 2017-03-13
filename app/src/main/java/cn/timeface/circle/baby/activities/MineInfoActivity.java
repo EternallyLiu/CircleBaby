@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,18 +21,16 @@ import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.oss.OSSManager;
-import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.support.oss.OSSManager;
+import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -73,15 +70,16 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("我的资料");
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
         initData();
         rlAvtar.setOnClickListener(this);
         rlNickname.setOnClickListener(this);
         rlChangepsw.setOnClickListener(this);
+        rlChangepsw.setVisibility(View.GONE);
     }
 
     private void initData() {
-        GlideUtil.displayImage(FastData.getAvatar(), ivAvatar, R.drawable.ic_launcher);
+        GlideUtil.displayImageCircle(FastData.getAvatar(), R.drawable.ic_launcher, ivAvatar);
         tvNickname.setText(FastData.getUserName());
         if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
             rlChangepsw.setVisibility(View.VISIBLE);
@@ -131,8 +129,8 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     break;
                 case TypeConstants.EDIT_NICKNAME:
                     tvNickname.setText(input);
-                    tfProgressDialog.setMessage("加载中…");
-                    tfProgressDialog.show();
+                    tfProgressDialog.setTvMessage("加载中…");
+                    tfProgressDialog.show(getSupportFragmentManager(), "");
                     changeInfo();
                     break;
                 case CROP_IMG_REQUEST_CODE:
@@ -142,9 +140,9 @@ public class MineInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     } else {
                         outFile = new File(outPath);
                     }
-                    tfProgressDialog.setMessage("加载中…");
-                    tfProgressDialog.show();
-                    GlideUtil.displayImage(outFile.getAbsolutePath(), ivAvatar);
+                    tfProgressDialog.setTvMessage("加载中…");
+                    tfProgressDialog.show(getSupportFragmentManager(), "");
+                    GlideUtil.displayImageCircle(outFile.getAbsolutePath(), R.drawable.ic_launcher, ivAvatar);
                     uploadImage(outFile.getAbsolutePath());
                     break;
             }

@@ -21,10 +21,10 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import cn.sharesdk.wechat.utils.WXAppExtendObject;
 import cn.sharesdk.wechat.utils.WXMediaMessage;
 import cn.sharesdk.wechat.utils.WechatHandlerActivity;
-import cn.timeface.circle.baby.api.ApiFactory;
-import cn.timeface.circle.baby.api.models.responses.WxLoginInfoResponse;
-import cn.timeface.circle.baby.api.services.WechatApiService;
 import cn.timeface.circle.baby.constants.WXConstants;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.models.responses.WxLoginInfoResponse;
+import cn.timeface.circle.baby.support.api.services.WechatApiService;
 
 /**
  * 微信客户端回调activity示例

@@ -12,6 +12,9 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import uk.co.senab.photoview.PhotoView;
 
 
@@ -33,13 +36,9 @@ public class PhotoPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_big_image, null);
+        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_big_image, container, false);
         imgView = ButterKnife.findById(view, R.id.iv_big_image);
-        Glide.with(mContext)
-                .load(mPaths.get(position))
-                .thumbnail(0.1f)
-                .fitCenter()
-                .into(imgView);
+        GlideUtil.displayImage(mPaths.get(position), imgView, true);
         container.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         return view;
     }

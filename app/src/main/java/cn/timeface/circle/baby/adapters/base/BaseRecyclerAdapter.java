@@ -11,8 +11,8 @@ import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.RelativeLayout;
 
-import cn.timeface.circle.baby.utils.ptr.PullUpFooter;
-import cn.timeface.circle.baby.utils.ptr.recyclerview.ViewHelper;
+import cn.timeface.circle.baby.support.utils.ptr.PullUpFooter;
+import cn.timeface.circle.baby.support.utils.ptr.recyclerview.ViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;

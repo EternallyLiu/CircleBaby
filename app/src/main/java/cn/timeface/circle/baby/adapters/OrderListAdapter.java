@@ -18,11 +18,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
-import cn.timeface.circle.baby.api.models.objs.OrderObj;
 import cn.timeface.circle.baby.constants.OrderState;
 import cn.timeface.circle.baby.constants.TypeConstant;
-import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
+import cn.timeface.circle.baby.support.managers.listeners.OnItemClickListener;
+import cn.timeface.circle.baby.support.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.support.api.models.objs.OrderObj;
 
 /**
  * Created by zhsheng on 2016/6/20.

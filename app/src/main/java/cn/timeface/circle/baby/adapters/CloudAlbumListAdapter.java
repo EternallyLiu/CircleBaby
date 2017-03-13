@@ -18,9 +18,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.CloudAlbumObj;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.api.models.objs.CloudAlbumObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
 
 /**
  * Created by zhsheng on 2016/6/7.

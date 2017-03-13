@@ -1,18 +1,27 @@
 package cn.timeface.circle.baby.activities.base;
 
-import android.os.Build;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
-import cn.timeface.circle.baby.api.ApiFactory;
-import cn.timeface.circle.baby.api.services.ApiService;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.open.TFOpen;
+import cn.timeface.open.TFOpenConfig;
+import cn.timeface.open.api.bean.obj.TFOUserObj;
+import ly.count.android.sdk.Countly;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -31,20 +40,46 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
-//            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
-//        }
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Countly.sharedInstance().setViewTracking(true);
+        Countly.sharedInstance().enableCrashReporting();
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
         }
+
+        if (!TextUtils.isEmpty(FastData.getUserId()) && FastData.getBabyObj() != null) {
+            //初始化开放平台
+            TFOUserObj tfoUserObj = new TFOUserObj();
+            tfoUserObj.setAvatar(FastData.getAvatar());
+            tfoUserObj.setGender(FastData.getBabyGender());
+            tfoUserObj.setNick_name(FastData.getBabyName());
+            tfoUserObj.setPhone(FastData.getAccount());
+            tfoUserObj.setUserId(FastData.getUserId());
+            TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
+                    .debug(BuildConfig.DEBUG).build()
+            );
+        }
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        Countly.sharedInstance().onStart(this);
+    }
+
+    @Override
+    public void onStop()
+    {
+        Countly.sharedInstance().onStop();
+        super.onStop();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+        LogUtil.showLog(getClass().getName());
     }
 
     @Override

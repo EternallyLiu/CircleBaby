@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.adapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -15,8 +16,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseListAdapter;
-import cn.timeface.circle.baby.api.models.objs.PrintParamObj;
-import cn.timeface.circle.baby.api.models.objs.PrintParamResponse;
+import cn.timeface.circle.baby.support.api.models.objs.PrintParamObj;
+import cn.timeface.circle.baby.support.api.models.objs.PrintParamResponse;
 
 /**
  * @author YW.SUN
@@ -35,7 +36,7 @@ public class CartPrintPropertyGvAdapter extends BaseListAdapter<PrintParamObj>{
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.item_print_cart_property_gv, null);
+            convertView = mLayoutInflater.inflate(R.layout.item_print_cart_property_gv, parent, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
@@ -44,20 +45,26 @@ public class CartPrintPropertyGvAdapter extends BaseListAdapter<PrintParamObj>{
         final PrintParamObj paramObj = listData.get(position);
         viewHolder.mLlRoot.setSelected(paramObj.isSelect());
         if (key.equals(PrintParamResponse.KEY_SIZE)) {
-            viewHolder.mTvBookSizeDetail.setVisibility(View.VISIBLE);
             String sizeString = paramObj.getShow();
-            viewHolder.mTvBookSize.setText(sizeString.substring(0, sizeString.indexOf(",")));
-            viewHolder.mTvBookSizeDetail.setText(sizeString.substring(sizeString.indexOf(",") + 1, sizeString.length()));
+
+            if (sizeString.indexOf(",") > 0) {
+                viewHolder.mTvBookSize.setText(sizeString.substring(0, sizeString.indexOf(",")));
+                viewHolder.mTvBookSizeDetail.setText(sizeString.substring(sizeString.indexOf(",") + 1, sizeString.length()));
+                viewHolder.mTvBookSizeDetail.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.mTvBookSize.setText(sizeString);
+                viewHolder.mTvBookSizeDetail.setVisibility(View.GONE);
+            }
         } else {
             viewHolder.mTvBookSizeDetail.setVisibility(View.GONE);
             viewHolder.mTvBookSize.setText(paramObj.getShow());
         }
 
-        if (key.equals(PrintParamResponse.KEY_PACK)) {
+        if (key.equals(PrintParamResponse.KEY_PACK) && !TextUtils.isEmpty(paramObj.getImgUrl())) {
             Glide.with(mContext)
                     .load(paramObj.getImgUrl())
-                    .placeholder(R.drawable.cell_default_image)
-                    .error(R.drawable.cell_default_image)
+                    .placeholder(R.drawable.bg_default_holder_img)
+                    .error(R.drawable.bg_default_holder_img)
                     .into(viewHolder.mIcon);
             viewHolder.mIcon.setVisibility(View.VISIBLE);
         } else {

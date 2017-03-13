@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,37 +23,36 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.SelectPhotosAdapter;
-import cn.timeface.circle.baby.api.models.db.PhotoModel;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.PhotoGroupItem;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.events.PicSaveCompleteEvent;
 import cn.timeface.circle.baby.fragments.PhotoCategoryFragment;
-import cn.timeface.circle.baby.managers.PhotoDataSave;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.managers.services.SavePicInfoService;
-import cn.timeface.circle.baby.utils.ImageFactory;
-import cn.timeface.circle.baby.utils.ImageUtil;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.mediastore.MediaStoreBucket;
+import cn.timeface.circle.baby.support.managers.PhotoDataSave;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.PhotoGroupItem;
+import cn.timeface.circle.baby.support.utils.ImageFactory;
+import cn.timeface.circle.baby.support.utils.ImageUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.mediastore.MediaStoreBucket;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
-import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DateUtil;
 import cn.timeface.common.utils.StorageUtil;
 import rx.Observable;
@@ -75,6 +77,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     SwipeRefreshLayout srlRefreshLayout;
     SelectPhotosAdapter adapter;
     PhotoCategoryFragment fragment;
+
     boolean fragmentShow = false;
     List<MediaStoreBucket> buckets = new ArrayList<>();
     String curBucketId = null;
@@ -356,7 +359,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     }
 
     @Subscribe
-    public void onEvent(PhotoSelectEvent event) {
+    public void onEvent(PhotoSelectCountEvent event) {
         changeSelCount(event.count);
         if(event.count == maxCount && maxCount == 1){
             clickDone();
@@ -495,10 +498,24 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     CAMERA_REQUEST_CODE);
         }else{
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             mPhotoFile = StorageUtil.genSystemPhotoFile();
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
-            startActivityForResult(takePictureIntent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
+//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
+//            startActivityForResult(takePictureIntent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
+
+
+            mPhotoFile = StorageUtil.genSystemPhotoFile();
+            if (!mPhotoFile.getParentFile().exists()) {
+                mPhotoFile.getParentFile().mkdirs();
+            }
+
+            Uri imageUri = FileProvider.getUriForFile(this,
+                    "cn.timeface.circle.baby.fileProvider", mPhotoFile);//通过FileProvider创建一个content类型的Uri
+            Intent intent = new Intent();
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//将拍取的照片保存到指定URI
+            startActivityForResult(intent,PHOTO_SELECT_CAMERA_REQUEST_CODE);
         }
     }
 
@@ -511,6 +528,16 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             reqData();
             reqBucket();
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            setResult(RESULT_OK, getIntent());
+            finish();
+            return true;
+        }else
+        return super.onKeyDown(keyCode, event);
     }
 
     private void checkCameraPermission() {

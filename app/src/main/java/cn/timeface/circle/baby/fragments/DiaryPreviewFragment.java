@@ -35,22 +35,20 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.adapters.HorizontalListViewAdapter2;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
-import cn.timeface.circle.baby.api.models.objs.TemplateAreaObj;
-import cn.timeface.circle.baby.api.models.objs.TemplateImage;
-import cn.timeface.circle.baby.api.models.objs.TemplateObj;
-import cn.timeface.circle.baby.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.oss.OSSManager;
-import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.support.api.models.objs.TemplateAreaObj;
+import cn.timeface.circle.baby.support.api.models.objs.TemplateImage;
+import cn.timeface.circle.baby.support.api.models.objs.TemplateObj;
+import cn.timeface.circle.baby.support.api.models.responses.DiaryPaperResponse;
+import cn.timeface.circle.baby.support.oss.OSSManager;
+import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.HorizontalListView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Observable;
@@ -107,7 +105,7 @@ public class DiaryPreviewFragment extends BaseFragment {
             actionBar.setTitle("宝宝日记");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        tfProgressDialog = new TFProgressDialog(getActivity());
+        tfProgressDialog = TFProgressDialog.getInstance("");
 
         uploadImageObservable(imgObj.getLocalPath())
                 .subscribe(s -> {
@@ -324,26 +322,26 @@ public class DiaryPreviewFragment extends BaseFragment {
                     .flatMap(templateObj1 -> apiService.diaryComposed(URLEncoder.encode(new Gson().toJson(templateObj1))))
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(() -> {
-                        tfProgressDialog.setMessage("合成卡片中…");
-                        tfProgressDialog.show();
+                        tfProgressDialog.setTvMessage("合成卡片中…");
+                        tfProgressDialog.show(getChildFragmentManager(), "");
                     })
                     .doOnTerminate(() -> {
-                        if (tfProgressDialog != null && tfProgressDialog.isShowing()) {
+                        if (tfProgressDialog != null && tfProgressDialog.isVisible()) {
                             tfProgressDialog.dismiss();
                         }
                     })
                     .subscribe(diaryComposedResponse -> {
-                                if (diaryComposedResponse.success()) {
-                                    MediaObj mediaObj = diaryComposedResponse.getMediaObj();
-                                    mediaObj.setPhotographTime(System.currentTimeMillis());
-                                    tfProgressDialog.dismiss();
-                                    PublishActivity.open(getContext(), mediaObj);
-                                    getActivity().finish();
-                                    EventBus.getDefault().post(new DiaryPublishEvent());
-                                } else {
-                                    ToastUtil.showToast(diaryComposedResponse.getInfo());
-                                }
-                            }
+                        if (diaryComposedResponse.success()) {
+//                                    DiaryCardObj diaryCardObj = diaryComposedResponse.getDiaryCardObj();
+//                                    diaryCardObj.getMedia().setPhotographTime(System.currentTimeMillis());
+                            tfProgressDialog.dismiss();
+//                                    PublishActivity.open(getContext(), diaryCardObj);
+                            DiaryPreviewFragment.this.getActivity().finish();
+                            EventBus.getDefault().post(new DiaryPublishEvent(diaryComposedResponse.getDiaryCardObj()));
+                        } else {
+                            ToastUtil.showToast(diaryComposedResponse.getInfo());
+                        }
+                    }
                             , throwable -> {
                                 Log.e(TAG, "diaryPublish:");
                             });

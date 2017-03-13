@@ -4,7 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IdRes;
@@ -31,7 +32,6 @@ import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,27 +40,39 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.CloudAlbumDetailAdapter;
-import cn.timeface.circle.baby.api.models.base.BaseResponse;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.SystemMsg;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
-import cn.timeface.circle.baby.oss.OSSManager;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.DeviceUtil;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionCustomDataObj;
+import cn.timeface.circle.baby.support.api.models.objs.PaintingCollectionRemarkObj;
+import cn.timeface.circle.baby.support.api.models.responses.GetThemeResponse;
+import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.oss.OSSManager;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
+import cn.timeface.circle.baby.ui.timelines.Utils.StatusBarUtil;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog;
 import cn.timeface.circle.baby.views.dialog.BottomMenuDialog2;
 import cn.timeface.circle.baby.views.dialog.LoadingDialog;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 public class CloudAlbumEditActivity extends BaseAppCompatActivity implements BottomMenuDialog.OnMenuClickListener, BottomMenuDialog2.OnMenuClickListener {
 
@@ -69,6 +81,8 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private static final int REQ_SELECT_COVER = 203;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.title)
+    TextView title;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     @Bind(R.id.fab)
@@ -90,7 +104,6 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     @Bind(R.id.main_content)
     CoordinatorLayout mainContent;
     private LoadingDialog loadingDialog;
-    private LinearLayoutManager layoutManager;
     private CloudAlbumDetailAdapter albumDetailAdapter;
     List<MediaObj> mediaObjs = new ArrayList<>(8);
     private MenuItem menu;
@@ -100,14 +113,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private List<ImageInfoListObj> imageInfoList;
     private int type;
     private int indexofHead;
-
-    public static void open(Activity activity, String albumId, int type,String title) {
-        Intent intent = new Intent(activity, CloudAlbumEditActivity.class);
-        intent.putExtra("albumId", albumId);
-        intent.putExtra("type", type);
-        intent.putExtra("title", title);
-        activity.startActivity(intent);
-    }
+    private int openBookType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,10 +121,14 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloud_album_edit);
         ButterKnife.bind(this);
-        String title =  getIntent().getStringExtra("title");
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+            StatusBarUtil.setColor(this, Color.BLACK);
+        String titleStr = getIntent().getStringExtra("title");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        title.setText(titleStr);
+//        getSupportActionBar().setTitle(title);
         //toolbar.setNavigationIcon(R.drawable.ic_back);
         albumId = getIntent().getStringExtra("albumId");
         type = getIntent().getIntExtra("type", 0);
@@ -128,8 +138,16 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         reqCloudAlbumDetail(albumId);
     }
 
+    public static void open(Activity activity, String albumId, int type, String title) {
+        Intent intent = new Intent(activity, CloudAlbumEditActivity.class);
+        intent.putExtra("albumId", albumId);
+        intent.putExtra("type", type);
+        intent.putExtra("title", title);
+        activity.startActivity(intent);
+    }
+
     private void setupRecyclerView() {
-        layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         albumDetailAdapter = new CloudAlbumDetailAdapter(this, mediaObjs);
         recyclerView.setAdapter(albumDetailAdapter);
@@ -151,9 +169,9 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                             dataList.addAll(obj.getMediaList());
                         }
                         mediaObjHeader = null;
-                        for(int i =0;i<dataList.size();i++){
+                        for (int i = 0; i < dataList.size(); i++) {
                             MediaObj mediaObj = dataList.get(i);
-                            if(mediaObj.getIsCover() == 1){
+                            if (mediaObj.getIsCover() == 1) {
                                 mediaObjHeader = mediaObj;
                                 indexofHead = i;
                                 break;
@@ -199,7 +217,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 BottomMenuDialog menuDialog = BottomMenuDialog.getInstance();
                 menuDialog.setOnMenuClick(this);
                 menuDialog.show(getSupportFragmentManager(), "");
-            }else if(type == 1){
+            } else if (type == 1) {
                 BottomMenuDialog2 menuDialog2 = BottomMenuDialog2.getInstance();
                 menuDialog2.setOnMenuClick(this);
                 menuDialog2.show(getSupportFragmentManager(), "");
@@ -254,9 +272,9 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     }
 
     private void completeEdit() {
-        if(mediaObjs.size()>indexofHead){
-            mediaObjs.add(indexofHead,mediaObjHeader);
-        }else{
+        if (mediaObjs.size() > indexofHead) {
+            mediaObjs.add(indexofHead, mediaObjHeader);
+        } else {
             mediaObjs.add(mediaObjHeader);
         }
 
@@ -377,11 +395,77 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 goEditState();
                 break;
             case R.id.rl_book_pre:
-                //进入POD预览
-                Intent intent = new Intent(this, SelectThemeActivity.class);
-                intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) imageInfoList);
-                intent.putExtra("cloudAlbum", 1);
-                startActivity(intent);
+                //直接做书，不给用户选择主题
+                List<MediaObj> allSelectMedias = new ArrayList<>();
+                for(ImageInfoListObj imageInfoListObj : imageInfoList){
+                    allSelectMedias.addAll(imageInfoListObj.getMediaList());
+                }
+                addSubscription(
+                        apiService.getDefaultTheme(BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK)
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .filter(new Func1<GetThemeResponse, Boolean>() {
+                                    @Override
+                                    public Boolean call(GetThemeResponse getThemeResponse) {
+                                        return getThemeResponse.success();
+                                    }
+                                })
+                                .observeOn(Schedulers.io())
+                                .flatMap(new Func1<GetThemeResponse, Observable<ImageExInfoResponse>>() {
+                                    @Override
+                                    public Observable<ImageExInfoResponse> call(GetThemeResponse getThemeResponse) {
+                                        openBookType = getThemeResponse.getId();
+                                        return apiService.queryImageInfo(FastData.getBabyAvatar());
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                        response -> {
+                                            if (response.success()) {
+                                                //跳转开放平台POD接口；
+                                                String bookName = FastData.getBabyName() + "的照片书";
+                                                List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+                                                StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                                int index = 0;
+                                                for (MediaObj mediaObj : allSelectMedias) {
+                                                    index++;
+                                                    TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
+                                                    tfoResourceObjs.add(tfoResourceObj);
+                                                    sb.append(mediaObj.getId());
+                                                    if (index < allSelectMedias.size()) {
+                                                        sb.append(",");
+                                                    } else {
+                                                        sb.append("]}");
+                                                    }
+                                                }
+
+                                                List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+                                                TFOContentObj tfoContentObj;
+                                                tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+                                                tfoContentObjs1.add(tfoContentObj);
+
+                                                ArrayList<String> keys = new ArrayList<>();
+                                                ArrayList<String> values = new ArrayList<>();
+                                                keys.add("book_author");
+                                                keys.add("book_title");
+
+                                                values.add(FastData.getUserName());
+                                                values.add(bookName);
+
+                                                TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
+                                                List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+                                                tfoPublishObjs.add(tfoPublishObj);
+
+                                                MyPODActivity.open(this, "", "", BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
+                                                finish();
+                                            }
+                                        },
+                                        throwable -> {
+                                            Log.e(TAG, throwable.getLocalizedMessage());
+                                        }
+                                )
+                );
+
+
                 break;
             case R.id.rl_delete_album:
                 //删除相册
@@ -392,7 +476,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         }
     }
 
-    public void deleteNotify(){
+    public void deleteNotify() {
         new AlertDialog.Builder(this)
                 .setTitle("提示")
                 .setMessage("相册里有图片，不能删除哦~")
@@ -456,7 +540,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                         if (media.getImgUrl().equals(mediaObj.getImgUrl())) {
                             media.setIsCover(1);
                             GlideUtil.displayImage(mediaObj.getImgUrl(), ivHeader);
-                        }else{
+                        } else {
                             media.setIsCover(0);
                         }
                     }
@@ -504,7 +588,8 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
                 .subscribe(baseResponse -> {
                     if (baseResponse.success()) {
                         ToastUtil.showToast("添加成功");
-                        albumDetailAdapter.notifyDataSetChanged();
+//                        albumDetailAdapter.notifyDataSetChanged();
+                        reqCloudAlbumDetail(albumId);
                         EventBus.getDefault().post(new HomeRefreshEvent());
                     }
 

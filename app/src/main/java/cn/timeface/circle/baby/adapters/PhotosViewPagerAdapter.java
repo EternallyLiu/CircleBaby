@@ -4,18 +4,13 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.CheckBox;
 
 import com.bumptech.glide.Glide;
-
 
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.db.PhotoModel;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.views.PhotoSelectView;
 
 

@@ -21,19 +21,21 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.TimeLineEditActivity;
-import cn.timeface.circle.baby.api.ApiFactory;
-import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
-import cn.timeface.circle.baby.api.services.ApiService;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ImageFactory;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.Utils;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ImageFactory;
+import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
 
@@ -49,6 +51,8 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
     private RelativeLayout tvShare;
     private RelativeLayout tvCancel;
 
+    private int allDetailsListPosition;
+
     public TimeLineActivityMenuDialog(Context context) {
         super(context, R.style.TFDialogStyle);
         this.context = context;
@@ -61,6 +65,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         init();
     }
 
+
     public void share(TimeLineObj timelineobj) {
         this.timelineobj = timelineobj;
         if (timelineobj.getType() == 1) {
@@ -69,6 +74,9 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         if (timelineobj.getAuthor().getUserId().equals(FastData.getUserId())) {
             tvEdit.setVisibility(View.VISIBLE);
             tvDlete.setVisibility(View.VISIBLE);
+        }else {
+            tvEdit.setVisibility(View.GONE);
+            tvDlete.setVisibility(View.GONE);
         }
         this.show();
     }
@@ -94,10 +102,16 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         window.setWindowAnimations(R.style.bottom_dialog_animation);
     }
 
+    public TimeLineActivityMenuDialog editeor(boolean isEditor) {
+        if (tvEdit != null)
+            tvEdit.setVisibility(isEditor ? View.VISIBLE : View.GONE);
+        return this;
+    }
+
     private void initListener() {
         tvEdit.setOnClickListener(v -> {
             dismiss();
-            context.startActivity(new Intent(context, TimeLineEditActivity.class).putExtra("timelimeobj", timelineobj));
+            context.startActivity(new Intent(context, TimeLineEditActivity.class).putExtra("timelimeobj", timelineobj).putExtra("allDetailsListPosition", allDetailsListPosition));
         });
         tvDlete.setOnClickListener(v -> {
             dismiss();
@@ -116,8 +130,8 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(response -> {
                                 if (response.success()) {
-                                    EventBus.getDefault().post(new DeleteTimeLineEvent());
-                                    EventBus.getDefault().post(new HomeRefreshEvent());
+                                    EventBus.getDefault().post(new DeleteTimeLineEvent(timelineobj.getTimeId()));
+                                    EventBus.getDefault().post(new HomeRefreshEvent(timelineobj.getTimeId()));
                                 } else {
                                     ToastUtil.showToast(response.getInfo());
                                 }
@@ -163,29 +177,37 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
             String url = context.getString(R.string.share_url_time, timelineobj.getTimeId());
             switch (timelineobj.getType()) {
                 case TypeConstants.PHOTO:
-                    url = context.getString(R.string.share_url_time, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL + context.getString(R.string.share_url_time, timelineobj.getTimeId());
                     break;
                 case TypeConstants.VIDEO:
-                    url = context.getString(R.string.share_url_video, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL + context.getString(R.string.share_url_video, timelineobj.getTimeId());
                     break;
                 case TypeConstants.DIARY:
-                    url = context.getString(R.string.share_url_diary, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL + context.getString(R.string.share_url_diary, timelineobj.getTimeId());
                     break;
                 case TypeConstants.CARD:
-                    url = context.getString(R.string.share_url_generalmap, timelineobj.getTimeId());
+                    url = BuildConfig.API_URL + context.getString(R.string.share_url_generalmap, timelineobj.getTimeId());
                     break;
 
             }
-            if (timelineobj.getMediaList().size() > 0 && !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getImgUrl())) {
-                imgUrl = timelineobj.getMediaList().get(0).getImgUrl();
-            } else {
-                imgUrl = FastData.getBabyAvatar();
-            }
-            new ShareDialog(context).share(title, content, imgUrl, url);
+//            if (timelineobj.getMediaList().size() > 0 && !TextUtils.isEmpty(timelineobj.getMediaList().get(0).getImgUrl())) {
+//                imgUrl = timelineobj.getMediaList().get(0).getImgUrl();
+//            } else {
+//                imgUrl = FastData.getBabyAvatar();
+//            }
+            new ShareDialog(context).share(title, content, ShareSdkUtil.getImgStrByResource(getContext(), R.drawable.ic_laucher_quadrate), url);
         });
         tvCancel.setOnClickListener(v -> {
             dismiss();
         });
     }
 
+    public int getAllDetailsListPosition() {
+        return allDetailsListPosition;
+    }
+
+    public TimeLineActivityMenuDialog setAllDetailsListPosition(int allDetailsListPosition) {
+        this.allDetailsListPosition = allDetailsListPosition;
+        return this;
+    }
 }

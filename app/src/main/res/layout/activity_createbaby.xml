@@ -13,8 +13,7 @@
         android:background="@color/bg_color1"
         android:clipToPadding="true"
         android:fitsSystemWindows="true"
-        android:minHeight="?attr/actionBarSize"
-        >
+        android:minHeight="?attr/actionBarSize">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -25,11 +24,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:drawableLeft="@drawable/back"
+                android:drawablePadding="@dimen/size_6"
                 android:text="返回"
                 android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_medium"
-                android:drawableLeft="@drawable/back"
-                android:drawablePadding="@dimen/size_6"/>
+                android:textSize="@dimen/text_medium" />
 
             <TextView
                 android:id="@+id/tv_title"
@@ -46,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
                 android:layout_marginRight="@dimen/size_12"
-                android:text="下一步"
+                android:text="完成"
                 android:textColor="@drawable/selector_textcolor_white"
                 android:textSize="@dimen/text_medium" />
 
@@ -74,12 +73,12 @@
         android:id="@+id/et_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_14"
         android:background="@color/text_color1"
         android:drawableLeft="@drawable/baby_name"
         android:drawablePadding="@dimen/size_12"
         android:hint="请输入宝宝的小名"
-        android:padding="@dimen/size_12"/>
+        android:padding="@dimen/size_12" />
 
     <View
         android:layout_width="match_parent"
@@ -117,6 +116,16 @@
             android:text="男孩"
             android:textColor="@color/text_color2"
             android:textSize="@dimen/text_medium" />
+
+        <RadioButton
+            android:id="@+id/rb_both"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/size_12"
+            android:text="龙凤胎"
+            android:textColor="@color/text_color2"
+            android:textSize="@dimen/text_medium" />
     </LinearLayout>
 
 
@@ -132,10 +141,10 @@
         android:background="@color/text_color1"
         android:drawableLeft="@drawable/brithday"
         android:drawablePadding="@dimen/size_12"
+        android:gravity="center_vertical"
         android:hint="请输入宝宝的生日"
         android:padding="@dimen/size_12"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/text_medium"/>
+        android:textSize="@dimen/text_medium" />
 
     <View
         android:layout_width="match_parent"
@@ -149,35 +158,37 @@
         android:background="@color/text_color1"
         android:drawableLeft="@drawable/relation"
         android:drawablePadding="@dimen/size_12"
+        android:gravity="center_vertical"
         android:hint="请选择你和宝宝的关系"
         android:padding="@dimen/size_12"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/text_medium"/>
+        android:textSize="@dimen/text_medium" />
 
     <RelativeLayout
         android:id="@+id/rl_focus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_marginTop="@dimen/size_12"
-        android:paddingRight="@dimen/size_12">
+        android:background="@color/white"
+        android:paddingRight="@dimen/size_12"
+        android:visibility="gone">
+
         <TextView
             android:id="@+id/tv_focus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/text_color1"
             android:drawablePadding="@dimen/size_12"
-            android:text="亲友已经创建过宝宝，去关注他"
-            android:padding="@dimen/size_12"
             android:gravity="center_vertical"
-            android:textSize="@dimen/text_medium"/>
+            android:padding="@dimen/size_12"
+            android:text="亲友已经创建过宝宝，去关注他"
+            android:textSize="@dimen/text_medium" />
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/edit"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            />
+            android:src="@drawable/edit" />
 
     </RelativeLayout>
 </LinearLayout>

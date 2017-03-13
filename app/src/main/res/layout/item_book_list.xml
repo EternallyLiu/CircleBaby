@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_main"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/size_12">
+
+    <ImageView
+        android:id="@+id/iv_shelf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_content"
+        android:layout_marginTop="-10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_book_shelf" />
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/rl_book_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/view_space_medium"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/iv_book_cover"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:paddingBottom="5px"
+                android:paddingLeft="2px"
+                android:paddingTop="2px"
+                android:scaleType="fitXY"
+                android:src="@drawable/bg_default_holder_img" />
+
+            <ImageView
+                android:id="@+id/iv_front_mask"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@id/iv_book_cover"
+                android:layout_alignLeft="@id/iv_book_cover"
+                android:layout_alignRight="@id/iv_book_cover"
+                android:layout_alignTop="@id/iv_book_cover"
+                android:scaleType="fitXY"
+                android:src="@drawable/book_front_mask" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/view_space_medium"
+            android:layout_marginRight="@dimen/view_space_medium"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/view_space_small"
+            android:paddingTop="@dimen/view_space_small">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/iv_menu"
+                    android:textColor="@color/text"
+                    android:textSize="16sp"
+                    tools:text="小CC的精装照片书" />
+
+                <ImageView
+                    android:id="@+id/iv_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_menu" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_pagenum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_6"
+                android:text="页      数: "
+                android:textColor="@color/text_color_hint" />
+
+            <TextView
+                android:id="@+id/tv_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_2"
+                android:text="作      者: "
+                android:textColor="@color/text_color_hint" />
+
+            <TextView
+                android:id="@+id/tv_creattime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_2"
+                android:text="创建时间: "
+                android:textColor="@color/text_color_hint" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_6"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_login"
+                    android:clickable="true"
+                    android:paddingBottom="@dimen/size_6"
+                    android:paddingLeft="@dimen/size_12"
+                    android:paddingRight="@dimen/size_12"
+                    android:paddingTop="@dimen/size_6"
+                    android:text="编辑内容"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_print"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_12"
+                    android:background="@drawable/selector_btn_login"
+                    android:paddingBottom="@dimen/size_6"
+                    android:paddingLeft="@dimen/size_12"
+                    android:paddingRight="@dimen/size_12"
+                    android:paddingTop="@dimen/size_6"
+                    android:text="申请印刷"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

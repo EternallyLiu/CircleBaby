@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="TimeFaceTheme" parent="Theme.Design.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:editTextStyle">@style/myEditText</item>
+        <item name="android:textAppearanceSmall">@style/TFTextSmallAppearance</item>
+        <item name="android:textAppearanceMedium">@style/TFTextMediumAppearance</item>
+        <item name="android:textAppearanceLarge">@style/TFTextLargeAppearance</item>
+        <item name="android:textAppearance">@style/TFTextAppearance</item>
+        <item name="android:listDivider">@drawable/shape_line_vertical</item>
+    </style>
+
+    <style name="TimeFaceTheme.DayNight" parent="Theme.AppCompat.DayNight">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="android:editTextStyle">@style/myEditText</item>
+        <item name="android:textAppearanceSmall">@style/TFTextSmallAppearance</item>
+        <item name="android:textAppearanceMedium">@style/TFTextMediumAppearance</item>
+        <item name="android:textAppearanceLarge">@style/TFTextLargeAppearance</item>
+        <item name="android:textAppearance">@style/TFTextAppearance</item>
+        <item name="android:listDivider">@drawable/shape_line_vertical</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="TimeFaceTheme.FullScreen" parent="Theme.Design.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="TimeFaceTheme.IOS" />
+
+
+    <!-- widget -->
+    <style name="TimeFaceTheme.IOS.TopTab" />
+
+    <style name="TimeFaceTheme.IOS.TopTab.Left">
+        <item name="android:background">@drawable/selector_ios_style_title_tab_left</item>
+        <item name="android:textColor">@color/selector_ios_style_title_tab</item>
+        <item name="android:button">@null</item>
+    </style>
+
+    <style name="TimeFaceTheme.IOS.TopTab.Right">
+        <item name="android:background">@drawable/selector_ios_style_title_tab_right</item>
+        <item name="android:textColor">@color/selector_ios_style_title_tab</item>
+        <item name="android:button">@null</item>
+    </style>
+
+    <style name="TimeFaceTheme.IOS.Button" parent="Base.Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/selector_ios_btn</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <style name="TimeFaceTheme.IOS.ButtonEmpty" parent="Base.Widget.AppCompat.Button">
+        <item name="android:background">@drawable/selector_ios_btn_empty</item>
+        <item name="android:textColor">@color/ios_empty_button_normal_text_selector</item>
+    </style>
+
+    <style name="TimeFaceTheme.IOS.Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/spinner_background_material</item>
+    </style>
+
+    <!-- Text -->
+    <style name="TimeFaceTheme.IOS.H1">
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:textColor">@color/text_color3</item>
+        <item name="android:paddingTop">@dimen/view_space_small</item>
+        <item name="android:paddingBottom">@dimen/view_space_small</item>
+    </style>
+
+    <style name="TimeFaceTheme.IOS.H1WithPadding" parent="TimeFaceTheme.IOS.H1">
+        <item name="android:paddingLeft">5dp</item>
+    </style>
+
+    <style name="TimeFaceTheme.IOS.IconText">
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+</resources>

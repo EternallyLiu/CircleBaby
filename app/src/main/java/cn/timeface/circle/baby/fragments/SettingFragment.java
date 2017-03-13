@@ -4,8 +4,10 @@ package cn.timeface.circle.baby.fragments;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
@@ -30,13 +33,18 @@ import cn.timeface.circle.baby.activities.AboutActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.LoginActivity;
 import cn.timeface.circle.baby.constants.TypeConstant;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.MiPushUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.MiPushUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
+import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.PermissionUtils;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import cn.timeface.common.utils.ShareSdkUtil;
@@ -67,14 +75,24 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     RelativeLayout rlWifi;
     @Bind(R.id.iv_swich_msg)
     ImageView ivSwichMsg;
-
-    public SettingFragment() {
-    }
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.rl_setting_pwd)
+    RelativeLayout rlSettingPwd;
+    @Bind(R.id.tv_phone_number)
+    TextView tvPhoneNumber;
+    @Bind(R.id.rl_setting_phone)
+    RelativeLayout rlSettingPhone;
+    @Bind(R.id.iv_swich_sms)
+    ImageView ivSwichSms;
+    @Bind(R.id.rl_sms)
+    RelativeLayout rlSms;
+    private String phoneNumber;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -92,7 +110,38 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
+
+    @Subscribe
+    public void onEvent(UpdatePhone event) {
+        showPhone();
+
+    }
+
+    public SettingFragment() {
+    }
+
+    private void showPhone() {
+        phoneNumber = FastData.getUserInfo().getPhoneNumber();
+
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            String replace = phoneNumber.substring(3, 7);
+            tvPhoneNumber.setText(phoneNumber.replace(replace, "****"));
+        }else tvPhoneNumber.setText("");
+    }
+
     private void initData() {
+
         if (Remember.getInt("wifidownload", 1) == 0) {
             ivSwichWifi.setImageResource(R.drawable.swichoff);
         }
@@ -101,25 +150,45 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         }
         new CacheSizeTask().execute();
 
-
+        showPhone();
         rlWifi.setOnClickListener(this);
         rlSettingMsg.setOnClickListener(this);
         rlSettingShare.setOnClickListener(this);
         rlSettingAbout.setOnClickListener(this);
-        rlSettingScore.setVisibility(View.GONE);
+        rlSettingScore.setOnClickListener(this);
         rlSettingClear.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
+        rlSettingPwd.setOnClickListener(this);
+        rlSettingPhone.setOnClickListener(this);
+        rlSms.setOnClickListener(this);
+        ivSwichSms.setImageResource(FastData.getSendSms()== 1 ? R.drawable.swichon : R.drawable.swichoff);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_setting_score:
+                PermissionUtils.skipRatting(getActivity());
+                break;
+            case R.id.rl_sms:
+                apiService.smsRemind(FastData.getSendSms() == 1 ? 0 : 1)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                FastData.setSendSms(1 - FastData.getSendSms());
+                                ivSwichSms.setImageResource(FastData.getSendSms()== 1 ? R.drawable.swichon : R.drawable.swichoff);
+                            }
+                        }, throwable -> {
+                            LogUtil.showError(throwable);
+                        });
+                break;
+            case R.id.rl_setting_phone:
+
+                FragmentBridgeActivity.open(getActivity(), BindPhoneFragment.class.getSimpleName());
+                break;
+            case R.id.rl_setting_pwd:
+                FragmentBridgeActivity.open(getActivity(), NotifyPwdFragment.class.getSimpleName());
+                break;
             case R.id.rl_wifi:
                 if (Remember.getInt("wifidownload", 1) == 0) {
                     ivSwichWifi.setImageResource(R.drawable.swichon);
@@ -149,7 +218,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 //                String url = "http://fir.im/timebabyandroid";
                 String url = "http://www.timeface.cn/baby/babyShare/app.html";
                 new ShareDialog(getActivity()).share("成长印记，印下美好成长时光", "一键汇聚宝宝的成长点滴，轻松愉快地为宝宝定制专属印刷品，和家人一起见证宝宝成长的每一步。",
-                        ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_launcher),
+                        cn.timeface.circle.baby.support.utils.ShareSdkUtil.getImgStrByResource(getActivity(),R.drawable.ic_laucher_quadrate),
                         url);
 
                 break;
@@ -166,6 +235,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
 
             case R.id.btn_sign_out:
+                BabyObj.deleteAll();
                 FastData.setUserFrom(-1);
                 LoginActivity.open(getActivity());
                 getActivity().finish();
@@ -196,8 +266,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 if (StorageUtil.getExternalCacheDir().exists()) {
                     cacheSize += StorageUtil.getFolderSize(StorageUtil.getExternalCacheDir());
                 }
-                System.out.println("cacheSize:" + cacheSize);
-                System.out.println(StorageUtil.FormatFileSize(cacheSize));
             } catch (Exception e) {
                 e.printStackTrace();
             }

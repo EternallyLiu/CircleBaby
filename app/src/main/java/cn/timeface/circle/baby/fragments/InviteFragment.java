@@ -18,33 +18,34 @@ import java.net.URLEncoder;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.responses.InviteResponse;
-import cn.timeface.circle.baby.constants.TypeConstant;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ShareSdkUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.responses.InviteResponse;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.ShareDialog;
 
 public class InviteFragment extends BaseFragment implements View.OnClickListener {
 
 
+    @Bind(R.id.title)
+    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.tv_code)
     TextView tvCode;
+    @Bind(R.id.iv)
+    ImageView iv;
     @Bind(R.id.btn_wx)
     Button btnWx;
     @Bind(R.id.btn_qq)
     Button btnQq;
     @Bind(R.id.btn_sms)
     Button btnSms;
-    @Bind(R.id.iv)
-    ImageView iv;
     private String relationName;
     public InviteResponse inviteResponse;
 
@@ -70,11 +71,8 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_invite, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
-        ActionBar actionBar = getActionBar();
-        if(actionBar!=null){
-            actionBar.setTitle("邀请");
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        initActionBar();
+        title.setText("邀请");
         reqData();
         btnWx.setOnClickListener(this);
         btnQq.setOnClickListener(this);
@@ -89,12 +87,12 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
                 .subscribe(inviteResponse -> {
                     this.inviteResponse = inviteResponse;
                     tvCode.setText(inviteResponse.getInviteCode());
-                    GlideUtil.displayImage(inviteResponse.getCodeUrl(), iv);
                     int width = Remember.getInt("width", 0);
                     ViewGroup.LayoutParams layoutParams = iv.getLayoutParams();
                     layoutParams.width = (int) (width * 1.8);
                     layoutParams.height = (int) (width * 1.8);
                     iv.setLayoutParams(layoutParams);
+                    GlideUtil.displayImage(inviteResponse.getCodeUrl(), iv);
                 }, throwable -> {
                     Log.e(TAG, "queryBabyFamilyList:");
                     throwable.printStackTrace();
@@ -113,18 +111,18 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
     public void onClick(View v) {
         String content = "我在成长印记记录了" + FastData.getBabyName() + "的成长，快来一起关注" + FastData.getBabyName() + "的成长瞬间！";
         String url = "";
-        if (inviteResponse!=null){
+        if (inviteResponse != null) {
             String inviteCode = inviteResponse.getInviteCode();
-            url = getActivity().getString(R.string.share_url_invite, FastData.getBabyId()) + "&inviteCode=" + inviteCode;
+            url = BuildConfig.API_URL + getActivity().getString(R.string.share_url_invite, FastData.getBabyId()) + "&inviteCode=" + inviteCode;
         }
         switch (v.getId()) {
             case R.id.btn_wx:
                 new ShareDialog(getActivity()).shareToWx("成长印记", content,
-                        FastData.getBabyAvatar(),"",url);
+                        ShareSdkUtil.getImgStrByResource(getActivity(),R.drawable.ic_laucher_quadrate), "", url);
                 break;
             case R.id.btn_qq:
                 new ShareDialog(getActivity()).shareToQQ("成长印记", content,
-                        FastData.getBabyAvatar(),"",url);
+                        ShareSdkUtil.getImgStrByResource(getActivity(),R.drawable.ic_laucher_quadrate), "", url);
                 break;
             case R.id.btn_sms:
                 String sms_body = content + url;

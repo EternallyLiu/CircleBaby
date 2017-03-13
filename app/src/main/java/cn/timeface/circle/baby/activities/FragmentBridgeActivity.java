@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,15 +13,10 @@ import com.wechat.photopicker.fragment.BigImageFragment;
 import com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.UserObj;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.fragments.AddAddressFragment;
 import cn.timeface.circle.baby.fragments.AddBookFragment;
@@ -41,6 +35,20 @@ import cn.timeface.circle.baby.fragments.SettingFragment;
 import cn.timeface.circle.baby.fragments.SettingMsgFragment;
 import cn.timeface.circle.baby.fragments.SystemMessageFragment;
 import cn.timeface.circle.baby.fragments.WebViewFragment;
+import cn.timeface.circle.baby.support.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
+import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
+import cn.timeface.circle.baby.ui.images.TagAddFragment;
+import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeLineDayFragment;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeLineFragment;
 
 /**
  * Created by JieGuo on 1/22/16.
@@ -52,6 +60,26 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
     public static void openBigimageFragment(Context context, ArrayList<String> paths, int index, boolean download, boolean delete) {
         Bundle bundle = new Bundle();
+        bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
+        bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
+        bundle.putBoolean("download", download);
+        bundle.putBoolean("delete", delete);
+        open(context, "BigImageFragment", "", bundle);
+    }
+
+    public static void openBigimageFragment(Context context,ArrayList<MediaObj> list, ArrayList<String> paths, int index, boolean download, boolean delete) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("mediaList",list);
+        bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
+        bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
+        bundle.putBoolean("download", download);
+        bundle.putBoolean("delete", delete);
+        open(context, "BigImageFragment", "", bundle);
+    }
+    public static void openBigimageFragment(Context context, int allDetailsListPosition,ArrayList<MediaObj> list, ArrayList<String> paths, int index, boolean download, boolean delete) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("allDetailsListPosition",allDetailsListPosition);
+        bundle.putParcelableArrayList("mediaList",list);
         bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
         bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
         bundle.putBoolean("download", download);
@@ -133,9 +161,8 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         open(context, "AddBookFragment", bundle);
     }
 
-    public static void openBookSizeListFragment(Context context, List<ImageInfoListObj> dataList) {
+    public static void openBookSizeListFragment(Context context) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("dataList", (ArrayList<? extends Parcelable>) dataList);
         open(context, "BookSizeListFragment", bundle);
     }
 
@@ -311,8 +338,34 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
             case "WebViewFragment":
                 return WebViewFragment.newInstance();
+            case "TimeLineFragment":
+                return TimeLineFragment.newInstance();
+            case "TimeLineDayFragment":
 
+                return TimeLineDayFragment.newInstance();
+            case "IconHistoryFragment":
 
+                return new IconHistoryFragment();
+            case "NotifyPwdFragment":
+                return new NotifyPwdFragment();
+            case "BindPhoneFragment":
+
+                return new BindPhoneFragment();
+            case "TagAddFragment":
+
+                return new TagAddFragment();
+            case "KithFragment":
+
+                return new KithFragment();
+            case "CreateBabyFragment":
+
+                return new CreateBabyFragment();
+            case "TimeFaceDetailFragment":
+
+                return new TimeFaceDetailFragment();
+            case "LocationListFragment":
+
+                return new LocationListFragment();
             default:
                 return null;
         }

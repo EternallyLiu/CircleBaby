@@ -25,14 +25,19 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.events.DiaryPublishEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 
+/**
+ * 日记卡片制作
+ * author : YW.SUN Created on 2017/2/13
+ * email : sunyw10@gmail.com
+ */
 public class DiaryPublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
 
@@ -50,15 +55,8 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
     TextView tvContent;
     @Bind(R.id.ll_single_date)
     LinearLayout llSingleDate;
-    @Bind(R.id.iv_icon)
-    ImageView ivIcon;
-    @Bind(R.id.ll_title)
-    LinearLayout llTitle;
-    @Bind(R.id.sv)
-    ScrollView sv;
+
     private List<ImgObj> selImages = new ArrayList<>();
-    private String content = "";
-    private boolean showGuide;
 
     public static void open(Context context) {
         Intent intent = new Intent(context, DiaryPublishActivity.class);
@@ -86,8 +84,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
 
         ivDiary.setOnClickListener(this);
         tvContent.setOnClickListener(this);
-        llTitle.setOnClickListener(this);
-
 //        selectImages();
     }
 
@@ -126,17 +122,6 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
                 String s = tvContent.getText().toString();
                 FragmentBridgeActivity.openForResult(this, "DiaryTextFragment", DIARYTEXT, s);
                 break;
-            case R.id.ll_title:
-                if (showGuide) {
-                    sv.setVisibility(View.GONE);
-                    showGuide = false;
-                    ivIcon.setImageResource(R.drawable.down);
-                }else{
-                    sv.setVisibility(View.VISIBLE);
-                    showGuide = true;
-                    ivIcon.setImageResource(R.drawable.up);
-                }
-                break;
         }
     }
 
@@ -151,7 +136,7 @@ public class DiaryPublishActivity extends BaseAppCompatActivity implements View.
         if (item.getItemId() == R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.next) {
-            content = tvContent.getText().toString();
+            String content = tvContent.getText().toString();
             String title = etTitle.getText().toString();
             if (selImages.size() < 1) {
                 ToastUtil.showToast("请选择一张图片");

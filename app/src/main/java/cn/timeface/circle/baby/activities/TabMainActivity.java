@@ -1,21 +1,27 @@
 package cn.timeface.circle.baby.activities;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.WindowCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +35,11 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.App;
+import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.DistrictModel;
-import cn.timeface.circle.baby.api.models.responses.DistrictListResponse;
-import cn.timeface.circle.baby.api.services.OpenUploadServices;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
@@ -43,24 +48,37 @@ import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.fragments.HomeFragment;
 import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.managers.services.SavePicInfoService;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.DistrictModel;
+import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
+import cn.timeface.circle.baby.support.api.models.responses.DistrictListResponse;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
+import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
+import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
+import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.CommonUtil;
-import cn.timeface.open.GlobalSetting;
-import cn.timeface.open.api.models.objs.TFOUserObj;
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
+/**
+ * 首页activity
+ * author : YW.SUN Created on 2017/1/11
+ * email : sunyw10@gmail.com
+ */
+public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus, DeleteDialog.SubmitListener, DeleteDialog.CloseListener {
     @Bind(R.id.menu_home_tv)
     TextView menuHomeTv;
     @Bind(R.id.menu_mime_tv)
     TextView menuMimeTv;
+    @Bind(R.id.menu_growth_up_tv)
+    TextView menuGrowthTv;
     @Bind(R.id.iv_publish)
     ImageView ivPublish;
     @Bind(R.id.toolbar)
@@ -71,39 +89,34 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     TextView tvToensurerelation;
     @Bind(R.id.foot_menu_ll)
     View footMenu;
+    @Bind(R.id.send_timeface)
+    ImageView sendTimeface;
     private long lastPressedTime = 0;
-    private static final int TAB1 = 0;
-    private static final int TAB2 = 1;
+    private static final int TAB1 = 0;//时光轴
+    private static final int TAB2 = 1;//我的
+    private static final int TAB3 = 2;//印成长
     @Bind(R.id.container)
     FrameLayout container;
     private BaseFragment currentFragment = null;
-    private PopupWindow popupWindow;
-
-    public static void open(Context context) {
-        context.startActivity(new Intent(context, TabMainActivity.class));
-    }
+    private DeleteDialog dialog;
+    private TFProgressDialog tfprogress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
         setContentView(R.layout.activity_tab_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         updateRegionDB();
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         int width = wm.getDefaultDisplay().getWidth() / 3;
         Remember.putInt("width", width);
 
-        RxPermissions.getInstance(this).request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        if (aBoolean) {
-                            SavePicInfoService.open(getApplicationContext());
-                        }
+        new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {
+                        SavePicInfoService.open(getApplicationContext());
                     }
                 });
 
@@ -111,38 +124,79 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         ivPublish.setOnClickListener(this);
         tvToensurerelation.setOnClickListener(this);
         rlToensurerelation.setOnClickListener(this);
-
-        if (TextUtils.isEmpty(FastData.getRelationName())) {
-            rlToensurerelation.setVisibility(View.VISIBLE);
-        } else {
-            rlToensurerelation.setVisibility(View.GONE);
-        }
-
+        sendTimeface.setOnClickListener(this);
         EventBus.getDefault().post(new EventTabMainWake());
 
         //初始化开放平台
-        TFOUserObj tfoUserObj = new TFOUserObj();
-        tfoUserObj.setAvatar(FastData.getAvatar());
-        tfoUserObj.setGender(FastData.getBabyGender());
-        tfoUserObj.setNick_name(FastData.getBabyName());
-        tfoUserObj.setPhone(FastData.getAccount());
-        tfoUserObj.setUserId(FastData.getUserId());
-        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);
-        GlobalSetting.getInstance().setUploadServices(new OpenUploadServices());
+//        TFOUserObj tfoUserObj = new TFOUserObj();
+//        tfoUserObj.setAvatar(FastData.getAvatar());
+//        tfoUserObj.setGender(FastData.getBabyGender());
+//        tfoUserObj.setNick_name(FastData.getBabyName());
+//        tfoUserObj.setPhone(FastData.getAccount());
+//        tfoUserObj.setUserId(FastData.getUserId());
+//        TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
+//                .debug(BuildConfig.DEBUG).build()
+//        );
+        int type = getIntent().getIntExtra("type", 0);
+        getIntent().putExtra("type", 0);
+        if (type == 1)
+            onEvent(new BabyAttentionEvent(BabyAttentionEvent.TYPE_CREATE_BABY));
+        new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {
+                        startService(new Intent(this, LoadMediaService.class));
+                    }
+                });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
+    public static void open(Context context) {
+        context.startActivity(new Intent(context, TabMainActivity.class));
+    }
+
+    /**
+     * 为了扩展跳转模式，例如1、创建宝宝，默认为0无任何操作
+     *
+     * @param context
+     * @param type
+     */
+    public static void open(Context context, int type) {
+        context.startActivity(new Intent(context, TabMainActivity.class).putExtra("type", type));
     }
 
     public void clickTab(View view) {
 
         switch (view.getId()) {
+            //时光轴
             case R.id.menu_home_tv:
+                sendTimeface.setVisibility(View.VISIBLE);
                 menuHomeTv.setSelected(true);
                 menuMimeTv.setSelected(false);
+                menuGrowthTv.setSelected(false);
                 showContent(TAB1);
                 break;
+            //我的
             case R.id.menu_mime_tv:
+                sendTimeface.setVisibility(View.GONE);
                 menuHomeTv.setSelected(false);
                 menuMimeTv.setSelected(true);
+                menuGrowthTv.setSelected(false);
                 showContent(TAB2);
+                showFootMenu();
+                break;
+            //印成长
+            case R.id.menu_growth_up_tv:
+                sendTimeface.setVisibility(View.GONE);
+                menuHomeTv.setSelected(false);
+                menuMimeTv.setSelected(false);
+                menuGrowthTv.setSelected(true);
+                showContent(TAB3);
+                showFootMenu();
                 break;
         }
     }
@@ -153,6 +207,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 return HomeFragment.newInstance("首页");
             case TAB2:
                 return MineFragment.newInstance("我的");
+            case TAB3:
+                return PrintGrowthHomeFragment.newInstance("印成长");
+
         }
         return null;
     }
@@ -183,6 +240,14 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         currentFragment = fragment;
     }
 
+    // 解决某些异常情况导致FootMenu消失
+    public void showFootMenu() {
+        if (footMenu.getTranslationY() != 0) {
+            Animator animator = ObjectAnimator.ofFloat(footMenu, "translationY", footMenu.getTranslationY(), 0);
+            animator.start();
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (isExit()) {
@@ -205,15 +270,17 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
+    public View getSendTimeface() {
+        return sendTimeface;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.send_timeface:
+                new PublishDialog(this).show();
+                CountlyEventHelper.getInstance().publishEvent(FastData.getUserId());
+                break;
             case R.id.iv_publish:
                 new PublishDialog(this).show();
                 break;
@@ -242,12 +309,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     private void reqData() {
         Subscription s = apiService.getLocationList()
-                .doOnNext(new Action1<DistrictListResponse>() {
-                    @Override
-                    public void call(DistrictListResponse response) {
-                        if (response != null && response.success()) {
-                            DistrictModel.deleteAll();
-                        }
+                .doOnNext(response -> {
+                    if (response != null && response.success()) {
+                        DistrictModel.deleteAll();
                     }
                 })
                 .flatMap(new Func1<DistrictListResponse, Observable<DistrictModel>>() {
@@ -257,26 +321,20 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                         return Observable.from(list);
                     }
                 })
-                .map(new Func1<DistrictModel, Byte>() {
-                    @Override
-                    public Byte call(DistrictModel districtModel) {
-                        byte error;
-                        try {
-                            districtModel.save();
-                        } finally {
-                            error = 1;
-                        }
-                        return error;
+                .map(districtModel -> {
+                    byte error;
+                    try {
+                        districtModel.save();
+                    } finally {
+                        error = 1;
                     }
+                    return error;
                 })
                 .last()
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(new Action1<Byte>() {
-                    @Override
-                    public void call(Byte error) {
-                        if (error == 1) {
-                            FastData.setRegionDBUpdateTime(System.currentTimeMillis());
-                        }
+                .subscribe(error -> {
+                    if (error == 1) {
+                        FastData.setRegionDBUpdateTime(System.currentTimeMillis());
                     }
                 }, throwable -> {
                     Log.e(TAG, "error", throwable);
@@ -301,5 +359,78 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         } else {
             rlToensurerelation.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * 显示关注宝宝之后的对话框
+     *
+     * @param tiitle
+     */
+    private void showDialog(int type, CharSequence tiitle) {
+        if (dialog == null) {
+            dialog = new DeleteDialog(this);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dialog.getSubmit().getLayoutParams();
+            if (params == null) {
+                params = new LinearLayout.LayoutParams(params.width = LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            } else params.width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            params.weight = 0;
+            dialog.getSubmit().setLayoutParams(params);
+            int padding = (int) getResources().getDimension(R.dimen.size_4);
+            dialog.getSubmit().setPadding(padding * 3, padding, padding * 3, padding);
+            dialog.hideCacelButton();
+            dialog.setMessageGravity(Gravity.CENTER_HORIZONTAL);
+            dialog.setCloseListener(this);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.showClose(true);
+            dialog.setSubmitListener(this);
+        }
+        if (type == BabyAttentionEvent.TYPE_CREATE_BABY) {
+            dialog.setTitle(new SpannableStringBuilder("创建成功！ "));
+            dialog.getTitle().setVisibility(View.VISIBLE);
+            dialog.getTitle().setGravity(Gravity.CENTER);
+            dialog.getTitle().setTextColor(Color.BLACK);
+            if (dialog.getTitleLine() != null) dialog.getTitleLine().setVisibility(View.GONE);
+        } else dialog.getTitle().setVisibility(View.GONE);
+        dialog.getSubmit().setText(type == 1 ? "立即查看" : "立即导入");
+        dialog.setType(type);
+        dialog.setMessage(tiitle);
+        if (!dialog.isShowing())
+            dialog.show();
+    }
+
+
+    @Subscribe
+    public void onEvent(BabyAttentionEvent attentionEvent) {
+        if (attentionEvent.getType() == 1 && attentionEvent.getBuilder() != null)
+            showDialog(attentionEvent.getType(), attentionEvent.getBuilder());
+        else if (attentionEvent.getType() == BabyAttentionEvent.TYPE_CREATE_BABY) {
+            BabyObj babyObj = FastData.getBabyObj();
+            StringBuilder sb = new StringBuilder();
+            SpannableStringBuilder builder = new SpannableStringBuilder();
+//            sb.append(String.format("创建成功\n"));
+//            builder.append(String.format("创建成功\n"));
+
+            sb.append(String.format("%s 已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
+            builder.append(String.format("%s 已经%s了", babyObj.getNickName(), babyObj.getAge())).append("\n");
+            builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            sb.append("马上导入宝宝照片，").append("\n");
+            builder.append("马上导入宝宝照片，").append("\n");
+            sb.append(String.format(" 回顾宝宝的成长吧！", babyObj.getNickName())).append("\n");
+            builder.append(String.format(" 回顾宝宝的成长吧！", babyObj.getNickName()));
+
+            showDialog(attentionEvent.getType(), builder);
+        }
+    }
+
+    @Override
+    public void close() {
+
+    }
+
+    @Override
+    public void submit() {
+        if (dialog != null && dialog.getType() == BabyAttentionEvent.TYPE_CREATE_BABY) {
+            PublishActivity.open(this, PublishActivity.PHOTO);
+        } else FragmentBridgeActivity.open(this, KithFragment.class.getSimpleName());
     }
 }

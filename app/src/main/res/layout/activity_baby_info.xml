@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/alabaster"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/bg_color1"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/back" />
+
+            <TextView
+                android:id="@+id/tv_mine"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/time_line_select_title"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_large" />
+
+            <TextView
+                android:id="@+id/tv_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="120条"
+                android:layout_marginRight="@dimen/size_6"
+                android:textColor="@color/text_color1"
+                android:textSize="@dimen/text_large" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/et_big_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/text_color1"
+        android:hint="@string/baby_name_input_tip"
+        android:inputType="text"
+        android:padding="@dimen/size_12"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_setting_big_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/size_12">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:background="@color/text_color1"
+            android:text="@string/baby_name_appear_tip"
+            android:textSize="@dimen/text_medium" />
+
+
+        <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
+            android:id="@+id/iv_swich_big_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            app:isSelected="true"
+            app:selectDrawable="@drawable/swichon"
+            app:unselectDrawable="@drawable/swichoff"/>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_36"
+        android:background="@drawable/selector_btn_login"
+        android:text="保存"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_medium"
+        android:visibility="visible" />
+
+</LinearLayout>

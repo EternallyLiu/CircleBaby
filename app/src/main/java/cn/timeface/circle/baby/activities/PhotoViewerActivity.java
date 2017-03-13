@@ -19,9 +19,9 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.PhotosViewPagerAdapter;
-import cn.timeface.circle.baby.api.models.db.PhotoModel;
-import cn.timeface.circle.baby.managers.PhotoDataSave;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.support.managers.PhotoDataSave;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 
 
 /**

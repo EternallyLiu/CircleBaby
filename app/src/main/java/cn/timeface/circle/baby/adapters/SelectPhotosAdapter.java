@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -18,10 +19,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.db.PhotoModel;
-import cn.timeface.circle.baby.api.models.objs.PhotoGroupItem;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.objs.PhotoGroupItem;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
 
 
@@ -95,9 +96,9 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
         if (viewType == TYPE_TITLE) {
             TitleViewHolder holder = ((TitleViewHolder) viewHolder);
             holder.tvTitle.setText(item.getTitle());
-            holder.cbAllSel.setTag(R.string.tag_index, position);
+            holder.cbTitleAllSel.setTag(R.string.tag_index, position);
 
-            holder.cbAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
+            holder.cbTitleAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
         } else if (viewType == TYPE_PHOTOS) {
             PhotosViewHolder holder = ((PhotosViewHolder) viewHolder);
             List<PhotoModel> imgs = getLineImgObj(position);
@@ -111,9 +112,11 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
                     //选中状态
                     holder.ivImgs[i].setChecked(selImgs.contains(imgs.get(i)));
                     holder.ivImgs[i].setTag(R.string.tag_obj, imgs.get(i));
+                    holder.picUpload[i].setVisibility(imgs.get(i).isNeedUpload() ? View.GONE : View.VISIBLE);
                 } else {
                     holder.ivImgs[i].setVisibility(View.INVISIBLE);
                     holder.ivImgs[i].getCbSel().setTag(R.string.tag_obj, null);
+                    holder.picUpload[i].setVisibility(View.GONE);
                 }
                 holder.ivImgs[i].getCbSel().setTag(R.string.tag_ex, dataPosition);
             }
@@ -169,19 +172,21 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
     class TitleViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tv_title)
         TextView tvTitle;
-        @Bind(R.id.cb_all_sel)
-        CheckBox cbAllSel;
+        @Bind(R.id.cb_title_all_sel)
+        CheckBox cbTitleAllSel;
 
         TitleViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            cbAllSel.setOnClickListener(onCheckedAllListener);
+            cbTitleAllSel.setOnClickListener(onCheckedAllListener);
         }
     }
 
     class PhotosViewHolder extends RecyclerView.ViewHolder {
         @Bind({R.id.iv_img0, R.id.iv_img1, R.id.iv_img2, R.id.iv_img3})
         PhotoSelectImageView[] ivImgs;
+        @Bind({R.id.pic_upload_0, R.id.pic_upload_1, R.id.pic_upload_2, R.id.pic_upload_3})
+        ImageView[] picUpload;
 
         PhotosViewHolder(View view) {
             super(view);
@@ -197,13 +202,15 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
         public void onClick(View v) {
             int line = (int) v.getTag(R.string.tag_index);
             int dataIndex = getDataPosition(line);
-            if (selImgs.size() + listData.get(dataIndex).getImgList().size() > maxCount) {
-                ToastUtil.showToast("最多只能选" + maxCount + "张照片");
-                ((CheckBox) v).setChecked(false);
-                return;
+            boolean isChecked = ((CheckBox) v).isChecked();
+            if(isChecked){
+                if (selImgs.size() + listData.get(dataIndex).getImgList().size() > maxCount) {
+                    ToastUtil.showToast("最多只能选" + maxCount + "张照片");
+                    ((CheckBox) v).setChecked(false);
+                    return;
+                }
             }
 
-            boolean isChecked = ((CheckBox) v).isChecked();
             for (PhotoModel item : listData.get(dataIndex).getImgList()) {
                 if (isChecked) {
                     doSelImg(dataIndex, item);
@@ -211,7 +218,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
                     doUnSelImg(dataIndex, item);
                 }
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selImgs.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selImgs.size()));
             notifyDataSetChanged();
         }
     };
@@ -232,7 +239,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
             } else {
                 doUnSelImg(dataIndex, img);
             }
-            EventBus.getDefault().post(new PhotoSelectEvent(selImgs.size()));
+            EventBus.getDefault().post(new PhotoSelectCountEvent(selImgs.size()));
         }
     };
 

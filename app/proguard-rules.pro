@@ -114,8 +114,17 @@
 -keepclasseswithmembers class * { @com.google.gson.annotations.Expose <fields>; }
 
 # 艹,由于gson解析需要,必须keeping所有序列化和反序列化的model
--keep class cn.timeface.circle.baby.api.models.** { *; }
--keep class cn.timeface.open.api.models.** { *; }
+-keep class cn.timeface.circle.baby.support.api.models.** { *; }
+-keep class cn.timeface.circle.baby.ui.babyInfo.beans.** { *; }
+-keep class cn.timeface.circle.baby.ui.calendar.bean.** { *; }
+-keep class cn.timeface.circle.baby.ui.calendar.response.** { *; }
+-keep class cn.timeface.circle.baby.ui.growth.responses.** { *; }
+-keep class cn.timeface.circle.baby.ui.growth.beans.** { *; }
+-keep class cn.timeface.circle.baby.ui.images.beans.** { *; }
+-keep class cn.timeface.circle.baby.ui.timelines.beans.** { *; }
+
+-keep class cn.timeface.open.api.model.** { *; }
+-keep class cn.timeface.open.api.bean.** { *; }
 
 
 # Parcelable
@@ -276,7 +285,7 @@
 }
 -dontwarn com.bumptech.glide.**
 -keepnames class com.bumptech.glide.Glide
--keep class cn.timeface.circle.baby.utils.glide.TFGlideModule
+-keep class TFGlideModule
 # LeakCanary
 -keep class org.eclipse.mat.** { *; }
 -keep class com.squareup.leakcanary.** { *; }
@@ -284,7 +293,7 @@
 # MiPush
 -keep class com.xiaomi.** { *; }
 -keep class com.google.protobuf.micro.** { *; }
--keep class cn.timeface.circle.baby.push.MiPushMessageReceiver
+-keep class MiPushMessageReceiver
 
 #mp4 merge
 -keep class com.coremedia.** { *; }

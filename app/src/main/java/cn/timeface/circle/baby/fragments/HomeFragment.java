@@ -4,21 +4,28 @@ package cn.timeface.circle.baby.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,14 +41,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alipay.sdk.auth.APAuthInfo;
 import com.github.rayboot.widget.ratioview.RatioImageView;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -54,36 +64,56 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.MileStoneActivity;
 import cn.timeface.circle.baby.activities.PublishActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
-import cn.timeface.circle.baby.adapters.TimeLineGroupAdapter;
-import cn.timeface.circle.baby.api.models.base.BaseResponse;
-import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
-import cn.timeface.circle.baby.api.models.objs.CommentObj;
-import cn.timeface.circle.baby.api.models.objs.RecommendObj;
-import cn.timeface.circle.baby.api.models.objs.TimeLineGroupObj;
-import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
-import cn.timeface.circle.baby.api.models.responses.BabyInfoResponse;
-import cn.timeface.circle.baby.events.ActionCallBackEvent;
-import cn.timeface.circle.baby.events.CommentSubmit;
+import cn.timeface.circle.baby.constants.CountlyEventHelper;
+import cn.timeface.circle.baby.dialogs.PublishDialog;
+import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
-import cn.timeface.circle.baby.events.IconCommentClickEvent;
+import cn.timeface.circle.baby.events.PicSaveCompleteEvent;
 import cn.timeface.circle.baby.events.StartUploadEvent;
-import cn.timeface.circle.baby.events.UnreadMsgEvent;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
+import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.managers.services.UploadService;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.ptr.IPTRRecyclerListener;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.InputMethodRelative;
+import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.db.PhotoModel_Table;
+import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
+import cn.timeface.circle.baby.support.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.RecommendObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.api.models.responses.BabyInfoResponse;
+import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
+import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.guides.GuideHelper;
+import cn.timeface.circle.baby.ui.guides.GuideUtils;
+import cn.timeface.circle.baby.ui.kiths.KithFragment;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
+import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
+import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.PhotoCameraRequest;
+import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
+import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
+import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
+import cn.timeface.circle.baby.ui.timelines.views.TimerImageView;
 import cn.timeface.circle.baby.views.TFStateView;
+import cn.timeface.common.utils.DeviceUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener {
+public class HomeFragment extends BaseFragment implements View.OnClickListener, BaseAdapter.LoadDataFinish, EmptyDataView.EmptyCallBack {
     private static final String ARG_PARAM1 = "param1";
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -123,30 +153,28 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     AppBarLayout appbar;
     @Bind(R.id.tv_progress)
     TextView mTvprogress;
+    EmptyDataView emptyView;
 
     private boolean rlCommentShow;
     private int currentPage = 1;
-    private String mParam1;
-    private TimeLineGroupAdapter adapter;
+    private TimeLineGroupListAdapter adapter;
     public BabyInfoResponse babyInfoResponse;
-    private IPTRRecyclerListener ptrListener;
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
     private boolean enableAnimation = true;
     private boolean bottomMenuShow = true;
 
-    private List<TimeLineGroupObj> tempList;
     AnimatorSet animatorSet = new AnimatorSet();
     private int commentId = 0;
     private int replacePosition;
     private int listPos;
     private TimeLineObj timeLineObj;
-    private InputMethodRelative rlComment;
     private EditText etCommment;
     private Button btnSend;
     private AlertDialog dialog;
-    private ArrayList<TimeLineGroupObj> lists;
     private TextView tvProgress;
     private AlertDialog progressDialog;
+    private View picChangeView;
+    private static final int PAGE_SIZE = 30;
 
     public HomeFragment() {
     }
@@ -163,24 +191,28 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            String mParam1 = getArguments().getString(ARG_PARAM1);
         }
         EventBus.getDefault().register(this);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        toolbar.setOnClickListener(this);
         setupPTR();
         initData();
 //        ((TimeLineDetailActivity)TimeLineDetailActivity.activity).setReplaceDataListener(this);
-        adapter = new TimeLineGroupAdapter(getActivity(), new ArrayList<>());
+        adapter = new TimeLineGroupListAdapter(getActivity());
+        adapter.setLoadDataFinish(this);
         contentRecyclerView.setAdapter(adapter);
 
-        tfStateView.setOnRetryListener(() -> reqData(1));
+        tfStateView.setOnRetryListener(() -> {
+            currentPage = 1;
+            reqData(currentPage);
+        });
         tfStateView.loading();
 
         tvAlbum.setOnClickListener(this);
@@ -188,11 +220,13 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         tvRelative.setOnClickListener(this);
         tvChangebaby.setOnClickListener(this);
         ivMessage.setOnClickListener(this);
+        ivMessage.setVisibility(View.GONE);
         ivAvatar.setOnClickListener(this);
 
-        reqData(1);
+        currentPage = 1;
+        reqData(currentPage);
 
-        initMsg();
+//        initMsg();
         if (FastData.getBabyId() != 0) {
             updateLoginInfo();
         }
@@ -200,35 +234,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void updateLoginInfo() {
-        apiService.updateLoginInfo()
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
-                }, throwable -> {
-                    Log.e(TAG, "updateLoginInfo:");
-                });
+        apiService.updateLoginInfo().compose(SchedulersCompat.applyIoSchedulers()).subscribe(response -> {
+        }, throwable -> {
+            Log.e(TAG, "updateLoginInfo:");
+        });
     }
 
-    private void initMsg() {
-        apiService.noReadMsg()
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(unReadMsgResponse -> {
-                    if (unReadMsgResponse.success()) {
-                        if (unReadMsgResponse.getUnreadMessageCount() > 0) {
-                            ivDot.setVisibility(View.VISIBLE);
-                        } else {
-                            ivDot.setVisibility(View.GONE);
-                        }
-                    }
-                }, error -> {
-                    Log.e(TAG, "noReadMsg:");
-                    error.printStackTrace();
-                });
-    }
 
     //    @TargetApi(Build.VERSION_CODES.M)
     private void setupPTR() {
         animatorSet.setInterpolator(new DecelerateInterpolator());
-        animatorSet.setDuration(400);
+        animatorSet.setDuration(200);
         /*contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -262,7 +278,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         });*/
 
 
-        ptrListener = new IPTRRecyclerListener() {
+        IPTRRecyclerListener ptrListener = new IPTRRecyclerListener() {
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
                 currentPage = 1;
@@ -271,7 +287,10 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
 
             @Override
             public void onTFPullUpToRefresh(View refreshView) {
-                reqData(++currentPage);
+                if (currentPage <= 1) currentPage = 1;
+                if (currentPage != 1 && adapter.getRealItemSize() < PAGE_SIZE * currentPage) {
+                    reqData(currentPage);
+                } else reqData(++currentPage);
             }
 
             @Override
@@ -279,12 +298,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 appbar.setExpanded(false);
                 if (enableAnimation && bottomMenuShow) {
                     bottomMenuShow = false;
-                    ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
-                            "translationY",
-                            0,
-                            ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
+                    ObjectAnimator anim = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(), "translationY", 0, ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight());
                     animatorSet.playTogether(anim);
                     animatorSet.start();
+                    if (getActivity() instanceof TabMainActivity) {
+                        ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.GONE);
+                    }
                 }
             }
 
@@ -293,83 +312,82 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 appbar.setExpanded(true);
                 if (enableAnimation && !bottomMenuShow) {
                     bottomMenuShow = true;
-                    Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
-                            "translationY",
-                            ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
-                            0);
+                    Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(), "translationY", ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(), 0);
                     animatorSet.playTogether(anim3);
                     animatorSet.start();
+                    if (getActivity() instanceof TabMainActivity) {
+                        ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+                    }
                 }
             }
         };
 
-        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), contentRecyclerView, swipeRefreshLayout)
-                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FROM_END)
-                .tfPtrListener(ptrListener);
-        contentRecyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).color(getResources().getColor(R.color.bg30)).sizeResId(R.dimen.view_space_normal).build());
-
+        tfptrListViewHelper = new TFPTRRecyclerViewHelper(
+                getActivity(),
+                contentRecyclerView,
+                swipeRefreshLayout).setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH).tfPtrListener(ptrListener);
+        contentRecyclerView.addItemDecoration(
+                new HorizontalDividerItemDecoration.Builder(getActivity())
+                        .color(getResources().getColor(R.color.bg30))
+                        .sizeResId(R.dimen.view_space_normal).build());
+        contentRecyclerView.getItemAnimator().setChangeDuration(0);
     }
+
 
     private void reqData(int page) {
-        apiService.timeline(page, 30)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(timelineResponse -> {
-                    if (tfStateView != null) {
-                        tfStateView.finish();
-                    }
-                    tfptrListViewHelper.finishTFPTRRefresh();
-
-                    if (Remember.getBoolean("showtimelinehead", true) && currentPage == 1 && adapter.getHeaderCount() == 0 && timelineResponse.getRecommendCard() != null) {
-                        if (!TextUtils.isEmpty(timelineResponse.getRecommendCard().getBgPicUrl())) {
-                            adapter.addHeader(initHeadView(timelineResponse.getRecommendCard()));
-                        }
-                    }
-                    if (timelineResponse.getCurrentPage() == timelineResponse.getTotalPage()) {
-                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.DISABLED);
-                    }
-                    tempList = timelineResponse.getDataList();
-                    setDataList(timelineResponse.getDataList());
-                }, error -> {
-                    if (tfStateView != null) {
-                        tfStateView.showException(error);
-                    }
-                    Log.e(TAG, "timeline:");
-                    tfptrListViewHelper.finishTFPTRRefresh();
-                    error.printStackTrace();
-                });
+       addSubscription( apiService.timeline(page, PAGE_SIZE).map(timelineResponse -> timelineResponse.getDataList()).map(timeLineGroupObjs -> {
+           ArrayList<BaseObj> list = new ArrayList<>();
+           for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
+               TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+               if (!adapter.containObj(bean) || currentPage == 1) list.add(bean);
+               for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                   if (!adapter.containObj(timeLineObj) || currentPage == 1) list.add(timeLineObj);
+               }
+           }
+           if (currentPage == 1) adapter.addList(true, list);
+           else adapter.addList(list);
+           return list;
+       }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
+           if (tfStateView != null) {
+               tfStateView.finish();
+           }
+           tfptrListViewHelper.finishTFPTRRefresh();
+       }, throwable -> {
+           LogUtil.showError(throwable);
+           if (tfStateView != null) {
+               tfStateView.showException(throwable);
+           }
+           tfptrListViewHelper.finishTFPTRRefresh();
+           adapter.error();
+       }));
     }
 
-    private void setDataList(List<TimeLineGroupObj> dataList) {
-        lists = new ArrayList<>();
-        for (TimeLineGroupObj obj : dataList) {
-            if (obj.getTimeLineList().size() > 0) {
-                lists.add(obj);
-            }
-        }
-        tempList = lists;
-//        if(lists.size()==0){
-//            showNoDataView(true);
-//        }else{
-//            showNoDataView(false);
-//        }
-        if (lists.size() < 3) {
-            if (enableAnimation && !bottomMenuShow) {
-                bottomMenuShow = true;
-                Animator anim3 = ObjectAnimator.ofFloat(((TabMainActivity) getActivity()).getFootMenuView(),
-                        "translationY",
-                        ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
-                        0);
-                animatorSet.playTogether(anim3);
-                animatorSet.start();
-            }
-        }
-        if (currentPage == 1) {
-            adapter.setListData(lists);
-        } else {
-            adapter.getListData().addAll(lists);
-        }
-        adapter.notifyDataSetChanged();
+    private void reqData(int page, int pageSize) {
+       addSubscription( apiService.timeline(page, pageSize).map(timelineResponse -> timelineResponse.getDataList()).map(timeLineGroupObjs -> {
+           ArrayList<BaseObj> list = new ArrayList<>();
+           for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
+               TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+               list.add(bean);
+               for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                   list.add(timeLineObj);
+               }
+           }
+           adapter.addList(true, list);
+           return list;
+       }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
+           if (tfStateView != null) {
+               tfStateView.finish();
+           }
+           tfptrListViewHelper.finishTFPTRRefresh();
+       }, throwable -> {
+           if (tfStateView != null) {
+               tfStateView.showException(throwable);
+           }
+           tfptrListViewHelper.finishTFPTRRefresh();
+           adapter.error();
+       }));
     }
+
 
     @Override
     public void onResume() {
@@ -378,7 +396,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initData() {
-        tvName.setText(FastData.getBabyName());
+        tvName.setText(FastData.getBabyObj().getNickName());
         tvAge.setText(FastData.getBabyAge());
         GlideUtil.displayImage(FastData.getBabyAvatar(), ivAvatar);
     }
@@ -391,9 +409,24 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         EventBus.getDefault().unregister(this);
     }
 
+    private static long clickToolBarLastTime = 0;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.close:
+                adapter.removeHeaaer(0);
+                break;
+            case R.id.upload:
+                adapter.removeHeader(picChangeView);
+                adapter.notifyDataSetChanged();
+                PublishActivity.open(getActivity(), PublishActivity.PHOTO);
+                break;
+            case R.id.toolbar:
+                if (System.currentTimeMillis() - clickToolBarLastTime <= 500 && adapter.getRealItemSize() > 0)
+                    contentRecyclerView.scrollToPosition(0);
+                clickToolBarLastTime = System.currentTimeMillis();
+                break;
             case R.id.tv_changebaby:
                 ChangeBabyActivity.open(getActivity());
                 break;
@@ -401,7 +434,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 FragmentBridgeActivity.open(getActivity(), "MessageFragment");
                 break;
             case R.id.tv_relative:
-                FragmentBridgeActivity.open(getActivity(), "FamilyMemberFragment");
+                FragmentBridgeActivity.open(getActivity(), KithFragment.class.getSimpleName());
+                CountlyEventHelper.getInstance().inviteEvent(FastData.getUserId());
                 break;
             case R.id.iv_avatar:
                 BabyInfoActivity.open(getActivity());
@@ -413,39 +447,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
                 CloudAlbumActivity.open(getActivity());
                 break;
             case R.id.btn_send:
-                String s = etCommment.getText().toString();
-                if (TextUtils.isEmpty(s)) {
-                    ToastUtil.showToast("请填写评论内容");
-                    return;
-                }
-                btnSend.setClickable(false);
-                Remember.putString("sendComment", s);
-                apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), timeLineObj.getTimeId(), commentId)
-                        .filter(new Func1<BaseResponse, Boolean>() {
-                            @Override
-                            public Boolean call(BaseResponse response) {
-                                return response.success();
-                            }
-                        })
-                        .flatMap(baseResponse -> apiService.queryBabyTimeDetail(timeLineObj.getTimeId()))
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(timeDetailResponse -> {
-                            if (timeDetailResponse.success()) {
-                                Remember.putString("sendComment", "");
-                                dialog.dismiss();
-                                timeLineObj = timeDetailResponse.getTimeInfo();
-                                hideKeyboard();
-//                                ToastUtil.showToast(timeDetailResponse.getInfo());
-                                if (replacePosition >= 0 && listPos >= 0) {
-                                    replaceList(replacePosition, listPos, timeLineObj);
-                                }
-                            }
-                            if (btnSend != null)
-                                btnSend.setClickable(false);
-                        }, error -> {
-                            Log.e(TAG, "comment");
-                            error.printStackTrace();
-                        });
                 break;
         }
     }
@@ -502,139 +503,60 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
         return view;
     }
 
-    @Subscribe
-    public void onEvent(CommentSubmit commentSubmit) {
-
-        replaceList(commentSubmit.getReplacePosition(), commentSubmit.getListPos(), commentSubmit.getTimeLineObj());
-    }
 
     @Subscribe
     public void onEvent(HomeRefreshEvent event) {
-        reqData(1);
-    }
-
-    @Subscribe
-    public void onEvent(UnreadMsgEvent event) {
-        initMsg();
-    }
-
-    public void replaceList(int replacePosition, int listPos, TimeLineObj timeLineObj) {
-
-        if (tempList.size() > replacePosition) {
-            if (tempList.get(replacePosition).getTimeLineList().size() > listPos) {
-                tempList.get(replacePosition).getTimeLineList().remove(listPos);
-                tempList.get(replacePosition).getTimeLineList().add(listPos, timeLineObj);
-            }
+        if (event.getTimeId() > 0) timeLineUpdate(event.getTimeId());
+        else {
+            initData();
+            currentPage = 1;
+            reqData(currentPage);
         }
-        adapter.setListData(tempList);
-        adapter.notifyDataSetChanged();
     }
+
 
     private void showNoDataView(boolean showNoData) {
         llNoData.setVisibility(showNoData ? View.VISIBLE : View.GONE);
         contentRecyclerView.setVisibility(showNoData ? View.GONE : View.VISIBLE);
     }
 
-    @Subscribe
-    public void onEvent(IconCommentClickEvent event) {
-        replacePosition = event.getReplacePosition();
-        listPos = event.getListPos();
-        timeLineObj = event.getTimeLineObj();
-        commentId = 0;
-        editComment();
-        etCommment.requestFocus();
-        etCommment.setHint("说点什么吧");
-    }
 
-    private void editComment() {
-        dialog = new AlertDialog.Builder(getActivity()).setView(initCommentEdit()).show();
-        dialog.setCanceledOnTouchOutside(true);
-        Window window = dialog.getWindow();
-        WindowManager m = window.getWindowManager();
-        Display d = m.getDefaultDisplay();
-        WindowManager.LayoutParams p = window.getAttributes();
-
-        p.width = d.getWidth();
-        window.setAttributes(p);
-        window.setGravity(Gravity.BOTTOM);
-        window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
-        window.setWindowAnimations(R.style.bottom_dialog_animation);
-    }
-
-    private View initCommentEdit() {
-        View view = View.inflate(getActivity(), R.layout.view_send_comment, null);
-        rlComment = (InputMethodRelative) view.findViewById(R.id.rl_comment);
-        etCommment = (EditText) view.findViewById(R.id.et_commment);
-        btnSend = (Button) view.findViewById(R.id.btn_send);
-
-        String sendComment = Remember.getString("sendComment", "");
-        if (!TextUtils.isEmpty(sendComment)) {
-            etCommment.setText(sendComment);
-        }
-        etCommment.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String s1 = s.toString();
-                Remember.putString("sendComment", s1);
-            }
-        });
-        btnSend.setOnClickListener(this);
-        return view;
-    }
-
-    @Subscribe
-    public void onEvent(ActionCallBackEvent event) {
-        CommentObj comment = event.getComment();
-        timeLineObj = event.getTimeLineObj();
-        replacePosition = event.getReplacePosition();
-        listPos = event.getListPos();
-        commentId = comment.getCommentId();
-        editComment();
-        etCommment.requestFocus();
-        etCommment.setHint("回复 " + comment.getUserInfo().getRelationName() + " ：");
-    }
-
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(StartUploadEvent event) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog();
-                mTvprogress.setText("上传中");
-                mTvprogress.setVisibility(View.VISIBLE);
-            }
-        });
+//        progressDialog();
+        mTvprogress.setText("上传中");
+        mTvprogress.setVisibility(View.VISIBLE);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(UploadEvent event) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                int progress = event.getProgress();
-                mTvprogress.setText("上传中 " + progress+"%");
-                if (tvProgress != null)
-                    tvProgress.setText(progress + "%");
-                if (progress == 100) {
-                    mTvprogress.setVisibility(View.GONE);
-                    if (progressDialog != null)
-                        progressDialog.dismiss();
-                    reqData(1);
-                    ToastUtil.showToast("发布成功");
-                    UploadService.stop(getContext());
-                }
+        int progress = event.getProgress();
+        mTvprogress.setText("上传中 " + progress + "%");
+        if (tvProgress != null) tvProgress.setText(progress + "%");
+        if (progress == 100) {
+            mTvprogress.setVisibility(View.GONE);
+            if (progressDialog != null) progressDialog.dismiss();
+            if (event.isComplete() && event.getTimeId() > 0) timeLineUpdate(event.getTimeId());
+            else {
+                currentPage = 1;
+                reqData(currentPage);
             }
-        });
+            ToastUtil.showToast("发布成功");
+        }
+        if (event.isComplete()) {
+            mTvprogress.setVisibility(View.GONE);
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+            if (event.isComplete() && event.getTimeId() > 0) {
+                timeLineUpdate(event.getTimeId());
+            } else {
+                currentPage = 1;
+                reqData(currentPage);
+            }
+            ToastUtil.showToast("发布成功");
+        }
+
 
     }
 
@@ -663,6 +585,101 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     /**
+     * 回调处理mediaObj对象发生变更的处理结果
+     *
+     * @param mediaUpdateEvent
+     */
+    @Subscribe
+    public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
+        if (mediaUpdateEvent.getAllDetailsListPosition() < 0) return;
+        TimeLineObj timeLineObj = adapter.getItem(mediaUpdateEvent.getAllDetailsListPosition());
+        boolean flag = timeLineObj.getMediaList().contains(mediaUpdateEvent.getMediaObj());
+        if (flag) {
+            int index = timeLineObj.getMediaList().indexOf(mediaUpdateEvent.getMediaObj());
+            timeLineObj.getMediaList().get(index).setTips(mediaUpdateEvent.getMediaObj().getTips());
+            timeLineObj.getMediaList().get(index).setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+            timeLineObj.getMediaList().get(index).setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
+        }
+    }
+
+    /**
+     * 处理相册图片发生变化
+     *
+     * @param list
+     */
+    private void initPicChange(List<String> list) {
+        if (list != null && list.size() > 0) {
+            if (picChangeView == null)
+                picChangeView = View.inflate(getActivity(), R.layout.home_header_photo_added, null);
+            TimerImageView imageView = (TimerImageView) picChangeView.findViewById(R.id.pic_array);
+            TextView addCount = (TextView) picChangeView.findViewById(R.id.pic_add_count);
+            TextView upload = (TextView) picChangeView.findViewById(R.id.upload);
+            ImageView imageView1 = (ImageView) picChangeView.findViewById(R.id.close);
+            imageView1.setOnClickListener(this);
+            String count = list.size() + "";
+            String content = String.format("手机新增了 %s 张照片！", count);
+            SpannableStringBuilder builder = new SpannableStringBuilder();
+            builder.append(content);
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#F59650"));
+            builder.setSpan(colorSpan, content.indexOf(count), content.indexOf(count) + count.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            addCount.setText(builder);
+            upload.setOnClickListener(this);
+            imageView.setList(list);
+            adapter.removeHeader(picChangeView);
+            adapter.addHeader(0, picChangeView);
+            adapter.notifyDataSetChanged();
+            contentRecyclerView.scrollToPosition(0);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(PicSaveCompleteEvent pic) {
+        addSubscription(PhotoModel.getAllPhotoId().flatMap(s -> apiService.mediaBackup(Uri.encode(s))).map(mediaIdResponse -> {
+            ArrayList<String> arrayList = new ArrayList<String>();
+            if (mediaIdResponse.success()) {
+                List<PhotoModel> models = SQLite.select().from(PhotoModel.class).where(PhotoModel_Table.photo_id.in(mediaIdResponse.getDataList())).queryList();
+                for (int i = 0; i < models.size(); i++) {
+                    arrayList.add(models.get(i).getLocalPath());
+                }
+            }
+            return arrayList;
+        }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> initPicChange(list), throwable -> LogUtil.showError(throwable)));
+        addSubscription(apiService.localList(FastData.getUserId()).flatMap(mediaIdResponse -> PhotoModel.findPhotos(mediaIdResponse.getDataList())).filter(photoModel -> photoModel != null).doOnNext(photoModel -> photoModel.setNeedUpload(false)).doOnNext(photoModel -> photoModel.update()).toList().compose(SchedulersCompat.applyIoSchedulers()).subscribe(photoModels -> LogUtil.showLog("uploaded size==" + photoModels.size()), throwable -> LogUtil.showError(throwable)));
+    }
+
+    /**
+     * 当前需要滑动的时光id
+     */
+    private int currentTimeId = 0;
+
+    /**
+     * 处理发布或者编辑、删除操作之后首页数据响应
+     *
+     * @param timeId
+     */
+    private void timeLineUpdate(int timeId) {
+        addSubscription(apiService.timeOfpage(PAGE_SIZE, timeId).compose(SchedulersCompat.applyIoSchedulers()).subscribe(response -> {
+            if (response.success()) {
+                currentTimeId = timeId;
+                currentPage = 1;
+                reqData(currentPage, response.getPageNo() * PAGE_SIZE);
+            }
+        }));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(TimelineEditEvent event) {
+        if (event instanceof DeleteTimeLineEvent) {
+            adapter.deleteTimeLine(event.getTimeId());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(TimeLineObj timeLineObj) {
+        adapter.updateItem(timeLineObj);
+    }
+
+    /**
      * 隐藏软键盘
      */
     private void hideKeyboard() {
@@ -671,5 +688,150 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener {
             if (getActivity().getCurrentFocus() != null)
                 manager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    @Subscribe
+    public void onEvent(TimeEditPhotoDeleteEvent event) {
+
+        TimeLineObj currentTimeLineObj = adapter.getItem(event.getAllDetailsListPosition());
+        if (currentTimeLineObj != null)
+            Observable.defer(() -> Observable.just(event)).map(event1 -> {
+                if (event.getMediaObj() != null) return event.getMediaObj();
+                else return new MediaObj(event.getUrl(), event.getUrl());
+            }).filter(mediaObj -> currentTimeLineObj.getMediaList().contains(mediaObj)).map(mediaObj -> currentTimeLineObj.getMediaList().get(currentTimeLineObj.getMediaList().indexOf(mediaObj))).flatMap(mediaObj -> {
+                event.setMediaObj(mediaObj);
+                return apiService.delTimeOfMedia(mediaObj.getId(), currentTimeLineObj.getTimeId());
+            }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(baseResponse -> {
+                if (baseResponse.success()) {
+                    currentTimeLineObj.getMediaList().remove(event.getMediaObj());
+                    adapter.updateItem(currentTimeLineObj);
+                }
+            }, throwable -> LogUtil.showError(throwable));
+    }
+
+    private GuideHelper guideHelper = null;
+    private LayoutInflater inflater = null;
+
+    /**
+     * 获取切换宝宝的新手指引视图
+     *
+     * @return
+     */
+    private GuideHelper.TipData getChangeBaby() {
+        View view = getLayoutInflater().inflate(R.layout.guide_home_change_baby, null);
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        GuideHelper.TipData tipdate = new GuideHelper.TipData(view, Gravity.CENTER | Gravity.BOTTOM, tvChangebaby);
+        tipdate.setLocation(Gravity.CENTER | Gravity.BOTTOM, DeviceUtil.dpToPx(getResources(), 30), 0);
+        return tipdate;
+    }
+
+    /**
+     * 获取发送入口的新手指引
+     *
+     * @return
+     */
+    private GuideHelper.TipData getSendTimeTip() {
+        if (getActivity() instanceof TabMainActivity) {
+            ((TabMainActivity) getActivity()).getSendTimeface().setVisibility(View.VISIBLE);
+        }
+        View view = getLayoutInflater().inflate(R.layout.guide_home_send_tip, null);
+        view.findViewById(R.id.next).setOnClickListener(v -> {
+            CountlyEventHelper.getInstance().publishEvent(FastData.getUserId());
+            new PublishDialog(getActivity()).show();
+            guideHelper.nextPage();
+        });
+        View v = ((TabMainActivity) getActivity()).getSendTimeface();
+        GuideHelper.TipData sendTip = new GuideHelper.TipData(view, Gravity.CENTER_VERTICAL | Gravity.LEFT, v);
+        sendTip.setLocation(Gravity.CENTER_VERTICAL | Gravity.LEFT, 0, DeviceUtil.dpToPx(getResources(), 40));
+        return sendTip;
+    }
+
+    public LayoutInflater getLayoutInflater() {
+        if (inflater == null) inflater = LayoutInflater.from(getActivity());
+        return inflater;
+    }
+
+    private GuideHelper.TipData initCalendarTip() {
+        if (adapter.getTipView() == null) return null;
+        View view = getLayoutInflater().inflate(R.layout.guide_home_calendar_tip, null);
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        GuideHelper.TipData calendarTip = new GuideHelper.TipData(view, Gravity.CENTER_VERTICAL | Gravity.RIGHT, adapter.getTipView());
+        calendarTip.setLocation(Gravity.CENTER_VERTICAL | Gravity.RIGHT, 0, (int) -adapter.getTipView().getY());
+        return calendarTip;
+    }
+
+    private void showGuide() {
+        if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
+            return;
+        }
+        Observable.defer(() -> Observable.just(getChangeBaby(), initCalendarTip(), getSendTimeTip())).filter(tipData -> tipData != null).toList().doOnNext(tipDatas -> {
+            if (guideHelper == null) guideHelper = new GuideHelper(getActivity());
+            if (tipDatas != null && tipDatas.size() > 0) {
+                for (int i = 0; i < tipDatas.size(); i++) {
+                    guideHelper.addPage(tipDatas.get(i));
+                }
+            }
+        }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(tipDatas -> guideHelper.show(false), throwable -> LogUtil.showError(throwable));
+    }
+
+    @Override
+    public void loadfinish(int code) {
+        tfptrListViewHelper.finishTFPTRRefresh();
+        if (emptyView != null) adapter.removeHeader(emptyView);
+        if (code == 19999) showGuide();
+        if (code == BaseAdapter.UPDATE_DATA_ADD_LIST_CENTER) {
+            if (currentTimeId > 0)
+                contentRecyclerView.scrollToPosition(adapter.findPosition(currentTimeId));
+            currentTimeId = 0;
+        } else if (code != BaseAdapter.DELETE_ALL && adapter.getRealItemSize() <= 0) {
+            if (tfStateView == null || tfStateView.getVisibility() != View.VISIBLE) {
+                Observable.defer(() -> {
+                    BabyObj babyObj = FastData.getBabyObj();
+                    StringBuilder sb = new StringBuilder();
+                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                    sb.append(String.format("%s 已经 %s 了", babyObj.getNickName(), babyObj.getAge()));
+                    builder.append(String.format("%s 已经 %s 了", babyObj.getNickName(), babyObj.getAge()));
+                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getAge()), sb.lastIndexOf(babyObj.getAge()) + babyObj.getNickName().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getAge()) + babyObj.getAge().length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+                    sb.append("\n马上导入宝宝的照片吧");
+                    builder.append("\n马上导入宝宝的照片吧");
+//                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.lastIndexOf(babyObj.getNickName()), sb.lastIndexOf(babyObj.getNickName()) + babyObj.getNickName().length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+
+//                    builder.setSpan(SpannableUtils.getTextSize(getActivity(), R.dimen.text_medium), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    builder.setSpan(SpannableUtils.getTextColor(getActivity(), R.color.sea_buckthorn), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+//                    builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), sb.indexOf(relativeName), sb.indexOf(relativeName) + relativeName.length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                    return Observable.just(builder);
+                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(spannableStringBuilder -> {
+                    if (emptyView == null) emptyView = new EmptyDataView(getActivity());
+                    ViewGroup.LayoutParams layoutParams = emptyView.getLayoutParams();
+                    if (layoutParams == null)
+                        layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    emptyView.setPadding(0, DeviceUtil.dpToPx(getResources(), 100), 0, 0);
+                    emptyView.setLayoutParams(layoutParams);
+                    emptyView.getErrorTitle().setText(spannableStringBuilder);
+                    emptyView.getEmptyIcon().setVisibility(View.GONE);
+                    emptyView.setRetry(true);
+                    emptyView.setErrorRetryText("导入手机照片");
+                    emptyView.setEmptyCallBack(this);
+                    emptyView.setVisibility(View.VISIBLE);
+                    adapter.addFooter(emptyView);
+                    adapter.notifyDataSetChanged();
+                }, throwable -> LogUtil.showError(throwable));
+            }
+        }
+    }
+
+    public boolean isBottomMenuShow() {
+        return bottomMenuShow;
+    }
+
+    @Override
+    public void retry() {
+        PublishActivity.open(getActivity(), PublishActivity.PHOTO);
     }
 }

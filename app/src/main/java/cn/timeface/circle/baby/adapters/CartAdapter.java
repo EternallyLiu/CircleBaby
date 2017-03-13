@@ -21,8 +21,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.api.models.PrintCartItem;
 import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.support.api.models.PrintCartItem;
 
 /**
  * Created by YW.SUN on 2015/5/17.
@@ -53,6 +53,7 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
                     item.getPrintList(),
                     listData.indexOf(item),
                     item);
+            adapter.setOnCartNumberChangeListener(onCartNumberChangeListener);
             adapter.setPropertyState(stateMap.get(adapter.getBookId()) == null
                     ? CartPrintPropertyAdapter.PROPERTY_STATE_NOMAL
                     : stateMap.get(adapter.getBookId()));
@@ -62,7 +63,7 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
 
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_print_cart, null);
+        View view = mLayoutInflater.inflate(R.layout.item_print_cart, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -131,6 +132,12 @@ public class CartAdapter extends BaseRecyclerAdapter<PrintCartItem> {
 
     public CartPrintPropertyAdapter getPropertyAdapter(int position) {
         return adapterList.get(position);
+    }
+
+    private CartPrintPropertyAdapter.OnCartNumberChangeListener onCartNumberChangeListener;
+
+    public void setOnCartNumberChangeListener(CartPrintPropertyAdapter.OnCartNumberChangeListener onCartNumberChangeListener) {
+        this.onCartNumberChangeListener = onCartNumberChangeListener;
     }
 
     /**

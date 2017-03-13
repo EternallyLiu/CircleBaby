@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/size_120"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/size_4"
+    android:paddingLeft="@dimen/size_16"
+    android:paddingTop="@dimen/size_4">
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="@dimen/size_36"
+        android:layout_height="@dimen/size_36"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/size_12"
+        android:scaleType="fitCenter"
+        android:src="@drawable/dialog_close"
+        android:visibility="visible" />
+
+    <cn.timeface.circle.baby.ui.timelines.views.TimerImageView
+        android:id="@+id/pic_array"
+        android:layout_width="@dimen/size_72"
+        android:layout_height="@dimen/size_72"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:layout_width="@dimen/size_24"
+        android:layout_height="@dimen/size_24"
+        android:layout_alignBottom="@+id/pic_array"
+        android:layout_alignRight="@+id/pic_array"
+        android:padding="@dimen/size_4"
+        android:scaleType="fitCenter"
+        android:src="@drawable/home_pic_change_icon" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/pic_array"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/size_4">
+
+        <TextView
+            android:id="@+id/pic_add_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_10"
+            android:layout_marginLeft="@dimen/size_6"
+            android:text="手机新增了2张图片"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/size_6"
+            android:layout_toRightOf="@+id/pic_array"
+            android:background="@drawable/selector_btn_login"
+            android:paddingBottom="@dimen/size_4"
+            android:paddingLeft="@dimen/size_12"
+            android:paddingRight="@dimen/size_12"
+            android:paddingTop="@dimen/size_4"
+            android:text="立即上传"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_medium" />
+    </LinearLayout>
+
+</RelativeLayout>

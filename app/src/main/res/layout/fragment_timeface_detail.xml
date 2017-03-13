@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color2">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/head" />
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_botton"
+        android:layout_below="@+id/toolbar">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/content_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <cn.timeface.circle.baby.ui.timelines.views.EmptyDataView
+        android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_bottom"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/back_up"
+        android:layout_width="@dimen/size_48"
+        android:layout_height="@dimen/size_48"
+        android:layout_alignBottom="@+id/swipe_refresh"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        android:scaleType="fitCenter"
+        android:src="@drawable/back_up" />
+
+    <RelativeLayout
+        android:id="@+id/rl_botton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/size_6">
+
+        <EditText
+            android:id="@+id/et_commment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_6"
+            android:layout_toLeftOf="@+id/add_like"
+            android:background="@drawable/shape_milestone_bg"
+            android:gravity="center_vertical"
+            android:hint="我也说一句"
+            android:imeOptions="actionSend"
+            android:padding="@dimen/view_space_normal"
+            android:singleLine="true"
+            android:textSize="@dimen/text_normal" />
+
+        <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
+            android:id="@+id/add_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/add_comment"
+            android:padding="@dimen/size_4"
+            android:scaleType="fitCenter"
+            app:selectDrawable="@drawable/time_line_cool"
+            app:unselectDrawable="@drawable/time_line_cool_no" />
+
+        <ImageView
+            android:id="@+id/add_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/size_4"
+            android:scaleType="fitCenter"
+            android:src="@drawable/timeline_comment" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -32,35 +32,41 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.Milestone;
-import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
-import cn.timeface.circle.baby.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
-import cn.timeface.circle.baby.events.LogoutEvent;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.TimelineEditEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.oss.OSSManager;
-import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.views.NoScrollGridView;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.Milestone;
+import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.oss.OSSManager;
+import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
+import rx.Observable;
 
 public class TimeLineEditActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
 
     protected final int PHOTO_COUNT_MAX = 100;
+
+    public static final String TIME_FORMAT = "yyyy-MM-dd";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -86,6 +92,10 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     TextView tvVideotime;
     @Bind(R.id.ll_video)
     LinearLayout llVideo;
+    @Bind(R.id.tv_location)
+    TextView tvLocation;
+    @Bind(R.id.rl_location)
+    RelativeLayout rlLocation;
     private PhotoGridAdapter adapter;
     private List<String> imageUrls = new ArrayList<>();
     private final int PICTURE = 0;
@@ -94,13 +104,15 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     private Milestone milestone;
     private List<ImgObj> selImages = new ArrayList<>();
     private TimeLineObj timelimeobj;
-    private List<MediaObj> mediaList;
+    private List<MediaObj> mediaList = new ArrayList<>(0);
     private int milestoneId;
     private String time;
     private List<String> urls = new ArrayList<>();
     ;
     private ArrayList<ImgObj> imgObjs = new ArrayList<>();
     private String time_shot;
+
+    private int allDetailsListPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,13 +121,14 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         initView();
+        rlLocation.setOnClickListener(this);
+        initLocation();
     }
 
     private void initView() {
         timelimeobj = getIntent().getParcelableExtra("timelimeobj");
-        mediaList = timelimeobj.getMediaList();
+        allDetailsListPosition = getIntent().getIntExtra("allDetailsListPosition", -1);
         milestoneId = timelimeobj.getMilestoneId();
         time = DateUtil.getYear2(timelimeobj.getDotime());
         rlMileStone.setOnClickListener(this);
@@ -142,15 +155,15 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
             llVideo.setVisibility(View.GONE);
             gvGridView.setVisibility(View.VISIBLE);
 
-            if (mediaList.size() > 0) {
-                for (MediaObj media : mediaList) {
+            if (timelimeobj.getMediaList().size() > 0) {
+                for (MediaObj media : timelimeobj.getMediaList()) {
                     ImgObj imgObj = media.getImgObj();
                     selImages.add(imgObj);
-                    imageUrls.add(media.getImgUrl());
+                    imageUrls.add(TextUtils.isEmpty(media.getLocalPath()) ? media.getImgUrl() : media.getImgUrl());
                 }
             }
 
-            if (timelimeobj.getType() == 0) {
+            if (timelimeobj.getType() == 0 || timelimeobj.getType() == 4) {
                 adapter = new PhotoGridAdapter(this);
                 adapter.getData().addAll(imageUrls);
                 gvGridView.setAdapter(adapter);
@@ -163,7 +176,9 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
+//                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
+                        FragmentBridgeActivity.openBigimageFragment(TimeLineEditActivity.this, allDetailsListPosition, timelimeobj.getMediaArray(),
+                                (ArrayList<String>) adapter.getData(), position, true, true);
                     }
                 });
             } else {
@@ -175,7 +190,13 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     }
 
     private void selectImages() {
-        SelectPhotoActivity.openForResult(this, imgObjs, PHOTO_COUNT_MAX, PICTURE);
+        if (timelimeobj.getType() == 4) {
+            if (timelimeobj.getMediaList().size() >= 9) {
+                ToastUtil.showToast("您的照片超过9张啦，不能再添加了");
+                return;
+            }
+        }
+        SelectPhotoActivity.openForResult(this, imgObjs, timelimeobj.getType() == 4 ? 9 - timelimeobj.getMediaList().size() : PHOTO_COUNT_MAX, PICTURE);
     }
 
     @Override
@@ -186,9 +207,16 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                 case PICTURE:
                     imgObjs = data.getParcelableArrayListExtra("result_select_image_list");
                     urls.clear();
+                    if (mediaList.size() > 0) {
+                        timelimeobj.getMediaList().removeAll(mediaList);
+                        mediaList.clear();
+                    }
                     for (ImgObj item : imgObjs) {
                         urls.add(item.getLocalPath());
+                        if (!timelimeobj.getMediaList().contains(item.getMediaObj()))
+                            mediaList.add(item.getMediaObj());
                     }
+                    timelimeobj.getMediaList().addAll(mediaList);
                     if (urls.size() > 0) {
                         List<String> imgs = new ArrayList<>();
                         imgs.addAll(imageUrls);
@@ -220,15 +248,22 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_location:
+                Bundle bundle = new Bundle();
+                if (timelimeobj.getLocationInfo() == null || TextUtils.isEmpty(timelimeobj.getLocationInfo().getArea()))
+                    bundle.putBoolean("isShowLocation", true);
+                else bundle.putBoolean("isShowLocation", false);
+                FragmentBridgeActivity.open(this, LocationListFragment.class.getSimpleName(), bundle);
+                break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
                 break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(this, SelectTimeActivity.class);
-                time_shot = DateUtil.formatDate("yyyy.MM.dd", timelimeobj.getDotime());
+                time_shot = DateUtil.formatDate(TIME_FORMAT, timelimeobj.getDotime());
                 if (TextUtils.isEmpty(time_shot)) {
-                    time_shot = DateUtil.formatDate("yyyy.MM.dd", timelimeobj.getDate());
+                    time_shot = DateUtil.formatDate(TIME_FORMAT, timelimeobj.getDate());
                 }
                 intent1.putExtra("time_shot", time_shot);
                 intent1.putExtra("time_now", tvTime.getText().toString());
@@ -239,20 +274,23 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
 
     private void editTime() {
         String value = etContent.getText().toString();
-        if (imageUrls.size() < 1 && timelimeobj.getType()!=1) {
+        if (Utils.getByteSize(value) > (timelimeobj.getType() == 4 ? PublishActivity.INPUT_VOICE_MAX_LENGTH : PublishActivity.INPUT_PIC_MAX_LENGTH)) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), timelimeobj.getType() == 4 ? PublishActivity.INPUT_VOICE_MAX_LENGTH : PublishActivity.INPUT_PIC_MAX_LENGTH));
+            return;
+        }
+        if (timelimeobj.getMediaList().size() < 1 && timelimeobj.getType() != 4 && timelimeobj.getType() != 1) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (imgObjs.size() > 0) {
-            for (ImgObj img : imgObjs) {
-                MediaObj mediaObj = img.getMediaObj();
-                mediaList.add(mediaObj);
-            }
+        if (timelimeobj.getType() == 4 && timelimeobj.getMediaList().size() > 9) {
+            ToastUtil.showToast("对不起，您选择的图片已超过9张啦");
+            return;
         }
-        String s = new Gson().toJson(mediaList);
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
-        apiService.editTime(URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, time, timelimeobj.getTimeId())
+        String s = JSONUtils.parse2JSONString(timelimeobj.getMediaList());
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+        long time = DateUtil.getTime(t, "yyyy-MM-dd HH:mm");
+        String locationInfo = JSONUtils.parse2JSONString(timelimeobj.getLocationInfo());
+        apiService.editTime(URLEncoder.encode(locationInfo), URLEncoder.encode(value), URLEncoder.encode(s), milestoneId, time, timelimeobj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     ToastUtil.showToast(response.getInfo());
@@ -263,8 +301,8 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
                                 uploadImage(url);
                             }
                         }
-                        EventBus.getDefault().post(new TimelineEditEvent());
-                        EventBus.getDefault().post(new HomeRefreshEvent());
+                        EventBus.getDefault().post(new TimelineEditEvent(timelimeobj.getTimeId()));
+                        EventBus.getDefault().post(new HomeRefreshEvent(timelimeobj.getTimeId()));
                     }
                 }, throwable -> {
                     throwable.printStackTrace();
@@ -429,6 +467,33 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
     }
 
     @Subscribe
+    public void onEvent(MediaUpdateEvent event) {
+        if (timelimeobj.getMediaList().contains(event.getMediaObj())) {
+            List<MediaObj> mediaList = timelimeobj.getMediaList();
+            int indexOf = mediaList.indexOf(event.getMediaObj());
+            mediaList.get(indexOf).setTips(event.getMediaObj().getTips());
+            mediaList.get(indexOf).setFavoritecount(event.getMediaObj().getFavoritecount());
+            mediaList.get(indexOf).setIsFavorite(event.getMediaObj().getIsFavorite());
+        }
+    }
+
+    @Subscribe
+    public void onEvent(NearLocationObj location) {
+        if (location.getLocation() == null)
+            timelimeobj.setLocationInfo(null);
+        else
+            timelimeobj.setLocationInfo(location);
+        initLocation();
+    }
+
+    private void initLocation() {
+        if (timelimeobj.getLocationInfo() == null || TextUtils.isEmpty(timelimeobj.getLocationInfo().getArea())) {
+            tvLocation.setText("不显示位置");
+        } else tvLocation.setText(timelimeobj.getLocationInfo().getArea());
+    }
+
+
+    @Subscribe
     public void onEvent(TimeEditPhotoDeleteEvent event) {
         boolean b = true;
         int position = event.getPosition();
@@ -438,22 +503,22 @@ public class TimeLineEditActivity extends BaseAppCompatActivity implements View.
         adapter.setData(data);
         adapter.notifyDataSetChanged();
         if (b) {
-            for (MediaObj media : mediaList) {
+            for (MediaObj media : timelimeobj.getMediaList()) {
                 if (url.equals(media.getImgUrl())) {
-                    mediaList.remove(media);
+                    timelimeobj.getMediaList().remove(media);
                     b = false;
                     break;
                 }
             }
         }
-        if(!b){
-            for(String s : imageUrls){
-                if(url.equals(s)){
+        if (!b) {
+            for (String s : imageUrls) {
+                if (url.equals(s)) {
                     imageUrls.remove(s);
                 }
             }
         }
-        if(b){
+        if (b) {
             for (ImgObj img : imgObjs) {
                 if (img.getLocalPath().equals(url)) {
                     imgObjs.remove(img);

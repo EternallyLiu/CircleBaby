@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -31,19 +33,23 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
+import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.PushItem;
-import cn.timeface.circle.baby.api.models.responses.PushResponse;
-import cn.timeface.circle.baby.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.TFDialog;
-import cn.timeface.circle.baby.managers.receivers.DownloadCompleteReceiver;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.NotificationUtil;
-import cn.timeface.circle.baby.utils.Once;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.Utils;
+import cn.timeface.circle.baby.support.managers.receivers.DownloadCompleteReceiver;
+import cn.timeface.circle.baby.support.api.models.PushItem;
+import cn.timeface.circle.baby.support.api.models.responses.PushResponse;
+import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
+import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.NotificationUtil;
+import cn.timeface.circle.baby.support.utils.Once;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.ui.images.TagAddFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DeviceUtil;
 import cn.timeface.common.utils.NetworkUtil;
@@ -83,7 +89,22 @@ public class SplashActivity extends BaseAppCompatActivity {
         public void handleMessage(Message msg) {
             SplashActivity outer = mOuter.get();
             if (outer != null) {
-                outer.doNext();
+                if(TextUtils.isEmpty(FastData.getUserId())){
+                    LoginActivity.open(outer);
+                } else {
+                    //手机号空，跳转绑定
+                    if(TextUtils.isEmpty(FastData.getUserInfo().getPhoneNumber())){
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("type", 0);
+                        FragmentBridgeActivity.open(outer, BindPhoneFragment.class.getSimpleName(), bundle);
+                    } else {
+                        if(FastData.getBabyCount() > 0){
+                            TabMainActivity.open(outer);
+                        } else {
+                            CreateBabyActivity.open(outer, true);
+                        }
+                    }
+                }
             }
         }
     }
@@ -95,15 +116,18 @@ public class SplashActivity extends BaseAppCompatActivity {
             finish();
             return;
         }
+
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        //初始化sharesdk
-//        ShareSDK.initSDK(this);
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
         firstRun();
-        showGuide();
-//        requestCheckUpdate();
+        requestCheckUpdate();
+    }
 
+    @Override
+    protected void onDestroy() {
+        handler.removeMessages(1);
+        super.onDestroy();
     }
 
     private void firstRun() {
@@ -231,10 +255,9 @@ public class SplashActivity extends BaseAppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     smileDialog.dismiss();
-                    progressDialog =
-                            new TFProgressDialog(SplashActivity.this);
-                    progressDialog.setMessage("正在下载...");
-                    progressDialog.show();
+                    progressDialog = TFProgressDialog.getInstance("");
+                    progressDialog.setTvMessage("正在下载...");
+                    progressDialog.show(getSupportFragmentManager(), "");
                     try {
                         downloadManager.enqueue(req);
                     } catch (Exception e) {
@@ -260,10 +283,9 @@ public class SplashActivity extends BaseAppCompatActivity {
             });
             smileDialog.show(getSupportFragmentManager(), "");
         } else {
-            progressDialog =
-                    new TFProgressDialog(SplashActivity.this);
-            progressDialog.setMessage("正在下载...");
-            progressDialog.show();
+            progressDialog = TFProgressDialog.getInstance("");
+            progressDialog.setTvMessage("正在下载...");
+            progressDialog.show(getSupportFragmentManager(), "");
             try {
                 downloadManager.enqueue(req);
             } catch (Exception e) {
@@ -353,10 +375,10 @@ public class SplashActivity extends BaseAppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    if (response.success() && response.getAdInfo()!=null && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
+                    if (response.success() && response.getAdInfo() != null && !TextUtils.isEmpty(response.getAdInfo().getAdImgUrl())) {
                         adUrl = response.getAdInfo().getAdUri();
                         adImgUrl = response.getAdInfo().getAdImgUrl();
-                        if(!adImgUrl.startsWith("http")){
+                        if (!adImgUrl.startsWith("http")) {
                             adImgUrl = adImgUrl.substring(adImgUrl.indexOf("http"));
                         }
                         Glide.with(SplashActivity.this)
@@ -368,140 +390,6 @@ public class SplashActivity extends BaseAppCompatActivity {
                 });
         addSubscription(s);
     }
-
-    private void doNext() {
-//        if (!TextUtils.isEmpty(FastData.getPreUserId())) {
-//            FastData.setUserId(FastData.getPreUserId());
-//            FastData.setPreUserId("");
-//        }
-//        if (TextUtils.isEmpty(FastData.getUserId())) {
-//            NewLoginActivity.open(SplashActivity.this);
-//            finish();
-//        } else {
-//            checkLimit();
-//        }
-        if(FastData.getUserFrom() == -1){
-            LoginActivity.open(this);
-            finish();
-        }else if (FastData.getUserFrom() == TypeConstants.USER_FROM_LOCAL) {
-            //上次登录为手机号登录
-            ShareSDK.initSDK(this);
-            String account = FastData.getAccount();
-            String password = FastData.getPassword();
-            if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password)) {
-                login(account, password, 0);
-            }
-        } else {
-            //上次登录为三方账号登录
-            String platform = cn.timeface.circle.baby.utils.Remember.getString("platform", "");
-            ShareSDK.initSDK(this);
-            if(!TextUtils.isEmpty(platform)){
-                Platform plat = ShareSDK.getPlatform(platform);
-                thirdLogin(plat.getDb().getToken(),
-                        plat.getDb().getUserIcon(),
-                        plat.getDb().getExpiresIn(),
-                        FastData.getUserFrom(),
-                        "m".equals(plat.getDb().getUserGender()) ? 1 : 0,
-                        plat.getDb().getUserName(),
-                        plat.getDb().get("openid"),
-                        plat.getDb().getUserId(),
-                        plat.getDb().get("unionid"), SplashActivity.this);
-            }
-        }
-    }
-
-    private Subscription login(String account, String psw, int type) {
-        Subscription s;
-        s = apiService.login(account, psw, type)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(loginResponse -> {
-                    if (loginResponse.success()) {
-                        FastData.setUserInfo(loginResponse.getUserInfo());
-                        FastData.setUserFrom(TypeConstants.USER_FROM_LOCAL);
-                        FastData.setAccount(account);
-                        FastData.setPassword(psw);
-                        if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this,true);
-                        } else {
-                            startActivity(new Intent(this, TabMainActivity.class));
-                        }
-                    }else{
-                        LoginActivity.open(this);
-                    }
-                    finish();
-                }, throwable -> {
-                    Log.e(TAG, "login:", throwable);
-                    throwable.printStackTrace();
-                    LoginActivity.open(this);
-                    finish();
-                });
-        return s;
-    }
-
-    public void thirdLogin(String accessToken,
-                           String avatar,
-                           long expiry_in,
-                           int from,
-                           int gender,
-                           String nickName,
-                           String openid,
-                           String platId,
-                           String unionid, Context context) {
-        apiService.vendorLogin(accessToken, avatar, expiry_in, from, gender, Uri.encode(nickName), openid, platId, unionid)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(loginResponse -> {
-                    if (loginResponse.success()) {
-                        FastData.setUserInfo(loginResponse.getUserInfo());
-                        FastData.setUserFrom(from);
-                        if (loginResponse.getBabycount() == 0) {
-                            CreateBabyActivity.open(this,true);
-                        } else {
-                            startActivity(new Intent(this, TabMainActivity.class));
-                        }
-                    }else{
-                        LoginActivity.open(this);
-                    }
-                    finish();
-                }, error -> {
-                    Log.e(TAG, "vendorLogin:", error);
-                    error.printStackTrace();
-                    LoginActivity.open(this);
-                    finish();
-                });
-    }
-
-    /*private void checkLimit() {
-        Subscription s = apiServiceV2.userLimit()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    if (response.success()) {
-                        FastData.setUserInfo(response.getUserInfo());
-                        if (response.getLimitType() == 0) {
-                            if (is_Scheme) {
-                                MainActivity.open(SplashActivity.this, scheme, data);
-                            } else {
-                                MainActivity.open(SplashActivity.this);
-                            }
-                        } else if (response.getLimitType() == 1) {
-                            EditMineDataActivity.open(SplashActivity.this, response.getUserInfo().getUserId(), true);
-                        }
-                        finish();
-                    } else {
-                        if (is_Scheme) {
-                            MainActivity.open(SplashActivity.this, scheme, data);
-                        } else {
-                            MainActivity.open(SplashActivity.this);
-                        }
-                        finish();
-                    }
-                }, throwable -> {
-                    MainActivity.open(SplashActivity.this);
-                });
-        addSubscription(s);
-    }*/
 
     /**
      * 广告点击
@@ -526,12 +414,6 @@ public class SplashActivity extends BaseAppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onDestroy() {
-        handler.removeMessages(1);
-        super.onDestroy();
     }
 
     private void fullScreen(boolean enable) {

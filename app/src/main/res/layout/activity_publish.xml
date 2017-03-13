@@ -86,36 +86,74 @@
                 android:textSize="@dimen/text_medium" />
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/rl_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/text_color1"
+            android:padding="@dimen/size_12">
+
+            <TextView
+                android:id="@+id/tv_location_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@color/text_color1"
+                android:text="所在位置"
+                android:textSize="@dimen/text_medium" />
+
+            <TextView
+                android:maxLines="2"
+                android:id="@+id/tv_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/size_12"
+                android:layout_toRightOf="@+id/tv_location_tip"
+                android:background="@color/text_color1"
+                android:drawablePadding="@dimen/size_12"
+                android:drawableRight="@drawable/mine_data_go"
+                android:ellipsize="end"
+                android:text=""
+                android:gravity="center_vertical|right"
+                android:textSize="@dimen/text_medium" />
+        </RelativeLayout>
+
         <GridView
             android:id="@+id/gv_grid_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:horizontalSpacing="@dimen/size_2"
-            android:verticalSpacing="@dimen/size_2"
-            android:numColumns="4" />
+            android:numColumns="4"
+            android:verticalSpacing="@dimen/size_2" />
 
         <RelativeLayout
             android:id="@+id/rl_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone">
+
             <RelativeLayout
                 android:id="@+id/rlvideo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <ImageView
                     android:id="@+id/iv_video"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
                     android:src="@drawable/splash" />
+
                 <ImageView
                     android:id="@+id/iv_cover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/video"
-                    android:layout_centerInParent="true"/>
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/video" />
             </RelativeLayout>
+
             <TextView
                 android:id="@+id/tv_videotime"
                 android:layout_width="wrap_content"

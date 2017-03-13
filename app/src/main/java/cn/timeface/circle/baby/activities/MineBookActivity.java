@@ -31,18 +31,19 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.MineBookAdapter;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.CartItemClickEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.managers.listeners.OnClickListener;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.managers.listeners.OnClickListener;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
@@ -129,7 +130,7 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                 keys.add("book_title");
                 values.add(FastData.getUserName());
                 values.add(FastData.getBabyName()+"的照片书");
-                MyPODActivity.open(MineBookActivity.this, mineBookObj.getBookId() ,mineBookObj.getOpenBookId(), mineBookObj.getOpenBookType(), null,"",false,mineBookObj.getBabyId(),keys,values,0);
+                MyPODActivity.open(MineBookActivity.this, mineBookObj.getBookId() ,mineBookObj.getOpenBookId(), BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, mineBookObj.getOpenBookType(), null,"",false,mineBookObj.getBabyId(),keys,values,0);
             } else {
                 //日记书、识图卡片书，跳转本地预览
                 apiService.queryImageInfoList(mineBookObj.getBookId(), mineBookObj.getBookType())
@@ -230,9 +231,10 @@ public class MineBookActivity extends BaseAppCompatActivity implements IEventBus
                 apiService.deleteBook(obj.getBookId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
-                            ToastUtil.showToast(response.getInfo());
                             if (response.success()) {
                                 EventBus.getDefault().post(new BookOptionEvent());
+                            } else {
+                                ToastUtil.showToast(response.getInfo());
                             }
                         }, error -> {
                             Log.e(TAG, "deleteBook:");

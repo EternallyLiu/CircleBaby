@@ -28,7 +28,7 @@ import cn.sharesdk.wechat.friends.Wechat;
 import cn.sharesdk.wechat.moments.WechatMoments;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.events.DeleteDynamicEvent;
-import cn.timeface.circle.baby.utils.FastData;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
 import cn.timeface.common.utils.ShareSdkUtil;
 

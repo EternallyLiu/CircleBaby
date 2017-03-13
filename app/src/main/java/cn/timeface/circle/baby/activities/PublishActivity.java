@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
@@ -31,6 +32,10 @@ import com.alibaba.sdk.android.oss.callback.OSSCompletedCallback;
 import com.alibaba.sdk.android.oss.callback.OSSProgressCallback;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.wechat.photopicker.PickerVideoActivity;
 
@@ -48,39 +53,56 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.PhotoGridAdapter;
 import cn.timeface.circle.baby.adapters.PublishPhotoAdapter;
-import cn.timeface.circle.baby.api.models.PhotoRecode;
-import cn.timeface.circle.baby.api.models.VideoInfo;
-import cn.timeface.circle.baby.api.models.objs.ImgObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.api.models.objs.Milestone;
-import cn.timeface.circle.baby.api.models.objs.MyUploadFileObj;
-import cn.timeface.circle.baby.api.models.objs.PublishObj;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
 import cn.timeface.circle.baby.events.PickerPhototAddEvent;
 import cn.timeface.circle.baby.events.PublishRefreshEvent;
 import cn.timeface.circle.baby.events.StartUploadEvent;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.managers.services.UploadService;
-import cn.timeface.circle.baby.oss.OSSManager;
-import cn.timeface.circle.baby.oss.uploadservice.UploadFileObj;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.GlideUtil;
-import cn.timeface.circle.baby.utils.MD5;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.circle.baby.utils.Utils;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.PhotoRecode;
+import cn.timeface.circle.baby.support.api.models.VideoInfo;
+import cn.timeface.circle.baby.support.api.models.objs.CardObj;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.LocationObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.Milestone;
+import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
+import cn.timeface.circle.baby.support.api.models.objs.PublishObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.managers.services.UploadService;
+import cn.timeface.circle.baby.support.oss.OSSManager;
+import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.MD5;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
+import cn.timeface.circle.baby.ui.timelines.beans.NearLocationObj;
+import cn.timeface.circle.baby.ui.timelines.beans.SendTimeFace;
+import cn.timeface.circle.baby.ui.timelines.beans.TimeConttent;
+import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
+import cn.timeface.circle.baby.ui.timelines.services.UploadVideoService;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class PublishActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
+
+    public static final String TIME_FORMAT = "yyyy-MM-dd";
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
+
+    public static final int INPUT_PIC_MAX_LENGTH = 400;
+    public static final int INPUT_VOICE_MAX_LENGTH = 1200;
+    public static final int INPUT_VIDEO_MAX_LENGTH = 400;
 
     public static final int NOMAL = 0;
     public static final int PHOTO = 1;
     public static final int VIDEO = 2;
     public static final int DIALY = 3;
     public static final int CARD = 4;
+    public static final int VOICE = 5;
 
     protected final int PHOTO_COUNT_MAX = 99;
 
@@ -112,6 +134,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     RelativeLayout rlVideo;
     @Bind(R.id.tv_videotime)
     TextView tvVideotime;
+    @Bind(R.id.tv_location)
+    TextView tvLocation;
+    @Bind(R.id.rl_location)
+    RelativeLayout rlLocation;
+    @Bind(R.id.rlvideo)
+    RelativeLayout rlvideo;
 
     private PhotoGridAdapter adapter;
     private List<String> imageUrls = new ArrayList<>();
@@ -131,8 +159,8 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private List<ImgObj>[] imagelLists;
     private PublishPhotoAdapter publishPhotoAdapter;
     private int type;
-    private MediaObj mediaObj;
-    private List<MediaObj> mediaObjs;
+    private CardObj cardObj;
+    private List<CardObj> cardObjs;
     private VideoInfo videoInfo;
     private TFProgressDialog tfProgressDialog;
     private String time_shot;
@@ -140,6 +168,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private int count = 0;
     private boolean isPublish;
     private double oldProgress = 0;
+    private NearLocationObj currentLocation = null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+    private ArrayList<MediaObj> mediaObjs;
 
     public static void open(Context context, int type) {
         Intent intent = new Intent(context, PublishActivity.class);
@@ -147,13 +182,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         context.startActivity(intent);
     }
 
-    public static void open(Context context, MediaObj mediaObj) {
+    public static void open(Context context, CardObj cardObj) {
         Intent intent = new Intent(context, PublishActivity.class);
-        intent.putExtra("mediaObj", mediaObj);
+        intent.putExtra("mediaObj", cardObj);
         context.startActivity(intent);
     }
 
-    public static void open(Context context, List<MediaObj> mediaObjs) {
+    public static void open(Context context, List<CardObj> mediaObjs) {
         Intent intent = new Intent(context, PublishActivity.class);
         intent.putParcelableArrayListExtra("mediaObjs", (ArrayList<? extends Parcelable>) mediaObjs);
         context.startActivity(intent);
@@ -165,27 +200,32 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publish);
         ButterKnife.bind(this);
+        rlLocation.setOnClickListener(this);
+        initLocation();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
 
         publishType = getIntent().getIntExtra("publish_type", NOMAL);
-        mediaObj = getIntent().getParcelableExtra("mediaObj");
-        mediaObjs = getIntent().getParcelableArrayListExtra("mediaObjs");
+        cardObj = getIntent().getParcelableExtra("mediaObj");
+        cardObjs = getIntent().getParcelableArrayListExtra("mediaObjs");
 
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
 
         adapter = new PhotoGridAdapter(this);
         gvGridView.setAdapter(adapter);
+        LogUtil.showLog(publishType + "");
         switch (publishType) {
             case PHOTO:
                 type = 0;
                 selectImages();
+                etContent.setHint("为这天记录说点什么吧~");
                 break;
             case VIDEO:
                 type = 1;
                 selectVideos();
+                etContent.setHint("为这天记录说点什么吧~");
                 break;
             case DIALY:
                 type = 2;
@@ -195,30 +235,38 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 type = 3;
                 CardPublishActivity.open(this);
                 break;
+            case VOICE:
+                type = 4;
+                tvTime.setText(DateUtil.getYear2(System.currentTimeMillis()));
+                etContent.setHint("记录下宝宝的童言趣语吧~");
+                break;
         }
 
-        if (mediaObj != null) {
+        if (cardObj != null) {
             type = 2;
             gvGridView.setVisibility(View.GONE);
             ivCard.setVisibility(View.VISIBLE);
-            GlideUtil.displayImage(mediaObj.getImgUrl(), ivCard);
-            time_shot = DateUtil.formatDate("yyyy.MM.dd", mediaObj.getPhotographTime());
+            GlideUtil.displayImage(cardObj.getMedia().getImgUrl(), ivCard);
+            time_shot = DateUtil.formatDate(TIME_FORMAT, cardObj.getMedia().getPhotographTime());
             tvTime.setText(time_shot);
         }
-        if (mediaObjs != null) {
+        if (cardObjs != null) {
             type = 3;
             gvGridView.setVisibility(View.VISIBLE);
             ivCard.setVisibility(View.GONE);
             List<String> list = new ArrayList<>();
-            for (MediaObj media : mediaObjs) {
-                list.add(media.getImgUrl());
+            mediaObjs = new ArrayList<>();
+            for (CardObj cardObj : cardObjs) {
+                list.add(cardObj.getMedia().getImgUrl());
+                mediaObjs.add(cardObj.getMedia());
             }
+            adapter.setMediaObjs(mediaObjs);
             adapter.setData(list);
             adapter.notifyDataSetChanged();
-            if (mediaObjs.get(0).getPhotographTime() == 0) {
-                time_shot = DateUtil.formatDate("yyyy.MM.dd", System.currentTimeMillis());
+            if (cardObjs.get(0).getMedia().getPhotographTime() == 0) {
+                time_shot = DateUtil.formatDate(TIME_FORMAT, System.currentTimeMillis());
             } else {
-                time_shot = DateUtil.formatDate("yyyy.MM.dd", mediaObjs.get(0).getPhotographTime());
+                time_shot = DateUtil.formatDate(TIME_FORMAT, cardObjs.get(0).getMedia().getPhotographTime());
             }
             tvTime.setText(time_shot);
         }
@@ -228,6 +276,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             public void onClick(View v) {
                 switch (type) {
                     case 0:
+                    case 4:
                         selectImages();
                         break;
                     case 1:
@@ -245,13 +294,75 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         gvGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, (ArrayList<String>) adapter.getData(), position, false, true);
+                LogUtil.showLog("adapter medias:" + (adapter.getMediaObjs() == null ? "null" : adapter.getMediaObjs().size()));
+                FragmentBridgeActivity.openBigimageFragment(PublishActivity.this, -1, adapter.getMediaObjs(), (ArrayList<String>) adapter.getData(), position, false, true);
             }
         });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    private void img2Medias() {
+        if (selImages != null && selImages.size() > 0) {
+            if (mediaObjs == null)
+                mediaObjs = new ArrayList();
+            ArrayList<MediaObj> list = new ArrayList<>();
+            if (mediaObjs.size() > 0) {
+                list.addAll(mediaObjs);
+                mediaObjs.clear();
+            }
+            MediaObj mediaObj = null;
+            boolean requestLocation = false;
+            for (int i = 0; i < selImages.size(); i++) {
+                mediaObj = selImages.get(i).getMediaObj();
+                if (list.contains(mediaObj))
+                    mediaObjs.add(list.get(list.indexOf(mediaObj)));
+                else mediaObjs.add(mediaObj);
+                if (!requestLocation)
+                    if (mediaObj.getLocation() != null) {
+                        gettLocationAddress(mediaObj.getLocation());
+                        requestLocation = true;
+                    }
+
+            }
+        }
+    }
+
+    private void initLocation() {
+        if (currentLocation == null) {
+            tvLocation.setText("不显示位置");
+        } else tvLocation.setText(currentLocation.getArea());
+    }
+
+    @Subscribe
+    public void onEvent(MediaUpdateEvent mediaUpdateEvent) {
+        MediaObj mediaObj = null;
+        if (mediaObjs.contains(mediaUpdateEvent.getMediaObj())) {
+            mediaObj = mediaObjs.get(mediaObjs.indexOf(mediaUpdateEvent.getMediaObj()));
+            if (mediaObj != null) {
+                mediaObj.setTips(mediaUpdateEvent.getMediaObj().getTips());
+                mediaObj.setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
+                mediaObj.setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+            }
+        }
+        for (int i = 0; i < photoRecodes.size(); i++) {
+            ArrayList<MediaObj> list = photoRecodes.get(i).getMediaObjList();
+            if (list.contains(mediaUpdateEvent.getMediaObj())) {
+                MediaObj obj = list.get(list.indexOf(mediaUpdateEvent.getMediaObj()));
+
+                obj.setTips(mediaUpdateEvent.getMediaObj().getTips());
+                obj.setFavoritecount(mediaUpdateEvent.getMediaObj().getFavoritecount());
+                obj.setIsFavorite(mediaUpdateEvent.getMediaObj().getIsFavorite());
+                publishPhotoAdapter.setListData(photoRecodes);
+                publishPhotoAdapter.notifyDataSetChanged();
+            }
+        }
+
     }
 
     private void selectImages() {
-        SelectPhotoActivity.openForResult(this, selImages, PHOTO_COUNT_MAX, PICTURE);
+        SelectPhotoActivity.openForResult(this, selImages, type == 4 ? 9 : PHOTO_COUNT_MAX, PICTURE);
 
     }
 
@@ -262,6 +373,100 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
 
+    private void resultPictrue() {
+        photoRecodes.clear();
+        imageUrls.clear();
+        titles.clear();
+        for (ImgObj item : selImages) {
+            imageUrls.add(item.getLocalPath());
+            String title = DateUtil.formatDate(TIME_FORMAT, item.getDateTimeMills());
+            LogUtil.showLog("title===" + title+"-----"+item.getDateTimeMills());
+            if (!titles.contains(title)) {
+                titles.add(title);
+            }
+        }
+
+        imagelLists = new List[titles.size()];
+        img2Medias();
+
+        ArrayList<MediaObj> list = null;
+        for (int i = 0; i < titles.size(); i++) {
+            list = new ArrayList<>(0);
+            imagelLists[i] = new ArrayList<>();
+            for (int index = 0; index < selImages.size(); index++) {
+                if (titles.get(i).equals(DateUtil.formatDate(TIME_FORMAT, selImages.get(index).getDateTimeMills()))) {
+                    imagelLists[i].add(selImages.get(index));
+                    list.add(mediaObjs.get(index));
+                }
+            }
+            photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i], list));
+        }
+        if (photoRecodes.size() > 1) {
+            llSingleDate.setVisibility(View.GONE);
+            contentRecyclerView.setVisibility(View.VISIBLE);
+            publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
+            contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            contentRecyclerView.setAdapter(publishPhotoAdapter);
+        } else {
+            llSingleDate.setVisibility(View.VISIBLE);
+            contentRecyclerView.setVisibility(View.GONE);
+
+            if (imageUrls.size() > 0) {
+                adapter.getData().clear();
+                adapter.getData().addAll(imageUrls);
+                adapter.notifyDataSetChanged();
+                adapter.setMediaObjs(mediaObjs);
+
+                tvTime.setText(titles.get(0));
+            }
+        }
+        time_shot = titles.get(0);
+    }
+
+    private void resultSpeak() {
+        photoRecodes.clear();
+        imageUrls.clear();
+        titles.clear();
+        titles.add(TextUtils.isEmpty(tvTime.getText().toString()) ? DateUtil.getYear2(System.currentTimeMillis()) : tvTime.getText().toString());
+        for (ImgObj item : selImages) {
+            imageUrls.add(item.getLocalPath());
+        }
+
+        imagelLists = new List[titles.size()];
+        img2Medias();
+
+        ArrayList<MediaObj> list = null;
+        for (int i = 0; i < titles.size(); i++) {
+            list = new ArrayList<>(0);
+            imagelLists[i] = new ArrayList<>();
+            for (int index = 0; index < selImages.size(); index++) {
+                imagelLists[i].add(selImages.get(index));
+                list.add(mediaObjs.get(index));
+            }
+            photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i], list));
+        }
+        if (photoRecodes.size() > 1) {
+            llSingleDate.setVisibility(View.GONE);
+            contentRecyclerView.setVisibility(View.VISIBLE);
+            publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
+            contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            contentRecyclerView.setAdapter(publishPhotoAdapter);
+        } else {
+            llSingleDate.setVisibility(View.VISIBLE);
+            contentRecyclerView.setVisibility(View.GONE);
+
+            if (imageUrls.size() > 0) {
+                adapter.getData().clear();
+                adapter.getData().addAll(imageUrls);
+                adapter.notifyDataSetChanged();
+                adapter.setMediaObjs(mediaObjs);
+
+                tvTime.setText(titles.get(0));
+            }
+        }
+        time_shot = titles.get(0);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -269,49 +474,14 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             switch (requestCode) {
                 case PICTURE:
                     selImages = data.getParcelableArrayListExtra("result_select_image_list");
-                    photoRecodes.clear();
-                    imageUrls.clear();
-                    titles.clear();
-                    for (ImgObj item : selImages) {
-                        imageUrls.add(item.getLocalPath());
-                        String title = item.getDate();
-
-                        if (!titles.contains(title)) {
-                            titles.add(title);
-
-                        }
+                    if (type == 0 && (selImages == null || selImages.size() <= 0)) {
+                        finish();
+                        return;
                     }
-
-                    imagelLists = new List[titles.size()];
-
-                    for (int i = 0; i < titles.size(); i++) {
-                        imagelLists[i] = new ArrayList<>();
-                        for (ImgObj item : selImages) {
-                            if (titles.get(i).equals(item.getDate())) {
-                                imagelLists[i].add(item);
-                            }
-                        }
-                        photoRecodes.add(new PhotoRecode(titles.get(i), imagelLists[i]));
-                    }
-                    if (photoRecodes.size() > 1) {
-                        llSingleDate.setVisibility(View.GONE);
-                        contentRecyclerView.setVisibility(View.VISIBLE);
-                        publishPhotoAdapter = new PublishPhotoAdapter(this, photoRecodes);
-                        contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                        contentRecyclerView.setAdapter(publishPhotoAdapter);
-                    } else {
-                        llSingleDate.setVisibility(View.VISIBLE);
-                        contentRecyclerView.setVisibility(View.GONE);
-
-                        if (imageUrls.size() > 0) {
-                            adapter.getData().clear();
-                            adapter.getData().addAll(imageUrls);
-                            adapter.notifyDataSetChanged();
-
-                            tvTime.setText(titles.get(0));
-                        }
-                    }
-                    time_shot = titles.get(0);
+                    if (type == 4) {
+                        resultSpeak();
+                    } else
+                        resultPictrue();
                     break;
                 case MILESTONE:
                     milestone = (Milestone) data.getParcelableExtra("milestone");
@@ -353,13 +523,25 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     layoutParams.width = width;
                     layoutParams.height = width;
                     ivVideo.setLayoutParams(layoutParams);
-                    time_shot = DateUtil.formatDate("yyyy.MM.dd", videoInfo.getDate());
+                    time_shot = DateUtil.formatDate(TIME_FORMAT, videoInfo.getDate());
+                    LogUtil.showLog("time==" + videoInfo.getDate());
                     tvTime.setText(time_shot);
                     tvVideotime.setText("时长：" + DateUtil.getTime4(videoInfo.getDuration() * 1000));
-                    mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
+                    MediaObj mediaObj = new MediaObj(videoInfo.getImgObjectKey(), videoInfo.getDuration(), videoObjectKey, videoInfo.getDate());
+                    if (cardObj == null)
+                        cardObj = new CardObj();
+                    cardObj.setMedia(mediaObj);
                     break;
             }
 
+        } else if (data == null) {
+            if (type == 0 && (selImages == null || selImages.size() <= 0)) {
+                finish();
+                return;
+            } else if (type == 1 && (cardObj == null || cardObj.getMedia() == null)) {
+                finish();
+                return;
+            }
         }
     }
 
@@ -372,6 +554,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_location:
+                Bundle bundle = new Bundle();
+                if (currentLocation == null)
+                    bundle.putBoolean("isShowLocation", true);
+                else bundle.putBoolean("isShowLocation", false);
+                FragmentBridgeActivity.open(this, LocationListFragment.class.getSimpleName(), bundle);
+                break;
             case R.id.rl_mile_stone:
                 Intent intent = new Intent(this, SelectMileStoneActivity.class);
                 startActivityForResult(intent, MILESTONE);
@@ -392,25 +581,27 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布识图卡片
     private void publishCard() {
         String content = etContent.getText().toString();
-        if (mediaObjs.size() == 0) {
+        if (Utils.getByteSize(content) > (type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH)) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH));
+            return;
+        }
+        if (cardObjs.size() == 0) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
             isPublish = false;
             return;
         }
-        tfProgressDialog.setMessage("发布中");
-        tfProgressDialog.show();
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+        tfProgressDialog.setTvMessage("发布中");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+        long time = DateUtil.getTime(t, DATETIME_FORMAT);
 
-        List<PublishObj> datalist = new ArrayList<>();
-
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
-        datalist.add(publishObj);
+        SendTimeFace data = new SendTimeFace(0);
+        data.getDataList().add(new TimeConttent(null, content, mediaObjs, milestone == null ? 0 : milestone.getId(), time));
 
         Gson gson = new Gson();
-        String s = gson.toJson(datalist);
+        String s = gson.toJson(data.getDataList());
 
-        apiService.publish(URLEncoder.encode(s), type)
+        apiService.publish(URLEncoder.encode(s), data.getType())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     tfProgressDialog.dismiss();
@@ -434,7 +625,11 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布日记
     private void publishDiary() {
         String content = etContent.getText().toString();
-        if (mediaObj == null) {
+        if (Utils.getByteSize(content) > (type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH)) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH));
+            return;
+        }
+        if (cardObj == null) {
             if (type == 1) {
                 Toast.makeText(this, "请选择视频~", Toast.LENGTH_SHORT).show();
             } else {
@@ -444,16 +639,16 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             isPublish = false;
             return;
         }
-        tfProgressDialog.setMessage("发布中");
-        tfProgressDialog.show();
-        String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-        long time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
-        List<PublishObj> datalist = new ArrayList<>();
-        List<MediaObj> mediaObjs = new ArrayList<>();
-        mediaObjs.add(mediaObj);
+        tfProgressDialog.setTvMessage("发布中");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
+        String t = tvTime.getText().toString() + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+        long time = DateUtil.getTime(t, DATETIME_FORMAT);
+        List<TimeConttent> datalist = new ArrayList<>();
+        ArrayList<MediaObj> cardObjs = new ArrayList<>();
+        cardObjs.add(cardObj.getMedia());
 
-        PublishObj publishObj = new PublishObj(content, mediaObjs, milestone == null ? 0 : milestone.getId(), time);
-        datalist.add(publishObj);
+        TimeConttent timeConttent = new TimeConttent(currentLocation, content, cardObjs, milestone == null ? 0 : milestone.getId(), time);
+        datalist.add(timeConttent);
 
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
@@ -466,7 +661,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                     if (response.success()) {
                         if (type == 1) {
                             EventBus.getDefault().post(new StartUploadEvent());
-                            uploadVideo(videoInfo.getPath());
+                            uploadVideo(response.getTimeInfo().getTimeId(), videoInfo.getPath());
                         } else {
                             EventBus.getDefault().post(new PickerPhototAddEvent());
                             EventBus.getDefault().post(new HomeRefreshEvent());
@@ -489,53 +684,71 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     //发布照片
     private void postRecord() {
         String value = etContent.getText().toString();
+        if (Utils.getByteSize(value) > (type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH)) {
+            ToastUtil.showToast(String.format(getString(R.string.input_max_length_tip), type == 4 ? INPUT_VOICE_MAX_LENGTH : INPUT_PIC_MAX_LENGTH));
+            return;
+        }
         long time = 0;
-        if (imageUrls.size() < 1) {
+        if (imageUrls.size() < 1 && type != 4) {
             Toast.makeText(this, "发张照片吧~", Toast.LENGTH_SHORT).show();
+            isPublish = false;
+            return;
+        }
+        if (type == 4 && TextUtils.isEmpty(value)) {
+            ToastUtil.showToast("在输入框写点内容吧？");
             isPublish = false;
             return;
         }
 
         if (photoRecodes.size() == 1) {
-            String t = tvTime.getText().toString() + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-            time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+            String t = tvTime.getText().toString() + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+            LogUtil.showLog("t==="+t);
+            time = DateUtil.getTime(t, DATETIME_FORMAT);
         }
-        tfProgressDialog.setMessage("发布中");
-        tfProgressDialog.show();
+        tfProgressDialog.setTvMessage("发布中");
+        tfProgressDialog.show(getSupportFragmentManager(), "");
         //发布
         localUrls = new ArrayList<>();
-        List<PublishObj> datalist = new ArrayList<>();
+        List<TimeConttent> datalist = new ArrayList<>();
         if (photoRecodes.size() == 1) {
             photoRecodes.get(0).setContent(value);
+            photoRecodes.get(0).setLocationObj(currentLocation);
         }
         for (PhotoRecode photoRecode : photoRecodes) {
             if (photoRecodes.size() > 1) {
                 String title = photoRecode.getTitle();
-                String t = title + DateUtil.formatDate(" kk:mm", System.currentTimeMillis());
-                time = DateUtil.getTime(t, "yyyy.MM.dd kk:mm");
+                String t = title + DateUtil.formatDate(" HH:mm", System.currentTimeMillis());
+                time = DateUtil.getTime(t, DATETIME_FORMAT);
             }
             String content = photoRecode.getContent();
             Milestone mileStone = photoRecode.getMileStone();
             int mileStoneId = mileStone == null ? 0 : mileStone.getId();
             List<ImgObj> imgObjList = photoRecode.getImgObjList();
-            List<MediaObj> mediaObjs = new ArrayList<>();
+            TimeConttent timeContent = new TimeConttent();
             for (ImgObj img : imgObjList) {
 //                Bitmap bitmap = BitmapFactory.decodeFile(img.getLocalPath());
-                int height = img.getHeight();
-                int width = img.getWidth();
-                Log.v(TAG, "img.getUrl ============ " + img.getUrl());
                 localUrls.add(img.getLocalPath());
-                MediaObj mediaObj = new MediaObj(img.getContent(), img.getUrl(), width, height, img.getDateMills());
-                mediaObjs.add(mediaObj);
             }
-            PublishObj publishObj = new PublishObj(content, mediaObjs, mileStoneId, time);
-            datalist.add(publishObj);
+            timeContent.setMilestone(mileStoneId);
+            timeContent.setContent(content);
+            timeContent.setTime(time);
+            timeContent.setMediaList(photoRecode.getMediaObjList());
+            timeContent.setLocationInfo(photoRecode.getLocationObj());
+            datalist.add(timeContent);
+        }
+        if (datalist.size() <= 0 && photoRecodes.size() <= 0) {
+            TimeConttent timeContent = new TimeConttent();
+            if (milestone != null)
+                timeContent.setMilestone(milestone.getId());
+            timeContent.setContent(value);
+            timeContent.setTime(time);
+            timeContent.setLocationInfo(currentLocation);
+            datalist.add(timeContent);
         }
         Gson gson = new Gson();
         String s = gson.toJson(datalist);
 
-        Log.v(TAG, s);
-
+        LogUtil.showLog("time==="+time);
         apiService.publish(URLEncoder.encode(s), type)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
@@ -544,15 +757,18 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                         finish();
                         isPublish = false;
                         count = 0;
-                        EventBus.getDefault().post(new StartUploadEvent());
-                        UploadService.start(PublishActivity.this, localUrls);
+                        if (localUrls != null && localUrls.size() > 0) {
+                            EventBus.getDefault().post(new StartUploadEvent(response.getTimeInfo().getTimeId()));
+                            UploadService.start(PublishActivity.this, response.getTimeInfo().getTimeId(), localUrls);
+                        } else
+                            EventBus.getDefault().post(new HomeRefreshEvent(response.getTimeInfo().getTimeId()));
                     } else {
                         ToastUtil.showToast(response.getInfo());
                     }
                 }, throwable -> {
                     tfProgressDialog.dismiss();
                     isPublish = false;
-                    Log.e(TAG, "publish:", throwable);
+                    LogUtil.showError(throwable);
                     ToastUtil.showToast("服务器异常，请稍后重试");
                 });
 
@@ -562,25 +778,36 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     @Subscribe
     public void onEvent(Object event) {
         if (event instanceof PublishRefreshEvent) {
-            mediaObjs = ((PublishRefreshEvent) event).getDataList();
+//            cardObjs = ((PublishRefreshEvent) event).getDataList();
             List<String> list = new ArrayList<>();
-            for (MediaObj media : mediaObjs) {
-                list.add(media.getImgUrl());
+            for (CardObj cardObj : cardObjs) {
+                list.add(cardObj.getMedia().getImgUrl());
             }
             adapter.setData(list);
             adapter.notifyDataSetChanged();
         } else if (event instanceof TimeEditPhotoDeleteEvent) {
             int position = ((TimeEditPhotoDeleteEvent) event).getPosition();
-            List<String> data = adapter.getData();
-            if (data.size() > position) {
-                data.remove(position);
-                selImages.remove(position);
-                adapter.setData(data);
-                adapter.notifyDataSetChanged();
-                if (photoRecodes.size() == 1) {
-                    List<ImgObj> imgObjList = photoRecodes.get(0).getImgObjList();
-                    if (imgObjList.size() > position) {
-                        imgObjList.remove(position);
+            if (photoRecodes.size() <= 1) {
+                List<String> data = adapter.getData();
+                if (data.size() > position) {
+                    data.remove(position);
+                    selImages.remove(position);
+                    adapter.setData(data);
+                    adapter.notifyDataSetChanged();
+                    if (photoRecodes.size() == 1) {
+                        List<ImgObj> imgObjList = photoRecodes.get(0).getImgObjList();
+                        if (imgObjList.size() > position) {
+                            imgObjList.remove(position);
+                        }
+                    }
+                }
+            } else {
+                MediaObj obj = ((TimeEditPhotoDeleteEvent) event).getMediaObj();
+                for (int i = 0; i < photoRecodes.size(); i++) {
+                    if (photoRecodes.get(i).getMediaObjList().contains(obj)) {
+                        photoRecodes.get(i).getMediaObjList().remove(obj);
+                        photoRecodes.get(i).getImgObjList().remove(obj.getImgObj());
+                        publishPhotoAdapter.notifyDataSetChanged();
                     }
                 }
             }
@@ -593,62 +820,12 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         ButterKnife.unbind(this);
     }
 
-    private void uploadVideo(String path) {
+    private void uploadVideo(int timeId, String path) {
         if (TextUtils.isEmpty(path)) {
             ToastUtil.showToast("视频文件异常");
             return;
         }
-        OSSManager ossManager = OSSManager.getOSSManager(this);
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    //获取上传文件
-                    UploadFileObj uploadFileObj = new MyUploadFileObj(path);
-                    //上传操作
-                    try {
-                        //判断服务器是否已存在该文件
-                        if (!ossManager.checkFileExist(uploadFileObj.getObjectKey())) {
-                            //如果不存在则上传
-                            ossManager.upload(uploadFileObj.getObjectKey(), uploadFileObj.getFinalUploadFile().getAbsolutePath(), new OSSProgressCallback<PutObjectRequest>() {
-                                @Override
-                                public void onProgress(PutObjectRequest putObjectRequest, long l, long l1) {
-                                    int progress = (int) (l * 100 / l1);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            EventBus.getDefault().post(new UploadEvent(progress));
-                                        }
-                                    });
-                                }
-                            }, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
-                                @Override
-                                public void onSuccess(PutObjectRequest putObjectRequest, PutObjectResult putObjectResult) {
-
-                                }
-
-                                @Override
-                                public void onFailure(PutObjectRequest putObjectRequest, ClientException e, ServiceException e1) {
-
-                                }
-                            });
-                        } else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    EventBus.getDefault().post(new UploadEvent(100));
-                                }
-                            });
-                        }
-                        String videoObjectKey = uploadFileObj.getObjectKey();
-                    } catch (Exception e) {
-                        Log.e(TAG, "uploadVideo", e);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "uploadVideo", e);
-                }
-            }
-        }.start();
+        UploadVideoService.start(this, timeId, path);
     }
 
     @Override
@@ -697,6 +874,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             isPublish = true;
             switch (type) {
                 case 0:
+                case 4:
                     postRecord();
                     break;
                 case 1:
@@ -733,4 +911,61 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Publish Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Subscribe
+    public void onEvent(NearLocationObj location) {
+        if (location.getLocation() == null)
+            currentLocation = null;
+        else
+            currentLocation = location;
+        initLocation();
+    }
+
+    private void gettLocationAddress(LocationObj locationObj) {
+        apiService.queryLocationInfo(locationObj.getLat(), locationObj.getLog())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        currentLocation = response.getLocationInfo();
+                        initLocation();
+                    }
+                }, throwable -> {
+                    LogUtil.showError(throwable);
+                });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
 }

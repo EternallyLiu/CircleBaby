@@ -16,7 +16,7 @@
         android:textAppearance="?android:attr/textAppearanceMediumInverse" />
 
     <CheckBox
-        android:id="@+id/cb_all_sel"
+        android:id="@+id/cb_title_all_sel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:button="@drawable/selector_item_photo_select"

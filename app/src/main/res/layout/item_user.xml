@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="@dimen/view_space_medium"
+    android:id="@+id/ll_root"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="@dimen/size_48"
+        android:layout_height="@dimen/size_48"
+        android:src="@drawable/bg_default_holder_img" />
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/view_space_small"
+        android:layout_marginTop="@dimen/view_space_small"
+        android:textColor="@color/text_color12"
+        tools:text="爷爷" />
+
+
+    <TextView
+        android:id="@+id/tv_photo_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color12"
+        tools:text="814张" />
+
+</LinearLayout>

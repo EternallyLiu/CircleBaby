@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,11 +18,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.api.models.objs.Milestone;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 public class SelectTimeActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
@@ -106,7 +105,7 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
             case R.id.ll_time_set:
                 setChecked(2);
                 Calendar cal = Calendar.getInstance();
-                new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         monthOfYear = monthOfYear + 1;
@@ -118,23 +117,25 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
                         if (d.length() == 1) {
                             d = "0" + d;
                         }
-                        time = year + "." + m + "." + d;
+                        time = year + "-" + m + "-" + d;
                         tvTimeSet.setText(time);
 
-                        if(DateUtil.getTime(time,"yyyy.MM.dd") > System.currentTimeMillis()){
+                        if (DateUtil.getTime(time, "yyyy.MM.dd") > System.currentTimeMillis()) {
                             ToastUtil.showToast("选择的时间不能超过当前时间");
                             return;
                         }
-                        if(DateUtil.getTime(time,"yyyy.MM.dd") < FastData.getBabyBithday()){
-                            ToastUtil.showToast("您选择的时间在宝宝生日之前，时光列表中将看不到哦~");
-                        }
-
+//                        if (DateUtil.getTime(time, "yyyy.MM.dd") < FastData.getBabyBithday()) {
+//                            ToastUtil.showToast(getString(R.string.publish_select_date_min));
+//                        }
+                        LogUtil.showLog("time==="+time);
                         Intent intent = new Intent();
                         intent.putExtra("time", time);
                         setResult(RESULT_OK, intent);
                         finish();
                     }
-                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                dialog.show();
                 break;
         }
     }

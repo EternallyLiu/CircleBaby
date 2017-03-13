@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_book_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="cn.timeface.circle.baby.ui.growth.activities.ProductionListActivity"
+    tools:showIn="@layout/activity_production_list">
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/view_space_medium"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="@dimen/view_space_normal"
+        tools:text="每套选择8张（也可以是8的倍数）"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/text" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_books"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_tip"
+        android:clipToPadding="false" />
+
+    <LinearLayout
+        android:id="@+id/ll_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_72"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/nodata" />
+
+        <TextView
+            android:id="@+id/tv_empty_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/view_space_medium"
+            android:layout_marginTop="@dimen/view_space_medium"
+            android:gravity="center"
+            android:paddingLeft="@dimen/view_space_medium"
+            android:paddingRight="@dimen/view_space_medium"
+            android:textColor="@color/text_color_hint"
+            tools:text="小CC的照片书为空哦，\n赶紧上传照片，制作照片书吧~" />
+
+        <Button
+            android:id="@+id/btn_create"
+            android:layout_width="@dimen/size_160"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_yellow_bg"
+            android:text="立即上传"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_ask_for_print"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/view_space_medium"
+        android:background="@drawable/shape_yellow_bg"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        tools:text="选择印刷规格" />
+
+    <cn.timeface.circle.baby.views.TFStateView
+        android:id="@+id/tf_stateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

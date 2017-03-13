@@ -3,22 +3,20 @@ package cn.timeface.circle.baby.adapters;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.github.rayboot.widget.ratioview.RatioFrameLayout;
-import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseListAdapter;
-import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
-import cn.timeface.circle.baby.api.models.objs.PrintPropertyPriceObj;
-import cn.timeface.circle.baby.utils.GlideUtil;
+import cn.timeface.circle.baby.support.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.support.api.models.objs.PrintPropertyPriceObj;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 
 /**
  * @author WXW
@@ -38,17 +36,34 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.item_my_order_print_item, null);
+            convertView = mLayoutInflater.inflate(R.layout.item_my_order_print_item, parent, false);
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        final PrintPropertyPriceObj obj = listData.get(position);
-        if(bookItem.getBookType()!=2){
-            viewHolder.ivBookbg.setImageResource(R.drawable.book_front_mask2);
+        PrintPropertyPriceObj obj = listData.get(position);
+
+        int imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 120);
+        switch (bookItem.getBookType()) {
+            case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK://精装照片书
+            case BookModel.BOOK_TYPE_PAINTING://绘画集
+            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS://成长语录
+            case BookModel.BOOK_TYPE_CALENDAR://台历
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 120);
+                break;
+            case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK://成长纪念册
+                imageWidth = DeviceUtil.dpToPx(mContext.getResources(), 100);
+                break;
         }
-        GlideUtil.displayImage(bookItem.getCoverImage(),viewHolder.ivBookCover);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                imageWidth, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        viewHolder.ivBookCover.setLayoutParams(lp);
+        viewHolder.ivBookCover.setMaxWidth(imageWidth);
+
+        GlideUtil.displayImage(bookItem.getCoverImage(), viewHolder.ivBookCover);
+
         viewHolder.tvPrice.setText(mContext.getString(R.string.total_price, obj.getPrice()));
         viewHolder.tvNumber.setText(mContext.getString(R.string.cart_print_property_num, String.valueOf(obj.getNum())));
 
@@ -60,7 +75,7 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
         viewHolder.tvPack.setText(mContext.getString(R.string.cart_print_property_pack,
                 bookItem.getPropertyShow("pack", String.valueOf(obj.getPack()))));
         String size = bookItem.getPropertyShow("size", String.valueOf(obj.getSize()));
-        size = size.substring(0, size.indexOf(","));
+        size = size.substring(0, size.indexOf(",") > 0 ? size.indexOf(",") : size.length());
         viewHolder.tvSize.setText(mContext.getString(R.string.cart_print_property_size, size));
 
         viewHolder.tvColor.setVisibility(View.VISIBLE);
@@ -81,19 +96,9 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
         return convertView;
     }
 
-    /**
-     * This class contains all butterknife-injected Views & Layouts from layout file 'item_my_order_print_item.xml'
-     * for easy to all layout elements.
-     *
-     * @author ButterKnifeZelezny, plugin for Android Studio by Avast Developers (http://github.com/avast)
-     */
     static class ViewHolder {
-        @Bind(R.id.iv_bookbg)
-        ImageView ivBookbg;
         @Bind(R.id.iv_book_cover)
         ImageView ivBookCover;
-        @Bind(R.id.fl_book_cover)
-        RatioFrameLayout flBookCover;
         @Bind(R.id.tv_size)
         TextView tvSize;
         @Bind(R.id.tv_color)
@@ -109,7 +114,7 @@ public class MyOrderPrintAdapter extends BaseListAdapter<PrintPropertyPriceObj> 
         @Bind(R.id.ll_price_number)
         LinearLayout llPriceNumber;
         @Bind(R.id.ll_root)
-        LinearLayout llRoot;
+        RelativeLayout llRoot;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

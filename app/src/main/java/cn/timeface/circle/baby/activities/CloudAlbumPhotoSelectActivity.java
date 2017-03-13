@@ -10,14 +10,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -29,16 +24,11 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.TimeBookPickerPhotoAdapter;
-import cn.timeface.circle.baby.api.models.objs.ImageInfoListObj;
-import cn.timeface.circle.baby.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.events.PhotoSelectEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.utils.DateUtil;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ToastUtil;
-import cn.timeface.open.api.models.objs.TFOContentObj;
-import cn.timeface.open.api.models.objs.TFOPublishObj;
-import cn.timeface.open.api.models.objs.TFOResourceObj;
+import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 
 /**
  * 云相册更换封面
@@ -69,7 +59,6 @@ public class CloudAlbumPhotoSelectActivity extends BaseAppCompatActivity impleme
     private int optionalPhotoSize;
     public ArrayList<ImageInfoListObj> dataList;
     private ArrayList<ImageInfoListObj> imageInfoList = new ArrayList<>();
-    private int bookPage;
     private TimeBookPickerPhotoAdapter adapter;
 
     @Override
@@ -80,7 +69,7 @@ public class CloudAlbumPhotoSelectActivity extends BaseAppCompatActivity impleme
 //        checkPermission();
         Intent intent = getIntent();
         dataList = intent.getParcelableArrayListExtra("dataList");
-        bookPage = intent.getIntExtra("bookPage", MAX_SELECTOR_SIZE);
+        int bookPage = intent.getIntExtra("bookPage", MAX_SELECTOR_SIZE);
         optionalPhotoSize = bookPage;
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -119,7 +108,7 @@ public class CloudAlbumPhotoSelectActivity extends BaseAppCompatActivity impleme
     }
 
     @Subscribe
-    public void onEvent(PhotoSelectEvent event) {
+    public void onEvent(PhotoSelectCountEvent event) {
         changeSelCount(event.count);
     }
 

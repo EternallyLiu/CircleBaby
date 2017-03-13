@@ -8,22 +8,31 @@
         android:id="@+id/appbar_layout"
         layout="@layout/layout_toolbar" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/content_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/appbar_layout"
         android:background="@color/bg_color2"
-        android:scrollbars="none"
-        android:layout_below="@+id/appbar_layout"/>
+        android:scrollbars="none">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/content_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_color2"
+            android:scrollbars="none" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <LinearLayout
         android:id="@+id/ll_no_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/appbar_layout"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_below="@+id/appbar_layout">
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -47,5 +56,6 @@
         android:id="@+id/tf_stateView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/appbar_layout"/>
+        android:visibility="gone"
+        android:layout_below="@+id/appbar_layout" />
 </RelativeLayout>

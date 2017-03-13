@@ -73,12 +73,12 @@
     <string name="icon_weibo">&#xe629;</string>
     <string name="mine">我的</string>
 
-    <string name="share_url_invite">http://www.timeface.cn/baby/babyShare/invite.html?babyId=%1$d</string>
-    <string name="share_url_time">http://www.timeface.cn/baby/babyShare/groupPicture.html?timeId=%1$d</string>
-    <string name="share_url_milestone">http://www.timeface.cn/baby/babyShare/milestone.html?babyId=%1$d</string>
-    <string name="share_url_generalmap">http://www.timeface.cn/baby/babyShare/generalMap.html?timeId=%1$d</string>
-    <string name="share_url_diary">http://www.timeface.cn/baby/babyShare/diary.html?timeId=%1$d</string>
-    <string name="share_url_video">http://www.timeface.cn/baby/babyShare/video.html?timeId=%1$d</string>
+    <string name="share_url_invite">babyShare/invite.html?babyId=%1$d</string>
+    <string name="share_url_time">babyShare/groupPicture.html?timeId=%1$d</string>
+    <string name="share_url_milestone">babyShare/milestone.html?babyId=%1$d</string>
+    <string name="share_url_generalmap">babyShare/generalMap.html?timeId=%1$d</string>
+    <string name="share_url_diary">babyShare/diary.html?timeId=%1$d</string>
+    <string name="share_url_video">babyShare/video.html?timeId=%1$d</string>
 
     <string name="picker_photo">选择图片</string>
     <string name="all_photo">全部图片</string>
@@ -188,7 +188,7 @@
     <string name="no_more_data">没有数据\n赶快添加一个吧</string>
     <string name="get_all_message">亲爱的，你已经没有内容喽</string>
     <string name="no_message">没有消息呢</string>
-    <string name="loading">正在加载...</string>
+    <string name="loading">正在加载…</string>
     <string name="no_connect">当前无网络连接，请重新连接</string>
     <string name="finish">完成</string>
     <string name="edit">编辑</string>
@@ -267,7 +267,7 @@
     <string name="integral">积分</string>
     <string name="integral_label">积分:</string>
     <string name="order_action_cancel">取消订单</string>
-    <string name="order_action_cancel_begin">取消订单中...</string>
+    <string name="order_action_cancel_begin">取消订单中…</string>
 
     <string name="book_null">还没有作品？快去制作吧</string>
 
@@ -295,9 +295,9 @@
     <string name="select_your_interest_field">选择您感兴趣的领域</string>
     <string name="begin_time_travel">开启时光之旅</string>
     <string name="recommend_attention_note">我们会根据所选的兴趣为你推荐精选的用户和内容</string>
-    <string name="apply_sale_status_up_begin">申请上架中...</string>
+    <string name="apply_sale_status_up_begin">申请上架中…</string>
     <string name="apply_sale_status_down">申请下架</string>
-    <string name="apply_sale_status_down_begin">申请下架中...</string>
+    <string name="apply_sale_status_down_begin">申请下架中…</string>
     <string name="review_begin">审核中</string>
     <string name="please_after_complete_summary_apply">请完善简介后再申请</string>
     <string name="please_after_select_category_apply">请选择分类后再申请</string>
@@ -454,7 +454,7 @@
     <string name="FALSE_COLOR">FALSE_COLOR</string>
     <string name="COLOR_BALANCE">COLOR_BALANCE</string>
     <string name="LEVELS_FILTER_MIN">LEVELS_FILTER_MIN</string>
-    <string name="detecting_faces">人脸识别...</string>
+    <string name="detecting_faces">人脸识别…</string>
 
     <!-- transition names -->
     <string name="avater_item">avater_item</string>
@@ -468,7 +468,7 @@
     <string name="skip">跳过</string>
     <string name="photo_caption">图注</string>
     <string name="album_all">所有照片</string>
-    <string name="tf_loading_desc">不是我太慢,是时间太快了...</string>
+    <string name="tf_loading_desc">不是我太慢,是时间太快了…</string>
     <string name="title_activity_scan">ScanActivity</string>
 
     <string name="title_activity_cart">印刷车</string>
@@ -672,5 +672,156 @@
     <string name="feed_back">反馈</string>
     <string name="terms_of_service">服务条款</string>
     <string name="timeface_copyright">时光流影   版权所有\nCopyright© 2014 TimeFace. All Rights Reserved.</string>
+    <string name="title_activity_book_list">BookListActivity</string>
+    <string name="time_line_select_year">年份</string>
+    <string name="time_line_select_title">成长记录</string>
+    <string name="time_line_select_baby_age">宝宝10个月</string>
+    <string name="time_line_select_month">10月</string>
+    <string name="time_line_select_pic_count">共s%张</string>
+    <string name="time_line_select_up">收起</string>
+    <string name="time_line_select_down">展开</string>
+    <string name="baby_name_input_tip">请输入宝宝的大名</string>
+    <string name="baby_name_appear_tip">显示大名</string>
+    <string name="baby_info_tv_big_name">宝宝大名</string>
+    <string name="baby_real_name_submit_null">对不起！您输入的大名不能为空！如果不需要他设置宝宝的大名，请直接点击左上角返回按钮</string>
+    <string name="baby_real_name_title">宝宝大名</string>
+    <string name="baby_real_name_save">保存</string>
+    <string name="baby_info_icons">用过的头像</string>
+    <string name="baby_icon_his_title">用过的头像</string>
 
+    <string name="bind_phone_hint">手机号</string>
+    <string name="bind_phone_hint_code">验证码</string>
+    <string name="bind_phone_hint_get_code">获取验证码</string>
+    <string name="bind_phone_skip">暂不绑定</string>
+    <string name="bind_phone_title">绑定手机号</string>
+    <string name="bind_phone_back">返回</string>
+    <string name="bind_phone_tip_note">成长印记需要您【验证手机号】才能进行下一步哦~</string>
+    <string name="bind_phone_tip_rule">手机号验证后，可获得100个积分奖励哦~</string>
+
+    <string name="settings_notify_password">修改密碼</string>
+    <string name="submit">确定</string>
+    <string name="bind_current_phone_tip">当前绑定的手机号：</string>
+    <string name="notify_pwd_new_again">请再次输入新密码</string>
+    <string name="notify_pwd_new">请输入您的新密码</string>
+    <string name="notify_pwd_old">请输入原密码</string>
+    <string name="pwd_input_tip">• 6~16位数的数字和字母组合</string>
+    <string name="pwd_input_old_null">• 输入的原密码不能为空！</string>
+    <string name="pwd_input_new_no">• 新密码输入框不能为空!</string>
+    <string name="notify_password">修改密码</string>
+    <string name="check_new_password_error">对不起！您两次输入的新密码不一致</string>
+    <string name="request_operation">正在请求操作……</string>
+    <string name="phone">手机号</string>
+    <string name="tag">标签</string>
+    <string name="tag_input_hint">请输入事件、地点或人物</string>
+    <string name="tag_history">历史标签</string>
+    <string name="tag_give_tip">推荐标签</string>
+    <string name="save_tip">保存</string>
+    <string name="tag_add_title">加标签</string>
+    <string name="tag_save_null_tip">对不起！选择标签之后再提交此操作！</string>
+    <string name="baby_name"><![CDATA[ <font color=\'#F79646\'>%1$s</font> ]]></string>
+    <string name="title_activity_card_preview">CardPreviewActivity</string>
+    <string name="title_activity_mine_book_v2">我的作品</string>
+    <string name="title_activity_recognize_card_create">识图卡片</string>
+    <string name="title_activity_select_server_photo">SelectServerPhotoActivity</string>
+    <string name="title_activity_select_time">SelectTimeActivity</string>
+    <string name="title_activity_select_server_time_detail">SelectServerTimeDetailActivity</string>
+    <string name="input_password">1234567890QWERTYUIOPASDFGHJKLZXCVBNM_</string>
+    <string name="title_activity_production_intro">产品介绍</string>
+
+    <string name="complete">完成</string>
+
+    <string name="msg_camera_framework_bug">抱歉，Android相机出现问题。您可能需要重启设备。</string>
+    <string name="select_picture">选择照片</string>
+    <string name="phone_album">手机相册</string>
+    <string name="time_album">时光相册</string>
+    <string name="dialog_ok">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="take_photo">拍照</string>
+    <string name="confirm">确认</string>
+    <string name="dialog_clear_cache">确定清空图片缓存?</string>
+
+    <string name="count_down_split_operator"> : </string>
+    <string name="put2my_bookshelf">加入我的书架</string>
+    <string name="width">宽度</string>
+    <string name="height">高度</string>
+
+    <string name="activity_notices">
+        活动期间我们会通过该手机号通知众筹活动进度以及剩余支付时间,
+        请及时关注.活动结束若不支付剩余金额,即视为自动放弃众筹活动资格,
+        预付款概不退回!
+    </string>
+    <string name="crowdfunding_notice">
+        <![CDATA[
+        <p>1. 当前图书最终价格根据预购人数，匹配相应的优惠折扣。预购人数越多，折扣越大。详情请点击价格帮助；</p>
+        <p>2. 在最终支付时间到达后仍未完成尾款支付的用户，众筹资格自动作废，预购款概不退回。</p>
+        <p><font color="#ff0000">3. 最终实付款为当前众筹价减去预付款。</font></p>
+        ]]>
+    </string>
+
+    <string name="import_qq_albums_tips">
+        我们正在导入您QQ空间的相册,请耐心等候,完成后我们会以系统消息的方式通知你. \n此页面关闭也没有关系哦!
+    </string>
+    <string name="importing_qq_albums">
+        我们正在导入您QQ空间的相册,请耐心等候,完成后我们会以系统消息的方式通知您.此页面关闭也没有关系哦!
+    </string>
+    <string name="import_too_faster">亲,您更新照片的速度太频繁,请明天再试</string>
+    <string name="check_in_earn_corn">签到赚积分</string>
+
+    <string name="book_subject_section2_content">
+        <![CDATA[<p>
+        <b>尺寸:</b><br/>
+        大小开本设定,满足不同需求 <br/>
+        收藏版（正16K） 260 X 185 毫米<br/>
+        舒适版（正32K） 216 X 150 毫米<br/>
+        </p>]]>
+    </string>
+
+    <string name="book_subject_section3_content">
+        <![CDATA[<p>
+        <b>封面:</b><br/>
+        （简装）简约文艺范儿<br/>
+        软装微喷打印, 完美 还原自设计封面<br/>
+        简约是一种生活态度<br/>
+        （精装）精致生活范儿<br/>
+        立体书壳包裹, 精致设计自己的小确幸<br/>
+        精致是没入灵魂的优雅感<br/>
+        </p>]]>
+    </string>
+
+    <string name="book_subject_section4_content">
+        <![CDATA[<p>
+        <b>印刷工艺:</b><br/>
+        独家高清印刷<br/>
+        原汁原味呈现你的真实记录<br/>
+        一本时光书,一段人生路<br/>
+        </p>]]>
+    </string>
+    <string name="create_calendar_now">立即制作</string>
+    <string name="calendar_2017_title">时光台历2017</string>
+    <string name="calendar_2017_subtitle">为家人/朋友/客户/员工定制一年美好回忆</string>
+    <string name="calendar_introduction_1">　　挑选12张照片入册</string>
+    <string name="calendar_introduction_2">　　丰富设计模板满足不同需求</string>
+    <string name="calendar_introduction_3">　　采用250g哑粉纸美感极致</string>
+    <string name="calendar_introduction_size">横版:宽230mm * 高165mm, 含底座高度约6寸</string>
+    <string name="calendar_introduction_orientation">竖版:宽150mm * 高205mm, 含底座高度约8寸</string>
+    <string name="calendar_page_size">13页双面印刷（12个月份, 每个月份正反2P+封面封底2P, 合计26P, 13张纸）</string>
+    <string name="calendar_page_paper">250g哑粉纸, 纸张坚挺用一年豪无压力, 手感温润细腻易书写</string>
+    <string name="bookbinding">装订方式</string>
+    <string name="calendar_introduction_bookbinding">360°双环装订, 单手就能翻阅, 完整呈现每一页画面</string>
+    <string name="memorials">纪念事件</string>
+    <string name="memorials_hint">如:妈妈生日等（最多5个字）</string>
+    <string name="select_date">选择日期</string>
+    <string name="select_date_hint">十月一日</string>
+    <string name="new_memorials">新增纪念日</string>
+
+    <string name="delete_name">删除</string>
+    <string name="bind_phone_get_code">发送验证码</string>
+    <string name="next">下一步</string>
+    <string name="select_server_photo_recommend_count">%s张照片效果最佳</string>
+    <string name="select_server_photo_select_count"><![CDATA[已选<font color = "#F79646"> %s </font>张]]></string>
+    <string name="select_server_time_select_count"><![CDATA[已选<font color = "#F79646"> %s </font>条记录]]></string>
+    <string name="publish_select_date_min">您选择的时间在宝宝生日之前，时光列表中将看不到哦~</string>
+
+
+    <string name="input_max_length_tip">您输入的内容不能超过%d字节（一个汉字2个字节，字母、数字和符号按照1个字节计算）</string>
 </resources>

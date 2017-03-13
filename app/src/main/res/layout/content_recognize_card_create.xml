@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="cn.timeface.circle.baby.ui.growth.activities.RecognizeCardCreateActivity"
+    tools:showIn="@layout/activity_recognize_card_create">
+
+    <ImageView
+        android:id="@+id/iv_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/size_36"
+        android:background="@color/white"
+        android:clickable="true"
+        android:padding="@dimen/size_80"
+        android:src="@drawable/card_add" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_add"
+        android:layout_marginTop="@dimen/size_24"
+        android:gravity="center"
+        android:text="点击上方 + 号添加图片"
+        android:textSize="@dimen/text_normal" />
+
+</RelativeLayout>

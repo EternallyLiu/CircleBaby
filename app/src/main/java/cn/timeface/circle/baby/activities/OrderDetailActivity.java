@@ -3,8 +3,6 @@ package cn.timeface.circle.baby.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,28 +20,26 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.adapters.MyOrderBookAdapter;
-import cn.timeface.circle.baby.api.models.objs.MyOrderBookItem;
-import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
-import cn.timeface.circle.baby.constants.LogConstant;
 import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.SelectPayWayDialog;
 import cn.timeface.circle.baby.events.OrderListRefreshEvent;
 import cn.timeface.circle.baby.events.PayResultEvent;
-import cn.timeface.circle.baby.managers.listeners.IEventBus;
-import cn.timeface.circle.baby.payment.alipay.AliPay;
-import cn.timeface.circle.baby.payment.timeface.AliPayNewUtil;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.api.models.objs.MyOrderBookItem;
+import cn.timeface.circle.baby.support.api.models.responses.MyOrderConfirmListResponse;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.payment.alipay.AliPay;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.OrderDetailFootView;
 import cn.timeface.circle.baby.views.OrderDetailHeaderView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
+import rx.Observable;
 import rx.Subscription;
 
 public class OrderDetailActivity extends BaseAppCompatActivity implements IEventBus {
@@ -69,29 +65,6 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
     private TFProgressDialog progressDialog;
     private int orderStatus;
     private String orderSummary;
-    private Timer timer = new Timer(true);
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    if (progressDialog != null) progressDialog.dismiss();
-                    PaySuccessActivity.open(OrderDetailActivity.this, orderId,
-                            orderPrice, orderStatus, orderSummary);
-                    finish();
-                    break;
-                case 2:
-                    if (orderStatus == TypeConstant.STATUS_CHECKING) {
-                        timer.cancel();
-                        progressDialog.dismiss();
-                        PaySuccessActivity.open(OrderDetailActivity.this, orderId,
-                                orderPrice, orderStatus, orderSummary);
-                        finish();
-                    }
-                    break;
-            }
-        }
-    };
 
     public static void open(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
@@ -113,7 +86,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
     }
 
     private void setupView() {
-        progressDialog = new TFProgressDialog(this);
+        progressDialog = TFProgressDialog.getInstance("");
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -143,10 +116,10 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                     if (listResponse.getOrderStatus() == 0 || listResponse.getOrderStatus() == 3) {
                         // 商家优惠码现场配送不显示运单号、物流信息
 //                        if (listResponse.getOrderStatus() == 5) {
-                            orderActionBtn.setText(getResources().getString(R.string.show_order));
-                            orderActionBtn.setVisibility(View.VISIBLE);
-                            orderActionCancelBtn.setVisibility(View.GONE);
-                            orderActionBtn.setBackgroundResource(R.color.bg_color1);
+                        orderActionBtn.setText(getResources().getString(R.string.show_order));
+                        orderActionBtn.setVisibility(View.VISIBLE);
+                        orderActionCancelBtn.setVisibility(View.GONE);
+                        orderActionBtn.setBackgroundResource(R.color.bg_color1);
 //                        }
                     }
                     // 待确认(未支付)
@@ -155,7 +128,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                         orderActionCancelBtn.setVisibility(View.VISIBLE);
                         orderActionBtn.setText(getResources().getString(R.string.payoff_at_once));
                         orderActionBtn.setBackgroundResource(R.drawable.selector_red_btn_bg);
-                    }else if(listResponse.getOrderStatus() == TypeConstant.STATUS_CLOSED || listResponse.getOrderStatus() == TypeConstant.STATUS_DELIVERY_SUCCESS){
+                    } else if (listResponse.getOrderStatus() == TypeConstant.STATUS_CLOSED || listResponse.getOrderStatus() == TypeConstant.STATUS_DELIVERY_SUCCESS) {
                         //已关闭
                         orderActionBtn.setVisibility(View.GONE);
                         orderActionCancelBtn.setVisibility(View.GONE);
@@ -185,7 +158,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                                 }
                             });
 
-                }else if(listResponse.getOrderStatus() == TypeConstant.STATUS_NOT_PAY){
+                } else if (listResponse.getOrderStatus() == TypeConstant.STATUS_NOT_PAY) {
                     //去支付
                     doPay();
                 }
@@ -211,7 +184,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
      */
     private void doPay() {
         orderPrice = listResponse.getOrderPrice();
-        progressDialog.setMessage(R.string.begin_payoff);
+        progressDialog.setTvMessage(getString(R.string.begin_payoff));
         Log.i("------->", "orderPrice:" + orderPrice + "-->getPayTitle:" + getPayTitle());
 //        if (orderPrice == 0) {//积分支付
 //            reqPayByPoint();
@@ -221,19 +194,19 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
             @Override
             public void okClick(int payType) {
                 dialog.dismiss();
-                progressDialog.show();
+                progressDialog.show(getSupportFragmentManager(), "");
                 switch (payType) {
                     // 支付宝
                     case 1:
-                        orderPrice = 0.01f;//一分钱测试支付
+//                        orderPrice = 0.01f;//一分钱测试支付
 //                            if (isUsePoint || !TextUtils.isEmpty(getUseCouponId())) {
 //                                //4混合支付(支付宝)
 //                                new AliPayNewUtil(MyOrderConfirmActivity.this, orderId, getPayTitle(), orderPrice, "4").pay();
 //                            } else {
 //                                //2支付宝支付
 //                        new AliPayNewUtil(OrderDetailActivity.this, orderId, getPayTitle(), orderPrice, "2").pay();
-                        Subscription subscription = new AliPay().payV2(orderId, OrderDetailActivity.this);
-                        addSubscription((subscription));
+
+                        addSubscription(new AliPay().payV2(orderId, OrderDetailActivity.this));
 //                            }
                         break;
 
@@ -244,11 +217,6 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
                             } else {
                                 new WxUtil(MyOrderConfirmActivity.this, orderId, FastData.getUserId(), "1").pay();
                             }
-                            break;*/
-
-                    //翼支付
-//                        case 3:
-                           /* new EPayUtil(MyOrderConfirmActivity.this, orderId).pay();
                             break;*/
                 }
             }
@@ -287,13 +255,13 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
             progressDialog.dismiss();
         }
 
-        if (event.type != null && (event.type).equals(PayResultEvent.PayType.WX)) {
-            if ((event.resultCode).equals("-1")) {
-                Toast.makeText(this, getString(R.string.pay_fail), Toast.LENGTH_SHORT).show();
-            } else if ((event.resultCode).equals("-2")) {
-                Toast.makeText(this, getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
-            }
-        }
+//        if (event.type != null && (event.type).equals(PayResultEvent.PayType.WX)) {
+//            if ((event.resultCode).equals("-1")) {
+//                Toast.makeText(this, getString(R.string.pay_fail), Toast.LENGTH_SHORT).show();
+//            } else if ((event.resultCode).equals("-2")) {
+//                Toast.makeText(this, getString(R.string.pay_cancel), Toast.LENGTH_SHORT).show();
+//            }
+//        }
 
         if (event.paySuccess()) {
             Toast.makeText(this, getString(R.string.pay_success), Toast.LENGTH_SHORT).show();
@@ -305,24 +273,33 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
      * 确认订单支付结果
      */
     private void reqConfirmOrder() {
-        progressDialog.setMessage(getString(R.string.pay_result_confirm_begin));
-        progressDialog.show();
+        progressDialog.setTvMessage(getString(R.string.pay_result_confirm_begin));
+        progressDialog.show(getSupportFragmentManager(), "");
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Subscription s = apiService.findOrderDetail(orderId)
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(response -> {
+        Subscription s = Observable.interval(1, 1, TimeUnit.SECONDS) //延时1s ，每间隔1s，时间单位
+                .flatMap(aLong -> apiService.findOrderDetail(orderId))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
                             if (response.success()) {
+//                                    orderDetail = response;
                                 orderStatus = response.getOrderStatus();
                                 orderSummary = response.getSummary();
-                                mHandler.sendEmptyMessage(2);
+
+                                if (orderStatus == TypeConstant.STATUS_CHECKING) {
+                                    if (progressDialog != null) {
+                                        progressDialog.dismiss();
+                                    }
+                                    PaySuccessActivity.open(this, orderId, orderPrice, orderStatus, orderSummary);
+                                    finish();
+                                }
                             }
-                        });
-                addSubscription(s);
-            }
-        }, 0, 2 * 1000);
+                        },
+                        throwable -> {
+                            Log.e(TAG, "reqConfirmOrder: ", throwable);
+                        }
+                );
+        addSubscription(s);
     }
 
     @Override
@@ -332,7 +309,7 @@ public class OrderDetailActivity extends BaseAppCompatActivity implements IEvent
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }

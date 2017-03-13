@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingBottom="@dimen/size_2"
+    android:paddingLeft="@dimen/size_4"
+    android:paddingRight="@dimen/size_6"
+    android:paddingTop="@dimen/size_2">
+
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/size_48"
+        android:layout_height="@dimen/size_48"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/size_4"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/create_state"
+        android:layout_width="@dimen/size_24"
+        android:layout_height="@dimen/size_24"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/family_creater" />
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/size_2"
+        android:layout_toRightOf="@+id/icon"
+        android:gravity="center_vertical|left"
+        android:lineSpacingExtra="@dimen/size_4"
+        android:lines="1"
+        android:padding="@dimen/size_4"
+        android:text="叔叔"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_medium" />
+
+    <ImageView
+        android:id="@+id/family_me"
+        android:layout_width="@dimen/size_24"
+        android:layout_height="@dimen/size_24"
+        android:layout_marginLeft="@dimen/size_6"
+        android:layout_marginTop="@dimen/size_4"
+        android:layout_toRightOf="@+id/content"
+        android:scaleType="fitCenter"
+        android:src="@drawable/family_me" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/size_2"
+        android:layout_toRightOf="@+id/icon"
+        android:gravity="center_vertical|left"
+        android:lineSpacingExtra="@dimen/size_4"
+        android:lines="1"
+        android:paddingLeft="@dimen/size_4"
+        android:paddingRight="@dimen/size_4"
+        android:paddingBottom="@dimen/size_4"
+        android:text="叔叔"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_small" />
+
+    <TextView
+        android:id="@+id/send_pic_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical|left"
+        android:lineSpacingExtra="@dimen/size_4"
+        android:lines="1"
+        android:paddingRight="@dimen/size_4"
+        android:paddingBottom="@dimen/size_4"
+        android:text="叔叔"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_small" />
+
+
+</RelativeLayout>

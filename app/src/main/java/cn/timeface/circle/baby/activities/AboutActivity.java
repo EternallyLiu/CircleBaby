@@ -14,7 +14,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.utils.Remember;
+import cn.timeface.circle.baby.support.utils.Remember;
 
 /**
  * @author shiyan
@@ -67,6 +67,6 @@ public class AboutActivity extends BaseAppCompatActivity {
      * 点击跳转至->服务条款
      */
     public void clickClause(View v) {
-        FragmentBridgeActivity.openWebViewFragment(this, "http://dev1.v5time.net/baby/serviceProvision.html", "服务条款");
+        FragmentBridgeActivity.openWebViewFragment(this, BuildConfig.API_URL+"serviceProvision.html", "服务条款");
     }
 }

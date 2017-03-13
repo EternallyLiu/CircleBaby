@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_create_calendar"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:elevation="0dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:navigationIcon="?attr/homeAsUpIndicator"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+        </android.support.design.widget.AppBarLayout>
+
+        <RadioGroup
+            android:id="@+id/rg_sides"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="-6dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/radio_front"
+                style="@style/TimeFaceTheme.IOS.TopTab.Left"
+                android:layout_width="@dimen/size_80"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="正面" />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/radio_back"
+                style="@style/TimeFaceTheme.IOS.TopTab.Right"
+                android:layout_width="@dimen/size_80"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="1dp"
+                android:gravity="center"
+                android:text="反面" />
+        </RadioGroup>
+
+        <cn.timeface.open.view.BookPodView
+            android:id="@+id/book_pod_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/size_24"
+            android:layout_marginRight="@dimen/size_24"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_48"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <cn.timeface.circle.baby.views.IconText
+                    android:id="@+id/tv_left"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="@dimen/size_48"
+                    android:gravity="center"
+                    android:text="@string/ic_back"
+                    android:textColor="@color/white_50"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/tv_month"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="@dimen/size_48"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    tools:text="2月" />
+
+                <cn.timeface.circle.baby.views.IconText
+                    android:id="@+id/tv_right"
+                    android:layout_width="@dimen/size_48"
+                    android:layout_height="@dimen/size_48"
+                    android:gravity="center"
+                    android:paddingBottom="8dp"
+                    android:rotation="180"
+                    android:text="@string/ic_back"
+                    android:textColor="@color/white_50"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_controller"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/size_12"
+                android:paddingEnd="@dimen/size_12"
+                android:paddingLeft="@dimen/size_12"
+                android:paddingRight="@dimen/size_12"
+                android:paddingStart="@dimen/size_12">
+
+                <TextView
+                    android:id="@+id/tv_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/size_48"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/ic_modify_paragraph"
+                    android:gravity="center"
+                    android:text="@string/edit_content"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/tv_print"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/size_48"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/ic_pod_request_print"
+                    android:enabled="true"
+                    android:gravity="center"
+                    android:text="@string/apply_print"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tv_delete"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/size_48"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:drawableTop="@drawable/ic_more_delete"
+                    android:enabled="true"
+                    android:gravity="center"
+                    android:text="@string/delete_name"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <cn.timeface.circle.baby.views.TFStateView
+        android:id="@+id/stateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_main"
+        tools:visibility="gone" />
+</FrameLayout>

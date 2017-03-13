@@ -13,8 +13,8 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.constants.TypeConstant;
+import cn.timeface.circle.baby.support.api.models.responses.MyOrderConfirmListResponse;
 
 /**
  * Created by zhsheng on 2016/6/22.

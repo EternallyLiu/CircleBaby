@@ -17,9 +17,6 @@ import android.widget.VideoView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +26,10 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.ClipVideoSuccessEvent;
-import cn.timeface.circle.baby.utils.ClipUtil;
-import cn.timeface.circle.baby.utils.Remember;
-import cn.timeface.circle.baby.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.ClipUtil;
+import cn.timeface.circle.baby.support.utils.Remember;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.RangeSeekBar;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
@@ -72,7 +70,7 @@ public class VideoEditActivity extends BaseAppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         hs.setVisibility(View.GONE);
-        tfProgressDialog = new TFProgressDialog(this);
+        tfProgressDialog = TFProgressDialog.getInstance("");
         path = getIntent().getStringExtra("path");
         duration = getIntent().getLongExtra("duration", 0);
         MediaController mc = new MediaController(this);
@@ -156,21 +154,23 @@ public class VideoEditActivity extends BaseAppCompatActivity {
                 }
                 ToastUtil.showToast("剪裁视频中…");
                 tvTag.setText("剪裁视频中…");
-                tfProgressDialog.setMessage("剪裁视频中…");
-                tfProgressDialog.show();
+                tfProgressDialog.setTvMessage("剪裁视频中…");
+                tfProgressDialog.show(getSupportFragmentManager(), "");
                 try {
                     if (min == 0 && max == seconds) {
                         EventBus.getDefault().post(new ClipVideoSuccessEvent(path, i));
                     } else {
                         String s = ClipUtil.clipVideo(path, min, max);
+                        LogUtil.showLog("s==="+s);
                         EventBus.getDefault().post(new ClipVideoSuccessEvent(s, i));
                     }
+                    LogUtil.showLog("clip finish");
                     tfProgressDialog.dismiss();
                     finish();
                 } catch (IOException e) {
                     isClip = false;
                     tfProgressDialog.dismiss();
-                    e.printStackTrace();
+                    LogUtil.showError(e);
                 }
                 isClip = false;
             }

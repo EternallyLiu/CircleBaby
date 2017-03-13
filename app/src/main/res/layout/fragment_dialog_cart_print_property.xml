@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:scaleimg="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,156 +14,173 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/rl_header_cover"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#00000000"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
-                <LinearLayout
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="12dp"
+                    android:background="@android:color/white" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_header_cover"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/rl_cover"
-                    android:layout_alignTop="@+id/rl_cover"
-                    android:layout_marginTop="12dp"
-                    android:background="@color/white"
-                    android:gravity="bottom"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="138dp"
+                        android:layout_marginLeft="12dp"
                         android:layout_marginRight="12dp"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="12dp"
+                        android:layout_toRightOf="@+id/rl_cover"
+                        android:orientation="vertical">
 
-                        <ProgressBar
-                            android:id="@+id/progressBar"
-                            android:layout_width="wrap_content"
+                        <RelativeLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/tv_price"
-                            android:layout_alignTop="@+id/tv_price"/>
+                            android:layout_marginTop="16dp"
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tv_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/red"/>
+                            <ProgressBar
+                                android:id="@+id/progressBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBottom="@+id/tv_price"
+                                android:layout_alignTop="@+id/tv_price" />
 
-                        <ImageView
-                            android:id="@+id/iv_close"
+                            <TextView
+                                android:id="@+id/tv_price"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/red" />
+
+                            <ImageView
+                                android:id="@+id/iv_close"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:clickable="true"
+                                android:src="@drawable/selector_btn_delete" />
+                        </RelativeLayout>
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:clickable="true"
-                            android:src="@drawable/selector_btn_delete"/>
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="16dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageButton
+                                android:id="@+id/book_print_number_minus_ib"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@drawable/shape_grey_border_bg"
+                                android:clickable="true"
+                                android:onClick="onBtnClick"
+                                android:src="@drawable/ic_minus_default" />
+
+                            <EditText
+                                android:id="@+id/book_print_number_et"
+                                android:layout_width="45dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="6dp"
+                                android:layout_marginRight="6dp"
+                                android:background="@drawable/shape_number_input_bg"
+                                android:gravity="center"
+                                android:imeOptions="actionDone"
+                                android:inputType="numberSigned"
+                                android:padding="5dp"
+                                android:text="1"
+                                android:textColor="@color/text_color9" />
+
+
+                            <ImageButton
+                                android:id="@+id/book_print_number_plus_ib"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@drawable/shape_red_border_bg"
+                                android:clickable="true"
+                                android:onClick="onBtnClick"
+                                android:src="@drawable/ic_plus_press" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                style="@style/OrderTextLabel"
+                                android:text="@string/select_print_number" />
+
+                            <TextView
+                                android:id="@+id/tv_max_amount"
+                                style="@style/OrderTextContent"
+                                android:layout_gravity="center_vertical"
+                                android:text="@string/print_top_limit" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_cover"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:id="@+id/rl_book_cover"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="26dp"
+                            android:clickable="true">
+
+                            <ImageView
+                                android:id="@+id/iv_book_cover"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:adjustViewBounds="true"
+                                android:maxWidth="100dp"
+                                android:paddingBottom="5px"
+                                android:paddingLeft="2px"
+                                android:paddingTop="2px"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/book_default_bg" />
+
+                            <ImageView
+                                android:id="@+id/iv_front_mask"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_alignBottom="@id/iv_book_cover"
+                                android:layout_alignLeft="@id/iv_book_cover"
+                                android:layout_alignRight="@id/iv_book_cover"
+                                android:layout_alignTop="@id/iv_book_cover"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/book_front_mask" />
+                        </RelativeLayout>
+
+                        <ImageView
+                            android:id="@+id/iv_book_tag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/fl_cover"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_time_book_tag_wechat"
+                            android:visibility="invisible" />
                     </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="138dp"
-                        android:layout_marginTop="16dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:id="@+id/book_print_number_minus_ib"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/shape_grey_border_bg"
-                            android:clickable="true"
-                            android:onClick="onBtnClick"
-                            android:src="@drawable/ic_minus_default"/>
-
-                        <EditText
-                            android:id="@+id/book_print_number_et"
-                            android:layout_width="45dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="6dp"
-                            android:layout_marginRight="6dp"
-                            android:background="@drawable/shape_number_input_bg"
-                            android:gravity="center"
-                            android:inputType="numberSigned"
-                            android:padding="5dp"
-                            android:text="1"
-                            android:textColor="@color/text_color9"/>
-
-
-                        <ImageButton
-                            android:id="@+id/book_print_number_plus_ib"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/shape_red_border_bg"
-                            android:clickable="true"
-                            android:onClick="onBtnClick"
-                            android:src="@drawable/ic_plus_press"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="138dp"
-                        android:layout_marginTop="8dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            style="@style/OrderTextLabel"
-                            android:text="@string/select_print_number"/>
-
-                        <TextView
-                            style="@style/OrderTextContent"
-                            android:layout_gravity="center_vertical"
-                            android:text="@string/print_top_limit"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rl_cover"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <com.github.rayboot.widget.ratioview.RatioFrameLayout
-                        android:id="@+id/fl_book_cover"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="26dp"
-                        android:layout_centerVertical="true"
-                        android:clickable="true"
-                        app:fixRatio="fixWidth"
-                        app:heightRatio="25"
-                        app:widthRatio="18">
-                        <ImageView
-                            android:id="@+id/iv_bookbg"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/book_front_mask" />
-
-                        <ImageView
-                            android:id="@+id/iv_book"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="@dimen/size_2"/>
-
-                    </com.github.rayboot.widget.ratioview.RatioFrameLayout>
-
-                    <ImageView
-                        android:visibility="invisible"
-                        android:id="@+id/iv_book_tag"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/fl_cover"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginLeft="16dp"
-                        android:src="@drawable/ic_time_book_tag_wechat"/>
                 </RelativeLayout>
-            </RelativeLayout>
+            </FrameLayout>
 
             <LinearLayout
+                android:id="@+id/ll_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rl_header_cover"
@@ -179,7 +194,7 @@
                     android:layout_height="1px"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@color/divider"/>
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -191,15 +206,14 @@
 
                     <TextView
                         style="@style/OrderTextLabel"
-                        android:text="选择开本（书本尺寸）"/>
+                        android:text="尺寸" />
 
                     <cn.timeface.circle.baby.views.NoScrollGridView
                         android:id="@+id/gv_book_size"
                         style="@style/PrintPropertyGrid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp">
-                    </cn.timeface.circle.baby.views.NoScrollGridView>
+                        android:layout_marginTop="16dp" />
                 </LinearLayout>
 
                 <View
@@ -207,7 +221,7 @@
                     android:layout_height="1px"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@color/divider"/>
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -219,15 +233,14 @@
 
                     <TextView
                         style="@style/OrderTextLabel"
-                        android:text="@string/cart_print_property_color_text"/>
+                        android:text="@string/cart_print_property_color_text" />
 
                     <cn.timeface.circle.baby.views.NoScrollGridView
                         android:id="@+id/gv_print_color"
                         style="@style/PrintPropertyGrid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp">
-                    </cn.timeface.circle.baby.views.NoScrollGridView>
+                        android:layout_marginTop="16dp" />
                 </LinearLayout>
 
                 <View
@@ -235,7 +248,7 @@
                     android:layout_height="1px"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@color/divider"/>
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -247,15 +260,14 @@
 
                     <TextView
                         style="@style/OrderTextLabel"
-                        android:text="纸张"/>
+                        android:text="纸张类别" />
 
                     <cn.timeface.circle.baby.views.NoScrollGridView
                         android:id="@+id/gv_paper"
                         style="@style/PrintPropertyGrid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp">
-                    </cn.timeface.circle.baby.views.NoScrollGridView>
+                        android:layout_marginTop="16dp" />
                 </LinearLayout>
 
                 <View
@@ -263,7 +275,7 @@
                     android:layout_height="1px"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:background="@color/divider"/>
+                    android:background="@color/divider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -280,12 +292,12 @@
 
                         <TextView
                             style="@style/OrderTextLabel"
-                            android:text="@string/cart_print_property_pack_text"/>
+                            android:text="装订方式" />
 
                         <TextView
                             android:id="@+id/tv_pack_label"
                             style="@style/OrderTextLabel"
-                            android:textColor="@color/bg27"/>
+                            android:textColor="@color/bg27" />
                     </LinearLayout>
 
 
@@ -294,8 +306,7 @@
                         style="@style/PrintPropertyGrid"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp">
-                    </cn.timeface.circle.baby.views.NoScrollGridView>
+                        android:layout_marginTop="16dp" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -322,7 +333,7 @@
             android:text="@string/add_to_cart"
             android:textAppearance="?android:attr/textAppearance"
             android:textColor="@color/white"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/btn_buy_now"
@@ -334,7 +345,7 @@
             android:text="@string/buy_now"
             android:textAppearance="?android:attr/textAppearance"
             android:textColor="@color/white"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/btn_ok"
@@ -346,6 +357,6 @@
             android:text="确定"
             android:textAppearance="?android:attr/textAppearance"
             android:textColor="@color/white"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 </RelativeLayout>

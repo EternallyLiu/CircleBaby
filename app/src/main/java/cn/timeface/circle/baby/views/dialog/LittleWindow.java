@@ -12,7 +12,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.api.models.objs.MineBookObj;
+import cn.timeface.circle.baby.support.api.models.objs.MineBookObj;
 
 /**
  * Created by zhsheng on 2016/5/13.
@@ -20,7 +20,6 @@ import cn.timeface.circle.baby.api.models.objs.MineBookObj;
 public class LittleWindow extends PopupWindow implements View.OnClickListener {
 
 //    private final TextView tvShare;
-    private final TextView tvDel;
     private final int[] mLocation = new int[2];
     private final View rootView;
     private ItemClickListener listener;
@@ -38,7 +37,7 @@ public class LittleWindow extends PopupWindow implements View.OnClickListener {
         setContentView(rootView);
 //        tvShare = (TextView) rootView.findViewById(R.id.share);
 //        tvShare.setOnClickListener(this);
-        tvDel = (TextView) rootView.findViewById(R.id.del);
+        TextView tvDel = (TextView) rootView.findViewById(R.id.del);
         tvDel.setOnClickListener(this);
     }
 

@@ -20,8 +20,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.cropper.CropImageView;
-import cn.timeface.circle.baby.utils.ImageUtil;
+import cn.timeface.circle.baby.views.cropper.CropImageView;
+import cn.timeface.circle.baby.support.utils.ImageUtil;
 import cn.timeface.common.utils.DeviceUtil;
 import cn.timeface.common.utils.StorageUtil;
 
@@ -41,7 +41,6 @@ public class CropPicActivity extends BaseAppCompatActivity {
     int ratioH;
     int outW;
     int outH;
-    private String path;
     private Bitmap bitmap;
 
     //path 文件路径
@@ -95,7 +94,7 @@ public class CropPicActivity extends BaseAppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.argb(255, 0, 0, 0)));
 
-        path = getIntent().getStringExtra("path");
+        String path = getIntent().getStringExtra("path");
         ratioW = getIntent().getIntExtra("ratio_w", 100);
         ratioH = getIntent().getIntExtra("ratio_h", 100);
         outW = getIntent().getIntExtra("out_w", 150);

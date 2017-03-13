@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_48">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="提示"
+                android:textColor="@color/colorPrimary"/>
+
+            <cn.timeface.circle.baby.views.IconText
+                android:visibility="gone"
+                android:layout_width="@dimen/size_48"
+                android:layout_height="@dimen/size_48"
+                android:layout_gravity="right"
+                android:gravity="center"
+                android:rotation="45"
+                android:text="@string/ic_plus"
+                android:textColor="@color/text_color4"
+                android:textSize="28sp"/>
+
+            <ImageView
+                android:id="@+id/tv_close"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_title_close"
+                android:layout_gravity="right"/>
+        </FrameLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color4"
+            android:textSize="@dimen/text_normal"
+            android:padding="@dimen/view_space_medium"
+            android:gravity="center"
+            android:text="上传12张图片可以自动匹配到12个月哦~"/>
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_upload"
+            style="@style/TimeFaceTheme.IOS.Button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="批量上传"
+            android:layout_marginTop="@dimen/view_space_medium"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_nope"
+            style="@style/TimeFaceTheme.IOS.ButtonEmpty"
+            android:layout_width="200dp"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:text="不了，我喜欢单张上传 "
+            android:textColor="@color/colorPrimary"
+            android:layout_marginBottom="@dimen/view_space_medium"/>
+    </LinearLayout>
+
+
+</FrameLayout>

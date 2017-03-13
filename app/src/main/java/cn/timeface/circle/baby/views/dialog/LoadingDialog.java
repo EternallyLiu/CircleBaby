@@ -22,7 +22,6 @@ import cn.timeface.circle.baby.R;
  * Created by zhsheng on 2016/5/5.
  */
 public class LoadingDialog extends DialogFragment {
-    private TextView tv_loading_msg;
     private ImageView imageView;
     private CharSequence tvLoadingMsg;
 
@@ -41,7 +40,7 @@ public class LoadingDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View loadingView = inflater.inflate(R.layout.view_loading, container, false);
         imageView = (ImageView) loadingView.findViewById(R.id.pb_loading);
-        tv_loading_msg = (TextView) loadingView.findViewById(R.id.tv_loading_msg);
+        TextView tv_loading_msg = (TextView) loadingView.findViewById(R.id.tv_loading_msg);
         ((Animatable)imageView.getDrawable()).start();
         if (!TextUtils.isEmpty(tvLoadingMsg)) tv_loading_msg.setText(tvLoadingMsg);
         return loadingView;

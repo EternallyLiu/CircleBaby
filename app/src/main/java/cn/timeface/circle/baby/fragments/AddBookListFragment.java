@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -20,12 +18,11 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.adapters.AddBookListAdapter;
-import cn.timeface.circle.baby.api.models.objs.BookTypeListObj;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
-import cn.timeface.circle.baby.managers.listeners.OnItemClickListener;
-import cn.timeface.circle.baby.utils.FastData;
-import cn.timeface.circle.baby.utils.ptr.TFPTRRecyclerViewHelper;
-import cn.timeface.circle.baby.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.managers.listeners.OnItemClickListener;
+import cn.timeface.circle.baby.support.api.models.objs.BookTypeListObj;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.TFStateView;
 
 public class AddBookListFragment extends BaseFragment {
