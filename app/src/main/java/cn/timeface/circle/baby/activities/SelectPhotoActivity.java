@@ -164,8 +164,8 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
 //            loadingDialog.setLoadingMsg("正在加载...");
 //            loadingDialog.show(getSupportFragmentManager(), "");
 //        } else {
-            reqData();
-            reqBucket();
+        reqData();
+        reqBucket();
 //        }
         setupGalleryView();
     }
@@ -307,17 +307,17 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
 
     private void setListData(List<PhotoGroupItem> datas) {
         List<PhotoGroupItem> data = new ArrayList<>();
-        for(PhotoGroupItem item : datas){
+        for (PhotoGroupItem item : datas) {
             String title = item.getTitle();
             List<PhotoModel> imgList = item.getImgList();
             List<PhotoModel> photoModels = new ArrayList<>();
-            for(PhotoModel photoModel : imgList){
-                if(ImageFactory.photoFilter(photoModel.getLocalPath())){
+            for (PhotoModel photoModel : imgList) {
+                if (ImageFactory.photoFilter(photoModel.getLocalPath())) {
                     photoModels.add(photoModel);
                 }
             }
-            if(photoModels.size()>0){
-                data.add(new PhotoGroupItem(title,photoModels));
+            if (photoModels.size() > 0) {
+                data.add(new PhotoGroupItem(title, photoModels));
             }
 
         }
@@ -365,7 +365,7 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     @Subscribe
     public void onEvent(PhotoSelectCountEvent event) {
         changeSelCount(event.count);
-        if(event.count == maxCount && maxCount == 1){
+        if (event.count == maxCount && maxCount == 1) {
             clickDone();
         }
     }
@@ -432,8 +432,8 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         }
     }
 
-    public void clickDone(){
-        if(forResult){
+    public void clickDone() {
+        if (forResult) {
             ArrayList<ImgObj> imgObjs = transToImgObj(adapter.getSelImgs());
             if (imgObjs.size() == 0) {
                 ToastUtil.showToast("请选择图片");
@@ -481,7 +481,8 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
                 break;
             case PHOTO_SELECT_CAMERA_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    ImageUtil.scanMediaJpegFile(this, mPhotoFile, this);
+                    if (mPhotoFile != null)
+                        ImageUtil.scanMediaJpegFile(this, mPhotoFile, this);
                 } else {
                     if (mPhotoFile != null) mPhotoFile.delete();
                 }
@@ -495,7 +496,8 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
         adapter.notifyDataSetChanged();
         changeSelCount(photoModels.size());
     }
-    private void intentCamera(){
+
+    private void intentCamera() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mPhotoFile = StorageUtil.genSystemPhotoFile();
             if (!mPhotoFile.getParentFile().exists()) {
@@ -508,8 +510,8 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
             intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);//设置Action为拍照
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//将拍取的照片保存到指定URI
-            startActivityForResult(intent,PHOTO_SELECT_CAMERA_REQUEST_CODE);
-        }else {
+            startActivityForResult(intent, PHOTO_SELECT_CAMERA_REQUEST_CODE);
+        } else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             mPhotoFile = StorageUtil.genSystemPhotoFile();
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
@@ -519,7 +521,9 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
 
     public void clickCamera(View view) {
         new RxPermissions(this).request(Manifest.permission.CAMERA)
-                .subscribe(permission->{if (permission)intentCamera();},throwable -> LogUtil.showError(throwable));
+                .subscribe(permission -> {
+                    if (permission) intentCamera();
+                }, throwable -> LogUtil.showError(throwable));
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 //
 //            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
@@ -542,12 +546,12 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode==KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             setResult(RESULT_OK, getIntent());
             finish();
             return true;
-        }else
-        return super.onKeyDown(keyCode, event);
+        } else
+            return super.onKeyDown(keyCode, event);
     }
 
     private void checkCameraPermission() {
