@@ -79,7 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_48"
         android:layout_alignParentBottom="true"
-        android:background="#DEF4F3F1"
+        android:background="#F4F3F1"
         android:orientation="horizontal"
         android:visibility="visible">
 
