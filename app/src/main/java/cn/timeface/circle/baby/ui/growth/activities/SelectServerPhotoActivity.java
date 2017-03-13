@@ -393,6 +393,11 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         tvContentType.setText(title);
     }
 
+    @Override
+    public void dismiss() {
+        if(selectContentTypeDialog != null) showSelectContentType(false);
+    }
+
     Fragment currentFragment = null;
     public void showContent(Fragment fragment) {
         canBack = false;
@@ -409,7 +414,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         currentFragment = fragment;
 
         if(currentFragment instanceof ServerPhotoFragment){
-//            rlPhotoTip.setVisibility(View.VISIBLE);
+//            rlPhotoTip.setVisibility(((ServerPhotoFragment) currentFragment).getSelectedMedias().isEmpty() ? View.GONE : View.VISIBLE);
             initAllSelectView(allSelectMedias.size());
         } else {
             rlPhotoTip.setVisibility(View.GONE);
@@ -434,7 +439,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         ft.commitAllowingStateLoss();
 
         if(currentFragmentEx instanceof ServerPhotoFragment){
-//            rlPhotoTip.setVisibility(View.VISIBLE);
+//            rlPhotoTip.setVisibility(((ServerPhotoFragment) currentFragmentEx).getSelectedMedias().isEmpty() ? View.GONE : View.VISIBLE);
             initAllSelectView(allSelectMedias.size());
         } else {
             rlPhotoTip.setVisibility(View.GONE);

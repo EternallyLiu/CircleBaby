@@ -407,6 +407,11 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         tvContentType.setText(title);
     }
 
+    @Override
+    public void dismiss() {
+        if(selectContentTypeDialog != null)setSelectContentShow(false);
+    }
+
     Fragment currentFragment = null;
 
     public void showContent(Fragment fragment) {

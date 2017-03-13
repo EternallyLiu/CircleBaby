@@ -186,7 +186,11 @@ public class ServerPhotoFragment extends BasePresenterFragment {
 
         llEmpty.setVisibility(serverPhotosAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
         if(getActivity() instanceof SelectServerPhotoActivity)
-            ((SelectServerPhotoActivity) getActivity()).setPhotoTipVisibility(llEmpty.isShown() ? View.GONE : View.VISIBLE);
+            ((SelectServerPhotoActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
+    }
+
+    public List<MediaObj> getSelectedMedias(){
+        return serverPhotosAdapter.getSelImgs();
     }
 
     /**

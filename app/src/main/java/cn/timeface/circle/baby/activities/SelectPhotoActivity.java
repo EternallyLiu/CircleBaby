@@ -522,15 +522,9 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
     public void clickCamera(View view) {
         new RxPermissions(this).request(Manifest.permission.CAMERA)
                 .subscribe(permission -> {
-                    if (permission) intentCamera();
-                }, throwable -> LogUtil.showError(throwable));
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
-//                    CAMERA_REQUEST_CODE);
-//        }else{
-//            intentCamera();
-//        }
+                            if (permission) intentCamera();
+                        },
+                        throwable -> LogUtil.showError(throwable));
     }
 
 

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -28,6 +29,8 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
     TextView tvTypeLocation;
     @Bind(R.id.tv_type_label)
     TextView tvTypeLabel;
+    @Bind(R.id.rl_root)
+    RelativeLayout rlRoot;
 
     @Bind({R.id.tv_type_time, R.id.tv_type_user, R.id.tv_type_location, R.id.tv_type_label})
     TextView[] textViews;
@@ -44,6 +47,7 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
         void selectTypeLocation();
         void selectTypeLabel();
         void setTypeText(String title);//设置标题名称
+        void dismiss();
     }
 
     public static SelectContentTypeDialog newInstance(SelectTypeListener selectTypeListener, int contentType, int bookType){
@@ -67,7 +71,7 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
         tvTypeUser.setOnClickListener(this);
         tvTypeLocation.setOnClickListener(this);
         tvTypeLabel.setOnClickListener(this);
-
+        rlRoot.setOnClickListener(this);
         contentType = getArguments().getInt("content_type", CONTENT_TYPE_PHOTO);
         bookType = getArguments().getInt("book_type", 0);
         if(contentType == CONTENT_TYPE_TIME){
@@ -86,24 +90,31 @@ public class SelectContentTypeDialog extends BasePresenterFragment implements Vi
 
     @Override
     public void onClick(View view) {
-        setBtnsEnable(view.getId());
         switch (view.getId()) {
             case R.id.tv_type_time:
                 selectTypeListener.selectTypeTime();
+                setBtnsEnable(view.getId());
                 break;
 
             //跳转成员选择页面
             case R.id.tv_type_user:
                 selectTypeListener.setTypeText("按发布人");//设置标题
                 selectTypeListener.selectTypeUser();
+                setBtnsEnable(view.getId());
                 break;
 
             case R.id.tv_type_location:
                 selectTypeListener.selectTypeLocation();
+                setBtnsEnable(view.getId());
                 break;
 
             case R.id.tv_type_label:
                 selectTypeListener.selectTypeLabel();
+                setBtnsEnable(view.getId());
+                break;
+
+            case R.id.rl_root:
+                selectTypeListener.dismiss();
                 break;
         }
     }
