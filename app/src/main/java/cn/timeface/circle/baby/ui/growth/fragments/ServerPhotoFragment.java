@@ -5,16 +5,11 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +18,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
-import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
-import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -52,12 +43,6 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     TFStateView stateView;
     @Bind(R.id.ll_empty)
     LinearLayout llEmpty;
-//    @Bind(R.id.tv_recommend_count)
-//    TextView tvRecommendCount;
-//    @Bind(R.id.tv_sel_count)
-//    TextView tvSelectCount;
-//    @Bind(R.id.rl_photo_tip)
-//    RelativeLayout rlPhotoTip;
 
     int contentType;
     String userId;
@@ -121,17 +106,6 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         return fragment;
     }
 
-//    /**
-//     * 编辑状态
-//     * @param contentType
-//     * @param userId
-//     * @param selectedMedias
-//     * @return
-//     */
-//    public ServerPhotoFragment newInstanceEdit(int contentType, String userId, List<MediaObj> selectedMedias, int bookType, int babyId){
-//        return newInstanceEdit(contentType, userId, selectedMedias, new ArrayList<>(), bookType, babyId);
-//    }
-
     public ServerPhotoFragment() {}
 
     @Nullable
@@ -154,6 +128,16 @@ public class ServerPhotoFragment extends BasePresenterFragment {
             setListData(mediaWrapObjs);
         }
         if(getActivity() instanceof SelectServerPhotoActivity) ((SelectServerPhotoActivity) getActivity()).initTips();
+        rvContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if(Math.abs(dy) > 5 && getActivity() instanceof SelectServerPhotoActivity){
+                    ((SelectServerPhotoActivity) getActivity()).showSelectContentType(false);
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
         return view;
     }
 
@@ -204,19 +188,6 @@ public class ServerPhotoFragment extends BasePresenterFragment {
         if(getActivity() instanceof SelectServerPhotoActivity)
             ((SelectServerPhotoActivity) getActivity()).setPhotoTipVisibility(llEmpty.isShown() ? View.GONE : View.VISIBLE);
     }
-
-    public List<MediaObj> getSelectedMedias(){
-        return (serverPhotosAdapter == null || serverPhotosAdapter.getSelImgs() == null) ? new ArrayList<>() : serverPhotosAdapter.getSelImgs();
-    }
-
-    public int getContentType() {
-        return contentType;
-    }
-
-//    @Subscribe
-//    public void photoCountEvent(PhotoSelectCountEvent countEvent){
-//        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(countEvent.count))));
-//    }
 
     /**
      * 设置选中的图片

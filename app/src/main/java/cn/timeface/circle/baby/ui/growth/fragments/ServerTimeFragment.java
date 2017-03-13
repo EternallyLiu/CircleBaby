@@ -104,6 +104,15 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         this.babyId = getArguments().getInt("baby_id");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
         if(timeIds == null) timeIds = new ArrayList<>();
+        rvContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if(Math.abs(dy) > 5 && getActivity() instanceof SelectServerTimeActivity){
+                    ((SelectServerTimeActivity) getActivity()).setSelectContentShow(false);
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
 
         reqData();
         return view;
@@ -148,14 +157,6 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         if(getActivity() instanceof SelectServerTimeActivity) ((SelectServerTimeActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
     }
 
-    public List<TimeLineObj> getSelectedTimeLines(){
-        return (serverTimesAdapter == null || serverTimesAdapter.getSelImgs() == null) ? new ArrayList<>() : serverTimesAdapter.getSelImgs();
-    }
-
-    public List<MediaObj> getSelectedMedias(){
-        return (serverTimesAdapter == null || serverTimesAdapter.getSelMedias() == null) ? new ArrayList<>() : serverTimesAdapter.getSelMedias();
-    }
-
     public int getQueryType(){
         switch (bookType) {
             //成长语录
@@ -181,14 +182,6 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
      */
     public boolean isAllSelect(){
         return serverTimesAdapter != null ? serverTimesAdapter.isAllSelect() : false;
-    }
-
-    /**
-     * 该页面选择了多少条内容
-     * @return
-     */
-    public int getSelectCount(){
-        return serverTimesAdapter != null ? serverTimesAdapter.getSelImgs().size() : 0;
     }
 
     /**
@@ -231,47 +224,4 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
                 break;
         }
     }
-
-//    @Subscribe
-//    public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
-        //选中
-//        if(selectMediaEvent.getSelect()){
-//            if(!mediaObjs.contains(selectMediaEvent.getMediaObj())){
-//                mediaObjs.add(selectMediaEvent.getMediaObj());
-//            }
-//        } else {
-//            if(mediaObjs.contains(selectMediaEvent.getMediaObj())){
-//                mediaObjs.remove(selectMediaEvent.getMediaObj());
-//            }
-//        }
-//    }
-
-//    @Subscribe
-//    public void selectMediaListEvent(SelectMediaListEvent mediaListEvent){
-        //选中
-//        if(mediaListEvent.isSelect()){
-//            if(!mediaObjs.containsAll(mediaListEvent.getMediaObjList())){
-//                mediaObjs.addAll(mediaListEvent.getMediaObjList());
-//            }
-//        } else {
-//            if(mediaObjs.containsAll(mediaListEvent.getMediaObjList())){
-//                mediaObjs.removeAll(mediaListEvent.getMediaObjList());
-//            }
-//        }
-//    }
-
-//    @Subscribe
-//    public void selectTimeLineEvent(SelectTimeLineEvent selectTimeLineEvent){
-        //选中
-//        if(selectTimeLineEvent.isSelect()){
-//            if(!serverTimesAdapter.getSelImgs().contains(selectTimeLineEvent.getTimeLineObj())){
-//                serverTimesAdapter.getSelImgs().add(selectTimeLineEvent.getTimeLineObj());
-//            }
-//        } else {
-//            if(serverTimesAdapter.getSelImgs().contains(selectTimeLineEvent.getTimeLineObj())){
-//                serverTimesAdapter.getSelImgs().remove(selectTimeLineEvent.getTimeLineObj());
-//            }
-//        }
-//        serverTimesAdapter.notifyDataSetChanged();
-//    }
 }
