@@ -212,30 +212,6 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.save){
-//            List<MediaObj> selectedMedias = new ArrayList<>();
-//            if(timePhotoFragment != null){
-//                selectedMedias.addAll(timePhotoFragment.getSelectedMedias());
-//            }
-//
-//            //取出所有用户发的选中的照片
-//            Iterator iterator = userPhotoFragmentMap.entrySet().iterator();
-//            while (iterator.hasNext()){
-//                Map.Entry entry = (Map.Entry) iterator.next();
-//                ServerPhotoFragment photoFragment = (ServerPhotoFragment) entry.getValue();
-//                selectedMedias.addAll(photoFragment.getSelectedMedias());
-//            }
-//
-//            //取出所有从地点筛选选中的照片
-//            Iterator iteratorLocation = locationPhotoFragmentMap.entrySet().iterator();
-//            while (iteratorLocation.hasNext()){
-//                Map.Entry entry = (Map.Entry) iteratorLocation.next();
-//                ServerPhotoFragment photoFragment = (ServerPhotoFragment) entry.getValue();
-//                selectedMedias.addAll(photoFragment.getSelectedMedias());
-//            }
-//
-//            if(labelPhotoFragment != null){
-//                selectedMedias.addAll(labelPhotoFragment.getSelectedMedias());
-//            }
 
             int pageNum = allSelectMedias.size();
             if(pageNum == 0){
@@ -349,25 +325,15 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     @Override
     public void selectTypeTime() {
         tvContentType.setText("按时间");
-        if(timePhotoFragment == null){
-//            if(TextUtils.isEmpty(bookId)){
-                timePhotoFragment = ServerPhotoFragment.newInstanceEdit(
-                        TypeConstants.PHOTO_TYPE_TIME,
-                        FastData.getUserId(),
-                        "",
-                        allSelectMedias,
-                        new ArrayList<>(),
-                        bookType,
-                        babyId);
-//            } else {
-//                timePhotoFragment = ServerPhotoFragment.newInstanceEdit(
-//                        TypeConstants.PHOTO_TYPE_TIME,
-//                        FastData.getUserId(),
-//                        "",
-//                        allSelectMedias,
-//                        bookType,
-//                        babyId);
-//            }
+        if(timePhotoFragment == null) {
+            timePhotoFragment = ServerPhotoFragment.newInstanceEdit(
+                    TypeConstants.PHOTO_TYPE_TIME,
+                    FastData.getUserId(),
+                    "",
+                    allSelectMedias,
+                    new ArrayList<>(),
+                    bookType,
+                    babyId);
         }
         timePhotoFragment.setMediaObjs(allSelectMedias);
         showContent(timePhotoFragment);
@@ -407,19 +373,15 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     @Override
     public void selectTypeLabel() {
         tvContentType.setText("按标签");
-        if(labelPhotoFragment == null){
-//            if(TextUtils.isEmpty(bookId)){
-//                labelPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LABEL, FastData.getUserId(), bookType);
-//            } else {
-                labelPhotoFragment = ServerPhotoFragment.newInstanceEdit(
-                        TypeConstants.PHOTO_TYPE_LABEL,
-                        FastData.getUserId(),
-                        "",
-                        allSelectMedias,
-                        new ArrayList<>(),
-                        bookType,
-                        babyId);
-//            }
+        if(labelPhotoFragment == null) {
+            labelPhotoFragment = ServerPhotoFragment.newInstanceEdit(
+                    TypeConstants.PHOTO_TYPE_LABEL,
+                    FastData.getUserId(),
+                    "",
+                    allSelectMedias,
+                    new ArrayList<>(),
+                    bookType,
+                    babyId);
         }
         labelPhotoFragment.setMediaObjs(allSelectMedias);
         showContent(labelPhotoFragment);
@@ -484,22 +446,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_content_type:
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
-                if (fragmentShow) {
-                    transaction.hide(selectContentTypeDialog);
-                    fragmentShow = false;
-                } else {
-                    if (selectContentTypeDialog == null) {
-                        selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_PHOTO, bookType);
-                        transaction.add(R.id.fl_container_type, selectContentTypeDialog);
-                    } else {
-                        transaction.show(selectContentTypeDialog);
-                    }
-                    fragmentShow = true;
-                }
-                transaction.commit();
+                showSelectContentType(!fragmentShow);
                 break;
 
             //点击选择用户操作
@@ -516,23 +463,39 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                     rlPhotoTip.setVisibility(View.VISIBLE);
                 } else {
                     ServerPhotoFragment serverPhotoFragment;
-//                    if(TextUtils.isEmpty(bookId)){
-//                        serverPhotoFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, userWrapObj.getUserInfo().getUserId(), bookType);
-//                    } else {
-                        serverPhotoFragment = ServerPhotoFragment.newInstanceEdit(
-                                TypeConstants.PHOTO_TYPE_USER,
-                                userWrapObj.getUserInfo().getUserId(),
-                                "",
-                                allSelectMedias,
-                                new ArrayList<>(),
-                                bookType, babyId);
-//                    }
+                    serverPhotoFragment = ServerPhotoFragment.newInstanceEdit(
+                            TypeConstants.PHOTO_TYPE_USER,
+                            userWrapObj.getUserInfo().getUserId(),
+                            "",
+                            allSelectMedias,
+                            new ArrayList<>(),
+                            bookType, babyId);
                     userPhotoFragmentMap.put(userWrapObj.getUserInfo().getUserId(), serverPhotoFragment);
                     userPhotoFragmentMap.get(userWrapObj.getUserInfo().getUserId()).setMediaObjs(allSelectMedias);
                     showContentEx(serverPhotoFragment);
                 }
                 break;
         }
+    }
+
+    public void showSelectContentType(boolean show){
+        if(fragmentShow == show) return;
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
+        if (!show) {
+            transaction.hide(selectContentTypeDialog);
+            fragmentShow = false;
+        } else {
+            if (selectContentTypeDialog == null) {
+                selectContentTypeDialog = SelectContentTypeDialog.newInstance(this, SelectContentTypeDialog.CONTENT_TYPE_PHOTO, bookType);
+                transaction.add(R.id.fl_container_type, selectContentTypeDialog);
+            } else {
+                transaction.show(selectContentTypeDialog);
+            }
+            fragmentShow = true;
+        }
+        transaction.commit();
     }
 
     private void initAllSelectView(int selectCount){
@@ -615,17 +578,13 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                             locationPhotoFragmentMap.get(city).setMediaObjs(allSelectMedias);
                                         } else {
                                             ServerPhotoFragment locationFragment;
-//                                            if (TextUtils.isEmpty(bookId)) {
-//                                                locationFragment = ServerPhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_LOCATION, FastData.getUserId(), response.getLocationInfo().getCity(), mediaWrapObjs, bookType);
-//                                            } else {
-                                                locationFragment = ServerPhotoFragment.newInstanceEdit(
-                                                        TypeConstants.PHOTO_TYPE_LOCATION,
-                                                        FastData.getUserId(),
-                                                        "",
-                                                        allSelectMedias,
-                                                        mediaWrapObjs,
-                                                        bookType, babyId);
-//                                            }
+                                            locationFragment = ServerPhotoFragment.newInstanceEdit(
+                                                    TypeConstants.PHOTO_TYPE_LOCATION,
+                                                    FastData.getUserId(),
+                                                    "",
+                                                    allSelectMedias,
+                                                    mediaWrapObjs,
+                                                    bookType, babyId);
 
                                             locationPhotoFragmentMap.put(city, locationFragment);
                                             locationPhotoFragmentMap.get(city).setMediaObjs(allSelectMedias);
@@ -638,9 +597,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                         ToastUtil.showToast(response.info);
                                     }
                                 },
-                                throwable -> {
-                                    Log.e(TAG, throwable.getLocalizedMessage());
-                                }
+                                throwable -> Log.e(TAG, throwable.getLocalizedMessage())
                         )
         );
     }

@@ -158,7 +158,7 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
                 obj.getBookSummary(),
                 obj.getBookId(),
                 String.valueOf(obj.getBookType()),
-                obj.getBookTotalPage(),
+                obj.getContentList().size() - 2,//去掉封面封底
                 CommemorationDataManger.getInstance().toData()
         );
     }
@@ -189,7 +189,7 @@ public class CalendarModel extends BasePresenterModel implements CalendarPresent
                 obj.getBookSummary(),
                 obj.getBookId(),
                 String.valueOf(obj.getBookType()),
-                obj.getBookTotalPage(),
+                obj.getContentList().size() - 2,
                 CommemorationDataManger.getInstance().toData());
     }
 

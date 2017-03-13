@@ -1,9 +1,7 @@
 package cn.timeface.circle.baby.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.DownloadManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -13,14 +11,12 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.tbruyelle.rxpermissions.RxPermissions;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -29,27 +25,20 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.ShareSDK;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.BuildConfig;
-import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.TFDialog;
-import cn.timeface.circle.baby.support.managers.receivers.DownloadCompleteReceiver;
 import cn.timeface.circle.baby.support.api.models.PushItem;
 import cn.timeface.circle.baby.support.api.models.responses.PushResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
-import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
+import cn.timeface.circle.baby.support.managers.receivers.DownloadCompleteReceiver;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.NotificationUtil;
 import cn.timeface.circle.baby.support.utils.Once;
 import cn.timeface.circle.baby.support.utils.Utils;
-import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
-import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DeviceUtil;
 import cn.timeface.common.utils.NetworkUtil;
@@ -104,6 +93,7 @@ public class SplashActivity extends BaseAppCompatActivity {
                             CreateBabyActivity.open(outer, true);
                         }
                     }
+                    outer.finish();
                 }
             }
         }
