@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_item_root"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/selector_album_item"
     android:clickable="true"
     android:gravity="center_vertical"
@@ -28,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            android:src="@drawable/login_default" />
+            tools:src="@drawable/login_default" />
 
     </FrameLayout>
 
@@ -47,21 +48,23 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:layout_marginTop="4dp"
+            android:ellipsize="end"
             android:maxLength="20"
-            android:singleLine="true"
-            android:text="Small Text"
+            android:maxLines="1"
             android:textColor="@color/selector_select_album_text"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            tools:text="Small Text" />
 
         <TextView
             android:id="@+id/tvCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:maxLength="20"
-            android:singleLine="true"
-            android:text="Small Text"
+            android:maxLines="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@color/text_color2" />
+            android:textColor="@color/text_color2"
+            tools:text="Small Text" />
 
     </LinearLayout>
 
