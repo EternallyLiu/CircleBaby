@@ -418,7 +418,7 @@ public class FastData extends Remember {
 
     public static String getBabyName() {
 //        return getString(BABY_Name, "");
-        return getBabyObj().getName();
+        return getBabyNickName();
     }
 
     public static void setBabyRealName(String name) {

@@ -190,11 +190,12 @@ public class LoginActivity extends BaseAppCompatActivity implements IEventBus {
                 FastData.setAccount(account);
                 FastData.setPassword(psw);
                 FastData.setBabyCount(loginResponse.getBabycount());
-                if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("type", 0);
-                    FragmentBridgeActivity.open(this, BindPhoneFragment.class.getSimpleName(), bundle);
-                } else if (loginResponse.getBabycount() == 0) {
+//                if (TextUtils.isEmpty(loginResponse.getUserInfo().getPhoneNumber())) {
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt("type", 0);
+//                    FragmentBridgeActivity.open(this, BindPhoneFragment.class.getSimpleName(), bundle);
+//                } else
+                if (loginResponse.getBabycount() == 0) {
                     CreateBabyActivity.open(this, true);
                 } else {
                     startActivity(new Intent(this, TabMainActivity.class));

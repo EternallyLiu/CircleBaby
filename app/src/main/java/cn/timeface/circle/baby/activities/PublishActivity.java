@@ -695,7 +695,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             return;
         }
         if (type == 4 && TextUtils.isEmpty(value)) {
-            ToastUtil.showToast("在输入框写点内容吧？");
+            ToastUtil.showToast("在输入框写点内容吧！");
             isPublish = false;
             return;
         }
