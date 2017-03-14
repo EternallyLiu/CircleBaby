@@ -109,7 +109,7 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        String content = "我在成长印记记录了" + FastData.getBabyName() + "的成长，快来一起关注" + FastData.getBabyName() + "的成长瞬间！";
+        String content = "我在成长印记记录了" + FastData.getBabyNickName() + "的成长，快来一起关注" + FastData.getBabyNickName() + "的成长瞬间！";
         String url = "";
         if (inviteResponse != null) {
             String inviteCode = inviteResponse.getInviteCode();

@@ -77,7 +77,7 @@ public abstract class ProductionListActivity extends BasePresenterAppCompatActiv
     }
 
     protected void setupEmptyViewContent(boolean hasPic) {
-        String babyName = FastData.getBabyName();
+        String babyName = FastData.getBabyNickName();
         switch (bookType) {
             case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
                 tvEmptyInfo.setText(hasPic ? babyName + "的成长纪念册为空哦，赶紧制作一本属于" + babyName + "的成长纪念册吧~"

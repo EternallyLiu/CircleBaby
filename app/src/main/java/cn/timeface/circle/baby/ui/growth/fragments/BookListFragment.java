@@ -147,7 +147,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                     keys.add("book_author");
                     keys.add("book_title");
                     values.add(FastData.getUserName());
-                    values.add(FastData.getBabyName() + "的照片书");
+                    values.add(FastData.getBabyNickName() + "的照片书");
                     MyPODActivity.open(
                             getContext(),
                             String.valueOf(bookObj.getBookId()),
@@ -217,7 +217,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
     }
 
     private void setupEmptyView(boolean hasPic) {
-        String babyName = FastData.getBabyName();
+        String babyName = FastData.getBabyNickName();
         switch (bookType) {
             case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
                 tvEmptyInfo.setText(hasPic ? babyName + "的成长纪念册为空哦，赶紧制作一本属于" + babyName + "的成长纪念册吧~"

@@ -62,7 +62,7 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
         if (info.getType() == 0) {
             holder.tvRelation.setText("系统消息");
         } else {
-            holder.tvRelation.setText(FastData.getBabyName() + info.getUserInfo().getRelationName());
+            holder.tvRelation.setText(FastData.getBabyNickName() + info.getUserInfo().getRelationName());
         }
         holder.tvTime.setText(DateUtil.formatDate("yyyy-MM-dd kk:mm", info.getTime()));
         if (info.getTimeInfo().getMediaList() == null || info.getTimeInfo().getMediaList().size() < 1) {
@@ -96,7 +96,7 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
                 content = info.getContent();
                 break;
             case 4:
-                content = "加入了宝宝印记，关注" + FastData.getBabyName() + "成长";
+                content = "加入了宝宝印记，关注" + FastData.getBabyNickName() + "成长";
                 break;
         }
         holder.tvContent.setText(content);

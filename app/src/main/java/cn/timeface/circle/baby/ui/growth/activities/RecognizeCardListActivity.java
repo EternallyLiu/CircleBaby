@@ -61,7 +61,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setTitle(FastData.getBabyName() + "识图卡片");
+        getSupportActionBar().setTitle(FastData.getBabyNickName() + "识图卡片");
 
         cardPresenter = new CardPresenter(this);
 
@@ -202,7 +202,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                                 FastData.getUserInfo().getNickName(),
                                 selectCards.get(0).getMedia().getImgUrl(),
                                 "",
-                                FastData.getBabyName() + "的识图卡片",
+                                FastData.getBabyNickName() + "的识图卡片",
                                 bookType,
                                 "",
                                 sb.toString(),
@@ -224,7 +224,7 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                                         0,//识图卡片没有booksizeid，传值0
                                         response.getDataId(),
                                         selectCards.get(0).getMedia().getImgUrl(),
-                                        FastData.getBabyName() + "的识图卡片",
+                                        FastData.getBabyNickName() + "的识图卡片",
                                         System.currentTimeMillis(),
                                         CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD).reqPrintStatus();
                                 CountlyEventHelper.getInstance().printEvent(FastData.getUserId(), response.getDataId());

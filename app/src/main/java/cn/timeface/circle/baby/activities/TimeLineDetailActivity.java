@@ -199,7 +199,7 @@ public class TimeLineDetailActivity extends BaseAppCompatActivity implements Vie
         tvContent.setText(timelineobj.getContent());
         tvAuthor.setText(timelineobj.getAuthor().getRelationName());
         tvDate.setText(DateUtil.formatDate("MM-dd kk:mm", timelineobj.getDate()));
-        getSupportActionBar().setTitle(timelineobj.getAuthor().getBabyObj().getName());
+        getSupportActionBar().setTitle(timelineobj.getAuthor().getBabyObj().getNickName());
         iconLike.setSelected(timelineobj.getLike() == 1 ? true : false);
 
         if (!TextUtils.isEmpty(timelineobj.getMilestone())) {

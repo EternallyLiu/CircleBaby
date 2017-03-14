@@ -79,7 +79,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
         cardPresenter.loadDiaryCard();
 
         btnAskPrint.setOnClickListener(this);
-        getSupportActionBar().setTitle(FastData.getBabyName() + "的日记卡片");
+        getSupportActionBar().setTitle(FastData.getBabyNickName() + "的日记卡片");
         rvBooks.setPadding(
                 getResources().getDimensionPixelOffset(R.dimen.size_16),
                 0,
@@ -216,7 +216,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
                                         FastData.getUserInfo().getNickName(),
                                         selectCards.get(0).getMedia().getImgUrl(),
                                         "",
-                                        FastData.getBabyName() + "的日记卡片",
+                                        FastData.getBabyNickName() + "的日记卡片",
                                         bookType,
                                         "",
                                         sb.toString(),
@@ -238,7 +238,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
                                                 bookSizeId,
                                                 response.getDataId(),
                                                 selectCards.get(0).getMedia().getImgUrl(),
-                                                FastData.getBabyName() + "的日记卡片",
+                                                FastData.getBabyNickName() + "的日记卡片",
                                                 System.currentTimeMillis(),
                                                 CartPrintPropertyDialog.REQUEST_CODE_DIARY_CARD).reqPrintStatus();
                                         CountlyEventHelper.getInstance().printEvent(FastData.getUserId(), response.getDataId());

@@ -152,7 +152,8 @@ public class BabyObj extends BaseModel implements Parcelable {
     }
 
     public String getName() {
-        return getNickName();
+//        return getNickName();
+        return name;
     }
 
     public void setName(String name) {
