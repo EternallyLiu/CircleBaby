@@ -296,15 +296,15 @@ public class MediaObj extends BaseObj implements Parcelable {
 
         if (o instanceof MediaObj) {
             MediaObj mediaObj = (MediaObj) o;
-            //mediaid 一样并且 标签也一致才相同
+            //mediaid 一样
             if (mediaObj != null && (getId() != 0 && getId() == mediaObj.getId()))
                 return true;
             else if (mediaObj != null && getId() <= 0) {
                 //判断本地唯一标记是否相同，相同那么就返回true 否则比较本地地址是否为空，不为空返回地址是否相同
-                return !TextUtils.isEmpty(getLocalIdentifier()) && !TextUtils.isEmpty(mediaObj.getLocalIdentifier()) ? getLocalIdentifier().equals(mediaObj.getLocalIdentifier()) : !TextUtils.isEmpty(getLocalPath()) && !TextUtils.isEmpty(mediaObj.getLocalPath()) ? getLocalPath().equals(mediaObj.getLocalPath()) : !TextUtils.isEmpty(getImgUrl()) && !TextUtils.isEmpty(mediaObj.getImgUrl()) ? getImgUrl().equals(mediaObj.getImgUrl()) : false;
+                return !TextUtils.isEmpty(getLocalIdentifier()) && !TextUtils.isEmpty(mediaObj.getLocalIdentifier())
+                        ? getLocalIdentifier().equals(mediaObj.getLocalIdentifier())
+                        : !TextUtils.isEmpty(getLocalPath()) && !TextUtils.isEmpty(mediaObj.getLocalPath()) ? getLocalPath().equals(mediaObj.getLocalPath()) : !TextUtils.isEmpty(getImgUrl()) && !TextUtils.isEmpty(mediaObj.getImgUrl()) ? getImgUrl().equals(mediaObj.getImgUrl()) : false;
             }
-//                    && ((getTip() == null && mediaObj.getTip() == null) || (getTip() !=null && mediaObj.getTip() != null && getTip().equals(mediaObj.getTip())));
-
         }
         return false;
     }

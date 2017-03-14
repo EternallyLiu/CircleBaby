@@ -177,7 +177,7 @@ public class ServerPhotoFragment extends BasePresenterFragment {
     private void setListData(List<MediaWrapObj> data){
         if (serverPhotosAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            serverPhotosAdapter = new SelectServerPhotosAdapter(getActivity(), data, 99, contentType, mediaObjs);
+            serverPhotosAdapter = new SelectServerPhotosAdapter(getActivity(), data, Integer.MAX_VALUE, contentType, mediaObjs);
             rvContent.setAdapter(serverPhotosAdapter);
         } else {
             serverPhotosAdapter.setListData(data);
