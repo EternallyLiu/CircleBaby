@@ -48,7 +48,7 @@ public class ChangebabyAdapter extends BaseRecyclerAdapter<UserObj> {
         holder.onClickListener = onClickListener;
         holder.info = info;
         GlideUtil.displayImage(info.getBabyObj().getAvatar(), holder.ivAvatar);
-        holder.tvName.setText(info.getBabyObj().getName());
+        holder.tvName.setText(info.getBabyObj().getNickName());
         holder.tvAge.setText(info.getBabyObj().getAge());
 
     }

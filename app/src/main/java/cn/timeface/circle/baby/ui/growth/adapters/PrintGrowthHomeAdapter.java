@@ -55,7 +55,7 @@ public class PrintGrowthHomeAdapter extends BaseRecyclerAdapter<PrintGrowthHomeO
         holder.tvSize.setText(printGrowthHomeObj.getSize());
         holder.tvTitle.setText(
                 Html.fromHtml(
-                        mContext.getResources().getString(R.string.baby_name, FastData.getBabyName())
+                        mContext.getResources().getString(R.string.baby_name, FastData.getBabyNickName())
                                 + "的"
                                 + BookModel.getGrowthBookName(printGrowthHomeObj.getBookType())));
         holder.rlRoot.setTag(R.string.tag_obj, printGrowthHomeObj);
