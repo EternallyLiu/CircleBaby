@@ -152,7 +152,7 @@ public class BabyObj extends BaseModel implements Parcelable {
     }
 
     public String getName() {
-        return name;
+        return getNickName();
     }
 
     public void setName(String name) {
@@ -161,8 +161,8 @@ public class BabyObj extends BaseModel implements Parcelable {
 
     public String getNickName() {
         if (getShowRealName() == 0)
-            return TextUtils.isEmpty(getRealName()) ? getName() : getRealName();
-        else return getName();
+            return TextUtils.isEmpty(getRealName()) ? name : getRealName();
+        else return name;
     }
 
     @Override
