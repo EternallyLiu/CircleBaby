@@ -95,6 +95,7 @@ public class SavePicInfoService extends Service {
                         return Observable.from(photoModels);
                     }
                 })
+                .filter(photoModel -> new File(photoModel.getLocalPath()).exists())
                 .window(100)
                 .flatMap(new Func1<Observable<PhotoModel>, Observable<List<PhotoModel>>>() {
                     @Override
