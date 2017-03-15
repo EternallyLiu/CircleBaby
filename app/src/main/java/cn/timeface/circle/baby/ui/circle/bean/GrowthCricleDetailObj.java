@@ -19,6 +19,9 @@ public class GrowthCricleDetailObj extends GrowthCircleObj implements Parcelable
     protected String rule;                        //圈规则
     protected int wrokAchievement;                //作品超过比例
 
+    public GrowthCricleDetailObj() {
+    }
+
     protected GrowthCricleDetailObj(Parcel in) {
         super(in);
         circleDescription = in.readString();

@@ -23,6 +23,9 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     protected CircleUserInfo publisher;                     //发布者
     protected long recordDate;                              //时光记录时间
 
+    public CircleTimelineObj() {
+    }
+
     protected CircleTimelineObj(Parcel in) {
         super(in);
         activityAlbum = in.createTypedArrayList(CircleActivityAlbumObj.CREATOR);

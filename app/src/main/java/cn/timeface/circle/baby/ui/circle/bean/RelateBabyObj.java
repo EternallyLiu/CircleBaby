@@ -16,6 +16,9 @@ public class RelateBabyObj extends BaseObj implements Parcelable {
     protected int babyId;       //宝宝id
     protected String babyName;  //宝宝姓名
 
+    public RelateBabyObj() {
+    }
+
     protected RelateBabyObj(Parcel in) {
         super(in);
         babyId = in.readInt();
