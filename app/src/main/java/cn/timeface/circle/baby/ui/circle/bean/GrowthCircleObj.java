@@ -22,6 +22,8 @@ public class GrowthCircleObj extends BaseObj implements Parcelable {
     protected int memberCount;        //圈中成员的数量
     protected int openLever;          //0 - 私有圈 1- 公有圈
     protected int workCount;          //圈中书的数量
+    protected long circleId;          //圈id
+    protected long circleNumber;      //圈号
 
     public GrowthCircleObj() {
     }
@@ -37,6 +39,8 @@ public class GrowthCircleObj extends BaseObj implements Parcelable {
         memberCount = in.readInt();
         openLever = in.readInt();
         workCount = in.readInt();
+        circleId = in.readLong();
+        circleNumber = in.readLong();
     }
 
     @Override
@@ -51,6 +55,8 @@ public class GrowthCircleObj extends BaseObj implements Parcelable {
         dest.writeInt(memberCount);
         dest.writeInt(openLever);
         dest.writeInt(workCount);
+        dest.writeLong(circleId);
+        dest.writeLong(circleNumber);
     }
 
     @Override
@@ -69,6 +75,22 @@ public class GrowthCircleObj extends BaseObj implements Parcelable {
             return new GrowthCircleObj[size];
         }
     };
+
+    public long getCircleId() {
+        return circleId;
+    }
+
+    public void setCircleId(long circleId) {
+        this.circleId = circleId;
+    }
+
+    public long getCircleNumber() {
+        return circleNumber;
+    }
+
+    public void setCircleNumber(long circleNumber) {
+        this.circleNumber = circleNumber;
+    }
 
     public String getQRcodeUrl() {
         return QRcodeUrl;

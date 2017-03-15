@@ -15,8 +15,8 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 public class CircleUserInfo extends BaseObj implements Parcelable {
     protected String circleAvatarUrl; //成长圈用户头像
     protected String circleNickName;  //成长圈用户昵称
-    protected int circleNumber;       //成长圈圈号
-    protected int circleUserId;       //成长圈用户id
+    protected long circleId;          //成长圈id
+    protected long circleUserId;      //成长圈用户id
     protected int circleUserType;     //成长圈用户类型  1-创建者 2-老师 3-普通成员
 
     public CircleUserInfo() {
@@ -26,8 +26,8 @@ public class CircleUserInfo extends BaseObj implements Parcelable {
         super(in);
         circleAvatarUrl = in.readString();
         circleNickName = in.readString();
-        circleNumber = in.readInt();
-        circleUserId = in.readInt();
+        circleId = in.readLong();
+        circleUserId = in.readLong();
         circleUserType = in.readInt();
     }
 
@@ -36,8 +36,8 @@ public class CircleUserInfo extends BaseObj implements Parcelable {
         super.writeToParcel(dest, flags);
         dest.writeString(circleAvatarUrl);
         dest.writeString(circleNickName);
-        dest.writeInt(circleNumber);
-        dest.writeInt(circleUserId);
+        dest.writeLong(circleId);
+        dest.writeLong(circleUserId);
         dest.writeInt(circleUserType);
     }
 
@@ -74,19 +74,19 @@ public class CircleUserInfo extends BaseObj implements Parcelable {
         this.circleNickName = circleNickName;
     }
 
-    public int getCircleNumber() {
-        return circleNumber;
+    public long getCircleId() {
+        return circleId;
     }
 
-    public void setCircleNumber(int circleNumber) {
-        this.circleNumber = circleNumber;
+    public void setCircleId(long circleId) {
+        this.circleId = circleId;
     }
 
-    public int getCircleUserId() {
+    public long getCircleUserId() {
         return circleUserId;
     }
 
-    public void setCircleUserId(int circleUserId) {
+    public void setCircleUserId(long circleUserId) {
         this.circleUserId = circleUserId;
     }
 

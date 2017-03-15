@@ -13,7 +13,7 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class RelateBabyObj extends BaseObj implements Parcelable {
-    protected int babyId;       //宝宝id
+    protected long babyId;       //宝宝id
     protected String babyName;  //宝宝姓名
 
     public RelateBabyObj() {
@@ -21,14 +21,14 @@ public class RelateBabyObj extends BaseObj implements Parcelable {
 
     protected RelateBabyObj(Parcel in) {
         super(in);
-        babyId = in.readInt();
+        babyId = in.readLong();
         babyName = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeInt(babyId);
+        dest.writeLong(babyId);
         dest.writeString(babyName);
     }
 
@@ -49,11 +49,11 @@ public class RelateBabyObj extends BaseObj implements Parcelable {
         }
     };
 
-    public int getBabyId() {
+    public long getBabyId() {
         return babyId;
     }
 
-    public void setBabyId(int babyId) {
+    public void setBabyId(long babyId) {
         this.babyId = babyId;
     }
 
