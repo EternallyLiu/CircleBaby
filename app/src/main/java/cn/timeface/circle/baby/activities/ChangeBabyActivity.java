@@ -164,7 +164,7 @@ public class ChangeBabyActivity extends BaseAppCompatActivity implements View.On
         TFOUserObj tfoUserObj = new TFOUserObj();
         tfoUserObj.setAvatar(FastData.getAvatar());
         tfoUserObj.setGender(FastData.getBabyGender());
-        tfoUserObj.setNick_name(FastData.getBabyName());
+        tfoUserObj.setNick_name(FastData.getBabyNickName());
         tfoUserObj.setPhone(FastData.getAccount());
         tfoUserObj.setUserId(FastData.getUserId());
 //        GlobalSetting.getInstance().init(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj, BuildConfig.DEBUG);

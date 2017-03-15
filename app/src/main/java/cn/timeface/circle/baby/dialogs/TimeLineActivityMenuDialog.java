@@ -172,8 +172,8 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         tvShare.setOnClickListener(v -> {
             dismiss();
             String imgUrl = "";
-            String title = FastData.getBabyName() + "长大了";
-            String content = FastData.getBabyName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyName() + "的新变化";
+            String title = FastData.getBabyNickName() + "长大了";
+            String content = FastData.getBabyNickName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyNickName() + "的新变化";
             String url = context.getString(R.string.share_url_time, timelineobj.getTimeId());
             switch (timelineobj.getType()) {
                 case TypeConstants.PHOTO:

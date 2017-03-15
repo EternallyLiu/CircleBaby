@@ -152,7 +152,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                                         FastData.getUserInfo().getNickName(),
                                         selectCards.get(0).getMedia().getImgUrl(),
                                         "",
-                                        FastData.getBabyName() + "的日记卡片",
+                                        FastData.getBabyNickName() + "的日记卡片",
                                         BookModel.BOOK_TYPE_DIARY_CARD,
                                         "",
                                         sb.toString(),
@@ -174,7 +174,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
                                                 bookSizeId,
                                                 response.getDataId(),
                                                 selectCards.get(0).getMedia().getImgUrl(),
-                                                FastData.getBabyName() + "的日记卡片",
+                                                FastData.getBabyNickName() + "的日记卡片",
                                                 System.currentTimeMillis(),
                                                 CartPrintPropertyDialog.REQUEST_CODE_DIARY_CARD).reqPrintStatus();
                                         CountlyEventHelper.getInstance().printEvent(FastData.getUserId(), response.getDataId());
@@ -272,7 +272,7 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
     }
 
     private void setupEmptyView() {
-        tvEmptyInfo.setText(FastData.getBabyName() + "的日记卡片为空哦，赶紧制作一张吧~");
+        tvEmptyInfo.setText(FastData.getBabyNickName() + "的日记卡片为空哦，赶紧制作一张吧~");
         btnCreate.setText("立即制作");
         btnCreate.setOnClickListener(v -> DiaryPublishActivity.open(getContext()));
     }

@@ -54,7 +54,7 @@ public abstract class BasePresenterAppCompatActivity extends RxAppCompatActivity
             TFOUserObj tfoUserObj = new TFOUserObj();
             tfoUserObj.setAvatar(FastData.getAvatar());
             tfoUserObj.setGender(FastData.getBabyGender());
-            tfoUserObj.setNick_name(FastData.getBabyName());
+            tfoUserObj.setNick_name(FastData.getBabyNickName());
             tfoUserObj.setPhone(FastData.getAccount());
             tfoUserObj.setUserId(FastData.getUserId());
             TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)

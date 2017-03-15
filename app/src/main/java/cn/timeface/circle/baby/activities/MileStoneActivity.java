@@ -91,7 +91,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
 
     private void initView() {
         width = Remember.getInt("width", 0);
-        tvName.setText(FastData.getBabyName());
+        tvName.setText(FastData.getBabyNickName());
         GlideUtil.displayImage(FastData.getBabyAvatar(), ivAvatar);
         llLeft.setTranslationY((float) (width * 0.7));
     }
@@ -166,8 +166,8 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
             if(TextUtils.isEmpty(imgUrl)){
                 imgUrl = FastData.getBabyAvatar();
             }
-            String title = FastData.getBabyName() + "成长里程碑";
-            String content = FastData.getBabyName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑";
+            String title = FastData.getBabyNickName() + "成长里程碑";
+            String content = FastData.getBabyNickName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑";
             String url = BuildConfig.API_URL+getString(R.string.share_url_milestone,FastData.getBabyId());
             new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this,R.drawable.ic_laucher_quadrate), url);
         }

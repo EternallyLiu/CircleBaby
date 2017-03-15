@@ -51,7 +51,7 @@ public class AddBookListFragment extends BaseFragment {
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
         if(actionBar!=null){
-            actionBar.setTitle("为" + FastData.getBabyName() + "定制");
+            actionBar.setTitle("为" + FastData.getBabyNickName() + "定制");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         tfStateView.setOnRetryListener(() -> reqData());

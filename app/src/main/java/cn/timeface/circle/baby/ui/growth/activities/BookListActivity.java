@@ -62,7 +62,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
         bookPresenter = new BookPresenter(this);
         bookPresenter.loadData(bookType, 1);
         btnAskPrint.setVisibility(View.GONE);
-        getSupportActionBar().setTitle(FastData.getBabyName() + "的" + BookModel.getGrowthBookName(bookType));
+        getSupportActionBar().setTitle(FastData.getBabyNickName() + "的" + BookModel.getGrowthBookName(bookType));
     }
 
     @Override
@@ -238,7 +238,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                     keys.add("book_author");
                     keys.add("book_title");
                     values.add(FastData.getUserName());
-                    values.add(FastData.getBabyName() + "的照片书");
+                    values.add(FastData.getBabyNickName() + "的照片书");
                     MyPODActivity.open(
                             BookListActivity.this,
                             String.valueOf(bookObj.getBookId()),

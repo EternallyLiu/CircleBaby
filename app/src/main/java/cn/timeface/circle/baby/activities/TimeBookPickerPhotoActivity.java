@@ -184,7 +184,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             String s = new Gson().toJson(dataList);
 
             //跳转开放平台POD接口；
-            bookName = FastData.getBabyName() + "时光书";
+            bookName = FastData.getBabyNickName() + "时光书";
             tfoResourceObjs = new ArrayList<TFOResourceObj>();
             for (ImageInfoListObj obj : dataList) {
                 for (MediaObj media : obj.getMediaList()) {
@@ -206,7 +206,7 @@ public class TimeBookPickerPhotoActivity extends BaseAppCompatActivity implement
             keys.add("book_author");
             keys.add("book_title");
             values.add(FastData.getUserName());
-            values.add(FastData.getBabyName()+"的照片书");
+            values.add(FastData.getBabyNickName()+"的照片书");
 
             MyPODActivity.open(this, bookId, openBookId, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, openBookType, tfoPublishObjs, s,true,FastData.getBabyId(),keys,values,1);
             finish();

@@ -186,7 +186,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
     }
 
     private void setupEmptyView() {
-        tvEmptyInfo.setText(FastData.getBabyName() + "的识图卡片为空哦，赶紧制作一张吧~");
+        tvEmptyInfo.setText(FastData.getBabyNickName() + "的识图卡片为空哦，赶紧制作一张吧~");
         btnCreate.setText("立即制作");
         btnCreate.setOnClickListener(v -> CardPublishActivity.open(getContext()));
     }
@@ -230,7 +230,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
                                 FastData.getUserInfo().getNickName(),
                                 selectCards.get(0).getMedia().getImgUrl(),
                                 "",
-                                FastData.getBabyName() + "的识图卡片",
+                                FastData.getBabyNickName() + "的识图卡片",
                                 BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD,
                                 "",
                                 sb.toString(),
@@ -252,7 +252,7 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
                                         0,//识图卡片没有booksizeid，传值0
                                         response.getDataId(),
                                         selectCards.get(0).getMedia().getImgUrl(),
-                                        FastData.getBabyName() + "的识图卡片",
+                                        FastData.getBabyNickName() + "的识图卡片",
                                         System.currentTimeMillis(),
                                         CartPrintPropertyDialog.REQUEST_CODE_RECOGNIZE_CARD).reqPrintStatus();
                                 CountlyEventHelper.getInstance().printEvent(FastData.getUserId(), response.getDataId());

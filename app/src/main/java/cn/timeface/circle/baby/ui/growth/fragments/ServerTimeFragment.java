@@ -147,7 +147,7 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
     private void setListData(List<TimeLineWrapObj> data){
         if (serverTimesAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, 99, this, mediaObjs, timeLineObjs);
+            serverTimesAdapter = new SelectServerTimesAdapter(getActivity(), data, Integer.MAX_VALUE, this, mediaObjs, timeLineObjs);
             rvContent.setAdapter(serverTimesAdapter);
         } else {
             serverTimesAdapter.setListData(data);
