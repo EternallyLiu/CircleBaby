@@ -544,7 +544,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
         transaction.commit();
     }
 
-    private void initAllSelectView(boolean allSelect, int selectCount){
+    public void initAllSelectView(boolean allSelect, int selectCount){
         cbAllSel.setChecked(allSelect);
         tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_time_select_count), String.valueOf(selectCount))));
     }
