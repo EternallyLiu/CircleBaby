@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
@@ -30,7 +31,7 @@ public class UserObj extends BaseObj implements Parcelable {
     public UserObj() {
     }
 
-    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId, String relationName, int isCreator, String phoneNumber, String uniId,int sendMessage) {
+    public UserObj(String avatar, BabyObj babyObj, String nickName, String userId, String relationName, int isCreator, String phoneNumber, String uniId, int sendMessage) {
         this.avatar = avatar;
         this.babyObj = babyObj;
         this.nickName = nickName;
@@ -39,7 +40,7 @@ public class UserObj extends BaseObj implements Parcelable {
         this.isCreator = isCreator;
         this.phoneNumber = phoneNumber;
         this.uniId = uniId;
-        this.sendMessage=sendMessage;
+        this.sendMessage = sendMessage;
     }
 
     public int getSendMessage() {
@@ -157,8 +158,12 @@ public class UserObj extends BaseObj implements Parcelable {
 
         UserObj userObj = (UserObj) o;
 
-        if (userId != null ? !userId.equals(userObj.userId) : userObj.userId != null) return false;
-        return true;
+        if (!TextUtils.isEmpty(getUserId()) && !TextUtils.isEmpty(userObj.getUserId()) && getUserId().equals(userObj.getUserId()))
+            return true;
+        else return false;
+
+//        if (userId != null ? !userId.equals(userObj.userId) : userObj.userId != null) return false;
+//        return true;
     }
 
     @Override
