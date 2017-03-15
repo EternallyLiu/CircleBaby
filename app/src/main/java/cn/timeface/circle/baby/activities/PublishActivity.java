@@ -695,7 +695,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
             return;
         }
         if (type == 4 && TextUtils.isEmpty(value)) {
-            ToastUtil.showToast("在输入框写点内容吧？");
+            ToastUtil.showToast("在输入框写点内容吧！");
             isPublish = false;
             return;
         }
@@ -712,6 +712,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         List<TimeConttent> datalist = new ArrayList<>();
         if (photoRecodes.size() == 1) {
             photoRecodes.get(0).setContent(value);
+            photoRecodes.get(0).setMileStone(milestone);
             photoRecodes.get(0).setLocationObj(currentLocation);
         }
         for (PhotoRecode photoRecode : photoRecodes) {

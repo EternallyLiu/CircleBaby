@@ -92,7 +92,7 @@ public class FamilyMemberFragment extends BaseFragment {
         setActionBar(toolbar);
         ActionBar actionBar = getActionBar();
         if(actionBar!=null){
-            actionBar.setTitle(FastData.getBabyName() + "一家");
+            actionBar.setTitle(FastData.getBabyNickName() + "一家");
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         tfStateView.setOnRetryListener(() -> reqData());

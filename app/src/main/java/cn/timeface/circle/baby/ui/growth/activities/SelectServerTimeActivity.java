@@ -236,9 +236,9 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                     response -> {
                                         if (response.success()) {
                                             //跳转开放平台POD接口；
-                                            String bookName = FastData.getBabyName() + "的成长纪念册";
+                                            String bookName = FastData.getBabyNickName() + "的成长纪念册";
                                             if (bookType == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
-                                                bookName = FastData.getBabyName() + "的成长语录";
+                                                bookName = FastData.getBabyNickName() + "的成长语录";
                                             }
 
 
@@ -294,14 +294,14 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                                 insertPageResourceObj.setImageWidth(response.getImageWidth());
                                                 insertPageResources.add(insertPageResourceObj);
                                                 TFOContentObj insertPageContent = new TFOContentObj("", insertPageResources);//没有subtitile
-                                                String insertContent = FastData.getBabyName()
+                                                String insertContent = FastData.getBabyNickName()
                                                         + ","
                                                         + FastData.getBabyAge()
                                                         + ","
                                                         + "是一个活泼可爱的小宝宝，在"
-                                                        + FastData.getBabyName()
+                                                        + FastData.getBabyNickName()
                                                         + "成长的过程中经常会\"语出惊人\"，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了"
-                                                        + FastData.getBabyName()
+                                                        + FastData.getBabyNickName()
                                                         + "成长中的童言趣语，一起来看看吧~";
                                                 insertPageContent.setContent(insertContent);
                                                 tfoPublishObjs.get(0).getContentList().add(0, insertPageContent);//插入插页信息

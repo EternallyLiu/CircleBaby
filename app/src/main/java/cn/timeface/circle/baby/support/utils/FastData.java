@@ -417,8 +417,8 @@ public class FastData extends Remember {
     }
 
     public static String getBabyName() {
-//        return getString(BABY_Name, "");
         return getBabyObj().getName();
+//        return getBabyNickName();
     }
 
     public static void setBabyRealName(String name) {
@@ -430,6 +430,10 @@ public class FastData extends Remember {
             }
 //            putString(BABY_RealName, name);
         }
+    }
+
+    public static String getBabyNickName(){
+        return getBabyObj().getNickName();
     }
 
     public static String getBabyRealName() {

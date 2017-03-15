@@ -23,9 +23,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -51,7 +49,6 @@ import cn.timeface.circle.baby.ui.growth.events.SelectMediaListEvent;
 import cn.timeface.circle.baby.ui.growth.fragments.PhotoMapFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.SelectUserFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.ServerPhotoFragment;
-import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
@@ -226,9 +223,9 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                     response -> {
                                         if(response.success()){
                                             //跳转开放平台POD接口；
-                                            String bookName = FastData.getBabyName() + "的照片书";
+                                            String bookName = FastData.getBabyNickName() + "的照片书";
                                             if(bookType == BookModel.BOOK_TYPE_PAINTING){
-                                                bookName = FastData.getBabyName() + "的绘画集";
+                                                bookName = FastData.getBabyNickName() + "的绘画集";
                                             }
                                             List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
                                             StringBuffer sb = new StringBuffer("{\"dataList\":[");
@@ -268,7 +265,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                                 tfoResourceObj.setImageUrl(FastData.getBabyAvatar());
                                                 tfoResourceObj.setImageWidth(response.getImageWidth());
                                                 tfoResourceObj.setImageHeight(response.getImageHeight());
-                                                PaintingCollectionRemarkObj remarkObj = new PaintingCollectionRemarkObj(FastData.getBabyName(), FastData.getBabyAge());
+                                                PaintingCollectionRemarkObj remarkObj = new PaintingCollectionRemarkObj(FastData.getBabyNickName(), FastData.getBabyAge());
                                                 customDataObj.setRemark(remarkObj);
                                                 customDataObj.setImgInfo(tfoResourceObj);
 
@@ -504,7 +501,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     }
 
     private void initAllSelectView(int selectCount){
-        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_time_select_count), String.valueOf(selectCount))));
+        tvSelectCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(selectCount))));
     }
 
     public void setPhotoTipVisibility(int visibility){

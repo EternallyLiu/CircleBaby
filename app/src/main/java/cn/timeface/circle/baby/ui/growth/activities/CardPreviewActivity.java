@@ -76,7 +76,7 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(FastData.getBabyName() + "的识图卡片");
+        getSupportActionBar().setTitle(FastData.getBabyNickName() + "的识图卡片");
         cardObj = getIntent().getParcelableExtra("card");
         if (cardObj != null) initView();//编辑 cardobj为null
     }
@@ -93,8 +93,8 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
             //分享
             case R.id.action_share:
                 new ShareDialog(this).share(
-                        FastData.getBabyName() + "长大了",
-                        FastData.getBabyName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyName() + "的新变化",
+                        FastData.getBabyNickName() + "长大了",
+                        FastData.getBabyNickName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyNickName() + "的新变化",
                         cardObj.getMedia().getImgUrl(),
                         BuildConfig.API_URL + getString(R.string.share_url_time, cardObj.getCardId()));
                 break;

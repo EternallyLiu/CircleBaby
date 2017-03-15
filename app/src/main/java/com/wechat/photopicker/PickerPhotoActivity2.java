@@ -240,10 +240,10 @@ public class PickerPhotoActivity2 extends BaseAppCompatActivity implements IEven
             String s = new Gson().toJson(mPhotoSelectorAdapter.getDataList());
 
             if (bookType == 2) {
-                bookName = FastData.getBabyName() + "日记卡片";
+                bookName = FastData.getBabyNickName() + "日记卡片";
                 createBook(s);
             } else if (bookType == 3) {
-                bookName = FastData.getBabyName() + "识图卡片";
+                bookName = FastData.getBabyNickName() + "识图卡片";
                 createBook(s);
             } else if (bookType == 5) {
                 //跳转开放平台POD接口；
