@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/size_4">
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:gravity="left|center_vertical"
+        android:lines="1"
+        android:text="@string/circle_publish_select_time_tip"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_small"/>
+
+    <ImageView
+        android:id="@+id/iv_right"
+        android:layout_width="@dimen/size_6"
+        android:layout_height="@dimen/size_12"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/mine_data_go"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_4"
+        android:layout_marginRight="@dimen/size_4"
+        android:layout_toLeftOf="@+id/iv_right"
+        android:layout_toRightOf="@+id/tv_tip"
+        android:gravity="right|center_vertical"
+        android:text="2017-03-19"
+        android:textSize="@dimen/text_small"/>
+
+</RelativeLayout>
