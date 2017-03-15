@@ -3,11 +3,16 @@ package cn.timeface.circle.baby.ui.circle.timelines.adapter;
 import android.content.Context;
 import android.view.View;
 
+import java.util.ArrayList;
+
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.ui.circle.bean.CircleContentObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.ItemObj;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
+import rx.Observable;
 
 /**
  * author : wangshuai Created on 2017/3/15
@@ -28,16 +33,32 @@ public class PublishAdapter extends BaseAdapter {
     public static final int TYPE_TIMELINE = -49999;
     //圈作业
     public static final int TYPE_WORK = -49998;
-
+    public static final int TYPE_SCHOOL = -49997;
     private int type = TYPE_TIMELINE;
 
     public PublishAdapter(Context activity, int type) {
         super(activity);
         setType(type);
     }
+
     public PublishAdapter(Context activity, CircleContentObj circleContentObj) {
         super(activity);
-        if (circleContentObj instanceof CircleTimelineObj)
+        if (circleContentObj instanceof CircleTimelineObj) {
+
+        } else if (circleContentObj instanceof CircleHomeworkObj) {
+            setType(TYPE_WORK);
+        } else if (circleContentObj instanceof CircleSchoolTaskObj) {
+            setType(TYPE_SCHOOL);
+        }
+    }
+
+    public PublishAdapter(Context context,CircleTimelineObj timelineObj){
+        super(context);
+        setType(TYPE_TIMELINE);
+        ArrayList<ItemObj> list=new ArrayList<>(0);
+        list.add(new ItemObj(ITEM_TYPE_INPUT_TITLE,timelineObj.getTitle()));
+        list.add(new ItemObj(ITEM_TYPE_INPUT_CONTENT,timelineObj.getContent()));
+//        list.add(new ItemObj(ITEM_TYPE_SELECT_ACTIVE,timelineObj.get));
     }
 
     @Override
