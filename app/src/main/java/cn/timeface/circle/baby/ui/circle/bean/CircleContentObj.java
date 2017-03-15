@@ -20,6 +20,9 @@ public class CircleContentObj extends BaseObj implements Parcelable {
     protected List<CircleMediaObj> mediaList;   //图片列表
     protected String title;                     //标题
 
+    public CircleContentObj() {
+    }
+
     protected CircleContentObj(Parcel in) {
         super(in);
         content = in.readString();

@@ -23,6 +23,9 @@ public class GrowthCircleObj extends BaseObj implements Parcelable {
     protected int openLever;          //0 - 私有圈 1- 公有圈
     protected int workCount;          //圈中书的数量
 
+    public GrowthCircleObj() {
+    }
+
     protected GrowthCircleObj(Parcel in) {
         super(in);
         QRcodeUrl = in.readString();

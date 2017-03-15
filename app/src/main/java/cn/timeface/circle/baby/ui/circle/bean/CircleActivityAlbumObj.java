@@ -17,6 +17,9 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
     protected String albumName;     //相册名称
     protected int mediaCount;       //相册中的图片数量
 
+    public CircleActivityAlbumObj() {
+    }
+
     protected CircleActivityAlbumObj(Parcel in) {
         super(in);
         albumId = in.readInt();
