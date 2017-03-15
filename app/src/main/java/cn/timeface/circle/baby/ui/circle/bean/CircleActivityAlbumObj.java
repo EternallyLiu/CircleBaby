@@ -13,7 +13,7 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
-    protected int albumId;          //相册id
+    protected long albumId;          //相册id
     protected String albumName;     //相册名称
     protected int mediaCount;       //相册中的图片数量
 
@@ -22,7 +22,7 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
 
     protected CircleActivityAlbumObj(Parcel in) {
         super(in);
-        albumId = in.readInt();
+        albumId = in.readLong();
         albumName = in.readString();
         mediaCount = in.readInt();
     }
@@ -30,7 +30,7 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeInt(albumId);
+        dest.writeLong(albumId);
         dest.writeString(albumName);
         dest.writeInt(mediaCount);
     }
@@ -52,11 +52,11 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
         }
     };
 
-    public int getAlbumId() {
+    public long getAlbumId() {
         return albumId;
     }
 
-    public void setAlbumId(int albumId) {
+    public void setAlbumId(long albumId) {
         this.albumId = albumId;
     }
 

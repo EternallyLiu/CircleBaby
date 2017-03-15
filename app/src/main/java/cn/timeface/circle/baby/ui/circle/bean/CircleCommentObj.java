@@ -15,9 +15,9 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 public class CircleCommentObj extends BaseObj implements Parcelable {
     protected String commentContent;                //评论/回复的内容
     protected long commentDate;                     //评论的日期
-    protected int commentId;                        //评论的id
+    protected long commentId;                       //评论的id
     protected CircleUserInfo commentUserInfo;       //评论的发布人
-    protected int toCommentId;                      //被回复的评论的id
+    protected long toCommentId;                      //被回复的评论的id
     protected CircleUserInfo toCommentUserInfo;     //被回复的评论的发布人
 
     public CircleCommentObj() {
@@ -27,9 +27,9 @@ public class CircleCommentObj extends BaseObj implements Parcelable {
         super(in);
         commentContent = in.readString();
         commentDate = in.readLong();
-        commentId = in.readInt();
+        commentId = in.readLong();
         commentUserInfo = in.readParcelable(CircleUserInfo.class.getClassLoader());
-        toCommentId = in.readInt();
+        toCommentId = in.readLong();
         toCommentUserInfo = in.readParcelable(CircleUserInfo.class.getClassLoader());
     }
 
@@ -38,9 +38,9 @@ public class CircleCommentObj extends BaseObj implements Parcelable {
         super.writeToParcel(dest, flags);
         dest.writeString(commentContent);
         dest.writeLong(commentDate);
-        dest.writeInt(commentId);
+        dest.writeLong(commentId);
         dest.writeParcelable(commentUserInfo, flags);
-        dest.writeInt(toCommentId);
+        dest.writeLong(toCommentId);
         dest.writeParcelable(toCommentUserInfo, flags);
     }
 
@@ -77,11 +77,11 @@ public class CircleCommentObj extends BaseObj implements Parcelable {
         this.commentDate = commentDate;
     }
 
-    public int getCommentId() {
+    public long getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(int commentId) {
+    public void setCommentId(long commentId) {
         this.commentId = commentId;
     }
 
@@ -93,11 +93,11 @@ public class CircleCommentObj extends BaseObj implements Parcelable {
         this.commentUserInfo = commentUserInfo;
     }
 
-    public int getToCommentId() {
+    public long getToCommentId() {
         return toCommentId;
     }
 
-    public void setToCommentId(int toCommentId) {
+    public void setToCommentId(long toCommentId) {
         this.toCommentId = toCommentId;
     }
 

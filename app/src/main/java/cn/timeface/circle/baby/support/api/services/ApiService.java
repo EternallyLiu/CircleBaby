@@ -69,9 +69,11 @@ import cn.timeface.circle.baby.support.mvp.model.GeneralBookItemResponse;
 import cn.timeface.circle.baby.support.mvp.model.GeneralBookResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
+import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
@@ -1056,11 +1058,20 @@ public interface ApiService {
      * @return
      */
     @GET("dynamic/comment")
-    Observable<QueryTimeLineResponse> circleComment(
-            @Query("circleTimelineId") int circleTimelineId,
+    Observable<CircleCommentResponse> circleComment(
+            @Query("circleTimelineId") long circleTimelineId,
             @Query("commentContent") String commentContent,
-            @Query("commentDate") int commentDate,
-            @Query("commentId") int commentId);
+            @Query("commentDate") long commentDate,
+            @Query("commentId") long commentId);
+
+    /**
+     * 编辑某条时光
+     * @param circleTimelineInfo
+     * @return
+     */
+    @GET("dynamic/update")
+    Observable<UpdateTimeLineResponse> circleUpdate(
+            @Query("circleTimelineInfo") String circleTimelineInfo);
 
     /**
      * 圈时光点赞、取消点赞
@@ -1070,7 +1081,7 @@ public interface ApiService {
      */
     @GET("dynamic/like")
     Observable<BaseResponse> circleLike(
-            @Query("circleTimelineId") int circleTimelineId,
+            @Query("circleTimelineId") long circleTimelineId,
             @Query("like") int like);
 
     /**
@@ -1080,7 +1091,25 @@ public interface ApiService {
      */
     @GET("dynamic/comment/delete")
     Observable<BaseResponse> deleteComment(
-            @Query("commentId") int commentId);
+            @Query("commentId") long commentId);
+
+    /**
+     * 圈时光详情
+     * @param circleTimelineId
+     * @return
+     */
+    @GET("dynamic/detail")
+    Observable<UpdateTimeLineResponse> circleTimeDetail(
+            @Query("circleTimelineId") long circleTimelineId);
+
+    /**
+     * 删除某条圈时光
+     * @param circleTimelineId
+     * @return
+     */
+    @GET("dynamic/delete")
+    Observable<BaseResponse> circleTimeDelete(
+            @Query("circleTimelineId") long circleTimelineId);
 
     /**
      * 加圈申请

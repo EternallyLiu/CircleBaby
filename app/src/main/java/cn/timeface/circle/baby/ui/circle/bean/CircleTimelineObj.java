@@ -13,26 +13,27 @@ import java.util.List;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CircleTimelineObj extends CircleContentObj implements Parcelable {
-    protected List<CircleActivityAlbumObj> activityAlbum;   //圈活动相册对象
-    protected int circleTimelineId;                         //时光id
+    protected CircleActivityAlbumObj activityAlbum;         //圈活动相册对象
+    protected long circleTimelineId;                        //时光id
     protected int commentCount;                             //评论的数量
     protected List<CircleCommentObj> commmentList;          //评论列表
-    protected boolean isSync;                               //是否同步
+    protected int isSync;                                   //是否同步  0 否 1 是
     protected int likeCount;                                //点赞数量
     protected List<CircleUserInfo> likeList;                //点赞列表
     protected CircleUserInfo publisher;                     //发布者
     protected long recordDate;                              //时光记录时间
+    protected int like;                                     //是否赞了该动态 0 否 1 是
 
     public CircleTimelineObj() {
     }
 
     protected CircleTimelineObj(Parcel in) {
         super(in);
-        activityAlbum = in.createTypedArrayList(CircleActivityAlbumObj.CREATOR);
-        circleTimelineId = in.readInt();
+        activityAlbum = in.readParcelable(CircleActivityAlbumObj.class.getClassLoader());
+        circleTimelineId = in.readLong();
         commentCount = in.readInt();
         commmentList = in.createTypedArrayList(CircleCommentObj.CREATOR);
-        isSync = in.readByte() != 0;
+        isSync = in.readInt();
         likeCount = in.readInt();
         likeList = in.createTypedArrayList(CircleUserInfo.CREATOR);
         publisher = in.readParcelable(CircleUserInfo.class.getClassLoader());
@@ -42,11 +43,11 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeTypedList(activityAlbum);
-        dest.writeInt(circleTimelineId);
+        dest.writeParcelable(activityAlbum, flags);
+        dest.writeLong(circleTimelineId);
         dest.writeInt(commentCount);
         dest.writeTypedList(commmentList);
-        dest.writeByte((byte) (isSync ? 1 : 0));
+        dest.writeInt(isSync);
         dest.writeInt(likeCount);
         dest.writeTypedList(likeList);
         dest.writeParcelable(publisher, flags);
@@ -70,19 +71,19 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
         }
     };
 
-    public List<CircleActivityAlbumObj> getActivityAlbum() {
+    public CircleActivityAlbumObj getActivityAlbum() {
         return activityAlbum;
     }
 
-    public void setActivityAlbum(List<CircleActivityAlbumObj> activityAlbum) {
+    public void setActivityAlbum(CircleActivityAlbumObj activityAlbum) {
         this.activityAlbum = activityAlbum;
     }
 
-    public int getCircleTimelineId() {
+    public long getCircleTimelineId() {
         return circleTimelineId;
     }
 
-    public void setCircleTimelineId(int circleTimelineId) {
+    public void setCircleTimelineId(long circleTimelineId) {
         this.circleTimelineId = circleTimelineId;
     }
 
@@ -100,14 +101,6 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
 
     public void setCommmentList(List<CircleCommentObj> commmentList) {
         this.commmentList = commmentList;
-    }
-
-    public boolean isSync() {
-        return isSync;
-    }
-
-    public void setSync(boolean sync) {
-        isSync = sync;
     }
 
     public int getLikeCount() {
@@ -140,5 +133,21 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
 
     public void setRecordDate(long recordDate) {
         this.recordDate = recordDate;
+    }
+
+    public int getIsSync() {
+        return isSync;
+    }
+
+    public void setIsSync(int isSync) {
+        this.isSync = isSync;
+    }
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
     }
 }
