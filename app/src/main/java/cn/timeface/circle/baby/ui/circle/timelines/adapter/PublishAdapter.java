@@ -43,22 +43,48 @@ public class PublishAdapter extends BaseAdapter {
 
     public PublishAdapter(Context activity, CircleContentObj circleContentObj) {
         super(activity);
-        if (circleContentObj instanceof CircleTimelineObj) {
-
-        } else if (circleContentObj instanceof CircleHomeworkObj) {
-            setType(TYPE_WORK);
-        } else if (circleContentObj instanceof CircleSchoolTaskObj) {
-            setType(TYPE_SCHOOL);
-        }
+        if (circleContentObj != null)
+            if (circleContentObj instanceof CircleTimelineObj) {
+                initTimeLine((CircleTimelineObj) circleContentObj);
+            } else if (circleContentObj instanceof CircleHomeworkObj) {
+                initWork((CircleHomeworkObj) circleContentObj);
+            } else if (circleContentObj instanceof CircleSchoolTaskObj) {
+                initSchool((CircleSchoolTaskObj) circleContentObj);
+            }
     }
 
-    public PublishAdapter(Context context,CircleTimelineObj timelineObj){
-        super(context);
+    public void initSchool(CircleSchoolTaskObj homeworkObj) {
+        setType(TYPE_SCHOOL);
+        list.add(new ItemObj(ITEM_TYPE_INPUT_TITLE, homeworkObj.getTitle()));
+        list.add(new ItemObj(ITEM_TYPE_INPUT_CONTENT, homeworkObj.getContent()));
+        for (int i = 0; i < homeworkObj.getMediaList().size(); i++) {
+            list.add(new ItemObj(ITEM_TYPE_MEDIA, homeworkObj.getMediaList().get(i)));
+        }
+        addList(true, list);
+    }
+
+    public void initWork(CircleHomeworkObj homeworkObj) {
+        setType(TYPE_WORK);
+        list.add(new ItemObj(ITEM_TYPE_INPUT_TITLE, homeworkObj.getTitle()));
+        list.add(new ItemObj(ITEM_TYPE_INPUT_CONTENT, homeworkObj.getContent()));
+        for (int i = 0; i < homeworkObj.getMediaList().size(); i++) {
+            list.add(new ItemObj(ITEM_TYPE_MEDIA, homeworkObj.getMediaList().get(i)));
+        }
+        addList(true, list);
+    }
+
+    public void initTimeLine(CircleTimelineObj timelineObj) {
         setType(TYPE_TIMELINE);
-        ArrayList<ItemObj> list=new ArrayList<>(0);
-        list.add(new ItemObj(ITEM_TYPE_INPUT_TITLE,timelineObj.getTitle()));
-        list.add(new ItemObj(ITEM_TYPE_INPUT_CONTENT,timelineObj.getContent()));
-//        list.add(new ItemObj(ITEM_TYPE_SELECT_ACTIVE,timelineObj.get));
+        ArrayList<ItemObj> list = new ArrayList<>(0);
+        list.add(new ItemObj(ITEM_TYPE_INPUT_TITLE, timelineObj.getTitle()));
+        list.add(new ItemObj(ITEM_TYPE_INPUT_CONTENT, timelineObj.getContent()));
+        list.add(new ItemObj(ITEM_TYPE_SELECT_ACTIVE, timelineObj.getActivityAlbum()));
+        list.add(new ItemObj(ITEM_TYPE_SELECT_TIME, timelineObj.getRecordDate()));
+        list.add(new ItemObj(ITEM_TYPE_NOTIFY_TIMELINE, timelineObj.getIsSync()));
+        for (int i = 0; i < timelineObj.getMediaList().size(); i++) {
+            list.add(new ItemObj(ITEM_TYPE_MEDIA, timelineObj.getMediaList().get(i)));
+        }
+        addList(true, list);
     }
 
     @Override
