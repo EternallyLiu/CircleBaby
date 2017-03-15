@@ -172,7 +172,6 @@ public class BookPrintHelper {
      * 加入购物车
      */
     private void showCartDialog(final int printCode) {
-        Log.d("-------->", "-------->showCartDialog openBookType:" + openBookType);
 
         Subscription s = apiService.queryParamList(openBookType, pageNum)
                 .compose(SchedulersCompat.applyIoSchedulers())

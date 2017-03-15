@@ -9,12 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.view.RxView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CardPublishActivity;
@@ -37,7 +40,11 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.adapters.RecognizeCardListAdapter;
 import cn.timeface.circle.baby.ui.growth.events.CardEditEvent;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 识图卡片列表
@@ -62,10 +69,13 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
         super.onCreate(savedInstanceState);
 
         getSupportActionBar().setTitle(FastData.getBabyNickName() + "识图卡片");
-
         cardPresenter = new CardPresenter(this);
-
-        btnAskPrint.setOnClickListener(this);
+        RxView.clicks(btnAskPrint)
+                .throttleFirst(2, TimeUnit.SECONDS)
+                .subscribe(
+                        aVoid -> onClick(btnAskPrint),
+                        throwable -> Log.e(TAG, throwable.getLocalizedMessage())
+                );
         btnAskPrint.setText("申请印刷");
         tvTip.setText(" 每套选择" + bookPage + "张（也可以是" + bookPage + "的倍数）");
 
@@ -79,7 +89,6 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_add) {
-//            RecognizeCardCreateActivity.open(this);
             CardPublishActivity.open(this);
             return true;
         }
@@ -88,7 +97,6 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
 
     @Override
     public void onCreateClick() {
-//        RecognizeCardCreateActivity.open(this);
         CardPublishActivity.open(this);
     }
 
