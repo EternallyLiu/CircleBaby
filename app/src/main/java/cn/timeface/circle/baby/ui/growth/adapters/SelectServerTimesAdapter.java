@@ -313,7 +313,6 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
             }
 //            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
             EventBus.getDefault().post(new TimeSelectCountEvent(selTimeLines.size()));
-            EventBus.getDefault().post(new SelectTimeLineEvent(((CheckBox) v).isChecked(), img));
         }
     };
 
@@ -341,6 +340,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         if(!selMedias.containsAll(img.getMediaList())){
             selMedias.addAll(img.getMediaList());
         }
+        EventBus.getDefault().post(new SelectTimeLineEvent(true, img));
     }
 
     public void doAllSelImg(){
@@ -382,6 +382,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         if(selMedias.containsAll(img.getMediaList())){
             selMedias.removeAll(img.getMediaList());
         }
+        EventBus.getDefault().post(new SelectTimeLineEvent(false, img));
     }
 
     public List<TimeLineObj> getSelImgs() {
