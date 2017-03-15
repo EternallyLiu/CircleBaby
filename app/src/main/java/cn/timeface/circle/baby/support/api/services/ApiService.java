@@ -3,31 +3,6 @@ package cn.timeface.circle.baby.support.api.services;
 import java.util.Map;
 
 import cn.timeface.circle.baby.BuildConfig;
-import cn.timeface.circle.baby.support.api.models.db.LocationResponse;
-import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
-import cn.timeface.circle.baby.support.api.models.responses.CloudAlbumDownloadImageResponse;
-import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
-import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
-import cn.timeface.circle.baby.support.api.models.responses.GetThemeResponse;
-import cn.timeface.circle.baby.support.api.models.responses.GroupPhotoByLocationResponse;
-import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
-import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
-import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
-import cn.timeface.circle.baby.support.api.models.responses.LocationInfoResponse;
-import cn.timeface.circle.baby.support.api.models.responses.MineResponse;
-import cn.timeface.circle.baby.support.api.models.responses.ProductionIntroListResponse;
-import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLabelResponse;
-import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLocationResponse;
-import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByTimeResponse;
-import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByUserResponse;
-import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
-import cn.timeface.circle.baby.support.api.models.responses.QueryProductionExtraResponse;
-import cn.timeface.circle.baby.support.api.models.responses.QuerySelectedPhotoResponse;
-import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
-import cn.timeface.circle.baby.support.api.models.responses.UsersInfoResponse;
-import cn.timeface.circle.baby.support.mvp.model.GeneralBookItemResponse;
-import cn.timeface.circle.baby.support.mvp.model.GeneralBookResponse;
-import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ADResponse;
 import cn.timeface.circle.baby.support.api.models.responses.AddAddressResponse;
@@ -37,25 +12,36 @@ import cn.timeface.circle.baby.support.api.models.responses.AlbumDetailResponse;
 import cn.timeface.circle.baby.support.api.models.responses.AliPayResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BabyInfoListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BabyInfoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BookTypeListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.CardBookSizeResponse;
 import cn.timeface.circle.baby.support.api.models.responses.CardListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.CloudAlbumDownloadImageResponse;
 import cn.timeface.circle.baby.support.api.models.responses.CloudAlbumListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.CreateBookResponse;
+import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryComposedResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryPaperResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryTextResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DistrictListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.api.models.responses.FamilyListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.GetThemeResponse;
+import cn.timeface.circle.baby.support.api.models.responses.GroupPhotoByLocationResponse;
+import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.ImageInfoListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.InviteResponse;
+import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.KnowledgeComposedResponse;
 import cn.timeface.circle.baby.support.api.models.responses.LessResponse;
+import cn.timeface.circle.baby.support.api.models.responses.LocationInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.LoginResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MineBookListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.MineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MsgListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MyOrderConfirmListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MyOrderListResponse;
@@ -63,6 +49,12 @@ import cn.timeface.circle.baby.support.api.models.responses.ParamListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.PrintCartListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.PrintDispatchListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.PrintStatusResponse;
+import cn.timeface.circle.baby.support.api.models.responses.ProductionIntroListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoByLocationResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryPhotoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryProductionExtraResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QuerySelectedPhotoResponse;
+import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.RegisterResponse;
 import cn.timeface.circle.baby.support.api.models.responses.RelationIdResponse;
 import cn.timeface.circle.baby.support.api.models.responses.RelationshipResponse;
@@ -72,20 +64,24 @@ import cn.timeface.circle.baby.support.api.models.responses.TimelineResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UnReadMsgResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UserLoginResponse;
-import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
+import cn.timeface.circle.baby.support.api.models.responses.UsersInfoResponse;
+import cn.timeface.circle.baby.support.mvp.model.GeneralBookItemResponse;
+import cn.timeface.circle.baby.support.mvp.model.GeneralBookResponse;
+import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
+import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
-import cn.timeface.circle.baby.ui.timelines.beans.PhotoCameraRequest;
 import cn.timeface.circle.baby.ui.timelines.beans.QueryLocationInfoResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.SendTimeLineResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeAxixResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeOfPageResponse;
 import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
-import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -1050,4 +1046,91 @@ public interface ApiService {
 
     @GET("openBook/getExtra")
     Observable<QueryProductionExtraResponse> getProductionExtra(@Query("bookId") String bookId);
+
+    /**
+     * 圈时光评论
+     * @param circleTimelineId
+     * @param commentContent
+     * @param commentDate
+     * @param commentId
+     * @return
+     */
+    @GET("dynamic/comment")
+    Observable<QueryTimeLineResponse> circleComment(
+            @Query("circleTimelineId") int circleTimelineId,
+            @Query("commentContent") String commentContent,
+            @Query("commentDate") int commentDate,
+            @Query("commentId") int commentId);
+
+    /**
+     * 圈时光点赞、取消点赞
+     * @param circleTimelineId
+     * @param like
+     * @return
+     */
+    @GET("dynamic/like")
+    Observable<BaseResponse> circleLike(
+            @Query("circleTimelineId") int circleTimelineId,
+            @Query("like") int like);
+
+    /**
+     * 删除某条评论
+     * @param commentId
+     * @return
+     */
+    @GET("dynamic/comment/delete")
+    Observable<BaseResponse> deleteComment(
+            @Query("commentId") int commentId);
+
+    /**
+     * 加圈申请
+     * @param babyRealName
+     * @param circleNumber
+     * @param leaveWords
+     * @return
+     */
+    @GET("babyCircle/join")
+    Observable<BaseResponse> join(
+            @Query("babyRealName") String babyRealName,
+            @Query("circleNumber") int circleNumber,
+            @Query("leaveWords") String leaveWords);
+
+
+    /**
+     * 创建圈子
+     * @param circleName
+     * @param openLever
+     * @return
+     */
+    @GET("babyCircle/create")
+    Observable<CircleCreateResponse> create(
+            @Query("circleName") String circleName,
+            @Query("openLever") int openLever);
+
+    /**
+     * 圈列表
+     * @return
+     */
+    @GET("babyCircle/list")
+    Observable<CircleListResponse> circleList();
+
+    /**
+     * 圈资料
+     * @param circleNumber
+     * @return
+     */
+    @GET("babyCircle/detail")
+    Observable<CircleDetailResponse> circleDetail(
+            @Query("circleNumber") int circleNumber);
+
+    /**
+     * 查找圈子
+     * @param circleName
+     * @return
+     */
+    @GET("babyCircle/queryByCircleNumOrName")
+    Observable<CircleListResponse> queryByCircleNumOrName(
+            @Query("circleName") String circleName);
+
+
 }
