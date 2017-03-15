@@ -387,4 +387,16 @@ public class MediaObj extends BaseObj implements Parcelable {
         this.tip = in.readParcelable(MediaObj.class.getClassLoader());
     }
 
+    public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {
+        @Override
+        public MediaObj createFromParcel(Parcel source) {
+            return new MediaObj(source);
+        }
+
+        @Override
+        public MediaObj[] newArray(int size) {
+            return new MediaObj[size];
+        }
+    };
+
 }
