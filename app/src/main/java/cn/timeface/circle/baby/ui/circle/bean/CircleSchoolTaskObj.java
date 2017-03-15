@@ -15,6 +15,9 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
     protected int taskId;               //作业id
     protected CircleUserInfo teacher;   //布置作业的老师对象
 
+    public CircleSchoolTaskObj() {
+    }
+
     protected CircleSchoolTaskObj(Parcel in) {
         super(in);
         isCommit = in.readByte() != 0;

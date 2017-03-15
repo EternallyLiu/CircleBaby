@@ -19,6 +19,9 @@ public class CircleHomeworkObj extends CircleSchoolTaskObj implements Parcelable
     protected int taskId;                 //老师的作业id
     protected String teacherReview;       //老师评语
 
+    public CircleHomeworkObj() {
+    }
+
     protected CircleHomeworkObj(Parcel in) {
         super(in);
         homeworkId = in.readByte() != 0;

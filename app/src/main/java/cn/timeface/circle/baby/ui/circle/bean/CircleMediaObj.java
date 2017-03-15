@@ -15,6 +15,9 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 public class CircleMediaObj extends MediaObj implements Parcelable {
     List<RelateBabyObj> relateBabys;
 
+    public CircleMediaObj() {
+    }
+
     protected CircleMediaObj(Parcel in) {
         super(in);
         relateBabys = in.createTypedArrayList(RelateBabyObj.CREATOR);

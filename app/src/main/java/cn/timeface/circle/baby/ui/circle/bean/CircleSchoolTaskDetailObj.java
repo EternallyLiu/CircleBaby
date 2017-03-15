@@ -15,6 +15,9 @@ import java.util.List;
 public class CircleSchoolTaskDetailObj extends CircleSchoolTaskObj implements Parcelable {
     protected List<CircleHomeworkObj> homeworkList;         //家长提交的作业列表
 
+    public CircleSchoolTaskDetailObj() {
+    }
+
     protected CircleSchoolTaskDetailObj(Parcel in) {
         super(in);
         homeworkList = in.createTypedArrayList(CircleHomeworkObj.CREATOR);

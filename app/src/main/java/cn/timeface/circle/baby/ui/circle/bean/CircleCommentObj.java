@@ -20,6 +20,9 @@ public class CircleCommentObj extends BaseObj implements Parcelable {
     protected int toCommentId;                      //被回复的评论的id
     protected CircleUserInfo toCommentUserInfo;     //被回复的评论的发布人
 
+    public CircleCommentObj() {
+    }
+
     protected CircleCommentObj(Parcel in) {
         super(in);
         commentContent = in.readString();

@@ -19,6 +19,9 @@ public class CircleUserInfo extends BaseObj implements Parcelable {
     protected int circleUserId;       //成长圈用户id
     protected int circleUserType;     //成长圈用户类型  1-创建者 2-老师 3-普通成员
 
+    public CircleUserInfo() {
+    }
+
     protected CircleUserInfo(Parcel in) {
         super(in);
         circleAvatarUrl = in.readString();
