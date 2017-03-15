@@ -146,9 +146,9 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:9.8.0'
     compile files('libs/MiPush_SDK_Client_3_0_3.jar')
     compile files('libs/libammsdk.jar')
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+//    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     compile files('libs/alipaySdk-20160812.jar')
     compile 'com.jakewharton.timber:timber:4.3.1'
     compile 'com.zhy:highlight:1.1.0'
