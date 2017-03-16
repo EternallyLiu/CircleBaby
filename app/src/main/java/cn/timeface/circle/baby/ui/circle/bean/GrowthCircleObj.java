@@ -4,77 +4,67 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.NotNull;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.support.api.models.db.AppDatabase;
+import cn.timeface.circle.baby.support.utils.FastData;
 
 /**
  * 成长圈对象
  * Created by lidonglin on 2017/3/14.
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class GrowthCircleObj extends BaseObj implements Parcelable {
-    protected String QRcodeUrl;       //二维码图片地址
-    protected String cicleCoverUrl;   //圈封面地址
-    protected String circleName;      //圈名称
-    protected long createDate;        //创建时间
-    protected int joinType;           //0 - 我创建的圈 1 - 我加入的圈
-    protected int mediaCount;         //圈中图片的数量
-    protected int memberCount;        //圈中成员的数量
-    protected int openLever;          //0 - 私有圈 1- 公有圈
-    protected int workCount;          //圈中书的数量
+@Table(database = AppDatabase.class)
+public class GrowthCircleObj extends BaseModel implements Parcelable {
+
+    private static volatile GrowthCircleObj currentGrowthCircleObj = null;
+
+    @PrimaryKey
     protected long circleId;          //圈id
+    @Unique
     protected long circleNumber;      //圈号
+    @Column
+    protected String QRcodeUrl;       //二维码图片地址
+    @Column
+    protected String cicleCoverUrl;   //圈封面地址
+    @Column
+    protected String circleName;      //圈名称
+    @Column
+    protected long createDate;        //创建时间
+    @Column
+    protected int joinType;           //0 - 我创建的圈 1 - 我加入的圈
+    @Column
+    protected int mediaCount;         //圈中图片的数量
+    @Column
+    protected int memberCount;        //圈中成员的数量
+    @Column
+    protected int openLever;          //0 - 私有圈 1- 公有圈
+    @Column
+    protected int workCount;          //圈中书的数量
 
     public GrowthCircleObj() {
     }
 
-    protected GrowthCircleObj(Parcel in) {
-        super(in);
-        QRcodeUrl = in.readString();
-        cicleCoverUrl = in.readString();
-        circleName = in.readString();
-        createDate = in.readLong();
-        joinType = in.readInt();
-        mediaCount = in.readInt();
-        memberCount = in.readInt();
-        openLever = in.readInt();
-        workCount = in.readInt();
-        circleId = in.readLong();
-        circleNumber = in.readLong();
+    public static GrowthCircleObj getInstance() {
+        if (currentGrowthCircleObj == null)
+            synchronized (GrowthCircleObj.class) {
+                if (currentGrowthCircleObj == null)
+                    currentGrowthCircleObj = SQLite.select().from(GrowthCircleObj.class).where(GrowthCircleObj_Table.circleId.eq(FastData.getCircleId())).querySingle();
+            }
+        return currentGrowthCircleObj;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(QRcodeUrl);
-        dest.writeString(cicleCoverUrl);
-        dest.writeString(circleName);
-        dest.writeLong(createDate);
-        dest.writeInt(joinType);
-        dest.writeInt(mediaCount);
-        dest.writeInt(memberCount);
-        dest.writeInt(openLever);
-        dest.writeInt(workCount);
-        dest.writeLong(circleId);
-        dest.writeLong(circleNumber);
+    public static GrowthCircleObj refreshInstance() {
+        currentGrowthCircleObj = null;
+        return getInstance();
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<GrowthCircleObj> CREATOR = new Creator<GrowthCircleObj>() {
-        @Override
-        public GrowthCircleObj createFromParcel(Parcel in) {
-            return new GrowthCircleObj(in);
-        }
-
-        @Override
-        public GrowthCircleObj[] newArray(int size) {
-            return new GrowthCircleObj[size];
-        }
-    };
 
     public long getCircleId() {
         return circleId;
@@ -163,4 +153,50 @@ public class GrowthCircleObj extends BaseObj implements Parcelable {
     public void setWorkCount(int workCount) {
         this.workCount = workCount;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.circleId);
+        dest.writeLong(this.circleNumber);
+        dest.writeString(this.QRcodeUrl);
+        dest.writeString(this.cicleCoverUrl);
+        dest.writeString(this.circleName);
+        dest.writeLong(this.createDate);
+        dest.writeInt(this.joinType);
+        dest.writeInt(this.mediaCount);
+        dest.writeInt(this.memberCount);
+        dest.writeInt(this.openLever);
+        dest.writeInt(this.workCount);
+    }
+
+    protected GrowthCircleObj(Parcel in) {
+        this.circleId = in.readLong();
+        this.circleNumber = in.readLong();
+        this.QRcodeUrl = in.readString();
+        this.cicleCoverUrl = in.readString();
+        this.circleName = in.readString();
+        this.createDate = in.readLong();
+        this.joinType = in.readInt();
+        this.mediaCount = in.readInt();
+        this.memberCount = in.readInt();
+        this.openLever = in.readInt();
+        this.workCount = in.readInt();
+    }
+
+    public static final Creator<GrowthCircleObj> CREATOR = new Creator<GrowthCircleObj>() {
+        @Override
+        public GrowthCircleObj createFromParcel(Parcel source) {
+            return new GrowthCircleObj(source);
+        }
+
+        @Override
+        public GrowthCircleObj[] newArray(int size) {
+            return new GrowthCircleObj[size];
+        }
+    };
 }

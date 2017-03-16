@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 
@@ -432,7 +433,7 @@ public class FastData extends Remember {
         }
     }
 
-    public static String getBabyNickName(){
+    public static String getBabyNickName() {
         return getBabyObj().getNickName();
     }
 
@@ -608,6 +609,24 @@ public class FastData extends Remember {
      */
     public static long getRegionDBUpdateTime(long defaultValue) {
         return getLong(REGION_DB_UPDATE_TIME, defaultValue);
+    }
+
+    public static final String GROWTH_CIRCLE_ID = "growth_circle_id";
+
+    public static void setCircleId(long id) {
+        putLong(GROWTH_CIRCLE_ID, id);
+    }
+
+    public static long getCircleId() {
+        return getLong(GROWTH_CIRCLE_ID, 0);
+    }
+
+    public static void setGrowthCircleObj(GrowthCircleObj growthCircleObj) {
+        if (growthCircleObj != null) {
+            FastData.setCircleId(growthCircleObj.getCircleId());
+            growthCircleObj.save();
+            GrowthCircleObj.refreshInstance();
+        }
     }
 
     /**
