@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -74,6 +75,7 @@ public class CircleContentObj extends BaseObj implements Parcelable {
     }
 
     public List<CircleMediaObj> getMediaList() {
+        if (mediaList == null) mediaList = new ArrayList<>(0);
         return mediaList;
     }
 

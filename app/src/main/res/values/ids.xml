@@ -19,6 +19,7 @@
     <item name="glide_tag_id" type="id"/>
 
     <item name="recycler_item_click_tag" type="id"/>
+    <item name="recycler_item_input_tag" type="id"/>
 
     <item name="tag_delete" type="id"/>
     <item name="tag_add" type="id"/>
