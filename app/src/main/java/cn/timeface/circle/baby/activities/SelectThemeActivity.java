@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -177,11 +178,13 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
 
                                         ArrayList<String> keys = new ArrayList<>();
                                         ArrayList<String> values = new ArrayList<>();
-                                        keys.add("book_author");
-                                        keys.add("book_title");
 
-                                        values.add(author);
-                                        values.add(bookName);
+                                        if (TextUtils.isEmpty(bookId)) {
+                                            keys.add("book_author");
+                                            keys.add("book_title");
+                                            values.add(author);
+                                            values.add(bookName);
+                                        }
 
 
                                         TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
