@@ -615,7 +615,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
             if (elementsMap.get(contentId).containsKey(elementId)) {
 
                 TFOBookElementModel elementModel = elementsMap.get(contentId).get(elementId);
-                elementModel.setElementDeleted(visibility);
+                elementModel.setElementDeleted(!visibility);
                 return elementModel;
             }
         }
