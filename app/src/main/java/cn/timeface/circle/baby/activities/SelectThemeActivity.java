@@ -107,15 +107,15 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
         // 7-开放平台照片书 pod type
         addSubscription(
                 TFOpenDataProvider.get().bookTypeList(0, 7, 0, 0)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(listBaseResponse -> {
-                    tfStateView.finish();
-                    this.listBaseResponse = listBaseResponse;
-                    setDataList(listBaseResponse.getData());
-                }, throwable -> {
-                    tfStateView.showException(throwable);
-                    Log.e(TAG, "getRelationshipList:", throwable);
-                }));
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(listBaseResponse -> {
+                            tfStateView.finish();
+                            this.listBaseResponse = listBaseResponse;
+                            setDataList(listBaseResponse.getData());
+                        }, throwable -> {
+                            tfStateView.showException(throwable);
+                            Log.e(TAG, "getRelationshipList:", throwable);
+                        }));
     }
 
 
@@ -141,7 +141,7 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.complete){
+        if (item.getItemId() == R.id.complete) {
             creatBook(bookId, openBookId);
         }
         return super.onOptionsItemSelected(item);
@@ -153,12 +153,12 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(
                                 response -> {
-                                    if(response.success()){
+                                    if (response.success()) {
                                         //跳转开放平台POD接口；
                                         List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
                                         StringBuffer sb = new StringBuffer("{\"dataList\":[");
                                         int index = 0;
-                                        for(MediaObj mediaObj : response.getDataList()){
+                                        for (MediaObj mediaObj : response.getDataList()) {
                                             index++;
                                             TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
                                             tfoResourceObjs.add(tfoResourceObj);
@@ -178,20 +178,16 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
 
                                         ArrayList<String> keys = new ArrayList<>();
                                         ArrayList<String> values = new ArrayList<>();
-
-                                        if (TextUtils.isEmpty(bookId)) {
-                                            keys.add("book_author");
-                                            keys.add("book_title");
-                                            values.add(author);
-                                            values.add(bookName);
-                                        }
-
+                                        keys.add("book_author");
+                                        keys.add("book_title");
+                                        values.add(author);
+                                        values.add(bookName);
 
                                         TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
                                         List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
                                         tfoPublishObjs.add(tfoPublishObj);
 
-                                        MyPODActivity.open(this, bookId, openBookId, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, tfoPublishObjs, sb.toString(),true,FastData.getBabyId(),keys,values,1);
+                                        MyPODActivity.open(this, bookId, openBookId, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, bookTheme, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
                                         finish();
                                     }
                                 },
@@ -203,8 +199,8 @@ public class SelectThemeActivity extends BaseAppCompatActivity implements IEvent
     }
 
     @Subscribe
-    public void bookOptionEvent(BookOptionEvent optionEvent){
-        if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_CREATE){
+    public void bookOptionEvent(BookOptionEvent optionEvent) {
+        if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_CREATE) {
             finish();
         }
     }
