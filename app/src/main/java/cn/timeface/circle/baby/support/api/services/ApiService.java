@@ -69,10 +69,27 @@ import cn.timeface.circle.baby.support.mvp.model.GeneralBookItemResponse;
 import cn.timeface.circle.baby.support.mvp.model.GeneralBookResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
+import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
+import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
+import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
+import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
+import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
+import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
+import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
+import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
+import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
+import cn.timeface.circle.baby.ui.circle.response.HomeWorkSubmitResponse;
+import cn.timeface.circle.baby.ui.circle.response.QrcodeResponse;
+import cn.timeface.circle.baby.ui.circle.response.QueryCircleByTimeResponse;
+import cn.timeface.circle.baby.ui.circle.response.QueryCircleLastActivityResponse;
+import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
+import cn.timeface.circle.baby.ui.circle.response.TeacherAuthIsHasResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
@@ -384,6 +401,7 @@ public interface ApiService {
 
     /**
      * 删除时光里面的照片
+     *
      * @param mediaId
      * @param timeId
      * @return
@@ -752,7 +770,8 @@ public interface ApiService {
 
     /**
      * 获取书的列表数据
-     * @param bookType 书类型
+     *
+     * @param bookType       书类型
      * @param permissionType 1,表示查询当前给宝宝的所有作品（包括创建者和关注者）2,表示查询当前用户的所有作品（包括其关注和创建的所有宝宝）
      * @return
      */
@@ -818,13 +837,14 @@ public interface ApiService {
 
     /**
      * 编辑作品
-     * @param bookId 作品id
-     * @param babyId baby id
-     * @param bookCover 作品封面
-     * @param author 作者
-     * @param bookName 书名
+     *
+     * @param bookId      作品id
+     * @param babyId      baby id
+     * @param bookCover   作品封面
+     * @param author      作者
+     * @param bookName    书名
      * @param description 作品描述
-     * @param pageNum  作品页数
+     * @param pageNum     作品页数
      * @return
      */
     @FormUrlEncoded
@@ -841,8 +861,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("mediaID/backup")
     Observable<MediaIdResponse> mediaBackup(@Field("identifiers") String identifiers);
+
     /**
      * 按时间查询所有图片
+     *
      * @param babyId
      * @return
      */
@@ -852,8 +874,10 @@ public interface ApiService {
 
     @POST("mediaID/localList")
     Observable<MediaIdResponse> localList(@Query("userId") String userId);
+
     /**
      * 按标签查询所有图片
+     *
      * @param babyId
      * @return
      */
@@ -863,6 +887,7 @@ public interface ApiService {
 
     /**
      * 按地点查询所有图片
+     *
      * @param babyId
      * @return
      */
@@ -872,6 +897,7 @@ public interface ApiService {
 
     /**
      * 按成员查询所有图片
+     *
      * @param babyId
      * @return
      */
@@ -882,6 +908,7 @@ public interface ApiService {
 
     /**
      * 按时间查询所有时光
+     *
      * @param babyId
      * @param type
      * @return
@@ -893,6 +920,7 @@ public interface ApiService {
 
     /**
      * 按发布人查询所有时光
+     *
      * @param babyId
      * @param userId
      * @param type
@@ -906,6 +934,7 @@ public interface ApiService {
 
     /**
      * 查询所有成员信息
+     *
      * @return
      */
     @GET("printGrowth/getFamilyMember")
@@ -913,26 +942,33 @@ public interface ApiService {
 
     /**
      * 查询图片信息
+     *
      * @return
      */
     @GET("babyCloudAlbums/imageParam")
     Observable<ImageExInfoResponse> queryImageInfo(@Query("url") String url);
+
     /**
      * 查询页码
+     *
      * @return
      */
     @GET("babyTime/getTimeOfPageNo")
     Observable<TimeOfPageResponse> timeOfpage(@Query("pageSize") int pageSize,
                                               @Query("timeId") int timeId);
+
     /**
      * 查询经纬度反地理编码
+     *
      * @return
      */
     @GET("map/getAddress")
     Observable<QueryLocationInfoResponse> queryLocationInfo(@Query("lat") double lat,
                                                             @Query("log") double log);
+
     /**
      * 设置短信提醒
+     *
      * @return
      */
     @GET("member/msgRemind")
@@ -1040,6 +1076,7 @@ public interface ApiService {
 
     /**
      * 更新输编辑时间
+     *
      * @param bookId
      * @return
      */
@@ -1051,6 +1088,7 @@ public interface ApiService {
 
     /**
      * 圈时光评论
+     *
      * @param circleTimelineId
      * @param commentContent
      * @param commentDate
@@ -1066,6 +1104,7 @@ public interface ApiService {
 
     /**
      * 编辑某条时光
+     *
      * @param circleTimelineInfo
      * @return
      */
@@ -1075,6 +1114,7 @@ public interface ApiService {
 
     /**
      * 圈时光点赞、取消点赞
+     *
      * @param circleTimelineId
      * @param like
      * @return
@@ -1086,6 +1126,7 @@ public interface ApiService {
 
     /**
      * 删除某条评论
+     *
      * @param commentId
      * @return
      */
@@ -1095,6 +1136,7 @@ public interface ApiService {
 
     /**
      * 圈时光详情
+     *
      * @param circleTimelineId
      * @return
      */
@@ -1104,6 +1146,7 @@ public interface ApiService {
 
     /**
      * 删除某条圈时光
+     *
      * @param circleTimelineId
      * @return
      */
@@ -1113,6 +1156,7 @@ public interface ApiService {
 
     /**
      * 加圈申请
+     *
      * @param babyRealName
      * @param circleNumber
      * @param leaveWords
@@ -1127,6 +1171,7 @@ public interface ApiService {
 
     /**
      * 创建圈子
+     *
      * @param circleName
      * @param openLever
      * @return
@@ -1138,6 +1183,7 @@ public interface ApiService {
 
     /**
      * 圈列表
+     *
      * @return
      */
     @GET("babyCircle/list")
@@ -1145,6 +1191,7 @@ public interface ApiService {
 
     /**
      * 圈资料
+     *
      * @param circleNumber
      * @return
      */
@@ -1154,6 +1201,7 @@ public interface ApiService {
 
     /**
      * 查找圈子
+     *
      * @param circleName
      * @return
      */
@@ -1161,5 +1209,296 @@ public interface ApiService {
     Observable<CircleListResponse> queryByCircleNumOrName(
             @Query("circleName") String circleName);
 
+    /**
+     * 按照圈中的宝宝查询
+     *
+     * @param circleId
+     * @return
+     */
+    @GET("babyMedia/byBaby")
+    Observable<QueryCirclePhotoResponse<QueryByCircleBabyObj>> queryByCircleBaby(
+            @Query("circleId") long circleId);
+
+    /**
+     * 查询某个圈成员的发布图片
+     *
+     * @param circleId
+     * @param userId
+     * @return
+     */
+    @GET("babyMedia/getUser")
+    Observable<QueryCirclePhotoResponse<GetCirclePhotoByUserObj>> getCirclePhotoByUser(
+            @Query("circleId") long circleId,
+            @Query("userId") long userId);
+
+    /**
+     * 按发布者查询
+     *
+     * @param circleId
+     * @return
+     */
+    @GET("babyMedia/byUser")
+    Observable<QueryCirclePhotoResponse<QueryByCircleUserObj>> queryByCircleUser(
+            @Query("circleId") long circleId);
+
+    /**
+     * 查询宝宝被圈中的照片
+     *
+     * @param circleId
+     * @param babyId
+     * @return
+     */
+    @GET("babyMedia/getAtBaby")
+    Observable<QueryCirclePhotoResponse<GetCirclePhotoByUserObj>> getCirclePhotoByAtBaby(
+            @Query("circleId") long circleId,
+            @Query("babyId") long babyId);
+
+    /**
+     * 按年月查询所有照片
+     *
+     * @param circleId
+     * @param year
+     * @param month
+     * @return
+     */
+    @GET("babyMedia/byYearMonth")
+    Observable<QueryCirclePhotoResponse<GetCirclePhotoByUserObj>> getCirclePhotoByYearMonth(
+            @Query("circleId") long circleId,
+            @Query("year") String year,
+            @Query("month") String month);
+
+    /**
+     * 按活动相册查询
+     *
+     * @param circleId
+     * @return
+     */
+    @GET("activity/list")
+    Observable<QueryCirclePhotoResponse<CircleActivityAlbumObj>> queryByCircleActivity(
+            @Query("circleId") long circleId);
+
+    /**
+     * 按时间查询
+     *
+     * @param circleId
+     * @return
+     */
+    @GET("babyMedia/byTime")
+    Observable<QueryCircleByTimeResponse> queryByCircleTime(
+            @Query("circleId") long circleId);
+
+    /**
+     * 活动相册中照片详情列表
+     *
+     * @param activityAlbumId
+     * @return
+     */
+    @GET("activity/detail")
+    Observable<QueryCirclePhotoResponse<GetCirclePhotoByUserObj>> getCirclePhotoByActivity(
+            @Query("activityAlbumId") long activityAlbumId);
+
+    /**
+     * 搜索活动相册
+     *
+     * @param circleId
+     * @param key
+     * @return
+     */
+    @GET("activity/search")
+    Observable<QueryCirclePhotoResponse<CircleActivityAlbumObj>> searchCircleActivity(
+            @Query("circleId") long circleId,
+            @Query("key") String key);
+
+    /**
+     * 新增宝宝
+     * @param circleId
+     * @param babyName
+     * @return
+     */
+    @GET("circle/addBaby")
+    Observable<BaseResponse> addBaby(
+            @Query("circleId") long circleId,
+            @Query("babyName") String babyName);
+
+    /**
+     * 圈中某个宝宝
+     * @param circleId
+     * @param babyName
+     * @param babyId
+     * @param mediaId
+     * @return
+     */
+    @GET("circle/atBaby")
+    Observable<BaseResponse> atBaby(
+            @Query("circleId") long circleId,
+            @Query("babyName") String babyName,
+            @Query("babyId") long babyId,
+            @Query("mediaId") long mediaId);
+
+    /**
+     * 获取圈内的所有宝宝
+     * @param circleId
+     * @param hasAlone
+     * @param mediaId
+     * @return
+     */
+    @GET("circle/allBaby")
+    Observable<QueryCirclePhotoResponse<GetCircleAllBabyObj>> getCircleAllBaby(
+            @Query("circleId") long circleId,
+            @Query("hasAlone") int hasAlone,
+            @Query("mediaId") long mediaId);
+
+    /**
+     * 查询圈时光上次发布的活动相册
+     * @param circleId
+     * @return
+     */
+    @GET("activity/lastActivity")
+    Observable<QueryCircleLastActivityResponse> queryLastActivity(
+            @Query("circleId") long circleId);
+
+    /**
+     * 圈首页
+     * @param circleId
+     * @return
+     */
+    @GET("circle/index")
+    Observable<CircleIndexResponse> circleIndex(
+            @Query("circleId") long circleId);
+
+    /**
+     * 圈时光发布
+     * @param circleId
+     * @param circleTimeline
+     * @return
+     */
+    @GET("dynamic/publish")
+    Observable<CirclePublishResponse> circlePublish(
+            @Query("circleId") long circleId,
+            @Query("circleTimeline") String circleTimeline);
+
+    /**
+     * 获取圈作业列表
+     * @param circleId
+     * @return
+     */
+    @GET("homework/list")
+    Observable<HomeWorkListResponse> homeWorkList(
+            @Query("circleId") long circleId);
+
+    /**
+     * 老师布置作业详情列表
+     * @param taskId
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    @GET("homework/teacherHomeworkDetal")
+    Observable<HomeWorkDetailResponse> teacherHomeworkDetal(
+            @Query("taskId") long taskId,
+            @Query("currentPage") int currentPage,
+            @Query("pageSize") int pageSize);
+
+    /**
+     * 发布作业
+     * @param circleId
+     * @param schoolTask
+     * @return
+     */
+    @GET("homework/publish")
+    Observable<HomeWorkPublishResponse> homeWorkPublish(
+            @Query("circleId") long circleId,
+            @Query("schoolTask") String schoolTask);
+
+    /**
+     * 家长提交作业的详情
+     * @param homeworkId
+     * @return
+     */
+    @GET("homework/submitHomeworkDetal")
+    Observable<HomeWorkSubmitResponse> submitHomeworkDetal(
+            @Query("homeworkId") long homeworkId);
+
+    /**
+     * 提交作业
+     * @param taskId
+     * @param homework
+     * @return
+     */
+    @GET("homework/submit")
+    Observable<HomeWorkSubmitResponse> homeWorkSubmit(
+            @Query("taskId") long taskId,
+            @Query("homework") String homework);
+
+    /**
+     * 同意教师认证
+     * @param userId
+     * @return
+     */
+    @GET("teacherAuth/check")
+    Observable<BaseResponse> checkTeacher(
+            @Query("userId") long userId);
+
+    /**
+     * 需认证的教师列表
+     * @param circleId
+     * @return
+     */
+    @GET("teacherAuth/list")
+    Observable<QueryCirclePhotoResponse<TeacherAuthObj>> checkTeacherList(
+            @Query("circleId") long circleId);
+
+    /**
+     * 查询是否有新的教师认证消息
+     * @param circleId
+     * @return
+     */
+    @GET("teacherAuth/isHas")
+    Observable<TeacherAuthIsHasResponse> isHas(
+            @Query("circleId") long circleId);
+
+    /**
+     * 圈二维码详情
+     * @param circleId
+     * @return
+     */
+    @GET("circle/qrcode")
+    Observable<QrcodeResponse> qrcode(
+            @Query("circleId") long circleId);
+
+    /**
+     * 修改宝宝大名
+     * @param babyId
+     * @param realName
+     * @return
+     */
+    @GET("circle/updateBabyRealName")
+    Observable<BaseResponse> updateBabyRealName(
+            @Query("babyId") long babyId,
+            @Query("realName") String realName);
+
+    /**
+     * 移除某个成员
+     * @param circleId
+     * @param userId
+     * @return
+     */
+    @GET("circle/removeMember")
+    Observable<BaseResponse> updateBabyRealName(
+            @Query("circleId") long circleId,
+            @Query("userId") long userId);
+
+    /**
+     * 发起/取消 某个成员的教师认证
+     * @param certification
+     * @param circleId
+     * @param userId
+     * @return
+     */
+    @GET("teacherAuth/start")
+    Observable<BaseResponse> teacherAuthStart(
+            @Query("certification") int certification,
+            @Query("circleId") long circleId,
+            @Query("userId") long userId);
 
 }

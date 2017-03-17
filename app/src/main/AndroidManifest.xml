@@ -502,6 +502,12 @@
             android:name=".ui.calendar.UpdateCommemorationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TimeFaceTheme.DayNight" />
+
+        <activity
+            android:name=".ui.circle.activities.CirclePhotoActivity"
+            android:label="@string/title_circle_photo"
+            android:theme="@style/AppTheme" />
+
         <service android:name=".ui.timelines.services.UploadVideoService"/>
 
         //-----------------------countly----------------------------------
