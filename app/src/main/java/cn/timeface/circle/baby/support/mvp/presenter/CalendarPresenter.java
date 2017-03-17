@@ -629,7 +629,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
      * @param contentId   content id
      * @param observables list
      */
-    private void changeFrontList(String month, String contentId,
+    private void   changeFrontList(String month, String contentId,
                                  List<Observable<TFOBaseResponse<EditText>>> observables) {
 
         CommemorationDataManger manager = CommemorationDataManger.getInstance();
