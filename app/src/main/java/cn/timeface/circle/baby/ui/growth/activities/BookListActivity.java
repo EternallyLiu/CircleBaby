@@ -203,9 +203,8 @@ public class BookListActivity extends ProductionListActivity implements BookPres
             case R.id.iv_menu:
                 if (productionMenuDialog == null) {
                     ProductionMenuDialog productionMenuDialog = ProductionMenuDialog.newInstance(
-                            bookType,
-                            String.valueOf(bookObj.getBookId()),
-                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, String.valueOf(bookObj.getOpenBookId()), bookObj.getBaby().getBabyId());
+                            bookObj,
+                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
                     productionMenuDialog.show(getSupportFragmentManager(), "");
                 }
                 break;

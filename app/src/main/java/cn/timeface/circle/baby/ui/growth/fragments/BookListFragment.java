@@ -112,9 +112,8 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
             case R.id.iv_menu:
                 if (productionMenuDialog == null) {
                     productionMenuDialog = ProductionMenuDialog.newInstance(
-                            bookType,
-                            String.valueOf(bookObj.getBookId()),
-                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, String.valueOf(bookObj.getOpenBookId()), bookObj.getBaby().getBabyId());
+                            bookObj,
+                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
                     productionMenuDialog.show(getChildFragmentManager(), "");
                 }
                 break;
