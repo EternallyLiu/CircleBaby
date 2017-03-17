@@ -505,6 +505,11 @@
 
         <activity android:name=".ui.circle.timelines.activity.PublishActivity"/>
 
+        <activity
+            android:name=".ui.circle.activities.CirclePhotoActivity"
+            android:label="@string/title_circle_photo"
+            android:theme="@style/AppTheme" />
+
         <service android:name=".ui.timelines.services.UploadVideoService"/>
 
         //-----------------------countly----------------------------------
