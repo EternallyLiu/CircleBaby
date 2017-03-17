@@ -115,6 +115,7 @@
 
 # 艹,由于gson解析需要,必须keeping所有序列化和反序列化的model
 -keep class cn.timeface.circle.baby.support.api.models.** { *; }
+-keep class cn.timeface.circle.baby.support.mvp.** { *; }
 -keep class cn.timeface.circle.baby.ui.babyInfo.beans.** { *; }
 -keep class cn.timeface.circle.baby.ui.calendar.bean.** { *; }
 -keep class cn.timeface.circle.baby.ui.calendar.response.** { *; }
@@ -125,6 +126,7 @@
 
 -keep class cn.timeface.open.api.model.** { *; }
 -keep class cn.timeface.open.api.bean.** { *; }
+-keep class cn.timeface.open.** { *; }
 
 
 # Parcelable

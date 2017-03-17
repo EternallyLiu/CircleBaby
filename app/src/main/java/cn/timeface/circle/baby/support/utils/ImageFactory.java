@@ -555,7 +555,8 @@ public class ImageFactory {
 
     //过滤图片.jpg/.jpeg/.png
     public static boolean photoFilter(String file) {
-        if (file.toLowerCase().endsWith(".jpg") || file.toLowerCase().endsWith(".jpeg") || file.toLowerCase().endsWith(".png")) {
+        if ((file.toLowerCase().endsWith(".jpg") || file.toLowerCase().endsWith(".jpeg") || file.toLowerCase().endsWith(".png"))
+                && new File(file).exists()) {
             return true;
         }
         return false;
