@@ -3,7 +3,6 @@ package cn.timeface.circle.baby.ui.growth.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -12,14 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 
 import java.net.URLEncoder;
@@ -193,7 +188,6 @@ public class RecognizeCardEditActivity extends CardPreviewActivity implements Vi
         rlCard.setOnClickListener(this);
         ivCard.post(() -> {
             float scale = 1;
-
             if(knowledgeCardObj.getImageInfo().getImageH() >= knowledgeCardObj.getImageInfo().getImageW()){
                 scale = (float) ivCard.getHeight() / knowledgeCardObj.getImageInfo().getImageH();
             } else {
@@ -210,6 +204,7 @@ public class RecognizeCardEditActivity extends CardPreviewActivity implements Vi
             }
             ivCard.zoomTo(scale, knowledgeCardObj.getImageInfo().getImageW() * scale, knowledgeCardObj.getImageInfo().getImageH() * scale);
             Log.e(TAG, String.valueOf(scale));
+            Log.e(TAG, "widith:" + String.valueOf(ivCard.getWidth()));
         });
     }
 
