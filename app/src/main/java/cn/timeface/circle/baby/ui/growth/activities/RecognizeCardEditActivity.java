@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.growth.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,10 +12,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 
 import java.net.URLEncoder;
@@ -181,10 +186,31 @@ public class RecognizeCardEditActivity extends CardPreviewActivity implements Vi
 
         Glide.with(this)
                 .load(knowledgeCardObj.getImageInfo().getYurl())
+                .asBitmap()
                 .placeholder(R.drawable.bg_default_holder_img)
                 .error(R.drawable.bg_default_holder_img)
                 .into(ivCard);
         rlCard.setOnClickListener(this);
+        ivCard.post(() -> {
+            float scale = 1;
+
+            if(knowledgeCardObj.getImageInfo().getImageH() >= knowledgeCardObj.getImageInfo().getImageW()){
+                scale = (float) ivCard.getHeight() / knowledgeCardObj.getImageInfo().getImageH();
+            } else {
+                scale = (float) ivCard.getWidth() / knowledgeCardObj.getImageInfo().getImageW();
+            }
+
+            float displayW = knowledgeCardObj.getImageInfo().getImageW() * scale;
+            float displayH = knowledgeCardObj.getImageInfo().getImageH() * scale;
+
+            if(displayW >= displayH){
+                scale = ivCard.getHeight() / displayH;
+            } else {
+                scale = ivCard.getWidth() / displayW;
+            }
+            ivCard.zoomTo(scale, knowledgeCardObj.getImageInfo().getImageW() * scale, knowledgeCardObj.getImageInfo().getImageH() * scale);
+            Log.e(TAG, String.valueOf(scale));
+        });
     }
 
     @Override

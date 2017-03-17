@@ -51,7 +51,7 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
     @Bind(R.id.et_title)
     EditText etTitle;
     @Bind(R.id.iv_card)
-    PhotoView ivCard;
+    cn.timeface.circle.baby.views.widget.photoview.PhotoView ivCard;
     @Bind(R.id.rl_card)
     RatioRelativeLayout rlCard;
     @Bind(R.id.content_card_preview)
