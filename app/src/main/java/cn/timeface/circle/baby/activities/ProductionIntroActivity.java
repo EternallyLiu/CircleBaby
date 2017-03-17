@@ -115,7 +115,15 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                 break;
             //成长纪念册
             case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
-                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "", FastData.getBabyId());
+                SelectServerTimeActivity.open(
+                        this,
+                        bookType,
+                        TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
+                        "",
+                        "",
+                        FastData.getBabyId(),
+                        FastData.getUserName(),
+                        FastData.getBabyNickName() + "的成长纪念册");
                 break;
             //绘画集
             case BookModel.BOOK_TYPE_PAINTING:
@@ -123,7 +131,15 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                 break;
             //成长语录
             case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
-                SelectServerTimeActivity.open(this, bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "", FastData.getBabyId());
+                SelectServerTimeActivity.open(
+                        this,
+                        bookType,
+                        TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS,
+                        "",
+                        "",
+                        FastData.getBabyId(),
+                        FastData.getUserName(),
+                        FastData.getBabyNickName() + "的成长语录");
                 break;
             //识图卡片
             case BookModel.BOOK_TYPE_RECOGNIZE_PHOTO_CARD:

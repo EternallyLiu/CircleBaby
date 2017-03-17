@@ -100,17 +100,29 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
     String bookId;
     String openBookId;
     int babyId;//判断这本书是否属于当前宝宝
+    String author;
+    String bookName;
 
     List<MediaObj> allSelectMedias = new ArrayList<>();
 
 
     public static void open(Context context,int bookType, int openBookType, String bookId, String openBookId, int babyId) {
+        String bookName = FastData.getBabyNickName() + "的照片书";
+        if(bookType == BookModel.BOOK_TYPE_PAINTING){
+            bookName = FastData.getBabyNickName() + "的绘画集";
+        }
+        open(context, bookType, openBookType, bookId, openBookId, babyId, FastData.getUserName(), bookName);
+    }
+
+    public static void open(Context context,int bookType, int openBookType, String bookId, String openBookId, int babyId, String author, String bookName) {
         Intent intent = new Intent(context, SelectServerPhotoActivity.class);
         intent.putExtra("open_book_type", openBookType);
         intent.putExtra("book_type", bookType);
         intent.putExtra("book_id", bookId);
         intent.putExtra("open_book_id", openBookId);
         intent.putExtra("baby_id", babyId);
+        intent.putExtra("author", author);
+        intent.putExtra("book_name", bookName);
         context.startActivity(intent);
     }
 
@@ -128,6 +140,8 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
         this.bookId = getIntent().getStringExtra("book_id");
         this.openBookId = getIntent().getStringExtra("open_book_id");
         this.babyId = getIntent().getIntExtra("baby_id", 0);
+        this.author = getIntent().getStringExtra("author");
+        this.bookName = getIntent().getStringExtra("book_name");
 
         //新建一本
         if(TextUtils.isEmpty(bookId)){
@@ -223,10 +237,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                     response -> {
                                         if(response.success()){
                                             //跳转开放平台POD接口；
-                                            String bookName = FastData.getBabyNickName() + "的照片书";
-                                            if(bookType == BookModel.BOOK_TYPE_PAINTING){
-                                                bookName = FastData.getBabyNickName() + "的绘画集";
-                                            }
+
                                             List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
                                             StringBuffer sb = new StringBuffer("{\"dataList\":[");
                                             int index = 0;
@@ -253,7 +264,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                             keys.add("book_author");
                                             keys.add("book_title");
 
-                                            values.add(FastData.getUserName());
+                                            values.add(author);
                                             values.add(bookName);
 
 

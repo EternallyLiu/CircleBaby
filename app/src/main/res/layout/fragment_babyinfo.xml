@@ -211,13 +211,12 @@
                     android:visibility="gone" />
 
                 <TextView
+                    android:layout_toLeftOf="@+id/iv_gender"
                     android:id="@+id/tv_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="@dimen/size_12"
-                    android:layout_toLeftOf="@+id/iv_gender"
                     android:text="未选择"
                     android:textSize="@dimen/text_normal" />
 

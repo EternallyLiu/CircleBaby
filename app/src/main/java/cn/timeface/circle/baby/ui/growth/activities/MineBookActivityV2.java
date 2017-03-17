@@ -87,16 +87,30 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
                                     ));
                     break;
                 case 1: //成长纪念册
-                    SelectServerTimeActivity.open(this, BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
-                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "", FastData.getBabyId());
+                    SelectServerTimeActivity.open(
+                            this,
+                            BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
+                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
+                            "",
+                            "",
+                            FastData.getBabyId(),
+                            FastData.getUserName(),
+                            FastData.getBabyNickName() + "的成长纪念册");
                     break;
                 case 2: //绘画集
                     SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_PAINTING,
                             TypeConstants.OPEN_BOOK_TYPE_PAINTING, "", "", FastData.getBabyId());
                     break;
                 case 3: //成长语录
-                    SelectServerTimeActivity.open(this, BookModel.BOOK_TYPE_GROWTH_QUOTATIONS,
-                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "", FastData.getBabyId());
+                    SelectServerTimeActivity.open(
+                            this,
+                            BookModel.BOOK_TYPE_GROWTH_QUOTATIONS,
+                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS,
+                            "",
+                            "",
+                            FastData.getBabyId(),
+                            FastData.getUserName(),
+                            FastData.getBabyNickName() + "的成长语录");
                     break;
                 case 4: //识图卡片
                     CardPublishActivity.open(this);
