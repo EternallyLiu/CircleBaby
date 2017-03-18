@@ -15,8 +15,20 @@ public class CirclePhotoMonthObj extends BaseObj implements Parcelable {
     protected int mediaCount;           //该月中所有的图片
     protected String mediaUrl;          //该月第一张图片的url
     protected String month;             //月份
+    protected String year;              //年
 
     public CirclePhotoMonthObj() {
+    }
+
+    public CirclePhotoMonthObj(int mediaCount, String month) {
+        this.mediaCount = mediaCount;
+        this.month = month;
+    }
+
+    public CirclePhotoMonthObj(int mediaCount, String mediaUrl, String month) {
+        this.mediaCount = mediaCount;
+        this.mediaUrl = mediaUrl;
+        this.month = month;
     }
 
     public CirclePhotoMonthObj(Parcel in) {
@@ -24,6 +36,7 @@ public class CirclePhotoMonthObj extends BaseObj implements Parcelable {
         mediaCount = in.readInt();
         mediaUrl = in.readString();
         month = in.readString();
+        year = in.readString();
     }
 
     @Override
@@ -32,6 +45,7 @@ public class CirclePhotoMonthObj extends BaseObj implements Parcelable {
         dest.writeInt(mediaCount);
         dest.writeString(mediaUrl);
         dest.writeString(month);
+        dest.writeString(year);
     }
 
     @Override
@@ -77,5 +91,13 @@ public class CirclePhotoMonthObj extends BaseObj implements Parcelable {
 
     public static Creator<CirclePhotoMonthObj> getCREATOR() {
         return CREATOR;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
     }
 }

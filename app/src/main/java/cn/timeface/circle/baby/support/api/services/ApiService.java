@@ -4,6 +4,7 @@ import java.util.Map;
 
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.responses.ADResponse;
 import cn.timeface.circle.baby.support.api.models.responses.AddAddressResponse;
 import cn.timeface.circle.baby.support.api.models.responses.AddCartItemResponse;
@@ -80,6 +81,7 @@ import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
@@ -1109,7 +1111,7 @@ public interface ApiService {
      * @return
      */
     @GET("dynamic/update")
-    Observable<UpdateTimeLineResponse> circleUpdate(
+    Observable<UpdateTimeLineResponse> editCircleTime(
             @Query("circleTimelineInfo") String circleTimelineInfo);
 
     /**
@@ -1215,7 +1217,7 @@ public interface ApiService {
      * @param circleId
      * @return
      */
-    @GET("babyMedia/byBaby")
+    @GET("circleMedia/byBaby")
     Observable<QueryCirclePhotoResponse<QueryByCircleBabyObj>> queryByCircleBaby(
             @Query("circleId") long circleId);
 
@@ -1226,7 +1228,7 @@ public interface ApiService {
      * @param userId
      * @return
      */
-    @GET("babyMedia/getUser")
+    @GET("circleMedia/getUser")
     Observable<QueryCirclePhotoResponse<GetCirclePhotoByUserObj>> getCirclePhotoByUser(
             @Query("circleId") long circleId,
             @Query("userId") long userId);
@@ -1237,7 +1239,7 @@ public interface ApiService {
      * @param circleId
      * @return
      */
-    @GET("babyMedia/byUser")
+    @GET("circleMedia/byUser")
     Observable<QueryCirclePhotoResponse<QueryByCircleUserObj>> queryByCircleUser(
             @Query("circleId") long circleId);
 
@@ -1248,7 +1250,7 @@ public interface ApiService {
      * @param babyId
      * @return
      */
-    @GET("babyMedia/getAtBaby")
+    @GET("circleMedia/getAtBaby")
     Observable<QueryCirclePhotoResponse<GetCirclePhotoByUserObj>> getCirclePhotoByAtBaby(
             @Query("circleId") long circleId,
             @Query("babyId") long babyId);
@@ -1261,7 +1263,7 @@ public interface ApiService {
      * @param month
      * @return
      */
-    @GET("babyMedia/byYearMonth")
+    @GET("circleMedia/byYearMonth")
     Observable<QueryCirclePhotoResponse<GetCirclePhotoByUserObj>> getCirclePhotoByYearMonth(
             @Query("circleId") long circleId,
             @Query("year") String year,
@@ -1283,7 +1285,7 @@ public interface ApiService {
      * @param circleId
      * @return
      */
-    @GET("babyMedia/byTime")
+    @GET("circleMedia/byTime")
     Observable<QueryCircleByTimeResponse> queryByCircleTime(
             @Query("circleId") long circleId);
 
@@ -1478,6 +1480,15 @@ public interface ApiService {
             @Query("realName") String realName);
 
     /**
+     * 圈资料编辑
+     * @param circleDetailInfo
+     * @return
+     */
+    @GET("circle/update")
+    Observable<BaseResponse> editCircleInfo(
+            @Query("circleDetailInfo") String circleDetailInfo);
+
+    /**
      * 移除某个成员
      * @param circleId
      * @param userId
@@ -1498,6 +1509,48 @@ public interface ApiService {
     @GET("teacherAuth/start")
     Observable<BaseResponse> teacherAuthStart(
             @Query("certification") int certification,
+            @Query("circleId") long circleId,
+            @Query("userId") long userId);
+
+    /**
+     * 圈成员列表
+     * @param circleId
+     * @return
+     */
+    @GET("circle/memberList")
+    Observable<CircleMemberListResponse> circleMemberList(
+            @Query("circleId") long circleId);
+
+    /**
+     * 同意/拒绝 某人入圈
+     * @param agree
+     * @param circleId
+     * @param userId
+     * @return
+     */
+    @GET("circle/joinCircleCheck")
+    Observable<BaseResponse> joinCircleCheck(
+            @Query("agree") int agree,
+            @Query("circleId") long circleId,
+            @Query("userId") long userId);
+
+    /**
+     * 圈头像推荐图片
+     * @return
+     */
+    @GET("circle/getDefaultCover")
+    Observable<QueryCirclePhotoResponse<MediaObj>> getDefaultCover();
+
+    /**
+     * 修改圈成员昵称
+     * @param nickName
+     * @param circleId
+     * @param userId
+     * @return
+     */
+    @GET("circle/updateNickname")
+    Observable<BaseResponse> updateNickname(
+            @Query("nickName") String nickName,
             @Query("circleId") long circleId,
             @Query("userId") long userId);
 

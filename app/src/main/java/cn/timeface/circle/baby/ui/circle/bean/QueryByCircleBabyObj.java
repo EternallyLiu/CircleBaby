@@ -19,6 +19,11 @@ public class QueryByCircleBabyObj extends BaseObj implements Parcelable {
     public QueryByCircleBabyObj() {
     }
 
+    public QueryByCircleBabyObj(BabyObj babyInfo, int mediaCount) {
+        this.babyInfo = babyInfo;
+        this.mediaCount = mediaCount;
+    }
+
     public QueryByCircleBabyObj(Parcel in) {
         super(in);
         babyInfo = in.readParcelable(BabyObj.class.getClassLoader());

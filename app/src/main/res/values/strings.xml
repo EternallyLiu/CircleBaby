@@ -832,4 +832,8 @@
     <string name="send_circle_school_title">发布作业</string>
     <string name="send_circle_homework_title">提交作业</string>
     <string name="circle_publish_notify_timeline_tip">同步到宝宝动态</string>
+
+
+
+    <string name="circlephoto_count">共%d张照片</string>
 </resources>

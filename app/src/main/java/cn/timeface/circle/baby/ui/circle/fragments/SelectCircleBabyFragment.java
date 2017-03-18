@@ -14,32 +14,33 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
-import cn.timeface.circle.baby.ui.circle.adapters.CircleByUserAdapter;
-import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
-import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
+import cn.timeface.circle.baby.ui.circle.adapters.CircleByBabyAdapter;
+import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 
 /**
- * 圈照片按发布人fragment
- * Created by lidonglin on 2017/3/17.
+ * 圈照片按圈中宝宝fragment
+ * Created by lidonglin on 2017/3/18.
  */
-public class SelectCircleUserFragment extends BasePresenterFragment {
+public class SelectCircleBabyFragment extends BasePresenterFragment {
 
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
 
     View.OnClickListener clickListener;
-    CircleByUserAdapter circleByUserAdapter;
+    CircleByBabyAdapter circleByBabyAdapter;
     private long circleId = 0;
-    private List<QueryByCircleUserObj> data = new ArrayList<>();
+    private List<QueryByCircleBabyObj> data = new ArrayList<>();
 
-    public static SelectCircleUserFragment newInstance(View.OnClickListener clickListener){
-        SelectCircleUserFragment selectUserFragment = new SelectCircleUserFragment();
+    public static SelectCircleBabyFragment newInstance(View.OnClickListener clickListener) {
+        SelectCircleBabyFragment selectUserFragment = new SelectCircleBabyFragment();
         selectUserFragment.clickListener = clickListener;
         return selectUserFragment;
     }
 
-    public SelectCircleUserFragment() {}
+    public SelectCircleBabyFragment() {
+    }
 
     @Nullable
     @Override
@@ -69,14 +70,14 @@ public class SelectCircleUserFragment extends BasePresenterFragment {
         setData(getData());
     }
 
-    private void setData(List<QueryByCircleUserObj> objs){
-        if(circleByUserAdapter == null){
+    private void setData(List<QueryByCircleBabyObj> objs) {
+        if (circleByBabyAdapter == null) {
             rvContent.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-            circleByUserAdapter = new CircleByUserAdapter(getActivity(), objs, clickListener);
-            rvContent.setAdapter(circleByUserAdapter);
+            circleByBabyAdapter = new CircleByBabyAdapter(getActivity(), objs, clickListener);
+            rvContent.setAdapter(circleByBabyAdapter);
         } else {
-            circleByUserAdapter.setListData(objs);
-            circleByUserAdapter.notifyDataSetChanged();
+            circleByBabyAdapter.setListData(objs);
+            circleByBabyAdapter.notifyDataSetChanged();
         }
     }
 
@@ -86,14 +87,16 @@ public class SelectCircleUserFragment extends BasePresenterFragment {
         ButterKnife.unbind(this);
     }
 
-    public List<QueryByCircleUserObj> getData() {
+    public List<QueryByCircleBabyObj> getData() {
         data.clear();
-        CircleUserInfo user = new CircleUserInfo("http://img1.timeface.cn/baby/d8e132d581eb8bb1b1c6a5a80b81d2f1.jpg", "豆豆的妈妈", 0, 0, 0);
-        QueryByCircleUserObj queryByCircleUserObj = new QueryByCircleUserObj(user, 100);
-        data.add(queryByCircleUserObj);
-        data.add(queryByCircleUserObj);
-        data.add(queryByCircleUserObj);
-        data.add(queryByCircleUserObj);
+        BabyObj babyObj = new BabyObj();
+        babyObj.setAvatar("http://img1.timeface.cn/baby/d8e132d581eb8bb1b1c6a5a80b81d2f1.jpg");
+        babyObj.setName("豆豆");
+        QueryByCircleBabyObj queryByCircleBabyObj = new QueryByCircleBabyObj(babyObj, 100);
+        data.add(queryByCircleBabyObj);
+        data.add(queryByCircleBabyObj);
+        data.add(queryByCircleBabyObj);
+        data.add(queryByCircleBabyObj);
         return data;
     }
 }

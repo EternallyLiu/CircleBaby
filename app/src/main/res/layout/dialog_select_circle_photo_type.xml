@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:gravity="center_horizontal"
-            android:text="按@圈的人"
+            android:text="按@圈的宝宝"
             android:textColor="@color/gray_normal"
             android:textSize="@dimen/text_medium"
             android:paddingTop="@dimen/size_12"

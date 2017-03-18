@@ -21,6 +21,12 @@ public class QueryByCircleTimeObj extends BaseObj implements Parcelable {
     public QueryByCircleTimeObj() {
     }
 
+    public QueryByCircleTimeObj(int mediaCount, List<CirclePhotoMonthObj> monthList, String year) {
+        this.mediaCount = mediaCount;
+        this.monthList = monthList;
+        this.year = year;
+    }
+
     public QueryByCircleTimeObj(Parcel in) {
         super(in);
         mediaCount = in.readInt();
