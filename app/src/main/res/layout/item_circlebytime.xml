@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_month"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/text_color1"
+    android:clickable="true"
+    android:gravity="center_horizontal">
+
+    <ImageView
+        android:id="@+id/iv_month"
+        android:layout_width="@dimen/size_56"
+        android:layout_height="@dimen/size_56"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/size_12"
+        android:src="@color/bg_color5" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/iv_month"
+        android:layout_marginLeft="@dimen/size_6"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_month"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10月"
+            android:textColor="@color/text_color31"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_6"
+            android:text="共264张照片"
+            android:textColor="@color/text_color32"
+            android:textSize="@dimen/text_normal" />
+
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="@dimen/size_12"
+        android:layout_height="@dimen/size_24"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/size_12"
+        android:src="@drawable/edit" />
+
+</RelativeLayout>

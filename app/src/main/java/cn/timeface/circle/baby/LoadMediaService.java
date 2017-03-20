@@ -100,7 +100,6 @@ public class LoadMediaService extends IntentService {
             }
             cursor.close();
         }
-        LogUtil.showLog(TAG, "不论是否有sd卡都要查询手机内存");
         //不论是否有sd卡都要查询手机内存
         Cursor cursor = cr.query(MediaStore.Video.Media.INTERNAL_CONTENT_URI, progress, null, null, null);
         while (cursor.moveToNext()) {
@@ -138,7 +137,6 @@ public class LoadMediaService extends IntentService {
         Observable.defer(() -> Observable.from(list))
                 .map(videoInfo -> {
                     VideoInfo info = SQLite.select().from(VideoInfo.class).where(VideoInfo_Table.path.eq(videoInfo.getPath())).querySingle();
-                    LogUtil.showLog(TAG, "video info json===" + JSONUtils.parse2JSONString(info));
                     if (info != null) {
                         if (!TextUtils.isEmpty(info.getThumbmailLocalUrl()) && !info.getThumbmailLocalUrl().equals(videoInfo.getThumbmailLocalUrl())) {
                             File file = new File(info.getThumbmailLocalUrl());

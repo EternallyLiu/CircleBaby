@@ -176,25 +176,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     private GoogleApiClient client;
     private ArrayList<MediaObj> mediaObjs;
 
-    public static void open(Context context, int type) {
-        Intent intent = new Intent(context, PublishActivity.class);
-        intent.putExtra("publish_type", type);
-        context.startActivity(intent);
-    }
-
-    public static void open(Context context, CardObj cardObj) {
-        Intent intent = new Intent(context, PublishActivity.class);
-        intent.putExtra("mediaObj", cardObj);
-        context.startActivity(intent);
-    }
-
-    public static void open(Context context, List<CardObj> mediaObjs) {
-        Intent intent = new Intent(context, PublishActivity.class);
-        intent.putParcelableArrayListExtra("mediaObjs", (ArrayList<? extends Parcelable>) mediaObjs);
-        context.startActivity(intent);
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -302,6 +283,51 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+    }
+
+    public static void open(Context context, int type) {
+        Intent intent = new Intent(context, PublishActivity.class);
+        intent.putExtra("publish_type", type);
+        context.startActivity(intent);
+    }
+
+    public static void open(Context context, CardObj cardObj) {
+        Intent intent = new Intent(context, PublishActivity.class);
+        intent.putExtra("mediaObj", cardObj);
+        context.startActivity(intent);
+    }
+
+    public static void open(Context context, List<CardObj> mediaObjs) {
+        Intent intent = new Intent(context, PublishActivity.class);
+        intent.putParcelableArrayListExtra("mediaObjs", (ArrayList<? extends Parcelable>) mediaObjs);
+        context.startActivity(intent);
+    }
+
 
     private void img2Medias() {
         if (selImages != null && selImages.size() > 0) {
@@ -815,12 +841,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
-    }
-
     private void uploadVideo(int timeId, String path) {
         if (TextUtils.isEmpty(path)) {
             ToastUtil.showToast("视频文件异常");
@@ -928,16 +948,6 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 .build();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
-
     @Subscribe
     public void onEvent(NearLocationObj location) {
         if (location.getLocation() == null)
@@ -960,13 +970,4 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
                 });
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
-    }
 }

@@ -20,6 +20,12 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
     public CircleActivityAlbumObj() {
     }
 
+    public CircleActivityAlbumObj(long albumId, String albumName, int mediaCount) {
+        this.albumId = albumId;
+        this.albumName = albumName;
+        this.mediaCount = mediaCount;
+    }
+
     protected CircleActivityAlbumObj(Parcel in) {
         super(in);
         albumId = in.readLong();
