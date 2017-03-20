@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+
+    <TextView
+        android:id="@+id/tv_input_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/size_12"
+        android:paddingTop="@dimen/size_12"
+        android:text="导入手机照片"
+        android:textColor="@color/text_color30"
+        android:textSize="@dimen/text_medium" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px" />
+
+    <TextView
+        android:id="@+id/tv_input_pc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/size_12"
+        android:paddingTop="@dimen/size_12"
+        android:text="导入电脑照片"
+        android:textColor="@color/text_color30"
+        android:textSize="@dimen/text_medium" />
+
+</LinearLayout>

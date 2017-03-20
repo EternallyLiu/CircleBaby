@@ -510,6 +510,11 @@
             android:label="@string/title_circle_photo"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".ui.circle.activities.ActiveAddActivity"
+            android:label="@string/add_active"
+            android:theme="@style/AppTheme" />
+
         <service android:name=".ui.timelines.services.UploadVideoService"/>
 
         //-----------------------countly----------------------------------
