@@ -24,6 +24,7 @@ import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ImageUtil;
 import cn.timeface.circle.baby.support.utils.MD5;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 
 /**
  * @author SUN
@@ -298,6 +299,14 @@ public class ImgObj extends BaseImgObj {
 
     public MediaObj getMediaObj() {
         MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
+        mediaObj.setLocalIdentifier(getId());
+        mediaObj.setLocalPath(getLocalPath());
+        mediaObj.setLocation(new LocationObj(getLat(), getLng()));
+        mediaObj.setImageOrientation(PhotoModel.getPhotoModel(getId(), getLocalPath(), getUrl()).getOrientation());
+        return mediaObj;
+    }
+    public CircleMediaObj getCircleMediaObj() {
+        CircleMediaObj mediaObj = new CircleMediaObj(getContent(), getUrl(), width, height, getDateMills());
         mediaObj.setLocalIdentifier(getId());
         mediaObj.setLocalPath(getLocalPath());
         mediaObj.setLocation(new LocationObj(getLat(), getLng()));

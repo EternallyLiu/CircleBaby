@@ -74,6 +74,9 @@ import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.ActiveSelectListResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.CreateActiveResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.TimeLineSendResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
@@ -384,6 +387,7 @@ public interface ApiService {
 
     /**
      * 删除时光里面的照片
+     *
      * @param mediaId
      * @param timeId
      * @return
@@ -752,7 +756,8 @@ public interface ApiService {
 
     /**
      * 获取书的列表数据
-     * @param bookType 书类型
+     *
+     * @param bookType       书类型
      * @param permissionType 1,表示查询当前给宝宝的所有作品（包括创建者和关注者）2,表示查询当前用户的所有作品（包括其关注和创建的所有宝宝）
      * @return
      */
@@ -818,13 +823,14 @@ public interface ApiService {
 
     /**
      * 编辑作品
-     * @param bookId 作品id
-     * @param babyId baby id
-     * @param bookCover 作品封面
-     * @param author 作者
-     * @param bookName 书名
+     *
+     * @param bookId      作品id
+     * @param babyId      baby id
+     * @param bookCover   作品封面
+     * @param author      作者
+     * @param bookName    书名
      * @param description 作品描述
-     * @param pageNum  作品页数
+     * @param pageNum     作品页数
      * @return
      */
     @FormUrlEncoded
@@ -841,8 +847,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("mediaID/backup")
     Observable<MediaIdResponse> mediaBackup(@Field("identifiers") String identifiers);
+
     /**
      * 按时间查询所有图片
+     *
      * @param babyId
      * @return
      */
@@ -852,8 +860,10 @@ public interface ApiService {
 
     @POST("mediaID/localList")
     Observable<MediaIdResponse> localList(@Query("userId") String userId);
+
     /**
      * 按标签查询所有图片
+     *
      * @param babyId
      * @return
      */
@@ -863,6 +873,7 @@ public interface ApiService {
 
     /**
      * 按地点查询所有图片
+     *
      * @param babyId
      * @return
      */
@@ -872,6 +883,7 @@ public interface ApiService {
 
     /**
      * 按成员查询所有图片
+     *
      * @param babyId
      * @return
      */
@@ -882,6 +894,7 @@ public interface ApiService {
 
     /**
      * 按时间查询所有时光
+     *
      * @param babyId
      * @param type
      * @return
@@ -893,6 +906,7 @@ public interface ApiService {
 
     /**
      * 按发布人查询所有时光
+     *
      * @param babyId
      * @param userId
      * @param type
@@ -906,6 +920,7 @@ public interface ApiService {
 
     /**
      * 查询所有成员信息
+     *
      * @return
      */
     @GET("printGrowth/getFamilyMember")
@@ -913,26 +928,33 @@ public interface ApiService {
 
     /**
      * 查询图片信息
+     *
      * @return
      */
     @GET("babyCloudAlbums/imageParam")
     Observable<ImageExInfoResponse> queryImageInfo(@Query("url") String url);
+
     /**
      * 查询页码
+     *
      * @return
      */
     @GET("babyTime/getTimeOfPageNo")
     Observable<TimeOfPageResponse> timeOfpage(@Query("pageSize") int pageSize,
                                               @Query("timeId") int timeId);
+
     /**
      * 查询经纬度反地理编码
+     *
      * @return
      */
     @GET("map/getAddress")
     Observable<QueryLocationInfoResponse> queryLocationInfo(@Query("lat") double lat,
                                                             @Query("log") double log);
+
     /**
      * 设置短信提醒
+     *
      * @return
      */
     @GET("member/msgRemind")
@@ -1040,6 +1062,7 @@ public interface ApiService {
 
     /**
      * 更新输编辑时间
+     *
      * @param bookId
      * @return
      */
@@ -1051,6 +1074,7 @@ public interface ApiService {
 
     /**
      * 圈时光评论
+     *
      * @param circleTimelineId
      * @param commentContent
      * @param commentDate
@@ -1066,6 +1090,7 @@ public interface ApiService {
 
     /**
      * 编辑某条时光
+     *
      * @param circleTimelineInfo
      * @return
      */
@@ -1075,6 +1100,7 @@ public interface ApiService {
 
     /**
      * 圈时光点赞、取消点赞
+     *
      * @param circleTimelineId
      * @param like
      * @return
@@ -1086,6 +1112,7 @@ public interface ApiService {
 
     /**
      * 删除某条评论
+     *
      * @param commentId
      * @return
      */
@@ -1095,6 +1122,7 @@ public interface ApiService {
 
     /**
      * 圈时光详情
+     *
      * @param circleTimelineId
      * @return
      */
@@ -1104,6 +1132,7 @@ public interface ApiService {
 
     /**
      * 删除某条圈时光
+     *
      * @param circleTimelineId
      * @return
      */
@@ -1113,6 +1142,7 @@ public interface ApiService {
 
     /**
      * 加圈申请
+     *
      * @param babyRealName
      * @param circleNumber
      * @param leaveWords
@@ -1127,6 +1157,7 @@ public interface ApiService {
 
     /**
      * 创建圈子
+     *
      * @param circleName
      * @param openLever
      * @return
@@ -1138,6 +1169,7 @@ public interface ApiService {
 
     /**
      * 圈列表
+     *
      * @return
      */
     @GET("babyCircle/list")
@@ -1145,6 +1177,7 @@ public interface ApiService {
 
     /**
      * 圈资料
+     *
      * @param circleNumber
      * @return
      */
@@ -1154,6 +1187,7 @@ public interface ApiService {
 
     /**
      * 查找圈子
+     *
      * @param circleName
      * @return
      */
@@ -1161,5 +1195,59 @@ public interface ApiService {
     Observable<CircleListResponse> queryByCircleNumOrName(
             @Query("circleName") String circleName);
 
+
+    /**
+     * 获取活动相册列表
+     *
+     * @param circleId
+     * @return
+     */
+    @POST("activity/list")
+    Observable<ActiveSelectListResponse> queryActiveList(@Query("circleId") long circleId);
+
+    /**
+     * 创建活动相册
+     *
+     * @param albumName
+     * @param circleId
+     * @return
+     */
+    @POST("activity/create")
+    Observable<CreateActiveResponse> createActive(@Query("albumName") String albumName,
+                                                  @Query("circleId") long circleId);
+
+    /**
+     * 查询上一次发布圈动态的相册
+     * @param circleId
+     * @return
+     */
+    @POST("activity/lastActivity")
+    Observable<CreateActiveResponse> queryLastSelect(@Query("circleId") long circleId);
+
+    /**
+     * 发送圈动态
+     * @param circleId
+     * @param circleTimeline
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("dynamic/publish")
+    Observable<TimeLineSendResponse> sendCircleTimeLine(@Field("circleId") long circleId,
+                                                        @Field("circleTimeline") String circleTimeline);
+
+
+    /**
+     * 圈中/取消宝宝
+     * @param babyIds
+     * @param cancleCircleId
+     * @param circleId
+     * @param mediaId
+     * @return
+     */
+    @POST("circle/atBaby")
+    Observable<BaseResponse> circleAtBaby(@Query("babyIds") String babyIds,
+                                          @Query("cancleCircleId") String cancleCircleId,
+                                          @Query("circleId") long circleId,
+                                          @Query("mediaId") long mediaId);
 
 }

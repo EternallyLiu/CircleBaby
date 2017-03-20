@@ -504,6 +504,8 @@
             android:theme="@style/TimeFaceTheme.DayNight"/>
 
         <activity android:name=".ui.circle.timelines.activity.PublishActivity"/>
+        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity"/>
+        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity"/>
 
         <service android:name=".ui.timelines.services.UploadVideoService"/>
 

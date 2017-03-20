@@ -158,4 +158,6 @@
 
     <color name="color_367ff9">#367ff9</color>
     <color name="color_eceff4">#eceff4</color>
+
+    <color name="iron">#CCCCCC</color>
 </resources>

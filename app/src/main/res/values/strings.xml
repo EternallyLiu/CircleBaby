@@ -831,4 +831,15 @@
     <string name="send_circle_school_title">发布作业</string>
     <string name="send_circle_homework_title">提交作业</string>
     <string name="circle_publish_notify_timeline_tip">同步到宝宝动态</string>
+    <string name="unjoin_active_tip">不参与活动</string>
+    <string name="select_active_media_count_tip">已有照片%d张</string>
+    <string name="activity_select_active_tip">选择活动相册</string>
+    <string name="add_active_album">添加相册</string>
+    <string name="input_create_actve_tip">请输入活动名称</string>
+    <string name="activity_create_active_title">添加活动相册</string>
+    <string name="input_content_cannot_null">你输入的内容不能为空</string>
+    <string name="pic_select_max_tip">最多只能选%d张照片</string>
+    <string name="comfirm">提交</string>
+    <string name="tv_circle_time_line_titl_tip">寒假里的一件小事</string>
+    <string name="circle_relate_baby">\@我要圈人</string>
 </resources>

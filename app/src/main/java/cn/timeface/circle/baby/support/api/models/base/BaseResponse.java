@@ -5,9 +5,9 @@ package cn.timeface.circle.baby.support.api.models.base;
  * email : sy0725work@gmail.com
  */
 public class BaseResponse extends BaseObj {
-    int errorCode;
+    public int errorCode;
     public String info;
-    int status;
+    public int status;
 
     public int getErrorCode() {
         return errorCode;
