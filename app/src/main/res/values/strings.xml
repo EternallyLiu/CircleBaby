@@ -727,6 +727,8 @@
     <string name="title_activity_select_server_time_detail">SelectServerTimeDetailActivity</string>
     <string name="input_password">1234567890QWERTYUIOPASDFGHJKLZXCVBNM_</string>
     <string name="title_activity_production_intro">产品介绍</string>
+    <string name="title_circle_photo">CirclePhotoActivity</string>
+    <string name="add_active">添加活动相册</string>
 
     <string name="complete">完成</string>
 
