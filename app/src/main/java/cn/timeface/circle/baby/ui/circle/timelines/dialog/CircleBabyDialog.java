@@ -4,10 +4,14 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyboardShortcutGroup;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -39,7 +43,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
 
     public CircleBabyDialog(Context context, CircleMediaObj mediaObj) {
         this(context);
-        adapter.addList(true, mediaObj.getRelateBabys());
+        setMediaObj(mediaObj);
     }
 
     private CircleBabyDialog(Context context) {
@@ -68,6 +72,15 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
         adapter.setItemClickLister(this);
         btnSubmit.setOnClickListener(this);
 
+
+        Window window = getWindow();
+        WindowManager m = window.getWindowManager();
+        Display d = m.getDefaultDisplay();
+        WindowManager.LayoutParams p = window.getAttributes();
+        p.width = d.getWidth();
+        window.setAttributes(p);
+        window.setGravity(Gravity.BOTTOM);
+        window.setWindowAnimations(R.style.bottom_dialog_animation);
     }
 
     @Override
@@ -99,6 +112,11 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
                 }
             }
         }
+    }
+
+    private void setMediaObj(CircleMediaObj mediaObj) {
+        adapter.addList(true, mediaObj.getRelateBabys());
+        adapter.addList(new CircleBabyObj(-1));
     }
 
     private CircleBabyCallBack circleBabyCallBack;

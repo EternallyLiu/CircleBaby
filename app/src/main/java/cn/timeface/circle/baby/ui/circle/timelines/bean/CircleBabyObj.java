@@ -59,6 +59,10 @@ public class CircleBabyObj implements Parcelable {
         dest.writeLong(this.selectUserId);
     }
 
+    public CircleBabyObj(long babyId) {
+        this.babyId = babyId;
+    }
+
     public CircleBabyObj() {
     }
 
