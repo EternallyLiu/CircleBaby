@@ -296,7 +296,7 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                                             List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
                                             tfoPublishObjs.add(tfoPublishObj);
 
-                                            MyPODActivity.open(this, bookId, openBookId, bookType, openBookType, tfoPublishObjs, sb.toString(),true,FastData.getBabyId(),keys,values,1);
+                                            MyPODActivity.open(this, bookId, openBookId, bookType, openBookType, tfoPublishObjs, sb.toString(),true,FastData.getBabyId(),keys,values, TextUtils.isEmpty(bookId) ? 1 : 2);
                                             finish();
                                         }
                                     },

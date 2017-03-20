@@ -331,7 +331,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                                             sb.append(",").append(sbTime).append("}");
 
                                             finish();
-                                            MyPODActivity.open(this, bookId, openBookId, bookType, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
+                                            MyPODActivity.open(this, bookId, openBookId, bookType, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, TextUtils.isEmpty(bookId) ? 1 : 2);
                                         }
                                     },
                                     throwable -> Log.e(TAG, throwable.getLocalizedMessage())
