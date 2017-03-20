@@ -91,7 +91,6 @@ dependencies {
     compile(name: 'refreshload-release', ext: 'aar')
     compile(name: 'timeface-common-release', ext: 'aar')
     compile(name: 'countly-sdk-16.06.04', ext: 'aar')
-    testCompile 'junit:junit:4.12'
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
@@ -100,6 +99,17 @@ dependencies {
 //    compile project(':open')
 //    releaseCompile project(path: ':open', configuration: 'release')
 //    debugCompile project(path: ':open', configuration: 'debug')
+
+    // 仅支持 WebP 静态图，需要添加
+    // your project's other dependencies
+
+
+    compile files('libs/MiPush_SDK_Client_3_0_3.jar')
+    compile files('libs/libammsdk.jar')
+    compile files('libs/alipaySdk-20160812.jar')
+    // rxLifecycle
+
+    //Bugly
 
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:appcompat-v7:25.2.0'
@@ -120,12 +130,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.facebook.fresco:fresco:0.14.1'
-    // 仅支持 WebP 静态图，需要添加
     compile 'com.facebook.fresco:webpsupport:0.14.1'
-    // your project's other dependencies
     compile 'com.facebook.fresco:imagepipeline-okhttp3:0.14.1'
-
-
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'com.jakewharton:butterknife:7.0.1'
@@ -143,23 +149,19 @@ dependencies {
     compile 'com.googlecode.mp4parser:isoparser:1.1.20'
     compile 'com.belerweb:pinyin4j:2.5.1'
     compile 'com.google.android.gms:play-services-appindexing:9.8.0'
-    compile files('libs/MiPush_SDK_Client_3_0_3.jar')
-    compile files('libs/libammsdk.jar')
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-    compile files('libs/alipaySdk-20160812.jar')
     compile 'com.jakewharton.timber:timber:4.3.1'
     compile 'com.zhy:highlight:1.1.0'
-    // rxLifecycle
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'
-
-    //Bugly
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
-
+    compile 'com.android.support.constraint:constraint-layout:1.0.1'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.5.0'
+    testCompile 'junit:junit:4.12'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }
 
 

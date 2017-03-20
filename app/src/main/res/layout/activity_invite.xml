@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="cn.timeface.circle.baby.ui.circle.groupmembers.activity.InviteActivity">
+
+    <include layout="@layout/head" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:text="圈号"
+        android:textColor="@color/bg_color1"
+        android:textSize="@dimen/text_medium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="568948"
+        android:textColor="@color/bg_color1"
+        android:textSize="@dimen/text_medium" />
+
+    <com.github.rayboot.widget.ratioview.RatioImageView
+        android:id="@+id/iv_img"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_add_member"
+        app:fixRatio="fixWidth"
+        app:heightRatio="1"
+        app:widthRatio="1" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="@string/add_member"
+        android:textColor="@color/bg_color1"
+        android:textSize="@dimen/text_medium" />
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/selector_common_btn"
+        android:gravity="center"
+        android:text="分享邀请函"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_medium" />
+</LinearLayout>
