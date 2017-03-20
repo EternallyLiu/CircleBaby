@@ -19,13 +19,16 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
+import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
+import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerTimesActivity;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerTimesAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineWrapperObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
@@ -79,29 +82,57 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
         this.circleId = getArguments().getString("circle_id");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
         if(timeIds == null) timeIds = new ArrayList<>();
-        rvContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if(Math.abs(dy) > 5 && getActivity() instanceof CircleSelectServerTimesActivity){
-                    ((CircleSelectServerTimesActivity) getActivity()).setSelectContentShow(false);
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+//        rvContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                if(Math.abs(dy) > 5 && getActivity() instanceof CircleSelectServerTimesActivity){
+//                    ((CircleSelectServerTimesActivity) getActivity()).setSelectContentShow(false);
+//                }
+//                super.onScrolled(recyclerView, dx, dy);
+//            }
+//        });
 
         reqData();
         return view;
     }
 
     private void reqData(){
-        Observable<CircleTimeLinesResponse> timeResponseObservable = apiService.queryCircleTimeLines(circleId, contentType);
+
+        //mock data
+        Observable<QueryTimeLineResponse> timeResponseObservable = null;
+        if(contentType == TypeConstants.PHOTO_TYPE_TIME){
+//            timeResponseObservable = apiService.queryTimeLineByTime(babyId, String.valueOf(getQueryType()));
+        } else {
+//            timeResponseObservable = apiService.queryTimeLineByMember(babyId, userId, getQueryType());
+        }
 
         if(timeResponseObservable == null) return;
         timeResponseObservable.compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
                             if(response.success()){
-                                setListData(response.getDataList());
+                                //mock date
+                                List<CircleTimeLineWrapperObj> timeLineWrapperObjList = new ArrayList<>();
+                                for(TimeLineWrapObj timeLineWrapObj : response.getDataList()){
+                                    for(TimeLineObj timeLineObj : timeLineWrapObj.getTimelineList()){
+                                        List<CircleTimeLineExObj> circleTimeLineExObjList = new ArrayList<CircleTimeLineExObj>();
+                                        CircleTimeLineWrapperObj circleTimeLineWrapperObj = new CircleTimeLineWrapperObj();
+                                        CircleTimeLineExObj circleTimeLineExObj = new CircleTimeLineExObj();
+                                        CircleTimelineObj circleTimelineObj = new CircleTimelineObj();
+
+                                        circleTimelineObj.setRecordDate(timeLineObj.getDate());
+                                        circleTimelineObj.setCircleTimelineId(timeLineObj.getTimeId());
+                                        circleTimelineObj.setLike(timeLineObj.getLike());
+                                        circleTimelineObj.setLikeCount(timeLineObj.getLikeCount());
+                                        circleTimelineObj.setContent(timeLineObj.getContent());
+                                        circleTimelineObj.setMediaList(timeLineObj.getMediaList());
+
+                                    }
+                                }
+
+
+
+//                                setListData(response.getDataList());
                             } else {
                                 ToastUtil.showToast(response.info);
                             }
@@ -111,6 +142,26 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
                             Log.e(TAG, throwable.getLocalizedMessage());
                         }
                 );
+
+
+
+
+//        Observable<CircleTimeLinesResponse> timeResponseObservable = apiService.queryCircleTimeLines(circleId, contentType);
+//        if(timeResponseObservable == null) return;
+//        timeResponseObservable.compose(SchedulersCompat.applyIoSchedulers())
+//                .subscribe(
+//                        response -> {
+//                            if(response.success()){
+//                                setListData(response.getDataList());
+//                            } else {
+//                                ToastUtil.showToast(response.info);
+//                            }
+//                        },
+//                        throwable -> {
+//                            stateView.showException(throwable);
+//                            Log.e(TAG, throwable.getLocalizedMessage());
+//                        }
+//                );
     }
 
     private void setListData(List<CircleTimeLineWrapperObj> data){
@@ -124,7 +175,31 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
         }
         llEmpty.setVisibility(serverTimesAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
         stateView.finish();
-        if(getActivity() instanceof CircleSelectServerTimesActivity) ((CircleSelectServerTimesActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
+//        if(getActivity() instanceof CircleSelectServerTimesActivity) ((CircleSelectServerTimesActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 设置选中的时光
+     * @param timeLineObjs
+     */
+    public void setTimeLineObjs(List<CircleTimeLineExObj> timeLineObjs) {
+        this.timeLineObjs = timeLineObjs;
+        if(serverTimesAdapter != null){
+            serverTimesAdapter.setSelImgs((ArrayList<CircleTimeLineExObj>) timeLineObjs);
+            serverTimesAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 设置选中的图片
+     * @param mediaObjs
+     */
+    public void setMediaObjs(List<MediaObj> mediaObjs){
+        this.mediaObjs = mediaObjs;
+        if(serverTimesAdapter != null){
+            serverTimesAdapter.setSelImgs((ArrayList<CircleTimeLineExObj>) timeLineObjs);
+            serverTimesAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

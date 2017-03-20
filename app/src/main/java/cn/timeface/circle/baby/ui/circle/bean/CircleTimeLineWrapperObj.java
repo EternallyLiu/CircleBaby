@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class CircleTimeLineWrapperObj {
     private String date;
-    private List<CircleTimeLineExObj> timlineList;
+    private List<CircleTimeLineExObj> timelineList;
 
     public String getDate() {
         return date;
@@ -19,11 +19,11 @@ public class CircleTimeLineWrapperObj {
         this.date = date;
     }
 
-    public List<CircleTimeLineExObj> getTimlineList() {
-        return timlineList;
+    public List<CircleTimeLineExObj> getTimelineList() {
+        return timelineList;
     }
 
-    public void setTimlineList(List<CircleTimeLineExObj> timlineList) {
-        this.timlineList = timlineList;
+    public void setTimelineList(List<CircleTimeLineExObj> timelineList) {
+        this.timelineList = timelineList;
     }
 }

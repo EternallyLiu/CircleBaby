@@ -413,7 +413,6 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
     }
 
     Fragment currentFragment = null;
-
     public void showContent(Fragment fragment) {
         canBack = false;
         FragmentManager fm = getSupportFragmentManager();

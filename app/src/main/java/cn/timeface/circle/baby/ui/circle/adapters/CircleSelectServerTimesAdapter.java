@@ -69,10 +69,10 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
         everyGroupUnSelImgSize = new int[size];
 
         for (int i = 0; i < size; i++) {
-            int imgCount = listData.get(i).getTimlineList().size();
+            int imgCount = listData.get(i).getTimelineList().size();
             everyGroupUnSelImgSize[i] = imgCount;//默认所有都没有选中
             for (CircleTimeLineExObj circleTimeLineExObj : selTimeLines) {
-                if (listData.get(i).getTimlineList().contains(circleTimeLineExObj)) {
+                if (listData.get(i).getTimelineList().contains(circleTimeLineExObj)) {
                     everyGroupUnSelImgSize[i]--;
                 }
             }
@@ -95,7 +95,7 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
 
         if(allSelect){
             for(CircleTimeLineWrapperObj timeLineWrapObj : listData){
-                for(CircleTimeLineExObj timeLineExObj : timeLineWrapObj.getTimlineList()){
+                for(CircleTimeLineExObj timeLineExObj : timeLineWrapObj.getTimelineList()){
                     if(!selTimeLines.contains(timeLineExObj))selTimeLines.add(timeLineExObj);
                 }
             }
@@ -104,13 +104,13 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
         }
 
         for (int i = 0; i < size; i++) {
-            int imgCount = listData.get(i).getTimlineList().size();
+            int imgCount = listData.get(i).getTimelineList().size();
             if(allSelect){
                 everyGroupUnSelImgSize[i] = 0;
             } else {
                 everyGroupUnSelImgSize[i] = imgCount;//默认所有都没有选中
                 for (CircleTimeLineExObj circleTimeLineExObj : selTimeLines) {
-                    if (listData.get(i).getTimlineList().contains(circleTimeLineExObj)) {
+                    if (listData.get(i).getTimelineList().contains(circleTimeLineExObj)) {
                         everyGroupUnSelImgSize[i]--;
                     }
                 }
@@ -191,19 +191,19 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
     //获取该行数据再PhotoGroupItem对象中需要显示哪些图片
     public List<CircleTimeLineExObj> getLineImgObj(int line) {
         int dataPos = getDataPosition(line);
-        int imgCount = listData.get(dataPos).getTimlineList().size();
+        int imgCount = listData.get(dataPos).getTimelineList().size();
         int innerLine = line - 1;
         if (dataPos > 0) {
             innerLine = innerLine - lineEnd[dataPos - 1];
         }
-        return listData.get(dataPos).getTimlineList().subList((innerLine) * COLUMN_NUM,
+        return listData.get(dataPos).getTimelineList().subList((innerLine) * COLUMN_NUM,
                 Math.min((innerLine + 1) * COLUMN_NUM, imgCount));
     }
 
     public List<CircleTimeLineExObj> getTimeLines(){
         List<CircleTimeLineExObj> timeLineObjList = new ArrayList<>();
         for(CircleTimeLineWrapperObj timeLineWrapObj : getListData()){
-            timeLineObjList.addAll(timeLineWrapObj.getTimlineList());
+            timeLineObjList.addAll(timeLineWrapObj.getTimelineList());
         }
         return timeLineObjList;
     }
@@ -280,14 +280,14 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
         public void onClick(View v) {
             int line = (int) v.getTag(R.string.tag_index);
             int dataIndex = getDataPosition(line);
-            if (selTimeLines.size() + listData.get(dataIndex).getTimlineList().size() > maxCount) {
+            if (selTimeLines.size() + listData.get(dataIndex).getTimelineList().size() > maxCount) {
                 ToastUtil.showToast("最多只能选" + maxCount + "张照片");
                 ((CheckBox) v).setChecked(false);
                 return;
             }
 
             boolean isChecked = ((CheckBox) v).isChecked();
-            for (CircleTimeLineExObj item : listData.get(dataIndex).getTimlineList()) {
+            for (CircleTimeLineExObj item : listData.get(dataIndex).getTimelineList()) {
                 if (isChecked) {
                     doSelImg(dataIndex, item);
                 } else {
@@ -351,8 +351,8 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
         selTimeLines.clear();
         selMedias.clear();
         for(CircleTimeLineWrapperObj timeLineWrapObj : listData){
-            selTimeLines.addAll(timeLineWrapObj.getTimlineList());
-            for(CircleTimeLineExObj circleTimeLineExObj : timeLineWrapObj.getTimlineList()){
+            selTimeLines.addAll(timeLineWrapObj.getTimelineList());
+            for(CircleTimeLineExObj circleTimeLineExObj : timeLineWrapObj.getTimelineList()){
                 selMedias.addAll(circleTimeLineExObj.getCircleTimeline().getMediaList());
             }
         }

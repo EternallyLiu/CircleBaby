@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 /**
  * 圈内容的基类
@@ -18,7 +19,7 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 public class CircleContentObj extends BaseObj implements Parcelable {
     protected String content;                   //内容
     protected long createDate;                  //创建时间
-    protected List<CircleMediaObj> mediaList;   //图片列表
+    protected List<MediaObj> mediaList;   //图片列表
     protected String title;                     //标题
 
     public CircleContentObj() {
@@ -28,7 +29,7 @@ public class CircleContentObj extends BaseObj implements Parcelable {
         super(in);
         content = in.readString();
         createDate = in.readLong();
-        mediaList = in.createTypedArrayList(CircleMediaObj.CREATOR);
+        mediaList = in.createTypedArrayList(MediaObj.CREATOR);
         title = in.readString();
     }
 
@@ -74,12 +75,12 @@ public class CircleContentObj extends BaseObj implements Parcelable {
         this.createDate = createDate;
     }
 
-    public List<CircleMediaObj> getMediaList() {
+    public List<MediaObj> getMediaList() {
         if (mediaList == null) mediaList = new ArrayList<>(0);
         return mediaList;
     }
 
-    public void setMediaList(List<CircleMediaObj> mediaList) {
+    public void setMediaList(List<MediaObj> mediaList) {
         this.mediaList = mediaList;
     }
 
