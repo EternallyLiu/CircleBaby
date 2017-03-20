@@ -1484,17 +1484,6 @@ public interface ApiService {
             @Query("circleId") long circleId);
 
     /**
-     * 修改宝宝大名
-     * @param babyId
-     * @param realName
-     * @return
-     */
-    @GET("circle/updateBabyRealName")
-    Observable<BaseResponse> updateBabyRealName(
-            @Query("babyId") long babyId,
-            @Query("realName") String realName);
-
-    /**
      * 圈资料编辑
      * @param circleDetailInfo
      * @return
@@ -1502,17 +1491,6 @@ public interface ApiService {
     @GET("circle/update")
     Observable<BaseResponse> editCircleInfo(
             @Query("circleDetailInfo") String circleDetailInfo);
-
-    /**
-     * 移除某个成员
-     * @param circleId
-     * @param userId
-     * @return
-     */
-    @GET("circle/removeMember")
-    Observable<BaseResponse> updateBabyRealName(
-            @Query("circleId") long circleId,
-            @Query("userId") long userId);
 
     /**
      * 发起/取消 某个成员的教师认证
