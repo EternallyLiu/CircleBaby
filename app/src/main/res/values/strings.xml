@@ -218,6 +218,7 @@
     <string name="CODE_503">服务器连接失败</string>
     <string name="CODE_504">被墙了</string>
     <string name="CODE_505">http版本不支持</string>
+    <string name="UNKNOWN_ERROR">未知错误</string>
 
     <string name="SERVICE_ERROR">服务器连接失败</string>
 
@@ -639,6 +640,21 @@
     <string name="title_activity_circle_book_permisson">CircleBookPermissonActivity</string>
     <string name="pod_change_theme">更改主题</string>
     <string name="circle_change_theme">更换主题</string>
+
+    <!-- growth circle-->
+    <string name="growth_circle">成长圈</string>
+    <string name="create">创建</string>
+    <string name="create_growth_circle">创建圈子</string>
+    <string name="join_growth_circle">加入圈子</string>
+    <string name="circle_no_dynamic">还没有新的动态哦，\n点击右下角，发布本圈的第一条动态吧！</string>
+    <string name="circle_info">圈资料</string>
+    <string name="share_circle_to_friends">分享圈给好友</string>
+    <string name="circle_production">圈作品</string>
+    <string name="circle_photos">圈照片库</string>
+    <string name="circle_member_manager">圈成员管理</string>
+    <string name="publish_homework">发布作业</string>
+    <string name="quit_growth_circle">退出圈子</string>
+
 
     <string name="JANUARY">一月</string>
     <string name="FEBRUARY">二月</string>

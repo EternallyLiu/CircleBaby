@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.github.rayboot.widget.ratioview.RatioImageView
+        android:id="@+id/iv_circle_cover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_none_photo"
+        android:gravity="center"
+        android:scaleType="fitXY"
+        app:fixRatio="fixWidth"
+        app:heightRatio="1"
+        app:widthRatio="2" />
+
+    <TextView
+        android:id="@+id/tv_circle_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/white"
+        android:padding="@dimen/view_space_normal"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_normal"
+        tools:text="南门小学" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_space_normal"
+        android:background="@android:color/white"
+        android:padding="@dimen/view_space_normal">
+
+        <TextView
+            android:id="@+id/tv_homework"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="bottom"
+            android:layout_toLeftOf="@+id/tv_homework_detail"
+            android:background="@android:color/white"
+            android:textColor="@color/text_color12"
+            android:textSize="@dimen/text_normal"
+            tools:text="王老师" />
+
+        <TextView
+            android:id="@+id/tv_homework_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/view_space_normal"
+            android:background="@drawable/selector_btn_login"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="@dimen/view_space_normal"
+            android:text="查看作业"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_normal" />
+    </RelativeLayout>
+</LinearLayout>

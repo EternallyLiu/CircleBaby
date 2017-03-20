@@ -25,6 +25,7 @@ import cn.timeface.circle.baby.R;
  * HTTP error status codes.
  */
 public class HttpStatusCodes {
+    public static final int UNKNOWN_ERROR = -8;
     public static final int PARSE_ERROR = -7;
     public static final int NO_MORE_INFO = -6;
     public static final int NO_MORE_DATA = -5;
@@ -99,5 +100,77 @@ public class HttpStatusCodes {
         mCodes.put(CODE_505, R.string.CODE_505);
 
         return mCodes;
+    }
+
+    public static int getMessage(int state) {
+        switch (state) {
+            case PARSE_ERROR:
+                return R.string.state_error_parse_error;
+            case NO_MORE_INFO:
+                return R.string.no_more_info;
+            case NO_MORE_DATA:
+                return R.string.no_more_data;
+            case GET_ALL_MESSAGE:
+                return R.string.get_all_message;
+            case NO_MESSAGE:
+                return R.string.no_message;
+            case LOADING:
+                return R.string.loading;
+            case NO_CONNECT:
+                return R.string.no_connect;
+            case FINISH:
+                return R.string.finish;
+            case CODE_400:
+                return R.string.CODE_400;
+            case CODE_401:
+                return R.string.CODE_401;
+            case CODE_402:
+                return R.string.CODE_402;
+            case CODE_403:
+                return R.string.CODE_403;
+            case CODE_404:
+                return R.string.CODE_404;
+            case CODE_405:
+                return R.string.CODE_405;
+            case CODE_406:
+                return R.string.CODE_406;
+            case CODE_407:
+                return R.string.CODE_407;
+            case CODE_408:
+                return R.string.CODE_408;
+            case CODE_409:
+                return R.string.CODE_409;
+            case CODE_410:
+                return R.string.CODE_410;
+            case CODE_411:
+                return R.string.CODE_411;
+            case CODE_412:
+                return R.string.CODE_412;
+            case CODE_413:
+                return R.string.CODE_413;
+            case CODE_414:
+                return R.string.CODE_414;
+            case CODE_415:
+                return R.string.CODE_415;
+            case CODE_416:
+                return R.string.CODE_416;
+            case CODE_417:
+                return R.string.CODE_417;
+            case CODE_500:
+                return R.string.CODE_500;
+            case CODE_501:
+                return R.string.CODE_501;
+            case CODE_502:
+                return R.string.CODE_502;
+            case CODE_503:
+                return R.string.CODE_503;
+            case CODE_504:
+                return R.string.CODE_504;
+            case CODE_505:
+                return R.string.CODE_505;
+
+            default:
+                return R.string.UNKNOWN_ERROR;
+        }
     }
 }

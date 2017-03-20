@@ -132,7 +132,7 @@ dependencies {
     compile 'com.umeng.analytics:analytics:6.0.9'
     compile 'com.github.rayboot.widget:ratioview:1.0.1'
     compile 'com.bigkoo:convenientbanner:2.0.4'
-    compile 'com.yqritc:recyclerview-flexibledivider:1.2.6'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.aliyun.dpa:oss-android-sdk:2.0.3'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'fr.baloomba:viewpagerindicator:2.4.2'
@@ -151,6 +151,7 @@ dependencies {
     compile files('libs/alipaySdk-20160812.jar')
     compile 'com.jakewharton.timber:timber:4.3.1'
     compile 'com.zhy:highlight:1.1.0'
+    compile 'com.makeramen:roundedimageview:2.3.0'
     // rxLifecycle
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'

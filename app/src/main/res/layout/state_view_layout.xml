@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/nodata" />
+        android:src="@drawable/anim_loading_200" />
 
     <TextView
         android:id="@+id/error_title"
@@ -21,10 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="正在加载..."
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textColor="@color/text"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/error_subtitle"
@@ -32,19 +31,22 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
-        android:textColor="@color/black"
+        android:gravity="center"
+        android:textColor="@color/text"
+        android:visibility="gone"
         tools:text="Couldn\'t load items" />
 
     <TextView
         android:id="@+id/error_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:layout_margin="16dp"
-        android:minWidth="200dp"
-        android:textSize="20sp"
         android:background="@drawable/selector_btn_login"
+        android:gravity="center_horizontal"
+        android:minWidth="200dp"
         android:padding="8dp"
         android:text="@string/state_btn_retry"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:visibility="gone" />
 </LinearLayout>

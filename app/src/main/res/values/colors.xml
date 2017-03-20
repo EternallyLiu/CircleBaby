@@ -76,6 +76,7 @@
     <color name="text_color9">#333333</color>
     <color name="text_color10">#7cb42b</color>
     <color name="text_color12">#666666</color>
+    <color name="text_color13">#999999</color>
     <color name="text_color14">#ea0000</color>
     <color name="text_color15">#646464</color>
     <color name="text_color16">#f7993d</color>
@@ -95,7 +96,7 @@
     <color name="text_color30">#1D1D1D</color>
     <color name="text_color31">#3D3D3D</color>
     <color name="text_color32">#ADADAD</color>
-
+    <color name="text_color33">#aaaaaa</color>
 
     <color name="text_color_hint">#ffA8A8A8</color>
 
@@ -120,8 +121,8 @@
     <color name="selector_bg8">#e96600</color>
 
     <color name="error_view_text">#999999</color>
-    <color name="error_view_text_dark">#CC000000</color>
-    <color name="error_view_text_light">#ffffff</color>
+    <color name="error_view_text_dark">#FFFFFF</color>
+    <color name="error_view_text_light">#FFFFFF</color>
 
     <color name="error_view_retry_button_background">#069bf2</color>
     <color name="error_view_retry_button_background_hover">#058ccd</color>

@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -22,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,12 +35,10 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.CountlyEventHelper;
-import cn.timeface.circle.baby.constants.TypeConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.events.EventTabMainWake;
@@ -57,7 +55,10 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.fragment.GrowthCircleListFragment;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.fragment.GrowthCircleMainFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
@@ -73,14 +74,7 @@ import rx.functions.Func1;
  * email : sunyw10@gmail.com
  */
 public class TabMainActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus, DeleteDialog.SubmitListener, DeleteDialog.CloseListener {
-    @Bind(R.id.menu_home_tv)
-    TextView menuHomeTv;
-    @Bind(R.id.menu_mime_tv)
-    TextView menuMimeTv;
-    @Bind(R.id.menu_growth_up_tv)
-    TextView menuGrowthTv;
-    @Bind(R.id.iv_publish)
-    ImageView ivPublish;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.rl_toensurerelation)
@@ -89,14 +83,21 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     TextView tvToensurerelation;
     @Bind(R.id.foot_menu_ll)
     View footMenu;
+    @Bind(R.id.rg_main)
+    RadioGroup rgMain;
     @Bind(R.id.send_timeface)
     ImageView sendTimeface;
+    @Bind(R.id.container)
+    FrameLayout container;
+
     private long lastPressedTime = 0;
     private static final int TAB1 = 0;//时光轴
     private static final int TAB2 = 1;//我的
     private static final int TAB3 = 2;//印成长
-    @Bind(R.id.container)
-    FrameLayout container;
+    private static final int TAB4 = 3;//成长圈
+    private static final int TAB4_CIRCLE_LIST = 4;//成长圈列表
+    private static final int TAB4_CIRCLE_MAIN = 5;//成长圈首页
+
     private BaseFragment currentFragment = null;
     private DeleteDialog dialog;
     private TFProgressDialog tfprogress;
@@ -121,8 +122,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                     }
                 });
 
-        clickTab(menuHomeTv);
-        ivPublish.setOnClickListener(this);
+        setupBottomMenu();
+        showContent(TAB1);
+
         tvToensurerelation.setOnClickListener(this);
         rlToensurerelation.setOnClickListener(this);
         sendTimeface.setOnClickListener(this);
@@ -170,36 +172,31 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         context.startActivity(new Intent(context, TabMainActivity.class).putExtra("type", type));
     }
 
-    public void clickTab(View view) {
-
-        switch (view.getId()) {
-            //时光轴
-            case R.id.menu_home_tv:
-                sendTimeface.setVisibility(View.VISIBLE);
-                menuHomeTv.setSelected(true);
-                menuMimeTv.setSelected(false);
-                menuGrowthTv.setSelected(false);
-                showContent(TAB1);
-                break;
-            //我的
-            case R.id.menu_mime_tv:
-                sendTimeface.setVisibility(View.GONE);
-                menuHomeTv.setSelected(false);
-                menuMimeTv.setSelected(true);
-                menuGrowthTv.setSelected(false);
-                showContent(TAB2);
-                showFootMenu();
-                break;
-            //印成长
-            case R.id.menu_growth_up_tv:
-                sendTimeface.setVisibility(View.GONE);
-                menuHomeTv.setSelected(false);
-                menuMimeTv.setSelected(false);
-                menuGrowthTv.setSelected(true);
-                showContent(TAB3);
-                showFootMenu();
-                break;
-        }
+    private void setupBottomMenu() {
+        rgMain.setOnCheckedChangeListener((group, checkedId) -> {
+            sendTimeface.setVisibility(checkedId == R.id.rb_home ? View.VISIBLE : View.GONE);
+            switch (checkedId) {
+                //时光轴
+                case R.id.rb_home:
+                    showContent(TAB1);
+                    break;
+                //成长圈
+                case R.id.rb_growth_circle:
+                    showCircleContent();
+                    showFootMenu();
+                    break;
+                //印成长
+                case R.id.rb_growth_up:
+                    showContent(TAB3);
+                    showFootMenu();
+                    break;
+                //我的
+                case R.id.rb_mime:
+                    showContent(TAB2);
+                    showFootMenu();
+                    break;
+            }
+        });
     }
 
     public BaseFragment getFragment(int navType) {
@@ -210,14 +207,15 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 return MineFragment.newInstance("我的");
             case TAB3:
                 return PrintGrowthHomeFragment.newInstance("印成长");
-
+            case TAB4_CIRCLE_LIST:
+                return GrowthCircleListFragment.newInstance();
+            case TAB4_CIRCLE_MAIN:
+                return GrowthCircleMainFragment.newInstance();
         }
         return null;
     }
 
-
     public void showContent(int navType) {
-
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         BaseFragment fragment = (BaseFragment) fm.findFragmentByTag(navType + "");
@@ -239,6 +237,17 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         }
         ft.commitAllowingStateLoss();
         currentFragment = fragment;
+    }
+
+    public void showCircleContent() {
+        showContent(GrowthCircleObj.getInstance() == null ?
+                TAB4_CIRCLE_LIST : TAB4_CIRCLE_MAIN);
+    }
+
+    // 圈首页与圈列表切换显示
+    public void switchCircleFragment() {
+        showCircleContent();
+        showFootMenu();
     }
 
     // 解决某些异常情况导致FootMenu消失
@@ -282,9 +291,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 new PublishDialog(this).show();
                 CountlyEventHelper.getInstance().publishEvent(FastData.getUserId());
                 break;
-            case R.id.iv_publish:
-                new PublishDialog(this).show();
-                break;
             case R.id.tv_toensurerelation:
             case R.id.rl_toensurerelation:
                 Intent intent = new Intent(this, ConfirmRelationActivity.class);
@@ -293,6 +299,16 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 startActivity(intent);
                 break;
 
+        }
+    }
+
+    public void clickCircleCard(View v) {
+        if (v.getTag(R.string.tag_obj) != null
+                && v.getTag(R.string.tag_obj) instanceof GrowthCircleObj) {
+            GrowthCircleObj item = (GrowthCircleObj) v.getTag(R.string.tag_obj);
+
+            FastData.setGrowthCircleObj(item);
+            switchCircleFragment(); // 切换为圈首页
         }
     }
 
