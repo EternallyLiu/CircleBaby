@@ -834,6 +834,7 @@
     <string name="circle_publish_notify_timeline_tip">同步到宝宝动态</string>
 
 
-
     <string name="circlephoto_count">共%d张照片</string>
+    <string name="title_activity_circle_select_server_times">CircleSelectServerTimesActivity
+    </string>
 </resources>

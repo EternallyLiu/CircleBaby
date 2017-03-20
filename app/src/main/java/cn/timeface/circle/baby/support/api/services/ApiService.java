@@ -83,6 +83,7 @@ import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
@@ -1553,5 +1554,17 @@ public interface ApiService {
             @Query("nickName") String nickName,
             @Query("circleId") long circleId,
             @Query("userId") long userId);
+
+    /**
+     * 按某种条件查询时光列表
+     * @param circleId 圈号
+     * @param type 1-全部 2-按我发布的 3-按@我宝宝的
+     * @return
+     */
+    @GET("circleBook/queryDynamicList")
+    Observable<CircleTimeLinesResponse> queryCircleTimeLines(
+            @Query("circleId") String circleId,
+            @Query("type") int type);
+
 
 }
