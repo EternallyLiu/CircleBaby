@@ -1,5 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.CheckBox;
@@ -7,12 +9,16 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
+import cn.timeface.circle.baby.ui.circle.dialogs.CircleSelectTimeTypeDialog;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleServerTimeFragment;
 import cn.timeface.circle.baby.views.TFStateView;
 
@@ -21,7 +27,7 @@ import cn.timeface.circle.baby.views.TFStateView;
  * author : sunyanwei Created on 17-3-20
  * email : sunyanwei@timeface.cn
  */
-public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActivity {
+public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActivity implements CircleSelectTimeTypeDialog.SelectTypeListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -44,18 +50,29 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     boolean fragmentShow = false;
     boolean canBack = false;
-    CircleServerTimeFragment timeFragment;//按时间
-    HashMap<String, CircleServerTimeFragment> userFragmentMap = new HashMap<>();//存储下来所有用户对应的fragment
-//    SelectContentTypeDialog selectContentTypeDialog;
+    CircleServerTimeFragment allTimeFragment;//全部动态
+    CircleServerTimeFragment mineTimeFragment;//我发布的动态
+    CircleServerTimeFragment aboutBabyTimeFragment;//与我宝宝相关的动态
+    CircleSelectTimeTypeDialog selectContentTypeDialog;
     int openBookType;
     int bookType;
     String bookId;
     String openBookId;
-    int babyId;
+    String circleId;
 
-//    List<MediaObj> allSelectMedias = new ArrayList<>();
-//    List<TimeLineObj> allSelectTimeLines = new ArrayList<>();
-//    List<String> allSelectTimeIds = new ArrayList<>();
+    List<MediaObj> allSelectMedias = new ArrayList<>();
+    List<CircleTimeLineExObj> allSelectTimeLines = new ArrayList<>();
+    List<String> allSelectTimeIds = new ArrayList<>();
+
+    public static void open(Context context, int bookType, int openBookType, String bookId, String openBookId, String circleId) {
+        Intent intent = new Intent(context, CircleSelectServerTimesActivity.class);
+        intent.putExtra("open_book_type", openBookType);
+        intent.putExtra("book_type", bookType);
+        intent.putExtra("book_id", bookId);
+        intent.putExtra("open_book_id", openBookId);
+        intent.putExtra("circle_id", circleId);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,5 +82,20 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
+    }
+
+    @Override
+    public void selectTypeAll() {
+
+    }
+
+    @Override
+    public void selectTypeMe() {
+
+    }
+
+    @Override
+    public void selectTypeAboutMyBaby() {
+
     }
 }
