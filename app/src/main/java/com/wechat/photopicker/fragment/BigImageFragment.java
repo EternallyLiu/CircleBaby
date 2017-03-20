@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,11 +39,14 @@ import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
+import cn.timeface.circle.baby.ui.circle.bean.RelateBabyObj;
 import cn.timeface.circle.baby.ui.guides.GuideHelper;
 import cn.timeface.circle.baby.ui.guides.GuideUtils;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.images.views.FlipImageView;
+import cn.timeface.circle.baby.ui.images.views.FlowLayout;
 import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
@@ -58,7 +60,9 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 /**
  * Created by yellowstart on 15/12/15.
  */
-public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack, View.OnClickListener, DeleteDialog.SubmitListener {
+public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack, View.OnClickListener, DeleteDialog.SubmitListener, PhotoPagerAdapter.ImageClickListener {
+
+    public static int CIRCLE_MEDIA_IMAGE_EDITOR = 1009;
 
     @Bind(R.id.tv_title)
     TextView tvTitle;
@@ -86,6 +90,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     FlipImageView ivTagAdd;
     @Bind(R.id.iv_image_like)
     FlipImageView ivImageLike;
+    @Bind(R.id.fl_baby_list)
+    FlowLayout flBabyList;
     private List<String> mPaths;
 
     private ArrayList<MediaObj> mMedias;
@@ -96,6 +102,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private boolean delete;
     private MenuItem save;
     private TFProgressDialog tfProgressDialog;
+
+    private int type = 0;//0默认时光轴跳转  1009、成长圈跳转，需要圈人
 
     private int allDetailsListPosition;
 
@@ -109,6 +117,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         mCurrenItem = intent.getIntExtra(KEY_SELECTOR_POSITION, 0);
         download = intent.getBooleanExtra("download", false);
         delete = intent.getBooleanExtra("delete", false);
+        type = intent.getIntExtra("type", 0);
         setHasOptionsMenu(true);
         EventBus.getDefault().register(this);
     }
@@ -125,6 +134,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         }
         if (mPaths.size() > 0 && mPaths != null) {
             mPhotoPagerAdapter = new PhotoPagerAdapter(getActivity(), mPaths);
+            mPhotoPagerAdapter.setClickListener(this);
         }
         mViewPager.setAdapter(mPhotoPagerAdapter);
         mViewPager.setCurrentItem(mCurrenItem);
@@ -138,6 +148,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         love.setOnClickListener(this);
         initListener();
         showGuide();
+        initCircleBaby();
         return view;
     }
 
@@ -516,5 +527,34 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         if (deleteDialog != null && deleteDialog.isShowing()) {
             deleteDialog.dismiss();
         }
+    }
+
+    private TextView initBabyName(RelateBabyObj babyObj) {
+        TextView textView = (TextView) inflate.inflate(R.layout.circle_relate_baby, flBabyList, false);
+        textView.setText(String.format("@%s", babyObj.getBabyName()));
+        textView.setTag(R.id.recycler_item_click_tag, babyObj);
+        return textView;
+    }
+
+    private void initCircleBaby() {
+        if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
+            flBabyList.removeAllViews();
+            addSubscription(Observable.defer(() -> Observable.just(mMedias.get(mViewPager.getCurrentItem())))
+                    .map(mediaObj -> (CircleMediaObj) mediaObj)
+                    .flatMap(circleMediaObj -> Observable.from(circleMediaObj.getRelateBabys()))
+                    .filter(relateBabyObj -> relateBabyObj != null)
+                    .map(relateBabyObj -> initBabyName(relateBabyObj))
+                    .toList()
+                    .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(textViews -> flBabyList.removeAllViews())
+                    .flatMap(textViews -> Observable.from(textViews))
+                    .subscribe(textView -> flBabyList.addView(textView), throwable -> LogUtil.showError(throwable)));
+        }
+    }
+
+
+    @Override
+    public void imageClcik() {
+        if (llBotton != null)
+            llBotton.setVisibility(llBotton.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
     }
 }

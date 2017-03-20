@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.circle.response;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import android.os.Parcel;
 
 import java.util.List;
@@ -70,6 +71,13 @@ public class CircleIndexResponse extends BaseResponse {
         this.userInfo = userInfo;
     }
 
+    public List<CircleTimelineObj> getDataList() {
+        return dataList;
+    }
+
+    public void setDataList(List<CircleTimelineObj> dataList) {
+        this.dataList = dataList;
+    }
     @Override
     public int describeContents() {
         return 0;

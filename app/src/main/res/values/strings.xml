@@ -743,6 +743,8 @@
     <string name="title_activity_select_server_time_detail">SelectServerTimeDetailActivity</string>
     <string name="input_password">1234567890QWERTYUIOPASDFGHJKLZXCVBNM_</string>
     <string name="title_activity_production_intro">产品介绍</string>
+    <string name="title_circle_photo">CirclePhotoActivity</string>
+    <string name="add_active">添加活动相册</string>
 
     <string name="complete">完成</string>
 
@@ -837,7 +839,7 @@
     <string name="select_server_photo_select_count"><![CDATA[已选<font color = "#F79646"> %s </font>张照片]]></string>
     <string name="select_server_time_select_count"><![CDATA[已选<font color = "#F79646"> %s </font>条记录]]></string>
     <string name="publish_select_date_min">您选择的时间在宝宝生日之前，时光列表中将看不到哦~</string>
-
+    <string name="circle_activity_photo_count">照片： %d张</string>
 
     <string name="input_max_length_tip">您输入的内容不能超过%d字节（一个汉字2个字节，字母、数字和符号按照1个字节计算）</string>
     <string name="input_title_tip">请输入标题</string>
@@ -847,4 +849,19 @@
     <string name="send_circle_school_title">发布作业</string>
     <string name="send_circle_homework_title">提交作业</string>
     <string name="circle_publish_notify_timeline_tip">同步到宝宝动态</string>
+    <string name="unjoin_active_tip">不参与活动</string>
+    <string name="select_active_media_count_tip">已有照片%d张</string>
+    <string name="activity_select_active_tip">选择活动相册</string>
+    <string name="add_active_album">添加相册</string>
+    <string name="input_create_actve_tip">请输入活动名称</string>
+    <string name="activity_create_active_title">添加活动相册</string>
+    <string name="input_content_cannot_null">你输入的内容不能为空</string>
+    <string name="pic_select_max_tip">最多只能选%d张照片</string>
+    <string name="comfirm">提交</string>
+    <string name="tv_circle_time_line_titl_tip">寒假里的一件小事</string>
+    <string name="circle_relate_baby">\@我要圈人</string>
+
+
+
+    <string name="circlephoto_count">共%d张照片</string>
 </resources>

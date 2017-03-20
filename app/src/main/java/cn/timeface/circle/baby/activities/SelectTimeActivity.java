@@ -89,6 +89,7 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
 
                 Intent intent = new Intent();
                 intent.putExtra("time", time);
+                intent.putExtra("timeMillis", DateUtil.getTime(time, PublishActivity.TIME_FORMAT));
                 setResult(RESULT_OK, intent);
                 finish();
 
@@ -99,6 +100,7 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
 
                 Intent intent1 = new Intent();
                 intent1.putExtra("time", time);
+                intent1.putExtra("timeMillis", DateUtil.getTime(time, PublishActivity.TIME_FORMAT));
                 setResult(RESULT_OK, intent1);
                 finish();
                 break;
@@ -127,9 +129,11 @@ public class SelectTimeActivity extends BaseAppCompatActivity implements View.On
 //                        if (DateUtil.getTime(time, "yyyy.MM.dd") < FastData.getBabyBithday()) {
 //                            ToastUtil.showToast(getString(R.string.publish_select_date_min));
 //                        }
-                        LogUtil.showLog("time==="+time);
+                        LogUtil.showLog("time===" + time);
                         Intent intent = new Intent();
                         intent.putExtra("time", time);
+                        intent.putExtra("timeMillis", DateUtil.getTime(time, PublishActivity.TIME_FORMAT));
+
                         setResult(RESULT_OK, intent);
                         finish();
                     }

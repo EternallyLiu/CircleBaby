@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_color3">
+
+    <include
+        android:id="@+id/topBar"
+        layout="@layout/head"/>
+
+    <cn.timeface.circle.baby.ui.circle.timelines.views.InputListenerEditText
+        android:id="@+id/et_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topBar"
+        android:background="@color/white"
+        android:textSize="@dimen/text_normal"
+        android:hint="@string/input_create_actve_tip"
+        android:padding="@dimen/size_6"/>
+
+    <TextView
+        android:id="@+id/tv_text_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/et_input"
+        android:layout_below="@+id/et_input"
+        android:layout_marginTop="@dimen/size_4"
+        android:text="0 / 8"
+        android:textSize="@dimen/text_small_10"/>
+
+    <Button
+        android:id="@+id/submit"
+        android:textSize="@dimen/text_normal"
+        android:paddingTop="@dimen/size_2"
+        android:paddingBottom="@dimen/size_2"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_ok"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/size_24"
+        android:background="@drawable/selector_btn_login"/>
+    
+</RelativeLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_circle_activity"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_circle_activity_bg"
+    android:clickable="true"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/iv_circle_activity"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_160"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_circlracticity_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color1"
+            tools:text="小博士学习班" />
+
+        <TextView
+            android:id="@+id/tv_circlracticity_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_6"
+            android:textColor="@color/text_color1"
+            tools:text="照片：814张" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

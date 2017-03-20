@@ -16,8 +16,16 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
     protected long albumId;          //相册id
     protected String albumName;     //相册名称
     protected int mediaCount;       //相册中的图片数量
+    protected String mediaUrl;
 
     public CircleActivityAlbumObj() {
+    }
+
+    public CircleActivityAlbumObj(long albumId, String albumName, int mediaCount, String mediaUrl) {
+        this.albumId = albumId;
+        this.albumName = albumName;
+        this.mediaCount = mediaCount;
+        this.mediaUrl = mediaUrl;
     }
 
     protected CircleActivityAlbumObj(Parcel in) {
@@ -25,6 +33,7 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
         albumId = in.readLong();
         albumName = in.readString();
         mediaCount = in.readInt();
+        mediaUrl = in.readString();
     }
 
     @Override
@@ -33,6 +42,7 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
         dest.writeLong(albumId);
         dest.writeString(albumName);
         dest.writeInt(mediaCount);
+        dest.writeString(mediaUrl);
     }
 
     @Override
@@ -74,5 +84,13 @@ public class CircleActivityAlbumObj extends BaseObj implements Parcelable {
 
     public void setMediaCount(int mediaCount) {
         this.mediaCount = mediaCount;
+    }
+
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
     }
 }

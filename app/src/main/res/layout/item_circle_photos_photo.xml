@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ratio="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:padding="@dimen/view_space_small">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <cn.timeface.circle.baby.views.CirclePhotoImageView
+            android:id="@+id/iv_img0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="clickCirclePhotoView"
+            android:paddingLeft="@dimen/view_space_small"
+            android:paddingRight="@dimen/view_space_small"
+            ratio:fixRatio="fixWidth"
+            ratio:heightRatio="1"
+            ratio:widthRatio="1" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <cn.timeface.circle.baby.views.CirclePhotoImageView
+            android:id="@+id/iv_img1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="clickCirclePhotoView"
+            android:paddingLeft="@dimen/view_space_small"
+            android:paddingRight="@dimen/view_space_small"
+            ratio:fixRatio="fixWidth"
+            ratio:heightRatio="1"
+            ratio:widthRatio="1" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <cn.timeface.circle.baby.views.CirclePhotoImageView
+            android:id="@+id/iv_img2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="clickCirclePhotoView"
+            android:paddingLeft="@dimen/view_space_small"
+            android:paddingRight="@dimen/view_space_small"
+            ratio:fixRatio="fixWidth"
+            ratio:heightRatio="1"
+            ratio:widthRatio="1" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <cn.timeface.circle.baby.views.CirclePhotoImageView
+            android:id="@+id/iv_img3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:onClick="clickCirclePhotoView"
+            android:paddingLeft="@dimen/view_space_small"
+            android:paddingRight="@dimen/view_space_small"
+            ratio:fixRatio="fixWidth"
+            ratio:heightRatio="1"
+            ratio:widthRatio="1" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,6 +1,10 @@
 package cn.timeface.circle.baby.ui.circle.timelines.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -8,17 +12,30 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.SelectPhotoActivity;
+import cn.timeface.circle.baby.activities.SelectTimeActivity;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleContentObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.ItemObj;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleGridStaggerLookup;
 import cn.timeface.circle.baby.ui.circle.timelines.views.InputListenerEditText;
@@ -34,6 +51,9 @@ import rx.Observable;
  */
 public class PublishAdapter extends BaseAdapter implements InputListenerEditText.InputCallBack {
 
+    public static final int MAX_PIC_TIMELINE_COUNT = 99;
+    public static final int MAX_PIC_WORK_COUNT = 9;
+
     //item类型
     public static final int ITEM_TYPE_INPUT_CONTENT = -39999;
     public static final int ITEM_TYPE_INPUT_TITLE = -39998;
@@ -43,6 +63,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
     public static final int ITEM_TYPE_NOTIFY_TIMELINE = -39994;
 
     private CircleContentObj contentObj = null;
+    private List<ImgObj> selImage = new ArrayList<>(0);
 
     //适配器功能类型
     //圈动态
@@ -61,7 +82,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
 
     @Override
     public int getItemCount() {
-        return (getType() == TYPE_TIMELINE ? lookup.isSync() ? 5 : 4 : 2) + contentObj.getMediaList().size();
+        return (getType() == TYPE_TIMELINE ? lookup.isSync() ? 5 : 4 : 2) + contentObj.getMediaList().size() + getSelImage().size() + (getType() == TYPE_TIMELINE ? contentObj.getMediaList().size() >= MAX_PIC_TIMELINE_COUNT ? 0 : 1 : contentObj.getMediaList().size() >= MAX_PIC_WORK_COUNT ? 0 : 1);
 
     }
 
@@ -81,6 +102,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                 doContent(contentView, position);
                 break;
             case ITEM_TYPE_SELECT_ACTIVE:
+                doActivce(contentView);
                 break;
             case ITEM_TYPE_SELECT_TIME:
                 doTime(contentView);
@@ -89,6 +111,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                 doNotifyTimeLine(contentView);
                 break;
             case ITEM_TYPE_MEDIA:
+                doMedia(contentView, position);
                 break;
         }
     }
@@ -113,6 +136,46 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         return 0;
     }
 
+
+    private void doMedia(View view, int position) {
+        ImageView ivImg = ViewHolder.getView(view, R.id.iv_img);
+
+        //计算宽度和高度
+        int width = App.mScreenWidth / lookup.getColumCount() * lookup.getSpanSize(position);
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) view.getLayoutParams();
+        if (params == null)
+            params = new RecyclerView.LayoutParams(width, width);
+        params.width = width;
+        params.height = width;
+        view.setLayoutParams(params);
+
+
+        int index = (getType() == TYPE_TIMELINE ? lookup.isSync() ? position - 5 : position - 4 : position - 2);
+        if (index >= 0 && index >= contentObj.getMediaList().size()) {
+            index = index - contentObj.getMediaList().size();
+            if (index >= 0 && index < selImage.size()) {
+                ivImg.setTag(R.id.recycler_item_click_tag, index);
+                GlideUtil.displayImage(selImage.get(index).getLocalPath(), ivImg, false);
+            } else {
+                ivImg.setTag(R.id.recycler_item_click_tag, -1);
+                GlideUtil.setImage(null, ivImg, R.drawable.ic_publish_add_nor, false);
+            }
+        } else if (index >= 0) {
+            ivImg.setTag(R.id.recycler_item_click_tag, index);
+            CircleMediaObj mediaObj = contentObj.getMediaList().get(index);
+            GlideUtil.displayImage(mediaObj.getImgUrl(), ivImg, false);
+        }
+        ivImg.setOnClickListener(this);
+    }
+
+    private void doActivce(View view) {
+        TextView tvActive = ViewHolder.getView(view, R.id.tv_active);
+        CircleTimelineObj timelineObj = (CircleTimelineObj) contentObj;
+        if (timelineObj.getActivityAlbum() == null) {
+            tvActive.setText(R.string.unjoin_active_tip);
+        } else tvActive.setText(timelineObj.getActivityAlbum().getAlbumName());
+    }
+
     private void doNotifyTimeLine(View view) {
         SwitchCompat switchCompat = ViewHolder.getView(view, R.id.swich_right);
         switchCompat.setChecked(lookup.isSync());
@@ -126,12 +189,12 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         });
     }
 
-    private void doTime(View view){
-        TextView tvTime=ViewHolder.getView(view,R.id.tv_time);
-        CircleTimelineObj timelineObj= (CircleTimelineObj) contentObj;
-        if (timelineObj.getRecordDate()<=0)
+    private void doTime(View view) {
+        TextView tvTime = ViewHolder.getView(view, R.id.tv_time);
+        CircleTimelineObj timelineObj = (CircleTimelineObj) contentObj;
+        if (timelineObj.getRecordDate() <= 0)
             timelineObj.setRecordDate(System.currentTimeMillis());
-        tvTime.setText(DateUtil.formatDate("yyyy.MM.dd",timelineObj.getRecordDate()));
+        tvTime.setText(DateUtil.formatDate("yyyy.MM.dd", timelineObj.getRecordDate()));
     }
 
     private void doTitle(View view, int position) {
@@ -204,6 +267,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         else if (contentObj instanceof CircleTimelineObj) setType(TYPE_TIMELINE);
     }
 
+
     public int getType() {
         return type;
     }
@@ -221,12 +285,55 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             }
     }
 
+    public List<ImgObj> getSelImage() {
+        return selImage;
+    }
+
+    public void setSelImage(List<ImgObj> selImage) {
+        this.selImage = selImage;
+    }
+
     public CircleGridStaggerLookup getLookup() {
         return lookup;
     }
 
     public void setLookup(CircleGridStaggerLookup lookup) {
         this.lookup = lookup;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rl_time:
+                Intent intent1 = new Intent(context(), SelectTimeActivity.class);
+                intent1.putExtra("time_shot", DateUtil.formatDate(cn.timeface.circle.baby.activities.PublishActivity.TIME_FORMAT, System.currentTimeMillis()));
+                intent1.putExtra("time_now", DateUtil.formatDate(cn.timeface.circle.baby.activities.PublishActivity.TIME_FORMAT, System.currentTimeMillis()));
+                ActivityCompat.startActivityForResult((Activity) context(), intent1, PublishActivity.TIME, null);
+//                SelectTimeActivity.open(context());
+                break;
+            case R.id.iv_img:
+                Observable.defer(() -> Observable.from(contentObj.getMediaList()))
+                        .map(circleMediaObj -> circleMediaObj.getImgObj())
+                        .toList()
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(imgObjs -> {
+                            int index = (int) v.getTag(R.id.recycler_item_click_tag);
+                            if (index < 0) {
+                                int maxCount = (getType() == TYPE_TIMELINE ? MAX_PIC_TIMELINE_COUNT : MAX_PIC_WORK_COUNT);
+                                maxCount -= contentObj.getMediaList().size();
+                                if (maxCount <= 0) {
+                                    ToastUtil.showToast(context(), String.format(context().getString(R.string.pic_select_max_tip), getType() == TYPE_TIMELINE ? MAX_PIC_TIMELINE_COUNT : MAX_PIC_WORK_COUNT));
+                                } else
+                                    SelectPhotoActivity.openForResult(context(), selImage, maxCount, PublishActivity.PICTURE);
+                            } else {
+
+                            }
+                        }, throwable -> LogUtil.showError(throwable));
+                break;
+            default:
+                super.onClick(v);
+                break;
+        }
     }
 
     @Override
@@ -267,5 +374,15 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                         .subscribe(s -> LogUtil.showLog(s), throwable -> LogUtil.showError(throwable));
                 break;
         }
+    }
+
+    public Observable getSendContent() {
+        return Observable.from(contentObj.getMediaList())
+                .filter(circleMediaObj -> circleMediaObj.getId() > 0)
+                .toList()
+                .flatMap(circleMediaObjs -> Observable.from(selImage).filter(imgObj -> imgObj != null).doOnNext(imgObj -> circleMediaObjs.add(imgObj.getCircleMediaObj())).map(imgObj -> circleMediaObjs))
+                .doOnNext(circleMediaObjs -> contentObj.setMediaList(circleMediaObjs))
+                .map(circleMediaObjs -> contentObj)
+                .doOnNext(circleContentObj -> circleContentObj.setCreateDate(System.currentTimeMillis()));
     }
 }
