@@ -12,17 +12,17 @@ import java.util.List;
  * Created by lidonglin on 2017/3/14.
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class GrowthCricleDetailObj extends GrowthCircleObj implements Parcelable {
+public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable {
     protected String circleDescription;           //圈描述
     protected int mediaAchievement;               //图片超过比例
     protected List<CircleUserInfo> memberList;    //圈中用户列表 (不超过10个)
     protected String rule;                        //圈规则
     protected int wrokAchievement;                //作品超过比例
 
-    public GrowthCricleDetailObj() {
+    public GrowthCircleDetailObj() {
     }
 
-    protected GrowthCricleDetailObj(Parcel in) {
+    protected GrowthCircleDetailObj(Parcel in) {
         super(in);
         circleDescription = in.readString();
         mediaAchievement = in.readInt();
@@ -46,15 +46,15 @@ public class GrowthCricleDetailObj extends GrowthCircleObj implements Parcelable
         return 0;
     }
 
-    public static final Creator<GrowthCricleDetailObj> CREATOR = new Creator<GrowthCricleDetailObj>() {
+    public static final Creator<GrowthCircleDetailObj> CREATOR = new Creator<GrowthCircleDetailObj>() {
         @Override
-        public GrowthCricleDetailObj createFromParcel(Parcel in) {
-            return new GrowthCricleDetailObj(in);
+        public GrowthCircleDetailObj createFromParcel(Parcel in) {
+            return new GrowthCircleDetailObj(in);
         }
 
         @Override
-        public GrowthCricleDetailObj[] newArray(int size) {
-            return new GrowthCricleDetailObj[size];
+        public GrowthCircleDetailObj[] newArray(int size) {
+            return new GrowthCircleDetailObj[size];
         }
     };
 

@@ -440,7 +440,24 @@
             android:label="@string/title_activity_card_preview"
             android:theme="@style/AppTheme"/>
 
-        <service android:name=".LoadMediaService"/>
+        <activity
+            android:name=".ui.growthcircle.mainpage.activity.CreateCircleActivity"
+            android:label="@string/create_growth_circle"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.growthcircle.mainpage.activity.JoinCircleActivity"
+            android:label="@string/join_growth_circle"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.growthcircle.mainpage.activity.JoinCircleMatchListActivity"
+            android:label="@string/join_growth_circle"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.growthcircle.mainpage.activity.CircleInfoActivity"
+            android:label="@string/circle_info"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".LoadMediaService" />
 
         <!-- ***********************BAIDU LOC SDK START************************ -->
         <service

@@ -30,7 +30,7 @@ public class ErrorViewContent {
             case HttpStatusCodes.FINISH:
                 return null;
             case HttpStatusCodes.NO_CONNECT:
-                return new ErrorViewContent(state, R.drawable.nodata, title, null, R.string.state_btn_retry, 0);
+                return new ErrorViewContent(state, R.drawable.nodata, title, null, R.string.state_btn_retry, R.drawable.selector_btn_login);
             case HttpStatusCodes.NO_MORE_INFO:
                 return new ErrorViewContent(state, R.drawable.nodata, title, null, 0, 0);
             case HttpStatusCodes.NO_MORE_DATA:
@@ -44,7 +44,7 @@ public class ErrorViewContent {
             case HttpStatusCodes.PARSE_ERROR:
                 return new ErrorViewContent(state, R.drawable.nodata, title, null, 0, 0);
             default:
-                return new ErrorViewContent(state, R.drawable.nodata, title, null, R.string.state_btn_retry, 0);
+                return new ErrorViewContent(state, R.drawable.nodata, title, null, R.string.state_btn_retry, R.drawable.selector_btn_login);
         }
     }
 

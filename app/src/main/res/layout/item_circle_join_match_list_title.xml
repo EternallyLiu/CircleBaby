@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/view_space_normal"
+    android:paddingLeft="@dimen/view_space_normal"
+    android:paddingRight="@dimen/view_space_normal"
+    android:paddingTop="@dimen/view_space_normal"
+    android:text="为您匹配到的圈子"
+    android:textColor="@color/text_color13"
+    android:textSize="@dimen/text_normal" />

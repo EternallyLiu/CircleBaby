@@ -72,7 +72,9 @@ import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
@@ -1113,28 +1115,43 @@ public interface ApiService {
 
     /**
      * 加圈申请
+     *
      * @param babyRealName
-     * @param circleNumber
+     * @param circleId
      * @param leaveWords
      * @return
      */
     @GET("babyCircle/join")
-    Observable<BaseResponse> join(
-            @Query("babyRealName") String babyRealName,
-            @Query("circleNumber") int circleNumber,
-            @Query("leaveWords") String leaveWords);
-
+    Observable<BaseResponse> joinCircle(@Query("circleId") long circleId,
+                                        @Query("babyRealName") String babyRealName,
+                                        @Query("leaveWords") String leaveWords);
 
     /**
      * 创建圈子
-     * @param circleName
-     * @param openLever
+     *
+     * @param circleName 圈名称
+     * @param openLever 0-私有圈 1-公有圈
      * @return
      */
     @GET("babyCircle/create")
-    Observable<CircleCreateResponse> create(
-            @Query("circleName") String circleName,
-            @Query("openLever") int openLever);
+    Observable<CircleCreateResponse> createCircle(@Query("circleName") String circleName,
+                                                  @Query("openLever") int openLever);
+
+    /**
+     * 修改宝宝大名
+     */
+    @GET("circle/updateBabyRealName")
+    Observable<BaseResponse> updateBabyRealName(@Query("babyId") long babyId,
+                                                @Query("realName") String realName);
+
+    /**
+     * 圈首页
+     *
+     * @param circleId 圈ID
+     * @return
+     */
+    @GET("circle/index")
+    Observable<CircleIndexResponse> queryCircleIndex(@Query("circleId") long circleId);
 
     /**
      * 圈列表
@@ -1145,21 +1162,21 @@ public interface ApiService {
 
     /**
      * 圈资料
-     * @param circleNumber
+     *
+     * @param circleId 圈ID
      * @return
      */
     @GET("babyCircle/detail")
-    Observable<CircleDetailResponse> circleDetail(
-            @Query("circleNumber") int circleNumber);
+    Observable<CircleDetailResponse> circleDetail(@Query("circleId") long circleId);
 
     /**
      * 查找圈子
+     *
      * @param circleName
      * @return
      */
     @GET("babyCircle/queryByCircleNumOrName")
-    Observable<CircleListResponse> queryByCircleNumOrName(
-            @Query("circleName") String circleName);
+    Observable<CircleSearchListResponse> queryByCircleNumOrName(@Query("circleName") String circleName);
 
 
 }

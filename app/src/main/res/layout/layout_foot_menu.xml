@@ -1,89 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_56"
     android:background="@color/bg18"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/bg23"/>
+        android:background="@color/bg23" />
 
-    <LinearLayout
+    <RadioGroup
+        android:id="@+id/rg_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/menu_home_tv"
+        <RadioButton
+            android:id="@+id/rb_home"
             style="@style/FooterNavText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.0"
+            android:layout_weight="1"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:drawablePadding="@dimen/size_2"
             android:drawableTop="@drawable/selector_home_babytime"
-            android:onClick="clickTab"
             android:padding="@dimen/view_space_normal"
-            android:tag="0"
             android:text="时光轴"
-            android:drawablePadding="@dimen/size_2"
-            android:textColor="@drawable/selector_home_mine_textcolor"/>
+            android:textColor="@drawable/selector_home_mine_textcolor" />
 
-        <TextView
-            android:id="@+id/menu_growth_up_tv"
+        <RadioButton
+            android:id="@+id/rb_growth_circle"
             style="@style/FooterNavText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.0"
+            android:layout_weight="1"
+            android:button="@android:color/transparent"
+            android:drawablePadding="@dimen/size_2"
+            android:drawableTop="@drawable/selector_home_growth_circle"
+            android:padding="@dimen/view_space_normal"
+            android:text="@string/growth_circle"
+            android:textColor="@drawable/selector_home_mine_textcolor" />
+
+        <RadioButton
+            android:id="@+id/rb_growth_up"
+            style="@style/FooterNavText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@android:color/transparent"
+            android:drawablePadding="@dimen/size_2"
             android:drawableTop="@drawable/selector_home_growth"
-            android:onClick="clickTab"
             android:padding="@dimen/view_space_normal"
-            android:tag="0"
             android:text="印成长"
-            android:drawablePadding="@dimen/size_2"
-            android:textColor="@drawable/selector_home_mine_textcolor"/>
+            android:textColor="@drawable/selector_home_mine_textcolor" />
 
-        <FrameLayout
-            android:visibility="gone"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:gravity="center">
-            <ImageView
-                android:id="@+id/iv_publish"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1.0"
-                android:clickable="true"
-                android:gravity="center"
-                android:scaleType="centerInside"
-                android:src="@drawable/publish"
-                />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/add"
-                android:layout_gravity="center"
-                />
-        </FrameLayout>
-
-
-        <TextView
-            android:id="@+id/menu_mime_tv"
+        <RadioButton
+            android:id="@+id/rb_mime"
             style="@style/FooterNavText"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:drawableTop="@drawable/selector_home_mine"
-            android:onClick="clickTab"
-            android:padding="@dimen/view_space_normal"
-            android:tag="1"
-            android:text="我的"
+            android:layout_weight="1"
+            android:button="@android:color/transparent"
             android:drawablePadding="@dimen/size_2"
-            android:textColor="@drawable/selector_home_mine_textcolor"/>
-
-    </LinearLayout>
+            android:drawableTop="@drawable/selector_home_mine"
+            android:padding="@dimen/view_space_normal"
+            android:text="我的"
+            android:textColor="@drawable/selector_home_mine_textcolor" />
+    </RadioGroup>
 </LinearLayout>
