@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerTimesAdapter;
@@ -99,13 +100,7 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
     private void reqData(){
 
         //mock data
-        Observable<QueryTimeLineResponse> timeResponseObservable = null;
-        if(contentType == TypeConstants.PHOTO_TYPE_TIME){
-//            timeResponseObservable = apiService.queryTimeLineByTime(babyId, String.valueOf(getQueryType()));
-        } else {
-//            timeResponseObservable = apiService.queryTimeLineByMember(babyId, userId, getQueryType());
-        }
-
+        Observable<QueryTimeLineResponse> timeResponseObservable = apiService.queryTimeLineByTime(FastData.getBabyId(), "-1");
         if(timeResponseObservable == null) return;
         timeResponseObservable.compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
@@ -114,25 +109,28 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
                                 //mock date
                                 List<CircleTimeLineWrapperObj> timeLineWrapperObjList = new ArrayList<>();
                                 for(TimeLineWrapObj timeLineWrapObj : response.getDataList()){
+
+                                    List<CircleTimeLineExObj> circleTimeLineExObjList = new ArrayList<CircleTimeLineExObj>();
+                                    CircleTimeLineWrapperObj circleTimeLineWrapperObj = new CircleTimeLineWrapperObj();
                                     for(TimeLineObj timeLineObj : timeLineWrapObj.getTimelineList()){
-                                        List<CircleTimeLineExObj> circleTimeLineExObjList = new ArrayList<CircleTimeLineExObj>();
-                                        CircleTimeLineWrapperObj circleTimeLineWrapperObj = new CircleTimeLineWrapperObj();
+
                                         CircleTimeLineExObj circleTimeLineExObj = new CircleTimeLineExObj();
                                         CircleTimelineObj circleTimelineObj = new CircleTimelineObj();
-
                                         circleTimelineObj.setRecordDate(timeLineObj.getDate());
                                         circleTimelineObj.setCircleTimelineId(timeLineObj.getTimeId());
                                         circleTimelineObj.setLike(timeLineObj.getLike());
                                         circleTimelineObj.setLikeCount(timeLineObj.getLikeCount());
                                         circleTimelineObj.setContent(timeLineObj.getContent());
                                         circleTimelineObj.setMediaList(timeLineObj.getMediaList());
-
+                                        circleTimelineObj.setTitle("timeTitle");
+                                        circleTimeLineExObj.setCircleTimeline(circleTimelineObj);
+                                        circleTimeLineExObjList.add(circleTimeLineExObj);
+                                        circleTimeLineWrapperObj.setTimelineList(circleTimeLineExObjList);
+                                        timeLineWrapperObjList.add(circleTimeLineWrapperObj);
                                     }
                                 }
 
-
-
-//                                setListData(response.getDataList());
+                                setListData(timeLineWrapperObjList);
                             } else {
                                 ToastUtil.showToast(response.info);
                             }
