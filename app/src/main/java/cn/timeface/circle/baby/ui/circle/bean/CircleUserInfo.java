@@ -22,6 +22,14 @@ public class CircleUserInfo extends BaseObj implements Parcelable {
     public CircleUserInfo() {
     }
 
+    public CircleUserInfo(String circleAvatarUrl, String circleNickName, long circleId, long circleUserId, int circleUserType) {
+        this.circleAvatarUrl = circleAvatarUrl;
+        this.circleNickName = circleNickName;
+        this.circleId = circleId;
+        this.circleUserId = circleUserId;
+        this.circleUserType = circleUserType;
+    }
+
     protected CircleUserInfo(Parcel in) {
         super(in);
         circleAvatarUrl = in.readString();

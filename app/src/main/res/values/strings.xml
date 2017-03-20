@@ -821,7 +821,7 @@
     <string name="select_server_photo_select_count"><![CDATA[已选<font color = "#F79646"> %s </font>张照片]]></string>
     <string name="select_server_time_select_count"><![CDATA[已选<font color = "#F79646"> %s </font>条记录]]></string>
     <string name="publish_select_date_min">您选择的时间在宝宝生日之前，时光列表中将看不到哦~</string>
-
+    <string name="circle_activity_photo_count">照片： %d张</string>
 
     <string name="input_max_length_tip">您输入的内容不能超过%d字节（一个汉字2个字节，字母、数字和符号按照1个字节计算）</string>
     <string name="input_title_tip">请输入标题</string>
@@ -842,4 +842,8 @@
     <string name="comfirm">提交</string>
     <string name="tv_circle_time_line_titl_tip">寒假里的一件小事</string>
     <string name="circle_relate_baby">\@我要圈人</string>
+
+
+
+    <string name="circlephoto_count">共%d张照片</string>
 </resources>
