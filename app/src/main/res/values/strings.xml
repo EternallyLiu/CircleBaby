@@ -745,6 +745,7 @@
     <string name="title_activity_production_intro">产品介绍</string>
     <string name="title_circle_photo">CirclePhotoActivity</string>
     <string name="add_active">添加活动相册</string>
+    <string name="input_pc">导入电脑照片</string>
 
     <string name="complete">完成</string>
 

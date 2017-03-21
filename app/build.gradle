@@ -161,6 +161,7 @@ dependencies {
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
 
     debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
+    compile 'com.google.zxing:core:3.2.1'
 }
 
 
