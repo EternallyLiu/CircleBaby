@@ -27,11 +27,11 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerTimesActivity;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerTimesAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineWrapperObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
-import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
 
@@ -52,21 +52,18 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
     int contentType; //1-全部 2-按我发布的 3-按@我宝宝的
     CircleSelectServerTimesAdapter serverTimesAdapter;
     List<MediaObj> mediaObjs = new ArrayList<>();//选中的照片(编辑的话是书中包含的所有照片)
-    List<String> timeIds = new ArrayList<>();//选中的时光id（编辑的时候所有选中的时光）
     List<CircleTimeLineExObj> timeLineObjs = new ArrayList<>();//选中的时光（根据时光反解出来的时光）(当前页面选中的时光)
 
     public static CircleServerTimeFragment newInstance(
             int contentType,
             String circleId,
             List<MediaObj> selectedMedias,
-            List<String> selectedTimeIds,
             List<CircleTimeLineExObj> selectedTimeLines){
         CircleServerTimeFragment fragment = new CircleServerTimeFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("content_type", contentType);
         bundle.putString("circle_id", circleId);
         bundle.putParcelableArrayList("media_objs", (ArrayList<? extends Parcelable>) selectedMedias);
-        bundle.putStringArrayList("time_ids", (ArrayList<String>) selectedTimeIds);
         bundle.putParcelableArrayList("time_lines", (ArrayList<? extends Parcelable>) selectedTimeLines);
         fragment.setArguments(bundle);
         return fragment;
@@ -79,11 +76,9 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
         ButterKnife.bind(this, view);
         this.contentType = getArguments().getInt("content_type", TypeConstants.PHOTO_TYPE_TIME);
         this.mediaObjs = getArguments().getParcelableArrayList("media_objs");
-        this.timeIds = getArguments().getStringArrayList("time_ids");
         this.timeLineObjs = getArguments().getParcelableArrayList("time_lines");
         this.circleId = getArguments().getString("circle_id");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
-        if(timeIds == null) timeIds = new ArrayList<>();
 //        rvContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            @Override
 //            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -113,6 +108,8 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
 
                                     List<CircleTimeLineExObj> circleTimeLineExObjList = new ArrayList<CircleTimeLineExObj>();
                                     CircleTimeLineWrapperObj circleTimeLineWrapperObj = new CircleTimeLineWrapperObj();
+                                    circleTimeLineWrapperObj.setDate(timeLineWrapObj.getDate());
+                                    timeLineWrapperObjList.add(circleTimeLineWrapperObj);
                                     for(TimeLineObj timeLineObj : timeLineWrapObj.getTimelineList()){
 
                                         CircleTimeLineExObj circleTimeLineExObj = new CircleTimeLineExObj();
@@ -127,9 +124,6 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
                                         circleTimeLineExObj.setCircleTimeline(circleTimelineObj);
                                         circleTimeLineExObjList.add(circleTimeLineExObj);
                                         circleTimeLineWrapperObj.setTimelineList(circleTimeLineExObjList);
-                                        circleTimeLineWrapperObj.setDate(
-                                                DateUtil.formatDate("yyyy年MM月", circleTimeLineExObj.getCircleTimeline().getRecordDate()));
-                                        timeLineWrapperObjList.add(circleTimeLineWrapperObj);
                                     }
                                 }
 
@@ -176,7 +170,7 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
         }
         llEmpty.setVisibility(serverTimesAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
         stateView.finish();
-//        if(getActivity() instanceof CircleSelectServerTimesActivity) ((CircleSelectServerTimesActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
+        if(getActivity() instanceof CircleSelectServerTimesActivity) ((CircleSelectServerTimesActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
     }
 
     /**
@@ -201,6 +195,14 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
             serverTimesAdapter.setSelImgs((ArrayList<CircleTimeLineExObj>) timeLineObjs);
             serverTimesAdapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * 该页面内容是否都全部选中
+     * @return
+     */
+    public boolean isAllSelect(){
+        return serverTimesAdapter != null ? serverTimesAdapter.isAllSelect() : false;
     }
 
     @Override

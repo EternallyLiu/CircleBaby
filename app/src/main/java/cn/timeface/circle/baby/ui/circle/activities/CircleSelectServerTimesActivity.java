@@ -17,6 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,7 +29,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
+import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
@@ -36,8 +40,10 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.dialogs.CircleSelectTimeTypeDialog;
+import cn.timeface.circle.baby.ui.circle.events.CircleSelectTimeLineEvent;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleServerTimeFragment;
-import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
+import cn.timeface.circle.baby.ui.growth.events.SelectMediaListEvent;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
@@ -48,7 +54,8 @@ import cn.timeface.open.api.bean.obj.TFOResourceObj;
  * author : sunyanwei Created on 17-3-20
  * email : sunyanwei@timeface.cn
  */
-public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActivity implements CircleSelectTimeTypeDialog.SelectTypeListener, View.OnClickListener {
+public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActivity
+        implements CircleSelectTimeTypeDialog.SelectTypeListener, View.OnClickListener, IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -70,7 +77,6 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
     TextView tvContent;
 
     boolean fragmentShow = false;
-    boolean canBack = false;
     CircleServerTimeFragment allTimeFragment;//全部动态
     CircleServerTimeFragment mineTimeFragment;//我发布的动态
     CircleServerTimeFragment aboutBabyTimeFragment;//与我宝宝相关的动态
@@ -83,7 +89,6 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     List<MediaObj> allSelectMedias = new ArrayList<>();
     List<CircleTimeLineExObj> allSelectTimeLines = new ArrayList<>();
-    List<String> allSelectTimeIds = new ArrayList<>();
 
     public static void open(Context context, int bookType, int openBookType, String bookId, String openBookId, String circleId) {
         Intent intent = new Intent(context, CircleSelectServerTimesActivity.class);
@@ -117,7 +122,6 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                 CircleSelectTimeTypeDialog.TIME_TYPE_ALL,
                 circleId,
                 allSelectMedias,
-                allSelectTimeIds,
                 allSelectTimeLines);
         allTimeFragment.setTimeLineObjs(allSelectTimeLines);
         allTimeFragment.setMediaObjs(allSelectMedias);
@@ -126,13 +130,13 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_select_server_photo, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_publish_finish, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.save){
+        if(item.getItemId() == R.id.menu_complete){
             int pageNum = allSelectTimeLines.size();
             if(pageNum == 0){
                 ToastUtil.showToast("请选择至少一条时光");
@@ -257,7 +261,6 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     Fragment currentFragment = null;
     public void showContent(Fragment fragment) {
-        canBack = false;
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         if (currentFragment != null) {
@@ -270,9 +273,9 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
         }
         currentFragment = fragment;
 
-        if(currentFragment instanceof ServerTimeFragment){
+        if(currentFragment instanceof CircleServerTimeFragment){
 //            rlPhotoTip.setVisibility(View.VISIBLE);
-            initAllSelectView(((ServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
+            initAllSelectView(((CircleServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
         } else {
             rlPhotoTip.setVisibility(View.GONE);
         }
@@ -300,9 +303,80 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     }
 
+    public void setPhotoTipVisibility(int visibility){
+        rlPhotoTip.setVisibility(visibility);
+        if(currentFragment instanceof CircleServerTimeFragment) {
+            initAllSelectView(((CircleServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
+        }
+    }
 
     private void initAllSelectView(boolean allSelect, int selectCount){
         cbAllSel.setChecked(allSelect);
         tvSelCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_time_select_count), String.valueOf(selectCount))));
+    }
+
+    @Subscribe
+    public void bookOptionEvent(BookOptionEvent optionEvent){
+        if(optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_CREATE){
+            finish();
+        }
+    }
+
+    @Subscribe
+    public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
+        if(selectMediaEvent.getType() != SelectMediaEvent.TYPE_TIME_MEDIA) return;
+        //选中
+        if(selectMediaEvent.getSelect()){
+            if(!allSelectMedias.contains(selectMediaEvent.getMediaObj())){
+                allSelectMedias.add(selectMediaEvent.getMediaObj());
+            }
+        } else {
+            if(allSelectMedias.contains(selectMediaEvent.getMediaObj())){
+                allSelectMedias.remove(selectMediaEvent.getMediaObj());
+            }
+        }
+    }
+
+    @Subscribe
+    public void selectMediaListEvent(SelectMediaListEvent mediaListEvent) {
+        if (mediaListEvent.getType() != SelectMediaListEvent.TYPE_TIME_MEDIA) return;
+        //选中
+        if (mediaListEvent.isSelect()) {
+            for (MediaObj mediaObj : mediaListEvent.getMediaObjList()) {
+                if (!allSelectMedias.contains(mediaObj)) {
+                    allSelectMedias.add(mediaObj);
+                }
+            }
+
+        } else {
+            for (MediaObj mediaObj : mediaListEvent.getMediaObjList()) {
+                if (allSelectMedias.contains(mediaObj)) {
+                    allSelectMedias.remove(mediaObj);
+                }
+            }
+
+        }
+    }
+
+    @Subscribe
+    public void selectTimeLineEvent(CircleSelectTimeLineEvent selectTimeLineEvent){
+        //选中
+        if(selectTimeLineEvent.isSelect()){
+            if(!allSelectTimeLines.contains(selectTimeLineEvent.getTimeLineExObj())){
+                allSelectTimeLines.add(selectTimeLineEvent.getTimeLineExObj());
+            }
+        } else {
+            if(allSelectTimeLines.contains(selectTimeLineEvent.getTimeLineExObj())){
+                allSelectTimeLines.remove(selectTimeLineEvent.getTimeLineExObj());
+            }
+        }
+
+        if(currentFragment instanceof CircleServerTimeFragment){
+            initAllSelectView(((CircleServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
+            ((CircleServerTimeFragment) currentFragment).setTimeLineObjs(allSelectTimeLines);
+        } else if(currentFragment instanceof CircleServerTimeFragment) {
+            initAllSelectView(((CircleServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
+            ((CircleServerTimeFragment) currentFragment).setTimeLineObjs(allSelectTimeLines);
+        }
     }
 }

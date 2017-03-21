@@ -109,7 +109,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity.open(this);
         updateRegionDB();
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         int width = wm.getDefaultDisplay().getWidth() / 3;
