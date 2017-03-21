@@ -109,6 +109,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
 
         menuSections.add(new GroupMemberSection(true, "3&入圈申请&" + appliUserInfoList.size()));
         for (int i = 0; i < appliUserInfoList.size(); i++) {
+            appliUserInfoList.get(i).getCircleUserInfo().setCircleUserType(5);
             menuSections.add(new GroupMemberSection(appliUserInfoList.get(i)));
         }
         return menuSections;

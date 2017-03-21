@@ -76,17 +76,14 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
                         .load(menemberInfo.getBabyAvatarUrl())
                         .into(viewChild);
             }
-            String userId = FastData.getUserId();
-            switch (menemberInfo.getCircleUserInfo().getCircleUserType()) {
-                case 1:
-                    baseViewHolder.setVisible(R.id.iv_create_member, true);
-                    break;
-                case 3:
-                    baseViewHolder.setVisible(R.id.iv_mine_self, true);
-                    break;
-                default:
-                    baseViewHolder.setVisible(R.id.iv_create_member, false);
-                    baseViewHolder.setVisible(R.id.iv_mine_self, false);
+
+            if (menemberInfo.getCircleUserInfo().getCircleUserType() == 1) {
+                baseViewHolder.setVisible(R.id.iv_create_member, true);
+            } else if (FastData.getCircleUserInfo().getCircleUserId() == menemberInfo.getCircleUserInfo().getCircleUserId()) {
+                baseViewHolder.setVisible(R.id.iv_mine_self, true);
+            } else {
+                baseViewHolder.setVisible(R.id.iv_create_member, false);
+                baseViewHolder.setVisible(R.id.iv_mine_self, false);
             }
         }
     }

@@ -12,6 +12,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -79,23 +80,116 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
             tvBtnUp.setText("修改昵称");
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo,1);
+                }
+            });
         } else if (circleUserIdself == circleUserId) {
             title.setText("我的圈资料");
             tvBtnUp.setText("修改宝宝名称");
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo,2);
+                }
+            });
         } else if (circleUserTypeSelf == 1 && circleUserType == 2) {
             title.setText("管理员成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("取消教师认证");
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TFDialog tfDialog = TFDialog.getInstance();
+                    tfDialog.setMessage("是否移除" + circleUserInfo.getCircleNickName());
+                    tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            tfDialog.dismiss();
+                        }
+                    });
+                    tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            removeMember();
+                        }
+                    });
+                    tfDialog.show(getSupportFragmentManager(),"");
+                }
+            });
+            tvBtnDown.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TFDialog tfDialog = TFDialog.getInstance();
+                    tfDialog.setMessage("是否取消认证" + circleUserInfo.getCircleNickName() + "的教师资格");
+                    tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            tfDialog.dismiss();
+                        }
+                    });
+                    tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            start(0);
+                        }
+                    });
+                    tfDialog.show(getSupportFragmentManager(),"");
+                }
+            });
         } else if (circleUserTypeSelf == 1 && circleUserType == 3) {
             title.setText("管理员成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("教师认证");
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TFDialog tfDialog = TFDialog.getInstance();
+                    tfDialog.setMessage("是否移除" + circleUserInfo.getCircleNickName());
+                    tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            tfDialog.dismiss();
+                        }
+                    });
+                    tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            removeMember();
+                        }
+                    });
+                    tfDialog.show(getSupportFragmentManager(),"");
+                }
+            });
+            tvBtnDown.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TFDialog tfDialog = TFDialog.getInstance();
+                    tfDialog.setMessage("是否发起认证" + circleUserInfo.getCircleNickName() + "的教师资格");
+                    tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            tfDialog.dismiss();
+                        }
+                    });
+                    tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            start(1);
+                        }
+                    });
+                    tfDialog.show(getSupportFragmentManager(),"");
+                }
+            });
+
         } else if (circleUserTypeSelf == 1 && circleUserType == 5) {
             title.setText("入圈申请");
             tvBtnUp.setText("同意加入");
@@ -115,6 +209,44 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
 
     private void joinCheck(int type){
         Subscription subscribe = apiService.joinCircleCheck(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse>() {
+                    @Override
+                    public void call(BaseResponse baseResponse) {
+                        if (baseResponse.success()) {
+                            ToastUtil.showToast(CheckMemberDetailActivity.this,"操作成功");
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        addSubscription(subscribe);
+    }
+
+    private void start(int type){
+        Subscription subscribe = apiService.start(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse>() {
+                    @Override
+                    public void call(BaseResponse baseResponse) {
+                        if (baseResponse.success()) {
+                            ToastUtil.showToast(CheckMemberDetailActivity.this,"操作成功");
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        addSubscription(subscribe);
+    }
+
+    private void removeMember(){
+        Subscription subscribe = apiService.removeMember(circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(new Action1<BaseResponse>() {
                     @Override

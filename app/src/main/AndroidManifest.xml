@@ -558,7 +558,8 @@
 
         <activity android:name=".ui.circle.groupmembers.activity.GroupMembersActivity" />
         <activity android:name=".ui.circle.groupmembers.activity.InviteActivity" />
-        <activity android:name=".ui.circle.groupmembers.activity.CheckMemberDetailActivity"></activity>
+        <activity android:name=".ui.circle.groupmembers.activity.CheckMemberDetailActivity" />
+        <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity"></activity>
     </application>
 
 </manifest>

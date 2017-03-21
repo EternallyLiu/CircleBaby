@@ -1647,12 +1647,44 @@ public interface ApiService {
 
     /**
      * 接口详情 (id: 7760) 复制URL
-     接口名称 同意/拒绝 某人入圈
-     请求类型 get
-     请求Url  /circle/joinCircleCheck
+     * 接口名称 同意/拒绝 某人入圈
+     * 请求类型 get
+     * 请求Url  /circle/joinCircleCheck
      */
     @POST("circle/joinCircleCheck")
     Observable<BaseResponse> joinCircleCheck(@Query("agree") long agree,
-                                                   @Query("circleId") long circleId,
-                                                   @Query("userId") long userId);
+                                             @Query("circleId") long circleId,
+                                             @Query("userId") long userId);
+
+    /**
+     * 接口详情 (id: 7758) 复制URL
+     * 接口名称 发起/取消 某个成员的教师认证
+     * 请求类型 get
+     * 请求Url  /teacherAuth/start
+     */
+    @POST("teacherAuth/start")
+    Observable<BaseResponse> start(@Query("certification") long certification,
+                                   @Query("circleId") long circleId,
+                                   @Query("userId") long userId);
+
+    /**
+     * 接口详情 (id: 7757) 复制URL
+     * 接口名称 移除某个成员
+     * 请求类型 post
+     * 请求Url  /circle/removeMember
+     */
+    @POST("circle/removeMember")
+    Observable<BaseResponse> removeMember(@Query("circleId") long circleId,
+                                          @Query("userId") long userId);
+
+    /**
+     * 接口详情 (id: 7763) 复制URL
+     * 接口名称 修改圈成员昵称
+     * 请求类型 get
+     * 请求Url  /circle/updateNickname
+     */
+    @POST("circle/updateNickname")
+    Observable<BaseResponse> updateNickname(@Query("circleId") long circleId,
+                                            @Query("nickName") String nickName,
+                                            @Query("userId") long userId);
 }
