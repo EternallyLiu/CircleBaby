@@ -59,6 +59,33 @@ public class PublishActivity extends BaseAppCompatActivity {
     private int type = PublishAdapter.TYPE_TIMELINE;
     private CircleGridStaggerLookup lookup;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_circle_publish);
+        ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        adapter = new PublishAdapter(this);
+        init();
+        lookup = new CircleGridStaggerLookup(type, 4, false);
+        adapter.setLookup(lookup);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
+        gridLayoutManager.setSpanSizeLookup(lookup);
+        adapter.setType(type);
+        contentRecyclerView.setAdapter(adapter);
+        contentRecyclerView.setLayoutManager(gridLayoutManager);
+    }
+
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        ButterKnife.unbind(this);
+        super.onDestroy();
+    }
+
     /**
      * 发送或者编辑圈动态
      *
@@ -83,26 +110,6 @@ public class PublishActivity extends BaseAppCompatActivity {
         context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_circle_publish);
-        ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        adapter = new PublishAdapter(this);
-        init();
-        lookup = new CircleGridStaggerLookup(type, 4, false);
-        adapter.setLookup(lookup);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false);
-        gridLayoutManager.setSpanSizeLookup(lookup);
-        adapter.setType(type);
-        contentRecyclerView.setAdapter(adapter);
-        contentRecyclerView.setLayoutManager(gridLayoutManager);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(ActiveSelectEvent event) {
         CircleTimelineObj timelineObj = (CircleTimelineObj) adapter.getContentObj();
@@ -111,7 +118,7 @@ public class PublishActivity extends BaseAppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    private void init(){
+    private void init() {
         Bundle bundle = getIntent().getExtras();
         type = bundle.getInt("type", PublishAdapter.TYPE_TIMELINE);
 
@@ -158,10 +165,18 @@ public class PublishActivity extends BaseAppCompatActivity {
     }
 
     private void sendTimeLine() {
-        addSubscription(Observable.defer(() -> Observable.just(adapter.getSendContent()))
+        LogUtil.showLog("sendTimeLine");
+        addSubscription(Observable.defer(() -> adapter.getSendContent())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .filter(circleContentObj -> {
+                    if (circleContentObj.getMediaList().size() <= 0) {
+                        ToastUtil.showToast(this, getString(R.string.please_send_one_picture));
+                        return false;
+                    } else return true;
+                })
                 .map(circleContentObj -> JSONUtils.parse2JSONString(circleContentObj))
                 .filter(s -> !TextUtils.isEmpty(s))
-                .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(s -> LogUtil.showLog("s===" + s))
                 .flatMap(s -> apiService.sendCircleTimeLine(FastData.getCircleId(), s).compose(SchedulersCompat.applyIoSchedulers()))
                 .subscribe(timeLineSendResponse -> {
                     if (timeLineSendResponse.success()) {
@@ -194,13 +209,6 @@ public class PublishActivity extends BaseAppCompatActivity {
                     break;
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        ButterKnife.unbind(this);
-        super.onDestroy();
     }
 
 

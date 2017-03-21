@@ -240,7 +240,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
     public void showCircleContent() {
-        showContent(GrowthCircleObj.getInstance() == null ?
+        showContent(FastData.getCircleId() == 0 ?
                 TAB4_CIRCLE_LIST : TAB4_CIRCLE_MAIN);
     }
 
@@ -306,8 +306,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         if (v.getTag(R.string.tag_obj) != null
                 && v.getTag(R.string.tag_obj) instanceof GrowthCircleObj) {
             GrowthCircleObj item = (GrowthCircleObj) v.getTag(R.string.tag_obj);
-
-            FastData.setGrowthCircleObj(item);
+            FastData.setCircleId(item.getCircleId());
             switchCircleFragment(); // 切换为圈首页
         }
     }

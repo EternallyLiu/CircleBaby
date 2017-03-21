@@ -1,6 +1,9 @@
 package cn.timeface.circle.baby.ui.circle.timelines.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +47,10 @@ public class SelectActiveActivity extends BaseAppCompatActivity {
 
     private ActiveSelectAdapter adapter = null;
     private LinearLayoutManager layoutManager;
+
+    public static void open(Context context){
+        context.startActivity(new Intent(context,SelectActiveActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

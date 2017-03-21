@@ -29,7 +29,6 @@ public class JSONUtils {
         String json = null;
         try {
             json = LoganSquare.serialize(object);
-            LogUtil.showLog("json:" + json);
         } catch (IOException e) {
             LogUtil.showLog("异常!");
             e.printStackTrace();
@@ -42,9 +41,7 @@ public class JSONUtils {
         String json = null;
         try {
             json = LoganSquare.serialize(list);
-            LogUtil.showLog("json:" + json);
         } catch (IOException e) {
-            LogUtil.showLog("异常!");
             e.printStackTrace();
         }
         return json;

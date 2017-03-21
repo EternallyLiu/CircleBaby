@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
@@ -627,6 +628,26 @@ public class FastData extends Remember {
             growthCircleObj.save();
             GrowthCircleObj.refreshInstance();
         }
+    }
+
+    private static final String CIRCLE_USER_INFO_ID = "circle_user_info_id";
+
+    public static long getCircleUserId() {
+        return getLong(CIRCLE_USER_INFO_ID, 0);
+    }
+
+    private static void setCircleUserId(long id) {
+        putLong(CIRCLE_USER_INFO_ID, id);
+    }
+
+    public static void setCircleUserInfo(CircleUserInfo userInfo) {
+        setCircleUserId(userInfo.getCircleUserId());
+        userInfo.save();
+        CircleUserInfo.refresh();
+    }
+
+    public static CircleUserInfo getCircleUserInfo() {
+        return CircleUserInfo.getInstance();
     }
 
     /**

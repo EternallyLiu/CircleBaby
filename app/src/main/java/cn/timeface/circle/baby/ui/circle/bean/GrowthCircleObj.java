@@ -29,7 +29,7 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
     @PrimaryKey
     protected long circleId;          //圈id
     @Unique
-    protected long circleNumber;      //圈号
+    protected String circleNumber;      //圈号
     @Column
     protected String QRcodeUrl;       //二维码图片地址
     @Column
@@ -74,11 +74,11 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         this.circleId = circleId;
     }
 
-    public long getCircleNumber() {
+    public String getCircleNumber() {
         return circleNumber;
     }
 
-    public void setCircleNumber(long circleNumber) {
+    public void setCircleNumber(String circleNumber) {
         this.circleNumber = circleNumber;
     }
 
@@ -162,7 +162,7 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.circleId);
-        dest.writeLong(this.circleNumber);
+        dest.writeString(this.circleNumber);
         dest.writeString(this.QRcodeUrl);
         dest.writeString(this.cicleCoverUrl);
         dest.writeString(this.circleName);
@@ -176,7 +176,7 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
 
     protected GrowthCircleObj(Parcel in) {
         this.circleId = in.readLong();
-        this.circleNumber = in.readLong();
+        this.circleNumber = in.readString();
         this.QRcodeUrl = in.readString();
         this.cicleCoverUrl = in.readString();
         this.circleName = in.readString();

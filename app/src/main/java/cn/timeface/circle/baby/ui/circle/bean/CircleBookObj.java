@@ -8,13 +8,13 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CircleBookObj {
-    protected long circleNumber;  //圈号
+    protected String circleNumber;  //圈号
 
-    public long getCircleNumber() {
+    public String getCircleNumber() {
         return circleNumber;
     }
 
-    public void setCircleNumber(long circleNumber) {
+    public void setCircleNumber(String circleNumber) {
         this.circleNumber = circleNumber;
     }
 }

@@ -864,4 +864,6 @@
 
 
     <string name="circlephoto_count">共%d张照片</string>
+    <string name="please_input_your_title">请输入您的标题</string>
+    <string name="please_send_one_picture">发张照片吧~</string>
 </resources>
