@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerTimesAdapter;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineWrapperObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
@@ -121,7 +122,32 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
                                         circleTimelineObj.setLike(timeLineObj.getLike());
                                         circleTimelineObj.setLikeCount(timeLineObj.getLikeCount());
                                         circleTimelineObj.setContent(timeLineObj.getContent());
-                                        circleTimelineObj.setMediaList(timeLineObj.getMediaList());
+                                        List<CircleMediaObj> circleMediaObjArrayList = new ArrayList<>();
+                                        circleTimelineObj.setMediaList(circleMediaObjArrayList);
+
+                                        for(MediaObj mediaObj : timeLineObj.getMediaList()){
+                                            CircleMediaObj circleMediaObj = new CircleMediaObj();
+                                            circleMediaObj.setImgUrl(mediaObj.getImgUrl());
+                                            circleMediaObj.setContent(mediaObj.getContent());
+                                            circleMediaObj.setBaseType(mediaObj.getBaseType());
+                                            circleMediaObj.setDate(mediaObj.getDate());
+                                            circleMediaObj.setFavoritecount(mediaObj.getFavoritecount());
+                                            circleMediaObj.setH(mediaObj.getH());
+                                            circleMediaObj.setId(mediaObj.getId());
+                                            circleMediaObj.setImageOrientation(mediaObj.getImageOrientation());
+                                            circleMediaObj.setLength(mediaObj.getLength());
+                                            circleMediaObj.setLocalIdentifier(mediaObj.getLocalIdentifier());
+                                            circleMediaObj.setIsFavorite(mediaObj.getIsFavorite());
+                                            circleMediaObj.setTimeId(mediaObj.getTimeId());
+                                            circleMediaObj.setLocalPath(mediaObj.getLocalPath());
+                                            circleMediaObj.setLocation(mediaObj.getLocation());
+                                            circleMediaObj.setTip(mediaObj.getTip());
+                                            circleMediaObj.setTips(mediaObj.getTips());
+                                            circleMediaObj.setW(mediaObj.getW());
+                                            circleMediaObjArrayList.add(circleMediaObj);
+                                        }
+
+
                                         circleTimelineObj.setTitle("timeTitle");
                                         circleTimeLineExObj.setCircleTimeline(circleTimelineObj);
                                         circleTimeLineExObjList.add(circleTimeLineExObj);

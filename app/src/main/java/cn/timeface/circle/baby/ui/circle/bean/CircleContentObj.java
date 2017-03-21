@@ -19,7 +19,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 public class CircleContentObj extends BaseObj implements Parcelable {
     protected String content;                   //内容
     protected long createDate;                  //创建时间
-    protected List<MediaObj> mediaList;   //图片列表
+    protected List<CircleMediaObj> mediaList;   //图片列表
     protected String title;                     //标题
 
     public CircleContentObj() {
@@ -29,7 +29,7 @@ public class CircleContentObj extends BaseObj implements Parcelable {
         super(in);
         content = in.readString();
         createDate = in.readLong();
-        mediaList = in.createTypedArrayList(MediaObj.CREATOR);
+        mediaList = in.createTypedArrayList(CircleMediaObj.CREATOR);
         title = in.readString();
     }
 
@@ -75,12 +75,12 @@ public class CircleContentObj extends BaseObj implements Parcelable {
         this.createDate = createDate;
     }
 
-    public List<MediaObj> getMediaList() {
+    public List<CircleMediaObj> getMediaList() {
         if (mediaList == null) mediaList = new ArrayList<>(0);
         return mediaList;
     }
 
-    public void setMediaList(List<MediaObj> mediaList) {
+    public void setMediaList(List<CircleMediaObj> mediaList) {
         this.mediaList = mediaList;
     }
 
