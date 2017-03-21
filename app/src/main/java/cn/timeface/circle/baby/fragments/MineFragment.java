@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import cn.timeface.circle.baby.ui.growth.activities.MineBookActivityV2;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
