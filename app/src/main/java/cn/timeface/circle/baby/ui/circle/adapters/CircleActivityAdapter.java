@@ -46,9 +46,9 @@ public class CircleActivityAdapter extends BaseRecyclerAdapter<CircleActivityAlb
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.tvCirclracticityName.setText(albumObj.getAlbumName());
         holder.tvCirclracticityCount.setText(mContext.getString(R.string.circle_activity_photo_count,albumObj.getMediaCount()));
-//        Glide.with(mContext)
-//                .load(albumObj.get().getAvatar())
-//                .into(holder.ivCircleActivity);
+        Glide.with(mContext)
+                .load(albumObj.getMediaUrl())
+                .into(holder.ivCircleActivity);
         holder.llCircleActivity.setTag(R.string.tag_obj, albumObj);
         if (clickListener != null) holder.llCircleActivity.setOnClickListener(clickListener);
     }

@@ -26,6 +26,10 @@ public class TFProgressDialog extends DialogFragment {
     private ImageView ivProgress;
     private String message;
 
+    public static TFProgressDialog getInstance() {
+        return getInstance("正在加载...");
+    }
+
     public static TFProgressDialog getInstance(String message) {
         TFProgressDialog progressDialog = new TFProgressDialog();
         Bundle bundle = new Bundle();

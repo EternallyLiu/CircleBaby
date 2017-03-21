@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.github.rayboot.widget.ratioview.RatioFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:fixRatio="fixWidth"
+    app:heightRatio="1"
+    app:widthRatio="1">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:onClick="clickCircleMember"
+        android:scaleType="center"
+        android:src="@drawable/bg_none_photo"
+        app:riv_mutate_background="true"
+        app:riv_oval="true" />
+</com.github.rayboot.widget.ratioview.RatioFrameLayout>

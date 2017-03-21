@@ -219,6 +219,7 @@
     <string name="CODE_503">服务器连接失败</string>
     <string name="CODE_504">被墙了</string>
     <string name="CODE_505">http版本不支持</string>
+    <string name="UNKNOWN_ERROR">未知错误</string>
 
     <string name="SERVICE_ERROR">服务器连接失败</string>
 
@@ -641,6 +642,21 @@
     <string name="pod_change_theme">更改主题</string>
     <string name="circle_change_theme">更换主题</string>
 
+    <!-- growth circle-->
+    <string name="growth_circle">成长圈</string>
+    <string name="create">创建</string>
+    <string name="create_growth_circle">创建圈子</string>
+    <string name="join_growth_circle">加入圈子</string>
+    <string name="circle_no_dynamic">还没有新的动态哦，\n点击右下角，发布本圈的第一条动态吧！</string>
+    <string name="circle_info">圈资料</string>
+    <string name="share_circle_to_friends">分享圈给好友</string>
+    <string name="circle_production">圈作品</string>
+    <string name="circle_photos">圈照片库</string>
+    <string name="circle_member_manager">圈成员管理</string>
+    <string name="publish_homework">发布作业</string>
+    <string name="quit_growth_circle">退出圈子</string>
+
+
     <string name="JANUARY">一月</string>
     <string name="FEBRUARY">二月</string>
     <string name="MARCH">三月</string>
@@ -729,6 +745,7 @@
     <string name="input_password">1234567890QWERTYUIOPASDFGHJKLZXCVBNM_</string>
     <string name="title_activity_production_intro">产品介绍</string>
     <string name="title_circle_photo">CirclePhotoActivity</string>
+    <string name="add_active">添加活动相册</string>
 
     <string name="complete">完成</string>
 
@@ -833,6 +850,17 @@
     <string name="send_circle_school_title">发布作业</string>
     <string name="send_circle_homework_title">提交作业</string>
     <string name="circle_publish_notify_timeline_tip">同步到宝宝动态</string>
+    <string name="unjoin_active_tip">不参与活动</string>
+    <string name="select_active_media_count_tip">已有照片%d张</string>
+    <string name="activity_select_active_tip">选择活动相册</string>
+    <string name="add_active_album">添加相册</string>
+    <string name="input_create_actve_tip">请输入活动名称</string>
+    <string name="activity_create_active_title">添加活动相册</string>
+    <string name="input_content_cannot_null">你输入的内容不能为空</string>
+    <string name="pic_select_max_tip">最多只能选%d张照片</string>
+    <string name="comfirm">提交</string>
+    <string name="tv_circle_time_line_titl_tip">寒假里的一件小事</string>
+    <string name="circle_relate_baby">\@我要圈人</string>
 
 
     <string name="circlephoto_count">共%d张照片</string>

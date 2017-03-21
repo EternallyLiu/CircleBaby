@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:timeLine="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+    >
+
+    <RelativeLayout
+        android:id="@+id/rl_time_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/alabaster"
+        android:paddingLeft="@dimen/size_6"
+        android:paddingRight="@dimen/size_6">
+
+        <cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker
+            android:id="@+id/line"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:paddingBottom="@dimen/size_24"
+            android:paddingLeft="@dimen/size_12"
+            android:paddingRight="@dimen/size_12"
+            android:paddingTop="@dimen/size_24"
+            timeLine:beginLine="@color/sea_buckthorn"
+            timeLine:endLine="@color/sea_buckthorn"
+            timeLine:lineSize="@dimen/size_2"
+            timeLine:marker="@drawable/circle_market_drawable"
+            timeLine:markerSize="@dimen/size_18"/>
+
+        <TextView
+            android:id="@+id/tv_date_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/size_12"
+            android:layout_toRightOf="@+id/line"
+            android:gravity="center_vertical"
+            android:text="@string/time_line_select_year"
+            android:textColor="@color/sea_buckthorn"
+            android:textSize="@dimen/text_normal"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_time_line"
+        android:background="@color/white"
+        android:padding="@dimen/size_4">
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_circle_time_line_titl_tip"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text_normal"/>
+
+        <LinearLayout
+            android:id="@+id/ll_gv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_title"
+            android:orientation="vertical"></LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_gv"
+            android:paddingBottom="@dimen/size_4"
+            android:paddingTop="@dimen/size_4"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text_small"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_detail"
+            android:paddingBottom="@dimen/size_2"
+            android:paddingTop="@dimen/size_2">
+
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="@dimen/size_36"
+                android:layout_height="@dimen/size_36"
+                android:layout_centerVertical="true"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:id="@id/tv_name"
+                android:maxLength="8"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/size_4"
+                android:layout_toRightOf="@+id/iv_icon"
+                android:textColor="@color/sea_buckthorn"
+                android:textSize="@dimen/text_normal"/>
+
+            <TextView
+                android:id="@id/tv_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/size_4"
+                android:layout_toRightOf="@+id/tv_name"
+                android:text="删除"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_normal"/>
+
+            <ImageView
+                android:id="@+id/iv_message"
+                android:layout_width="@dimen/size_30"
+                android:layout_height="@dimen/size_30"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/timeline_comment"/>
+
+            <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
+                android:id="@+id/iv_like"
+                android:layout_width="@dimen/size_30"
+                android:layout_height="@dimen/size_30"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/size_4"
+                android:layout_toLeftOf="@+id/iv_message"
+                android:scaleType="fitCenter"
+                timeLine:isSelected="false"
+                timeLine:selectDrawable="@drawable/time_line_cool"
+                timeLine:unselectDrawable="@drawable/time_line_cool_no"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

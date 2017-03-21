@@ -22,7 +22,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -95,7 +94,7 @@ public class StateView extends LinearLayout {
             showRetryButton = a.getBoolean(R.styleable.StateView_ev_showRetryButton, false);
             retryButtonText = a.getString(R.styleable.StateView_ev_retryButtonText);
             retryButtonBackground = a.getResourceId(R.styleable.StateView_ev_retryButtonBackground,
-                    R.drawable.selector_state_btn);
+                    R.drawable.selector_btn_login);
             retryButtonTextColor = a.getColor(R.styleable.StateView_ev_retryButtonTextColor,
                     getResources().getColor(R.color.error_view_text_dark));
 
@@ -173,8 +172,8 @@ public class StateView extends LinearLayout {
         }
 
         if (isTitleVisible()) {
-            setTitleTextSize(TypedValue.COMPLEX_UNIT_SP, 18.0f);
-            setTitleLineSpacing(0.0f, 1.0f);
+//            setTitleTextSize(TypedValue.COMPLEX_UNIT_SP, 18.0f);
+//            setTitleLineSpacing(0.0f, 1.0f);
             setTitle(content.getTitleRes());
         }
 
@@ -427,7 +426,7 @@ public class StateView extends LinearLayout {
     }
 
     public interface RetryListener {
-        public void onRetry();
+        void onRetry();
     }
 
     public TextView getTitleTextView() {

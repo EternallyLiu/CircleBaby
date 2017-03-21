@@ -8,7 +8,7 @@ import java.util.List;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 /**
- *  成长圈中的图片对象
+ * 成长圈中的图片对象
  * Created by lidonglin on 2017/3/14.
  */
 
@@ -16,6 +16,19 @@ public class CircleMediaObj extends MediaObj implements Parcelable {
     List<RelateBabyObj> relateBabys;
 
     public CircleMediaObj() {
+    }
+
+    public CircleMediaObj(String content, String imgUrl, int w, int h, long photographTime) {
+        setContent(content);
+        setImgUrl(imgUrl);
+        setW(w);
+        setH(h);
+        setPhotographTime(photographTime);
+//        this.content = content;
+//        this.imgUrl = imgUrl;
+//        this.w = w;
+//        this.h = h;
+//        this.photographTime = photographTime;
     }
 
     protected CircleMediaObj(Parcel in) {

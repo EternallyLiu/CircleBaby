@@ -3,14 +3,18 @@
                 xmlns:select="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/size_4">
+                android:paddingBottom="@dimen/size_2"
+                android:paddingLeft="@dimen/size_4"
+                android:paddingRight="@dimen/size_4"
+                android:paddingTop="@dimen/size_2"
+    >
 
-   <ImageView
-       android:id="@+id/iv_img"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:scaleType="fitCenter"
-       android:src="@drawable/bg_default_holder_img"/>
+    <ImageView
+        android:id="@+id/iv_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/bg_default_holder_img"/>
 
 
 </RelativeLayout>

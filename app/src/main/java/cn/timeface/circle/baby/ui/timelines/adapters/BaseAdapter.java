@@ -69,7 +69,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     };
 
     protected void handleMsg(Message msg) {
-        Log.i("test", "handleMsg:" + msg.what + "--" + msg.arg1 + "--" + msg.arg2);
         switch (msg.what) {
             case DELETE_ALL:
                 if (list != null && list.size() > 0) {

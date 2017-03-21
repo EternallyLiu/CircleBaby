@@ -6,14 +6,13 @@
     android:layout_height="wrap_content"
     android:background="@drawable/shape_circle_activity_bg"
     android:clickable="true"
-    android:gravity="center"
-    android:paddingBottom="@dimen/size_12"
-    android:paddingTop="@dimen/size_12">
+    android:gravity="center">
 
     <ImageView
         android:id="@+id/iv_circle_activity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/size_160"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

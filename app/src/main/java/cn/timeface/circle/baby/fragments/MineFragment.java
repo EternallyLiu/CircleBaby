@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.CartActivity;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.MineInfoActivity;
 import cn.timeface.circle.baby.activities.OrderListActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
@@ -28,7 +29,6 @@ import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
 import cn.timeface.circle.baby.ui.growth.activities.MineBookActivityV2;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -261,8 +261,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 FragmentBridgeActivity.open(getContext(), "SettingFragment");
                 break;
             case R.id.ll_mine_info:
-                //MineInfoActivity.open(getActivity());
-                GroupMembersActivity.open(getActivity());
+                MineInfoActivity.open(getActivity());
                 break;
             case R.id.ll_mine_product:
 //                MineBookActivity.open(getActivity());
@@ -270,6 +269,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.ll_mine_order:
                 OrderListActivity.open(getContext());
+//                CirclePhotoActivity.open(getActivity(),0,0);
                 break;
             case R.id.ll_mine_car:
                 CartActivity.open(getActivity());
