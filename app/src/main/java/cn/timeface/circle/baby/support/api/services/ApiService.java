@@ -79,6 +79,7 @@ import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
@@ -1199,6 +1200,15 @@ public interface ApiService {
      */
     @GET("circle/index")
     Observable<CircleIndexResponse> queryCircleIndex(@Query("circleId") long circleId);
+
+    /**
+     * 圈首页
+     *
+     * @param circleId 圈ID
+     * @return
+     */
+    @GET("circle/indexInfo")
+    Observable<CircleIndexInfoResponse> queryCircleIndexInfo(@Query("circleId") long circleId);
 
     /**
      * 圈列表

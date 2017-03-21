@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.network.NetworkError;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -121,8 +122,9 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
     private void setupData(GrowthCircleObj circleObj) {
         getSupportActionBar().setTitle(circleObj.getCircleName());
         tvOpenType.setText(circleObj.isPublic() ? "公开" : "不公开");
-        tvCircleMemberCount.setText(String.valueOf(circleObj.getMemberCount()));
-        tvCircleNumber.setText(String.valueOf(circleObj.getCircleNumber()));
+        tvCircleMemberCount.setText(circleObj.getMemberCount()
+                + "/" + TypeConstants.GROWTH_CIRCLE_MEMBER_MAX_COUNT);
+        tvCircleNumber.setText(circleObj.getCircleNumber());
         tvCirclePhotoCount.setText(circleObj.getMediaCount() + "张");
         tvCircleProductCount.setText(circleObj.getWorkCount() + "本");
     }
@@ -130,17 +132,8 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
     private void setupDetailData(GrowthCircleDetailObj circleDetailObj) {
         tvCircleIntro.setText(circleDetailObj.getCircleDescription());
 
-        if (circleDetailObj.getMediaAchievement() > 0) {
-            tvCirclePhotoPercent.setText("超过" + circleDetailObj.getMediaAchievement() + "%的圈子");
-        } else {
-            tvCirclePhotoPercent.setText("低于" + Math.abs(circleDetailObj.getMediaAchievement()) + "%的圈子");
-        }
-
-        if (circleDetailObj.getWrokAchievement() > 0) {
-            tvCircleProductPercent.setText("超过" + circleDetailObj.getWrokAchievement() + "%的圈子");
-        } else {
-            tvCircleProductPercent.setText("低于" + Math.abs(circleDetailObj.getWrokAchievement()) + "%的圈子");
-        }
+        tvCirclePhotoPercent.setText("超过" + circleDetailObj.getMediaAchievement() + "%的圈子");
+        tvCircleProductPercent.setText("超过" + circleDetailObj.getWrokAchievement() + "%的圈子");
 
         tvCircleRule.setText(circleDetailObj.getRule());
 

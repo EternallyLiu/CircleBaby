@@ -240,7 +240,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     }
 
     public void showCircleContent() {
-        showContent(GrowthCircleObj.getInstance() == null ?
+        showContent(FastData.getCircleId() == 0 ?
                 TAB4_CIRCLE_LIST : TAB4_CIRCLE_MAIN);
     }
 

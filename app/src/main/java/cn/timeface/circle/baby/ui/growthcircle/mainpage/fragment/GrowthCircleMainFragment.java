@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -142,6 +143,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
             setupCircleInfo(circleObj);
 
             tfStateView.loading();
+            reqInfo(circleObj.getCircleId());
             reqData(circleObj.getCircleId());
         }
     }
@@ -204,8 +206,32 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
         addSubscription(s);
     }
 
+    private void reqInfo(long circleId) {
+        Subscription s = apiService.queryCircleIndexInfo(circleId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            tfStateView.finish();
+                            tfptrListViewHelper.finishTFPTRRefresh();
+                            if (response.success()) {
+                                setupCircleInfo(response.getGrowthCircle());
+                            } else {
+                                Toast.makeText(getContext(), response.info, Toast.LENGTH_SHORT).show();
+                            }
+                            adapter.removeFooter(tfStateView);
+                        },
+                        throwable -> {
+                            tfptrListViewHelper.finishTFPTRRefresh();
+                            tfStateView.showException(throwable);
+                            adapter.addFooter(tfStateView);
+                            LogUtil.showError(throwable);
+                        }
+                );
+        addSubscription(s);
+    }
+
     private void setupListData(List<CircleTimelineObj> dataList) {
-        LogUtil.showLog("size==="+dataList.size());
+        LogUtil.showLog("size===" + dataList.size());
         if (currentPage <= 1)
             adapter.addList(true, dataList);
         else adapter.addList(dataList);
@@ -217,8 +243,9 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
             case R.id.tv_back:
                 if (getActivity() instanceof TabMainActivity) {
                     // 切换为圈列表
-                    GrowthCircleObj.getInstance().delete();
-                    GrowthCircleObj.refreshInstance();
+//                    GrowthCircleObj.getInstance().delete();
+//                    GrowthCircleObj.refreshInstance();
+                    FastData.setCircleId(0);
                     ((TabMainActivity) getActivity()).switchCircleFragment();
                 } else {
                     getActivity().onBackPressed();
