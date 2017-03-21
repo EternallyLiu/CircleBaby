@@ -67,6 +67,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
     private TextView tvHomework;
     private TextView tvHomeworkDetail;
 
+    private long circleId;
     private GrowthCircleObj circleObj;
 
     public static GrowthCircleMainFragment newInstance() {
@@ -83,6 +84,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
         setupPTR();
         initHeaderFooter();
 
+        circleId = FastData.getCircleId();
         setupData();
 
         return view;
@@ -94,7 +96,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
         IPTRRecyclerListener ptrListener = new IPTRRecyclerListener() {
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
-                reqData(circleObj.getCircleId());
+                reqData(circleId);
             }
 
             @Override
@@ -138,21 +140,17 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
     }
 
     private void setupData() {
-        circleObj = GrowthCircleObj.getInstance();
-        if (circleObj != null) {
-            setupCircleInfo(circleObj);
-
-            tfStateView.loading();
-            reqInfo(circleObj.getCircleId());
-            reqData(circleObj.getCircleId());
-        }
+        tfStateView.loading();
+        reqInfo(circleId);
+        reqData(circleId);
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        Log.i("-------->", "-------->onHiddenChanged: " + hidden);
-        if (!hidden && circleObj != GrowthCircleObj.getInstance()) {
+        Log.d("-------->", "-------->onHiddenChanged: " + hidden);
+        if (!hidden && circleId != FastData.getCircleId()) {
+            circleId = FastData.getCircleId();
             setupData();
         }
     }
@@ -170,6 +168,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
     }
 
     private void setupCircleInfo(GrowthCircleObj circleObj) {
+        this.circleObj = circleObj;
         tvCircleName.setText(circleObj.getCircleName());
         Glide.with(getContext())
                 .load(circleObj.getCicleCoverUrl())
@@ -214,6 +213,9 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
                             tfStateView.finish();
                             tfptrListViewHelper.finishTFPTRRefresh();
                             if (response.success()) {
+                                FastData.setGrowthCircleObj(response.getGrowthCircle());
+                                FastData.setCircleUserInfo(response.getUserInfo());
+
                                 setupCircleInfo(response.getGrowthCircle());
                             } else {
                                 Toast.makeText(getContext(), response.info, Toast.LENGTH_SHORT).show();
@@ -261,6 +263,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
     }
 
     private void showMoreDialog() {
+        if (circleObj == null) return;
         CircleMoreDialog dialog = CircleMoreDialog.newInstance(circleObj);
         dialog.show(getChildFragmentManager(), "CircleMoreDialog");
     }
