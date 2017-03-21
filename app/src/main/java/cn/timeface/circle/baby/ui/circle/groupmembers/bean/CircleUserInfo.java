@@ -1,10 +1,13 @@
 package cn.timeface.circle.baby.ui.circle.groupmembers.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by wangwei on 2017/3/20.
  */
 
-public class CircleUserInfo {
+public class CircleUserInfo implements Parcelable {
     /**
      * circleAvatarUrl	成长圈用户头像	string
      circleId	成长圈id	number
@@ -72,4 +75,38 @@ public class CircleUserInfo {
         this.circleNickName = circleNickName;
         this.circleUserType = circleUserType;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.circleAvatarUrl);
+        dest.writeInt(this.circleId);
+        dest.writeString(this.circleNickName);
+        dest.writeInt(this.circleUserId);
+        dest.writeInt(this.circleUserType);
+    }
+
+    protected CircleUserInfo(Parcel in) {
+        this.circleAvatarUrl = in.readString();
+        this.circleId = in.readInt();
+        this.circleNickName = in.readString();
+        this.circleUserId = in.readInt();
+        this.circleUserType = in.readInt();
+    }
+
+    public static final Parcelable.Creator<CircleUserInfo> CREATOR = new Parcelable.Creator<CircleUserInfo>() {
+        @Override
+        public CircleUserInfo createFromParcel(Parcel source) {
+            return new CircleUserInfo(source);
+        }
+
+        @Override
+        public CircleUserInfo[] newArray(int size) {
+            return new CircleUserInfo[size];
+        }
+    };
 }

@@ -14,18 +14,22 @@ public class MenemberInfo {
     private String babyAvatarUrl;
     private String babyName;
     private String leaveMessage;
-    private CircleUserInfo CircleUserInfo;
+    private int babyId;
+    private CircleUserInfo userInfo;
 
-    public MenemberInfo(String babyAvatarUrl, cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo circleUserInfo) {
+    public MenemberInfo(String babyAvatarUrl, int babyId, cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo circleUserInfo) {
         this.babyAvatarUrl = babyAvatarUrl;
-        CircleUserInfo = circleUserInfo;
+        this.babyId = babyId;
+        userInfo = circleUserInfo;
     }
 
-    public MenemberInfo(String babyAvatarUrl, String babyName, String leaveMessage, CircleUserInfo circleUserInfo) {
+    public MenemberInfo(String babyAvatarUrl, String babyName, String leaveMessage, int babyId, cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo circleUserInfo) {
         this.babyAvatarUrl = babyAvatarUrl;
         this.babyName = babyName;
+
         this.leaveMessage = leaveMessage;
-        CircleUserInfo = circleUserInfo;
+        this.babyId = babyId;
+        userInfo = circleUserInfo;
     }
 
     public String getBabyAvatarUrl() {
@@ -53,10 +57,10 @@ public class MenemberInfo {
     }
 
     public cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo getCircleUserInfo() {
-        return CircleUserInfo;
+        return userInfo;
     }
 
     public void setCircleUserInfo(cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo circleUserInfo) {
-        CircleUserInfo = circleUserInfo;
+        userInfo = circleUserInfo;
     }
 }

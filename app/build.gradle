@@ -111,6 +111,7 @@ dependencies {
 
     //Bugly
 
+    // rxLifecycle
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:25.2.0'
@@ -152,7 +153,6 @@ dependencies {
     compile 'com.jakewharton.timber:timber:4.3.1'
     compile 'com.zhy:highlight:1.1.0'
     compile 'com.makeramen:roundedimageview:2.3.0'
-    // rxLifecycle
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'
     compile 'com.tencent.bugly:crashreport:latest.release'

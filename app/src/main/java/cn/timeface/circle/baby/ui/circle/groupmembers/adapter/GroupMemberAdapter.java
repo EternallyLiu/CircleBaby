@@ -57,32 +57,37 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
     @Override
     protected void convert(BaseViewHolder baseViewHolder, GroupMemberSection groupMemberSection) {
         MenemberInfo menemberInfo = groupMemberSection.t;
-        baseViewHolder.setText(R.id.tv_content, menemberInfo.getCircleUserInfo().getCircleNickName());
-        CircleImageView view = baseViewHolder.getView(R.id.iv_content_img);
-        CircleImageView viewChild = baseViewHolder.getView(R.id.iv_child_img);
-        if (menemberInfo.getCircleUserInfo().getCircleUserType() == 4) {
-            Glide.with(mContext)
-                    .load(R.drawable.ic_add_member)
-                    .into(view);
-        } else {
-            Glide.with(mContext)
-                    .load(menemberInfo.getCircleUserInfo().getCircleAvatarUrl())
-                    .into(view);
-            Glide.with(mContext)
-                    .load(menemberInfo.getBabyAvatarUrl())
-                    .into(viewChild);
-        }
-        String userId = FastData.getUserId();
-        switch (menemberInfo.getCircleUserInfo().getCircleUserType()) {
-            case 1:
-                baseViewHolder.setVisible(R.id.iv_create_member, true);
-                break;
-            case 3:
-                baseViewHolder.setVisible(R.id.iv_mine_self, true);
-                break;
-            default:
-                baseViewHolder.setVisible(R.id.iv_create_member, false);
-                baseViewHolder.setVisible(R.id.iv_mine_self, false);
+        if (menemberInfo.getCircleUserInfo() != null) {
+            baseViewHolder.setText(R.id.tv_content, menemberInfo.getCircleUserInfo().getCircleNickName());
+            CircleImageView view = baseViewHolder.getView(R.id.iv_content_img);
+            CircleImageView viewChild = baseViewHolder.getView(R.id.iv_child_img);
+            if (menemberInfo.getCircleUserInfo().getCircleUserType() == 4) {
+                Glide.with(mContext)
+                        .load(R.drawable.ic_add_member)
+                        .into(view);
+            } else {
+                if (menemberInfo.getCircleUserInfo() != null) {
+                    Glide.with(mContext)
+                            .load(menemberInfo.getCircleUserInfo().getCircleAvatarUrl())
+                            .into(view);
+                }
+
+                Glide.with(mContext)
+                        .load(menemberInfo.getBabyAvatarUrl())
+                        .into(viewChild);
+            }
+            String userId = FastData.getUserId();
+            switch (menemberInfo.getCircleUserInfo().getCircleUserType()) {
+                case 1:
+                    baseViewHolder.setVisible(R.id.iv_create_member, true);
+                    break;
+                case 3:
+                    baseViewHolder.setVisible(R.id.iv_mine_self, true);
+                    break;
+                default:
+                    baseViewHolder.setVisible(R.id.iv_create_member, false);
+                    baseViewHolder.setVisible(R.id.iv_mine_self, false);
+            }
         }
     }
 

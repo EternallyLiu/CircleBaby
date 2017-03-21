@@ -20,11 +20,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.GroupMemberAdapter;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
+import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.section.GroupMemberSection;
+import rx.Subscription;
+import rx.functions.Action1;
 
 public class GroupMembersActivity extends BaseAppCompatActivity {
 
@@ -37,10 +41,14 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
 
     GroupMemberAdapter adapter;
     boolean isExpand = true;
-    List<CircleUserInfo> circleUserInfoList;
+    List<MenemberInfo> normalUserInfoList;
+    List<MenemberInfo> teacherUserInfoList;
+    List<MenemberInfo> appliUserInfoList;
+    GrowthCircleObj circleObj;
 
-    public static void open(Context context) {
+    public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, GroupMembersActivity.class);
+        intent.putExtra("circleObj", circleObj);
         context.startActivity(intent);
     }
 
@@ -53,46 +61,75 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         title.setText("群成员管理");
+        circleObj = getIntent().getParcelableExtra("circleObj");
 
         setUpView();
         reqContent();
-        circleUserInfoList = new ArrayList<>();
-        CircleUserInfo circleUserInfo = new CircleUserInfo("http://img1.timeface.cn/uploads/avator/default.png", 15, "CC", 45, 1);
-        circleUserInfoList.add(circleUserInfo);
-        for (int i = 0; i <18 ; i++) {
-            CircleUserInfo circleUserInfo1 = new CircleUserInfo("http://img1.timeface.cn/uploads/avator/default.png", 15, "CC", 45, 2);
-            circleUserInfoList.add(circleUserInfo1);
-        }
-        ArrayList<GroupMemberSection> content = getContent();
-        adapter.setNewData(content);
+        normalUserInfoList = new ArrayList<>();
+        teacherUserInfoList = new ArrayList<>();
+        appliUserInfoList = new ArrayList<>();
+
     }
 
     private void reqContent() {
+        Subscription subscribe = apiService.memberList(circleObj.getCircleId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(new Action1<MemberListResponse>() {
+                    @Override
+                    public void call(MemberListResponse memberListResponse) {
+                        if (memberListResponse.success()) {
+                            normalUserInfoList = memberListResponse.getNormals();
+                            appliUserInfoList = memberListResponse.getApplicants();
+                            teacherUserInfoList = memberListResponse.getTeachers();
+                            ArrayList<GroupMemberSection> content = getContent();
+                            adapter.setNewData(content);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
 
+                    }
+                });
+        addSubscription(subscribe);
     }
-    private  ArrayList<GroupMemberSection> getContent() {
+
+    private ArrayList<GroupMemberSection> getContent() {
         ArrayList<GroupMemberSection> menuSections = new ArrayList<>();
         //1&老师&4   1是类型  2是title  3是个数
-        menuSections.add(new GroupMemberSection(true, "1&老师&4"));
-        for (int i = 0; i < 4; i++) {
-            CircleUserInfo circleUserInfo = new CircleUserInfo("http://img1.timeface.cn/uploads/avator/default.png", 15, "CC", 45, 2);
-            MenemberInfo menemberInfo = new MenemberInfo("http://img1.timeface.cn/uploads/avator/default.png", circleUserInfo);
-            menuSections.add(new GroupMemberSection(menemberInfo));
+        menuSections.add(new GroupMemberSection(true, "1&老师&" + teacherUserInfoList.size()));
+        for (int i = 0; i < teacherUserInfoList.size(); i++) {
+            menuSections.add(new GroupMemberSection(teacherUserInfoList.get(i)));
         }
-        menuSections.add(new GroupMemberSection(true, "2&圈子成员&10"));
-        List<CircleUserInfo> circleMember = getCircleMember();
+        menuSections.add(new GroupMemberSection(true, "2&圈子成员&" + normalUserInfoList.size()));
+        List<MenemberInfo> circleMember = getCircleMember();
         for (int i = 0; i < circleMember.size(); i++) {
-            CircleUserInfo circleUserInfo = new CircleUserInfo("http://img1.timeface.cn/uploads/avator/default.png", 15, "CC", 45, 2);
-            MenemberInfo menemberInfo = new MenemberInfo("http://img1.timeface.cn/uploads/avator/default.png", circleMember.get(i));
-            menuSections.add(new GroupMemberSection(menemberInfo));
+            menuSections.add(new GroupMemberSection(circleMember.get(i)));
         }
-        menuSections.add(new GroupMemberSection(true, "3&入圈申请&5"));
-        for (int i = 0; i < 5; i++) {
-            CircleUserInfo circleUserInfo = new CircleUserInfo("http://img1.timeface.cn/uploads/avator/default.png", 15, "CC", 45, 2);
-            MenemberInfo menemberInfo = new MenemberInfo("http://img1.timeface.cn/uploads/avator/default.png", circleUserInfo);
-            menuSections.add(new GroupMemberSection(menemberInfo));
+
+        menuSections.add(new GroupMemberSection(true, "3&入圈申请&" + appliUserInfoList.size()));
+        for (int i = 0; i < appliUserInfoList.size(); i++) {
+            menuSections.add(new GroupMemberSection(appliUserInfoList.get(i)));
         }
         return menuSections;
+    }
+
+    private List<MenemberInfo> getCircleMember() {
+        List<MenemberInfo> circleUserInfos = new ArrayList<>();
+        if (isExpand) {
+            if (normalUserInfoList.size() > 9) {
+                for (int i = 0; i < 9; i++) {
+                    circleUserInfos.add(normalUserInfoList.get(i));
+                }
+            } else {
+                circleUserInfos.addAll(normalUserInfoList);
+            }
+        } else {
+            circleUserInfos.addAll(normalUserInfoList);
+        }
+        CircleUserInfo circleUserInfo = new CircleUserInfo("", "新增成员", 4);
+        circleUserInfos.add(new MenemberInfo("", 0, circleUserInfo));
+        return circleUserInfos;
     }
 
     private void setUpView() {
@@ -107,17 +144,17 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
                 GroupMemberSection groupMemberSection = (GroupMemberSection) baseQuickAdapter.getItem(i);
-                CircleUserInfo circleUserInfo = groupMemberSection.t.getCircleUserInfo();
-                switch (circleUserInfo.getCircleUserType()) {
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 4:
-                        InviteActivity.open(GroupMembersActivity.this);
-                        break;
+                MenemberInfo t = groupMemberSection.t;
+                if (t != null) {
+                    CircleUserInfo circleUserInfo = groupMemberSection.t.getCircleUserInfo();
+                    switch (circleUserInfo.getCircleUserType()) {
+                        case 4:
+                            InviteActivity.open(GroupMembersActivity.this,circleObj);
+                            break;
+                        default:
+                            CheckMemberDetailActivity.open(GroupMembersActivity.this, circleUserInfo);
+                    }
                 }
-                ToastUtil.showToast(GroupMembersActivity.this, "成功");
             }
         });
         rvContent.addOnItemTouchListener(new OnItemChildClickListener() {
@@ -136,18 +173,5 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
                 }
             }
         });
-    }
-
-    private List<CircleUserInfo> getCircleMember() {
-        List<CircleUserInfo> circleUserInfos = new ArrayList<>();
-        if (isExpand) {
-            for(int i=0;i<9;i++) {
-                circleUserInfos.add(circleUserInfoList.get(i));
-            }
-        } else {
-            circleUserInfos.addAll(circleUserInfoList);
-        }
-        circleUserInfos.add(new CircleUserInfo("","新增成员",4));
-        return circleUserInfos;
     }
 }
