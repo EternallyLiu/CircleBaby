@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color2"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_6"
+        android:background="@color/white"
+        android:padding="@dimen/size_12"
+        android:text="www.timeface.cn/baby"
+        android:textColor="@color/gray_normal"
+        android:textSize="@dimen/text_normal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/view_space_normal"
+        android:text="用手机访问无效，请用电脑访问网址"
+        android:textColor="@color/gray_normal"
+        android:textSize="@dimen/text_normal" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/size_32"
+        android:layout_marginTop="@dimen/view_space_large"
+        android:text="点击扫一扫登录电脑端"
+        android:textColor="@color/text_color30"
+        android:textSize="@dimen/text_normal" />
+
+    <ImageView
+        android:id="@+id/iv_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:clickable="true"
+        android:onClick="clickScan"
+        android:src="@drawable/ic_scan" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="@dimen/size_48"
+        android:layout_height="@dimen/size_48"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/size_48"
+        android:src="@drawable/guide_1" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/size_6"
+        android:textColor="@color/gray_normal"
+        tools:text="爷爷" />
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/size_12"
+        android:textColor="@color/text_color30"
+        android:textSize="@dimen/text_normal"
+        tools:text="也可以账号密码登录" />
+
+    <TextView
+        android:id="@+id/tv_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/size_2"
+        android:textColor="@color/text_color30"
+        android:textSize="@dimen/text_normal"
+        tools:text="账号： 18766554235" />
+
+    <Button
+        android:id="@+id/btn_forget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/size_24"
+        android:background="@drawable/selector_btn_login"
+        android:paddingLeft="@dimen/size_12"
+        android:paddingRight="@dimen/size_12"
+        android:text="忘记密码"
+        android:textColor="@android:color/white" />
+
+
+</LinearLayout>

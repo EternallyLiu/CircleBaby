@@ -68,4 +68,7 @@ public class TypeConstants {
     public static final int OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK = 113; // 成长纪念册：113
     public static final int OPEN_BOOK_TYPE_GROWTH_QUOTATIONS = 114; // 成长语录：114
 
+    // 成长圈成员人数上限
+    public static final int GROWTH_CIRCLE_MEMBER_MAX_COUNT = 500;
+
 }

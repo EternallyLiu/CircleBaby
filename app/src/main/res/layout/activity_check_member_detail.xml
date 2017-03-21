@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="cn.timeface.circle.baby.ui.circle.groupmembers.activity.CheckMemberDetailActivity">
+
+    <include layout="@layout/head" />
+
+    <RelativeLayout
+        android:id="@+id/ll_root"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_content_img"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_toLeftOf="@+id/iv_frist"
+            android:src="@drawable/ic_launcher" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_child_img"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="60dp"
+            android:src="@drawable/ic_launcher" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_medium"
+        tools:text="美术小李老师" />
+
+    <TextView
+        android:id="@+id/tv_user_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/text_color2"
+        android:textSize="@dimen/text_medium"
+        tools:text="关联宝贝：陈一辰" />
+
+    <TextView
+        android:id="@+id/tv_btn_up"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_btn_primary"
+        android:gravity="center"
+        android:textColor="@color/bg_color1"
+        android:textSize="@dimen/text_medium"
+        tools:text="移除成员" />
+
+    <TextView
+        android:id="@+id/tv_btn_down"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_btn_primary"
+        android:gravity="center"
+        android:textColor="@color/bg_color1"
+        android:textSize="@dimen/text_medium"
+        tools:text="移除成员" />
+</LinearLayout>
