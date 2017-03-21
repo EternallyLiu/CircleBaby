@@ -33,6 +33,7 @@ public class GlideUtil {
     }
 
     public static void displayImage(String url, ImageView imageView) {
+        LogUtil.showLog("url===" + url);
         if (TextUtils.isEmpty(url) || imageView == null) {
             imageView.setImageResource(R.drawable.ic_launcher);
             return;
@@ -158,7 +159,7 @@ public class GlideUtil {
                     } else
                         Glide.with(imageView.getContext()).load(url).thumbnail(0.1f).centerCrop().crossFade().into(imageView);
 
-                },throwable -> LogUtil.showError(throwable));
+                }, throwable -> LogUtil.showError(throwable));
     }
 
     public static void displayImage(String url, ImageView imageView, boolean fitCenter) {

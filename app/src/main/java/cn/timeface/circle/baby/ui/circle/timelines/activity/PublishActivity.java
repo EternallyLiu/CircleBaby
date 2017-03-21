@@ -12,23 +12,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleContentObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.PublishAdapter;
@@ -165,24 +172,56 @@ public class PublishActivity extends BaseAppCompatActivity {
     }
 
     private void sendTimeLine() {
-        LogUtil.showLog("sendTimeLine");
-        addSubscription(Observable.defer(() -> adapter.getSendContent())
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .filter(circleContentObj -> {
-                    if (circleContentObj.getMediaList().size() <= 0) {
-                        ToastUtil.showToast(this, getString(R.string.please_send_one_picture));
-                        return false;
-                    } else return true;
-                })
-                .map(circleContentObj -> JSONUtils.parse2JSONString(circleContentObj))
-                .filter(s -> !TextUtils.isEmpty(s))
-                .doOnNext(s -> LogUtil.showLog("s===" + s))
-                .flatMap(s -> apiService.sendCircleTimeLine(FastData.getCircleId(), s).compose(SchedulersCompat.applyIoSchedulers()))
-                .subscribe(timeLineSendResponse -> {
-                    if (timeLineSendResponse.success()) {
-                        finish();
-                    } else ToastUtil.showToast(this, timeLineSendResponse.getInfo());
-                }, throwable -> LogUtil.showError(throwable)));
+        if (adapter.getType() == PublishAdapter.TYPE_TIMELINE) {
+            CircleTimelineObj timelineObj = (CircleTimelineObj) adapter.getContentObj();
+            if (timelineObj.getCircleTimelineId() <= 0) {
+                timelineObj.setCreateDate(System.currentTimeMillis());
+            }
+            if (Utils.getByteSize(timelineObj.getTitle()) > 20) {
+                ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 20));
+                return;
+            } else if (Utils.getByteSize(timelineObj.getContent()) > 400) {
+                ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "内容", 400));
+                return;
+            }
+            for (ImgObj imgObj : adapter.getSelImage()) {
+                if (!timelineObj.getMediaList().contains(imgObj.getCircleMediaObj())) {
+                    timelineObj.getMediaList().add(imgObj.getCircleMediaObj());
+                }
+            }
+            if (timelineObj.getMediaList().size() > PublishAdapter.MAX_PIC_TIMELINE_COUNT) {
+                ToastUtil.showToast(this, String.format(getString(R.string.pic_select_max_tip), PublishAdapter.MAX_PIC_TIMELINE_COUNT));
+                return;
+            }
+            List<String> list = new ArrayList<>(0);
+            for (CircleMediaObj mediaObj : timelineObj.getMediaList())
+                if (mediaObj.getId() <= 0) list.add(mediaObj.getLocalPath());
+            if (list.size() > 0)
+                UploadService.start(this, list);
+            String send = new Gson().toJson(timelineObj);
+            addSubscription(apiService.sendCircleTimeLine(FastData.getCircleId(), URLEncoder.encode(send)).compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(timeLineSendResponse -> {
+                        if (timeLineSendResponse.success())
+                            finish();
+                    }, throwable -> LogUtil.showError(throwable)));
+        }
+//        addSubscription(Observable.defer(() -> adapter.getSendContent())
+//                .compose(SchedulersCompat.applyIoSchedulers())
+//                .filter(circleContentObj -> {
+//                    if (circleContentObj.getMediaList().size() <= 0) {
+//                        ToastUtil.showToast(this, getString(R.string.please_send_one_picture));
+//                        return false;
+//                    } else return true;
+//                })
+//                .map(circleContentObj -> JSONUtils.parse2JSONString(circleContentObj))
+//                .filter(s -> !TextUtils.isEmpty(s))
+//                .doOnNext(s -> LogUtil.showLog("s===" + s))
+//                .flatMap(s -> apiService.sendCircleTimeLine(FastData.getCircleId(), s).compose(SchedulersCompat.applyIoSchedulers()))
+//                .subscribe(timeLineSendResponse -> {
+//                    if (timeLineSendResponse.success()) {
+//                        finish();
+//                    } else ToastUtil.showToast(this, timeLineSendResponse.getInfo());
+//                }, throwable -> LogUtil.showError(throwable)));
     }
 
     @Override

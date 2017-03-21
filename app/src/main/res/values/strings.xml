@@ -842,6 +842,7 @@
     <string name="circle_activity_photo_count">照片： %d张</string>
 
     <string name="input_max_length_tip">您输入的内容不能超过%d字节（一个汉字2个字节，字母、数字和符号按照1个字节计算）</string>
+    <string name="input_max_tip">不能超过%d字节（一个汉字2个字节，字母、数字和符号按照1个字节计算）</string>
     <string name="input_title_tip">请输入标题</string>
     <string name="circle_publish_select_acctive_tip">选择活动相册（可不选）</string>
     <string name="circle_publish_select_time_tip">记录时间</string>

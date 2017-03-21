@@ -27,49 +27,21 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     public CircleTimelineObj() {
     }
 
-    protected CircleTimelineObj(Parcel in) {
-        super(in);
-        activityAlbum = in.readParcelable(CircleActivityAlbumObj.class.getClassLoader());
-        circleTimelineId = in.readLong();
-        commentCount = in.readInt();
-        commmentList = in.createTypedArrayList(CircleCommentObj.CREATOR);
-        isSync = in.readInt();
-        likeCount = in.readInt();
-        likeList = in.createTypedArrayList(CircleUserInfo.CREATOR);
-        publisher = in.readParcelable(CircleUserInfo.class.getClassLoader());
-        recordDate = in.readLong();
-    }
-
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeParcelable(activityAlbum, flags);
-        dest.writeLong(circleTimelineId);
-        dest.writeInt(commentCount);
-        dest.writeTypedList(commmentList);
-        dest.writeInt(isSync);
-        dest.writeInt(likeCount);
-        dest.writeTypedList(likeList);
-        dest.writeParcelable(publisher, flags);
-        dest.writeLong(recordDate);
+    public String toString() {
+        return "CircleTimelineObj{" +
+                "activityAlbum=" + activityAlbum +
+                ", circleTimelineId=" + circleTimelineId +
+                ", commentCount=" + commentCount +
+                ", commmentList=" + commmentList +
+                ", isSync=" + isSync +
+                ", likeCount=" + likeCount +
+                ", likeList=" + likeList +
+                ", publisher=" + publisher +
+                ", recordDate=" + recordDate +
+                ", like=" + like +
+                '}';
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CircleTimelineObj> CREATOR = new Creator<CircleTimelineObj>() {
-        @Override
-        public CircleTimelineObj createFromParcel(Parcel in) {
-            return new CircleTimelineObj(in);
-        }
-
-        @Override
-        public CircleTimelineObj[] newArray(int size) {
-            return new CircleTimelineObj[size];
-        }
-    };
 
     public CircleActivityAlbumObj getActivityAlbum() {
         return activityAlbum;
@@ -150,4 +122,50 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     public void setLike(int like) {
         this.like = like;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeParcelable(this.activityAlbum, flags);
+        dest.writeLong(this.circleTimelineId);
+        dest.writeInt(this.commentCount);
+        dest.writeTypedList(this.commmentList);
+        dest.writeInt(this.isSync);
+        dest.writeInt(this.likeCount);
+        dest.writeTypedList(this.likeList);
+        dest.writeParcelable(this.publisher, flags);
+        dest.writeLong(this.recordDate);
+        dest.writeInt(this.like);
+    }
+
+    protected CircleTimelineObj(Parcel in) {
+        super(in);
+        this.activityAlbum = in.readParcelable(CircleActivityAlbumObj.class.getClassLoader());
+        this.circleTimelineId = in.readLong();
+        this.commentCount = in.readInt();
+        this.commmentList = in.createTypedArrayList(CircleCommentObj.CREATOR);
+        this.isSync = in.readInt();
+        this.likeCount = in.readInt();
+        this.likeList = in.createTypedArrayList(CircleUserInfo.CREATOR);
+        this.publisher = in.readParcelable(CircleUserInfo.class.getClassLoader());
+        this.recordDate = in.readLong();
+        this.like = in.readInt();
+    }
+
+    public static final Creator<CircleTimelineObj> CREATOR = new Creator<CircleTimelineObj>() {
+        @Override
+        public CircleTimelineObj createFromParcel(Parcel source) {
+            return new CircleTimelineObj(source);
+        }
+
+        @Override
+        public CircleTimelineObj[] newArray(int size) {
+            return new CircleTimelineObj[size];
+        }
+    };
 }
