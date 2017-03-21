@@ -4,20 +4,51 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.support.api.models.db.AppDatabase;
+import cn.timeface.circle.baby.support.utils.FastData;
 
 /**
  * 圈用户对象
  * Created by lidonglin on 2017/3/14.
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class CircleUserInfo extends BaseObj implements Parcelable {
-    protected String circleAvatarUrl; //成长圈用户头像
-    protected String circleNickName;  //成长圈用户昵称
-    protected long circleId;          //成长圈id
+@Table(database = AppDatabase.class)
+public class CircleUserInfo extends BaseModel implements Parcelable {
+
+    private static volatile CircleUserInfo currentUserInfo = null;
+
+    public static CircleUserInfo getInstance() {
+        if (currentUserInfo == null)
+            synchronized (CircleUserInfo.class) {
+                if (currentUserInfo == null)
+                    currentUserInfo = SQLite.select().from(CircleUserInfo.class).where(CircleUserInfo_Table.circleUserId.eq(FastData.getCircleUserId())).and(CircleUserInfo_Table.circleId.eq(FastData.getCircleId()))
+                            .querySingle();
+            }
+        return currentUserInfo;
+    }
+
+    public static CircleUserInfo refresh() {
+        currentUserInfo = null;
+        return getInstance();
+    }
+
+    @PrimaryKey
     protected long circleUserId;      //成长圈用户id
+    @Column
+    protected long circleId;          //成长圈id
+    @Column
     protected int circleUserType;     //成长圈用户类型  1-创建者 2-老师 3-普通成员
+    @Column
+    protected String circleAvatarUrl; //成长圈用户头像
+    @Column
+    protected String circleNickName;  //成长圈用户昵称
 
     public CircleUserInfo() {
     }
@@ -29,42 +60,6 @@ public class CircleUserInfo extends BaseObj implements Parcelable {
         this.circleUserId = circleUserId;
         this.circleUserType = circleUserType;
     }
-
-    protected CircleUserInfo(Parcel in) {
-        super(in);
-        circleAvatarUrl = in.readString();
-        circleNickName = in.readString();
-        circleId = in.readLong();
-        circleUserId = in.readLong();
-        circleUserType = in.readInt();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(circleAvatarUrl);
-        dest.writeString(circleNickName);
-        dest.writeLong(circleId);
-        dest.writeLong(circleUserId);
-        dest.writeInt(circleUserType);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CircleUserInfo> CREATOR = new Creator<CircleUserInfo>() {
-        @Override
-        public CircleUserInfo createFromParcel(Parcel in) {
-            return new CircleUserInfo(in);
-        }
-
-        @Override
-        public CircleUserInfo[] newArray(int size) {
-            return new CircleUserInfo[size];
-        }
-    };
 
     public String getCircleAvatarUrl() {
         return circleAvatarUrl;
@@ -105,4 +100,38 @@ public class CircleUserInfo extends BaseObj implements Parcelable {
     public void setCircleUserType(int circleUserType) {
         this.circleUserType = circleUserType;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.circleUserId);
+        dest.writeLong(this.circleId);
+        dest.writeInt(this.circleUserType);
+        dest.writeString(this.circleAvatarUrl);
+        dest.writeString(this.circleNickName);
+    }
+
+    protected CircleUserInfo(Parcel in) {
+        this.circleUserId = in.readLong();
+        this.circleId = in.readLong();
+        this.circleUserType = in.readInt();
+        this.circleAvatarUrl = in.readString();
+        this.circleNickName = in.readString();
+    }
+
+    public static final Creator<CircleUserInfo> CREATOR = new Creator<CircleUserInfo>() {
+        @Override
+        public CircleUserInfo createFromParcel(Parcel source) {
+            return new CircleUserInfo(source);
+        }
+
+        @Override
+        public CircleUserInfo[] newArray(int size) {
+            return new CircleUserInfo[size];
+        }
+    };
 }
