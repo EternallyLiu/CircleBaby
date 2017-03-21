@@ -9,11 +9,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.view.RxView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.DiaryPublishActivity;
@@ -78,7 +81,12 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
         cardPresenter = new CardPresenter(this);
         cardPresenter.loadDiaryCard();
 
-        btnAskPrint.setOnClickListener(this);
+        RxView.clicks(btnAskPrint)
+                .throttleFirst(2, TimeUnit.SECONDS)
+                .subscribe(
+                        aVoid -> onClick(btnAskPrint),
+                        throwable -> Log.e(TAG, throwable.getLocalizedMessage())
+                );
         getSupportActionBar().setTitle(FastData.getBabyNickName() + "的日记卡片");
         rvBooks.setPadding(
                 getResources().getDimensionPixelOffset(R.dimen.size_16),

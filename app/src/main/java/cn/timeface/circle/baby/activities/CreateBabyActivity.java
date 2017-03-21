@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
 import com.bumptech.glide.Glide;
+import com.tbruyelle.rxpermissions.RxPermissions;
 import com.wechat.photopicker.PickerPhotoActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,6 +39,7 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
@@ -231,9 +234,16 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     }
 
     private void startPhotoPick() {
-        Intent intent = new Intent(this, PickerPhotoActivity.class);
-        intent.putExtra(KEY_SELECTED_PHOTO_SIZE, 8);
-        startActivityForResult(intent, PicutreSelcted);
+        new RxPermissions(this).request(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .subscribe(aBoolean -> {
+                    if (aBoolean) {
+                        Intent intent = new Intent(this, PickerPhotoActivity.class);
+                        intent.putExtra(KEY_SELECTED_PHOTO_SIZE, 8);
+                        startActivityForResult(intent, PicutreSelcted);
+                    } else {
+                        ToastUtil.showToast("成长印记需要赋予存储和相机的权限，才能更换头像");
+                    }
+                });
     }
 
     @Override

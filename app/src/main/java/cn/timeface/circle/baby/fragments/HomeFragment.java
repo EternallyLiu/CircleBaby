@@ -4,8 +4,6 @@ package cn.timeface.circle.baby.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -15,15 +13,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,7 +35,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alipay.sdk.auth.APAuthInfo;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -51,7 +44,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.Bind;
@@ -84,7 +76,6 @@ import cn.timeface.circle.baby.support.api.models.objs.RecommendObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.responses.BabyInfoResponse;
-import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
@@ -95,23 +86,18 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.guides.GuideHelper;
 import cn.timeface.circle.baby.ui.guides.GuideUtils;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
-import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
-import cn.timeface.circle.baby.ui.timelines.beans.PhotoCameraRequest;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
-import cn.timeface.circle.baby.ui.timelines.fragments.MediaIdResponse;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.TimerImageView;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.common.utils.DeviceUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener, BaseAdapter.LoadDataFinish, EmptyDataView.EmptyCallBack {
     private static final String ARG_PARAM1 = "param1";
@@ -174,7 +160,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     private TextView tvProgress;
     private AlertDialog progressDialog;
     private View picChangeView;
-    private static final int PAGE_SIZE = 30;
+    private static final int PAGE_SIZE = 5;
 
     public HomeFragment() {
     }
@@ -282,6 +268,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
                 currentPage = 1;
+                tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
                 reqData(currentPage);
             }
 
@@ -335,57 +322,80 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
 
     private void reqData(int page) {
-       addSubscription( apiService.timeline(page, PAGE_SIZE).map(timelineResponse -> timelineResponse.getDataList()).map(timeLineGroupObjs -> {
-           ArrayList<BaseObj> list = new ArrayList<>();
-           for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
-               TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
-               if (!adapter.containObj(bean) || currentPage == 1) list.add(bean);
-               for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
-                   if (!adapter.containObj(timeLineObj) || currentPage == 1) list.add(timeLineObj);
-               }
-           }
-           if (currentPage == 1) adapter.addList(true, list);
-           else adapter.addList(list);
-           return list;
-       }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
-           if (tfStateView != null) {
-               tfStateView.finish();
-           }
-           tfptrListViewHelper.finishTFPTRRefresh();
-       }, throwable -> {
-           LogUtil.showError(throwable);
-           if (tfStateView != null) {
-               tfStateView.showException(throwable);
-           }
-           tfptrListViewHelper.finishTFPTRRefresh();
-           adapter.error();
-       }));
+        addSubscription(
+                apiService.timeline(page, PAGE_SIZE)
+                        .map(timelineResponse -> {
+                            if(currentPage >= timelineResponse.getTotalPage()){
+                                tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
+                            } else {
+                                tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
+                            }
+                            return timelineResponse.getDataList();
+                        })
+                        .map(timeLineGroupObjs -> {
+                            ArrayList<BaseObj> list = new ArrayList<>();
+                            for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
+                                TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+                                if (!adapter.containObj(bean) || currentPage == 1) list.add(bean);
+                                for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                                    if (!adapter.containObj(timeLineObj) || currentPage == 1)
+                                        list.add(timeLineObj);
+                                }
+                            }
+                            if (currentPage == 1) {
+                                adapter.addList(true, list);
+                            } else {
+                                adapter.addList(list);
+                            }
+                            return list;
+                        }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
+                    tfptrListViewHelper.finishTFPTRRefresh();
+                }, throwable -> {
+                    LogUtil.showError(throwable);
+                    if (tfStateView != null) {
+                        tfStateView.showException(throwable);
+                    }
+                    tfptrListViewHelper.finishTFPTRRefresh();
+                    adapter.error();
+                }));
     }
 
     private void reqData(int page, int pageSize) {
-       addSubscription( apiService.timeline(page, pageSize).map(timelineResponse -> timelineResponse.getDataList()).map(timeLineGroupObjs -> {
-           ArrayList<BaseObj> list = new ArrayList<>();
-           for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
-               TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
-               list.add(bean);
-               for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
-                   list.add(timeLineObj);
-               }
-           }
-           adapter.addList(true, list);
-           return list;
-       }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
-           if (tfStateView != null) {
-               tfStateView.finish();
-           }
-           tfptrListViewHelper.finishTFPTRRefresh();
-       }, throwable -> {
-           if (tfStateView != null) {
-               tfStateView.showException(throwable);
-           }
-           tfptrListViewHelper.finishTFPTRRefresh();
-           adapter.error();
-       }));
+        addSubscription(apiService.timeline(page, pageSize)
+                .map(timelineResponse -> {
+                    if(currentPage >= timelineResponse.getTotalPage()){
+                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START);
+                    } else {
+                        tfptrListViewHelper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH);
+                    }
+                    return timelineResponse.getDataList();
+                })
+                .map(timeLineGroupObjs -> {
+                    ArrayList<BaseObj> list = new ArrayList<>();
+                    for (TimeLineGroupObj groupObj : timeLineGroupObjs) {
+                        TimeGroupSimpleBean bean = new TimeGroupSimpleBean(groupObj.getAge(), groupObj.getDateEx(), groupObj.getDate());
+                        list.add(bean);
+                        for (TimeLineObj timeLineObj : groupObj.getTimeLineList()) {
+                            list.add(timeLineObj);
+                        }
+                    }
+                    adapter.addList(true, list);
+                    return list;
+                }).compose(SchedulersCompat.applyIoSchedulers()).subscribe(list -> {
+                    if (tfStateView != null) {
+                        tfStateView.finish();
+                    }
+                    tfptrListViewHelper.finishTFPTRRefresh();
+                }, throwable -> {
+                    if (tfStateView != null) {
+                        tfStateView.showException(throwable);
+                    }
+                    tfptrListViewHelper.finishTFPTRRefresh();
+                    adapter.error();
+                }));
     }
 
 

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class HorizontalListViewAdapter3 extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.item_selecttheme, parent, false);
             holder.mImage = (ImageView) convertView.findViewById(R.id.img_list_item);
             holder.ivSelect = (ImageView) convertView.findViewById(R.id.iv_select);
+            holder.tvThemeName = (TextView) convertView.findViewById(R.id.tv_theme_name);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -68,6 +70,7 @@ public class HorizontalListViewAdapter3 extends BaseAdapter {
             holder.ivSelect.setVisibility(View.GONE);
         }
         GlideUtil.displayImage(list.get(position).getTemplatePic(), holder.mImage);
+        holder.tvThemeName.setText(list.get(position).getTemplateName());
 
         return convertView;
     }
@@ -75,6 +78,7 @@ public class HorizontalListViewAdapter3 extends BaseAdapter {
     private static class ViewHolder {
         private ImageView ivSelect;
         private ImageView mImage;
+        private TextView tvThemeName;
     }
 
     public void setSelectIndex(int i) {

@@ -91,6 +91,7 @@ dependencies {
     compile(name: 'refreshload-release', ext: 'aar')
     compile(name: 'timeface-common-release', ext: 'aar')
     compile(name: 'countly-sdk-16.06.04', ext: 'aar')
+    testCompile 'junit:junit:4.12'
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
     compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
