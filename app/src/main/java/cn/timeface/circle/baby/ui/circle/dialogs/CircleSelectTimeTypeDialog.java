@@ -3,9 +3,11 @@ package cn.timeface.circle.baby.ui.circle.dialogs;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -33,6 +35,7 @@ public class CircleSelectTimeTypeDialog extends DialogFragment implements View.O
 
     @Override
     public void onClick(View view) {
+        dismissAllowingStateLoss();
         switch (view.getId()){
             case R.id.tv_all_times:
                 selectTypeListener.selectTypeAll();
@@ -64,8 +67,20 @@ public class CircleSelectTimeTypeDialog extends DialogFragment implements View.O
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_circle_select_time_type, container, false);
-        ButterKnife.bind(this, super.onCreateView(inflater, container, savedInstanceState));
+        ButterKnife.bind(this, view);
+        tvAboutBabyTimes.setOnClickListener(this);
+        tvAllMineTime.setOnClickListener(this);
+        tvAllTimes.setOnClickListener(this);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        getDialog().getWindow().setBackgroundDrawableResource(R.color.trans);
+        getDialog().getWindow().setWindowAnimations(R.style.DialogAnimation);
+        getDialog().getWindow().setGravity(Gravity.BOTTOM);
     }
 
     public void setSelectTypeListener(SelectTypeListener selectTypeListener) {

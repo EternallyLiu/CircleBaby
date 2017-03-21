@@ -441,6 +441,7 @@
             android:theme="@style/AppTheme" />
 
         <service android:name=".LoadMediaService" />
+
         <activity
             android:name=".ui.growthcircle.mainpage.activity.CreateCircleActivity"
             android:label="@string/create_growth_circle"
@@ -521,13 +522,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/TimeFaceTheme.DayNight" />
         <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
-            android:theme="@style/TimeFaceTheme.DayNight"/>
-
-        <activity android:name=".ui.circle.timelines.activity.PublishActivity"/>
-        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity"/>
-        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity"/>
-
-            android:theme="@style/TimeFaceTheme.DayNight" />
+        android:theme="@style/TimeFaceTheme.DayNight"/>
+        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
+        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
+        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
+        android:theme="@style/TimeFaceTheme.DayNight" />
         <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
         <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
         <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
@@ -541,15 +540,14 @@
             android:theme="@style/AppTheme" />
 
         <service android:name=".ui.timelines.services.UploadVideoService" />
+
         <activity
             android:name=".ui.circle.photo.activities.InputPcActivity"
             android:label="@string/input_pc"
             android:theme="@style/AppTheme" />
+        <activity android:name=".views.barcodescanner.CaptureActivity" />
 
-        <activity android:name="cn.timeface.circle.baby.views.barcodescanner.CaptureActivity" />
-
-        <service android:name=".ui.timelines.services.UploadVideoService"/>
-
+        <service android:name=".ui.timelines.services.UploadVideoService" />
         //-----------------------countly----------------------------------
         <service android:name="org.openudid.OpenUDID_service">
             <intent-filter>
@@ -578,12 +576,15 @@
         <activity
             android:name=".ui.circle.activities.CircleSelectServerTimesActivity"
             android:label="@string/title_activity_circle_select_server_times"
-            android:theme="@style/AppTheme"></activity>
-
+            android:theme="@style/AppTheme" />
         <activity android:name=".ui.circle.groupmembers.activity.GroupMembersActivity" />
         <activity android:name=".ui.circle.groupmembers.activity.InviteActivity" />
         <activity android:name=".ui.circle.groupmembers.activity.CheckMemberDetailActivity" />
-        <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity"></activity>
+        <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectServerTimeDetailActivity"
+            android:label="@string/title_activity_circle_select_server_time_detail"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

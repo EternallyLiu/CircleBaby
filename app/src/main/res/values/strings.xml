@@ -869,4 +869,7 @@
     <string name="please_send_one_picture">发张照片吧~</string>
     <string name="title_activity_circle_select_server_times">CircleSelectServerTimesActivity
     </string>
+    <string name="title_activity_circle_select_server_time_detail">
+        CircleSelectServerTimeDetailActivity
+    </string>
 </resources>

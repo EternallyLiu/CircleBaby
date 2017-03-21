@@ -27,12 +27,14 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerTimeDetailActivity;
 import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerTimesActivity;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerTimesAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineWrapperObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
+import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeDetailActivity;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
 
@@ -52,13 +54,13 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
     private String circleId;
     int contentType; //1-全部 2-按我发布的 3-按@我宝宝的
     CircleSelectServerTimesAdapter serverTimesAdapter;
-    List<MediaObj> mediaObjs = new ArrayList<>();//选中的照片(编辑的话是书中包含的所有照片)
+    List<CircleMediaObj> mediaObjs = new ArrayList<>();//选中的照片(编辑的话是书中包含的所有照片)
     List<CircleTimeLineExObj> timeLineObjs = new ArrayList<>();//选中的时光（根据时光反解出来的时光）(当前页面选中的时光)
 
     public static CircleServerTimeFragment newInstance(
             int contentType,
             String circleId,
-            List<MediaObj> selectedMedias,
+            List<CircleMediaObj> selectedMedias,
             List<CircleTimeLineExObj> selectedTimeLines){
         CircleServerTimeFragment fragment = new CircleServerTimeFragment();
         Bundle bundle = new Bundle();
@@ -215,7 +217,7 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
      * 设置选中的图片
      * @param mediaObjs
      */
-    public void setMediaObjs(List<MediaObj> mediaObjs){
+    public void setMediaObjs(List<CircleMediaObj> mediaObjs){
         this.mediaObjs = mediaObjs;
         if(serverTimesAdapter != null){
             serverTimesAdapter.setSelImgs((ArrayList<CircleTimeLineExObj>) timeLineObjs);
@@ -231,8 +233,22 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
         return serverTimesAdapter != null ? serverTimesAdapter.isAllSelect() : false;
     }
 
+    public void doAllSelImg(){
+        if(serverTimesAdapter != null)serverTimesAdapter.doAllSelImg();
+    }
+
+    public void doAllUnSelImg(){
+        if(serverTimesAdapter != null)serverTimesAdapter.doAllUnSelImg();
+    }
+
     @Override
     public void onClick(View view) {
-
+        switch (view.getId()) {
+            //跳到时光详情页面
+            case R.id.ll_time_root:
+                CircleTimeLineExObj timeLineExObj = (CircleTimeLineExObj) view.getTag(R.string.tag_obj);
+                CircleSelectServerTimeDetailActivity.open(getActivity(), timeLineExObj, mediaObjs);
+                break;
+        }
     }
 }

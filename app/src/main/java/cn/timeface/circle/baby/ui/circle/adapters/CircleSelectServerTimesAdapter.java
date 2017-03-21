@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.events.TimeSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineWrapperObj;
 import cn.timeface.circle.baby.ui.circle.events.CircleSelectTimeLineEvent;
@@ -44,7 +45,7 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
     final int maxCount;
 
     List<CircleTimeLineExObj> selTimeLines = new ArrayList<>(10);//用于存储所有选中的时光
-    List<MediaObj> selMedias = new ArrayList<>(10);
+    List<CircleMediaObj> selMedias = new ArrayList<>(10);
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
     View.OnClickListener clickListener;
 
@@ -53,7 +54,7 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
             List<CircleTimeLineWrapperObj> listData,
             int maxCount,
             View.OnClickListener clickListener,
-            List<MediaObj> mediaObjs,
+            List<CircleMediaObj> mediaObjs,
             List<CircleTimeLineExObj> timeLineObjs) {
         super(mContext, listData);
         this.maxCount = maxCount;
@@ -345,6 +346,8 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
         if(!selMedias.containsAll(img.getCircleTimeline().getMediaList())){
             selMedias.addAll(img.getCircleTimeline().getMediaList());
         }
+
+        EventBus.getDefault().post(new CircleSelectTimeLineEvent(true, img));
     }
 
     public void doAllSelImg(){
@@ -386,13 +389,15 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
         if(selMedias.containsAll(img.getCircleTimeline().getMediaList())){
             selMedias.removeAll(img.getCircleTimeline().getMediaList());
         }
+
+        EventBus.getDefault().post(new CircleSelectTimeLineEvent(false, img));
     }
 
     public List<CircleTimeLineExObj> getSelImgs() {
         return selTimeLines;
     }
 
-    public List<MediaObj> getSelMedias() {
+    public List<CircleMediaObj> getSelMedias() {
         return selMedias;
     }
 
