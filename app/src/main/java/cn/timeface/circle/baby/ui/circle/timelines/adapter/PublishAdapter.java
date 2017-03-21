@@ -25,6 +25,7 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.activities.SelectTimeActivity;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -36,9 +37,11 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.SelectActiveActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.ItemObj;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleGridStaggerLookup;
 import cn.timeface.circle.baby.ui.circle.timelines.views.InputListenerEditText;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
@@ -170,6 +173,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
 
     private void doActivce(View view) {
         TextView tvActive = ViewHolder.getView(view, R.id.tv_active);
+        view.setOnClickListener(this);
         CircleTimelineObj timelineObj = (CircleTimelineObj) contentObj;
         if (timelineObj.getActivityAlbum() == null) {
             tvActive.setText(R.string.unjoin_active_tip);
@@ -304,6 +308,9 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_active:
+                SelectActiveActivity.open(context());
+                break;
             case R.id.rl_time:
                 Intent intent1 = new Intent(context(), SelectTimeActivity.class);
                 intent1.putExtra("time_shot", DateUtil.formatDate(cn.timeface.circle.baby.activities.PublishActivity.TIME_FORMAT, System.currentTimeMillis()));
@@ -376,13 +383,33 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         }
     }
 
-    public Observable getSendContent() {
-        return Observable.from(contentObj.getMediaList())
-                .filter(circleMediaObj -> circleMediaObj.getId() > 0)
-                .toList()
-                .flatMap(circleMediaObjs -> Observable.from(selImage).filter(imgObj -> imgObj != null).doOnNext(imgObj -> circleMediaObjs.add(imgObj.getCircleMediaObj())).map(imgObj -> circleMediaObjs))
-                .doOnNext(circleMediaObjs -> contentObj.setMediaList(circleMediaObjs))
-                .map(circleMediaObjs -> contentObj)
+    public Observable<CircleContentObj> getSendContent() {
+        if (contentObj.getMediaList().size() > 0)
+            return Observable.from(contentObj.getMediaList())
+                    .doOnNext(circleMediaObj -> {
+                        if (circleMediaObj.getId() < 0) {
+                            contentObj.getMediaList().remove(circleMediaObj);
+                        }
+                    })
+                    .toList()
+                    .flatMap(circleMediaObjs -> Observable.from(selImage).filter(imgObj -> imgObj != null).doOnNext(imgObj -> circleMediaObjs.add(imgObj.getCircleMediaObj())).map(imgObj -> circleMediaObjs))
+                    .doOnNext(circleMediaObjs -> contentObj.setMediaList(circleMediaObjs))
+                    .map(circleMediaObjs -> contentObj)
+                    .doOnNext(circleContentObj -> circleContentObj.setCreateDate(System.currentTimeMillis()));
+        else if (selImage.size() > 0) {
+            List<String> list=new ArrayList<>(0);
+            return Observable.from(selImage)
+                    .filter(imgObj -> imgObj != null)
+                    .doOnNext(imgObj -> list.add(imgObj.getLocalPath()))
+                    .doOnNext(imgObj -> contentObj.getMediaList().add(imgObj.getCircleMediaObj()))
+                    .toList()
+                    .doOnNext(imgObjs -> {
+                        LogUtil.showLog("list====="+ JSONUtils.parse2JSONString(list));
+                        UploadService.start(context(),list);
+                    })
+                    .map(imgObjs -> contentObj)
+                    .doOnNext(circleContentObj -> circleContentObj.setCreateDate(System.currentTimeMillis()));
+        } else return Observable.just(contentObj)
                 .doOnNext(circleContentObj -> circleContentObj.setCreateDate(System.currentTimeMillis()));
     }
 }

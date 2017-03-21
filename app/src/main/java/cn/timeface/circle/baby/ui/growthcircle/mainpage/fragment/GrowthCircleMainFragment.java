@@ -34,7 +34,9 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
 
@@ -46,6 +48,11 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.iv_publish)
     ImageView ivPublish;
+
+    private int currentPage = 1;
+    private static final int PAGE_SIZE = 20;
+
+    private CircleTimeLineAdapter adapter = null;
 
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
     private boolean bottomMenuShow = true;
@@ -72,8 +79,8 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_circle_main_page, container, false);
         ButterKnife.bind(this, view);
-        initHeaderFooter();
         setupPTR();
+        initHeaderFooter();
 
         setupData();
 
@@ -81,6 +88,8 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
     }
 
     private void setupPTR() {
+        adapter = new CircleTimeLineAdapter(getActivity());
+        recyclerView.setAdapter(adapter);
         IPTRRecyclerListener ptrListener = new IPTRRecyclerListener() {
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
@@ -155,6 +164,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
 
         footerView = LayoutInflater.from(getContext()).inflate(R.layout.footer_circle_dynamic_list, null);
         tfStateView = ButterKnife.findById(footerView, R.id.tf_stateView);
+        adapter.addHeader(headerView);
     }
 
     private void setupCircleInfo(GrowthCircleObj circleObj) {
@@ -182,17 +192,23 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
                             } else {
                                 Toast.makeText(getContext(), response.info, Toast.LENGTH_SHORT).show();
                             }
+                            adapter.removeFooter(tfStateView);
                         },
                         throwable -> {
                             tfptrListViewHelper.finishTFPTRRefresh();
                             tfStateView.showException(throwable);
+                            adapter.addFooter(tfStateView);
+                            LogUtil.showError(throwable);
                         }
                 );
         addSubscription(s);
     }
 
     private void setupListData(List<CircleTimelineObj> dataList) {
-
+        LogUtil.showLog("size==="+dataList.size());
+        if (currentPage <= 1)
+            adapter.addList(true, dataList);
+        else adapter.addList(dataList);
     }
 
     @OnClick({R.id.tv_back, R.id.iv_more, R.id.iv_publish})
