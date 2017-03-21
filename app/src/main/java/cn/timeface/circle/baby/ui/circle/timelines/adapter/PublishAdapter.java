@@ -25,6 +25,7 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.activities.SelectTimeActivity;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -162,7 +163,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             }
         } else if (index >= 0) {
             ivImg.setTag(R.id.recycler_item_click_tag, index);
-            CircleMediaObj mediaObj = contentObj.getMediaList().get(index);
+            MediaObj mediaObj = contentObj.getMediaList().get(index);
             GlideUtil.displayImage(mediaObj.getImgUrl(), ivImg, false);
         }
         ivImg.setOnClickListener(this);

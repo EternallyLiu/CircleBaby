@@ -23,6 +23,7 @@ import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineWrapObj;
 import cn.timeface.circle.baby.support.api.models.responses.QueryTimeLineResponse;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
+import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -126,6 +127,8 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
                                         circleTimeLineExObj.setCircleTimeline(circleTimelineObj);
                                         circleTimeLineExObjList.add(circleTimeLineExObj);
                                         circleTimeLineWrapperObj.setTimelineList(circleTimeLineExObjList);
+                                        circleTimeLineWrapperObj.setDate(
+                                                DateUtil.formatDate("yyyy年MM月", circleTimeLineExObj.getCircleTimeline().getRecordDate()));
                                         timeLineWrapperObjList.add(circleTimeLineWrapperObj);
                                     }
                                 }
