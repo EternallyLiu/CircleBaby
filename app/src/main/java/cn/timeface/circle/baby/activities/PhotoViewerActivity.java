@@ -22,6 +22,8 @@ import cn.timeface.circle.baby.adapters.PhotosViewPagerAdapter;
 import cn.timeface.circle.baby.support.managers.PhotoDataSave;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 
 /**
@@ -74,6 +76,7 @@ public class PhotoViewerActivity extends BaseAppCompatActivity {
 
     private void setupView() {
         int index = getIntent().getIntExtra("data_index", 0);
+        LogUtil.showLog("photo=="+ JSONUtils.parse2JSONString(allImgs.get(index)));
         adapter = new PhotosViewPagerAdapter(this, allImgs);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(index);

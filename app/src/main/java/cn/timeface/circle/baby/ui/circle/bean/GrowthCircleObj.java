@@ -199,4 +199,19 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
             return new GrowthCircleObj[size];
         }
     };
+
+    /**
+     * 是否为圈创建者
+     */
+    public boolean isCreator() {
+        return joinType == 0;
+    }
+
+    /**
+     * 是否为公开圈
+     */
+    public boolean isPublic() {
+        return openLever == 1;
+    }
+
 }

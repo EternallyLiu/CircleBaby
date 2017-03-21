@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.support.api.models.objs.UserWrapObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
-import cn.timeface.circle.baby.support.utils.ToastUtil;
-import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleActivityAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
-import cn.timeface.circle.baby.ui.growth.adapters.UsersAdapter;
 
 /**
  * 选择圈活动fragment
@@ -106,10 +101,10 @@ public class SelectCircleActivityFragment extends BasePresenterFragment {
 
     public List<CircleActivityAlbumObj> getData() {
         data.clear();
-        data.add(new CircleActivityAlbumObj(0,"小博士学习班",108));
-        data.add(new CircleActivityAlbumObj(1,"小学士学习班",109));
-        data.add(new CircleActivityAlbumObj(2,"小硕士学习班",110));
-        data.add(new CircleActivityAlbumObj(3,"小博士后学习班",111));
+        data.add(new CircleActivityAlbumObj(0, "小博士学习班", 108, "http://img1.timeface.cn/baby/d8e132d581eb8bb1b1c6a5a80b81d2f1.jpg"));
+        data.add(new CircleActivityAlbumObj(1, "小学士学习班", 109, "http://img1.timeface.cn/baby/d8e132d581eb8bb1b1c6a5a80b81d2f1.jpg"));
+        data.add(new CircleActivityAlbumObj(2, "小硕士学习班", 110, "http://img1.timeface.cn/baby/d8e132d581eb8bb1b1c6a5a80b81d2f1.jpg"));
+        data.add(new CircleActivityAlbumObj(3, "小博士后学习班", 111, "http://img1.timeface.cn/baby/d8e132d581eb8bb1b1c6a5a80b81d2f1.jpg"));
         return data;
     }
 }

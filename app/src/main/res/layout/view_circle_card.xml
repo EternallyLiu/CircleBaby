@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <com.github.rayboot.widget.ratioview.RatioFrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fixRatio="fixWidth"
+                app:heightRatio="1"
+                app:widthRatio="2">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/iv_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/bg_none_photo"
+                    app:riv_corner_radius_top_left="4dp"
+                    app:riv_corner_radius_top_right="4dp"
+                    app:riv_mutate_background="true"
+                    app:riv_oval="false" />
+
+                <TextView
+                    android:id="@+id/tv_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:background="@drawable/shape_circle_card_view_tag_bg"
+                    android:paddingBottom="@dimen/view_space_small"
+                    android:paddingLeft="@dimen/view_space_normal"
+                    android:paddingRight="@dimen/view_space_normal"
+                    android:paddingTop="@dimen/view_space_small"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_small"
+                    android:visibility="gone"
+                    tools:text="我加入的" />
+
+            </com.github.rayboot.widget.ratioview.RatioFrameLayout>
+
+            <TextView
+                android:id="@+id/tv_circle_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/view_space_normal"
+                android:paddingLeft="@dimen/view_space_medium"
+                android:paddingRight="@dimen/view_space_medium"
+                android:paddingTop="@dimen/view_space_normal"
+                android:textColor="@color/text_color9"
+                android:textSize="@dimen/text_normal"
+                tools:text="南门小学" />
+
+            <TextView
+                android:id="@+id/tv_circle_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/view_space_normal"
+                android:paddingLeft="@dimen/view_space_medium"
+                android:paddingRight="@dimen/view_space_medium"
+                android:textColor="@color/text_color13"
+                android:textSize="@dimen/text_small"
+                tools:text="成员：54人   |   照片：123456张" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

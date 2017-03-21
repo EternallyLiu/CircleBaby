@@ -41,9 +41,9 @@
         android:id="@+id/ll_tag_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/ll_botton"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="@dimen/size_24"
+        android:layout_marginBottom="@dimen/size_56"
         android:layout_marginLeft="@dimen/size_6"
         android:orientation="vertical"
         android:padding="@dimen/size_6"/>
@@ -77,63 +77,85 @@
     <LinearLayout
         android:id="@+id/ll_botton"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size_48"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="#F4F3F1"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:visibility="visible">
 
-        <LinearLayout
-            android:id="@+id/tag"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <cn.timeface.circle.baby.ui.images.views.FlipImageView
-                android:id="@+id/iv_tag_add"
-                android:layout_width="@dimen/size_27"
-                android:layout_height="@dimen/size_27"
-                android:layout_marginRight="@dimen/size_4"
-                android:scaleType="fitCenter"/>
-
-            <TextView
-                android:id="@+id/tv_tag_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/size_4"
-                android:text="加标签"
-                android:textColor="@color/aluminum"
-                android:textSize="@dimen/text_normal"/>
-
-        </LinearLayout>
+        <cn.timeface.circle.baby.ui.images.views.FlowLayout
+            android:id="@+id/fl_baby_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></cn.timeface.circle.baby.ui.images.views.FlowLayout>
 
         <LinearLayout
-            android:id="@+id/love"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_48"
             android:orientation="horizontal"
-            android:padding="@dimen/size_4">
+            >
 
-            <cn.timeface.circle.baby.ui.images.views.FlipImageView
-                android:id="@+id/iv_image_like"
-                android:layout_width="@dimen/size_27"
-                android:layout_height="@dimen/size_27"
-                android:layout_marginRight="@dimen/size_4"
-                android:scaleType="fitCenter"/>
+            <LinearLayout
+                android:id="@+id/tag"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <cn.timeface.circle.baby.ui.images.views.FlipImageView
+                    android:id="@+id/iv_tag_add"
+                    android:layout_width="@dimen/size_27"
+                    android:layout_height="@dimen/size_27"
+                    android:layout_marginRight="@dimen/size_4"
+                    android:scaleType="fitCenter"/>
+
+                <TextView
+                    android:id="@+id/tv_tag_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_4"
+                    android:text="加标签"
+                    android:textColor="@color/aluminum"
+                    android:textSize="@dimen/text_normal"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/love"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/size_4">
+
+                <cn.timeface.circle.baby.ui.images.views.FlipImageView
+                    android:id="@+id/iv_image_like"
+                    android:layout_width="@dimen/size_27"
+                    android:layout_height="@dimen/size_27"
+                    android:layout_marginRight="@dimen/size_4"
+                    android:scaleType="fitCenter"/>
+
+                <TextView
+                    android:id="@+id/tv_like_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/size_4"
+                    android:text="+0"
+                    android:textColor="@color/aluminum"
+                    android:textSize="@dimen/text_normal"/>
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_like_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/size_4"
-                android:text="+0"
+                android:id="@+id/tv_relate_baby"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/circle_relate_baby"
                 android:textColor="@color/aluminum"
                 android:textSize="@dimen/text_normal"/>
-        </LinearLayout>
 
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

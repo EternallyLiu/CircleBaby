@@ -90,7 +90,6 @@ public class TimeLineSelectAdapter extends BaseAdapter {
         TextView year = ViewHolder.getView(view, R.id.year);
         year.setText(item.getYear() + "年");
 
-        Log.i("test","position:"+position);
         if (getItemCount() <= 1) {
             Log.i("test","1");
             marker.setDrawBegin(false);

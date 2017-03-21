@@ -23,6 +23,7 @@ public class FlipImageView extends ImageView {
     private Resources manager;
 
     private Drawable default_image;
+    private int status = 0;
 
     public FlipImageView(Context context) {
         this(context, null);
@@ -45,12 +46,13 @@ public class FlipImageView extends ImageView {
             return;
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.FlipImageView);
         default_image = typedArray.getDrawable(R.styleable.FlipImageView_defaultImage);
-        typedArray.recycle();
         setImageDrawable(default_image);
+        typedArray.recycle();
     }
 
     public void changeStatus(@DrawableRes int drawableId) {
         setImageDrawable(getDrawable(drawableId));
+        setStatus(drawableId);
     }
 
     private Drawable getDrawable(@DrawableRes int rid) {
@@ -65,4 +67,11 @@ public class FlipImageView extends ImageView {
         return drawable;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

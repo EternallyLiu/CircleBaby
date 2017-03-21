@@ -102,14 +102,14 @@ dependencies {
 
     // 仅支持 WebP 静态图，需要添加
     // your project's other dependencies
-    
+
 
 
     compile files('libs/MiPush_SDK_Client_3_0_3.jar')
     compile files('libs/libammsdk.jar')
     compile files('libs/alipaySdk-20160812.jar')
     // rxLifecycle
-    
+
     //Bugly
     compile 'com.android.support:support-v4:25.3.0'
     compile 'com.android.support:appcompat-v7:25.3.0'
@@ -138,7 +138,7 @@ dependencies {
     compile 'com.umeng.analytics:analytics:6.0.9'
     compile 'com.github.rayboot.widget:ratioview:1.0.1'
     compile 'com.bigkoo:convenientbanner:2.0.4'
-    compile 'com.yqritc:recyclerview-flexibledivider:1.2.6'
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0'
     compile 'com.aliyun.dpa:oss-android-sdk:2.0.3'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'fr.baloomba:viewpagerindicator:2.4.2'
@@ -151,6 +151,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:9.8.0'
     compile 'com.jakewharton.timber:timber:4.3.1'
     compile 'com.zhy:highlight:1.1.0'
+    compile 'com.makeramen:roundedimageview:2.3.0'
+    // rxLifecycle
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'
     compile 'com.tencent.bugly:crashreport:latest.release'
