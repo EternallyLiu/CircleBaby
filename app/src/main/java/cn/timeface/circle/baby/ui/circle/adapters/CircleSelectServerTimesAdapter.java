@@ -130,7 +130,7 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
         if (viewType == TYPE_TITLE) {
-            return new TitleViewHolder(mLayoutInflater.inflate(R.layout.item_select_photos_time, viewGroup, false));
+            return new TitleViewHolder(mLayoutInflater.inflate(R.layout.item_circle_select_photos_time, viewGroup, false));
         } else if (viewType == TYPE_TIMES) {
             return new TimesViewHolder(mLayoutInflater.inflate(R.layout.item_select_times, viewGroup, false));
         }

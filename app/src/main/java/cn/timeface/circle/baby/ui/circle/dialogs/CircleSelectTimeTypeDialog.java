@@ -32,12 +32,6 @@ public class CircleSelectTimeTypeDialog extends DialogFragment implements View.O
     TextView tvAboutBabyTimes;
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.tv_all_times:
@@ -76,5 +70,11 @@ public class CircleSelectTimeTypeDialog extends DialogFragment implements View.O
 
     public void setSelectTypeListener(SelectTypeListener selectTypeListener) {
         this.selectTypeListener = selectTypeListener;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }
