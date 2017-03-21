@@ -70,7 +70,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
 
     public TimeLineGroupListAdapter(Context activity) {
         super(activity);
-        largeSize = (int) context().getResources().getDimension(R.dimen.text_large);
+        largeSize = (int) context().getResources().getDimension(R.dimen.text_medium);
         smailSize = (int) context().getResources().getDimension(R.dimen.text_small_10);
         dayColor = context().getResources().getColor(R.color.sea_buckthorn);
         maxImageHeight = (int) (context().getResources().getDimension(R.dimen.size_120) * 1.5f);
@@ -299,7 +299,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         tvLikecount.setText(item.getLikeCount() + "");
         iconLike.setTag(R.id.icon_like, position);
         iconLike.setOnClickListener(this);
-        tvLikecount.setOnClickListener(this);
+//        tvLikecount.setOnClickListener(this);
 
         iconComment.setTag(R.id.recycler_item_click_tag, position);
         iconComment.setOnClickListener(this);

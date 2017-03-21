@@ -16,7 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/tv_text"
+            android:layout_above="@+id/rl_text"
             android:gravity="center">
             <com.github.rayboot.widget.ratioview.RatioImageView
                 xmlns:scaleimg="http://schemas.android.com/apk/res-auto"
@@ -30,12 +30,33 @@
                 />
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tv_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="选择你喜欢的模板主题"
-            android:layout_above="@+id/lv_horizontal"/>
+        <RelativeLayout
+            android:layout_marginTop="@dimen/view_space_large"
+            android:layout_marginBottom="@dimen/view_space_medium"
+            android:paddingLeft="@dimen/view_space_normal"
+            android:paddingRight="@dimen/view_space_normal"
+            android:id="@+id/rl_text"
+            android:layout_above="@+id/lv_horizontal"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textSize="16sp"
+                android:id="@+id/tv_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择主题风格:" />
+
+            <TextView
+                android:layout_alignParentRight="true"
+                android:textColor="@color/red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="更改主题后内容将重新排版" />
+
+
+        </RelativeLayout>
 
         <cn.timeface.circle.baby.views.HorizontalListView
             android:id="@+id/lv_horizontal"
@@ -46,6 +67,7 @@
         </cn.timeface.circle.baby.views.HorizontalListView>
 
         <cn.timeface.circle.baby.views.TFStateView
+            android:visibility="gone"
             android:id="@+id/tf_stateView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

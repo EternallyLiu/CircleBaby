@@ -22,6 +22,11 @@ public class GetCirclePhotoByUserObj extends BaseObj implements Parcelable {
     public GetCirclePhotoByUserObj() {
     }
 
+    public GetCirclePhotoByUserObj(List<MediaObj> mediaList, String date) {
+        this.mediaList = mediaList;
+        this.date = date;
+    }
+
     public GetCirclePhotoByUserObj(Parcel in) {
         super(in);
         mediaList = in.createTypedArrayList(MediaObj.CREATOR);

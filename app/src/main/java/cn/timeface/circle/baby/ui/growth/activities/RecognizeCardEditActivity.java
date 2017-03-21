@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.SelectPhotoActivity;
@@ -34,6 +35,7 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.Pinyin4jUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -51,6 +53,7 @@ public class RecognizeCardEditActivity extends CardPreviewActivity implements Vi
     long createTime;
     String py;
     ImgObj imgObj;
+    int count = 100;
 
     public static void open(Context context, CardObj cardObj){
         Intent intent = new Intent(context, RecognizeCardEditActivity.class);
@@ -181,10 +184,40 @@ public class RecognizeCardEditActivity extends CardPreviewActivity implements Vi
 
         Glide.with(this)
                 .load(knowledgeCardObj.getImageInfo().getYurl())
+                .asBitmap()
                 .placeholder(R.drawable.bg_default_holder_img)
                 .error(R.drawable.bg_default_holder_img)
                 .into(ivCard);
         rlCard.setOnClickListener(this);
+
+        Observable.interval(500, TimeUnit.MILLISECONDS)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .takeWhile(aLong -> count > 0)
+                .subscribe(
+                        aLong -> {
+                            if(ivCard.getDisplayRect().width() > 1 && ivCard.getDisplayRect().height() > 1){
+                                float scale = 1;
+                                if(knowledgeCardObj.getImageInfo().getImageH() >= knowledgeCardObj.getImageInfo().getImageW()){
+                                    scale = (float) ivCard.getHeight() / knowledgeCardObj.getImageInfo().getImageH();
+                                } else {
+                                    scale = (float) ivCard.getWidth() / knowledgeCardObj.getImageInfo().getImageW();
+                                }
+
+                                float displayW = knowledgeCardObj.getImageInfo().getImageW() * scale;
+                                float displayH = knowledgeCardObj.getImageInfo().getImageH() * scale;
+
+                                if(displayW >= displayH){
+                                    scale = ivCard.getHeight() / displayH;
+                                } else {
+                                    scale = ivCard.getWidth() / displayW;
+                                }
+                                ivCard.zoomTo(scale, knowledgeCardObj.getImageInfo().getImageW() * scale, knowledgeCardObj.getImageInfo().getImageH() * scale);
+                                count = 0;
+                                ivCard.setMinScale(scale);
+                                Log.e(TAG, String.valueOf(count));
+                            }
+                        }
+                );
     }
 
     @Override

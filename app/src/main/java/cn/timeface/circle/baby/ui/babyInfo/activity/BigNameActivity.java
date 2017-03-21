@@ -106,7 +106,7 @@ public class BigNameActivity extends BaseAppCompatActivity implements View.OnCli
                 if (baby > 0)
                     objectKey = s.substring(baby);
                 apiService.editBabyInfo(time, URLEncoder.encode(b), mBabyObj.getGender(), URLEncoder.encode(n),
-                        realName, mBabyObj.getShowRealName() + "", objectKey)
+                        URLEncoder.encode(realName), mBabyObj.getShowRealName() + "", objectKey)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(response -> {
                             if (response.success()) {

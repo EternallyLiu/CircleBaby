@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/size_12"
+    android:paddingBottom="@dimen/size_12"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/view_space_normal"
+    android:paddingRight="@dimen/view_space_normal">
+
+    <TextView
+        android:drawablePadding="@dimen/size_12"
+        android:drawableLeft="@drawable/ic_time_clock"
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Medium Text"
+        android:textColor="@color/gray_normal"
+        android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+
+    <CheckBox
+        android:id="@+id/cb_title_all_sel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:button="@drawable/selector_item_photo_select"
+        android:paddingLeft="@dimen/view_space_normal"
+        android:paddingRight="@dimen/view_space_normal"
+        android:text="全选"
+        android:textColor="@color/bg_color1" />
+</LinearLayout>

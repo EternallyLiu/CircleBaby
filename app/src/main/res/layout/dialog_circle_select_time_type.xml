@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_all_times"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_click_able"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="全部动态"
+        android:textColor="@color/text"
+        android:textSize="16sp" />
+
+    <include layout="@layout/horizontal_line_view" />
+
+    <TextView
+        android:id="@+id/tv_mine_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_click_able"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="我发布的动态"
+        android:textColor="@color/text"
+        android:textSize="16sp" />
+
+    <include layout="@layout/horizontal_line_view" />
+
+    <TextView
+        android:id="@+id/tv_about_baby_times"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_click_able"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="全部动态"
+        android:textColor="@color/text"
+        android:textSize="16sp" />
+
+</LinearLayout>

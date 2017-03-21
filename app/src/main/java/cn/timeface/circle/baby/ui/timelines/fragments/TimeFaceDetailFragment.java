@@ -231,19 +231,19 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
             layoutmanager.setSpanSizeLookup(lookup);
             contentRecyclerView.setLayoutManager(layoutmanager);
             contentRecyclerView.setAdapter(adapter);
+            contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    int firstVisibleItemPosition = layoutmanager.findFirstVisibleItemPosition();
+                    if (lookup.isShowSmail()) {
+                        if (firstVisibleItemPosition / lookup.getColumCount() > 1) {
+                            backUp.setVisibility(View.VISIBLE);
+                        } else backUp.setVisibility(View.GONE);
+                    } else
+                        backUp.setVisibility(firstVisibleItemPosition > 0 ? View.VISIBLE : View.GONE);
+                }
+            });
         }
-        contentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int firstVisibleItemPosition = layoutmanager.findFirstVisibleItemPosition();
-                if (lookup.isShowSmail()) {
-                    if (firstVisibleItemPosition / lookup.getColumCount() > 1) {
-                        backUp.setVisibility(View.VISIBLE);
-                    } else backUp.setVisibility(View.GONE);
-                } else
-                    backUp.setVisibility(firstVisibleItemPosition > 0 ? View.VISIBLE : View.GONE);
-            }
-        });
         ArrayList<Object> contentList = new ArrayList<>();
         contentList.addAll(currentTimeLineObj.getMediaList());
         if (!TextUtils.isEmpty(currentTimeLineObj.getContent()))
@@ -313,21 +313,18 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         view.setClickable(false);
         apiService.like(currentTimeLineObj.getTimeId(), (currentTimeLineObj.getLike() + 1) % 2)
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(baseResponse -> view.setClickable(true))
                 .subscribe(response -> {
                     if (response.success()) {
                         reqData();
                     }
-                    view.setClickable(true);
                 }, error -> {
-                    view.setClickable(true);
                     LogUtil.showError(error);
                 });
     }
 
     @Override
     public void loadfinish(int code) {
-        LogUtil.showLog("adapter size:" + adapter.getItemCount());
-        LogUtil.showLog("medias size:" + currentTimeLineObj.getMediaList().size());
     }
 
     @Override

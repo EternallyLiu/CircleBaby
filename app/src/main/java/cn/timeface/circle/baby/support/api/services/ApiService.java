@@ -76,15 +76,17 @@ import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
-import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
@@ -1178,7 +1180,7 @@ public interface ApiService {
      * 创建圈子
      *
      * @param circleName 圈名称
-     * @param openLever 0-私有圈 1-公有圈
+     * @param openLever  0-私有圈 1-公有圈
      * @return
      */
     @GET("babyCircle/create")
@@ -1338,6 +1340,7 @@ public interface ApiService {
 
     /**
      * 新增宝宝
+     *
      * @param circleId
      * @param babyName
      * @return
@@ -1349,6 +1352,7 @@ public interface ApiService {
 
     /**
      * 圈中某个宝宝
+     *
      * @param circleId
      * @param babyName
      * @param babyId
@@ -1364,6 +1368,7 @@ public interface ApiService {
 
     /**
      * 获取圈内的所有宝宝
+     *
      * @param circleId
      * @param hasAlone
      * @param mediaId
@@ -1377,6 +1382,7 @@ public interface ApiService {
 
     /**
      * 查询圈时光上次发布的活动相册
+     *
      * @param circleId
      * @return
      */
@@ -1386,6 +1392,7 @@ public interface ApiService {
 
     /**
      * 圈首页
+     *
      * @param circleId
      * @return
      */
@@ -1395,6 +1402,7 @@ public interface ApiService {
 
     /**
      * 圈时光发布
+     *
      * @param circleId
      * @param circleTimeline
      * @return
@@ -1406,6 +1414,7 @@ public interface ApiService {
 
     /**
      * 获取圈作业列表
+     *
      * @param circleId
      * @return
      */
@@ -1415,6 +1424,7 @@ public interface ApiService {
 
     /**
      * 老师布置作业详情列表
+     *
      * @param taskId
      * @param currentPage
      * @param pageSize
@@ -1428,6 +1438,7 @@ public interface ApiService {
 
     /**
      * 发布作业
+     *
      * @param circleId
      * @param schoolTask
      * @return
@@ -1439,6 +1450,7 @@ public interface ApiService {
 
     /**
      * 家长提交作业的详情
+     *
      * @param homeworkId
      * @return
      */
@@ -1448,6 +1460,7 @@ public interface ApiService {
 
     /**
      * 提交作业
+     *
      * @param taskId
      * @param homework
      * @return
@@ -1459,6 +1472,7 @@ public interface ApiService {
 
     /**
      * 同意教师认证
+     *
      * @param userId
      * @return
      */
@@ -1468,6 +1482,7 @@ public interface ApiService {
 
     /**
      * 需认证的教师列表
+     *
      * @param circleId
      * @return
      */
@@ -1477,6 +1492,7 @@ public interface ApiService {
 
     /**
      * 查询是否有新的教师认证消息
+     *
      * @param circleId
      * @return
      */
@@ -1486,6 +1502,7 @@ public interface ApiService {
 
     /**
      * 圈二维码详情
+     *
      * @param circleId
      * @return
      */
@@ -1495,6 +1512,7 @@ public interface ApiService {
 
     /**
      * 圈资料编辑
+     *
      * @param circleDetailInfo
      * @return
      */
@@ -1504,6 +1522,7 @@ public interface ApiService {
 
     /**
      * 发起/取消 某个成员的教师认证
+     *
      * @param certification
      * @param circleId
      * @param userId
@@ -1517,6 +1536,7 @@ public interface ApiService {
 
     /**
      * 圈成员列表
+     *
      * @param circleId
      * @return
      */
@@ -1526,6 +1546,7 @@ public interface ApiService {
 
     /**
      * 同意/拒绝 某人入圈
+     *
      * @param agree
      * @param circleId
      * @param userId
@@ -1539,6 +1560,7 @@ public interface ApiService {
 
     /**
      * 圈头像推荐图片
+     *
      * @return
      */
     @GET("circle/getDefaultCover")
@@ -1546,6 +1568,7 @@ public interface ApiService {
 
     /**
      * 修改圈成员昵称
+     *
      * @param nickName
      * @param circleId
      * @param userId
@@ -1579,6 +1602,7 @@ public interface ApiService {
 
     /**
      * 查询上一次发布圈动态的相册
+     *
      * @param circleId
      * @return
      */
@@ -1587,6 +1611,7 @@ public interface ApiService {
 
     /**
      * 发送圈动态
+     *
      * @param circleId
      * @param circleTimeline
      * @return
@@ -1599,6 +1624,7 @@ public interface ApiService {
 
     /**
      * 圈中/取消宝宝
+     *
      * @param babyIds
      * @param cancleCircleId
      * @param circleId
@@ -1611,4 +1637,66 @@ public interface ApiService {
                                           @Query("circleId") long circleId,
                                           @Query("mediaId") long mediaId);
 
+    /**
+     * 按某种条件查询时光列表
+     * @param circleId 圈号
+     * @param type 1-全部 2-按我发布的 3-按@我宝宝的
+     * @return
+     */
+    @GET("circleBook/queryDynamicList")
+    Observable<CircleTimeLinesResponse> queryCircleTimeLines(
+            @Query("circleId") String circleId,
+            @Query("type") int type);
+
+    /**
+     * 接口详情 (id: 7759) 复制URL
+     * 接口名称 圈成员列表
+     * 请求类型 get
+     * 请求Url  /circle/memberList
+     */
+    @POST("circle/memberList")
+    Observable<MemberListResponse> memberList(@Query("circleId") long circleId);
+
+    /**
+     * 接口详情 (id: 7760) 复制URL
+     * 接口名称 同意/拒绝 某人入圈
+     * 请求类型 get
+     * 请求Url  /circle/joinCircleCheck
+     */
+    @POST("circle/joinCircleCheck")
+    Observable<BaseResponse> joinCircleCheck(@Query("agree") long agree,
+                                             @Query("circleId") long circleId,
+                                             @Query("userId") long userId);
+
+    /**
+     * 接口详情 (id: 7758) 复制URL
+     * 接口名称 发起/取消 某个成员的教师认证
+     * 请求类型 get
+     * 请求Url  /teacherAuth/start
+     */
+    @POST("teacherAuth/start")
+    Observable<BaseResponse> start(@Query("certification") long certification,
+                                   @Query("circleId") long circleId,
+                                   @Query("userId") long userId);
+
+    /**
+     * 接口详情 (id: 7757) 复制URL
+     * 接口名称 移除某个成员
+     * 请求类型 post
+     * 请求Url  /circle/removeMember
+     */
+    @POST("circle/removeMember")
+    Observable<BaseResponse> removeMember(@Query("circleId") long circleId,
+                                          @Query("userId") long userId);
+
+    /**
+     * 接口详情 (id: 7763) 复制URL
+     * 接口名称 修改圈成员昵称
+     * 请求类型 get
+     * 请求Url  /circle/updateNickname
+     */
+    @POST("circle/updateNickname")
+    Observable<BaseResponse> updateNickname(@Query("circleId") long circleId,
+                                            @Query("nickName") String nickName,
+                                            @Query("userId") long userId);
 }

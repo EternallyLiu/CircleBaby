@@ -37,6 +37,7 @@ public class CalendarExtendObj extends TFOBookModel {
         setTemplateId(tfoBookModel.getTemplateId());
         setBookTypeScale(tfoBookModel.getBookTypeScale());
         setContentList(tfoBookModel.getContentList());
+        setPodType(tfoBookModel.getPodType());
     }
 
     private void initValue(TFOBookModel newModel) {
@@ -58,6 +59,7 @@ public class CalendarExtendObj extends TFOBookModel {
         newModel.setTemplateId(getTemplateId());
         newModel.setBookTypeScale(getBookTypeScale());
         newModel.setContentList(new LinkedList<>());
+        newModel.setPodType(getPodType());
 
     }
 
