@@ -439,6 +439,8 @@
             android:name=".ui.growth.activities.CardPreviewActivity"
             android:label="@string/title_activity_card_preview"
             android:theme="@style/AppTheme" />
+
+        <service android:name=".LoadMediaService" />
         <activity
             android:name=".ui.growthcircle.mainpage.activity.CreateCircleActivity"
             android:label="@string/create_growth_circle"
@@ -519,6 +521,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/TimeFaceTheme.DayNight" />
         <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
+            android:theme="@style/TimeFaceTheme.DayNight"/>
+
+        <activity android:name=".ui.circle.timelines.activity.PublishActivity"/>
+        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity"/>
+        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity"/>
+
+            android:theme="@style/TimeFaceTheme.DayNight" />
+        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
         <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
         <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
         <activity
@@ -530,6 +540,7 @@
             android:label="@string/add_active"
             android:theme="@style/AppTheme" />
 
+        <service android:name=".ui.timelines.services.UploadVideoService" />
         <activity
             android:name=".ui.circle.photo.activities.InputPcActivity"
             android:label="@string/input_pc"
@@ -563,6 +574,11 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <activity
+            android:name=".ui.circle.activities.CircleSelectServerTimesActivity"
+            android:label="@string/title_activity_circle_select_server_times"
+            android:theme="@style/AppTheme"></activity>
 
         <activity android:name=".ui.circle.groupmembers.activity.GroupMembersActivity" />
         <activity android:name=".ui.circle.groupmembers.activity.InviteActivity" />

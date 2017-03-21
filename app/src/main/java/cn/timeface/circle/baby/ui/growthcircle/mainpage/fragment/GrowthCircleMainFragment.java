@@ -37,6 +37,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
@@ -234,6 +235,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
 
     private void setupListData(List<CircleTimelineObj> dataList) {
         LogUtil.showLog("size===" + dataList.size());
+        LogUtil.showLog("circle_timeLine", JSONUtils.parse2JSONString(dataList));
         if (currentPage <= 1)
             adapter.addList(true, dataList);
         else adapter.addList(dataList);

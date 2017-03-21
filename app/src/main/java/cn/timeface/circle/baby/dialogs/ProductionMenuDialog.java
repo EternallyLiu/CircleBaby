@@ -1,8 +1,6 @@
 package cn.timeface.circle.baby.dialogs;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -15,16 +13,15 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.SelectThemeActivity;
-import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 import cn.timeface.circle.baby.support.api.models.objs.ImageInfoListObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.services.ApiService;
@@ -45,20 +42,14 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
     TextView tvDelete;
 
     ApiService apiService = ApiFactory.getApi().getApiService();
-    String bookId;
-    String openBookId;
-    int bookType;
+    BookObj bookObj;
     boolean changeTheme;
-    int babyId;
 
-    public static ProductionMenuDialog newInstance(int bookType, String bookId, boolean changeTheme, String openBookId, int babyId) {
+    public static ProductionMenuDialog newInstance(BookObj bookObj, boolean changeTheme) {
         ProductionMenuDialog productionMenuDialog = new ProductionMenuDialog();
         Bundle bundle = new Bundle();
-        bundle.putInt("book_type", bookType);
-        bundle.putString("book_id", bookId);
+        bundle.putParcelable("book_obj", bookObj);
         bundle.putBoolean("change_theme", changeTheme);
-        bundle.putString("open_book_id", openBookId);
-        bundle.putInt("baby_id", babyId);
         productionMenuDialog.setArguments(bundle);
         return productionMenuDialog;
     }
@@ -81,11 +72,8 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
         View view = inflater.inflate(R.layout.dialog_production_menu, container, false);
         ButterKnife.bind(this, view);
 
-        bookId = getArguments().getString("book_id");
-        openBookId = getArguments().getString("open_book_id");
-        bookType = getArguments().getInt("book_type");
+        bookObj = getArguments().getParcelable("book_obj");
         changeTheme = getArguments().getBoolean("change_theme");
-        babyId = getArguments().getInt("baby_id");
         tvChangeTheme.setOnClickListener(this);
         tvDelete.setOnClickListener(this);
         tvChangeTheme.setVisibility(changeTheme ? View.VISIBLE : View.GONE);
@@ -115,11 +103,14 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
                                     mediaObj.setTimeId(timeId);
                                 }
                             }
-                            //照片书，进入选择主题界面
-//                            Intent intent = new Intent(getActivity(), SelectThemeActivity.class);
-//                            intent.putParcelableArrayListExtra("dataList", (ArrayList<? extends Parcelable>) dataList);
-//                            startActivity(intent);
-                            SelectThemeActivity.open(getActivity(), bookId, openBookId, babyId);
+
+                            SelectThemeActivity.open(
+                                    getActivity(),
+                                    String.valueOf(bookObj.getBookId()),
+                                    String.valueOf(bookObj.getOpenBookId()),
+                                    bookObj.getBaby().getBabyId(),
+                                    bookObj.getAuthor().getNickName(),
+                                    bookObj.getBookName());
                         } else {
                             ToastUtil.showToast(response.getInfo());
                         }
@@ -130,18 +121,16 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
         //删除
         } else if (view.getId() == R.id.tv_delete) {
             ((BasePresenterAppCompatActivity) getActivity()).addSubscription(
-                    apiService.deleteBook(bookId)
+                    apiService.deleteBook(String.valueOf(bookObj.getBookId()))
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .doOnUnsubscribe(()->dismiss())
                             .subscribe(response -> {
                                 if (response.success()) {
-                                    EventBus.getDefault().post(new BookOptionEvent(BookOptionEvent.BOOK_OPTION_DELETE, bookType, bookId));
+                                    EventBus.getDefault().post(new BookOptionEvent(BookOptionEvent.BOOK_OPTION_DELETE, bookObj.getBookType(), String.valueOf(bookObj.getBookId())));
                                 } else {
                                     ToastUtil.showToast(response.getInfo());
                                 }
-                            }, error -> {
-                                Log.e(ProductionMenuDialog.class.getSimpleName(), "deleteBook:");
-                            })
+                            }, error -> Log.e(ProductionMenuDialog.class.getSimpleName(), "deleteBook:"))
             );
         }
     }

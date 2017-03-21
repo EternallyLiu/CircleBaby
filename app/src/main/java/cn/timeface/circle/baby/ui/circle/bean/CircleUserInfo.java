@@ -106,6 +106,19 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CircleUserInfo that = (CircleUserInfo) o;
+
+        if (getCircleUserId() > 0 && getCircleUserId() == that.getCircleUserId()) return true;
+
+        return false;
+    }
+
+
+    @Override
     public int describeContents() {
         return 0;
     }

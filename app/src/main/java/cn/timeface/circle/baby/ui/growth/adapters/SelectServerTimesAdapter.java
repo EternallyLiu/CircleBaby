@@ -95,7 +95,11 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
                 }
             }
         } else {
-            selTimeLines.clear();
+            List<TimeLineObj> timeLineObjList = getTimeLines();
+            for(TimeLineObj timeLineObj : timeLineObjList){
+                selMedias.removeAll(timeLineObj.getMediaList());
+                selTimeLines.remove(timeLineObj);
+            }
         }
 
         for (int i = 0; i < size; i++) {
@@ -205,6 +209,9 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
 
     public boolean isAllSelect(){
         List<TimeLineObj> timeLineObjList = getTimeLines();
+        if(selTimeLines.size() >= timeLineObjList.size()){
+            return true;
+        }
         return timeLineObjList.containsAll(selTimeLines)
                 && selTimeLines.containsAll(timeLineObjList);
     }
@@ -313,7 +320,6 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
             }
 //            EventBus.getDefault().post(new PhotoSelectCountEvent(selTimeLines.size()));
             EventBus.getDefault().post(new TimeSelectCountEvent(selTimeLines.size()));
-            EventBus.getDefault().post(new SelectTimeLineEvent(((CheckBox) v).isChecked(), img));
         }
     };
 
@@ -341,11 +347,15 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         if(!selMedias.containsAll(img.getMediaList())){
             selMedias.addAll(img.getMediaList());
         }
+        EventBus.getDefault().post(new SelectTimeLineEvent(true, img));
     }
 
     public void doAllSelImg(){
-        selTimeLines.clear();
-        selMedias.clear();
+        List<TimeLineObj> timeLineObjList = getTimeLines();
+        for(TimeLineObj timeLineObj : timeLineObjList){
+            selMedias.removeAll(timeLineObj.getMediaList());
+            selTimeLines.remove(timeLineObj);
+        }
         for(TimeLineWrapObj timeLineWrapObj : listData){
             selTimeLines.addAll(timeLineWrapObj.getTimelineList());
             for(TimeLineObj timeLineObj : timeLineWrapObj.getTimelineList()){
@@ -357,8 +367,11 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
     }
 
     public void doAllUnSelImg(){
-        selTimeLines.clear();
-        selMedias.clear();
+        List<TimeLineObj> timeLineObjList = getTimeLines();
+        for(TimeLineObj timeLineObj : timeLineObjList){
+            selMedias.removeAll(timeLineObj.getMediaList());
+            selTimeLines.remove(timeLineObj);
+        }
         setupData(false);
         notifyDataSetChanged();
     }
@@ -382,6 +395,7 @@ public class SelectServerTimesAdapter extends BaseRecyclerAdapter<TimeLineWrapOb
         if(selMedias.containsAll(img.getMediaList())){
             selMedias.removeAll(img.getMediaList());
         }
+        EventBus.getDefault().post(new SelectTimeLineEvent(false, img));
     }
 
     public List<TimeLineObj> getSelImgs() {

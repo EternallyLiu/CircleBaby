@@ -615,7 +615,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
             if (elementsMap.get(contentId).containsKey(elementId)) {
 
                 TFOBookElementModel elementModel = elementsMap.get(contentId).get(elementId);
-                elementModel.setElementDeleted(visibility);
+                elementModel.setElementDeleted(!visibility);
                 return elementModel;
             }
         }
@@ -629,7 +629,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
      * @param contentId   content id
      * @param observables list
      */
-    private void changeFrontList(String month, String contentId,
+    private void   changeFrontList(String month, String contentId,
                                  List<Observable<TFOBaseResponse<EditText>>> observables) {
 
         CommemorationDataManger manager = CommemorationDataManger.getInstance();

@@ -1,6 +1,8 @@
 package cn.timeface.circle.baby.ui.circle.timelines.adapter;
 
 import android.content.Context;
+import android.os.Message;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import cn.timeface.circle.baby.App;
@@ -18,6 +21,7 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseViewHolder;
@@ -53,6 +57,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LogUtil.showLog("onCreateViewHolder==" + viewType);
         if (viewType == 1) {
             return super.onCreateViewHolder(parent, viewType);
         } else if (viewType < VIEW_TYPE_FOOTER) {
@@ -65,7 +70,13 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     }
 
     @Override
+    public <T> T getItem(int position) {
+        return super.getItem(position - mHeadView.size());
+    }
+
+    @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
+        LogUtil.showLog("onBindViewHolder==" + position);
         if (position < mHeadView.size()) {
 
         } else if (position < (mHeadView.size() + getRealItemSize())) {
@@ -123,6 +134,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
 
     @Override
     public int getViewType(int position) {
+        LogUtil.showLog("getviewType==" + position);
         if (position >= 0 && position < mHeadView.size()) {
             return VIEW_TYPE_HEADER + position;
         } else if (position >= 0 && position >= mHeadView.size() + getRealItemSize()) {
@@ -177,11 +189,13 @@ public class CircleTimeLineAdapter extends BaseAdapter {
         view.setLayoutParams(itemParams);
         imageView.setTag(R.id.recycler_item_click_tag, index);
         imageView.setOnClickListener(this);
-        GlideUtil.displayImage(mediaObj.getLocalPath(), imageView);
+        GlideUtil.displayImage(TextUtils.isEmpty(mediaObj.getLocalPath()) ? mediaObj.getImgUrl() :
+                mediaObj.getLocalPath(), imageView);
         return view;
     }
 
     private int doGrid(LinearLayout gv, List<CircleMediaObj> list) {
+        LogUtil.showLog("media size==" + list.size());
         gv.setVisibility(View.GONE);
         if (gv.getChildCount() > 0)
             gv.removeAllViews();
@@ -253,13 +267,67 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     @Override
     public void initView(View contentView, int position) {
 
+        LogUtil.showLog("position====" + position);
         if (position < mHeadView.size()) {
 
         } else if (position < (mHeadView.size() + getRealItemSize())) {
-            doTimeLine(contentView, position - mHeadView.size(), getItem(position - mHeadView.size()));
+            doTimeLine(contentView, position - mHeadView.size(), getItem(position));
         } else {
         }
 
+    }
+
+    public void clearFooter() {
+        if (mFooter != null && mFooter.size() > 0) {
+            mFooter.clear();
+            notifyDataSetChanged();
+        }
+
+    }
+
+    @Override
+    protected void handleMsg(Message msg) {
+        clearFooter();
+        switch (msg.what) {
+            case DELETE_ALL:
+                if (list != null && list.size() > 0) {
+                    list.clear();
+                    notifyDataSetChanged();
+                }
+                break;
+            case UPDATE_DATA_ADD_LIST_CENTER:
+                if (msg.obj != null) {
+                    if (msg.arg1 >= 0 && msg.arg1 <= getRealItemSize() && msg.arg2 > 0) {
+                        if (msg.arg2 == 1) list.add(msg.arg1, msg.obj);
+                        else list.addAll(msg.arg1, (Collection<Object>) msg.obj);
+                        notifyItemRangeInserted(msg.arg1 + mHeadView.size(), msg.arg2);
+                        if (msg.arg1 + mHeadView.size() < getItemCount())
+                            notifyItemRangeChanged(msg.arg1 + mHeadView.size(), getItemCount() - msg.arg1 - mHeadView.size());
+                    }
+                }
+                break;
+            case UPDATE_DATA_DELETE_DATA:
+                if (msg.arg1 >= 0 && msg.arg1 < getRealItemSize()) {
+                    for (int i = 0; i < msg.arg2; i++) {
+                        list.remove(msg.arg1);
+                        notifyItemRemoved(msg.arg1 + mHeadView.size());
+                    }
+                }
+                if (msg.arg1 + mHeadView.size() < getItemCount())
+                    notifyItemRangeChanged(msg.arg1 + mHeadView.size(), getItemCount() - msg.arg1 - mHeadView.size());
+                break;
+            case UPDATE_DATA_UPDATE_DATA:
+                if (msg.obj != null) {
+                    list.remove(msg.arg1);
+                    list.add(msg.arg1, msg.obj);
+                }
+                notifyItemChanged(msg.arg1 + mHeadView.size());
+//                if (msg.arg1 != getRealItemSize())
+//                    notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
+                break;
+        }
+        if (getLoadDataFinish() != null)
+            getLoadDataFinish().loadfinish(msg.what);
     }
 
     public boolean isHasWork() {
