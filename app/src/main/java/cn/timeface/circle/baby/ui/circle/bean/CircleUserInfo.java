@@ -101,6 +101,10 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         this.circleUserType = circleUserType;
     }
 
+    public boolean isTeacher() {
+        return circleUserType == 2;
+    }
+
     @Override
     public int describeContents() {
         return 0;

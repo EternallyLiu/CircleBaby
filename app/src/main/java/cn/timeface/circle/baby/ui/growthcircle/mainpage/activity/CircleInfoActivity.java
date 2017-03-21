@@ -21,6 +21,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.network.NetworkError;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
@@ -127,6 +128,8 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
         tvCircleNumber.setText(circleObj.getCircleNumber());
         tvCirclePhotoCount.setText(circleObj.getMediaCount() + "张");
         tvCircleProductCount.setText(circleObj.getWorkCount() + "本");
+
+        GlideUtil.displayImage(circleObj.getCircleCoverUrl(), ivCircleCover);
     }
 
     private void setupDetailData(GrowthCircleDetailObj circleDetailObj) {
@@ -198,12 +201,11 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
                 .subscribe(
                         response -> {
                             dismissProgressDialog();
+                            Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
                             if (response.success()) {
                                 EventBus.getDefault().post(new CircleJoinedEvent());
                                 showProgressDialog();
                                 reqData(circleObj.getCircleId());
-                            } else {
-                                Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
                             }
                         },
                         throwable -> {

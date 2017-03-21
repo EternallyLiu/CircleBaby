@@ -171,7 +171,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
         this.circleObj = circleObj;
         tvCircleName.setText(circleObj.getCircleName());
         Glide.with(getContext())
-                .load(circleObj.getCicleCoverUrl())
+                .load(circleObj.getCircleCoverUrl())
                 .centerCrop()
                 .into(ivCircleCover);
     }
@@ -247,8 +247,8 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
                     // 切换为圈列表
 //                    GrowthCircleObj.getInstance().delete();
 //                    GrowthCircleObj.refreshInstance();
-                    FastData.setCircleId(0);
-                    ((TabMainActivity) getActivity()).switchCircleFragment();
+//                    FastData.setCircleId(0);
+                    ((TabMainActivity) getActivity()).showCircleListFragment();
                 } else {
                     getActivity().onBackPressed();
                 }

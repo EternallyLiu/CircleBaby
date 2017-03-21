@@ -14,6 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleInfoActivity;
@@ -57,6 +58,9 @@ public class CircleMoreDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_circle_more, container, false);
         ButterKnife.bind(this, view);
+
+        tvPublishHomework.setVisibility(FastData.getCircleUserInfo().isTeacher() ?
+                View.VISIBLE : View.GONE);
         return view;
     }
 
