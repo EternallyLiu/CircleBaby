@@ -1644,4 +1644,15 @@ public interface ApiService {
      */
     @POST("circle/memberList")
     Observable<MemberListResponse> memberList(@Query("circleId") long circleId);
+
+    /**
+     * 接口详情 (id: 7760) 复制URL
+     接口名称 同意/拒绝 某人入圈
+     请求类型 get
+     请求Url  /circle/joinCircleCheck
+     */
+    @POST("circle/joinCircleCheck")
+    Observable<BaseResponse> joinCircleCheck(@Query("agree") long agree,
+                                                   @Query("circleId") long circleId,
+                                                   @Query("userId") long userId);
 }

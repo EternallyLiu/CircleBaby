@@ -12,9 +12,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Subscription;
+import rx.functions.Action1;
 
 public class CheckMemberDetailActivity extends BaseAppCompatActivity {
 
@@ -94,13 +99,37 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
         } else if (circleUserTypeSelf == 1 && circleUserType == 5) {
             title.setText("入圈申请");
             tvBtnUp.setText("同意加入");
+
             tvBtnDown.setText("拒绝加入");
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnUp.setOnClickListener(v -> joinCheck(1));
+            tvBtnDown.setOnClickListener(v -> joinCheck(0));
+
         }else {
             title.setText("我的圈资料");
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.GONE);
         }
     }
+
+    private void joinCheck(int type){
+        Subscription subscribe = apiService.joinCircleCheck(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(new Action1<BaseResponse>() {
+                    @Override
+                    public void call(BaseResponse baseResponse) {
+                        if (baseResponse.success()) {
+                            ToastUtil.showToast(CheckMemberDetailActivity.this,"操作成功");
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        addSubscription(subscribe);
+    }
+
 }
