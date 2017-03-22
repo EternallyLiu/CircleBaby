@@ -1,5 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.groupmembers.adapter;
 
+import android.view.View;
+
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -65,7 +67,9 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
                 Glide.with(mContext)
                         .load(R.drawable.ic_add_member)
                         .into(view);
+                viewChild.setVisibility(View.GONE);
             } else {
+                viewChild.setVisibility(View.VISIBLE);
                 if (menemberInfo.getCircleUserInfo() != null) {
                     Glide.with(mContext)
                             .load(menemberInfo.getCircleUserInfo().getCircleAvatarUrl())

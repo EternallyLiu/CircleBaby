@@ -1,10 +1,13 @@
 package cn.timeface.circle.baby.ui.circle.groupmembers.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by wangwei on 2017/3/20.
  */
 
-public class MenemberInfo {
+public class MenemberInfo implements Parcelable {
     /**
      * babyAvatarUrl	该用户关联的宝宝头像	string
      * babyName	关联的宝宝姓名	string
@@ -63,4 +66,38 @@ public class MenemberInfo {
     public void setCircleUserInfo(cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo circleUserInfo) {
         userInfo = circleUserInfo;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.babyAvatarUrl);
+        dest.writeString(this.babyName);
+        dest.writeString(this.leaveMessage);
+        dest.writeInt(this.babyId);
+        dest.writeParcelable(this.userInfo, flags);
+    }
+
+    protected MenemberInfo(Parcel in) {
+        this.babyAvatarUrl = in.readString();
+        this.babyName = in.readString();
+        this.leaveMessage = in.readString();
+        this.babyId = in.readInt();
+        this.userInfo = in.readParcelable(CircleUserInfo.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<MenemberInfo> CREATOR = new Parcelable.Creator<MenemberInfo>() {
+        @Override
+        public MenemberInfo createFromParcel(Parcel source) {
+            return new MenemberInfo(source);
+        }
+
+        @Override
+        public MenemberInfo[] newArray(int size) {
+            return new MenemberInfo[size];
+        }
+    };
 }

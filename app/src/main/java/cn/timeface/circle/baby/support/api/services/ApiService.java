@@ -76,7 +76,9 @@ import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
+import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
@@ -87,6 +89,7 @@ import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
@@ -1641,9 +1644,8 @@ public interface ApiService {
 
     /**
      * 按某种条件查询时光列表
-     *
      * @param circleId 圈号
-     * @param type     1-全部 2-按我发布的 3-按@我宝宝的
+     * @param type 1-全部 2-按我发布的 3-按@我宝宝的
      * @return
      */
     @GET("circleBook/queryDynamicList")
@@ -1705,7 +1707,6 @@ public interface ApiService {
 
     /**
      * 删除圈动态
-     *
      * @param circleTimelineId
      * @return
      */
@@ -1721,6 +1722,15 @@ public interface ApiService {
     @POST("dynamic/detail")
     Observable<CircleTimeLineDetailResponse> queryCircleTimeLineDetail(@Query("circleTimelineId") long circleTimelineId);
 
+    /**
+     * 接口详情 (id: 7762) 复制URL
+     接口名称 成员近期发布的照片
+     请求类型 get
+     请求Url  /circle/getNewestPic
+     */
+    @POST("circle/getNewestPic")
+    Observable<MediasResponse> getNewestPic(@Query("circleId") long circleId,
+                                            @Query("userId") long userId);
 
     /**
      * 编辑圈动态

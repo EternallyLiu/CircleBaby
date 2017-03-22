@@ -11,10 +11,10 @@
 
     <RelativeLayout
         android:id="@+id/ll_root"
-        android:layout_width="120dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:clickable="true"
         android:gravity="center"
         android:orientation="vertical">
@@ -22,12 +22,12 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_content_img"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
             android:layout_toLeftOf="@+id/iv_frist"
-            android:src="@drawable/ic_launcher" />
+            android:scaleType="centerCrop"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_child_img"
@@ -36,8 +36,8 @@
             android:layout_alignParentRight="true"
             android:layout_gravity="center"
             android:layout_marginRight="5dp"
-            android:layout_marginTop="60dp"
-            android:src="@drawable/ic_launcher" />
+            android:layout_marginTop="40dp"
+            android:scaleType="centerCrop" />
     </RelativeLayout>
 
     <TextView
@@ -47,7 +47,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:textColor="@color/text"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_small"
         tools:text="美术小李老师" />
 
     <TextView
@@ -57,30 +57,91 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:textColor="@color/text_color2"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_small"
         tools:text="关联宝贝：陈一辰" />
+
+    <TextView
+        android:id="@+id/tv_want_reason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:textSize="@dimen/text_small"
+        android:textColor="@color/black"
+        android:text="申请留言:我是陈一辰的妈妈"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_btn_up"
         android:layout_width="200dp"
-        android:layout_height="40dp"
+        android:layout_height="30dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/selector_btn_primary"
         android:gravity="center"
         android:textColor="@color/bg_color1"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone"
         tools:text="移除成员" />
 
     <TextView
         android:id="@+id/tv_btn_down"
         android:layout_width="200dp"
-        android:layout_height="40dp"
+        android:layout_height="30dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/selector_btn_primary"
         android:gravity="center"
         android:textColor="@color/bg_color1"
-        android:textSize="@dimen/text_medium"
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone"
         tools:text="移除成员" />
+
+    <RelativeLayout
+        android:id="@+id/rv_close_circle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_close_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="近期照片"
+            android:textSize="@dimen/text_normal" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rc_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:layout_below="@id/tv_close_circle"/>
+
+        <ImageView
+            android:id="@+id/iv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_empty_stateview"
+            android:layout_marginTop="30dp"
+            android:visibility="gone"
+            android:layout_below="@id/tv_close_circle"/>
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_empty"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            android:textSize="@dimen/text_small"
+            android:layout_marginTop="20dp"
+            android:text="sorry,他最近没有发布照片！"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

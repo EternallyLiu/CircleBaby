@@ -20,9 +20,9 @@ public class CirclePhotoMonthObj extends BaseObj implements Parcelable {
     public CirclePhotoMonthObj() {
     }
 
-    public CirclePhotoMonthObj(int mediaCount, String month) {
+    public CirclePhotoMonthObj(int mediaCount, String year) {
         this.mediaCount = mediaCount;
-        this.month = month;
+        this.year = year;
     }
 
     public CirclePhotoMonthObj(int mediaCount, String mediaUrl, String month) {

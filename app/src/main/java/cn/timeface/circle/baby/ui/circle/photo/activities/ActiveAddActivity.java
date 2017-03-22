@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +16,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 
 /**
  * 添加圈活动相册
@@ -34,6 +37,7 @@ public class ActiveAddActivity extends BasePresenterAppCompatActivity implements
     EditText etActiveName;
     @Bind(R.id.btn_ok)
     Button btnOk;
+    private long circleId;
 
     public static void open(Context context, long circleId) {
         Intent intent = new Intent(context, ActiveAddActivity.class);
@@ -48,6 +52,7 @@ public class ActiveAddActivity extends BasePresenterAppCompatActivity implements
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        circleId = getIntent().getLongExtra("circle_id",0);
         btnOk.setOnClickListener(this);
 
     }
@@ -64,8 +69,19 @@ public class ActiveAddActivity extends BasePresenterAppCompatActivity implements
             showToast("活动相册为1~8个汉字");
             return;
         }
-
-
-        showToast("确定");
+        apiService.createActive(name, circleId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            if (response.success()) {
+                                finish();
+                            } else {
+                                ToastUtil.showToast(response.getInfo());
+                            }
+                        },
+                        throwable -> {
+                            Log.e(TAG, throwable.getLocalizedMessage());
+                        }
+                );
     }
 }
