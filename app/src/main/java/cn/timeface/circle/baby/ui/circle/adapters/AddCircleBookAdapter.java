@@ -47,8 +47,10 @@ public class AddCircleBookAdapter extends BaseRecyclerAdapter<CircleBookTypeObj>
         Glide.with(mContext)
                 .load(obj.getIconUrl())
                 .into(holder.ivBookCover);
-//        holder.llRoot.setTag(R.string.tag_obj, obj);
-//        if (clickListener != null) holder.llRoot.setOnClickListener(clickListener);
+        holder.tvCreat.setTag(R.string.tag_obj, obj);
+        holder.tvDetail.setTag(R.string.tag_obj, obj);
+        if (clickListener != null) holder.tvCreat.setOnClickListener(clickListener);
+        if (clickListener != null) holder.tvDetail.setOnClickListener(clickListener);
     }
 
     @Override
