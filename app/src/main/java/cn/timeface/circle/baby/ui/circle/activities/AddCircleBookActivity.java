@@ -8,36 +8,24 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.circle.adapters.AddCircleBookAdapter;
 import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
-import cn.timeface.circle.baby.ui.circle.timelines.activity.CreateActiveActivity;
-import cn.timeface.circle.baby.ui.circle.timelines.adapter.ActiveSelectAdapter;
-import cn.timeface.circle.baby.ui.circle.timelines.events.ActiveSelectEvent;
-import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
-import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
-import cn.timeface.circle.baby.views.DividerItemDecoration;
 
 /**
- * 添加圈时光书
+ * 添加圈作品
  * Created by lidonglin on 2017/3/22.
  */
-public class AddCircleBookActivity extends BaseAppCompatActivity {
+public class AddCircleBookActivity extends BaseAppCompatActivity implements View.OnClickListener {
 
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
@@ -46,8 +34,8 @@ public class AddCircleBookActivity extends BaseAppCompatActivity {
     @Bind(R.id.appbar_layout)
     AppBarLayout appbarLayout;
 
-    private ActiveSelectAdapter adapter = null;
     private LinearLayoutManager layoutManager;
+    private AddCircleBookAdapter addCircleBookAdapter;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, AddCircleBookActivity.class));
@@ -82,12 +70,32 @@ public class AddCircleBookActivity extends BaseAppCompatActivity {
     }
 
     private void setData(List<CircleBookTypeObj> dataList) {
-
+        if (addCircleBookAdapter == null) {
+            contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            addCircleBookAdapter = new AddCircleBookAdapter(this, dataList, this);
+            contentRecyclerView.setAdapter(addCircleBookAdapter);
+        } else {
+            addCircleBookAdapter.setListData(dataList);
+            addCircleBookAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View view) {
+        CircleBookTypeObj typeObj = (CircleBookTypeObj) view.getTag(R.string.tag_obj);
+        switch (view.getId()){
+            case R.id.tv_creat:
+
+                break;
+            case R.id.tv_detail:
+
+                break;
+        }
     }
 }
