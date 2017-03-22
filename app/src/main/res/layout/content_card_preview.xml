@@ -56,7 +56,7 @@
                 app:heightRatio="10"
                 app:widthRatio="10">
 
-                <uk.co.senab.photoview.PhotoView
+                <cn.timeface.circle.baby.views.widget.photoview.PhotoView
                     android:id="@+id/iv_card"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

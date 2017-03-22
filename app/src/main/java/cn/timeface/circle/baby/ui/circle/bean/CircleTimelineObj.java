@@ -5,7 +5,13 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
  * 圈时光对象
@@ -96,6 +102,8 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     }
 
     public List<CircleCommentObj> getCommmentList() {
+
+        if (commmentList == null) commmentList = new ArrayList<>(0);
         return commmentList;
     }
 
@@ -112,6 +120,7 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     }
 
     public List<CircleUserInfo> getLikeList() {
+        if (likeList == null) likeList = new ArrayList<>(0);
         return likeList;
     }
 
@@ -149,5 +158,19 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
 
     public void setLike(int like) {
         this.like = like;
+    }
+
+    public TFOContentObj toTFOContentObj() {
+        TFOContentObj tfoContentObj = new TFOContentObj(DateUtil.formatDate("yyyy-MM-dd hh:kk:mm", getRecordDate()), toTFOResourceObjs());
+        tfoContentObj.setContent(getContent());
+        return tfoContentObj;
+    }
+
+    public List<TFOResourceObj> toTFOResourceObjs() {
+        List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+        for (MediaObj mediaObj : getMediaList()) {
+            tfoResourceObjs.add(mediaObj.toTFOResourceObj());
+        }
+        return tfoResourceObjs;
     }
 }

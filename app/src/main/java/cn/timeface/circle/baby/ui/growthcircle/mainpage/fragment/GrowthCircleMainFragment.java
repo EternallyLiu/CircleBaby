@@ -35,13 +35,16 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
 
-public class GrowthCircleMainFragment extends BaseFragment implements IEventBus {
+public class GrowthCircleMainFragment extends BaseFragment implements IEventBus, BaseAdapter.LoadDataFinish {
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -92,6 +95,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
 
     private void setupPTR() {
         adapter = new CircleTimeLineAdapter(getActivity());
+        adapter.setLoadDataFinish(this);
         recyclerView.setAdapter(adapter);
         IPTRRecyclerListener ptrListener = new IPTRRecyclerListener() {
             @Override
@@ -234,6 +238,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
 
     private void setupListData(List<CircleTimelineObj> dataList) {
         LogUtil.showLog("size===" + dataList.size());
+        LogUtil.showLog("circle_timeLine", JSONUtils.parse2JSONString(dataList));
         if (currentPage <= 1)
             adapter.addList(true, dataList);
         else adapter.addList(dataList);
@@ -257,7 +262,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
                 showMoreDialog();
                 break;
             case R.id.iv_publish:
-
+                PublishActivity.open(getActivity());
                 break;
         }
     }
@@ -279,4 +284,11 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
 
     }
 
+    @Override
+    public void loadfinish(int code) {
+        if (adapter.getRealItemSize() <= 0 && footerView != null) {
+            tfStateView.empty(R.string.circle_no_dynamic);
+            adapter.addFooter(footerView);
+        }
+    }
 }

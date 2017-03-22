@@ -38,7 +38,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.File;
 import java.net.URLEncoder;
 import java.util.Calendar;
-import java.util.Observable;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

@@ -155,7 +155,10 @@ public class ServerTimeFragment extends BasePresenterFragment implements View.On
         }
         llEmpty.setVisibility(serverTimesAdapter.getListData().size() > 0 ? View.GONE : View.VISIBLE);
         stateView.finish();
-        if(getActivity() instanceof SelectServerTimeActivity) ((SelectServerTimeActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
+        if(getActivity() instanceof SelectServerTimeActivity){
+            ((SelectServerTimeActivity) getActivity()).setPhotoTipVisibility(View.VISIBLE);
+            ((SelectServerTimeActivity) getActivity()).initAllSelectView(isAllSelect(), serverTimesAdapter.getSelImgs().size());
+        }
     }
 
     public int getQueryType(){

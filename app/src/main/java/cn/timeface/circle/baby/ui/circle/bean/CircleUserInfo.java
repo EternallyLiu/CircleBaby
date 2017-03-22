@@ -34,6 +34,11 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         return currentUserInfo;
     }
 
+    public static void clearAll(){
+        SQLite.delete().from(CircleUserInfo.class).query();
+        currentUserInfo=null;
+    }
+
     public static CircleUserInfo refresh() {
         currentUserInfo = null;
         return getInstance();
@@ -100,6 +105,19 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
     public void setCircleUserType(int circleUserType) {
         this.circleUserType = circleUserType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CircleUserInfo that = (CircleUserInfo) o;
+
+        if (getCircleUserId() > 0 && getCircleUserId() == that.getCircleUserId()) return true;
+
+        return false;
+    }
+
 
     @Override
     public int describeContents() {

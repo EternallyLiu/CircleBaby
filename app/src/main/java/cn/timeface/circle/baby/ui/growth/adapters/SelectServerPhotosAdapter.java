@@ -87,6 +87,34 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
         }
     }
 
+    /**
+     * 遍历所有图片判断跨行标题全选是否选中
+     * @param mediaObj
+     */
+    private void setupSelectData(MediaObj mediaObj){
+        for (int i = 0; i < listData.size(); i++) {
+            if(listData.get(i).getMediaList().contains(mediaObj)){
+                everyGroupUnSelImgSize[i]--;
+            } else {
+                continue;
+            }
+        }
+    }
+
+    /**
+     * 遍历所有图片判断跨行标题全选是否选中
+     * @param mediaObj
+     */
+    private void setupUnSelectData(MediaObj mediaObj){
+        for (int i = 0; i < listData.size(); i++) {
+            if(listData.get(i).getMediaList().contains(mediaObj)){
+                everyGroupUnSelImgSize[i]++;
+            } else {
+                continue;
+            }
+        }
+    }
+
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
         if (viewType == TYPE_TITLE) {
@@ -248,6 +276,7 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
                 doUnSelImg(dataIndex, img);
             }
             EventBus.getDefault().post(new PhotoSelectCountEvent(selMedias.size()));
+            notifyDataSetChanged();
         }
     };
 
@@ -264,13 +293,14 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
             //选中上传
 //            UploadAllPicService.addUrgent(App.getInstance(), img);
             selMedias.add(img);
-            everyGroupUnSelImgSize[dataIndex] -= 1;
-            if (everyGroupUnSelImgSize[dataIndex] == 0) {
+//            everyGroupUnSelImgSize[dataIndex] -= 1;
+//            if (everyGroupUnSelImgSize[dataIndex] == 0) {
                 //全选
 
-                notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
-            }
+//                notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
+//            }
         }
+        setupSelectData(img);
         EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_MEDIA_MEDIA, true, img));
     }
 
@@ -279,12 +309,13 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
             //取消上传
 //            UploadAllPicService.addUrgent(App.getInstance(), img);
             selMedias.remove(img);
-            everyGroupUnSelImgSize[dataIndex] += 1;
-            if (everyGroupUnSelImgSize[dataIndex] == 1) {
+//            everyGroupUnSelImgSize[dataIndex] += 1;
+//            if (everyGroupUnSelImgSize[dataIndex] == 1) {
                 //非全选
-                notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
-            }
+//                notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
+//            }
         }
+        setupUnSelectData(img);
         EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_MEDIA_MEDIA, false, img));
     }
 

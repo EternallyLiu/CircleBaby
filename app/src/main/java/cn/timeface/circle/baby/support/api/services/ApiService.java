@@ -86,6 +86,7 @@ import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
@@ -98,6 +99,7 @@ import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
 import cn.timeface.circle.baby.ui.circle.response.TeacherAuthIsHasResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.ActiveSelectListResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleTimeLineDetailResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.CreateActiveResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.TimeLineSendResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
@@ -1638,6 +1640,17 @@ public interface ApiService {
                                           @Query("mediaId") long mediaId);
 
     /**
+     * 按某种条件查询时光列表
+     * @param circleId 圈号
+     * @param type 1-全部 2-按我发布的 3-按@我宝宝的
+     * @return
+     */
+    @GET("circleBook/queryDynamicList")
+    Observable<CircleTimeLinesResponse> queryCircleTimeLines(
+            @Query("circleId") String circleId,
+            @Query("type") int type);
+
+    /**
      * 接口详情 (id: 7759) 复制URL
      * 接口名称 圈成员列表
      * 请求类型 get
@@ -1688,6 +1701,18 @@ public interface ApiService {
     Observable<BaseResponse> updateNickname(@Query("circleId") long circleId,
                                             @Query("nickName") String nickName,
                                             @Query("userId") long userId);
+
+    /**
+     * 删除圈动态
+     * @param circleTimelineId
+     * @return
+     */
+    @POST("dynamic/delete")
+    Observable<BaseResponse> deleteCircleTimeLine(@Query("circleTimelineId") long circleTimelineId);
+
+    @POST("dynamic/detail")
+    Observable<CircleTimeLineDetailResponse> queryCircleTimeLineDetail(@Query("circleTimelineId") long circleTimelineId);
+
     /**
      * 接口详情 (id: 7762) 复制URL
      接口名称 成员近期发布的照片

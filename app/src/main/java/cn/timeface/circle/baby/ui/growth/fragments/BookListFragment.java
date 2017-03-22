@@ -112,9 +112,8 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
             case R.id.iv_menu:
                 if (productionMenuDialog == null) {
                     productionMenuDialog = ProductionMenuDialog.newInstance(
-                            bookType,
-                            String.valueOf(bookObj.getBookId()),
-                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, String.valueOf(bookObj.getOpenBookId()), bookObj.getBaby().getBabyId());
+                            bookObj,
+                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
                     productionMenuDialog.show(getChildFragmentManager(), "");
                 }
                 break;
@@ -165,11 +164,27 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                 //精装照片书&绘画集
                 if (bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK
                         || bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING) {
-                    SelectServerPhotoActivity.open(getActivity(), bookType, bookObj.getOpenBookType(), String.valueOf(bookObj.getBookId()), String.valueOf(bookObj.getOpenBookId()), bookObj.getBaby().getBabyId());
+                    SelectServerPhotoActivity.open(
+                            getActivity(),
+                            bookType,
+                            bookObj.getOpenBookType(),
+                            String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            bookObj.getBaby().getBabyId(),
+                            bookObj.getAuthor().getNickName(),
+                            bookObj.getBookName());
                     //成长纪念册&成长语录
                 } else if (bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK
                         || bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
-                    SelectServerTimeActivity.open(getActivity(), bookType, bookObj.getOpenBookType(), String.valueOf(bookObj.getBookId()), String.valueOf(bookObj.getOpenBookId()), bookObj.getBaby().getBabyId());
+                    SelectServerTimeActivity.open(
+                            getActivity(),
+                            bookType,
+                            bookObj.getOpenBookType(),
+                            String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            bookObj.getBaby().getBabyId(),
+                            bookObj.getAuthor().getNickName(),
+                            bookObj.getBookName());
                 } else {
                     Log.e(TAG, "无法识别的书籍类型");
                 }
@@ -282,7 +297,15 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                 //成长纪念册
                 case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
                     if (hasPic) {
-                        SelectServerTimeActivity.open(getContext(), bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK, "", "", FastData.getBabyId());
+                        SelectServerTimeActivity.open(
+                                getContext(),
+                                bookType,
+                                TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
+                                "",
+                                "",
+                                FastData.getBabyId(),
+                                FastData.getUserName(),
+                                FastData.getBabyNickName() + "的成长纪念册");
                     } else {
                         PublishActivity.open(getContext(), PublishActivity.PHOTO);
                     }
@@ -290,7 +313,15 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                 //成长语录
                 case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
                     if (hasPic) {
-                        SelectServerTimeActivity.open(getContext(), bookType, TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS, "", "", FastData.getBabyId());
+                        SelectServerTimeActivity.open(
+                                getContext(),
+                                bookType,
+                                TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS,
+                                "",
+                                "",
+                                FastData.getBabyId(),
+                                FastData.getUserName(),
+                                FastData.getBabyNickName() + "的成长语录");
                     } else {
                         PublishActivity.open(getContext(), PublishActivity.VOICE);
                     }

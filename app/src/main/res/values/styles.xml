@@ -195,6 +195,7 @@
     </style>
 
     <style name="myEditText" parent="@android:style/Widget.Holo.Light.EditText">
-        <item name="android:textCursorDrawable" tools:ignore="NewApi">@drawable/search_view_line</item>
+        <item name="android:textCursorDrawable" tools:ignore="NewApi">@drawable/search_view_line
+        </item>
     </style>
 </resources>

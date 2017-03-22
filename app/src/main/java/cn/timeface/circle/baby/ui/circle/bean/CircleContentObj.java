@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 /**
  * 圈内容的基类
@@ -45,18 +46,6 @@ public class CircleContentObj extends BaseObj implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
-    public static final Creator<CircleContentObj> CREATOR = new Creator<CircleContentObj>() {
-        @Override
-        public CircleContentObj createFromParcel(Parcel in) {
-            return new CircleContentObj(in);
-        }
-
-        @Override
-        public CircleContentObj[] newArray(int size) {
-            return new CircleContentObj[size];
-        }
-    };
 
     public String getContent() {
         return content;
