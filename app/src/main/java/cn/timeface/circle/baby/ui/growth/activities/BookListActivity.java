@@ -36,6 +36,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.calendar.CalendarPreviewActivity;
 import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerTimesActivity;
+import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 
 /**
@@ -99,6 +100,11 @@ public class BookListActivity extends ProductionListActivity implements BookPres
         } else {
             llEmpty.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void setCircleBookData(List<CircleBookObj> circleBookObjs) {
+
     }
 
     @Override

@@ -43,6 +43,24 @@ public class BookPresenter extends BasePresenter<BookPresentation.View, BookMode
     }
 
     @Override
+    public void circleBooks(long circleId, int permissionType) {
+        view.setStateView(true);
+        view.addSubscription(
+                model.circleBookList(circleId, permissionType)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(
+                                response -> {
+                                    view.setCircleBookData(response.getDataList());
+                                    view.setStateView(false);
+                                },
+                                throwable -> {
+                                    view.showErr("数据获取失败");
+                                }
+                        )
+        );
+    }
+
+    @Override
     public void edit() {
 
     }

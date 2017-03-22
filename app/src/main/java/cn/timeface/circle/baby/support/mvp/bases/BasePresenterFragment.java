@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.support.mvp.bases;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -73,5 +74,23 @@ public class BasePresenterFragment extends Fragment implements BasePresenterView
     @Override
     public AppCompatActivity getCurrentActivity() {
         return ((AppCompatActivity) getActivity());
+    }
+
+    public void setActionBar(android.support.v7.widget.Toolbar view) {
+        if (getActivity() instanceof AppCompatActivity) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(view);
+//            }
+        }
+    }
+
+    public ActionBar getActionBar() {
+        if (getActivity() instanceof AppCompatActivity) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            return supportActionBar;
+//            }
+        }
+        return null;
     }
 }

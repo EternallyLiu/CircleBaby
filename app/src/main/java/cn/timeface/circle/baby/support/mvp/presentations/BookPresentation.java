@@ -8,6 +8,8 @@ import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.CardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
+import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
+import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
 import rx.Observable;
 
 /**
@@ -80,6 +82,8 @@ public interface BookPresentation {
          * @return base response
          */
         Observable<BaseResponse> deleteBook(String bookId);
+
+        Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList(long circleId, int permissionType);
     }
 
     interface Presenter{
@@ -89,6 +93,8 @@ public interface BookPresentation {
         void create();
 
         void loadData(int bookType, int permissionType);
+
+        void circleBooks(long circleId, int permissionType);
 
         /**
          * 编辑书作品
@@ -123,6 +129,8 @@ public interface BookPresentation {
         void setStateView(boolean loading);
 
         void setBookData(List<BookObj> bookObjs, boolean hasPic);
+
+        void setCircleBookData(List<CircleBookObj> circleBookObjs);
 
     }
 

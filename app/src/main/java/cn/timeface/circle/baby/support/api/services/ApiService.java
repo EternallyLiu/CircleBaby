@@ -70,6 +70,8 @@ import cn.timeface.circle.baby.support.mvp.model.GeneralBookItemResponse;
 import cn.timeface.circle.baby.support.mvp.model.GeneralBookResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
+import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
@@ -77,7 +79,7 @@ import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
-import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
+import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
@@ -1305,7 +1307,7 @@ public interface ApiService {
      * @return
      */
     @GET("activity/list")
-    Observable<QueryCirclePhotoResponse<QueryByCircleActivityObj>> queryByCircleActivity(
+    Observable<QueryCirclePhotoResponse<CircleActivityAlbumObj>> queryByCircleActivity(
             @Query("circleId") long circleId);
 
     /**
@@ -1336,7 +1338,7 @@ public interface ApiService {
      * @return
      */
     @GET("activity/search")
-    Observable<QueryCirclePhotoResponse<QueryByCircleActivityObj>> searchCircleActivity(
+    Observable<QueryCirclePhotoResponse<CircleActivityAlbumObj>> searchCircleActivity(
             @Query("circleId") long circleId,
             @Query("key") String key);
 
@@ -1641,8 +1643,9 @@ public interface ApiService {
 
     /**
      * 按某种条件查询时光列表
+     *
      * @param circleId 圈号
-     * @param type 1-全部 2-按我发布的 3-按@我宝宝的
+     * @param type     1-全部 2-按我发布的 3-按@我宝宝的
      * @return
      */
     @GET("circleBook/queryDynamicList")
@@ -1704,6 +1707,7 @@ public interface ApiService {
 
     /**
      * 删除圈动态
+     *
      * @param circleTimelineId
      * @return
      */
@@ -1715,11 +1719,24 @@ public interface ApiService {
 
     /**
      * 接口详情 (id: 7762) 复制URL
-     接口名称 成员近期发布的照片
-     请求类型 get
-     请求Url  /circle/getNewestPic
+     * 接口名称 成员近期发布的照片
+     * 请求类型 get
+     * 请求Url  /circle/getNewestPic
      */
     @POST("circle/getNewestPic")
     Observable<MediasResponse> getNewestPic(@Query("circleId") long circleId,
                                             @Query("userId") long userId);
+
+    /**
+     * 圈作品列表
+     * @param circleId
+     * @param permissionType
+     * @return
+     */
+    @GET("circle/book/list")
+    Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList(@Query("circleId") long circleId,
+                                                                       @Query("permissionType") int permissionType);
+
+    @GET("circleBook/typeList")
+    Observable<QueryCirclePhotoResponse<CircleBookTypeObj>> circleBookTypeList();
 }
