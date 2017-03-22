@@ -80,12 +80,14 @@ import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListRespon
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleHomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePhotoBookResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleSchoolTaskListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
@@ -1377,9 +1379,9 @@ public interface ApiService {
      */
     @GET("circle/allBaby")
     Observable<QueryCirclePhotoResponse<GetCircleAllBabyObj>> getCircleAllBaby(
-            @Query("circleId") long circleId,
+            @Query("circleId") String circleId,
             @Query("hasAlone") int hasAlone,
-            @Query("mediaId") long mediaId);
+            @Query("mediaId") String mediaId);
 
     /**
      * 查询圈时光上次发布的活动相册
@@ -1711,9 +1713,30 @@ public interface ApiService {
 
     /**
      * 圈照片书（查找圈内活动相册列表）
-     * @param circleId
+     * @param activityAlbumId
      * @return
      */
     @POST("circle/activity/detail")
     Observable<QueryPhotoResponse> queryAlbumPhotos(@Query("activityAlbumId") String activityAlbumId);
+
+    /**
+     * 圈照片书（查找圈内活动相册列表）
+     * @param circleId
+     * @return
+     */
+    @POST("circle/homework/teacherHomeworkList")
+    Observable<CircleSchoolTaskListResponse> queryCircleTasks(
+            @Query("circleId") String circleId,
+            @Query("currentPage") int currentPage,
+            @Query("pageSize") int pageSize);
+
+    /**
+     * 按宝宝查询家庭作业
+     * @param circleId
+     * @return
+     */
+    @POST("circle/homework/queryHomeworkByBabyId")
+    Observable<CircleHomeWorkListResponse> queryHomeworksByBaby(
+            @Query("circleId") String circleId,
+            @Query("babyId") int babyId);
 }

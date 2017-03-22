@@ -592,6 +592,14 @@
         <activity
             android:name=".ui.circle.activities.CircleSelectServerPhotosActivity"
             android:label="@string/title_activity_circle_select_server_photos"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectServeHomeWorksActivity"
+            android:label="@string/title_activity_circle_select_serve_home_works"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectHomeWordDetailActivity"
+            android:label="@string/title_activity_circle_select_home_word_detail"
             android:theme="@style/AppTheme"></activity>
     </application>
 

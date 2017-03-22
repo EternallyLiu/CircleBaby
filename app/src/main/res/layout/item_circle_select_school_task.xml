@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/selector_click_able"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/view_space_medium"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:textColor="@color/text"
+        android:textSize="18sp"
+        tools:text="寒假为父母做一件事"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_select_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/text_color_hint"
+        android:textSize="16sp"
+        tools:text="已选择3条记录" />
+
+</RelativeLayout>

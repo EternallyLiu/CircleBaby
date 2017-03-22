@@ -877,4 +877,10 @@
     </string>
     <string name="title_activity_circle_select_server_photos">CircleSelectServerPhotosActivity
     </string>
+    <string name="title_activity_circle_select_serve_home_works">
+        CircleSelectServeHomeWorksActivity
+    </string>
+    <string name="title_activity_circle_select_home_word_detail">
+        CircleSelectHomeWordDetailActivity
+    </string>
 </resources>
