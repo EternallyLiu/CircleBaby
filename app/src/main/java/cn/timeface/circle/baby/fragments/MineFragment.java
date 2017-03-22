@@ -271,6 +271,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             case R.id.ll_mine_order:
                 OrderListActivity.open(getContext());
 //                CirclePhotoActivity.open(getActivity(), 9);
+//                FragmentBridgeActivity.openCircleBooksFragment(getActivity(), 9);
                 break;
             case R.id.ll_mine_car:
                 CartActivity.open(getActivity());
