@@ -81,6 +81,7 @@ import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
+import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
@@ -1310,7 +1311,7 @@ public interface ApiService {
      * @return
      */
     @GET("activity/list")
-    Observable<QueryCirclePhotoResponse<QueryByCircleActivityObj>> queryByCircleActivity(
+    Observable<QueryCirclePhotoResponse<CircleActivityAlbumObj>> queryByCircleActivity(
             @Query("circleId") long circleId);
 
     /**
@@ -1341,7 +1342,7 @@ public interface ApiService {
      * @return
      */
     @GET("activity/search")
-    Observable<QueryCirclePhotoResponse<QueryByCircleActivityObj>> searchCircleActivity(
+    Observable<QueryCirclePhotoResponse<CircleActivityAlbumObj>> searchCircleActivity(
             @Query("circleId") long circleId,
             @Query("key") String key);
 
