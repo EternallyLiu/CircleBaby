@@ -1699,4 +1699,12 @@ public interface ApiService {
     Observable<BaseResponse> updateNickname(@Query("circleId") long circleId,
                                             @Query("nickName") String nickName,
                                             @Query("userId") long userId);
+
+    /**
+     * 删除圈动态
+     * @param circleTimelineId
+     * @return
+     */
+    @POST("dynamic/delete")
+    Observable<BaseResponse> deleteCircleTimeLine(@Query("circleTimelineId") long circleTimelineId);
 }

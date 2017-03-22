@@ -35,6 +35,7 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
@@ -259,7 +260,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
                 showMoreDialog();
                 break;
             case R.id.iv_publish:
-
+                PublishActivity.open(getActivity());
                 break;
         }
     }

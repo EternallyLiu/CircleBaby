@@ -64,11 +64,43 @@
             android:layout_below="@+id/tv_title"
             android:orientation="vertical"></LinearLayout>
 
+        <RelativeLayout
+            android:layout_below="@+id/ll_gv"
+            android:id="@+id/rl_pic_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/size_6"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/pic_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="@dimen/size_4"
+                android:text="共9张图片  "
+                android:textColor="@color/sea_buckthorn"
+                android:textSize="@dimen/text_medium"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/iv_pic_count"
+                android:layout_width="@dimen/size_15"
+                android:layout_height="@dimen/size_9"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/pic_count"
+                android:scaleType="fitCenter"
+                android:src="@drawable/home_pic_count" />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/tv_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_gv"
+            android:layout_below="@+id/rl_pic_count"
             android:paddingBottom="@dimen/size_4"
             android:paddingTop="@dimen/size_4"
             android:textColor="@color/text"
@@ -83,8 +115,8 @@
 
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="@dimen/size_36"
-                android:layout_height="@dimen/size_36"
+                android:layout_width="@dimen/size_20"
+                android:layout_height="@dimen/size_20"
                 android:layout_centerVertical="true"
                 android:scaleType="fitCenter"/>
 
@@ -113,8 +145,8 @@
 
             <ImageView
                 android:id="@+id/iv_message"
-                android:layout_width="@dimen/size_30"
-                android:layout_height="@dimen/size_30"
+                android:layout_width="@dimen/size_20"
+                android:layout_height="@dimen/size_20"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:scaleType="fitCenter"
@@ -122,10 +154,10 @@
 
             <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
                 android:id="@+id/iv_like"
-                android:layout_width="@dimen/size_30"
-                android:layout_height="@dimen/size_30"
+                android:layout_width="@dimen/size_20"
+                android:layout_height="@dimen/size_20"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/size_4"
+                android:layout_marginRight="@dimen/size_6"
                 android:layout_toLeftOf="@+id/iv_message"
                 android:scaleType="fitCenter"
                 timeLine:isSelected="false"
