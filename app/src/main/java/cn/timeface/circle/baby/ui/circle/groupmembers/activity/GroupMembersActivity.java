@@ -13,6 +13,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -22,8 +23,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.events.UpdateMemberDetailEvent;
 import cn.timeface.circle.baby.events.UpdateMemberEvent;
+import cn.timeface.circle.baby.events.UpdateNameEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.GroupMemberAdapter;
@@ -49,6 +53,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
     List<MenemberInfo> teacherUserInfoList;
     List<MenemberInfo> appliUserInfoList;
     GrowthCircleObj circleObj;
+    MenemberInfo menemberInfo;
 
     public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, GroupMembersActivity.class);
@@ -111,6 +116,10 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         List<MenemberInfo> circleMember = getCircleMember();
         for (int i = 0; i < circleMember.size(); i++) {
             menuSections.add(new GroupMemberSection(circleMember.get(i)));
+            if (circleMember.get(i).getCircleUserInfo().getCircleUserId() == FastData.getCircleUserInfo().getCircleUserId()) {
+                this.menemberInfo = circleMember.get(i);
+                EventBus.getDefault().post(new UpdateMemberDetailEvent(menemberInfo));
+            }
         }
         if (appliUserInfoList.size() > 0) {
             menuSections.add(new GroupMemberSection(true, "3&入圈申请&" + appliUserInfoList.size()));
@@ -194,6 +203,11 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         if (appliUserInfoList.size() > 0) {
             appliUserInfoList.clear();
         }
+        reqContent();
+    }
+
+    @Subscribe
+    public void onEvent(UpdateNameEvent event) {
         reqContent();
     }
 }
