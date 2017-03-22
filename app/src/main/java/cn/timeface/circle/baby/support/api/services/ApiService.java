@@ -98,6 +98,7 @@ import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
 import cn.timeface.circle.baby.ui.circle.response.TeacherAuthIsHasResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.ActiveSelectListResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleSchoolTaskResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleTimeLineDetailResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.CreateActiveResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.TimeLineSendResponse;
@@ -1640,8 +1641,9 @@ public interface ApiService {
 
     /**
      * 按某种条件查询时光列表
+     *
      * @param circleId 圈号
-     * @param type 1-全部 2-按我发布的 3-按@我宝宝的
+     * @param type     1-全部 2-按我发布的 3-按@我宝宝的
      * @return
      */
     @GET("circleBook/queryDynamicList")
@@ -1703,13 +1705,43 @@ public interface ApiService {
 
     /**
      * 删除圈动态
+     *
      * @param circleTimelineId
      * @return
      */
     @POST("dynamic/delete")
     Observable<BaseResponse> deleteCircleTimeLine(@Query("circleTimelineId") long circleTimelineId);
 
+    /**
+     * 查询圈动态详情
+     *
+     * @param circleTimelineId
+     * @return
+     */
     @POST("dynamic/detail")
     Observable<CircleTimeLineDetailResponse> queryCircleTimeLineDetail(@Query("circleTimelineId") long circleTimelineId);
 
+
+    /**
+     * 编辑圈动态
+     *
+     * @param circleTimelineInfo
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("dynamic/update")
+    Observable<CircleTimeLineDetailResponse> editorCircleTimeLine(@Field("circleTimelineInfo") String circleTimelineInfo);
+
+
+    /**
+     * 发布作业
+     *
+     * @param circleId
+     * @param schoolTask
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("homework/publish")
+    Observable<CircleSchoolTaskResponse> sendSchoolTask(@Field("circleId") long circleId,
+                                                        @Field("schoolTask") String schoolTask);
 }

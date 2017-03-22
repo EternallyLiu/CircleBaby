@@ -36,6 +36,7 @@ public class CircleGridStaggerLookup extends GridLayoutManager.SpanSizeLookup {
                 switch (position) {
                     case 0:
                     case 1:
+                    case 2:
                         return getColumCount();
                     default:
                         return 1;
