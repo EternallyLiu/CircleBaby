@@ -35,5 +35,16 @@ public class BaseObj implements Parcelable {
         this.baseType = in.readInt();
     }
 
+    public static final Creator<BaseObj> CREATOR = new Creator<BaseObj>() {
+        @Override
+        public BaseObj createFromParcel(Parcel source) {
+            return new BaseObj(source);
+        }
+
+        @Override
+        public BaseObj[] newArray(int size) {
+            return new BaseObj[size];
+        }
+    };
 }
 

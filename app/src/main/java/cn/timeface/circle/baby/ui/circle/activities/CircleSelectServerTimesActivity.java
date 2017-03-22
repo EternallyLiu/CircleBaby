@@ -29,10 +29,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
-import cn.timeface.circle.baby.dialogs.SelectContentTypeDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
@@ -49,7 +47,6 @@ import cn.timeface.circle.baby.ui.circle.events.CircleSelectTimeLineEvent;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleServerTimeFragment;
 import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
 import cn.timeface.circle.baby.ui.growth.events.SelectMediaListEvent;
-import cn.timeface.circle.baby.ui.growth.fragments.ServerTimeFragment;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
@@ -79,8 +76,6 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
     RelativeLayout contentSelectTime;
     @Bind(R.id.tv_content_type)
     TextView tvContentType;
-    @Bind(R.id.tv_content)
-    TextView tvContent;
 
     CircleServerTimeFragment allTimeFragment;//全部动态
     CircleServerTimeFragment mineTimeFragment;//我发布的动态
@@ -290,7 +285,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     @Override
     public void selectTypeAll() {
-        tvContent.setText("全部动态");
+        tvContentType.setText("全部动态");
         if(allTimeFragment == null){
             allTimeFragment = CircleServerTimeFragment.newInstance(
                     CircleSelectTimeTypeDialog.TIME_TYPE_ALL,
@@ -303,7 +298,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     @Override
     public void selectTypeMe() {
-        tvContent.setText("我发布的动态");
+        tvContentType.setText("我发布的动态");
         if(mineTimeFragment == null){
             mineTimeFragment = CircleServerTimeFragment.newInstance(
                     CircleSelectTimeTypeDialog.TIME_TYPE_ME,
@@ -316,7 +311,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     @Override
     public void selectTypeAboutMyBaby() {
-        tvContent.setText("与我宝宝相关的动态");
+        tvContentType.setText("与我宝宝相关的动态");
         if(aboutBabyTimeFragment == null){
             aboutBabyTimeFragment = CircleServerTimeFragment.newInstance(
                     CircleSelectTimeTypeDialog.TIME_TYPE_ABOUT_BABY,

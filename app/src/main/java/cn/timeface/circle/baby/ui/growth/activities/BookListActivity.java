@@ -36,6 +36,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.calendar.CalendarPreviewActivity;
 import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerTimesActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectSeverAlbumsActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 
 /**
@@ -121,14 +122,14 @@ public class BookListActivity extends ProductionListActivity implements BookPres
 //                                            }
 //                                    ));
 
-                    CircleSelectServerTimesActivity.open(
-                            this,
-                            BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
-                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
-                            "",
-                            "",
-                            "123456"
-                    );
+//                    CircleSelectServerTimesActivity.open(
+//                            this,
+//                            BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
+//                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
+//                            "",
+//                            "",
+//                            "123456");
+                    CircleSelectSeverAlbumsActivity.open(this, "123456");
 
                     break;
                 //绘画集

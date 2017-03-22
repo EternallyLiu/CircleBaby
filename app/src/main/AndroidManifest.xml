@@ -584,6 +584,14 @@
         <activity
             android:name=".ui.circle.activities.CircleSelectServerTimeDetailActivity"
             android:label="@string/title_activity_circle_select_server_time_detail"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectSeverAlbumsActivity"
+            android:label="@string/title_activity_circle_select_sever_photos"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectServerPhotosActivity"
+            android:label="@string/title_activity_circle_select_server_photos"
             android:theme="@style/AppTheme"></activity>
     </application>
 

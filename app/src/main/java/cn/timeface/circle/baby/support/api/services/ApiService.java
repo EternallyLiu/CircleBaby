@@ -84,6 +84,7 @@ import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
+import cn.timeface.circle.baby.ui.circle.response.CirclePhotoBookResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
@@ -1699,4 +1700,20 @@ public interface ApiService {
     Observable<BaseResponse> updateNickname(@Query("circleId") long circleId,
                                             @Query("nickName") String nickName,
                                             @Query("userId") long userId);
+
+    /**
+     * 圈照片书（查找圈内活动相册列表）
+     * @param circleId
+     * @return
+     */
+    @POST("circle/photoBook/index")
+    Observable<CirclePhotoBookResponse> queryCircleAlbums(@Query("circleId") String circleId);
+
+    /**
+     * 圈照片书（查找圈内活动相册列表）
+     * @param circleId
+     * @return
+     */
+    @POST("circle/activity/detail")
+    Observable<QueryPhotoResponse> queryAlbumPhotos(@Query("activityAlbumId") String activityAlbumId);
 }
