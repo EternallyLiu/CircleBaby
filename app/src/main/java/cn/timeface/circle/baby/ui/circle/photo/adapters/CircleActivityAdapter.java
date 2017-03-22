@@ -18,15 +18,16 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 
 /**
  * 活动列表adapter
  * Created by lidonglin on 2017/3/15.
  */
-public class CircleActivityAdapter extends BaseRecyclerAdapter<CircleActivityAlbumObj> {
+public class CircleActivityAdapter extends BaseRecyclerAdapter<QueryByCircleActivityObj> {
     View.OnClickListener clickListener;
 
-    public CircleActivityAdapter(Context mContext, List<CircleActivityAlbumObj> listData, View.OnClickListener clickListener) {
+    public CircleActivityAdapter(Context mContext, List<QueryByCircleActivityObj> listData, View.OnClickListener clickListener) {
         super(mContext, listData);
         this.clickListener = clickListener;
     }
@@ -39,12 +40,12 @@ public class CircleActivityAdapter extends BaseRecyclerAdapter<CircleActivityAlb
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        final CircleActivityAlbumObj albumObj = listData.get(position);
+        final QueryByCircleActivityObj albumObj = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.tvCirclracticityName.setText(albumObj.getAlbumName());
-        holder.tvCirclracticityCount.setText(mContext.getString(R.string.circle_activity_photo_count,albumObj.getMediaCount()));
+        holder.tvCirclracticityName.setText(albumObj.getAlbum().getAlbumName());
+        holder.tvCirclracticityCount.setText(mContext.getString(R.string.circle_activity_photo_count,albumObj.getAlbum().getMediaCount()));
         Glide.with(mContext)
-                .load(albumObj.getMediaUrl())
+                .load(albumObj.getAlbumUrl())
                 .into(holder.ivCircleActivity);
         holder.llCircleActivity.setTag(R.string.tag_obj, albumObj);
         if (clickListener != null) holder.llCircleActivity.setOnClickListener(clickListener);

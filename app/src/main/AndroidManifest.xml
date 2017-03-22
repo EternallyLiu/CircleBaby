@@ -523,14 +523,10 @@
         <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
             android:theme="@style/TimeFaceTheme.DayNight"/>
 
-        <activity android:name=".ui.circle.timelines.activity.PublishActivity"/>
         <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity"/>
         <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity"/>
 
             android:theme="@style/TimeFaceTheme.DayNight" />
-        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
-        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
-        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
         <activity
             android:name=".ui.circle.photo.activities.CirclePhotoActivity"
             android:label="@string/title_circle_photo"

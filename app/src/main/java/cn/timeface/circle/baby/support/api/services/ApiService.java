@@ -70,13 +70,13 @@ import cn.timeface.circle.baby.support.mvp.model.GeneralBookItemResponse;
 import cn.timeface.circle.baby.support.mvp.model.GeneralBookResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
-import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
+import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
@@ -85,8 +85,8 @@ import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
-import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
@@ -1303,7 +1303,7 @@ public interface ApiService {
      * @return
      */
     @GET("activity/list")
-    Observable<QueryCirclePhotoResponse<CircleActivityAlbumObj>> queryByCircleActivity(
+    Observable<QueryCirclePhotoResponse<QueryByCircleActivityObj>> queryByCircleActivity(
             @Query("circleId") long circleId);
 
     /**
@@ -1334,7 +1334,7 @@ public interface ApiService {
      * @return
      */
     @GET("activity/search")
-    Observable<QueryCirclePhotoResponse<CircleActivityAlbumObj>> searchCircleActivity(
+    Observable<QueryCirclePhotoResponse<QueryByCircleActivityObj>> searchCircleActivity(
             @Query("circleId") long circleId,
             @Query("key") String key);
 
