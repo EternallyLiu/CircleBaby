@@ -1,12 +1,18 @@
-package cn.timeface.circle.baby.ui.growth.fragments;
+package cn.timeface.circle.baby.ui.circle.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,10 +30,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
-import cn.timeface.circle.baby.activities.PublishActivity;
-import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.CartPrintPropertyDialog;
-import cn.timeface.circle.baby.dialogs.CreateCalendarDialog;
 import cn.timeface.circle.baby.dialogs.ProductionMenuDialog;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
@@ -39,8 +42,9 @@ import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
 import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
-import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.ui.calendar.CalendarPreviewActivity;
+import cn.timeface.circle.baby.ui.circle.adapters.CircleBookListAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
@@ -48,11 +52,10 @@ import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
- * 书籍相关作品列表页面
- * author : YW.SUN Created on 2017/2/13
- * email : sunyw10@gmail.com
+ * 圈作品
+ * Created by lidonglin on 2017/3/22.
  */
-public class BookListFragment extends BasePresenterFragment implements BookPresentation.View, View.OnClickListener, IEventBus {
+public class CircleBooksFragment extends BasePresenterFragment implements BookPresentation.View, View.OnClickListener, IEventBus {
 
     @Bind(R.id.tv_tip)
     TextView tvTip;
@@ -70,31 +73,50 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
     TFStateView tfStateView;
     @Bind(R.id.content_book_list)
     RelativeLayout contentBookList;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
 
+    private long circleId;
     private int bookType;
     private BookListAdapter bookListAdapter;
     private BookPresenter bookPresenter;
     private ProductionMenuDialog productionMenuDialog;
 
     private boolean hasPic;
+    private CircleBookListAdapter circleBookListAdapter;
 
-    public static BookListFragment newInstance(int bookType) {
-        BookListFragment fragment = new BookListFragment();
+    public static CircleBooksFragment newInstance(long circleId) {
+        CircleBooksFragment fragment = new CircleBooksFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("book_type", bookType);
+        bundle.putLong("circle_id", circleId);
         fragment.setArguments(bundle);
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        circleId = getArguments().getLong("circle_id");
+        setHasOptionsMenu(true);
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_book_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_circle_book_list, container, false);
         ButterKnife.bind(this, view);
-        this.bookType = getArguments().getInt("book_type", 0);
+        setActionBar(toolbar);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("圈作品");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         tvTip.setVisibility(View.GONE);
         bookPresenter = new BookPresenter(this);
-        bookPresenter.loadData(bookType, 2);
+        bookPresenter.circleBooks(circleId, 2);
         btnAskForPrint.setVisibility(View.GONE);
         return view;
     }
@@ -210,136 +232,35 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
 
     @Override
     public void setBookData(List<BookObj> bookObjs, boolean hasPic) {
-        if (bookListAdapter == null) {
-            bookListAdapter = new BookListAdapter(getActivity(), bookObjs, this);
-            rvBooks.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            rvBooks.setAdapter(bookListAdapter);
-        } else {
-            bookListAdapter.setListData(bookObjs);
-            bookListAdapter.notifyDataSetChanged();
-        }
-
-        this.hasPic = hasPic;
-        updateEmptyView();
     }
 
     @Override
     public void setCircleBookData(List<CircleBookObj> circleBookObjs) {
-
+        if (circleBookListAdapter == null) {
+            circleBookListAdapter = new CircleBookListAdapter(getActivity(), circleBookObjs, this);
+            rvBooks.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+            rvBooks.setAdapter(circleBookListAdapter);
+        } else {
+            circleBookListAdapter.setListData(circleBookObjs);
+            circleBookListAdapter.notifyDataSetChanged();
+        }
+        updateEmptyView();
     }
 
     private void updateEmptyView() {
-        if (bookListAdapter.getListData().isEmpty()) {
+        if (circleBookListAdapter.getListData().isEmpty()) {
             llEmpty.setVisibility(View.VISIBLE);
-            setupEmptyView(hasPic);
+            setupEmptyView();
         } else {
             llEmpty.setVisibility(View.GONE);
         }
     }
 
-    private void setupEmptyView(boolean hasPic) {
+    private void setupEmptyView() {
         String babyName = FastData.getBabyNickName();
-        switch (bookType) {
-            case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
-                tvEmptyInfo.setText(hasPic ? babyName + "的成长纪念册为空哦，赶紧制作一本属于" + babyName + "的成长纪念册吧~"
-                        : babyName + "的成长纪念册为空哦，赶紧发布内容，制作一本吧~");
-                btnCreate.setText(hasPic ? "立即制作" : "立即上传");
-                break;
-            case BookModel.BOOK_TYPE_CALENDAR:
-                tvEmptyInfo.setText(babyName + "的台历为空哦，赶紧制作一本属于" + babyName + "的台历吧~");
-                btnCreate.setText("立即制作");
-                break;
-            case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
-                tvEmptyInfo.setText(hasPic ? babyName + "的照片书为空哦，赶紧制作一本属于" + babyName + "的照片书吧~"
-                        : babyName + "的照片书为空哦，赶紧上传照片，制作照片书吧~");
-                btnCreate.setText(hasPic ? "立即制作" : "立即上传");
-                break;
-            case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
-                tvEmptyInfo.setText(hasPic ? babyName + "的成长语录为空哦，赶紧制作一本属于" + babyName + "的成长语录吧~"
-                        : babyName + "的成长语录为空哦，赶紧发布内容，制作一本吧~");
-                btnCreate.setText(hasPic ? "立即制作" : "立即上传");
-                break;
-            case BookModel.BOOK_TYPE_NOTEBOOK:
-                tvEmptyInfo.setText(babyName + "的记事本为空哦，赶紧制作一本属于" + babyName + "的记事本吧~");
-                btnCreate.setText("立即制作");
-                break;
-            case BookModel.BOOK_TYPE_PAINTING:
-                tvEmptyInfo.setText(hasPic ? babyName + "的绘画集为空哦，赶紧制作一本属于" + babyName + "的绘画集吧~"
-                        : babyName + "的绘画集为空哦，赶紧发布内容，制作一本吧~");
-                btnCreate.setText(hasPic ? "立即制作" : "立即上传");
-                break;
-        }
-
-        btnCreate.setOnClickListener(v -> {
-            switch (bookType) {
-                //精装照片书
-                case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
-                    if (hasPic) {
-                        addSubscription(
-                                apiService.getDefaultTheme(bookType)
-                                        .compose(SchedulersCompat.applyIoSchedulers())
-                                        .subscribe(
-                                                response -> {
-                                                    if (response.success()) {
-                                                        SelectServerPhotoActivity.open(getActivity(), BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "", FastData.getBabyId());
-                                                    }
-                                                },
-                                                throwable -> {
-                                                    Log.e(TAG, throwable.getLocalizedMessage());
-                                                }
-                                        ));
-                    } else {
-                        PublishActivity.open(getContext(), PublishActivity.PHOTO);
-                    }
-                    break;
-                //绘画集
-                case BookModel.BOOK_TYPE_PAINTING:
-                    if (hasPic) {
-                        SelectServerPhotoActivity.open(getContext(), bookType, TypeConstants.OPEN_BOOK_TYPE_PAINTING, "", "", FastData.getBabyId());
-                    } else {
-                        PublishActivity.open(getContext(), PublishActivity.PHOTO);
-                    }
-                    break;
-                //成长纪念册
-                case BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK:
-                    if (hasPic) {
-                        SelectServerTimeActivity.open(
-                                getContext(),
-                                bookType,
-                                TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
-                                "",
-                                "",
-                                FastData.getBabyId(),
-                                FastData.getUserName(),
-                                FastData.getBabyNickName() + "的成长纪念册");
-                    } else {
-                        PublishActivity.open(getContext(), PublishActivity.PHOTO);
-                    }
-                    break;
-                //成长语录
-                case BookModel.BOOK_TYPE_GROWTH_QUOTATIONS:
-                    if (hasPic) {
-                        SelectServerTimeActivity.open(
-                                getContext(),
-                                bookType,
-                                TypeConstants.OPEN_BOOK_TYPE_GROWTH_QUOTATIONS,
-                                "",
-                                "",
-                                FastData.getBabyId(),
-                                FastData.getUserName(),
-                                FastData.getBabyNickName() + "的成长语录");
-                    } else {
-                        PublishActivity.open(getContext(), PublishActivity.VOICE);
-                    }
-                    break;
-                //台历
-                case BookModel.BOOK_TYPE_CALENDAR:
-                    CreateCalendarDialog createCalendarDialog = CreateCalendarDialog.newInstance();
-                    createCalendarDialog.setCancelable(true);
-                    createCalendarDialog.show(getActivity().getSupportFragmentManager(), "CreateCalendarDialog");
-                    break;
-            }
-        });
+        tvEmptyInfo.setText("本圈还没有新的作品哦，\n点击右上角加号发布本圈第一部作品吧");
+        btnCreate.setVisibility(View.GONE);
+//        btnCreate.setText("立即制作");
     }
 
     @Subscribe
@@ -357,8 +278,22 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                 }
                 updateEmptyView();
             } else {
-                bookPresenter.loadData(bookType, 2);
+                bookPresenter.circleBooks(circleId, 2);
             }
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_mine_book, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add) {
+            ToastUtil.showToast("新增圈作品");
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

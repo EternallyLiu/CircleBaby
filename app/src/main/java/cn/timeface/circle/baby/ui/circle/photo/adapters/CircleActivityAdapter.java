@@ -24,10 +24,10 @@ import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
  * 活动列表adapter
  * Created by lidonglin on 2017/3/15.
  */
-public class CircleActivityAdapter extends BaseRecyclerAdapter<QueryByCircleActivityObj> {
+public class CircleActivityAdapter extends BaseRecyclerAdapter<CircleActivityAlbumObj> {
     View.OnClickListener clickListener;
 
-    public CircleActivityAdapter(Context mContext, List<QueryByCircleActivityObj> listData, View.OnClickListener clickListener) {
+    public CircleActivityAdapter(Context mContext, List<CircleActivityAlbumObj> listData, View.OnClickListener clickListener) {
         super(mContext, listData);
         this.clickListener = clickListener;
     }
@@ -40,10 +40,10 @@ public class CircleActivityAdapter extends BaseRecyclerAdapter<QueryByCircleActi
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        final QueryByCircleActivityObj albumObj = listData.get(position);
+        final CircleActivityAlbumObj albumObj = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.tvCirclracticityName.setText(albumObj.getAlbum().getAlbumName());
-        holder.tvCirclracticityCount.setText(mContext.getString(R.string.circle_activity_photo_count,albumObj.getAlbum().getMediaCount()));
+        holder.tvCirclracticityName.setText(albumObj.getAlbumName());
+        holder.tvCirclracticityCount.setText(mContext.getString(R.string.circle_activity_photo_count,albumObj.getMediaCount()));
         Glide.with(mContext)
                 .load(albumObj.getAlbumUrl())
                 .into(holder.ivCircleActivity);

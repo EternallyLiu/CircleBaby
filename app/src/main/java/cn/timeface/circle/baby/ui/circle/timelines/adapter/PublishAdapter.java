@@ -64,6 +64,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
     public static final int ITEM_TYPE_SELECT_ACTIVE = -39996;
     public static final int ITEM_TYPE_SELECT_TIME = -39995;
     public static final int ITEM_TYPE_NOTIFY_TIMELINE = -39994;
+    public static final int ITEM_TYPE_MEDIA_TIP = -39993;
 
     private CircleContentObj contentObj = null;
     private List<ImgObj> selImage = new ArrayList<>(0);
@@ -85,7 +86,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
 
     @Override
     public int getItemCount() {
-        return (getType() == TYPE_TIMELINE ? lookup.isSync() ? 5 : 4 : 2) + contentObj.getMediaList().size() + getSelImage().size() + (getType() == TYPE_TIMELINE ? contentObj.getMediaList().size() >= MAX_PIC_TIMELINE_COUNT ? 0 : 1 : contentObj.getMediaList().size() >= MAX_PIC_WORK_COUNT ? 0 : 1);
+        return (getType() == TYPE_TIMELINE ? lookup.isSync() ? 5 : 4 : 3) + contentObj.getMediaList().size() + getSelImage().size() + (getType() == TYPE_TIMELINE ? contentObj.getMediaList().size() >= MAX_PIC_TIMELINE_COUNT ? 0 : 1 : contentObj.getMediaList().size() >= MAX_PIC_WORK_COUNT ? 0 : 1);
 
     }
 
@@ -134,6 +135,8 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                 return R.layout.circle_publish_notify_timeline;
             case ITEM_TYPE_MEDIA:
                 return R.layout.circle_publish_media;
+            case ITEM_TYPE_MEDIA_TIP:
+                return R.layout.circle_send_media_tip;
 
         }
         return 0;
@@ -250,7 +253,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             case 1:
                 return ITEM_TYPE_INPUT_CONTENT;
             case 2:
-                return getType() == TYPE_TIMELINE ? ITEM_TYPE_SELECT_ACTIVE : ITEM_TYPE_MEDIA;
+                return getType() == TYPE_TIMELINE ? ITEM_TYPE_SELECT_ACTIVE : ITEM_TYPE_MEDIA_TIP;
             case 3:
                 return getType() == TYPE_TIMELINE ? lookup.isSync() ? ITEM_TYPE_SELECT_TIME : ITEM_TYPE_NOTIFY_TIMELINE : ITEM_TYPE_MEDIA;
             case 4:
@@ -282,10 +285,13 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             switch (this.type) {
                 case TYPE_WORK:
                     contentObj = new CircleHomeworkObj();
+                    break;
                 case TYPE_SCHOOL:
                     contentObj = new CircleSchoolTaskObj();
+                    break;
                 case TYPE_TIMELINE:
                     contentObj = new CircleTimelineObj();
+                    break;
             }
     }
 
@@ -397,15 +403,15 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                     .map(circleMediaObjs -> contentObj)
                     .doOnNext(circleContentObj -> circleContentObj.setCreateDate(System.currentTimeMillis()));
         else if (selImage.size() > 0) {
-            List<String> list=new ArrayList<>(0);
+            List<String> list = new ArrayList<>(0);
             return Observable.from(selImage)
                     .filter(imgObj -> imgObj != null)
                     .doOnNext(imgObj -> list.add(imgObj.getLocalPath()))
                     .doOnNext(imgObj -> contentObj.getMediaList().add(imgObj.getCircleMediaObj()))
                     .toList()
                     .doOnNext(imgObjs -> {
-                        LogUtil.showLog("list====="+ JSONUtils.parse2JSONString(list));
-                        UploadService.start(context(),list);
+                        LogUtil.showLog("list=====" + JSONUtils.parse2JSONString(list));
+                        UploadService.start(context(), list);
                     })
                     .map(imgObjs -> contentObj)
                     .doOnNext(circleContentObj -> circleContentObj.setCreateDate(System.currentTimeMillis()));

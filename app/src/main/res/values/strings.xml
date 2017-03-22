@@ -870,4 +870,6 @@
     <string name="please_send_one_picture">发张照片吧~</string>
     <string name="title_activity_circle_select_server_times">CircleSelectServerTimesActivity
     </string>
+    <string name="send_school_media_tip">添加说明图片（选填）</string>
+    <string name="school_title_input_tip">作业标题不能为空</string>
 </resources>
