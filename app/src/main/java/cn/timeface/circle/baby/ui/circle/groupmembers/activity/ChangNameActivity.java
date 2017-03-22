@@ -17,6 +17,7 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.UpdateMemberEvent;
+import cn.timeface.circle.baby.events.UpdateNameEvent;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -67,7 +68,7 @@ public class ChangNameActivity extends BaseAppCompatActivity {
             return;
         }
         switch (type) {
-            case 1:
+            case 2:
                 Subscription subscribe = apiService.updateBabyRealName(FastData.getBabyId(), s)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(new Action1<BaseResponse>() {
@@ -76,6 +77,7 @@ public class ChangNameActivity extends BaseAppCompatActivity {
                                 if (baseResponse.success()) {
                                     ToastUtil.showToast(ChangNameActivity.this,"操作成功");
                                     EventBus.getDefault().post(new UpdateMemberEvent());
+                                    EventBus.getDefault().post(new UpdateNameEvent());
                                     finish();
                                 }
                             }
@@ -87,7 +89,7 @@ public class ChangNameActivity extends BaseAppCompatActivity {
                         });
                 addSubscription(subscribe);
                 break;
-            case 2:
+            case 1:
                 Subscription subscribe1 = apiService.updateNickname(circleUserInfo.getCircleId(), s, circleUserInfo.getCircleUserId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(new Action1<BaseResponse>() {
@@ -96,6 +98,7 @@ public class ChangNameActivity extends BaseAppCompatActivity {
                                 if (baseResponse.success()) {
                                     ToastUtil.showToast(ChangNameActivity.this,"操作成功");
                                     EventBus.getDefault().post(new UpdateMemberEvent());
+                                    EventBus.getDefault().post(new UpdateNameEvent());
                                     finish();
                                 }
                             }

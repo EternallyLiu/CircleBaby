@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,11 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.dialogs.TFDialog;
+import cn.timeface.circle.baby.events.UpdateMemberDetailEvent;
 import cn.timeface.circle.baby.events.UpdateMemberEvent;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -38,7 +41,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class CheckMemberDetailActivity extends BaseAppCompatActivity {
+public class CheckMemberDetailActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Bind(R.id.title)
     TextView title;
@@ -68,12 +71,15 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
     RelativeLayout rvCloseCircle;
     @Bind(R.id.tv_empty)
     TextView tvEmpty;
+    @Bind(R.id.tv_want_reason)
+    TextView tvWantReason;
 
     CircleUserInfo circleUserInfo;
     cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo circleUserSelf;
     PhotosShowAdapter adapter;
     ArrayList<String> mPathList;
     MenemberInfo menemberInfo;
+
 
     public static void open(Context context, MenemberInfo circleUserInfo) {
         Intent intent = new Intent(context, CheckMemberDetailActivity.class);
@@ -97,13 +103,13 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
         setPhotoView();
 
         tvUserName.setText(circleUserInfo.getCircleNickName());
-        tvUserConnect.setText("关联宝贝:李小萌");
+        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyName());
         setUpView();
 
     }
 
     private void setPhotoView() {
-        GlideUtil.displayImage(menemberInfo.getBabyAvatarUrl(),ivChildImg);
+        GlideUtil.displayImage(menemberInfo.getBabyAvatarUrl(), ivChildImg);
         Glide.with(this)
                 .load(menemberInfo.getCircleUserInfo().getCircleAvatarUrl())
                 .into(ivContentImg);
@@ -122,6 +128,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.VISIBLE);
             rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -134,6 +141,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.VISIBLE);
             rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -147,6 +155,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
             rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -195,6 +204,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
             rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -246,6 +256,8 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
             rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.VISIBLE);
+            tvWantReason.setText("申请留言:"+menemberInfo.getLeaveMessage());
             tvBtnUp.setOnClickListener(v -> joinCheck(1));
             tvBtnDown.setOnClickListener(v -> joinCheck(0));
 
@@ -254,6 +266,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.GONE);
             rvCloseCircle.setVisibility(View.VISIBLE);
+            tvWantReason.setVisibility(View.GONE);
 
             reqPersonalPhotos();
         }
@@ -267,7 +280,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
                     public void call(MediasResponse mediasResponse) {
                         if (mediasResponse.success()) {
                             List<MediaObj> dataList = mediasResponse.getDataList();
-                            if (dataList.size() != 0 ) {
+                            if (dataList.size() != 0) {
                                 rvCloseCircle.setVisibility(View.VISIBLE);
                                 setPersonalView();
                                 mPathList.clear();
@@ -373,4 +386,10 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity {
         addSubscription(subscribe);
     }
 
+    @Subscribe
+    public void onEvent(UpdateMemberDetailEvent event) {
+        MenemberInfo menemberInfo = event.getMenemberInfo();
+        tvUserName.setText(menemberInfo.getCircleUserInfo().getCircleNickName());
+        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyName());
+    }
 }
