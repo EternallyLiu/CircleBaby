@@ -105,6 +105,10 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         return circleUserType == 2;
     }
 
+    public static void deleteAll(){
+        SQLite.delete().from(CircleUserInfo.class).query();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

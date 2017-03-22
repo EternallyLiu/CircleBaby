@@ -152,6 +152,10 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         this.workCount = workCount;
     }
 
+    public static void deleteAll(){
+        SQLite.delete().from(GrowthCircleObj.class).query();
+    }
+
     @Override
     public int describeContents() {
         return 0;

@@ -40,6 +40,8 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.MiPushUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
@@ -47,7 +49,6 @@ import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.PermissionUtils;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.common.utils.DeviceUuidFactory;
-import cn.timeface.common.utils.ShareSdkUtil;
 import cn.timeface.common.utils.StorageUtil;
 import cn.timeface.common.utils.TimeFaceUtilInit;
 
@@ -137,7 +138,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         if (!TextUtils.isEmpty(phoneNumber)) {
             String replace = phoneNumber.substring(3, 7);
             tvPhoneNumber.setText(phoneNumber.replace(replace, "****"));
-        }else tvPhoneNumber.setText("");
+        } else tvPhoneNumber.setText("");
     }
 
     private void initData() {
@@ -161,7 +162,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         rlSettingPwd.setOnClickListener(this);
         rlSettingPhone.setOnClickListener(this);
         rlSms.setOnClickListener(this);
-        ivSwichSms.setImageResource(FastData.getSendSms()== 1 ? R.drawable.swichon : R.drawable.swichoff);
+        ivSwichSms.setImageResource(FastData.getSendSms() == 1 ? R.drawable.swichon : R.drawable.swichoff);
     }
 
     @Override
@@ -176,7 +177,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                         .subscribe(response -> {
                             if (response.success()) {
                                 FastData.setSendSms(1 - FastData.getSendSms());
-                                ivSwichSms.setImageResource(FastData.getSendSms()== 1 ? R.drawable.swichon : R.drawable.swichoff);
+                                ivSwichSms.setImageResource(FastData.getSendSms() == 1 ? R.drawable.swichon : R.drawable.swichoff);
                             }
                         }, throwable -> {
                             LogUtil.showError(throwable);
@@ -218,7 +219,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 //                String url = "http://fir.im/timebabyandroid";
                 String url = "http://www.timeface.cn/baby/babyShare/app.html";
                 new ShareDialog(getActivity()).share("成长印记，印下美好成长时光", "一键汇聚宝宝的成长点滴，轻松愉快地为宝宝定制专属印刷品，和家人一起见证宝宝成长的每一步。",
-                        cn.timeface.circle.baby.support.utils.ShareSdkUtil.getImgStrByResource(getActivity(),R.drawable.ic_laucher_quadrate),
+                        cn.timeface.circle.baby.support.utils.ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_laucher_quadrate),
                         url);
 
                 break;
@@ -236,6 +237,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
             case R.id.btn_sign_out:
                 BabyObj.deleteAll();
+                CircleUserInfo.deleteAll();
+                GrowthCircleObj.deleteAll();
                 FastData.setUserFrom(-1);
                 LoginActivity.open(getActivity());
                 getActivity().finish();
