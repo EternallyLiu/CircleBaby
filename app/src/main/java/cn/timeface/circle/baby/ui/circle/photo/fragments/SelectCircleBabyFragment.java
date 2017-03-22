@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleByBabyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 
@@ -30,12 +33,15 @@ public class SelectCircleBabyFragment extends BasePresenterFragment {
 
     View.OnClickListener clickListener;
     CircleByBabyAdapter circleByBabyAdapter;
-    private long circleId = 0;
+    private long circleId;
     private List<QueryByCircleBabyObj> data = new ArrayList<>();
 
-    public static SelectCircleBabyFragment newInstance(View.OnClickListener clickListener) {
+    public static SelectCircleBabyFragment newInstance(View.OnClickListener clickListener,long circleId) {
         SelectCircleBabyFragment selectUserFragment = new SelectCircleBabyFragment();
         selectUserFragment.clickListener = clickListener;
+        Bundle bundle = new Bundle();
+        bundle.putLong("circle_id", circleId);
+        selectUserFragment.setArguments(bundle);
         return selectUserFragment;
     }
 
@@ -47,13 +53,13 @@ public class SelectCircleBabyFragment extends BasePresenterFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_select_user, container, false);
         ButterKnife.bind(this, view);
-
+        circleId = getArguments().getLong("circle_id");
         reqData();
         return view;
     }
 
     private void reqData() {
-        /*apiService.queryByCircleUser(circleId)
+        apiService.queryByCircleBaby(circleId)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -66,8 +72,8 @@ public class SelectCircleBabyFragment extends BasePresenterFragment {
                         throwable -> {
                             Log.e(TAG, throwable.getLocalizedMessage());
                         }
-                );*/
-        setData(getData());
+                );
+//        setData(getData());
     }
 
     private void setData(List<QueryByCircleBabyObj> objs) {

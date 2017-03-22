@@ -67,21 +67,11 @@ public class CircleByTimeAdapter extends BaseRecyclerAdapter<QueryByCircleTimeOb
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         final CirclePhotoMonthObj obj = monthList.get(position);
-//        ViewHolder holder = (ViewHolder) viewHolder;
-//        holder.tvUserName.setText(obj.getUserInfo().getCircleNickName());
-//        holder.tvPhotoCount.setText(obj.getMediaCount() + "张");
-//        Glide.with(mContext)
-//                .load(obj.getUserInfo().getCircleAvatarUrl())
-//                .into(holder.ivAvatar);
-//        holder.llRoot.setTag(R.string.tag_obj, obj);
-//        if (clickListener != null) holder.llRoot.setOnClickListener(clickListener);
-
-
         if (viewHolder instanceof TitleViewHolder) {
-            ((TitleViewHolder) viewHolder).tvYear.setText(obj.getMonth());
+            ((TitleViewHolder) viewHolder).tvYear.setText(obj.getYear()+"年");
             ((TitleViewHolder) viewHolder).tvCount.setText(mContext.getString(R.string.circlephoto_count,obj.getMediaCount()));
         } else {
-            ((ViewHolder) viewHolder).tvMonth.setText(obj.getMonth());
+            ((ViewHolder) viewHolder).tvMonth.setText(obj.getMonth()+"月");
             ((ViewHolder) viewHolder).tvCount.setText(mContext.getString(R.string.circlephoto_count,obj.getMediaCount()));
             Glide.with(mContext)
                     .load(obj.getMediaUrl())
