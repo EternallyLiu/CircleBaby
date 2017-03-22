@@ -37,6 +37,7 @@ import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.PhotosShowAdapter;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
+import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -79,6 +80,8 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     PhotosShowAdapter adapter;
     ArrayList<String> mPathList;
     MenemberInfo menemberInfo;
+    @Bind(R.id.tv_go_see)
+    TextView tvGoSee;
 
 
     public static void open(Context context, MenemberInfo circleUserInfo) {
@@ -98,20 +101,20 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
 
         mPathList = new ArrayList<>();
         menemberInfo = getIntent().getParcelableExtra("circleUserInfo");
-        circleUserInfo = menemberInfo.getCircleUserInfo();
+        circleUserInfo = menemberInfo.getUserInfo();
         circleUserSelf = FastData.getCircleUserInfo();
         setPhotoView();
 
         tvUserName.setText(circleUserInfo.getCircleNickName());
-        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyName());
+        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyBrief().getBabyName());
         setUpView();
 
     }
 
     private void setPhotoView() {
-        GlideUtil.displayImage(menemberInfo.getBabyAvatarUrl(), ivChildImg);
+        GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(), ivChildImg);
         Glide.with(this)
-                .load(menemberInfo.getCircleUserInfo().getCircleAvatarUrl())
+                .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
                 .into(ivContentImg);
     }
 
@@ -123,6 +126,19 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
         int circleUserId = circleUserInfo.getCircleUserId();
         int circleUserType = circleUserInfo.getCircleUserType();
         if (circleUserIdself == circleUserId && circleUserTypeSelf == 2) {
+            title.setText("我的圈资料");
+            tvBtnUp.setText("修改昵称");
+            tvBtnDown.setVisibility(View.GONE);
+            tvBtnUp.setVisibility(View.VISIBLE);
+            rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.GONE);
+            tvBtnUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1);
+                }
+            });
+        } else if (circleUserIdself == circleUserId && circleUserType == 2) {
             title.setText("我的圈资料");
             tvBtnUp.setText("修改昵称");
             tvBtnDown.setVisibility(View.GONE);
@@ -149,7 +165,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                 }
             });
         } else if (circleUserTypeSelf == 1 && circleUserType == 2) {
-            title.setText("管理员成员");
+            title.setText("管理圈成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("取消教师认证");
             tvBtnDown.setVisibility(View.VISIBLE);
@@ -198,7 +214,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                 }
             });
         } else if (circleUserTypeSelf == 1 && circleUserType == 3) {
-            title.setText("管理员成员");
+            title.setText("管理圈成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("教师认证");
             tvBtnDown.setVisibility(View.VISIBLE);
@@ -257,7 +273,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvBtnUp.setVisibility(View.VISIBLE);
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.VISIBLE);
-            tvWantReason.setText("申请留言:"+menemberInfo.getLeaveMessage());
+            tvWantReason.setText("申请留言:" + menemberInfo.getLeaveMessage());
             tvBtnUp.setOnClickListener(v -> joinCheck(1));
             tvBtnDown.setOnClickListener(v -> joinCheck(0));
 
@@ -267,7 +283,12 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvBtnUp.setVisibility(View.GONE);
             rvCloseCircle.setVisibility(View.VISIBLE);
             tvWantReason.setVisibility(View.GONE);
-
+            tvGoSee.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CirclePhotoActivity.open(CheckMemberDetailActivity.this, circleUserInfo, true);
+                }
+            });
             reqPersonalPhotos();
         }
     }
@@ -282,6 +303,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                             List<MediaObj> dataList = mediasResponse.getDataList();
                             if (dataList.size() != 0) {
                                 rvCloseCircle.setVisibility(View.VISIBLE);
+                                rcContent.setVisibility(View.VISIBLE);
                                 setPersonalView();
                                 mPathList.clear();
                                 for (int i = 0; i < dataList.size(); i++) {
@@ -389,7 +411,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     @Subscribe
     public void onEvent(UpdateMemberDetailEvent event) {
         MenemberInfo menemberInfo = event.getMenemberInfo();
-        tvUserName.setText(menemberInfo.getCircleUserInfo().getCircleNickName());
-        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyName());
+        tvUserName.setText(menemberInfo.getUserInfo().getCircleNickName());
+        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyBrief().getBabyName());
     }
 }

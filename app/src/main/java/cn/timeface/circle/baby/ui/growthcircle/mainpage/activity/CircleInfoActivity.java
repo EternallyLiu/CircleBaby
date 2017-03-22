@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleDetailObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.adapter.CircleInfoMemberGridAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.JoinCircleDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleJoinedEvent;
@@ -162,7 +163,7 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
             }
         } else {
             // 进入成员管理页面
-
+            GroupMembersActivity.open(this, circleObj);
         }
     }
 

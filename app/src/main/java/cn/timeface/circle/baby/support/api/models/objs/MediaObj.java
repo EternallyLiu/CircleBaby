@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -41,6 +40,27 @@ public class MediaObj extends BaseObj implements Parcelable {
     private List<MediaTipObj> tips;
     private MediaTipObj tip;//当前所属哪个标签
 
+    /**
+     * {
+     "content": "",
+     "favoritecount": 0,
+     "h": 4000,
+     "id": 520,
+     "imageOrientation": 0,
+     "imgUrl": "http://img1.timeface.cn/baby/6d1c59dbf1122726441bafa82741bc16.jpg",
+     "isCover": 0,
+     "isFavorite": 0,
+     "length": 0,
+     "localIdentifier": "17522",
+     "localPath": "",
+     "location": {},
+     "photographTime": 1490175913000,
+     "selected": 0,
+     "tips": [],
+     "videoUrl": "",
+     "w": 3000
+     }
+     */
     public MediaObj() {
     }
 

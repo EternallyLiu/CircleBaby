@@ -114,6 +114,15 @@
             android:text="近期照片"
             android:textSize="@dimen/text_normal" />
 
+        <TextView
+            android:id="@+id/tv_go_see"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="去瞧瞧>>"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/bg_color1"
+            android:textSize="@dimen/text_normal" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rc_content"
             android:layout_width="match_parent"
