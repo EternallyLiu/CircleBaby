@@ -29,6 +29,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
@@ -41,6 +42,7 @@ import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.RelateBabyObj;
+import cn.timeface.circle.baby.ui.circle.timelines.dialog.CircleBabyDialog;
 import cn.timeface.circle.baby.ui.guides.GuideHelper;
 import cn.timeface.circle.baby.ui.guides.GuideUtils;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
@@ -92,6 +94,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     FlipImageView ivImageLike;
     @Bind(R.id.fl_baby_list)
     FlowLayout flBabyList;
+    @Bind(R.id.tv_relate_baby)
+    TextView tvRelateBaby;
     private List<String> mPaths;
 
     private ArrayList<MediaObj> mMedias;
@@ -106,6 +110,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private int type = 0;//0默认时光轴跳转  1009、成长圈跳转，需要圈人
 
     private int allDetailsListPosition;
+    private CircleBabyDialog circleBabyDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -556,5 +561,11 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     public void imageClcik() {
         if (llBotton != null)
             llBotton.setVisibility(llBotton.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick(R.id.tv_relate_baby)
+    public void onClick() {
+//        if (circleBabyDialog == null)
+//            circleBabyDialog = new CircleBabyDialog(getActivity());
     }
 }

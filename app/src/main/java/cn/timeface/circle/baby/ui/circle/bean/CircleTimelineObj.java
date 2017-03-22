@@ -47,6 +47,19 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CircleTimelineObj that = (CircleTimelineObj) o;
+
+        if (getCircleTimelineId() > 0 && getCircleTimelineId() == that.getCircleTimelineId())
+            return true;
+        return false;
+    }
+
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeParcelable(activityAlbum, flags);

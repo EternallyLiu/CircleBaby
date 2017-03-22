@@ -41,6 +41,7 @@ import cn.timeface.circle.baby.support.mvp.presentations.CalendarPresentation;
 import cn.timeface.circle.baby.support.mvp.presenter.BookPresenter;
 import cn.timeface.circle.baby.support.mvp.presenter.CalendarPresenter;
 import cn.timeface.circle.baby.ui.calendar.bean.CommemorationDataManger;
+import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
 import cn.timeface.circle.baby.views.IconText;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
@@ -471,6 +472,11 @@ public class CalendarPreviewActivity extends BasePresenterAppCompatActivity impl
 
 	@Override
 	public void setBookData(List<BookObj> bookObjs, boolean hasPic) {
+
+	}
+
+	@Override
+	public void setCircleBookData(List<CircleBookObj> circleBookObjs) {
 
 	}
 }

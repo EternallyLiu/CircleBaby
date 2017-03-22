@@ -37,6 +37,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -282,6 +283,15 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
     @Subscribe
     public void onEvent(UnreadMsgEvent event) {
 
+    }
+
+    @Subscribe
+    public void onEvent(CircleTimeLineEditEvent event) {
+        if (event.getTimelineObj() != null && event.getType() == 1) {
+            adapter.deleteItem(event.getTimelineObj());
+        } else if (event.getTimelineObj() != null && event.getType() == 0) {
+            adapter.updateItem(event.getTimelineObj());
+        }
     }
 
     @Override
