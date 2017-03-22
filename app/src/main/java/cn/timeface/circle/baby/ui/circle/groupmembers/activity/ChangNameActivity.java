@@ -9,11 +9,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.events.UpdateMemberEvent;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -64,7 +67,7 @@ public class ChangNameActivity extends BaseAppCompatActivity {
             return;
         }
         switch (type) {
-            case 0:
+            case 1:
                 Subscription subscribe = apiService.updateBabyRealName(FastData.getBabyId(), s)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(new Action1<BaseResponse>() {
@@ -72,6 +75,8 @@ public class ChangNameActivity extends BaseAppCompatActivity {
                             public void call(BaseResponse baseResponse) {
                                 if (baseResponse.success()) {
                                     ToastUtil.showToast(ChangNameActivity.this,"操作成功");
+                                    EventBus.getDefault().post(new UpdateMemberEvent());
+                                    finish();
                                 }
                             }
                         }, new Action1<Throwable>() {
@@ -82,7 +87,7 @@ public class ChangNameActivity extends BaseAppCompatActivity {
                         });
                 addSubscription(subscribe);
                 break;
-            case 1:
+            case 2:
                 Subscription subscribe1 = apiService.updateNickname(circleUserInfo.getCircleId(), s, circleUserInfo.getCircleUserId())
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(new Action1<BaseResponse>() {
@@ -90,6 +95,8 @@ public class ChangNameActivity extends BaseAppCompatActivity {
                             public void call(BaseResponse baseResponse) {
                                 if (baseResponse.success()) {
                                     ToastUtil.showToast(ChangNameActivity.this,"操作成功");
+                                    EventBus.getDefault().post(new UpdateMemberEvent());
+                                    finish();
                                 }
                             }
                         }, new Action1<Throwable>() {

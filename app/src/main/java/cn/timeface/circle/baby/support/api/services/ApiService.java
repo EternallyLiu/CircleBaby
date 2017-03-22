@@ -76,6 +76,7 @@ import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
@@ -1686,5 +1687,14 @@ public interface ApiService {
     @POST("circle/updateNickname")
     Observable<BaseResponse> updateNickname(@Query("circleId") long circleId,
                                             @Query("nickName") String nickName,
+                                            @Query("userId") long userId);
+    /**
+     * 接口详情 (id: 7762) 复制URL
+     接口名称 成员近期发布的照片
+     请求类型 get
+     请求Url  /circle/getNewestPic
+     */
+    @POST("circle/getNewestPic")
+    Observable<MediasResponse> getNewestPic(@Query("circleId") long circleId,
                                             @Query("userId") long userId);
 }
