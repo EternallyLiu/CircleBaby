@@ -30,6 +30,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.CircleTimeLineDetailActivitiy;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -76,7 +77,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
             View headerView = mHeadView.get(viewType - VIEW_TYPE_HEADER);
             return new BaseViewHolder(headerView, null);
         } else if (viewType >= VIEW_TYPE_FOOTER && viewType < 0) {
-            View footer = mFooter.get(viewType - VIEW_TYPE_FOOTER);
+            View footer = mFooter.get(viewType - VIEW_TYPE_FOOTER - mHeadView.size() - getRealItemSize());
             return new BaseViewHolder(footer, null);
         } else return null;
     }
@@ -375,7 +376,10 @@ public class CircleTimeLineAdapter extends BaseAdapter {
                     deleteDialog.show();
                 break;
             default:
-                super.onClick(v);
+                Observable.defer(() -> Observable.just((Integer) v.getTag(R.id.recycler_item_click_tag)))
+                        .filter(integer -> integer >= 0)
+                        .map(integer -> getItem(integer))
+                        .subscribe(o -> CircleTimeLineDetailActivitiy.open(context(), (CircleTimelineObj) o), throwable -> LogUtil.showError(throwable));
                 break;
         }
     }
