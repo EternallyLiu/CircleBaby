@@ -34,6 +34,11 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         return currentUserInfo;
     }
 
+    public static void clearAll(){
+        SQLite.delete().from(CircleUserInfo.class).query();
+        currentUserInfo=null;
+    }
+
     public static CircleUserInfo refresh() {
         currentUserInfo = null;
         return getInstance();

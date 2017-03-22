@@ -77,7 +77,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
             View headerView = mHeadView.get(viewType - VIEW_TYPE_HEADER);
             return new BaseViewHolder(headerView, null);
         } else if (viewType >= VIEW_TYPE_FOOTER && viewType < 0) {
-            View footer = mFooter.get(viewType - VIEW_TYPE_FOOTER);
+            View footer = mFooter.get(viewType - VIEW_TYPE_FOOTER - mHeadView.size() - getRealItemSize());
             return new BaseViewHolder(footer, null);
         } else return null;
     }

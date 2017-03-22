@@ -61,6 +61,11 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         return currentGrowthCircleObj;
     }
 
+    public static void clearAll(){
+        SQLite.delete().from(GrowthCircleObj.class).query();
+        currentGrowthCircleObj=null;
+    }
+
     public static GrowthCircleObj refreshInstance() {
         currentGrowthCircleObj = null;
         return getInstance();

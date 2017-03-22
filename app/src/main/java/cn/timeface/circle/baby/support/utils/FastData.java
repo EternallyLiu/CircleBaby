@@ -650,6 +650,17 @@ public class FastData extends Remember {
         return CircleUserInfo.getInstance();
     }
 
+
+    /**
+     * 清空程长圈缓存数据
+     */
+    public static void clearCircleData() {
+        CircleUserInfo.clearAll();
+        GrowthCircleObj.clearAll();
+        setCircleId(0);
+        setCircleUserId(0);
+    }
+
     /**
      * 是否显示印成长 产品介绍
      */
