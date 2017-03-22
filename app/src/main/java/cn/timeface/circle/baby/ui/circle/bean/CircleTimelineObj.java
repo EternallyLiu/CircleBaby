@@ -102,6 +102,8 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     }
 
     public List<CircleCommentObj> getCommmentList() {
+
+        if (commmentList == null) commmentList = new ArrayList<>(0);
         return commmentList;
     }
 
@@ -118,6 +120,7 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     }
 
     public List<CircleUserInfo> getLikeList() {
+        if (likeList == null) likeList = new ArrayList<>(0);
         return likeList;
     }
 

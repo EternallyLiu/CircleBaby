@@ -117,7 +117,6 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
     }
 
     private void doContent(View view, String content) {
-        LogUtil.showLog("content===>" + content);
         TextView contentView = ViewHolder.getView(view, R.id.content);
         contentView.setText(content);
     }

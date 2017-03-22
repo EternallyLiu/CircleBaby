@@ -3,12 +3,15 @@ package cn.timeface.circle.baby.ui.circle.timelines.activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -28,12 +31,15 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleCommentObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineDetailAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.TimeLikeUserList;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.TitleBean;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleTimeLineGridStagger;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineDetailAdapter;
 import cn.timeface.circle.baby.ui.timelines.beans.LikeUserList;
@@ -45,7 +51,7 @@ import cn.timeface.circle.baby.ui.timelines.views.SelectImageView;
  * author : wangshuai Created on 2017/3/21
  * email : wangs1992321@gmail.com
  */
-public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister, BaseAdapter.LoadDataFinish {
+public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister, BaseAdapter.LoadDataFinish, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.title)
     TextView title;
@@ -78,17 +84,38 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     private GridLayoutManager layoutmanager;
     private CircleTimeLineGridStagger lookup;
     private InputMethodManager manager;
+    private Menu currentMenu;
+
+    public static void open(Context context, CircleTimelineObj timelineObj) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(CircleTimelineObj.class.getSimpleName(), timelineObj);
+        context.startActivity(new Intent(context, CircleTimeLineDetailActivitiy.class).putExtras(bundle));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_timeface_detail);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         title.setText("动态详情");
+        currentTimeLineObj = getIntent().getParcelableExtra(CircleTimelineObj.class.getSimpleName());
+        init();
+        initRecyclerView();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        onRefresh();
+    }
+
+    private void init() {
+        swipeRefresh.setOnRefreshListener(this);
     }
 
     private void initRecyclerView() {
@@ -110,12 +137,12 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int firstVisibleItemPosition = layoutmanager.findFirstVisibleItemPosition();
-                if (lookup.isShowSmail()) {
-                    if (firstVisibleItemPosition / lookup.getColumCount() > 1) {
-                        backUp.setVisibility(View.VISIBLE);
-                    } else backUp.setVisibility(View.GONE);
-                } else
-                    backUp.setVisibility(firstVisibleItemPosition > 0 ? View.VISIBLE : View.GONE);
+//                if (lookup.isShowSmail()) {
+//                    if (firstVisibleItemPosition > 4) {
+//                        backUp.setVisibility(View.VISIBLE);
+//                    } else backUp.setVisibility(View.GONE);
+//                } else
+                backUp.setVisibility(firstVisibleItemPosition > (lookup.getBeginCount() > 0 ? lookup.getBeginCount() - 1 : 0) ? View.VISIBLE : View.GONE);
             }
         });
         ArrayList<Object> contentList = new ArrayList<>();
@@ -137,9 +164,20 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         else hideKeyboard();
     }
 
+    private void reqData() {
+        addSubscription(apiService.queryCircleTimeLineDetail(currentTimeLineObj.getCircleTimelineId()).compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(circleTimeLineDetailResponse -> swipeRefresh.setRefreshing(false))
+                .subscribe(circleTimeLineDetailResponse -> {
+                    if (circleTimeLineDetailResponse.success() && circleTimeLineDetailResponse.getCircleTimelineInfo() != null) {
+                        currentTimeLineObj = circleTimeLineDetailResponse.getCircleTimelineInfo();
+                        initRecyclerView();
+                    } else ToastUtil.showToast(this, circleTimeLineDetailResponse.getInfo());
+                }, throwable -> swipeRefresh.setRefreshing(false)));
+    }
+
     @Override
     protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
         ButterKnife.unbind(this);
         super.onDestroy();
     }
@@ -148,6 +186,35 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         if (manager == null)
             manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.showSoftInput(etCommment, 0);
+    }
+
+    private void doMenu() {
+        if (currentMenu != null && currentTimeLineObj.getMediaList().size() > GridStaggerLookup.MAX_MEDIA_SIZE_SHOW_GRID)
+            currentMenu.findItem(R.id.action_smail_image).setVisible(true);
+        else if (currentMenu != null)
+            currentMenu.findItem(R.id.action_smail_image).setVisible(false);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_timeline_detail, menu);
+        currentMenu = menu;
+        doMenu();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_smail_image) {
+            lookup.setShowSmail(!lookup.isShowSmail());
+            adapter.notifyDataSetChanged();
+//            if (adapter.getRealItemSize() >= 0)
+//                contentRecyclerView.scrollToPosition(0);
+            if (lookup.isShowSmail())
+                item.setTitle("查看大图");
+            else item.setTitle("浏览小图");
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -162,7 +229,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         }
     }
 
-    @OnClick({R.id.add_like, R.id.add_comment})
+    @OnClick({R.id.add_like, R.id.add_comment, R.id.back_up})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.add_like:
@@ -223,5 +290,10 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     @Override
     public void loadfinish(int code) {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        reqData();
     }
 }

@@ -98,6 +98,7 @@ import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
 import cn.timeface.circle.baby.ui.circle.response.TeacherAuthIsHasResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.ActiveSelectListResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleTimeLineDetailResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.CreateActiveResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.TimeLineSendResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
@@ -1707,4 +1708,8 @@ public interface ApiService {
      */
     @POST("dynamic/delete")
     Observable<BaseResponse> deleteCircleTimeLine(@Query("circleTimelineId") long circleTimelineId);
+
+    @POST("dynamic/detail")
+    Observable<CircleTimeLineDetailResponse> queryCircleTimeLineDetail(@Query("circleTimelineId") long circleTimelineId);
+
 }
