@@ -111,6 +111,7 @@ public class ImageActionDialog extends BaseDialog implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
+        dismiss();
         switch (v.getId()) {
             case R.id.rl_add_content:
                 //编辑
@@ -126,7 +127,7 @@ public class ImageActionDialog extends BaseDialog implements View.OnClickListene
                 break;
             case R.id.rl_share:
                 //分享
-                callback(v, 1);
+                callback(v, 4);
                 break;
             case R.id.rl_cancel:
                 //取消

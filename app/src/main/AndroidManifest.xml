@@ -527,6 +527,13 @@
         <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
         <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
         android:theme="@style/TimeFaceTheme.DayNight" />
+        android:theme="@style/TimeFaceTheme.DayNight"/>
+
+        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
+        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
+        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
+
+        android:theme="@style/TimeFaceTheme.DayNight" />
         <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
         <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
         <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
@@ -547,7 +554,16 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".views.barcodescanner.CaptureActivity" />
 
+        <activity android:name="cn.timeface.circle.baby.views.barcodescanner.CaptureActivity" />
+        <activity
+            android:name="cn.timeface.circle.baby.ui.circle.activities.AddCircleBookActivity"
+            android:label="@string/add_circle_book"
+            android:theme="@style/AppTheme" />
+        <activity android:name="cn.timeface.circle.baby.ui.circle.activities.CircleBookActivity" />
+
         <service android:name=".ui.timelines.services.UploadVideoService" />
+        <service android:name=".ui.timelines.services.UploadVideoService" />
+
         //-----------------------countly----------------------------------
         <service android:name="org.openudid.OpenUDID_service">
             <intent-filter>
@@ -577,6 +593,10 @@
             android:name=".ui.circle.activities.CircleSelectServerTimesActivity"
             android:label="@string/title_activity_circle_select_server_times"
             android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"></activity>
+
+        <activity android:name=".ui.circle.timelines.activity.CircleTimeLineDetailActivitiy" />
+
         <activity android:name=".ui.circle.groupmembers.activity.GroupMembersActivity" />
         <activity android:name=".ui.circle.groupmembers.activity.InviteActivity" />
         <activity android:name=".ui.circle.groupmembers.activity.CheckMemberDetailActivity" />

@@ -41,6 +41,7 @@ import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.calendar.CalendarPreviewActivity;
+import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
@@ -220,6 +221,11 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
 
         this.hasPic = hasPic;
         updateEmptyView();
+    }
+
+    @Override
+    public void setCircleBookData(List<CircleBookObj> circleBookObjs) {
+
     }
 
     private void updateEmptyView() {

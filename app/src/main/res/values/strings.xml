@@ -747,6 +747,7 @@
     <string name="title_circle_photo">CirclePhotoActivity</string>
     <string name="add_active">添加活动相册</string>
     <string name="input_pc">导入电脑照片</string>
+    <string name="add_circle_book">新增圈作品</string>
 
     <string name="complete">完成</string>
 
@@ -883,4 +884,6 @@
     <string name="title_activity_circle_select_home_word_detail">
         CircleSelectHomeWordDetailActivity
     </string>
+    <string name="send_school_media_tip">添加说明图片（选填）</string>
+    <string name="school_title_input_tip">作业标题不能为空</string>
 </resources>

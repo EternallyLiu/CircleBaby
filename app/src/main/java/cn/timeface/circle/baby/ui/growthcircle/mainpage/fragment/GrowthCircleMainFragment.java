@@ -35,14 +35,17 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
 
-public class GrowthCircleMainFragment extends BaseFragment implements IEventBus {
+public class GrowthCircleMainFragment extends BaseFragment implements IEventBus, BaseAdapter.LoadDataFinish {
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -93,6 +96,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
 
     private void setupPTR() {
         adapter = new CircleTimeLineAdapter(getActivity());
+        adapter.setLoadDataFinish(this);
         recyclerView.setAdapter(adapter);
         IPTRRecyclerListener ptrListener = new IPTRRecyclerListener() {
             @Override
@@ -259,7 +263,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
                 showMoreDialog();
                 break;
             case R.id.iv_publish:
-
+                PublishActivity.open(getActivity());
                 break;
         }
     }
@@ -281,4 +285,20 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus 
 
     }
 
+    @Subscribe
+    public void onEvent(CircleTimeLineEditEvent event) {
+        if (event.getTimelineObj() != null && event.getType() == 1) {
+            adapter.deleteItem(event.getTimelineObj());
+        } else if (event.getTimelineObj() != null && event.getType() == 0) {
+            adapter.updateItem(event.getTimelineObj());
+        }
+    }
+
+    @Override
+    public void loadfinish(int code) {
+        if (adapter.getRealItemSize() <= 0 && footerView != null) {
+            tfStateView.empty(R.string.circle_no_dynamic);
+            adapter.addFooter(footerView);
+        }
+    }
 }

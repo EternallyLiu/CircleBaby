@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,12 +23,11 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
-import cn.timeface.circle.baby.support.utils.ToastUtil;
-import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.CirclePhotoMonthObj;
-import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
+import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 import cn.timeface.circle.baby.ui.circle.photo.dialogs.CircleByTimeMenuDialog;
 import cn.timeface.circle.baby.ui.circle.photo.dialogs.SelectCirclePhotoTypeDialog;
 import cn.timeface.circle.baby.ui.circle.photo.fragments.CirclePhotoFragment;
@@ -71,12 +69,21 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     private MenuItem itemTime;
     private MenuItem itemActivity;
     private long circleId;
+    private boolean user;
+    private long circle_useridd;
+    private CircleUserInfo circleUserInfo;
 
 
-    public static void open(Context context, long circleId, long babyId) {
+    public static void open(Context context, long circleId) {
         Intent intent = new Intent(context, CirclePhotoActivity.class);
         intent.putExtra("circle_id", circleId);
-        intent.putExtra("baby_id", babyId);
+        context.startActivity(intent);
+    }
+
+    public static void open(Context context, CircleUserInfo circleUserInfo, boolean user) {
+        Intent intent = new Intent(context, CirclePhotoActivity.class);
+        intent.putExtra("circleUserInfo",circleUserInfo);
+        intent.putExtra("user",user);
         context.startActivity(intent);
     }
 
@@ -91,6 +98,12 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         tfStateView.finish();
         tvContentType.setOnClickListener(this);
         circleId = getIntent().getLongExtra("circle_id", 0);
+        circleUserInfo = getIntent().getParcelableExtra("circleUserInfo");
+        if (circleUserInfo != null) {
+            circleId = circleUserInfo.getCircleId();
+        }
+        user = getIntent().getBooleanExtra("user", false);
+
     }
 
     @Override
@@ -101,42 +114,39 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
                 break;
             case R.id.ll_circle_activity:
                 //按活动条目
-                CircleActivityAlbumObj albumObj = (CircleActivityAlbumObj) view.getTag(R.string.tag_obj);
-                showToast(albumObj.getAlbumName());
+                QueryByCircleActivityObj albumObj = (QueryByCircleActivityObj) view.getTag(R.string.tag_obj);
                 tvContentType.setVisibility(View.GONE);
                 tvContent.setVisibility(View.VISIBLE);
-                tvContent.setText(albumObj.getAlbumName());
+                tvContent.setText(albumObj.getAlbum().getAlbumName());
 
+                showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_ACTIVITY, albumObj.getAlbum().getAlbumId()));
                 break;
             case R.id.ll_root:
                 Object obj = view.getTag(R.string.tag_obj);
                 if (obj instanceof QueryByCircleUserObj) {
                     //按发布人条目
-                    showToast(((QueryByCircleUserObj) obj).getUserInfo().getCircleNickName());
                     tvContentType.setVisibility(View.GONE);
                     tvContent.setVisibility(View.VISIBLE);
                     tvContent.setText(((QueryByCircleUserObj) obj).getUserInfo().getCircleNickName());
 
-                    CirclePhotoFragment circlePhotoFragment = CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, "747858646564", 151);
-                    showContentEx(circlePhotoFragment);
+                    showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, circleId, ((QueryByCircleUserObj) obj).getUserInfo().getCircleUserId()));
 
                 } else if (obj instanceof QueryByCircleBabyObj) {
                     //按@圈的宝宝条目
-                    showToast(((QueryByCircleBabyObj) obj).getBabyInfo().getNickName());
                     tvContentType.setVisibility(View.GONE);
                     tvContent.setVisibility(View.VISIBLE);
                     tvContent.setText(((QueryByCircleBabyObj) obj).getBabyInfo().getNickName());
 
-
+                    showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_ATBABY, circleId, ((QueryByCircleBabyObj) obj).getBabyInfo().getBabyId()));
                 }
                 break;
             case R.id.rl_month:
                 CirclePhotoMonthObj monthObj = (CirclePhotoMonthObj) view.getTag(R.string.tag_obj);
-                showToast(monthObj.getYear() + monthObj.getMonth() + monthObj.getMediaCount() + "张");
                 tvContentType.setVisibility(View.GONE);
                 tvContent.setVisibility(View.VISIBLE);
                 tvContent.setText(monthObj.getYear() + monthObj.getMonth());
 
+                showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, circleId, monthObj.getYear(), monthObj.getMonth()));
                 break;
         }
     }
@@ -165,7 +175,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     public void selectTypeTime() {
         tvContentType.setText("按时间");
         if (selectCircleTimeFragment == null) {
-            selectCircleTimeFragment = SelectCircleTimeFragment.newInstance(this);
+            selectCircleTimeFragment = SelectCircleTimeFragment.newInstance(this, circleId);
         }
         showContent(selectCircleTimeFragment);
         if (fragmentShow)
@@ -176,7 +186,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     public void selectTypeUser() {
         tvContentType.setText("按发布人");
         if (selectCircleUserFragment == null) {
-            selectCircleUserFragment = SelectCircleUserFragment.newInstance(this);
+            selectCircleUserFragment = SelectCircleUserFragment.newInstance(this, circleId);
         }
         showContent(selectCircleUserFragment);
         if (fragmentShow)
@@ -187,9 +197,10 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     public void selectTypeActivity() {
         tvContentType.setText("按活动");
         if (selectCircleActivityFragment == null) {
-            selectCircleActivityFragment = SelectCircleActivityFragment.newInstance(this);
+            selectCircleActivityFragment = SelectCircleActivityFragment.newInstance(this, circleId);
         }
         showContent(selectCircleActivityFragment);
+        if (fragmentShow)
         if (fragmentShow)
             onClick(tvContentType);
     }
@@ -198,7 +209,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     public void selectTypeAt() {
         tvContentType.setText("按@圈的宝宝");
         if (selectCircleBabyFragment == null) {
-            selectCircleBabyFragment = SelectCircleBabyFragment.newInstance(this);
+            selectCircleBabyFragment = SelectCircleBabyFragment.newInstance(this, circleId);
         }
         showContent(selectCircleBabyFragment);
         if (fragmentShow)
@@ -215,13 +226,13 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         ArrayList<String> paths = new ArrayList<>();
         MediaObj mediaObj = (MediaObj) view.getTag(R.string.tag_obj);
         ArrayList<MediaObj> mediaList = (ArrayList<MediaObj>) view.getTag(R.string.tag_ex);
-        for(int i =0;i<mediaList.size();i++){
+        for (int i = 0; i < mediaList.size(); i++) {
             paths.add(mediaList.get(i).getImgUrl());
-            if(mediaList.get(i).getImgUrl().equals(mediaObj.getImgUrl())){
+            if (mediaList.get(i).getImgUrl().equals(mediaObj.getImgUrl())) {
                 position = i;
             }
         }
-        FragmentBridgeActivity.openBigimageFragment(this,mediaList,paths,position,false,false);
+        FragmentBridgeActivity.openBigimageFragment(this, mediaList, paths, position, false, false);
 
     }
 
@@ -247,6 +258,11 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         currentFragment = fragment;
 
         ft.commitAllowingStateLoss();
+
+        initMenu();
+    }
+
+    private void initMenu() {
         if (currentFragment instanceof SelectCircleTimeFragment) {
             showMenu(false, true);
         } else if (currentFragment instanceof SelectCircleActivityFragment) {
@@ -296,6 +312,13 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         itemActivity = menu.findItem(R.id.action_by_actvity);
         itemTime = menu.findItem(R.id.action_by_time);
         selectTypeActivity();
+        if(user){
+            tvContentType.setVisibility(View.GONE);
+            tvContent.setVisibility(View.VISIBLE);
+            tvContent.setText(circleUserInfo.getCircleNickName());
+            showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, circleUserInfo.getCircleId(), Long.valueOf(circleUserInfo.getCircleUserId())));
+            canBack = false;
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -309,7 +332,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
                 ActiveAddActivity.open(this, circleId);
                 return true;
             case R.id.action_by_time:
-                new CircleByTimeMenuDialog(this,this).show();
+                new CircleByTimeMenuDialog(this, this).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -323,6 +346,8 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
             tvContent.setVisibility(View.GONE);
             tvContentType.setVisibility(View.VISIBLE);
             flContainerEx.setVisibility(View.GONE);
+
+            initMenu();
         } else {
             super.onBackPressed();
         }
@@ -335,6 +360,6 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
 
     @Override
     public void inputPc() {
-        InputPcActivity.open(this,0);
+        InputPcActivity.open(this, 0);
     }
 }

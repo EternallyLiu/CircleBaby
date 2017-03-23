@@ -13,6 +13,9 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +23,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.events.UpdateMemberDetailEvent;
+import cn.timeface.circle.baby.events.UpdateMemberEvent;
+import cn.timeface.circle.baby.events.UpdateNameEvent;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.GroupMemberAdapter;
+import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
@@ -30,7 +39,7 @@ import cn.timeface.circle.baby.ui.circle.groupmembers.section.GroupMemberSection
 import rx.Subscription;
 import rx.functions.Action1;
 
-public class GroupMembersActivity extends BaseAppCompatActivity {
+public class GroupMembersActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Bind(R.id.title)
     TextView title;
@@ -45,6 +54,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
     List<MenemberInfo> teacherUserInfoList;
     List<MenemberInfo> appliUserInfoList;
     GrowthCircleObj circleObj;
+    MenemberInfo menemberInfo;
 
     public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, GroupMembersActivity.class);
@@ -97,7 +107,16 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
     private ArrayList<GroupMemberSection> getContent() {
         ArrayList<GroupMemberSection> menuSections = new ArrayList<>();
         //1&老师&4   1是类型  2是title  3是个数
-        menuSections.add(new GroupMemberSection(true, "1&老师&" + teacherUserInfoList.size()));
+        if (teacherUserInfoList.size() > 0) {
+            menuSections.add(new GroupMemberSection(true, "1&老师&" + teacherUserInfoList.size()));
+            for(int i=0;i<teacherUserInfoList.size();i++) {
+                if (teacherUserInfoList.get(i).getUserInfo().getCircleUserId() == FastData.getCircleUserInfo().getCircleUserId()) {
+                    this.menemberInfo = teacherUserInfoList.get(i);
+                    EventBus.getDefault().post(new UpdateMemberDetailEvent(menemberInfo));
+                }
+            }
+
+        }
         for (int i = 0; i < teacherUserInfoList.size(); i++) {
             menuSections.add(new GroupMemberSection(teacherUserInfoList.get(i)));
         }
@@ -105,11 +124,16 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
         List<MenemberInfo> circleMember = getCircleMember();
         for (int i = 0; i < circleMember.size(); i++) {
             menuSections.add(new GroupMemberSection(circleMember.get(i)));
+            if (circleMember.get(i).getUserInfo().getCircleUserId() == FastData.getCircleUserInfo().getCircleUserId()) {
+                this.menemberInfo = circleMember.get(i);
+                EventBus.getDefault().post(new UpdateMemberDetailEvent(menemberInfo));
+            }
         }
-
-        menuSections.add(new GroupMemberSection(true, "3&入圈申请&" + appliUserInfoList.size()));
+        if (appliUserInfoList.size() > 0) {
+            menuSections.add(new GroupMemberSection(true, "3&入圈申请&" + appliUserInfoList.size()));
+        }
         for (int i = 0; i < appliUserInfoList.size(); i++) {
-            appliUserInfoList.get(i).getCircleUserInfo().setCircleUserType(5);
+            appliUserInfoList.get(i).getUserInfo().setCircleUserType(5);
             menuSections.add(new GroupMemberSection(appliUserInfoList.get(i)));
         }
         return menuSections;
@@ -129,7 +153,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
             circleUserInfos.addAll(normalUserInfoList);
         }
         CircleUserInfo circleUserInfo = new CircleUserInfo("", "新增成员", 4);
-        circleUserInfos.add(new MenemberInfo("", 0, circleUserInfo));
+        circleUserInfos.add(new MenemberInfo(new CircleBabyBriefObj(), "", circleUserInfo));
         return circleUserInfos;
     }
 
@@ -147,13 +171,13 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
                 GroupMemberSection groupMemberSection = (GroupMemberSection) baseQuickAdapter.getItem(i);
                 MenemberInfo t = groupMemberSection.t;
                 if (t != null) {
-                    CircleUserInfo circleUserInfo = groupMemberSection.t.getCircleUserInfo();
+                    CircleUserInfo circleUserInfo = groupMemberSection.t.getUserInfo();
                     switch (circleUserInfo.getCircleUserType()) {
                         case 4:
-                            InviteActivity.open(GroupMembersActivity.this,circleObj);
+                            InviteActivity.open(GroupMembersActivity.this, circleObj);
                             break;
                         default:
-                            CheckMemberDetailActivity.open(GroupMembersActivity.this, circleUserInfo);
+                            CheckMemberDetailActivity.open(GroupMembersActivity.this, t);
                     }
                 }
             }
@@ -174,5 +198,24 @@ public class GroupMembersActivity extends BaseAppCompatActivity {
                 }
             }
         });
+    }
+
+    @Subscribe
+    public void onEvent(UpdateMemberEvent event) {
+        if (normalUserInfoList.size() > 0) {
+            normalUserInfoList.clear();
+        }
+        if (teacherUserInfoList.size() > 0) {
+            teacherUserInfoList.clear();
+        }
+        if (appliUserInfoList.size() > 0) {
+            appliUserInfoList.clear();
+        }
+        reqContent();
+    }
+
+    @Subscribe
+    public void onEvent(UpdateNameEvent event) {
+        reqContent();
     }
 }

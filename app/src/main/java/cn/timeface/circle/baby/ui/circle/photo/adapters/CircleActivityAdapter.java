@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 
 /**
  * 活动列表adapter
@@ -44,7 +45,7 @@ public class CircleActivityAdapter extends BaseRecyclerAdapter<CircleActivityAlb
         holder.tvCirclracticityName.setText(albumObj.getAlbumName());
         holder.tvCirclracticityCount.setText(mContext.getString(R.string.circle_activity_photo_count,albumObj.getMediaCount()));
         Glide.with(mContext)
-                .load(albumObj.getMediaUrl())
+                .load(albumObj.getAlbumUrl())
                 .into(holder.ivCircleActivity);
         holder.llCircleActivity.setTag(R.string.tag_obj, albumObj);
         if (clickListener != null) holder.llCircleActivity.setOnClickListener(clickListener);

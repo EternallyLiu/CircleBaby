@@ -71,12 +71,17 @@ import cn.timeface.circle.baby.support.mvp.model.GeneralBookResponse;
 import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
+import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
+import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
@@ -90,6 +95,7 @@ import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSchoolTaskListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
@@ -101,6 +107,8 @@ import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
 import cn.timeface.circle.baby.ui.circle.response.TeacherAuthIsHasResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.ActiveSelectListResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleSchoolTaskResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleTimeLineDetailResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.CreateActiveResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.TimeLineSendResponse;
 import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
@@ -1739,4 +1747,67 @@ public interface ApiService {
     Observable<CircleHomeWorkListResponse> queryHomeworksByBaby(
             @Query("circleId") String circleId,
             @Query("babyId") int babyId);
+
+    /**
+     * 删除圈动态
+     * @param circleTimelineId
+     * @return
+     */
+    @POST("dynamic/delete")
+    Observable<BaseResponse> deleteCircleTimeLine(@Query("circleTimelineId") long circleTimelineId);
+
+    /**
+     * 查询圈动态详情
+     *
+     * @param circleTimelineId
+     * @return
+     */
+    @POST("dynamic/detail")
+    Observable<CircleTimeLineDetailResponse> queryCircleTimeLineDetail(@Query("circleTimelineId") long circleTimelineId);
+
+    /**
+     * 接口详情 (id: 7762) 复制URL
+     * 接口名称 成员近期发布的照片
+     * 请求类型 get
+     * 请求Url  /circle/getNewestPic
+     */
+    @POST("circle/getNewestPic")
+    Observable<MediasResponse> getNewestPic(@Query("circleId") long circleId,
+                                            @Query("userId") long userId);
+
+    /**
+     * 编辑圈动态
+     *
+     * @param circleTimelineInfo
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("dynamic/update")
+    Observable<CircleTimeLineDetailResponse> editorCircleTimeLine(@Field("circleTimelineInfo") String circleTimelineInfo);
+
+
+    /**
+     * 发布作业
+     *
+     * @param circleId
+     * @param schoolTask
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("homework/publish")
+    Observable<CircleSchoolTaskResponse> sendSchoolTask(@Field("circleId") long circleId,
+                                                        @Field("schoolTask") String schoolTask);
+
+    /**
+     * 圈作品列表
+     * @param circleId
+     * @param permissionType
+     * @return
+     */
+    @GET("circle/book/list")
+    Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList(@Query("circleId") long circleId,
+                                                                       @Query("permissionType") int permissionType);
+
+    @GET("circleBook/typeList")
+    Observable<QueryCirclePhotoResponse<CircleBookTypeObj>> circleBookTypeList();
 }

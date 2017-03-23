@@ -1,15 +1,25 @@
 package cn.timeface.circle.baby.ui.circle.timelines.activity;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -41,6 +51,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.PublishAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.ItemObj;
 import cn.timeface.circle.baby.ui.circle.timelines.events.ActiveSelectEvent;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleGridStaggerLookup;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -65,6 +76,7 @@ public class PublishActivity extends BaseAppCompatActivity {
 
     private int type = PublishAdapter.TYPE_TIMELINE;
     private CircleGridStaggerLookup lookup;
+    private AlertDialog progressDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,32 +101,9 @@ public class PublishActivity extends BaseAppCompatActivity {
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
+        hideProgress();
         ButterKnife.unbind(this);
         super.onDestroy();
-    }
-
-    /**
-     * 发送或者编辑圈动态
-     *
-     * @param context
-     * @param timlineObj
-     */
-    public static void open(Context context, CircleTimelineObj timlineObj) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("type", PublishAdapter.TYPE_TIMELINE);
-        bundle.putParcelable(CircleTimelineObj.class.getSimpleName(), timlineObj);
-        context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
-    }
-
-    /**
-     * 上下文  默认发布圈动态
-     *
-     * @param context
-     */
-    public static void open(Context context) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("type", PublishAdapter.TYPE_TIMELINE);
-        context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -135,11 +124,13 @@ public class PublishActivity extends BaseAppCompatActivity {
                 CircleTimelineObj timelineObj = bundle.getParcelable(CircleTimelineObj.class.getSimpleName());
                 adapter.setContentObj(timelineObj);
                 break;
-            case PublishAdapter.TYPE_WORK:
-                title.setText(R.string.send_circle_homework_title);
-                break;
             case PublishAdapter.TYPE_SCHOOL:
                 title.setText(R.string.send_circle_school_title);
+                CircleSchoolTaskObj schoolTaskObj = bundle.getParcelable(CircleSchoolTaskObj.class.getSimpleName());
+                adapter.setContentObj(schoolTaskObj);
+                break;
+            case PublishAdapter.TYPE_WORK:
+                title.setText(R.string.send_circle_homework_title);
                 break;
 
         }
@@ -173,55 +164,140 @@ public class PublishActivity extends BaseAppCompatActivity {
 
     private void sendTimeLine() {
         if (adapter.getType() == PublishAdapter.TYPE_TIMELINE) {
-            CircleTimelineObj timelineObj = (CircleTimelineObj) adapter.getContentObj();
-            if (timelineObj.getCircleTimelineId() <= 0) {
-                timelineObj.setCreateDate(System.currentTimeMillis());
-            }
-            if (Utils.getByteSize(timelineObj.getTitle()) > 20) {
-                ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 20));
-                return;
-            } else if (Utils.getByteSize(timelineObj.getContent()) > 400) {
-                ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "内容", 400));
-                return;
-            }
-            for (ImgObj imgObj : adapter.getSelImage()) {
-                if (!timelineObj.getMediaList().contains(imgObj.getCircleMediaObj())) {
-                    timelineObj.getMediaList().add(imgObj.getCircleMediaObj());
-                }
-            }
-            if (timelineObj.getMediaList().size() > PublishAdapter.MAX_PIC_TIMELINE_COUNT) {
-                ToastUtil.showToast(this, String.format(getString(R.string.pic_select_max_tip), PublishAdapter.MAX_PIC_TIMELINE_COUNT));
-                return;
-            }
-            List<String> list = new ArrayList<>(0);
-            for (CircleMediaObj mediaObj : timelineObj.getMediaList())
-                if (mediaObj.getId() <= 0) list.add(mediaObj.getLocalPath());
-            if (list.size() > 0)
-                UploadService.start(this, list);
-            String send = new Gson().toJson(timelineObj);
-            addSubscription(apiService.sendCircleTimeLine(FastData.getCircleId(), URLEncoder.encode(send)).compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(timeLineSendResponse -> {
-                        if (timeLineSendResponse.success())
-                            finish();
-                    }, throwable -> LogUtil.showError(throwable)));
+            doTimeLine();
+        } else if (adapter.getType() == PublishAdapter.TYPE_SCHOOL) {
+            doSchool();
         }
-//        addSubscription(Observable.defer(() -> adapter.getSendContent())
-//                .compose(SchedulersCompat.applyIoSchedulers())
-//                .filter(circleContentObj -> {
-//                    if (circleContentObj.getMediaList().size() <= 0) {
-//                        ToastUtil.showToast(this, getString(R.string.please_send_one_picture));
-//                        return false;
-//                    } else return true;
-//                })
-//                .map(circleContentObj -> JSONUtils.parse2JSONString(circleContentObj))
-//                .filter(s -> !TextUtils.isEmpty(s))
-//                .doOnNext(s -> LogUtil.showLog("s===" + s))
-//                .flatMap(s -> apiService.sendCircleTimeLine(FastData.getCircleId(), s).compose(SchedulersCompat.applyIoSchedulers()))
-//                .subscribe(timeLineSendResponse -> {
-//                    if (timeLineSendResponse.success()) {
-//                        finish();
-//                    } else ToastUtil.showToast(this, timeLineSendResponse.getInfo());
-//                }, throwable -> LogUtil.showError(throwable)));
+    }
+
+    private void doSchool() {
+        CircleSchoolTaskObj schoolTask = (CircleSchoolTaskObj) adapter.getContentObj();
+        if (TextUtils.isEmpty(schoolTask.getTitle())) {
+            ToastUtil.showToast(this, getString(R.string.school_title_input_tip));
+            return;
+        } else if (Utils.getByteSize(schoolTask.getTitle()) > 20) {
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 20));
+            return;
+        } else if (Utils.getByteSize(schoolTask.getContent()) > 1200) {
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 1200));
+            return;
+        }
+        for (ImgObj imgObj : adapter.getSelImage()) {
+            if (!schoolTask.getMediaList().contains(imgObj.getCircleMediaObj())) {
+                schoolTask.getMediaList().add(imgObj.getCircleMediaObj());
+            }
+        }
+        if (schoolTask.getMediaList().size() > PublishAdapter.MAX_PIC_WORK_COUNT) {
+            ToastUtil.showToast(this, String.format(getString(R.string.pic_select_max_tip), PublishAdapter.MAX_PIC_WORK_COUNT));
+            return;
+        }
+        String send = new Gson().toJson(schoolTask);
+        showProgress();
+        addSubscription(apiService.sendSchoolTask(FastData.getCircleId(), Uri.encode(send))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(circleSchoolTaskResponse -> hideProgress())
+                .subscribe(circleSchoolTaskResponse -> {
+                    if (circleSchoolTaskResponse.success()) {
+                        finish();
+                    } else ToastUtil.showToast(this, circleSchoolTaskResponse.getInfo());
+                }, throwable -> {
+                    hideProgress();
+                    LogUtil.showError(throwable);
+                }));
+    }
+
+    /**
+     * 编辑  发布圈动态
+     * 依据cirleTimeLineId是否大于0
+     */
+    private void doTimeLine() {
+        CircleTimelineObj timelineObj = (CircleTimelineObj) adapter.getContentObj();
+        if (timelineObj.getCircleTimelineId() <= 0) {
+            timelineObj.setCreateDate(System.currentTimeMillis());
+        }
+        if (Utils.getByteSize(timelineObj.getTitle()) > 20) {
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 20));
+            return;
+        } else if (Utils.getByteSize(timelineObj.getContent()) > 400) {
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "内容", 400));
+            return;
+        }
+        for (ImgObj imgObj : adapter.getSelImage()) {
+            if (!timelineObj.getMediaList().contains(imgObj.getCircleMediaObj())) {
+                timelineObj.getMediaList().add(imgObj.getCircleMediaObj());
+            }
+        }
+        if (timelineObj.getMediaList().size() > PublishAdapter.MAX_PIC_TIMELINE_COUNT) {
+            ToastUtil.showToast(this, String.format(getString(R.string.pic_select_max_tip), PublishAdapter.MAX_PIC_TIMELINE_COUNT));
+            return;
+        }
+        List<String> list = new ArrayList<>(0);
+        for (CircleMediaObj mediaObj : timelineObj.getMediaList())
+            if (mediaObj.getId() <= 0) list.add(mediaObj.getLocalPath());
+        String send = new Gson().toJson(timelineObj);
+        LogUtil.showLog("send:" + send);
+        showProgress();
+        if (timelineObj.getCircleTimelineId() > 0) {
+            addSubscription(apiService.editorCircleTimeLine(Uri.encode(send))
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .doOnNext(circleTimeLineDetailResponse -> hideProgress())
+                    .subscribe(
+                            circleTimeLineDetailResponse -> {
+                                LogUtil.showLog("info:" + circleTimeLineDetailResponse.getInfo());
+                                if (circleTimeLineDetailResponse.success()) {
+                                    EventBus.getDefault().post(new CircleTimeLineEditEvent(circleTimeLineDetailResponse.getCircleTimelineInfo()));
+                                    if (list.size() > 0)
+                                        UploadService.start(this, list);
+                                    finish();
+                                } else
+                                    ToastUtil.showToast(this, circleTimeLineDetailResponse.getInfo());
+                            }
+                            , throwable -> {
+                                hideProgress();
+                                LogUtil.showError(throwable);
+                            }));
+        } else
+            addSubscription(apiService.sendCircleTimeLine(FastData.getCircleId(), Uri.encode(send)).compose(SchedulersCompat.applyIoSchedulers())
+                    .doOnNext(timeLineSendResponse -> hideProgress())
+                    .subscribe(timeLineSendResponse -> {
+                        if (timeLineSendResponse.success()) {
+                            if (list.size() > 0)
+                                UploadService.start(this, list);
+                            finish();
+                        } else ToastUtil.showToast(this, timeLineSendResponse.getInfo());
+                    }, throwable -> {
+                        hideProgress();
+                        LogUtil.showError(throwable);
+                    }));
+    }
+
+    private void hideProgress() {
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+
+    private void showProgress() {
+        if (progressDialog == null) {
+            progressDialog = new AlertDialog.Builder(this).setView(initProgress()).show();
+            progressDialog.setCanceledOnTouchOutside(false);
+            Window window = progressDialog.getWindow();
+            window.setGravity(Gravity.CENTER);
+            window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+            window.setWindowAnimations(R.style.bottom_dialog_animation);
+        }
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    private View initProgress() {
+        View view = View.inflate(this, R.layout.view_upload_progress, null);
+        ImageView ivLoad = (ImageView) view.findViewById(R.id.pb_loading);
+        TextView tvProgress = (TextView) view.findViewById(R.id.tv_progress);
+        tvProgress.setText("正在发送请求~~");
+        ((Animatable) ivLoad.getDrawable()).start();
+        return view;
     }
 
     @Override
@@ -248,6 +324,50 @@ public class PublishActivity extends BaseAppCompatActivity {
                     break;
             }
         }
+    }
+
+
+    public static void openSchoolTask(Context context) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", PublishAdapter.TYPE_SCHOOL);
+        context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
+    }
+
+    /**
+     * 布置或者编辑作业
+     *
+     * @param context
+     * @param timlineObj
+     */
+    public static void open(Context context, CircleSchoolTaskObj timlineObj) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", PublishAdapter.TYPE_SCHOOL);
+        bundle.putParcelable(CircleSchoolTaskObj.class.getSimpleName(), timlineObj);
+        context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
+    }
+
+    /**
+     * 发送或者编辑圈动态
+     *
+     * @param context
+     * @param timlineObj
+     */
+    public static void open(Context context, CircleTimelineObj timlineObj) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", PublishAdapter.TYPE_TIMELINE);
+        bundle.putParcelable(CircleTimelineObj.class.getSimpleName(), timlineObj);
+        context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
+    }
+
+    /**
+     * 上下文  默认发布圈动态
+     *
+     * @param context
+     */
+    public static void open(Context context) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", PublishAdapter.TYPE_TIMELINE);
+        context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
     }
 
 
