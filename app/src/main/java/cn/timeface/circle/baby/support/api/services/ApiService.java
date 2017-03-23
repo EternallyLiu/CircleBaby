@@ -72,7 +72,6 @@ import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
-import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
@@ -81,7 +80,6 @@ import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
-import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
@@ -95,7 +93,6 @@ import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSchoolTaskListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
-import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
@@ -1403,7 +1400,19 @@ public interface ApiService {
     Observable<QueryCirclePhotoResponse<GetCircleAllBabyObj>> getCircleAllBaby(
             @Query("circleId") String circleId,
             @Query("hasAlone") int hasAlone,
-            @Query("mediaId") String mediaId);
+            @Query("mediaId") int mediaId);
+
+    /**
+     * 获取圈内的所有宝宝
+     *
+     * @param circleId
+     * @param hasAlone
+     * @return
+     */
+    @GET("circle/allBaby")
+    Observable<QueryCirclePhotoResponse<GetCircleAllBabyObj>> getCircleAllBaby(
+            @Query("circleId") String circleId,
+            @Query("hasAlone") int hasAlone);
 
     /**
      * 查询圈时光上次发布的活动相册
@@ -1739,7 +1748,7 @@ public interface ApiService {
      * @param activityAlbumId
      * @return
      */
-    @POST("circle/activity/detail")
+    @POST("activity/detail")
     Observable<QueryPhotoResponse> queryAlbumPhotos(@Query("activityAlbumId") String activityAlbumId);
 
     /**
@@ -1747,7 +1756,7 @@ public interface ApiService {
      * @param circleId
      * @return
      */
-    @POST("circle/homework/teacherHomeworkList")
+    @POST("homework/teacherHomeworkList")
     Observable<CircleSchoolTaskListResponse> queryCircleTasks(
             @Query("circleId") String circleId,
             @Query("currentPage") int currentPage,
@@ -1758,7 +1767,7 @@ public interface ApiService {
      * @param circleId
      * @return
      */
-    @POST("circle/homework/queryHomeworkByBabyId")
+    @GET("homework/queryHomeworkByBabyId")
     Observable<CircleHomeWorkListResponse> queryHomeworksByBaby(
             @Query("circleId") String circleId,
             @Query("babyId") int babyId);

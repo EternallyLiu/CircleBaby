@@ -11,17 +11,15 @@ import android.view.ViewGroup;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
-import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.activities.CircleSelectHomeWordDetailActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectHomeWorkDetailActivity;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectBabyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -62,34 +60,25 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
         return view;
     }
 
-    private void reqData(){
+    private void reqData() {
         stateView.loading();
-        if(!BuildConfig.DEBUG) {
-            addSubscription(
-                    apiService.getCircleAllBaby(circleId, 1, "")
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .doOnCompleted(() -> stateView.finish())
-                            .subscribe(
-                                    response -> {
+        addSubscription(
+                apiService.getCircleAllBaby(circleId, 1)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnCompleted(() -> stateView.finish())
+                        .subscribe(
+                                response -> {
+                                    if (response.success()) {
                                         setData(response.getDataList());
-                                    },
-                                    throwable -> {
-                                        Log.e(TAG, throwable.getLocalizedMessage());
+                                    } else {
+                                        ToastUtil.showToast(response.getInfo());
                                     }
-                            )
-            );
-        } else {
-            List<GetCircleAllBabyObj> allBabyObjList = new ArrayList<>();
-            for(int i = 0; i < 10; i++){
-                GetCircleAllBabyObj babyObj = new GetCircleAllBabyObj();
-                babyObj.setBabyAvatarUrl(FastData.getBabyAvatar());
-                babyObj.setBabyName(FastData.getUserName());
-                babyObj.setSelectUserId(Long.parseLong(FastData.getUserId()));
-                allBabyObjList.add(babyObj);
-            }
-            setData(allBabyObjList);
-            stateView.finish();
-        }
+                                },
+                                throwable -> {
+                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                }
+                        )
+        );
     }
 
     private void setData(List<GetCircleAllBabyObj> allBabyObjList){
@@ -119,7 +108,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
         switch (view.getId()){
             case R.id.rl_root:
                 GetCircleAllBabyObj babyObj = (GetCircleAllBabyObj) view.getTag(R.string.tag_obj);
-                CircleSelectHomeWordDetailActivity.open(getActivity(), circleId, babyObj.getBabyId());
+                CircleSelectHomeWorkDetailActivity.open(getActivity(), circleId, babyObj.getCircleBabyId());
                 break;
         }
     }

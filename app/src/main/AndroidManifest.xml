@@ -604,7 +604,11 @@
             android:label="@string/title_activity_circle_select_serve_home_works"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".ui.circle.activities.CircleSelectHomeWordDetailActivity"
+            android:name=".ui.circle.activities.CircleSelectHomeWorkDetailActivity"
+            android:label="@string/title_activity_circle_select_home_word_detail"
+            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".ui.circle.activities.CircleSelectHomeWorkTaskDetailActivity"
             android:label="@string/title_activity_circle_select_home_word_detail"
             android:theme="@style/AppTheme"></activity>
     </application>

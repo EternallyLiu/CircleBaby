@@ -6,22 +6,22 @@ package cn.timeface.circle.baby.ui.circle.bean;
  * email : sunyanwei@timeface.cn
  */
 public class CircleActivityAlbumObjWrapper {
-    private CircleActivityAlbumObj atcityAlbum;
-    private String atcityAlbumCoverUrl;
+    private CircleActivityAlbumObj activityAlbum;
+    private String activityAlbumCoverUrl;
 
-    public CircleActivityAlbumObj getAtcityAlbum() {
-        return atcityAlbum;
+    public CircleActivityAlbumObj getActivityAlbum() {
+        return activityAlbum;
     }
 
-    public void setAtcityAlbum(CircleActivityAlbumObj atcityAlbum) {
-        this.atcityAlbum = atcityAlbum;
+    public void setActivityAlbum(CircleActivityAlbumObj activityAlbum) {
+        this.activityAlbum = activityAlbum;
     }
 
-    public String getAtcityAlbumCoverUrl() {
-        return atcityAlbumCoverUrl;
+    public String getActivityAlbumCoverUrl() {
+        return activityAlbumCoverUrl;
     }
 
-    public void setAtcityAlbumCoverUrl(String atcityAlbumCoverUrl) {
-        this.atcityAlbumCoverUrl = atcityAlbumCoverUrl;
+    public void setActivityAlbumCoverUrl(String activityAlbumCoverUrl) {
+        this.activityAlbumCoverUrl = activityAlbumCoverUrl;
     }
 }

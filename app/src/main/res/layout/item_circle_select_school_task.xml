@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:background="@drawable/selector_click_able"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/view_space_medium"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical">
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_click_able"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:padding="@dimen/view_space_medium">
 
     <TextView
         android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textColor="@color/text"
         android:textSize="18sp"
-        tools:text="寒假为父母做一件事"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        tools:text="寒假为父母做一件事" />
 
     <TextView
         android:id="@+id/tv_select_count"

@@ -16,7 +16,7 @@ public class GetCircleAllBabyObj extends BaseObj implements Parcelable {
     protected String babyAvatarUrl;
     protected String babyName;
     private long selectUserId;          //圈中宝宝的用户ID
-    private int babyId;
+    private int circleBabyId;
 
     public GetCircleAllBabyObj() {
     }
@@ -81,11 +81,11 @@ public class GetCircleAllBabyObj extends BaseObj implements Parcelable {
         return CREATOR;
     }
 
-    public int getBabyId() {
-        return babyId;
+    public int getCircleBabyId() {
+        return circleBabyId;
     }
 
-    public void setBabyId(int babyId) {
-        this.babyId = babyId;
+    public void setCircleBabyId(int circleBabyId) {
+        this.circleBabyId = circleBabyId;
     }
 }

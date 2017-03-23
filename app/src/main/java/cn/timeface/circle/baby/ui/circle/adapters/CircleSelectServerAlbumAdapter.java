@@ -43,10 +43,11 @@ public class CircleSelectServerAlbumAdapter extends BaseRecyclerAdapter<CircleAc
         final CircleActivityAlbumObjWrapper albumObjWrapper = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.rlRoot.setTag(R.string.tag_obj, albumObjWrapper);
+        holder.rlRoot.setTag(R.string.tag_index, position);
         if(onClickListener != null) holder.rlRoot.setOnClickListener(onClickListener);
-        holder.tvAlbumTitle.setText(albumObjWrapper.getAtcityAlbum().getAlbumName());
-        holder.tvAlbumPhotoCount.setText("已有照片" + String.valueOf(albumObjWrapper.getAtcityAlbum().getMediaCount()) + "张");
-        GlideUtil.displayImage(albumObjWrapper.getAtcityAlbumCoverUrl(), holder.ivAlbumCover);
+        holder.tvAlbumTitle.setText(albumObjWrapper.getActivityAlbum().getAlbumName());
+        holder.tvAlbumPhotoCount.setText("已有照片" + String.valueOf(albumObjWrapper.getActivityAlbum().getMediaCount()) + "张");
+        GlideUtil.displayImage(albumObjWrapper.getActivityAlbumCoverUrl(), holder.ivAlbumCover);
     }
 
     @Override

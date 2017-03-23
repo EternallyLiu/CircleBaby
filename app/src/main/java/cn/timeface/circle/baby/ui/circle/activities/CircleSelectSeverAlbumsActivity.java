@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,15 +22,13 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerAlbumAdapter;
-import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObjWrapper;
-import cn.timeface.circle.baby.ui.circle.response.CirclePhotoBookResponse;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -54,6 +53,9 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
     String circleId;
     CircleSelectServerAlbumAdapter selectServerAlbumAdapter;
+    final int REQUEST_CODE_SELECT_SERVER_PHOTO = 100;
+    List<MediaObj> allSelectMedias = new ArrayList<>();
+    int position = 0;//记录点击的那一个item
 
     public static void open(Context context, String circleId){
         Intent intent = new Intent(context, CircleSelectSeverAlbumsActivity.class);
@@ -72,45 +74,28 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
         circleId = getIntent().getStringExtra("circle_id");
         reqDate();
+        initPhotoTip();
     }
 
-    private void reqDate(){
+    private void reqDate() {
         stateView.loading();
-        if (!BuildConfig.DEBUG) {
-            List<CircleActivityAlbumObjWrapper> albumObjWrappers = new ArrayList<>();
-            for(int i = 0; i < 10; i++){
-                CircleActivityAlbumObjWrapper albumObjWrapper = new CircleActivityAlbumObjWrapper();
-                albumObjWrapper.setAtcityAlbumCoverUrl("http://img1.timeface.cn/baby/45e71214e0af15a36d270f5cb381a37c.jpg");
-                CircleActivityAlbumObj albumObj = new CircleActivityAlbumObj();
-                albumObj.setAlbumId(i << 2);
-                albumObj.setAlbumName("手工课");
-                albumObj.setMediaCount(i << 2);
-                albumObj.setAlbumUrl("http://img1.timeface.cn/baby/45e71214e0af15a36d270f5cb381a37c.jpg");
-                albumObjWrapper.setAtcityAlbum(albumObj);
-                albumObjWrappers.add(albumObjWrapper);
-            }
-
-            setData(albumObjWrappers);
-            stateView.finish();
-        } else {
-            addSubscription(
-                    apiService.queryCircleAlbums(circleId)
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .doOnCompleted(() -> stateView.finish())
-                            .subscribe(
-                                    response -> {
-                                        if(response.success()){
-                                            setData(response.getDataList());
-                                        } else {
-                                            ToastUtil.showToast(response.getInfo());
-                                        }
-                                    },
-                                    throwable -> {
-                                        Log.e(TAG, throwable.getLocalizedMessage());
+        addSubscription(
+                apiService.queryCircleAlbums(circleId)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnCompleted(() -> stateView.finish())
+                        .subscribe(
+                                response -> {
+                                    if (response.success()) {
+                                        setData(response.getDataList());
+                                    } else {
+                                        ToastUtil.showToast(response.getInfo());
                                     }
-                            )
-            );
-        }
+                                },
+                                throwable -> {
+                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                }
+                        )
+        );
     }
 
     private void setData(List<CircleActivityAlbumObjWrapper> albumObjWrappers){
@@ -149,11 +134,40 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
         switch (view.getId()){
             case R.id.rl_root:
                 CircleActivityAlbumObjWrapper albumObjWrapper = (CircleActivityAlbumObjWrapper) view.getTag(R.string.tag_obj);
-                CircleSelectServerPhotosActivity.open(
+                position = (int) view.getTag(R.string.tag_index);
+                CircleSelectServerPhotosActivity.open4Result(
                         this,
-                        albumObjWrapper.getAtcityAlbum().getAlbumName(),
-                        String.valueOf(albumObjWrapper.getAtcityAlbum().getAlbumId()));
+                        REQUEST_CODE_SELECT_SERVER_PHOTO,
+                        albumObjWrapper.getActivityAlbum().getAlbumName(),
+                        String.valueOf(albumObjWrapper.getActivityAlbum().getAlbumId()),
+                        allSelectMedias);
                 break;
         }
     }
+
+    private void initPhotoTip(){
+        if(allSelectMedias.isEmpty()){
+            rlPhotoTip.setVisibility(View.GONE);
+        } else {
+            rlPhotoTip.setVisibility(View.VISIBLE);
+            tvSelCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(allSelectMedias.size()))));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != RESULT_OK || data == null){
+            return;
+        }
+
+        if(requestCode == REQUEST_CODE_SELECT_SERVER_PHOTO){
+            this.allSelectMedias = (data.getParcelableArrayListExtra("all_select_medias"));
+//            int photoCount = data.getIntExtra("photo_count", 0);
+//            selectServerAlbumAdapter.getItem(position).getActivityAlbum().setMediaCount(photoCount);
+//            selectServerAlbumAdapter.notifyItemChanged(position);
+            initPhotoTip();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

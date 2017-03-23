@@ -20,6 +20,7 @@ import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectHomeWorkTaskDetailActivity;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectSchoolTaskAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -29,7 +30,7 @@ import cn.timeface.circle.baby.views.TFStateView;
  * author : sunyanwei Created on 17-3-22
  * email : sunyanwei@timeface.cn
  */
-public class CircleSelectSchoolTaskFragment extends BasePresenterFragment {
+public class CircleSelectSchoolTaskFragment extends BasePresenterFragment implements View.OnClickListener {
 
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
@@ -58,37 +59,26 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment {
         return view;
     }
 
-    private void reqData(){
+    private void reqData() {
         stateView.loading();
-        if(!BuildConfig.DEBUG) {
-            addSubscription(
-                    apiService.queryCircleTasks(circleId, 1, Integer.MAX_VALUE)
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .doOnCompleted(() -> stateView.finish())
-                            .subscribe(
-                                    response -> {
-                                        setData(response.getDataList());
-                                    },
-                                    throwable -> {
-                                        Log.e(TAG, throwable.getLocalizedMessage());
-                                    }
-                            )
-            );
-        } else {
-            List<CircleSchoolTaskObj> allBabyObjList = new ArrayList<>();
-            for(int i = 0; i < 10; i++){
-                CircleSchoolTaskObj babyObj = new CircleSchoolTaskObj();
-                babyObj.setTitle("寒假为父母做一件事情");
-                allBabyObjList.add(babyObj);
-            }
-            setData(allBabyObjList);
-            stateView.finish();
-        }
+        addSubscription(
+                apiService.queryCircleTasks(circleId, 1, Integer.MAX_VALUE)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnCompleted(() -> stateView.finish())
+                        .subscribe(
+                                response -> {
+                                    setData(response.getDataList());
+                                },
+                                throwable -> {
+                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                }
+                        )
+        );
     }
 
     private void setData(List<CircleSchoolTaskObj> schoolTaskObjList){
         if(selectSchoolTaskAdapter == null){
-            selectSchoolTaskAdapter = new CircleSelectSchoolTaskAdapter(getActivity(), schoolTaskObjList);
+            selectSchoolTaskAdapter = new CircleSelectSchoolTaskAdapter(getActivity(), schoolTaskObjList, this);
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             rvContent.addItemDecoration(
                     new HorizontalDividerItemDecoration.Builder(getActivity())
@@ -106,5 +96,13 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.rl_root){
+            CircleSchoolTaskObj schoolTaskObj = (CircleSchoolTaskObj) view.getTag(R.string.tag_obj);
+            CircleSelectHomeWorkTaskDetailActivity.open(getActivity(), schoolTaskObj.getTitle());
+        }
     }
 }

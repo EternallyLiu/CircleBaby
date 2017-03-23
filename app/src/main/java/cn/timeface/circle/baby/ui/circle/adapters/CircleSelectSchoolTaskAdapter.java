@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -21,8 +22,11 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
  * email : sunyanwei@timeface.cn
  */
 public class CircleSelectSchoolTaskAdapter extends BaseRecyclerAdapter<CircleSchoolTaskObj> {
-    public CircleSelectSchoolTaskAdapter(Context mContext, List<CircleSchoolTaskObj> listData) {
+    View.OnClickListener onClickListener;
+
+    public CircleSelectSchoolTaskAdapter(Context mContext, List<CircleSchoolTaskObj> listData, View.OnClickListener clickListener) {
         super(mContext, listData);
+        this.onClickListener = clickListener;
     }
 
     @Override
@@ -37,6 +41,8 @@ public class CircleSelectSchoolTaskAdapter extends BaseRecyclerAdapter<CircleSch
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.tvTitle.setText(schoolTaskObj.getTitle());
         holder.tvSelectCount.setText("已选择300条记录");
+        if(onClickListener != null)holder.rlRoot.setOnClickListener(onClickListener);
+        holder.rlRoot.setTag(R.string.tag_obj, schoolTaskObj);
     }
 
     @Override
@@ -54,6 +60,8 @@ public class CircleSelectSchoolTaskAdapter extends BaseRecyclerAdapter<CircleSch
         TextView tvTitle;
         @Bind(R.id.tv_select_count)
         TextView tvSelectCount;
+        @Bind(R.id.rl_root)
+        RelativeLayout rlRoot;
 
         ViewHolder(View view) {
             super(view);

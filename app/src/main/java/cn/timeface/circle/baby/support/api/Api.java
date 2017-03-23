@@ -1,13 +1,9 @@
 package cn.timeface.circle.baby.support.api;
 
-import com.bluelinelabs.logansquare.LoganSquare;
-import com.github.aurae.retrofit2.LoganSquareConverterFactory;
-
-import cn.timeface.circle.baby.BuildConfig;
-
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.api.services.WechatApiService;
 import cn.timeface.circle.baby.support.utils.NetUtils;

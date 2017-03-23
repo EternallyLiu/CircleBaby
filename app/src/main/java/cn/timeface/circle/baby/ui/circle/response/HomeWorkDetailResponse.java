@@ -13,11 +13,11 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskDetailObj;
 public class HomeWorkDetailResponse extends BaseResponse {
     private CircleSchoolTaskDetailObj schoolTaskDetailObj;
 
-    public CircleSchoolTaskDetailObj getCircleTimeline() {
+    public CircleSchoolTaskDetailObj getSchoolTaskDetailObj() {
         return schoolTaskDetailObj;
     }
 
-    public void setCircleTimeline(CircleSchoolTaskDetailObj schoolTaskDetailObj) {
+    public void setSchoolTaskDetailObj(CircleSchoolTaskDetailObj schoolTaskDetailObj) {
         this.schoolTaskDetailObj = schoolTaskDetailObj;
     }
 }

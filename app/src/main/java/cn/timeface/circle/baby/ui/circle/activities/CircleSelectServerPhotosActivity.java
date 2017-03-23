@@ -1,8 +1,10 @@
 package cn.timeface.circle.baby.ui.circle.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -48,12 +50,22 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
     String albumName;
     String albumId;
     SelectServerPhotosAdapter serverPhotosAdapter;
+    List<MediaObj> selMedias;
 
-    public static void open(Context context, String albumName, String albumId){
+    public void open(Context context, String albumName, String albumId, List<MediaObj> selMedias){
         Intent intent = new Intent(context, CircleSelectServerPhotosActivity.class);
         intent.putExtra("album_name", albumName);
         intent.putExtra("album_id", albumId);
+        intent.putParcelableArrayListExtra("select_medias", (ArrayList<? extends Parcelable>) selMedias);
         context.startActivity(intent);
+    }
+
+    public static void open4Result(Context context,int reqCode, String albumName, String albumId, List<MediaObj> selMedias){
+        Intent intent = new Intent(context, CircleSelectServerPhotosActivity.class);
+        intent.putExtra("album_name", albumName);
+        intent.putExtra("album_id", albumId);
+        intent.putParcelableArrayListExtra("select_medias", (ArrayList<? extends Parcelable>) selMedias);
+        ((Activity)context).startActivityForResult(intent, reqCode);
     }
 
     @Override
@@ -66,6 +78,7 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         albumName = getIntent().getStringExtra("album_name");
         albumId = getIntent().getStringExtra("album_id");
+        selMedias = getIntent().getParcelableArrayListExtra("select_medias");
         getSupportActionBar().setTitle(albumName);
         reqDate();
     }
@@ -78,67 +91,44 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_complete){
-            finish();
+        if(item.getItemId() == R.id.menu_complete ||
+                item.getItemId() == android.R.id.home){
+            close();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void reqDate(){
-        stateView.loading();
-        if (BuildConfig.DEBUG) {
-            List<MediaWrapObj> mediaWrapObjList = new ArrayList<>();
-            for(int i = 0; i < 10; i++){
-                MediaWrapObj mediaWrapObj = new MediaWrapObj();
-                List<MediaObj> mediaObjList = new ArrayList<>();
-                mediaWrapObj.setMediaCount(200);
-                mediaWrapObj.setDate("2016年10月");
-                mediaWrapObj.setMediaList(mediaObjList);
-                mediaWrapObjList.add(mediaWrapObj);
-                for(int j = 0 ; j < 100; j++){
-                    MediaObj mediaObj = new MediaObj();
-                    mediaObj.setW(100);
-                    mediaObj.setImgUrl("http://img1.timeface.cn/baby/45e71214e0af15a36d270f5cb381a37c.jpg");
-                    mediaObj.setContent("content");
-                    mediaObj.setDate(System.currentTimeMillis());
-                    mediaObj.setFavoritecount(10);
-                    mediaObj.setH(100);
-                    mediaObj.setId(j << 3);
-                    mediaObj.setImageOrientation(0);
-                    mediaObj.setIsFavorite(1);
-                    mediaObj.setTimeId(j << 2);
-                    mediaObj.setW(100);
-                    mediaObjList.add(mediaObj);
-                }
-            }
+    @Override
+    public void onBackPressed() {
+        close();
+        super.onBackPressed();
+    }
 
-            setData(mediaWrapObjList);
-            stateView.finish();
-        } else {
-            addSubscription(
-                    apiService.queryAlbumPhotos(albumId)
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .doOnCompleted(() -> stateView.finish())
-                            .subscribe(
-                                    response -> {
-                                        if(response.success()){
-                                            setData(response.getDataList());
-                                        } else {
-                                            ToastUtil.showToast(response.getInfo());
-                                        }
-                                    },
-                                    throwable -> {
-                                        Log.e(TAG, throwable.getLocalizedMessage());
+    private void reqDate() {
+        stateView.loading();
+        addSubscription(
+                apiService.queryAlbumPhotos(albumId)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnCompleted(() -> stateView.finish())
+                        .subscribe(
+                                response -> {
+                                    if (response.success()) {
+                                        setData(response.getDataList());
+                                    } else {
+                                        ToastUtil.showToast(response.getInfo());
                                     }
-                            )
-            );
-        }
+                                },
+                                throwable -> {
+                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                }
+                        )
+        );
     }
 
     private void setData(List<MediaWrapObj> mediaWrapObjs){
         if(serverPhotosAdapter == null){
             rvContent.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            serverPhotosAdapter = new SelectServerPhotosAdapter(this, mediaWrapObjs, Integer.MAX_VALUE, 1, new ArrayList<>());
+            serverPhotosAdapter = new SelectServerPhotosAdapter(this, mediaWrapObjs, Integer.MAX_VALUE, 1, selMedias);
             rvContent.setAdapter(serverPhotosAdapter);
             rvContent.addItemDecoration(
                     new HorizontalDividerItemDecoration.Builder(this)
@@ -149,6 +139,14 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
             serverPhotosAdapter.setListData(mediaWrapObjs);
             serverPhotosAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void close(){
+        Intent intent = new Intent();
+        intent.putParcelableArrayListExtra("all_select_medias", (ArrayList<? extends Parcelable>) serverPhotosAdapter.getSelImgs());
+        intent.putExtra("photo_count", serverPhotosAdapter.getCurSelectCount());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
 }

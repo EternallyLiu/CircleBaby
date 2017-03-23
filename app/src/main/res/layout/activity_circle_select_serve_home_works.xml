@@ -26,7 +26,7 @@
                 android:drawableEnd="@drawable/icon_arrow_down"
                 android:drawablePadding="5dp"
                 android:drawableRight="@drawable/icon_arrow_down"
-                android:text="按时间"
+                android:text="按成员"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </android.support.v7.widget.Toolbar>
 
