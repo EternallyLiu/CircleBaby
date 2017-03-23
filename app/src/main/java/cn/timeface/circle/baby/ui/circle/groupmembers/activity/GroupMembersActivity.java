@@ -3,11 +3,12 @@ package cn.timeface.circle.baby.ui.circle.groupmembers.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -41,10 +42,7 @@ import rx.functions.Action1;
 
 public class GroupMembersActivity extends BaseAppCompatActivity implements IEventBus {
 
-    @Bind(R.id.title)
-    TextView title;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
 
@@ -55,6 +53,12 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
     List<MenemberInfo> appliUserInfoList;
     GrowthCircleObj circleObj;
     MenemberInfo menemberInfo;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.srl_content)
+    SwipeRefreshLayout srlContent;
 
     public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, GroupMembersActivity.class);
@@ -69,8 +73,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText("群成员管理");
+        getSupportActionBar().setTitle("群成员管理");
         circleObj = getIntent().getParcelableExtra("circleObj");
 
         setUpView();
@@ -88,6 +91,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
                     @Override
                     public void call(MemberListResponse memberListResponse) {
                         if (memberListResponse.success()) {
+                            srlContent.setRefreshing(false);
                             normalUserInfoList = memberListResponse.getNormals();
                             appliUserInfoList = memberListResponse.getApplicants();
                             teacherUserInfoList = memberListResponse.getTeachers();
@@ -109,7 +113,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         //1&老师&4   1是类型  2是title  3是个数
         if (teacherUserInfoList.size() > 0) {
             menuSections.add(new GroupMemberSection(true, "1&老师&" + teacherUserInfoList.size()));
-            for(int i=0;i<teacherUserInfoList.size();i++) {
+            for (int i = 0; i < teacherUserInfoList.size(); i++) {
                 if (teacherUserInfoList.get(i).getUserInfo().getCircleUserId() == FastData.getCircleUserInfo().getCircleUserId()) {
                     this.menemberInfo = teacherUserInfoList.get(i);
                     EventBus.getDefault().post(new UpdateMemberDetailEvent(menemberInfo));
@@ -164,6 +168,22 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         adapter = new GroupMemberAdapter(R.layout.view_home_content, R.layout.layout_main_menu_header, menuSections);
         rvContent.setNestedScrollingEnabled(false);
         rvContent.setAdapter(adapter);
+
+        srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (normalUserInfoList.size() > 0) {
+                    normalUserInfoList.clear();
+                }
+                if (teacherUserInfoList.size() > 0) {
+                    teacherUserInfoList.clear();
+                }
+                if (appliUserInfoList.size() > 0) {
+                    appliUserInfoList.clear();
+                }
+                reqContent();
+            }
+        });
 
         rvContent.addOnItemTouchListener(new OnItemClickListener() {
             @Override

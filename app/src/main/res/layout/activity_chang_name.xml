@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="cn.timeface.circle.baby.ui.circle.groupmembers.activity.ChangNameActivity">
 
-    <include layout="@layout/head" />
+    <include layout="@layout/layout_toolbar" />
 
     <EditText
         android:id="@+id/et_nickname"
