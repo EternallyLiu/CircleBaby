@@ -40,8 +40,6 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.MiPushUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
-import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.settings.beans.UpdatePhone;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
@@ -237,8 +235,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
             case R.id.btn_sign_out:
                 BabyObj.deleteAll();
-                CircleUserInfo.deleteAll();
-                GrowthCircleObj.deleteAll();
+                FastData.clearCircleData();
                 FastData.setUserFrom(-1);
                 LoginActivity.open(getActivity());
                 getActivity().finish();
