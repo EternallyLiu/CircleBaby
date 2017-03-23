@@ -114,6 +114,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
         this.bookType = getIntent().getIntExtra("book_type", 0);
         this.bookId = getIntent().getStringExtra("book_id");
         this.openBookId = getIntent().getStringExtra("open_book_id");
+        this.circleId = getIntent().getStringExtra("circle_id");
         cbAllSel.setOnClickListener(this);
 
         //新建一本
@@ -422,9 +423,6 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
         }
 
         if(currentFragment instanceof CircleServerTimeFragment){
-            initAllSelectView(((CircleServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
-            ((CircleServerTimeFragment) currentFragment).setTimeLineObjs(allSelectTimeLines);
-        } else if(currentFragment instanceof CircleServerTimeFragment) {
             initAllSelectView(((CircleServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
             ((CircleServerTimeFragment) currentFragment).setTimeLineObjs(allSelectTimeLines);
         }

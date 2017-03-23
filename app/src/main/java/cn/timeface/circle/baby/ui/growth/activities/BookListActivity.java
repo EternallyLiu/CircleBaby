@@ -115,29 +115,19 @@ public class BookListActivity extends ProductionListActivity implements BookPres
             switch (bookType) {
                 //精装照片书
                 case BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK:
-//                    addSubscription(
-//                            apiService.getDefaultTheme(bookType)
-//                                    .compose(SchedulersCompat.applyIoSchedulers())
-//                                    .subscribe(
-//                                            response -> {
-//                                                if(response.success()){
-//                                                    SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "", FastData.getBabyId());
-//                                                }
-//                                            },
-//                                            throwable -> {
-//                                                Log.e(TAG, throwable.getLocalizedMessage());
-//                                            }
-//                                    ));
-
-//                    CircleSelectServerTimesActivity.open(
-//                            this,
-//                            BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
-//                            TypeConstants.OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK,
-//                            "",
-//                            "",
-//                            "123456");
-//                    CircleSelectSeverAlbumsActivity.open(this, "123456");
-                    CircleSelectServeHomeWorksActivity.open(this, "123456");
+                    addSubscription(
+                            apiService.getDefaultTheme(bookType)
+                                    .compose(SchedulersCompat.applyIoSchedulers())
+                                    .subscribe(
+                                            response -> {
+                                                if(response.success()){
+                                                    SelectServerPhotoActivity.open(this, BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, response.getId(), "", "", FastData.getBabyId());
+                                                }
+                                            },
+                                            throwable -> {
+                                                Log.e(TAG, throwable.getLocalizedMessage());
+                                            }
+                                    ));
 
                     break;
                 //绘画集

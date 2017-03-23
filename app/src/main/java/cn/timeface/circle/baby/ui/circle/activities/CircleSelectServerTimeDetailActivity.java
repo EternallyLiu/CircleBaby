@@ -21,6 +21,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerTimeMediaAdapter;
@@ -35,7 +36,7 @@ import cn.timeface.circle.baby.ui.circle.events.CircleSelectTimeLineEvent;
  * author : sunyanwei Created on 17-3-21
  * email : sunyanwei@timeface.cn
  */
-public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompatActivity implements View.OnClickListener {
+public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompatActivity implements View.OnClickListener, IEventBus {
 
     @Bind(R.id.tv_cancel)
     TextView tvCancel;

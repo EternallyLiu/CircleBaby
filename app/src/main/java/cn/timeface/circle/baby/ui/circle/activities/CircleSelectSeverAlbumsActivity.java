@@ -76,7 +76,7 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
     private void reqDate(){
         stateView.loading();
-        if (BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             List<CircleActivityAlbumObjWrapper> albumObjWrappers = new ArrayList<>();
             for(int i = 0; i < 10; i++){
                 CircleActivityAlbumObjWrapper albumObjWrapper = new CircleActivityAlbumObjWrapper();
@@ -85,7 +85,7 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
                 albumObj.setAlbumId(i << 2);
                 albumObj.setAlbumName("手工课");
                 albumObj.setMediaCount(i << 2);
-                albumObj.setMediaUrl("http://img1.timeface.cn/baby/45e71214e0af15a36d270f5cb381a37c.jpg");
+                albumObj.setAlbumUrl("http://img1.timeface.cn/baby/45e71214e0af15a36d270f5cb381a37c.jpg");
                 albumObjWrapper.setAtcityAlbum(albumObj);
                 albumObjWrappers.add(albumObjWrapper);
             }
@@ -126,6 +126,10 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
         } else {
             selectServerAlbumAdapter.setListData(albumObjWrappers);
             selectServerAlbumAdapter.notifyDataSetChanged();
+        }
+
+        if(selectServerAlbumAdapter.getListData().isEmpty()){
+            stateView.empty(R.string.no_list_data);
         }
     }
 

@@ -522,21 +522,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/TimeFaceTheme.DayNight" />
         <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
-        android:theme="@style/TimeFaceTheme.DayNight"/>
-        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
-        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
-        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
-        android:theme="@style/TimeFaceTheme.DayNight" />
-        android:theme="@style/TimeFaceTheme.DayNight"/>
-
-        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
         <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
         <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
 
-        android:theme="@style/TimeFaceTheme.DayNight" />
-        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
-        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
-        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
         <activity
             android:name=".ui.circle.photo.activities.CirclePhotoActivity"
             android:label="@string/title_circle_photo"
@@ -552,7 +540,6 @@
             android:name=".ui.circle.photo.activities.InputPcActivity"
             android:label="@string/input_pc"
             android:theme="@style/AppTheme" />
-        <activity android:name=".views.barcodescanner.CaptureActivity" />
 
         <activity android:name="cn.timeface.circle.baby.views.barcodescanner.CaptureActivity" />
         <activity
@@ -593,7 +580,6 @@
             android:name=".ui.circle.activities.CircleSelectServerTimesActivity"
             android:label="@string/title_activity_circle_select_server_times"
             android:theme="@style/AppTheme" />
-            android:theme="@style/AppTheme"></activity>
 
         <activity android:name=".ui.circle.timelines.activity.CircleTimeLineDetailActivitiy" />
 
