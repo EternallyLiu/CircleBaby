@@ -29,11 +29,13 @@
         tools:text="南门小学" />
 
     <RelativeLayout
+        android:id="@+id/rl_homework"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/view_space_normal"
         android:background="@android:color/white"
-        android:padding="@dimen/view_space_normal">
+        android:padding="@dimen/view_space_normal"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_homework"
