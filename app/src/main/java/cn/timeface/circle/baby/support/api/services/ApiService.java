@@ -1647,8 +1647,9 @@ public interface ApiService {
 
     /**
      * 按某种条件查询时光列表
+     *
      * @param circleId 圈号
-     * @param type 1-全部 2-按我发布的 3-按@我宝宝的
+     * @param type     1-全部 2-按我发布的 3-按@我宝宝的
      * @return
      */
     @GET("circleBook/queryDynamicList")
@@ -1710,6 +1711,7 @@ public interface ApiService {
 
     /**
      * 删除圈动态
+     *
      * @param circleTimelineId
      * @return
      */
@@ -1760,6 +1762,7 @@ public interface ApiService {
 
     /**
      * 圈作品列表
+     *
      * @param circleId
      * @param permissionType
      * @return
@@ -1770,4 +1773,39 @@ public interface ApiService {
 
     @GET("circleBook/typeList")
     Observable<QueryCirclePhotoResponse<CircleBookTypeObj>> circleBookTypeList();
+
+
+    /**
+     * 添加圈照片的标签
+     * @param mediaId
+     * @param tips
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("circleMedia/addLabel")
+    Observable<AddTagResponse> addCircleMediaLabal(@Field("mediaId") long mediaId,
+                                                   @Field("tips") String tips);
+
+    /**
+     * 添加圈图片为喜欢
+     *
+     * @param favore
+     * @param mediaId
+     * @return 喜欢的数量
+     */
+    @POST("circleMedia/addLike")
+    Observable<LikeResponse> addCircleMediaLike(@Query("favore") int favore,
+                                          @Query("mediaId") long mediaId);
+
+    /**
+     * 删除圈照片标签
+     *
+     * @param mediaId
+     * @param tips
+     * @return
+     */
+    @POST("circleMedia/delLabel")
+    Observable<BaseResponse> deleteCircleLabel(@Query("mediaId") long mediaId,
+                                         @Query("tipId") long tips);
+
 }

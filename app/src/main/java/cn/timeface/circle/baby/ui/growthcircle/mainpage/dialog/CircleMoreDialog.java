@@ -16,6 +16,7 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleInfoActivity;
 
 public class CircleMoreDialog extends DialogFragment {
@@ -96,7 +97,7 @@ public class CircleMoreDialog extends DialogFragment {
                 GroupMembersActivity.open(getContext(), circleObj);
                 break;
             case R.id.tv_publish_homework:
-
+                PublishActivity.openSchoolTask(getContext());
                 break;
         }
     }

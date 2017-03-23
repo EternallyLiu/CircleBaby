@@ -156,7 +156,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         view.setLayoutParams(params);
 
 
-        int index = (getType() == TYPE_TIMELINE ? lookup.isSync() ? position - 5 : position - 4 : position - 2);
+        int index = (getType() == TYPE_TIMELINE ? lookup.isSync() ? position - 5 : position - 4 : position - 3);
         if (index >= 0 && index >= contentObj.getMediaList().size()) {
             index = index - contentObj.getMediaList().size();
             if (index >= 0 && index < selImage.size()) {

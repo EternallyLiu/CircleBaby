@@ -187,6 +187,9 @@ public class PublishActivity extends BaseAppCompatActivity {
                 schoolTask.getMediaList().add(imgObj.getCircleMediaObj());
             }
         }
+        List<String> list = new ArrayList<>(0);
+        for (CircleMediaObj mediaObj : schoolTask.getMediaList())
+            if (mediaObj.getId() <= 0) list.add(mediaObj.getLocalPath());
         if (schoolTask.getMediaList().size() > PublishAdapter.MAX_PIC_WORK_COUNT) {
             ToastUtil.showToast(this, String.format(getString(R.string.pic_select_max_tip), PublishAdapter.MAX_PIC_WORK_COUNT));
             return;
