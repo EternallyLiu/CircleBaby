@@ -33,6 +33,11 @@ public class CircleHomeworkObj extends CircleContentObj implements Parcelable {
     public CircleHomeworkObj() {
     }
 
+    public CircleHomeworkObj(long taskId, String title) {
+        this.taskId = taskId;
+        setTitle(title);
+    }
+
 
     public long getHomeworkId() {
         return homeworkId;

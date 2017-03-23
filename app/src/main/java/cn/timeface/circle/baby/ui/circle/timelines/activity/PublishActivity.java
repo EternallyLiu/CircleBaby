@@ -99,6 +99,12 @@ public class PublishActivity extends BaseAppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
         hideProgress();
@@ -131,6 +137,8 @@ public class PublishActivity extends BaseAppCompatActivity {
                 break;
             case PublishAdapter.TYPE_WORK:
                 title.setText(R.string.send_circle_homework_title);
+                CircleHomeworkObj homeWork = bundle.getParcelable(CircleHomeworkObj.class.getSimpleName());
+                adapter.setContentObj(homeWork);
                 break;
 
         }
@@ -167,6 +175,60 @@ public class PublishActivity extends BaseAppCompatActivity {
             doTimeLine();
         } else if (adapter.getType() == PublishAdapter.TYPE_SCHOOL) {
             doSchool();
+        } else if (adapter.getType() == PublishAdapter.TYPE_WORK) {
+            doHomeWork();
+        }
+    }
+
+    private void doHomeWork() {
+        CircleHomeworkObj homework = (CircleHomeworkObj) adapter.getContentObj();
+        if (homework.getMediaList().size() <= 0 && TextUtils.isEmpty(homework.getContent())) {
+            ToastUtil.showToast(this, "作业内容不能为空");
+            return;
+        }
+        if (Utils.getByteSize(homework.getContent()) > 1200) {
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 1200));
+            return;
+        }
+        for (ImgObj imgObj : adapter.getSelImage()) {
+            if (!homework.getMediaList().contains(imgObj.getCircleMediaObj())) {
+                homework.getMediaList().add(imgObj.getCircleMediaObj());
+            }
+        }
+        List<String> list = new ArrayList<>(0);
+        for (CircleMediaObj mediaObj : homework.getMediaList())
+            if (mediaObj.getId() <= 0) list.add(mediaObj.getLocalPath());
+        if (homework.getMediaList().size() > PublishAdapter.MAX_PIC_WORK_COUNT) {
+            ToastUtil.showToast(this, String.format(getString(R.string.pic_select_max_tip), PublishAdapter.MAX_PIC_WORK_COUNT));
+            return;
+        }
+        String send = new Gson().toJson(homework);
+        showProgress();
+        addSubscription(apiService.homeWorkSubmit(homework.getTaskId(), send)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(homeWorkSubmitResponse -> hideProgress())
+                .subscribe(homeWorkSubmitResponse -> {
+            if (homeWorkSubmitResponse.success()) {
+                UploadService.start(this, list);
+                finish();
+            } else {
+                clearGCMedia();
+                ToastUtil.showToast(this, homeWorkSubmitResponse.getInfo());
+            }
+        }, throwable -> {
+            clearGCMedia();
+            hideProgress();
+            LogUtil.showError(throwable);
+        }));
+    }
+
+    private void clearGCMedia() {
+        int size = adapter.getContentObj().getMediaList().size();
+        for (int i = 0; i < size; ) {
+            if (adapter.getContentObj().getMediaList().get(i).getId() <= 0) {
+                adapter.getContentObj().getMediaList().remove(i);
+                size--;
+            } else i++;
         }
     }
 
@@ -201,9 +263,14 @@ public class PublishActivity extends BaseAppCompatActivity {
                 .doOnNext(circleSchoolTaskResponse -> hideProgress())
                 .subscribe(circleSchoolTaskResponse -> {
                     if (circleSchoolTaskResponse.success()) {
+                        UploadService.start(this, list);
                         finish();
-                    } else ToastUtil.showToast(this, circleSchoolTaskResponse.getInfo());
+                    } else {
+                        clearGCMedia();
+                        ToastUtil.showToast(this, circleSchoolTaskResponse.getInfo());
+                    }
                 }, throwable -> {
+                    clearGCMedia();
                     hideProgress();
                     LogUtil.showError(throwable);
                 }));
@@ -252,10 +319,13 @@ public class PublishActivity extends BaseAppCompatActivity {
                                     if (list.size() > 0)
                                         UploadService.start(this, list);
                                     finish();
-                                } else
+                                } else {
+                                    clearGCMedia();
                                     ToastUtil.showToast(this, circleTimeLineDetailResponse.getInfo());
+                                }
                             }
                             , throwable -> {
+                                clearGCMedia();
                                 hideProgress();
                                 LogUtil.showError(throwable);
                             }));
@@ -267,8 +337,12 @@ public class PublishActivity extends BaseAppCompatActivity {
                             if (list.size() > 0)
                                 UploadService.start(this, list);
                             finish();
-                        } else ToastUtil.showToast(this, timeLineSendResponse.getInfo());
+                        } else {
+                            clearGCMedia();
+                            ToastUtil.showToast(this, timeLineSendResponse.getInfo());
+                        }
                     }, throwable -> {
+                        clearGCMedia();
                         hideProgress();
                         LogUtil.showError(throwable);
                     }));
@@ -329,6 +403,17 @@ public class PublishActivity extends BaseAppCompatActivity {
         }
     }
 
+
+    public static void open(Context context, CircleHomeworkObj homeworkObj) {
+        if (TextUtils.isEmpty(homeworkObj.getTitle()) || homeworkObj.getTaskId() <= 0) {
+            ToastUtil.showToast(context, context.getString(R.string.please_select_school_work));
+            return;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", PublishAdapter.TYPE_WORK);
+        bundle.putParcelable(CircleHomeworkObj.class.getSimpleName(), homeworkObj);
+        context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
+    }
 
     public static void openSchoolTask(Context context) {
         Bundle bundle = new Bundle();

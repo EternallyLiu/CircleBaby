@@ -1475,10 +1475,11 @@ public interface ApiService {
      * @param homework
      * @return
      */
-    @GET("homework/submit")
+    @FormUrlEncoded
+    @POST("homework/submit")
     Observable<HomeWorkSubmitResponse> homeWorkSubmit(
-            @Query("taskId") long taskId,
-            @Query("homework") String homework);
+            @Field("taskId") long taskId,
+            @Field("homework") String homework);
 
     /**
      * 同意教师认证

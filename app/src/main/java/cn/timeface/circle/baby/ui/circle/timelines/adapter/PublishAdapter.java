@@ -124,7 +124,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
     public int getViewLayoutID(int viewType) {
         switch (viewType) {
             case ITEM_TYPE_INPUT_TITLE:
-                return R.layout.circle_publish_input_title_layout;
+                return getType() == TYPE_WORK ? R.layout.circle_publish_home_title : R.layout.circle_publish_input_title_layout;
             case ITEM_TYPE_INPUT_CONTENT:
                 return R.layout.circle_publish_input_content_layout;
             case ITEM_TYPE_SELECT_ACTIVE:
@@ -205,24 +205,29 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
     }
 
     private void doTitle(View view, int position) {
-        InputListenerEditText etInput = ViewHolder.getView(view, R.id.et_input_title);
-        TextView tvTextCount = ViewHolder.getView(view, R.id.tv_text_count);
-        if (!TextUtils.isEmpty(contentObj.getTitle())) {
-            etInput.setText(contentObj.getTitle());
+        if (getType() == TYPE_WORK) {
+            TextView title = ViewHolder.getView(view, R.id.title);
+            title.setText(contentObj.getTitle());
         } else {
-            etInput.setText("");
-            tvTextCount.setText("0 / 10");
+            InputListenerEditText etInput = ViewHolder.getView(view, R.id.et_input_title);
+            TextView tvTextCount = ViewHolder.getView(view, R.id.tv_text_count);
+            if (!TextUtils.isEmpty(contentObj.getTitle())) {
+                etInput.setText(contentObj.getTitle());
+            } else {
+                etInput.setText("");
+                tvTextCount.setText("0 / 10");
+            }
+            int size = Utils.getByteSize(contentObj.getTitle());
+            int count = size / 2;
+            if (size % 2 != 0) count++;
+            SpannableStringBuilder builder = new SpannableStringBuilder(String.format("%d / 10", count));
+            if (count > 10) {
+                builder.setSpan(SpannableUtils.getTextColor(context(), R.color.sea_buckthorn), 0, String.valueOf(count).length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
+            tvTextCount.setText(builder);
+            etInput.setTag(R.id.recycler_item_input_tag, tvTextCount);
+            etInput.setInputCallBack(this);
         }
-        int size = Utils.getByteSize(contentObj.getTitle());
-        int count = size / 2;
-        if (size % 2 != 0) count++;
-        SpannableStringBuilder builder = new SpannableStringBuilder(String.format("%d / 10", count));
-        if (count > 10) {
-            builder.setSpan(SpannableUtils.getTextColor(context(), R.color.sea_buckthorn), 0, String.valueOf(count).length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        }
-        tvTextCount.setText(builder);
-        etInput.setTag(R.id.recycler_item_input_tag, tvTextCount);
-        etInput.setInputCallBack(this);
     }
 
     private void doContent(View view, int position) {

@@ -20,14 +20,17 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
+import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.SchoolTaskAdapter;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 
 /**
  * author : wangshuai Created on 2017/3/23
  * email : wangs1992321@gmail.com
  */
-public class HomwWorkListActivity extends BaseAppCompatActivity {
+public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister {
 
     @Bind(R.id.title)
     TextView title;
@@ -63,6 +66,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity {
 
     private void init() {
         adapter = new SchoolTaskAdapter(this);
+        adapter.setItemClickLister(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         helper = new TFPTRRecyclerViewHelper(this, contentRecyclerView, swipeRefresh);
         helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
@@ -110,5 +114,13 @@ public class HomwWorkListActivity extends BaseAppCompatActivity {
     protected void onDestroy() {
         ButterKnife.unbind(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        HomeWorkListObj item = adapter.getItem(position);
+        if (item != null) {
+            PublishActivity.open(this, new CircleHomeworkObj(item.getSchoolTask().getTaskId(), item.getSchoolTask().getTitle()));
+        }
     }
 }
