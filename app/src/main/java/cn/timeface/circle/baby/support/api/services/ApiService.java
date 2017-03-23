@@ -1209,10 +1209,12 @@ public interface ApiService {
      * @return
      */
     @GET("circle/index")
-    Observable<CircleIndexResponse> queryCircleIndex(@Query("circleId") long circleId);
+    Observable<CircleIndexResponse> queryCircleIndex(@Query("circleId") long circleId,
+                                                     @Query("currentPage") int currentPage,
+                                                     @Query("pageSize") int pageSize);
 
     /**
-     * 圈首页
+     * 圈首页信息
      *
      * @param circleId 圈ID
      * @return
@@ -1236,6 +1238,18 @@ public interface ApiService {
      */
     @GET("babyCircle/detail")
     Observable<CircleDetailResponse> circleDetail(@Query("circleId") long circleId);
+
+    /**
+     * 退出圈子
+     */
+    @GET("circle/logout")
+    Observable<BaseResponse> quitCircle(@Query("circleId") long circleId);
+
+    /**
+     * 解散圈子
+     */
+    @GET("circle/disband")
+    Observable<BaseResponse> disbandCircle(@Query("circleId") long circleId);
 
     /**
      * 查找圈子
@@ -1647,8 +1661,9 @@ public interface ApiService {
 
     /**
      * 按某种条件查询时光列表
+     *
      * @param circleId 圈号
-     * @param type 1-全部 2-按我发布的 3-按@我宝宝的
+     * @param type     1-全部 2-按我发布的 3-按@我宝宝的
      * @return
      */
     @GET("circleBook/queryDynamicList")
@@ -1710,6 +1725,7 @@ public interface ApiService {
 
     /**
      * 删除圈动态
+     *
      * @param circleTimelineId
      * @return
      */
@@ -1760,6 +1776,7 @@ public interface ApiService {
 
     /**
      * 圈作品列表
+     *
      * @param circleId
      * @param permissionType
      * @return

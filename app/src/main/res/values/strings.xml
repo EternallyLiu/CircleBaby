@@ -655,6 +655,7 @@
     <string name="circle_member_manager">圈成员管理</string>
     <string name="publish_homework">发布作业</string>
     <string name="quit_growth_circle">退出圈子</string>
+    <string name="disband_growth_circle">解散圈子</string>
 
 
     <string name="JANUARY">一月</string>
@@ -747,6 +748,7 @@
     <string name="title_circle_photo">CirclePhotoActivity</string>
     <string name="add_active">添加活动相册</string>
     <string name="input_pc">导入电脑照片</string>
+    <string name="add_circle_book">新增圈作品</string>
 
     <string name="complete">完成</string>
 

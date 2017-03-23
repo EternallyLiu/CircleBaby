@@ -5,14 +5,12 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.db.AppDatabase;
 import cn.timeface.circle.baby.support.utils.FastData;
 
@@ -31,9 +29,9 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
     @Unique
     protected String circleNumber;      //圈号
     @Column
-    protected String QRcodeUrl;       //二维码图片地址
+    protected String qRcodeUrl;       //二维码图片地址
     @Column
-    protected String cicleCoverUrl;   //圈封面地址
+    protected String circleCoverUrl;   //圈封面地址
     @Column
     protected String circleName;      //圈名称
     @Column
@@ -87,20 +85,20 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         this.circleNumber = circleNumber;
     }
 
-    public String getQRcodeUrl() {
-        return QRcodeUrl;
+    public String getqRcodeUrl() {
+        return qRcodeUrl;
     }
 
-    public void setQRcodeUrl(String QRcodeUrl) {
-        this.QRcodeUrl = QRcodeUrl;
+    public void setqRcodeUrl(String qRcodeUrl) {
+        this.qRcodeUrl = qRcodeUrl;
     }
 
-    public String getCicleCoverUrl() {
-        return cicleCoverUrl;
+    public String getCircleCoverUrl() {
+        return circleCoverUrl;
     }
 
-    public void setCicleCoverUrl(String cicleCoverUrl) {
-        this.cicleCoverUrl = cicleCoverUrl;
+    public void setCircleCoverUrl(String circleCoverUrl) {
+        this.circleCoverUrl = circleCoverUrl;
     }
 
     public String getCircleName() {
@@ -159,6 +157,10 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         this.workCount = workCount;
     }
 
+    public static void deleteAll(){
+        SQLite.delete().from(GrowthCircleObj.class).query();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -168,8 +170,8 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.circleId);
         dest.writeString(this.circleNumber);
-        dest.writeString(this.QRcodeUrl);
-        dest.writeString(this.cicleCoverUrl);
+        dest.writeString(this.qRcodeUrl);
+        dest.writeString(this.circleCoverUrl);
         dest.writeString(this.circleName);
         dest.writeLong(this.createDate);
         dest.writeInt(this.joinType);
@@ -182,8 +184,8 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
     protected GrowthCircleObj(Parcel in) {
         this.circleId = in.readLong();
         this.circleNumber = in.readString();
-        this.QRcodeUrl = in.readString();
-        this.cicleCoverUrl = in.readString();
+        this.qRcodeUrl = in.readString();
+        this.circleCoverUrl = in.readString();
         this.circleName = in.readString();
         this.createDate = in.readLong();
         this.joinType = in.readInt();

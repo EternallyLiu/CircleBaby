@@ -67,7 +67,7 @@ public class JoinCircleActivity extends BaseAppCompatActivity {
                 .subscribe(
                         response -> {
                             progressDialog.dismiss();
-                            if (response.success()) {
+                            if (response.success() && response.getErrorCode() == 0) {
                                 if (response.getDataList() != null
                                         && response.getDataList().size() > 0) {
                                     if (response.getDataList().size() == 1) {
