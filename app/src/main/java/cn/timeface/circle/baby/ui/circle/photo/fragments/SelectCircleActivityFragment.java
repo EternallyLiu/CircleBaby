@@ -107,6 +107,7 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
 
     private void setData(List<CircleActivityAlbumObj> AlbumObjs) {
         if (circleActivityAdapter == null) {
+            circleActivityAdapter = new CircleActivityAdapter(getActivity(), AlbumObjs, clickListener);
             rvContent.setLayoutManager(new GridLayoutManager(getActivity(), 2));
             rvContent.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
                     sizeResId(R.dimen.view_space_normal).
@@ -116,7 +117,6 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
                     sizeResId(R.dimen.view_space_normal).
                     color(android.R.color.transparent).
                     build());
-            circleActivityAdapter = new CircleActivityAdapter(getActivity(), AlbumObjs, clickListener);
             rvContent.setAdapter(circleActivityAdapter);
         } else {
             circleActivityAdapter.setListData(AlbumObjs);

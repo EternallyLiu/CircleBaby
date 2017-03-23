@@ -14,6 +14,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.utils.FastBlur;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.views.barcodescanner.CaptureActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,6 +57,8 @@ public class InputPcActivity extends BasePresenterAppCompatActivity implements V
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        tvAccount.setText("账号："+ FastData.getAccount());
 
         ivScan.setOnClickListener(this);
         btnForget.setOnClickListener(this);

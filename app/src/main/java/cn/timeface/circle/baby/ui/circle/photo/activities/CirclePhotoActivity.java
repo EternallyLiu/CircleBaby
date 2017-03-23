@@ -23,11 +23,11 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.CirclePhotoMonthObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
-import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 import cn.timeface.circle.baby.ui.circle.photo.dialogs.CircleByTimeMenuDialog;
 import cn.timeface.circle.baby.ui.circle.photo.dialogs.SelectCirclePhotoTypeDialog;
 import cn.timeface.circle.baby.ui.circle.photo.fragments.CirclePhotoFragment;
@@ -114,12 +114,12 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
                 break;
             case R.id.ll_circle_activity:
                 //按活动条目
-                QueryByCircleActivityObj albumObj = (QueryByCircleActivityObj) view.getTag(R.string.tag_obj);
+                CircleActivityAlbumObj albumObj = (CircleActivityAlbumObj) view.getTag(R.string.tag_obj);
                 tvContentType.setVisibility(View.GONE);
                 tvContent.setVisibility(View.VISIBLE);
-                tvContent.setText(albumObj.getAlbum().getAlbumName());
+                tvContent.setText(albumObj.getAlbumName());
 
-                showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_ACTIVITY, albumObj.getAlbum().getAlbumId()));
+                showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_ACTIVITY, albumObj.getAlbumId()));
                 break;
             case R.id.ll_root:
                 Object obj = view.getTag(R.string.tag_obj);
