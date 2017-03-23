@@ -72,7 +72,6 @@ import cn.timeface.circle.baby.support.payment.timeface.WxPrepayResponse;
 import cn.timeface.circle.baby.ui.babyInfo.beans.IconHisResponse;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
-import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
@@ -81,7 +80,6 @@ import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
-import cn.timeface.circle.baby.ui.circle.photo.bean.QueryByCircleActivityObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
@@ -90,7 +88,6 @@ import cn.timeface.circle.baby.ui.circle.response.CircleIndexResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
-import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
@@ -1700,7 +1697,7 @@ public interface ApiService {
     @POST("teacherAuth/start")
     Observable<BaseResponse> start(@Query("certification") long certification,
                                    @Query("circleId") long circleId,
-                                   @Query("userId") long userId);
+                                   @Query("circleMemberId") long circleMemberId);
 
     /**
      * 接口详情 (id: 7757) 复制URL

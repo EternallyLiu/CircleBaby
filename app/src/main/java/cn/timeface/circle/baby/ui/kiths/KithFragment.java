@@ -33,7 +33,6 @@ import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.kiths.adapters.KithsAdapter;
-import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
@@ -137,6 +136,7 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
         relationNames.add("奶奶");
         relationNames.add("外公");
         relationNames.add("外婆");
+        relationNames.add("老师");
         relationNames.add("其他成员");
         for (FamilyMemberInfo info : list) {
             String relativeName = info.getUserInfo().getRelationName();
