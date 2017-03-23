@@ -73,7 +73,6 @@ public class CircleTimeLineAdapter extends BaseAdapter {
 
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LogUtil.showLog("onCreateViewHolder==" + viewType);
         if (viewType == 1) {
             return super.onCreateViewHolder(parent, viewType);
         } else if (viewType < VIEW_TYPE_FOOTER) {
@@ -92,7 +91,6 @@ public class CircleTimeLineAdapter extends BaseAdapter {
 
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
-        LogUtil.showLog("onBindViewHolder==" + position);
         if (position < mHeadView.size()) {
 
         } else if (position < (mHeadView.size() + getRealItemSize())) {
@@ -150,7 +148,6 @@ public class CircleTimeLineAdapter extends BaseAdapter {
 
     @Override
     public int getViewType(int position) {
-        LogUtil.showLog("getviewType==" + position);
         if (position >= 0 && position < mHeadView.size()) {
             return VIEW_TYPE_HEADER + position;
         } else if (position >= 0 && position >= mHeadView.size() + getRealItemSize()) {
@@ -291,7 +288,6 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     @Override
     public void initView(View contentView, int position) {
 
-        LogUtil.showLog("position====" + position);
         if (position < mHeadView.size()) {
 
         } else if (position < (mHeadView.size() + getRealItemSize())) {

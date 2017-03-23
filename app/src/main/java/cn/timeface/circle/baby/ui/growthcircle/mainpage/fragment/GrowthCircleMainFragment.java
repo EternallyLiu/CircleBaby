@@ -38,6 +38,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.HomwWorkListActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
@@ -198,7 +199,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
                     + "” 发起了新的作业 “" + circleIndexInfo.getLastSchoolTask().getTitle() + "”");
             tvHomeworkDetail.setOnClickListener(v -> {
                 // 跳转作业详情
-
+                HomwWorkListActivity.open(getActivity());
             });
         } else {
             rlHomework.setVisibility(View.GONE);
@@ -292,6 +293,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
     }
 
     private void showMoreDialog() {
+        LogUtil.showLog("circleObj", "circleObj：" + JSONUtils.parse2JSONString(circleObj));
         if (circleObj == null) return;
         CircleMoreDialog dialog = CircleMoreDialog.newInstance(circleObj);
         dialog.show(getChildFragmentManager(), "CircleMoreDialog");

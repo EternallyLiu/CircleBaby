@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
@@ -23,6 +25,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.SchoolTaskAdapter;
+import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleHomeWorkHeader;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 
@@ -46,6 +49,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
 
     private int currentPage = 1;
     private static final int PAGE_SIZE = 20;
+    private CircleHomeWorkHeader homeWorkHeader;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, HomwWorkListActivity.class));
@@ -100,9 +104,17 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
                 .doOnNext(homeWorkListResponse -> helper.finishTFPTRRefresh())
                 .subscribe(homeWorkListResponse -> {
                     if (homeWorkListResponse.success()) {
+                        if (homeWorkHeader == null)
+                            homeWorkHeader = new CircleHomeWorkHeader(homeWorkListResponse.getGrowthCircle(), homeWorkListResponse.getHasTeacherCertification(), homeWorkListResponse.getLastSubmitHomework());
+                        else {
+                            homeWorkHeader.setGrowthCircle(homeWorkListResponse.getGrowthCircle());
+                            homeWorkHeader.setHasTeacherCertification(homeWorkListResponse.getHasTeacherCertification());
+                            homeWorkHeader.setLastSubmitHomework(homeWorkListResponse.getLastSubmitHomework());
+                        }
                         if (currentPage == 1) {
                             adapter.addList(true, homeWorkListResponse.getDataList());
                         } else adapter.addList(homeWorkListResponse.getDataList());
+                        adapter.add(0, homeWorkHeader);
                     } else ToastUtil.showToast(this, homeWorkListResponse.getInfo());
                 }, throwable -> {
                     helper.finishTFPTRRefresh();
