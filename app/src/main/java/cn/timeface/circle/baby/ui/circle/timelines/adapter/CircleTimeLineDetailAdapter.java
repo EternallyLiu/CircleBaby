@@ -147,7 +147,6 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
             doVideo(contentView, position, mediaObj);
             return;
         }
-        LogUtil.showLog(JSONUtils.parse2JSONString(mediaObj));
         int width = Remember.getInt("width", 0);
         if (mediaObj.getW() > 0)
             width = lookup.isShowSmail() ? lookup.getSpanSize(position) * columWidth : App.mScreenWidth;
@@ -166,7 +165,6 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
             contentView.setPadding(0, 0, position % lookup.getColumCount() == lookup.getColumCount() - 1 ? 0 : imagePadding, imagePadding);
         else contentView.setPadding(0, 0, 0, imagePadding);
         ImageView icon = ViewHolder.getView(contentView, R.id.icon);
-        LogUtil.showLog(position + "---" + mediaObj.getImgUrl());
         GlideUtil.setImage(mediaObj.getImgUrl(), icon, R.drawable.bg_default_holder_img, true);
     }
 

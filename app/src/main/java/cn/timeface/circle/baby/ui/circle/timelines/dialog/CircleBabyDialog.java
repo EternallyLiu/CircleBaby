@@ -26,6 +26,7 @@ import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
 import rx.Observable;
+import rx.Subscription;
 
 /**
  * author : wangshuai Created on 2017/3/20
@@ -38,6 +39,8 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
 
     private List<Long> babyIds = new ArrayList<>(0);
     private List<Long> cancleCircleId = new ArrayList<>(0);
+
+    private Subscription currentSubscription;
 
     private RelateBabyAdapter adapter = null;
 
@@ -91,32 +94,18 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
 
     @Override
     public void onItemClick(View view, int position) {
-        FlipImageView ivSelect = (FlipImageView) view.findViewById(R.id.iv_select);
-        CircleBabyObj babyObj = adapter.getItem(position);
-        if (babyObj.getBabyId() > 0) {
-            if (ivSelect.getStatus() == RelateBabyAdapter.STATUS_SELECT) {
-                ivSelect.changeStatus(RelateBabyAdapter.STATUS_NONE);
-                ivSelect.setVisibility(View.GONE);
-                if (babyIds.contains(babyObj.getBabyId())) {
-                    babyIds.remove(babyIds.indexOf(babyObj.getBabyId()));
-                } else if (!cancleCircleId.contains(babyObj.getBabyId())) {
-                    cancleCircleId.add(babyObj.getBabyId());
-                }
-            } else if (ivSelect.getStatus() != RelateBabyAdapter.STATUS_FINAL) {
-                ivSelect.setVisibility(View.VISIBLE);
-                ivSelect.changeStatus(RelateBabyAdapter.STATUS_SELECT);
-                if (!babyIds.contains(babyObj.getBabyId())) {
-                    babyIds.add(babyObj.getBabyId());
-                } else if (cancleCircleId.contains(babyObj.getBabyId())) {
-                    cancleCircleId.remove(cancleCircleId.indexOf(babyObj.getBabyId()));
-                }
-            }
+    }
+
+    @Override
+    public void dismiss() {
+        if (currentSubscription != null && !currentSubscription.isUnsubscribed()) {
+            currentSubscription.unsubscribe();
+            currentSubscription = null;
         }
+        super.dismiss();
     }
 
     private void setMediaObj(CircleMediaObj mediaObj) {
-        adapter.addList(true, mediaObj.getRelateBabys());
-        adapter.addList(new CircleBabyObj(-1));
     }
 
     private CircleBabyCallBack circleBabyCallBack;

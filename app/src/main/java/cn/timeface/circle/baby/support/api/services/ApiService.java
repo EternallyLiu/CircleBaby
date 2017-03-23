@@ -1437,9 +1437,11 @@ public interface ApiService {
      * @param circleId
      * @return
      */
-    @GET("homework/list")
+    @POST("homework/list")
     Observable<HomeWorkListResponse> homeWorkList(
-            @Query("circleId") long circleId);
+            @Query("circleId") long circleId,
+            @Query("currentPage") int currentPage,
+            @Query("pageSize") int pageSize);
 
     /**
      * 老师布置作业详情列表
@@ -1484,10 +1486,11 @@ public interface ApiService {
      * @param homework
      * @return
      */
-    @GET("homework/submit")
+    @FormUrlEncoded
+    @POST("homework/submit")
     Observable<HomeWorkSubmitResponse> homeWorkSubmit(
-            @Query("taskId") long taskId,
-            @Query("homework") String homework);
+            @Field("taskId") long taskId,
+            @Field("homework") String homework);
 
     /**
      * 同意教师认证
@@ -1784,4 +1787,40 @@ public interface ApiService {
 
     @GET("circleBook/typeList")
     Observable<QueryCirclePhotoResponse<CircleBookTypeObj>> circleBookTypeList();
+
+
+    /**
+     * 添加圈照片的标签
+     *
+     * @param mediaId
+     * @param tips
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("circleMedia/addLabel")
+    Observable<AddTagResponse> addCircleMediaLabal(@Field("mediaId") long mediaId,
+                                                   @Field("tips") String tips);
+
+    /**
+     * 添加圈图片为喜欢
+     *
+     * @param favore
+     * @param mediaId
+     * @return 喜欢的数量
+     */
+    @POST("circleMedia/addLike")
+    Observable<LikeResponse> addCircleMediaLike(@Query("favore") int favore,
+                                                @Query("mediaId") long mediaId);
+
+    /**
+     * 删除圈照片标签
+     *
+     * @param mediaId
+     * @param tips
+     * @return
+     */
+    @POST("circleMedia/delLabel")
+    Observable<BaseResponse> deleteCircleLabel(@Query("mediaId") long mediaId,
+                                               @Query("tipId") long tips);
+
 }

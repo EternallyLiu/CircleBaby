@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -33,11 +34,13 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
@@ -45,7 +48,11 @@ import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action1;
+import rx.functions.Func0;
+import rx.functions.Func1;
 
 public class GrowthCircleMainFragment extends BaseFragment implements IEventBus, BaseAdapter.LoadDataFinish {
 
@@ -72,10 +79,10 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
     private TextView tvCircleName;
     private TextView tvHomework;
     private TextView tvHomeworkDetail;
-    private RelativeLayout rlHomework;
 
     private long circleId;
     private GrowthCircleObj circleObj;
+    private RelativeLayout rlHomework;
 
     public static GrowthCircleMainFragment newInstance() {
         return new GrowthCircleMainFragment();
@@ -104,14 +111,11 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
         IPTRRecyclerListener ptrListener = new IPTRRecyclerListener() {
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
-                currentPage = 1;
                 reqData(circleId);
             }
 
             @Override
             public void onTFPullUpToRefresh(View refreshView) {
-                ++currentPage;
-                reqData(circleId);
             }
 
             @Override
@@ -218,12 +222,12 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
                             } else {
                                 Toast.makeText(getContext(), response.info, Toast.LENGTH_SHORT).show();
                             }
-                            adapter.removeFooter(tfStateView);
+                            adapter.removeFooter(footerView);
                         },
                         throwable -> {
                             tfptrListViewHelper.finishTFPTRRefresh();
                             tfStateView.showException(throwable);
-                            adapter.addFooter(tfStateView);
+                            adapter.addFooter(footerView);
                             LogUtil.showError(throwable);
                         }
                 );
@@ -250,7 +254,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
                         throwable -> {
                             tfptrListViewHelper.finishTFPTRRefresh();
                             tfStateView.showException(throwable);
-                            adapter.addFooter(tfStateView);
+                            adapter.addFooter(footerView);
                             LogUtil.showError(throwable);
                         }
                 );
@@ -258,8 +262,6 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
     }
 
     private void setupListData(List<CircleTimelineObj> dataList) {
-        LogUtil.showLog("size===" + dataList.size());
-        LogUtil.showLog("circle_timeLine", JSONUtils.parse2JSONString(dataList));
         if (currentPage <= 1)
             adapter.addList(true, dataList);
         else adapter.addList(dataList);
@@ -307,6 +309,24 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
                 || event.type == CircleChangedEvent.TYPE_DISBANDED) {
             FastData.clearCircleData();
             showCircleListFragment();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEvent(CircleMediaEvent event) {
+        if (event.getType() == 0 && event.getMediaObj() != null) {
+            for (int i = 0; i < adapter.getRealItemSize(); i++) {
+                Object item = adapter.getData().get(i);
+                if (item != null && item instanceof CircleTimelineObj) {
+                    CircleTimelineObj timelineObj = (CircleTimelineObj) item;
+                    if (timelineObj.getMediaList().contains(event.getMediaObj())) {
+                        int index = timelineObj.getMediaList().indexOf(event.getMediaObj());
+                        timelineObj.getMediaList().get(index).setTips(event.getMediaObj().getTips());
+                        timelineObj.getMediaList().get(index).setIsFavorite(event.getMediaObj().getIsFavorite());
+                        timelineObj.getMediaList().get(index).setFavoritecount(event.getMediaObj().getFavoritecount());
+                    }
+                }
+            }
         }
     }
 

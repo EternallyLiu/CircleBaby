@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.trello.rxlifecycle.components.RxDialogFragment;
+import com.wechat.photopicker.fragment.BigImageFragment;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,9 +20,11 @@ import java.util.List;
 
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.support.api.Api;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
@@ -171,12 +174,12 @@ public class CircleTimeLineAdapter extends BaseAdapter {
         RelativeLayout rlPicCount = ViewHolder.getView(contentView, R.id.rl_pic_count);
         tvDelete.setTag(R.id.recycler_item_click_tag, timelineObj);
         tvDelete.setOnClickListener(this);
-        int count = doGrid(gv, timelineObj.getMediaList());
+        int count = doGrid(gv, position, timelineObj.getMediaList());
         if (count < timelineObj.getMediaList().size()) {
             rlPicCount.setVisibility(View.VISIBLE);
             picCount.setText(String.format("共%d张图片  ", timelineObj.getMediaList().size()));
         } else rlPicCount.setVisibility(View.GONE);
-        tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 HH时mm分 E", timelineObj.getCreateDate()));
+        tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 E", timelineObj.getCreateDate()));
         tvTitle.setText(timelineObj.getTitle());
         tvDetail.setText(timelineObj.getContent());
         tvName.setText(timelineObj.getPublisher().getCircleNickName());
@@ -195,7 +198,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
 
     }
 
-    private View getView(int index, LinearLayout rowLineaylayout, CircleMediaObj mediaObj) {
+    private View getView(int groupIndex, int index, LinearLayout rowLineaylayout, CircleMediaObj mediaObj) {
         View view = inflater.inflate(R.layout.time_line_list_image, rowLineaylayout, false);
         ImageView imageView = (ImageView) view.findViewById(R.id.icon);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) rowLineaylayout.getLayoutParams();
@@ -208,6 +211,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
             itemParams.width = width;
         }
         view.setLayoutParams(itemParams);
+        imageView.setTag(R.id.recycler_item_input_tag, groupIndex);
         imageView.setTag(R.id.recycler_item_click_tag, index);
         imageView.setOnClickListener(this);
         GlideUtil.displayImage(TextUtils.isEmpty(mediaObj.getLocalPath()) ? mediaObj.getImgUrl() :
@@ -215,8 +219,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
         return view;
     }
 
-    private int doGrid(LinearLayout gv, List<CircleMediaObj> list) {
-        LogUtil.showLog("media size==" + list.size());
+    private int doGrid(LinearLayout gv, int position, List<CircleMediaObj> list) {
         gv.setVisibility(View.GONE);
         if (gv.getChildCount() > 0)
             gv.removeAllViews();
@@ -269,7 +272,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
             rowView.setPadding(0, paddingImage, 0, 0);
             rowView.setLayoutParams(rowParams);
             for (int j = startIndex; j < count; j++) {
-                View view = getView(j, rowView, list.get(j));
+                View view = getView(position, j, rowView, list.get(j));
                 if (j >= startIndex && j < count - 1) {
                     view.setPadding(0, 0, (startIndex + 1) == count ? 0 : paddingImage, 0);
                 } else {
@@ -354,6 +357,15 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.icon:
+                Observable.defer(() -> Observable.just(v))
+                        .map(view -> (int) view.getTag(R.id.recycler_item_click_tag))
+                        .subscribe(integer -> {
+                            int postion = (int) v.getTag(R.id.recycler_item_input_tag);
+                            CircleTimelineObj currentTimeLineObj = getItem(postion + mHeadView.size());
+                            FragmentBridgeActivity.openBigimageFragment(context(), 0, MediaObj.getMediaArray(currentTimeLineObj.getMediaList()), MediaObj.getUrls(currentTimeLineObj.getMediaList()), integer, BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR, true, false);
+                        }, throwable -> LogUtil.showError(throwable));
+                break;
             case R.id.tv_delete:
                 if (deleteDialog == null) {
                     deleteDialog = new DeleteDialog(context());

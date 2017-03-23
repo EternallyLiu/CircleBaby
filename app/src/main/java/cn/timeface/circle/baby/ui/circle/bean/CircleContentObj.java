@@ -25,28 +25,6 @@ public class CircleContentObj extends BaseObj implements Parcelable {
     public CircleContentObj() {
     }
 
-    protected CircleContentObj(Parcel in) {
-        super(in);
-        content = in.readString();
-        createDate = in.readLong();
-        mediaList = in.createTypedArrayList(CircleMediaObj.CREATOR);
-        title = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(content);
-        dest.writeLong(createDate);
-        dest.writeTypedList(mediaList);
-        dest.writeString(title);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     public String getContent() {
         return content;
     }
@@ -79,4 +57,27 @@ public class CircleContentObj extends BaseObj implements Parcelable {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.content);
+        dest.writeLong(this.createDate);
+        dest.writeTypedList(this.mediaList);
+        dest.writeString(this.title);
+    }
+
+    protected CircleContentObj(Parcel in) {
+        super(in);
+        this.content = in.readString();
+        this.createDate = in.readLong();
+        this.mediaList = in.createTypedArrayList(CircleMediaObj.CREATOR);
+        this.title = in.readString();
+    }
+
 }
