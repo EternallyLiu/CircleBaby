@@ -82,9 +82,9 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
     private ProductionMenuDialog productionMenuDialog;
     private int bookType;
 
-    public static void open(Context context,long circleId) {
+    public static void open(Context context, long circleId) {
         Intent intent = new Intent(context, CircleBookActivity.class);
-        intent.putExtra("circle_id",circleId);
+        intent.putExtra("circle_id", circleId);
         context.startActivity(intent);
     }
 
@@ -96,7 +96,7 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("圈作品");
-        circleId = getIntent().getLongExtra("circle_id",0);
+        circleId = getIntent().getLongExtra("circle_id", 0);
 
         tvTip.setVisibility(View.GONE);
         btnAskForPrint.setVisibility(View.GONE);
@@ -136,23 +136,21 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
             circleBookListAdapter.setListData(circleBookObjs);
             circleBookListAdapter.notifyDataSetChanged();
         }
-        updateEmptyView();
+        updateEmptyView(circleBookObjs);
     }
 
-    private void updateEmptyView() {
-        if (circleBookListAdapter.getListData().isEmpty()) {
+    private void updateEmptyView(List<CircleBookObj> circleBookObjs) {
+        if (circleBookObjs.size() > 0) {
+            llEmpty.setVisibility(View.GONE);
+        } else {
             llEmpty.setVisibility(View.VISIBLE);
             setupEmptyView();
-        } else {
-            llEmpty.setVisibility(View.GONE);
         }
     }
 
     private void setupEmptyView() {
-        String babyName = FastData.getBabyNickName();
         tvEmptyInfo.setText("本圈还没有新的作品哦，\n点击右上角加号发布本圈第一部作品吧");
         btnCreate.setVisibility(View.GONE);
-//        btnCreate.setText("立即制作");
     }
 
     @Override
@@ -288,7 +286,7 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                         break;
                     }
                 }
-                updateEmptyView();
+                updateEmptyView(circleBookListAdapter.getListData());
             } else {
                 reqData();
             }

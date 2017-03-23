@@ -474,9 +474,4 @@ public class CalendarPreviewActivity extends BasePresenterAppCompatActivity impl
 	public void setBookData(List<BookObj> bookObjs, boolean hasPic) {
 
 	}
-
-	@Override
-	public void setCircleBookData(List<CircleBookObj> circleBookObjs) {
-
-	}
 }
