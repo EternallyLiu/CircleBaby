@@ -3,11 +3,12 @@ package cn.timeface.circle.baby.ui.circle.groupmembers.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -31,6 +32,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.GroupMemberAdapter;
+import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
@@ -40,10 +42,7 @@ import rx.functions.Action1;
 
 public class GroupMembersActivity extends BaseAppCompatActivity implements IEventBus {
 
-    @Bind(R.id.title)
-    TextView title;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
 
@@ -54,6 +53,12 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
     List<MenemberInfo> appliUserInfoList;
     GrowthCircleObj circleObj;
     MenemberInfo menemberInfo;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.srl_content)
+    SwipeRefreshLayout srlContent;
 
     public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, GroupMembersActivity.class);
@@ -68,8 +73,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText("群成员管理");
+        getSupportActionBar().setTitle("群成员管理");
         circleObj = getIntent().getParcelableExtra("circleObj");
 
         setUpView();
@@ -87,6 +91,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
                     @Override
                     public void call(MemberListResponse memberListResponse) {
                         if (memberListResponse.success()) {
+                            srlContent.setRefreshing(false);
                             normalUserInfoList = memberListResponse.getNormals();
                             appliUserInfoList = memberListResponse.getApplicants();
                             teacherUserInfoList = memberListResponse.getTeachers();
@@ -108,6 +113,13 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         //1&老师&4   1是类型  2是title  3是个数
         if (teacherUserInfoList.size() > 0) {
             menuSections.add(new GroupMemberSection(true, "1&老师&" + teacherUserInfoList.size()));
+            for (int i = 0; i < teacherUserInfoList.size(); i++) {
+                if (teacherUserInfoList.get(i).getUserInfo().getCircleUserId() == FastData.getCircleUserInfo().getCircleUserId()) {
+                    this.menemberInfo = teacherUserInfoList.get(i);
+                    EventBus.getDefault().post(new UpdateMemberDetailEvent(menemberInfo));
+                }
+            }
+
         }
         for (int i = 0; i < teacherUserInfoList.size(); i++) {
             menuSections.add(new GroupMemberSection(teacherUserInfoList.get(i)));
@@ -116,7 +128,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         List<MenemberInfo> circleMember = getCircleMember();
         for (int i = 0; i < circleMember.size(); i++) {
             menuSections.add(new GroupMemberSection(circleMember.get(i)));
-            if (circleMember.get(i).getCircleUserInfo().getCircleUserId() == FastData.getCircleUserInfo().getCircleUserId()) {
+            if (circleMember.get(i).getUserInfo().getCircleUserId() == FastData.getCircleUserInfo().getCircleUserId()) {
                 this.menemberInfo = circleMember.get(i);
                 EventBus.getDefault().post(new UpdateMemberDetailEvent(menemberInfo));
             }
@@ -125,7 +137,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
             menuSections.add(new GroupMemberSection(true, "3&入圈申请&" + appliUserInfoList.size()));
         }
         for (int i = 0; i < appliUserInfoList.size(); i++) {
-            appliUserInfoList.get(i).getCircleUserInfo().setCircleUserType(5);
+            appliUserInfoList.get(i).getUserInfo().setCircleUserType(5);
             menuSections.add(new GroupMemberSection(appliUserInfoList.get(i)));
         }
         return menuSections;
@@ -145,7 +157,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
             circleUserInfos.addAll(normalUserInfoList);
         }
         CircleUserInfo circleUserInfo = new CircleUserInfo("", "新增成员", 4);
-        circleUserInfos.add(new MenemberInfo("", 0, circleUserInfo));
+        circleUserInfos.add(new MenemberInfo(new CircleBabyBriefObj(), "", circleUserInfo));
         return circleUserInfos;
     }
 
@@ -157,13 +169,29 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         rvContent.setNestedScrollingEnabled(false);
         rvContent.setAdapter(adapter);
 
+        srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (normalUserInfoList.size() > 0) {
+                    normalUserInfoList.clear();
+                }
+                if (teacherUserInfoList.size() > 0) {
+                    teacherUserInfoList.clear();
+                }
+                if (appliUserInfoList.size() > 0) {
+                    appliUserInfoList.clear();
+                }
+                reqContent();
+            }
+        });
+
         rvContent.addOnItemTouchListener(new OnItemClickListener() {
             @Override
             public void SimpleOnItemClick(BaseQuickAdapter baseQuickAdapter, View view, int i) {
                 GroupMemberSection groupMemberSection = (GroupMemberSection) baseQuickAdapter.getItem(i);
                 MenemberInfo t = groupMemberSection.t;
                 if (t != null) {
-                    CircleUserInfo circleUserInfo = groupMemberSection.t.getCircleUserInfo();
+                    CircleUserInfo circleUserInfo = groupMemberSection.t.getUserInfo();
                     switch (circleUserInfo.getCircleUserType()) {
                         case 4:
                             InviteActivity.open(GroupMembersActivity.this, circleObj);

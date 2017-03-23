@@ -71,7 +71,7 @@ public class CircleCardView extends FrameLayout {
         tvTag.setText(circleObj.isCreator() ? "我创建的" : "我加入的");
 
         Glide.with(getContext())
-                .load(circleObj.getCicleCoverUrl())
+                .load(circleObj.getCircleCoverUrl())
                 .centerCrop()
                 .into(ivCover);
     }

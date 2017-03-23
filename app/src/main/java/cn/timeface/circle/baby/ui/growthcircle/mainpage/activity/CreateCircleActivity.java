@@ -23,7 +23,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.network.NetworkError;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.InputRealNameDialog;
-import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleCreatedEvent;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.CheckedUtil;
 import rx.Subscription;
@@ -98,7 +98,10 @@ public class CreateCircleActivity extends BaseAppCompatActivity {
                         response -> {
                             progressDialog.dismiss();
                             if (response.success()) {
-                                EventBus.getDefault().post(new CircleCreatedEvent(response.getCircleId()));
+                                EventBus.getDefault().post(
+                                        new CircleChangedEvent(response.getCircleId(),
+                                                CircleChangedEvent.TYPE_CREATED)
+                                );
                                 showCreatedDialog();
                             } else {
                                 Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();

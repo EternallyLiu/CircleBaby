@@ -15,21 +15,20 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseListAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
+import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
 
-public class CircleInfoMemberGridAdapter extends BaseListAdapter<CircleUserInfo> {
+public class CircleInfoMemberGridAdapter extends BaseListAdapter<CircleBabyBriefObj> {
 
-    public CircleInfoMemberGridAdapter(Context context, List<CircleUserInfo> listData) {
+    private static final int MAX_COUNT = 10;
+
+    public CircleInfoMemberGridAdapter(Context context, List<CircleBabyBriefObj> listData) {
         super(context, listData);
     }
 
     @Override
     public int getCount() {
-        return listData != null ? listData.size() + 1 : 0; // 添加列表末尾进入成员管理按钮
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return listData != null && listData.size() > position ? listData.get(position) : null;
+        if (listData == null) return 0;
+        return listData.size() > MAX_COUNT ? MAX_COUNT : listData.size(); // 不超过MaxCount
     }
 
     @Override
@@ -43,19 +42,19 @@ public class CircleInfoMemberGridAdapter extends BaseListAdapter<CircleUserInfo>
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (listData.size() > position) {
-            CircleUserInfo item = listData.get(position);
+        if (position - 1 == MAX_COUNT) {
+            holder.ivAvatar.setScaleType(ImageView.ScaleType.CENTER);
+            holder.ivAvatar.setImageResource(R.drawable.ic_menu);
+            holder.ivAvatar.setTag(R.string.tag_obj, null);
+        } else {
+            CircleBabyBriefObj item = listData.get(position);
 
             Glide.with(mContext)
-                    .load(item.getCircleAvatarUrl())
+                    .load(item.getBabyAvatarUrl())
                     .centerCrop()
                     .into(holder.ivAvatar);
 
             holder.ivAvatar.setTag(R.string.tag_obj, item);
-        } else {
-            holder.ivAvatar.setScaleType(ImageView.ScaleType.CENTER);
-            holder.ivAvatar.setImageResource(R.drawable.ic_menu);
-            holder.ivAvatar.setTag(R.string.tag_obj, null);
         }
 
         return convertView;

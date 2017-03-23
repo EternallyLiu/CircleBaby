@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="cn.timeface.circle.baby.ui.circle.groupmembers.activity.CheckMemberDetailActivity">
 
-    <include layout="@layout/head" />
+    <include layout="@layout/layout_toolbar" />
 
     <RelativeLayout
         android:id="@+id/ll_root"
@@ -47,7 +47,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:textColor="@color/text"
-        android:textSize="@dimen/text_small"
+        android:textSize="@dimen/text_normal"
         tools:text="美术小李老师" />
 
     <TextView
@@ -86,6 +86,19 @@
         tools:text="移除成员" />
 
     <TextView
+        android:id="@+id/tv_btn_mid"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/selector_btn_primary"
+        android:gravity="center"
+        android:textColor="@color/bg_color1"
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone"
+        tools:text="移除成员" />
+
+    <TextView
         android:id="@+id/tv_btn_down"
         android:layout_width="200dp"
         android:layout_height="30dp"
@@ -112,6 +125,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="近期照片"
+            android:textColor="@color/text"
+            android:textSize="@dimen/text_medium" />
+
+        <TextView
+            android:id="@+id/tv_go_see"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="去瞧瞧>>"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/bg_color1"
             android:textSize="@dimen/text_normal" />
 
         <android.support.v7.widget.RecyclerView

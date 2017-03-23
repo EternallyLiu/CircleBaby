@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.circle.groupmembers.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +27,6 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.UpdateMemberDetailEvent;
 import cn.timeface.circle.baby.events.UpdateMemberEvent;
-import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -36,17 +36,14 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.PhotosShowAdapter;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
-import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
+import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Subscription;
 import rx.functions.Action1;
 
 public class CheckMemberDetailActivity extends BaseAppCompatActivity implements IEventBus {
 
-    @Bind(R.id.title)
-    TextView title;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+
     @Bind(R.id.iv_content_img)
     CircleImageView ivContentImg;
     @Bind(R.id.iv_child_img)
@@ -79,6 +76,14 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     PhotosShowAdapter adapter;
     ArrayList<String> mPathList;
     MenemberInfo menemberInfo;
+    @Bind(R.id.tv_go_see)
+    TextView tvGoSee;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.tv_btn_mid)
+    TextView tvBtnMid;
 
 
     public static void open(Context context, MenemberInfo circleUserInfo) {
@@ -94,24 +99,23 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mPathList = new ArrayList<>();
         menemberInfo = getIntent().getParcelableExtra("circleUserInfo");
-        circleUserInfo = menemberInfo.getCircleUserInfo();
+        circleUserInfo = menemberInfo.getUserInfo();
         circleUserSelf = FastData.getCircleUserInfo();
         setPhotoView();
 
         tvUserName.setText(circleUserInfo.getCircleNickName());
-        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyName());
+        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyBrief().getBabyName());
         setUpView();
 
     }
 
     private void setPhotoView() {
-        GlideUtil.displayImage(menemberInfo.getBabyAvatarUrl(), ivChildImg);
+        GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(), ivChildImg);
         Glide.with(this)
-                .load(menemberInfo.getCircleUserInfo().getCircleAvatarUrl())
+                .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
                 .into(ivContentImg);
     }
 
@@ -122,184 +126,203 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
 
         int circleUserId = circleUserInfo.getCircleUserId();
         int circleUserType = circleUserInfo.getCircleUserType();
-        if (circleUserIdself == circleUserId && circleUserTypeSelf == 2) {
-            title.setText("我的圈资料");
+        if (circleUserIdself == circleUserId && circleUserType == 1) {
+            getSupportActionBar().setTitle("我的圈资料");
+            tvBtnUp.setText("修改宝宝姓名");
+            tvBtnMid.setText("修改昵称");
+            tvBtnDown.setText("教师认证");
+            tvBtnDown.setVisibility(View.VISIBLE);
+            tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnMid.setVisibility(View.VISIBLE);
+            rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.GONE);
+            tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
+            tvBtnMid.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
+            tvBtnDown.setOnClickListener(v -> {
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setMessage("是否发起认证" + circleUserInfo.getCircleNickName() + "的教师资格");
+                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        start(1);
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.show(getSupportFragmentManager(), "");
+            });
+        } else if (circleUserIdself == circleUserId && circleUserTypeSelf == 2) {
+            getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改昵称");
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnMid.setVisibility(View.GONE);
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.GONE);
-            tvBtnUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1);
-                }
-            });
+            tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
+        } else if (circleUserIdself == circleUserId && circleUserType == 2) {
+            getSupportActionBar().setTitle("我的圈资料");
+            tvBtnUp.setText("修改昵称");
+            tvBtnDown.setVisibility(View.GONE);
+            tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnMid.setVisibility(View.GONE);
+            rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.GONE);
+            tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
         } else if (circleUserIdself == circleUserId) {
-            title.setText("我的圈资料");
+            getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改宝宝名称");
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnMid.setVisibility(View.GONE);
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.GONE);
-            tvBtnUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2);
-                }
-            });
+            tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
         } else if (circleUserTypeSelf == 1 && circleUserType == 2) {
-            title.setText("管理员成员");
+            getSupportActionBar().setTitle("管理圈成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("取消教师认证");
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnMid.setVisibility(View.GONE);
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.GONE);
-            tvBtnUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TFDialog tfDialog = TFDialog.getInstance();
-                    tfDialog.setMessage("是否移除" + circleUserInfo.getCircleNickName());
-                    tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            tfDialog.dismiss();
-                        }
-                    });
-                    tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            removeMember();
-                        }
-                    });
-                    tfDialog.show(getSupportFragmentManager(), "");
-                }
+            tvBtnUp.setOnClickListener(v -> {
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setMessage("是否移除" + circleUserInfo.getCircleNickName());
+                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeMember();
+                    }
+                });
+                tfDialog.show(getSupportFragmentManager(), "");
             });
-            tvBtnDown.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TFDialog tfDialog = TFDialog.getInstance();
-                    tfDialog.setMessage("是否取消认证" + circleUserInfo.getCircleNickName() + "的教师资格");
-                    tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            tfDialog.dismiss();
-                        }
-                    });
-                    tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            start(0);
-                            tfDialog.dismiss();
-                        }
-                    });
-                    tfDialog.show(getSupportFragmentManager(), "");
-                }
+            tvBtnDown.setOnClickListener(v -> {
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setMessage("是否取消认证" + circleUserInfo.getCircleNickName() + "的教师资格");
+                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        start(0);
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.show(getSupportFragmentManager(), "");
             });
         } else if (circleUserTypeSelf == 1 && circleUserType == 3) {
-            title.setText("管理员成员");
+            getSupportActionBar().setTitle("管理圈成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("教师认证");
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnMid.setVisibility(View.GONE);
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.GONE);
-            tvBtnUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TFDialog tfDialog = TFDialog.getInstance();
-                    tfDialog.setMessage("是否移除" + circleUserInfo.getCircleNickName());
-                    tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            tfDialog.dismiss();
-                        }
-                    });
-                    tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            removeMember();
-                            tfDialog.dismiss();
-                        }
-                    });
-                    tfDialog.show(getSupportFragmentManager(), "");
-                }
+            tvBtnUp.setOnClickListener(v -> {
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setMessage("是否移除" + circleUserInfo.getCircleNickName());
+                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeMember();
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.show(getSupportFragmentManager(), "");
             });
-            tvBtnDown.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TFDialog tfDialog = TFDialog.getInstance();
-                    tfDialog.setMessage("是否发起认证" + circleUserInfo.getCircleNickName() + "的教师资格");
-                    tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            tfDialog.dismiss();
-                        }
-                    });
-                    tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            start(1);
-                            tfDialog.dismiss();
-                        }
-                    });
-                    tfDialog.show(getSupportFragmentManager(), "");
-                }
+            tvBtnDown.setOnClickListener(v -> {
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setMessage("是否发起认证" + circleUserInfo.getCircleNickName() + "的教师资格");
+                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        start(1);
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.show(getSupportFragmentManager(), "");
             });
 
         } else if (circleUserTypeSelf == 1 && circleUserType == 5) {
-            title.setText("入圈申请");
+            getSupportActionBar().setTitle("入圈申请");
             tvBtnUp.setText("同意加入");
-
             tvBtnDown.setText("拒绝加入");
+            tvWantReason.setText("申请留言:" + menemberInfo.getLeaveMessage());
             tvBtnDown.setVisibility(View.VISIBLE);
             tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnMid.setVisibility(View.GONE);
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.VISIBLE);
-            tvWantReason.setText("申请留言:"+menemberInfo.getLeaveMessage());
             tvBtnUp.setOnClickListener(v -> joinCheck(1));
             tvBtnDown.setOnClickListener(v -> joinCheck(0));
-
         } else {
-            title.setText("我的圈资料");
+            getSupportActionBar().setTitle("我的圈资料");
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.GONE);
+            tvBtnMid.setVisibility(View.GONE);
             rvCloseCircle.setVisibility(View.VISIBLE);
             tvWantReason.setVisibility(View.GONE);
-
+            tvGoSee.setOnClickListener(v -> CirclePhotoActivity.open(CheckMemberDetailActivity.this, circleUserInfo, true));
             reqPersonalPhotos();
+
         }
     }
 
     private void reqPersonalPhotos() {
         Subscription subscribe = apiService.getNewestPic(circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(new Action1<MediasResponse>() {
-                    @Override
-                    public void call(MediasResponse mediasResponse) {
-                        if (mediasResponse.success()) {
-                            List<MediaObj> dataList = mediasResponse.getDataList();
-                            if (dataList.size() != 0) {
-                                rvCloseCircle.setVisibility(View.VISIBLE);
-                                setPersonalView();
-                                mPathList.clear();
-                                for (int i = 0; i < dataList.size(); i++) {
-                                    mPathList.add(dataList.get(i).getImgUrl());
-                                }
-                                adapter.addAllDate(mPathList);
-                            } else {
-                                rvCloseCircle.setVisibility(View.VISIBLE);
-                                ivEmpty.setVisibility(View.VISIBLE);
-                                tvEmpty.setVisibility(View.VISIBLE);
+                .subscribe(mediasResponse -> {
+                    if (mediasResponse.success()) {
+                        List<MediaObj> dataList = mediasResponse.getDataList();
+                        if (dataList.size() != 0) {
+                            rvCloseCircle.setVisibility(View.VISIBLE);
+                            rcContent.setVisibility(View.VISIBLE);
+                            tvGoSee.setVisibility(View.VISIBLE);
+                            setPersonalView();
+                            mPathList.clear();
+                            for (int i = 0; i < dataList.size(); i++) {
+                                mPathList.add(dataList.get(i).getImgUrl());
                             }
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            rvCloseCircle.setVisibility(View.VISIBLE);
+                            ivEmpty.setVisibility(View.VISIBLE);
+                            tvEmpty.setVisibility(View.VISIBLE);
+                            tvGoSee.setVisibility(View.GONE);
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+                }, throwable -> {
 
-                    }
                 });
         addSubscription(subscribe);
     }
@@ -314,26 +337,20 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     private void joinCheck(int type) {
         Subscription subscribe = apiService.joinCircleCheck(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(new Action1<BaseResponse>() {
-                    @Override
-                    public void call(BaseResponse baseResponse) {
-                        if (baseResponse.success()) {
-                            if (type == 1) {
-                                ToastUtil.showToast(CheckMemberDetailActivity.this, "操作成功");
-                                EventBus.getDefault().post(new UpdateMemberEvent());
-                                finish();
-                            } else {
-                                ToastUtil.showToast(CheckMemberDetailActivity.this, "操作成功");
-                                EventBus.getDefault().post(new UpdateMemberEvent());
-                                finish();
-                            }
+                .subscribe(baseResponse -> {
+                    if (baseResponse.success()) {
+                        if (type == 1) {
+                            ToastUtil.showToast(CheckMemberDetailActivity.this, "操作成功");
+                            EventBus.getDefault().post(new UpdateMemberEvent());
+                            finish();
+                        } else {
+                            ToastUtil.showToast(CheckMemberDetailActivity.this, "操作成功");
+                            EventBus.getDefault().post(new UpdateMemberEvent());
+                            finish();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+                }, throwable -> {
 
-                    }
                 });
         addSubscription(subscribe);
     }
@@ -341,26 +358,20 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     private void start(int type) {
         Subscription subscribe = apiService.start(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(new Action1<BaseResponse>() {
-                    @Override
-                    public void call(BaseResponse baseResponse) {
-                        if (baseResponse.success()) {
-                            if (type == 1) {
-                                ToastUtil.showToast(CheckMemberDetailActivity.this, "认证成功,等待审核");
-                                EventBus.getDefault().post(new UpdateMemberEvent());
-                                finish();
-                            } else {
-                                ToastUtil.showToast(CheckMemberDetailActivity.this, "取消认证成功,等待审核");
-                                EventBus.getDefault().post(new UpdateMemberEvent());
-                                finish();
-                            }
+                .subscribe(baseResponse -> {
+                    if (baseResponse.success()) {
+                        if (type == 1) {
+                            ToastUtil.showToast(CheckMemberDetailActivity.this, "认证成功,等待审核");
+                            EventBus.getDefault().post(new UpdateMemberEvent());
+                            finish();
+                        } else {
+                            ToastUtil.showToast(CheckMemberDetailActivity.this, "取消认证成功,等待审核");
+                            EventBus.getDefault().post(new UpdateMemberEvent());
+                            finish();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+                }, throwable -> {
 
-                    }
                 });
         addSubscription(subscribe);
     }
@@ -368,14 +379,11 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     private void removeMember() {
         Subscription subscribe = apiService.removeMember(circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(new Action1<BaseResponse>() {
-                    @Override
-                    public void call(BaseResponse baseResponse) {
-                        if (baseResponse.success()) {
-                            ToastUtil.showToast(CheckMemberDetailActivity.this, "操作成功");
-                            EventBus.getDefault().post(new UpdateMemberEvent());
-                            finish();
-                        }
+                .subscribe(baseResponse -> {
+                    if (baseResponse.success()) {
+                        ToastUtil.showToast(CheckMemberDetailActivity.this, "操作成功");
+                        EventBus.getDefault().post(new UpdateMemberEvent());
+                        finish();
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -389,7 +397,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     @Subscribe
     public void onEvent(UpdateMemberDetailEvent event) {
         MenemberInfo menemberInfo = event.getMenemberInfo();
-        tvUserName.setText(menemberInfo.getCircleUserInfo().getCircleNickName());
-        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyName());
+        tvUserName.setText(menemberInfo.getUserInfo().getCircleNickName());
+        tvUserConnect.setText("关联宝贝:" + menemberInfo.getBabyBrief().getBabyName());
     }
 }

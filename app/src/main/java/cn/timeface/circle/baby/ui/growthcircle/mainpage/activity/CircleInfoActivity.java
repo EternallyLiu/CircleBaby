@@ -20,15 +20,17 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.network.NetworkError;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleDetailObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.adapter.CircleInfoMemberGridAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.JoinCircleDialog;
-import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleJoinedEvent;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
 import cn.timeface.circle.baby.views.NoScrollGridView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Subscription;
@@ -127,6 +129,8 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
         tvCircleNumber.setText(circleObj.getCircleNumber());
         tvCirclePhotoCount.setText(circleObj.getMediaCount() + "张");
         tvCircleProductCount.setText(circleObj.getWorkCount() + "本");
+
+        GlideUtil.displayImage(circleObj.getCircleCoverUrl(), ivCircleCover);
     }
 
     private void setupDetailData(GrowthCircleDetailObj circleDetailObj) {
@@ -139,11 +143,15 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
 
         if (circleDetailObj.getMemberList() != null
                 && circleDetailObj.getMemberList().size() > 0) {
-            memberList.setAdapter(new CircleInfoMemberGridAdapter(this, circleDetailObj.getMemberList()));
+            memberList.setAdapter(new CircleInfoMemberGridAdapter(this, circleDetailObj.getBabyList()));
         }
 
         tvSubmit.setVisibility(View.VISIBLE);
-        tvSubmit.setText(isJoined ? R.string.quit_growth_circle : R.string.join_growth_circle);
+        if (circleObj.isCreator()) {
+            tvSubmit.setText(R.string.disband_growth_circle);
+        } else {
+            tvSubmit.setText(isJoined ? R.string.quit_growth_circle : R.string.join_growth_circle);
+        }
         tvSubmit.setTextColor(ContextCompat.getColor(this, isJoined ?
                 R.color.text_color16 : android.R.color.white));
         tvSubmit.setBackgroundResource(isJoined ? R.drawable.selector_ios_btn_empty
@@ -151,22 +159,38 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
     }
 
     public void clickCircleMember(View view) {
-        if (view.getTag(R.string.tag_obj) != null) {
-            if (view.getTag(R.string.tag_obj) instanceof CircleUserInfo) {
-                // 进入成员页面
-                CircleUserInfo item = (CircleUserInfo) view.getTag(R.string.tag_obj);
-
-            }
-        } else {
-            // 进入成员管理页面
-
-        }
+        // 进入成员管理页面
+        GroupMembersActivity.open(this, circleObj);
     }
 
     @OnClick(R.id.tv_submit)
     public void onClick() {
         if (isJoined) {
-
+            if (circleObj.isCreator()) {
+                // 解散圈子
+                TFDialog disbandDialog = TFDialog.getInstance();
+                disbandDialog.setTitle("是否解散“" + circleObj.getCircleName() + "”");
+                disbandDialog.setMessage("警告：解散后，圈内容将被清空");
+                disbandDialog.setNegativeButton("取消", v -> disbandDialog.dismiss());
+                disbandDialog.setPositiveButton("确定", v -> {
+                    disbandDialog.dismiss();
+                    showProgressDialog();
+                    reqDisbandCircle(circleObj.getCircleId());
+                });
+                disbandDialog.show(getSupportFragmentManager(), "DisbandDialog");
+            } else {
+                // 退出圈子
+                TFDialog quitDialog = TFDialog.getInstance();
+                quitDialog.setTitle("是否退出“" + circleObj.getCircleName() + "”");
+                quitDialog.setMessage("警告：退出后，您发布的信息将被清空");
+                quitDialog.setNegativeButton("取消", v -> quitDialog.dismiss());
+                quitDialog.setPositiveButton("确定", v -> {
+                    quitDialog.dismiss();
+                    showProgressDialog();
+                    reqQuitCircle(circleObj.getCircleId());
+                });
+                quitDialog.show(getSupportFragmentManager(), "QuitDialog");
+            }
         } else {
             if (joinDialog == null) {
                 joinDialog = JoinCircleDialog.getInstance();
@@ -186,24 +210,73 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
 
                 joinDialog.dismiss();
                 showProgressDialog();
-                reqJoinCircle(joinDialog.getJoinMessage(), joinDialog.getChildrenName());
+                reqJoinCircle(circleObj.getCircleId(),
+                        joinDialog.getJoinMessage(), joinDialog.getChildrenName());
             });
             joinDialog.show(getSupportFragmentManager(), "JoinCircleDialog");
         }
     }
 
-    private void reqJoinCircle(String leaveWords, String babyRealName) {
-        Subscription s = apiService.joinCircle(circleObj.getCircleId(), babyRealName, leaveWords)
+    private void reqJoinCircle(long circleId, String leaveWords, String babyRealName) {
+        Subscription s = apiService.joinCircle(circleId, babyRealName, leaveWords)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
                             dismissProgressDialog();
+                            Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
                             if (response.success()) {
-                                EventBus.getDefault().post(new CircleJoinedEvent());
+                                EventBus.getDefault().post(
+                                        new CircleChangedEvent(circleId,
+                                                CircleChangedEvent.TYPE_JOINED)
+                                );
                                 showProgressDialog();
                                 reqData(circleObj.getCircleId());
-                            } else {
-                                Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
+                            }
+                        },
+                        throwable -> {
+                            dismissProgressDialog();
+                            NetworkError.showException(this, throwable);
+                        }
+                );
+        addSubscription(s);
+    }
+
+    private void reqQuitCircle(long circleId) {
+        Subscription s = apiService.quitCircle(circleId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            dismissProgressDialog();
+                            Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
+                            if (response.success()) {
+                                EventBus.getDefault().post(
+                                        new CircleChangedEvent(circleId,
+                                                CircleChangedEvent.TYPE_QUIT)
+                                );
+                                finish();
+                            }
+                        },
+                        throwable -> {
+                            dismissProgressDialog();
+                            NetworkError.showException(this, throwable);
+                        }
+                );
+        addSubscription(s);
+    }
+
+    private void reqDisbandCircle(long circleId) {
+        Subscription s = apiService.disbandCircle(circleId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            dismissProgressDialog();
+                            Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
+                            if (response.success() && response.getErrorCode() != 0) {
+                                EventBus.getDefault().post(
+                                        new CircleChangedEvent(circleId,
+                                                CircleChangedEvent.TYPE_DISBANDED)
+                                );
+                                finish();
                             }
                         },
                         throwable -> {

@@ -7,6 +7,8 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import java.util.List;
 
+import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
+
 /**
  * 成长圈详情对象
  * Created by lidonglin on 2017/3/14.
@@ -16,47 +18,12 @@ public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable
     protected String circleDescription;           //圈描述
     protected int mediaAchievement;               //图片超过比例
     protected List<CircleUserInfo> memberList;    //圈中用户列表 (不超过10个)
+    protected List<CircleBabyBriefObj> babyList;    //圈中所有宝宝 (不超过10个)
     protected String rule;                        //圈规则
     protected int wrokAchievement;                //作品超过比例
 
     public GrowthCircleDetailObj() {
     }
-
-    protected GrowthCircleDetailObj(Parcel in) {
-        super(in);
-        circleDescription = in.readString();
-        mediaAchievement = in.readInt();
-        memberList = in.createTypedArrayList(CircleUserInfo.CREATOR);
-        rule = in.readString();
-        wrokAchievement = in.readInt();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(circleDescription);
-        dest.writeInt(mediaAchievement);
-        dest.writeTypedList(memberList);
-        dest.writeString(rule);
-        dest.writeInt(wrokAchievement);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<GrowthCircleDetailObj> CREATOR = new Creator<GrowthCircleDetailObj>() {
-        @Override
-        public GrowthCircleDetailObj createFromParcel(Parcel in) {
-            return new GrowthCircleDetailObj(in);
-        }
-
-        @Override
-        public GrowthCircleDetailObj[] newArray(int size) {
-            return new GrowthCircleDetailObj[size];
-        }
-    };
 
     public String getCircleDescription() {
         return circleDescription;
@@ -82,6 +49,14 @@ public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable
         this.memberList = memberList;
     }
 
+    public List<CircleBabyBriefObj> getBabyList() {
+        return babyList;
+    }
+
+    public void setBabyList(List<CircleBabyBriefObj> babyList) {
+        this.babyList = babyList;
+    }
+
     public String getRule() {
         return rule;
     }
@@ -97,4 +72,42 @@ public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable
     public void setWrokAchievement(int wrokAchievement) {
         this.wrokAchievement = wrokAchievement;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.circleDescription);
+        dest.writeInt(this.mediaAchievement);
+        dest.writeTypedList(this.memberList);
+        dest.writeTypedList(this.babyList);
+        dest.writeString(this.rule);
+        dest.writeInt(this.wrokAchievement);
+    }
+
+    protected GrowthCircleDetailObj(Parcel in) {
+        super(in);
+        this.circleDescription = in.readString();
+        this.mediaAchievement = in.readInt();
+        this.memberList = in.createTypedArrayList(CircleUserInfo.CREATOR);
+        this.babyList = in.createTypedArrayList(CircleBabyBriefObj.CREATOR);
+        this.rule = in.readString();
+        this.wrokAchievement = in.readInt();
+    }
+
+    public static final Creator<GrowthCircleDetailObj> CREATOR = new Creator<GrowthCircleDetailObj>() {
+        @Override
+        public GrowthCircleDetailObj createFromParcel(Parcel source) {
+            return new GrowthCircleDetailObj(source);
+        }
+
+        @Override
+        public GrowthCircleDetailObj[] newArray(int size) {
+            return new GrowthCircleDetailObj[size];
+        }
+    };
 }

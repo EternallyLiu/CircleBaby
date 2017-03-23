@@ -31,7 +31,7 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
     protected void convertHead(BaseViewHolder baseViewHolder, GroupMemberSection groupMemberSection) {
         String[] split = groupMemberSection.header.split("&");
         if (isExpand) {
-            baseViewHolder.setText(R.id.tv_expand, "收缩全部成员");
+            baseViewHolder.setText(R.id.tv_expand, "收起");
         } else {
             baseViewHolder.setText(R.id.tv_expand, "展开全部成员");
         }
@@ -59,31 +59,31 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
     @Override
     protected void convert(BaseViewHolder baseViewHolder, GroupMemberSection groupMemberSection) {
         MenemberInfo menemberInfo = groupMemberSection.t;
-        if (menemberInfo.getCircleUserInfo() != null) {
-            baseViewHolder.setText(R.id.tv_content, menemberInfo.getCircleUserInfo().getCircleNickName());
+        if (menemberInfo.getUserInfo() != null) {
+            baseViewHolder.setText(R.id.tv_content, menemberInfo.getUserInfo().getCircleNickName());
             CircleImageView view = baseViewHolder.getView(R.id.iv_content_img);
             CircleImageView viewChild = baseViewHolder.getView(R.id.iv_child_img);
-            if (menemberInfo.getCircleUserInfo().getCircleUserType() == 4) {
+            if (menemberInfo.getUserInfo().getCircleUserType() == 4) {
                 Glide.with(mContext)
                         .load(R.drawable.ic_add_member)
                         .into(view);
                 viewChild.setVisibility(View.GONE);
             } else {
                 viewChild.setVisibility(View.VISIBLE);
-                if (menemberInfo.getCircleUserInfo() != null) {
+                if (menemberInfo.getUserInfo() != null) {
                     Glide.with(mContext)
-                            .load(menemberInfo.getCircleUserInfo().getCircleAvatarUrl())
+                            .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
                             .into(view);
                 }
 
                 Glide.with(mContext)
-                        .load(menemberInfo.getBabyAvatarUrl())
+                        .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
                         .into(viewChild);
             }
 
-            if (menemberInfo.getCircleUserInfo().getCircleUserType() == 1) {
+            if (menemberInfo.getUserInfo().getCircleUserType() == 1) {
                 baseViewHolder.setVisible(R.id.iv_create_member, true);
-            } else if (FastData.getCircleUserInfo().getCircleUserId() == menemberInfo.getCircleUserInfo().getCircleUserId()) {
+            } else if (FastData.getCircleUserInfo().getCircleUserId() == menemberInfo.getUserInfo().getCircleUserId()) {
                 baseViewHolder.setVisible(R.id.iv_mine_self, true);
             } else {
                 baseViewHolder.setVisible(R.id.iv_create_member, false);

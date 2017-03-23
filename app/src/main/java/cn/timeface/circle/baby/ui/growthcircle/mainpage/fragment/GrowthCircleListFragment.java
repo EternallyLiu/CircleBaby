@@ -34,8 +34,7 @@ import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleListObj;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CreateCircleActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.adapter.CircleListAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CreateCircleDialog;
-import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleCreatedEvent;
-import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleJoinedEvent;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Subscription;
 
@@ -209,12 +208,13 @@ public class GrowthCircleListFragment extends BaseFragment implements IEventBus 
     }
 
     @Subscribe
-    public void onEvent(CircleCreatedEvent event) {
-        reqData();
+    public void onEvent(CircleChangedEvent event) {
+        if (event.type == CircleChangedEvent.TYPE_CREATED
+                || event.type == CircleChangedEvent.TYPE_JOINED
+                || event.type == CircleChangedEvent.TYPE_QUIT
+                || event.type == CircleChangedEvent.TYPE_DISBANDED) {
+            reqData();
+        }
     }
 
-    @Subscribe
-    public void onEvent(CircleJoinedEvent event) {
-        reqData();
-    }
 }

@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.wechat.photopicker.event.OnPhotoClickListener;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import cn.timeface.circle.baby.R;
@@ -40,7 +39,7 @@ public class PhotosShowAdapter extends RecyclerView.Adapter<PhotosShowAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, final int position) {
         String path =mPathList.get(position);
         Glide.with(mContext)
-                .load(new File(path))
+                .load(path)
                 .centerCrop()
                 .thumbnail(0.1f)
                 .placeholder(R.mipmap.ic_photo_black_48dp)

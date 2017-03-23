@@ -10,7 +10,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.db.AppDatabase;
 import cn.timeface.circle.baby.support.utils.FastData;
 
@@ -106,6 +105,14 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         this.circleUserType = circleUserType;
     }
 
+    public boolean isTeacher() {
+        return circleUserType == 2;
+    }
+
+    public static void deleteAll(){
+        SQLite.delete().from(CircleUserInfo.class).query();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -118,6 +125,16 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "CircleUserInfo{" +
+                "circleUserId=" + circleUserId +
+                ", circleId=" + circleId +
+                ", circleUserType=" + circleUserType +
+                ", circleAvatarUrl='" + circleAvatarUrl + '\'' +
+                ", circleNickName='" + circleNickName + '\'' +
+                '}';
+    }
 
     @Override
     public int describeContents() {
