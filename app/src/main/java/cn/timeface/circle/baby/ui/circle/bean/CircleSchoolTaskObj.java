@@ -18,38 +18,6 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
     public CircleSchoolTaskObj() {
     }
 
-    protected CircleSchoolTaskObj(Parcel in) {
-        super(in);
-        isCommit = in.readInt();
-        taskId = in.readLong();
-        teacher = in.readParcelable(CircleUserInfo.class.getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(isCommit);
-        dest.writeLong(taskId);
-        dest.writeParcelable(teacher, flags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CircleSchoolTaskObj> CREATOR = new Creator<CircleSchoolTaskObj>() {
-        @Override
-        public CircleSchoolTaskObj createFromParcel(Parcel in) {
-            return new CircleSchoolTaskObj(in);
-        }
-
-        @Override
-        public CircleSchoolTaskObj[] newArray(int size) {
-            return new CircleSchoolTaskObj[size];
-        }
-    };
-
     public int isCommit() {
         return isCommit;
     }
@@ -73,4 +41,36 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
     public void setTeacher(CircleUserInfo teacher) {
         this.teacher = teacher;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(this.isCommit);
+        dest.writeLong(this.taskId);
+        dest.writeParcelable(this.teacher, flags);
+    }
+
+    protected CircleSchoolTaskObj(Parcel in) {
+        super(in);
+        this.isCommit = in.readInt();
+        this.taskId = in.readLong();
+        this.teacher = in.readParcelable(CircleUserInfo.class.getClassLoader());
+    }
+
+    public static final Creator<CircleSchoolTaskObj> CREATOR = new Creator<CircleSchoolTaskObj>() {
+        @Override
+        public CircleSchoolTaskObj createFromParcel(Parcel source) {
+            return new CircleSchoolTaskObj(source);
+        }
+
+        @Override
+        public CircleSchoolTaskObj[] newArray(int size) {
+            return new CircleSchoolTaskObj[size];
+        }
+    };
 }

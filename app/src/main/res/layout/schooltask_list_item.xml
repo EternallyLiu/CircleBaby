@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:timeLine="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:orientation="vertical">
 
     <RelativeLayout
@@ -18,36 +19,44 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/size_24"
+            android:paddingBottom="@dimen/size_36"
             android:paddingLeft="@dimen/size_12"
             android:paddingRight="@dimen/size_12"
-            android:paddingTop="@dimen/size_24"
+            android:paddingTop="@dimen/size_36"
             timeLine:beginLine="@color/sea_buckthorn"
             timeLine:endLine="@color/sea_buckthorn"
             timeLine:lineSize="@dimen/size_2"
             timeLine:marker="@drawable/circle_market_drawable"
             timeLine:markerSize="@dimen/size_18"/>
 
-        <TextView
-            android:id="@+id/tv_date_time"
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/size_12"
             android:layout_toRightOf="@+id/line"
             android:gravity="center_vertical"
-            android:text="@string/time_line_select_year"
-            android:textColor="@color/sea_buckthorn"
-            android:textSize="@dimen/text_normal"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_creater"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="right|center_vertical"
-            android:textSize="@dimen/text_small"/>
+            <TextView
+                android:id="@+id/tv_date_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/v_center"
+                android:gravity="center_vertical"
+                android:textColor="@color/sea_buckthorn"
+                android:textSize="@dimen/text_normal"
+                tools:something="2017年03月"/>
+
+            <TextView
+                android:id="@+id/tv_creater"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right|center_vertical"
+                android:textSize="@dimen/text_small"
+                tools:something="由汪老师发起"/>
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
@@ -79,7 +88,7 @@
             android:id="@+id/tv_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_commited"
+            android:layout_below="@+id/title"
             android:padding="@dimen/size_2"
             android:text="作业描述"
             android:textColor="@color/aluminum"

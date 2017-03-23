@@ -1,5 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.response;
 
+import android.os.Parcel;
+
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import java.util.List;
@@ -51,4 +53,40 @@ public class HomeWorkListResponse extends BaseResponse {
     public void setLastSubmitHomework(CircleHomeworkObj lastSubmitHomework) {
         this.lastSubmitHomework = lastSubmitHomework;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeTypedList(this.dataList);
+        dest.writeParcelable(this.growthCircle, flags);
+        dest.writeInt(this.hasTeacherCertification);
+        dest.writeParcelable(this.lastSubmitHomework, flags);
+    }
+
+    public HomeWorkListResponse() {
+    }
+
+    protected HomeWorkListResponse(Parcel in) {
+        this.dataList = in.createTypedArrayList(HomeWorkListObj.CREATOR);
+        this.growthCircle = in.readParcelable(GrowthCircleObj.class.getClassLoader());
+        this.hasTeacherCertification = in.readInt();
+        this.lastSubmitHomework = in.readParcelable(CircleHomeworkObj.class.getClassLoader());
+    }
+
+    public static final Creator<HomeWorkListResponse> CREATOR = new Creator<HomeWorkListResponse>() {
+        @Override
+        public HomeWorkListResponse createFromParcel(Parcel source) {
+            return new HomeWorkListResponse(source);
+        }
+
+        @Override
+        public HomeWorkListResponse[] newArray(int size) {
+            return new HomeWorkListResponse[size];
+        }
+    };
 }

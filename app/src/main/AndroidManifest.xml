@@ -588,6 +588,7 @@
         <activity android:name=".ui.circle.groupmembers.activity.InviteActivity"/>
         <activity android:name=".ui.circle.groupmembers.activity.CheckMemberDetailActivity"/>
         <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity"></activity>
+        <activity android:name=".ui.circle.timelines.activity.HomwWorkListActivity"/>
     </application>
 
 </manifest>

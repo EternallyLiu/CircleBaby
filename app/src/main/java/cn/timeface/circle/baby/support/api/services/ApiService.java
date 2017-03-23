@@ -1426,9 +1426,11 @@ public interface ApiService {
      * @param circleId
      * @return
      */
-    @GET("homework/list")
+    @POST("homework/list")
     Observable<HomeWorkListResponse> homeWorkList(
-            @Query("circleId") long circleId);
+            @Query("circleId") long circleId,
+            @Query("currentPage") int currentPage,
+            @Query("pageSize") int pageSize);
 
     /**
      * 老师布置作业详情列表
@@ -1777,6 +1779,7 @@ public interface ApiService {
 
     /**
      * 添加圈照片的标签
+     *
      * @param mediaId
      * @param tips
      * @return
@@ -1795,7 +1798,7 @@ public interface ApiService {
      */
     @POST("circleMedia/addLike")
     Observable<LikeResponse> addCircleMediaLike(@Query("favore") int favore,
-                                          @Query("mediaId") long mediaId);
+                                                @Query("mediaId") long mediaId);
 
     /**
      * 删除圈照片标签
@@ -1806,6 +1809,6 @@ public interface ApiService {
      */
     @POST("circleMedia/delLabel")
     Observable<BaseResponse> deleteCircleLabel(@Query("mediaId") long mediaId,
-                                         @Query("tipId") long tips);
+                                               @Query("tipId") long tips);
 
 }
