@@ -37,8 +37,10 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
@@ -80,6 +82,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
 
     private long circleId;
     private GrowthCircleObj circleObj;
+    private RelativeLayout rlHomework;
 
     public static GrowthCircleMainFragment newInstance() {
         return new GrowthCircleMainFragment();
@@ -242,7 +245,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
                                 FastData.setGrowthCircleObj(response.getGrowthCircle());
                                 FastData.setCircleUserInfo(response.getUserInfo());
 
-                                setupCircleInfo(response.getGrowthCircle());
+                                setupCircleInfo(response);
                             } else {
                                 Toast.makeText(getContext(), response.info, Toast.LENGTH_SHORT).show();
                             }
@@ -251,7 +254,7 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
                         throwable -> {
                             tfptrListViewHelper.finishTFPTRRefresh();
                             tfStateView.showException(throwable);
-                            adapter.addFooter(tfStateView);
+                            adapter.addFooter(footerView);
                             LogUtil.showError(throwable);
                         }
                 );
