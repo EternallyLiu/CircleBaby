@@ -107,7 +107,13 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
                     CircleSelectServeHomeWorksActivity.open(this, String.valueOf(FastData.getCircleId()));
                 //圈照片书
                 } else if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO){
-                    CircleSelectSeverAlbumsActivity.open(this, String.valueOf(FastData.getCircleId()));
+                    CircleSelectSeverAlbumsActivity.open(
+                            this,
+                            String.valueOf(FastData.getCircleId()),
+                            BookModel.CIRCLE_BOOK_TYPE_PHOTO,
+                            "",
+                            175,
+                            "");
                 //圈时光书
                 } else if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME) {
                     CircleSelectServerTimesActivity.open(

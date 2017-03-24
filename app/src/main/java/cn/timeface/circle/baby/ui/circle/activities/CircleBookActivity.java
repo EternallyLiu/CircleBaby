@@ -80,7 +80,6 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
     private List<CircleBookObj> data;
     private CircleBookListAdapter circleBookListAdapter;
     private ProductionMenuDialog productionMenuDialog;
-    private int bookType;
 
     public static void open(Context context, long circleId) {
         Intent intent = new Intent(context, CircleBookActivity.class);
@@ -201,7 +200,7 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
 
             case R.id.tv_print:
                 new BookPrintHelper(
-                        (BasePresenterAppCompatActivity) this,
+                        this,
                         bookObj.getBookType(),
                         bookObj.getOpenBookType(),
                         bookObj.getPageNum(),
@@ -214,58 +213,35 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                 break;
 
             case R.id.rl_book_cover:
-                if (bookType == BookModel.BOOK_TYPE_CALENDAR) {
-                    CalendarPreviewActivity.open(
-                            this,
-                            String.valueOf(bookObj.getOpenBookId()),
-                            String.valueOf(bookObj.getBookType()),
-                            String.valueOf(bookObj.getBookId()));
-                } else {
-                    //跳转POD预览
-                    ArrayList<String> keys = new ArrayList<>();
-                    ArrayList<String> values = new ArrayList<>();
-                    keys.add("book_author");
-                    keys.add("book_title");
-                    values.add(FastData.getUserName());
-                    values.add(FastData.getBabyNickName() + "的照片书");
-                    MyPODActivity.open(
-                            this,
-                            String.valueOf(bookObj.getBookId()),
-                            String.valueOf(bookObj.getOpenBookId()),
-                            bookObj.getBookType(),
-                            bookObj.getOpenBookType(),
-                            null,
-                            "",
-                            false,
-                            bookObj.getBaby().getBabyId(), keys, values, 0);
-                }
+                //跳转POD预览
+                ArrayList<String> keys = new ArrayList<>();
+                ArrayList<String> values = new ArrayList<>();
+                keys.add("book_author");
+                keys.add("book_title");
+                values.add(FastData.getUserName());
+                values.add(FastData.getBabyNickName() + "的照片书");
+                MyPODActivity.open(
+                        this,
+                        String.valueOf(bookObj.getBookId()),
+                        String.valueOf(bookObj.getOpenBookId()),
+                        bookObj.getBookType(),
+                        bookObj.getOpenBookType(),
+                        null,
+                        "",
+                        false,
+                        bookObj.getBaby().getBabyId(), keys, values, 0);
                 break;
 
             case R.id.tv_edit:
-                //精装照片书&绘画集
-                if (bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK
-                        || bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING) {
-                    SelectServerPhotoActivity.open(
+                //圈照片书
+                if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO) {
+                    CircleSelectSeverAlbumsActivity.open(
                             this,
-                            bookType,
-                            bookObj.getOpenBookType(),
+                            String.valueOf(circleId),
+                            bookObj.getBookType(),
                             String.valueOf(bookObj.getBookId()),
-                            String.valueOf(bookObj.getOpenBookId()),
-                            bookObj.getBaby().getBabyId(),
-                            bookObj.getAuthor().getNickName(),
-                            bookObj.getBookName());
-                    //成长纪念册&成长语录
-                } else if (bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_COMMEMORATION_BOOK
-                        || bookObj.getBookType() == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
-                    SelectServerTimeActivity.open(
-                            this,
-                            bookType,
                             bookObj.getOpenBookType(),
-                            String.valueOf(bookObj.getBookId()),
-                            String.valueOf(bookObj.getOpenBookId()),
-                            bookObj.getBaby().getBabyId(),
-                            bookObj.getAuthor().getNickName(),
-                            bookObj.getBookName());
+                            String.valueOf(bookObj.getOpenBookId()));
                 } else {
                     Log.e(TAG, "无法识别的书籍类型");
                 }
@@ -275,12 +251,12 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
 
     @Subscribe
     public void bookOptionEvent(BookOptionEvent optionEvent) {
-        if (optionEvent.getBookType() == bookType) {
             //删除书籍操作
             if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
                 for (int i = 0; i < circleBookListAdapter.getListData().size(); i++) {
                     BookObj bookObj = circleBookListAdapter.getListData().get(i);
-                    if (TextUtils.equals(optionEvent.getBookId(), String.valueOf(bookObj.getBookId()))) {
+                    if(optionEvent.getBookType() == bookObj.getBookType()
+                            && TextUtils.equals(optionEvent.getBookId(), String.valueOf(bookObj.getBookId()))){
                         circleBookListAdapter.getListData().remove(i);
                         circleBookListAdapter.notifyItemRemoved(i);
                         break;
@@ -290,6 +266,5 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
             } else {
                 reqData();
             }
-        }
     }
 }
