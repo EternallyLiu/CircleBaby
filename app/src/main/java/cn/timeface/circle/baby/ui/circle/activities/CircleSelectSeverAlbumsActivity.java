@@ -99,8 +99,8 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
         bookId = getIntent().getStringExtra("book_id");
         openBookId = getIntent().getStringExtra("open_book_id");
 
-        if(!TextUtils.isEmpty(bookId)){
-            apiService.bookMedias(bookId)
+        if(!TextUtils.isEmpty(bookId)) {
+            apiService.circleBookMedias(bookId)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(
                             response -> {

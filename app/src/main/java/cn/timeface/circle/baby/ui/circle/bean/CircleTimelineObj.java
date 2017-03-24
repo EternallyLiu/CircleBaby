@@ -176,6 +176,7 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     public TFOContentObj toTFOContentObj() {
         TFOContentObj tfoContentObj = new TFOContentObj(DateUtil.formatDate("yyyy-MM-dd hh:kk:mm", getRecordDate()), toTFOResourceObjs());
         tfoContentObj.setContent(getContent());
+        tfoContentObj.setExtra_mes(getTitle());
         return tfoContentObj;
     }
 
