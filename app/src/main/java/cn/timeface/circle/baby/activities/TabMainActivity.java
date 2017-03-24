@@ -57,8 +57,8 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleMainActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.fragment.GrowthCircleListFragment;
-import cn.timeface.circle.baby.ui.growthcircle.mainpage.fragment.GrowthCircleMainFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
@@ -95,8 +95,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     private static final int TAB2 = 1;//我的
     private static final int TAB3 = 2;//印成长
     private static final int TAB4 = 3;//成长圈
-    private static final int TAB4_CIRCLE_LIST = 4;//成长圈列表
-    private static final int TAB4_CIRCLE_MAIN = 5;//成长圈首页
 
     private BaseFragment currentFragment = null;
     private DeleteDialog dialog;
@@ -181,7 +179,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                     break;
                 //成长圈
                 case R.id.rb_growth_circle:
-                    showCircleContent();
+                    showContent(TAB4);
                     showFootMenu();
                     break;
                 //印成长
@@ -206,10 +204,8 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 return MineFragment.newInstance("我的");
             case TAB3:
                 return PrintGrowthHomeFragment.newInstance("印成长");
-            case TAB4_CIRCLE_LIST:
+            case TAB4:
                 return GrowthCircleListFragment.newInstance();
-            case TAB4_CIRCLE_MAIN:
-                return GrowthCircleMainFragment.newInstance();
         }
         return null;
     }
@@ -236,16 +232,6 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         }
         ft.commitAllowingStateLoss();
         currentFragment = fragment;
-    }
-
-    public void showCircleContent() {
-        showContent(FastData.getCircleId() == 0 ? TAB4_CIRCLE_LIST : TAB4_CIRCLE_MAIN);
-    }
-
-    // 显示圈列表
-    public void showCircleListFragment() {
-        showContent(TAB4_CIRCLE_LIST);
-        showFootMenu();
     }
 
     // 解决某些异常情况导致FootMenu消失
@@ -305,9 +291,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 && v.getTag(R.string.tag_obj) instanceof GrowthCircleObj) {
             GrowthCircleObj item = (GrowthCircleObj) v.getTag(R.string.tag_obj);
             FastData.setCircleId(item.getCircleId());
-            // 切换为圈首页
-            showCircleContent();
-            showFootMenu();
+            CircleMainActivity.open(this);
         }
     }
 

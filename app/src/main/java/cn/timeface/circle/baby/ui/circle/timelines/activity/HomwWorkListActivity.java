@@ -10,13 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
@@ -43,6 +41,8 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
     RecyclerView contentRecyclerView;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
+    @Bind(R.id.tv_right)
+    TextView tvRight;
 
     private SchoolTaskAdapter adapter = null;
     private TFPTRRecyclerViewHelper helper;
@@ -64,6 +64,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         title.setText(R.string.activity_homework_title);
+        tvRight.setText("教师认证");
         init();
         reqData();
     }
@@ -134,5 +135,9 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
         if (item != null) {
             PublishActivity.open(this, new CircleHomeworkObj(item.getSchoolTask().getTaskId(), item.getSchoolTask().getTitle()));
         }
+    }
+
+    @OnClick(R.id.tv_right)
+    public void onViewClicked() {
     }
 }

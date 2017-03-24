@@ -9,12 +9,15 @@ import android.widget.TextView;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleHomeWorkHeader;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
+import cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker;
 
 /**
  * author : wangshuai Created on 2017/3/22
@@ -27,6 +30,8 @@ public class SchoolTaskAdapter extends BaseAdapter {
     public SchoolTaskAdapter(Context activity) {
         super(activity);
     }
+
+    private boolean hashSubmit = false;
 
     @Override
     public int getViewLayoutID(int viewType) {
@@ -55,7 +60,9 @@ public class SchoolTaskAdapter extends BaseAdapter {
             ImageView ivIcon = ViewHolder.getView(contentView, R.id.iv_icon);
             TextView tvName = ViewHolder.getView(contentView, R.id.tv_name);
             Button btnPublishSchooltask = ViewHolder.getView(contentView, R.id.btn_publish_schooltask);
+            btnPublishSchooltask.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 2 ? View.VISIBLE : View.GONE);
             TextView tvLastTask = ViewHolder.getView(contentView, R.id.tv_last_homework);
+            tvLastTask.setVisibility(header.getLastSubmitHomework() == null ? View.GONE : View.VISIBLE);
             GlideUtil.displayImage(header.getGrowthCircle().getCircleCoverUrl(), ivIcon, true);
             tvName.setText(header.getGrowthCircle().getCircleName());
             tvLastTask.setText(String.format("%s上传了作业 \"%s\"", header.getLastSubmitHomework().getSubmitter().getCircleNickName(), header.getLastSubmitHomework().getTitle()));
@@ -65,6 +72,7 @@ public class SchoolTaskAdapter extends BaseAdapter {
 
     private void doSchoolTask(View contentView, int position) {
         HomeWorkListObj item = getItem(position);
+        TimeLineMarker marker = ViewHolder.getView(contentView, R.id.line);
         TextView tvDateTime = ViewHolder.getView(contentView, R.id.tv_date_time);
         TextView tvCreater = ViewHolder.getView(contentView, R.id.tv_creater);
         TextView title = ViewHolder.getView(contentView, R.id.title);
@@ -104,6 +112,41 @@ public class SchoolTaskAdapter extends BaseAdapter {
             image_1.setVisibility(View.VISIBLE);
             image_2.setVisibility(View.VISIBLE);
             image_3.setVisibility(View.VISIBLE);
+        }
+        if (getItem(0) instanceof CircleHomeWorkHeader) {
+            if (position > 1 && position < getRealItemSize() - 1) {
+                marker.setDrawBegin(true);
+                marker.setDrawEnd(true);
+            } else if (position == getRealItemSize() - 1) {
+                marker.setDrawEnd(false);
+                marker.setDrawBegin(true);
+            } else {
+                marker.setDrawEnd(true);
+                marker.setDrawBegin(hashSubmit);
+            }
+        } else {
+            if (position > 0 && position < getRealItemSize() - 1) {
+                marker.setDrawBegin(true);
+                marker.setDrawEnd(true);
+            } else if (position == getRealItemSize() - 1) {
+                marker.setDrawEnd(false);
+                marker.setDrawBegin(position == 1 ? hashSubmit ? true : false : true);
+            } else {
+                marker.setDrawEnd(true);
+                marker.setDrawBegin(hashSubmit);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_publish_schooltask:
+                PublishActivity.openSchoolTask(context());
+                break;
+            default:
+                super.onClick(v);
+                break;
         }
     }
 }

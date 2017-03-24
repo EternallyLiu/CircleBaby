@@ -1,16 +1,12 @@
-package cn.timeface.circle.baby.ui.growthcircle.mainpage.fragment;
+package cn.timeface.circle.baby.ui.growthcircle.mainpage.activity;
 
-
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,14 +23,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.activities.TabMainActivity;
-import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.network.NetworkError;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
@@ -45,24 +40,20 @@ import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
-import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
-import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action1;
-import rx.functions.Func0;
-import rx.functions.Func1;
 
-public class GrowthCircleMainFragment extends BaseFragment implements IEventBus, BaseAdapter.LoadDataFinish {
+/**
+ * 圈首页
+ */
+public class CircleMainActivity extends BaseAppCompatActivity implements IEventBus, BaseAdapter.LoadDataFinish {
 
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.iv_publish)
-    ImageView ivPublish;
 
     private int currentPage = 1;
     private static final int PAGE_SIZE = 20;
@@ -70,7 +61,6 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
     private CircleTimeLineAdapter adapter = null;
 
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
-    private boolean bottomMenuShow = true;
 
     private View headerView;
     private TFStateView tfStateView;
@@ -80,126 +70,99 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
     private TextView tvCircleName;
     private TextView tvHomework;
     private TextView tvHomeworkDetail;
+    private RelativeLayout rlHomework;
 
     private long circleId;
     private GrowthCircleObj circleObj;
-    private RelativeLayout rlHomework;
 
-    public static GrowthCircleMainFragment newInstance() {
-        return new GrowthCircleMainFragment();
-    }
-
-    public GrowthCircleMainFragment() {
+    public static void open(Context context) {
+        context.startActivity(new Intent(context, CircleMainActivity.class));
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_circle_main_page, container, false);
-        ButterKnife.bind(this, view);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_circle_main);
+        ButterKnife.bind(this);
+
         setupPTR();
         initHeaderFooter();
 
         circleId = FastData.getCircleId();
         setupData();
-
-        return view;
     }
 
     private void setupPTR() {
-        adapter = new CircleTimeLineAdapter(getActivity());
+        adapter = new CircleTimeLineAdapter(this);
         adapter.setLoadDataFinish(this);
         recyclerView.setAdapter(adapter);
+
         IPTRRecyclerListener ptrListener = new IPTRRecyclerListener() {
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
+                currentPage = 1;
                 reqData(circleId);
             }
 
             @Override
             public void onTFPullUpToRefresh(View refreshView) {
+                ++currentPage;
+                reqData(circleId);
             }
 
             @Override
             public void onScrollUp(int firstVisibleItem) {
-                if (bottomMenuShow) {
-                    bottomMenuShow = false;
-                    ObjectAnimator anim = ObjectAnimator.ofFloat(
-                            ((TabMainActivity) getActivity()).getFootMenuView(),
-                            "translationY",
-                            0,
-                            ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight()
-                    );
-                    anim.setDuration(200);
-                    anim.start();
-                }
             }
 
             @Override
             public void onScrollDown(int firstVisibleItem) {
-                if (!bottomMenuShow) {
-                    bottomMenuShow = true;
-                    Animator anim3 = ObjectAnimator.ofFloat(
-                            ((TabMainActivity) getActivity()).getFootMenuView(),
-                            "translationY",
-                            ((TabMainActivity) getActivity()).getFootMenuView().getMeasuredHeight(),
-                            0
-                    );
-                    anim3.setDuration(200);
-                    anim3.start();
-                }
             }
         };
 
-        tfptrListViewHelper = new TFPTRRecyclerViewHelper(getActivity(), recyclerView, swipeRefreshLayout)
-                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
+        tfptrListViewHelper = new TFPTRRecyclerViewHelper(this, recyclerView, swipeRefreshLayout)
+                .setTFPTRMode(TFPTRRecyclerViewHelper.Mode.BOTH)
                 .tfPtrListener(ptrListener);
     }
 
     private void setupData() {
-        tfStateView.loading();
+//        tfStateView.loading();
+        tfStateView.empty(R.string.circle_no_dynamic);
         reqInfo(circleId);
         reqData(circleId);
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        Log.d("-------->", "-------->onHiddenChanged: " + hidden);
-        if (!hidden && circleId != FastData.getCircleId()) {
-            circleId = FastData.getCircleId();
-            setupData();
-        }
-    }
-
     private void initHeaderFooter() {
-        headerView = LayoutInflater.from(getContext()).inflate(R.layout.header_circle_dynamic_list, null);
+        headerView = LayoutInflater.from(this).inflate(R.layout.header_circle_dynamic_list, null);
         ivCircleCover = ButterKnife.findById(headerView, R.id.iv_circle_cover);
         tvCircleName = ButterKnife.findById(headerView, R.id.tv_circle_name);
         tvHomework = ButterKnife.findById(headerView, R.id.tv_homework);
         tvHomeworkDetail = ButterKnife.findById(headerView, R.id.tv_homework_detail);
         rlHomework = ButterKnife.findById(headerView, R.id.rl_homework);
 
-        footerView = LayoutInflater.from(getContext()).inflate(R.layout.footer_circle_dynamic_list, null);
+        footerView = LayoutInflater.from(this).inflate(R.layout.footer_circle_dynamic_list, null);
         tfStateView = ButterKnife.findById(footerView, R.id.tf_stateView);
+
         adapter.addHeader(headerView);
+        adapter.addFooter(footerView);
     }
 
     private void setupCircleInfo(CircleIndexInfoResponse circleIndexInfo) {
         this.circleObj = circleIndexInfo.getGrowthCircle();
         tvCircleName.setText(circleObj.getCircleName());
-        Glide.with(getContext())
+        Glide.with(this)
                 .load(circleObj.getCircleCoverUrl())
                 .centerCrop()
                 .into(ivCircleCover);
 
         // 圈作业
-        if (circleIndexInfo.getLastSchoolTask() != null) {
+        if (circleIndexInfo.getLastSchoolTask() != null
+                && circleIndexInfo.getLastSchoolTask().getTeacher() != null) {
             rlHomework.setVisibility(View.VISIBLE);
             tvHomework.setText("“" + circleIndexInfo.getLastSchoolTask().getTeacher().getCircleNickName()
                     + "” 发起了新的作业 “" + circleIndexInfo.getLastSchoolTask().getTitle() + "”");
             tvHomeworkDetail.setOnClickListener(v -> {
                 // 跳转作业详情
-                HomwWorkListActivity.open(getActivity());
+                HomwWorkListActivity.open(this);
             });
         } else {
             rlHomework.setVisibility(View.GONE);
@@ -215,20 +178,13 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
                             tfptrListViewHelper.finishTFPTRRefresh();
                             if (response.success()) {
                                 setupListData(response.getDataList());
-
-                                if (response.getDataList() == null
-                                        || response.getDataList().size() == 0) {
-                                    tfStateView.empty(R.string.circle_no_dynamic);
-                                }
                             } else {
-                                Toast.makeText(getContext(), response.info, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
                             }
-                            adapter.removeFooter(footerView);
                         },
                         throwable -> {
-                            tfptrListViewHelper.finishTFPTRRefresh();
                             tfStateView.showException(throwable);
-                            adapter.addFooter(footerView);
+                            tfptrListViewHelper.finishTFPTRRefresh();
                             LogUtil.showError(throwable);
                         }
                 );
@@ -240,7 +196,6 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
-                            tfStateView.finish();
                             tfptrListViewHelper.finishTFPTRRefresh();
                             if (response.success()) {
                                 FastData.setGrowthCircleObj(response.getGrowthCircle());
@@ -248,14 +203,12 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
 
                                 setupCircleInfo(response);
                             } else {
-                                Toast.makeText(getContext(), response.info, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
                             }
-                            adapter.removeFooter(tfStateView);
                         },
                         throwable -> {
                             tfptrListViewHelper.finishTFPTRRefresh();
-                            tfStateView.showException(throwable);
-                            adapter.addFooter(footerView);
+                            NetworkError.showException(this, throwable);
                             LogUtil.showError(throwable);
                         }
                 );
@@ -272,45 +225,27 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_back:
-                if (getActivity() instanceof TabMainActivity) {
-                    showCircleListFragment();
-                } else {
-                    getActivity().onBackPressed();
-                }
+                onBackPressed();
                 break;
             case R.id.iv_more:
                 showMoreDialog();
                 break;
             case R.id.iv_publish:
-                PublishActivity.open(getActivity());
+                PublishActivity.open(this);
                 break;
         }
     }
 
-    private void showCircleListFragment() {
-        // 切换为圈列表
-        ((TabMainActivity) getActivity()).showCircleListFragment();
-    }
-
     private void showMoreDialog() {
-        LogUtil.showLog("circleObj", "circleObj：" + JSONUtils.parse2JSONString(circleObj));
         if (circleObj == null) return;
         CircleMoreDialog dialog = CircleMoreDialog.newInstance(circleObj);
-        dialog.show(getChildFragmentManager(), "CircleMoreDialog");
+        dialog.show(getSupportFragmentManager(), "CircleMoreDialog");
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @Subscribe
-    public void onEvent(CircleChangedEvent event) {
-        if (event.type == CircleChangedEvent.TYPE_QUIT
-                || event.type == CircleChangedEvent.TYPE_DISBANDED) {
-            FastData.clearCircleData();
-            showCircleListFragment();
+    public void loadFinish(int code) {
+        if (adapter.getRealItemSize() <= 0) {
+//            tfStateView.empty(R.string.circle_no_dynamic);
         }
     }
 
@@ -344,11 +279,24 @@ public class GrowthCircleMainFragment extends BaseFragment implements IEventBus,
         }
     }
 
-    @Override
-    public void loadfinish(int code) {
-        if (adapter.getRealItemSize() <= 0 && footerView != null) {
-            tfStateView.empty(R.string.circle_no_dynamic);
-            adapter.addFooter(footerView);
+    @Subscribe
+    public void onEvent(CircleChangedEvent event) {
+        if (event.type == CircleChangedEvent.TYPE_QUIT
+                || event.type == CircleChangedEvent.TYPE_DISBANDED) {
+            FastData.clearCircleData();
+            finish();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        FastData.clearCircleData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 }

@@ -30,7 +30,7 @@
             android:src="@drawable/add" />
     </RelativeLayout>
 
-    <ScrollView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/sv_no_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,57 +38,62 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/view_space_medium"
-                android:layout_marginTop="@dimen/view_space_medium"
-                android:gravity="center|end">
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_production_intro_text"
-                    android:gravity="center"
-                    android:paddingLeft="@dimen/view_space_large"
-                    android:paddingRight="@dimen/view_space_large"
-                    android:text="一分钟了解成长圈"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_small" />
+                    android:layout_marginBottom="@dimen/view_space_medium"
+                    android:layout_marginTop="@dimen/view_space_medium"
+                    android:gravity="center|end">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_production_intro_text"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/view_space_large"
+                        android:paddingRight="@dimen/view_space_large"
+                        android:text="一分钟了解成长圈"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_small" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/view_space_medium"
+                        android:layout_marginRight="@dimen/view_space_large"
+                        android:src="@drawable/ic_production_intro_image" />
+                </LinearLayout>
 
                 <ImageView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/iv_intro"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/view_space_medium"
-                    android:layout_marginRight="@dimen/view_space_large"
-                    android:src="@drawable/ic_production_intro_image" />
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/bg_growth_circle_empty" />
+
+                <TextView
+                    android:id="@+id/tv_create"
+                    style="@style/TimeFaceTheme.IOS.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/view_space_xlarge"
+                    android:layout_marginTop="@dimen/view_space_medium"
+                    android:clickable="true"
+                    android:text="马上创建"
+                    android:textSize="@dimen/text_normal" />
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/iv_intro"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/bg_growth_circle_empty" />
-
-            <TextView
-                android:id="@+id/tv_create"
-                style="@style/TimeFaceTheme.IOS.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/view_space_xlarge"
-                android:layout_marginTop="@dimen/view_space_medium"
-                android:clickable="true"
-                android:text="马上创建"
-                android:textSize="@dimen/text_normal" />
-        </LinearLayout>
-    </ScrollView>
+        </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"

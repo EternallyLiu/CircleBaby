@@ -889,4 +889,6 @@
     <string name="school_title_input_tip">作业标题不能为空</string>
     <string name="activity_homework_title">圈作业</string>
     <string name="please_select_school_work">请指定一个作业再进行此操作</string>
+    <string name="please_input_add_baby_real_name">请输入新增宝贝名字</string>
+    <string name="please_input_baby_real_name_tip">小贴士： 请填写宝贝真实姓名</string>
 </resources>

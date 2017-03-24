@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:background="@color/white">
+
+    <cn.timeface.circle.baby.views.ClearableEditText
+        android:id="@+id/et_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/tag_input"
+        android:gravity="left|center_vertical"
+        android:hint="@string/please_input_add_baby_real_name"
+        android:padding="@dimen/size_6"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_medium"/>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_submit"
+        android:layout_below="@+id/et_input"
+        android:layout_marginTop="@dimen/size_36"
+        android:gravity="right"
+        android:padding="@dimen/size_30"
+        android:text="@string/please_input_baby_real_name_tip"
+        android:textSize="@dimen/text_large"/>
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/selector_btn_login"
+        android:paddingBottom="@dimen/size_4"
+        android:paddingTop="@dimen/size_4"
+        android:text="@string/dialog_ok"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_normal"/>
+
+</RelativeLayout>

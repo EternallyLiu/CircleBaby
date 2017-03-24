@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -25,12 +24,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.TabMainActivity;
+import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleListObj;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleMainActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CreateCircleActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.adapter.CircleListAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CreateCircleDialog;
@@ -41,7 +43,7 @@ import rx.Subscription;
 public class GrowthCircleListFragment extends BaseFragment implements IEventBus {
 
     @Bind(R.id.sv_no_data)
-    ScrollView svNoData;
+    SwipeRefreshLayout svNoData;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh_layout)
@@ -68,6 +70,12 @@ public class GrowthCircleListFragment extends BaseFragment implements IEventBus 
 
         setupPTR();
 
+        svNoData.setOnRefreshListener(() -> {
+            svNoData.setRefreshing(false);
+            tfStateView.loading();
+            reqData();
+        });
+
         tfStateView.setOnRetryListener(() -> {
             tfStateView.loading();
             reqData();
@@ -75,6 +83,10 @@ public class GrowthCircleListFragment extends BaseFragment implements IEventBus 
 
         tfStateView.loading();
         reqData();
+
+        if (FastData.getCircleId() != 0) {
+            CircleMainActivity.open(getContext());
+        }
 
         return view;
     }
@@ -215,6 +227,13 @@ public class GrowthCircleListFragment extends BaseFragment implements IEventBus 
                 || event.type == CircleChangedEvent.TYPE_DISBANDED) {
             reqData();
         }
+    }
+
+    @Subscribe
+    public void onEvent(ConfirmRelationEvent event) {
+        // TODO: 2017/3/23 切换宝宝，这里接收的Event不一定对
+        // 切换宝宝
+        reqData();
     }
 
 }

@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:padding="@dimen/view_space_large">
 
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/view_space_medium"
         app:ev_showRetryButton="false"
         app:ev_showSubtitle="false" />
 </FrameLayout>

@@ -443,6 +443,9 @@
         <service android:name=".LoadMediaService" />
 
         <activity
+            android:name=".ui.growthcircle.mainpage.activity.CircleMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.growthcircle.mainpage.activity.CreateCircleActivity"
             android:label="@string/create_growth_circle"
             android:screenOrientation="portrait" />

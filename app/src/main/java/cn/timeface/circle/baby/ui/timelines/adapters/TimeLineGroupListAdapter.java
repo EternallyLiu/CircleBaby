@@ -1,10 +1,8 @@
 package cn.timeface.circle.baby.ui.timelines.adapters;
 
 import android.content.Context;
-import android.media.ExifInterface;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -13,9 +11,6 @@ import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
-import android.widget.GridView;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -25,17 +20,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import butterknife.Bind;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.support.api.models.objs.TimeLineGroupObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -46,7 +38,6 @@ import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.TimeGroupSimpleBean;
 import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * author : wangshuai Created on 2017/2/16
@@ -584,7 +575,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
                 break;
         }
         if (getLoadDataFinish() != null)
-            getLoadDataFinish().loadfinish(msg.what);
+            getLoadDataFinish().loadFinish(msg.what);
     }
 
     public boolean isIntentCalender() {
@@ -598,7 +589,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
     public void setTipView(View tipView) {
         this.tipView = tipView;
         if (getLoadDataFinish() != null) {
-            getLoadDataFinish().loadfinish(19999);
+            getLoadDataFinish().loadFinish(19999);
         }
     }
 

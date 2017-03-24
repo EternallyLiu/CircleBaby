@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 import cn.timeface.circle.baby.R;
-import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> implements ViewHolderInterface, View.OnClickListener {
 
@@ -108,7 +106,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
                 break;
         }
         if (getLoadDataFinish() != null)
-            getLoadDataFinish().loadfinish(msg.what);
+            getLoadDataFinish().loadFinish(msg.what);
     }
 
     public boolean containObj(Object object) {
@@ -166,6 +164,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
             handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, position, list.size(), list.get(0)));
         else
             handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, position, list.size(), list));
+    }
+
+    public void add(Object object) {
+        add(getRealItemSize(), object);
     }
 
     public void add(int index, Object object) {
@@ -320,6 +322,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
      * 数据加载完毕之后回调改接口，为了处理数据加载完成之后的操作
      */
     public interface LoadDataFinish {
-        public void loadfinish(int code);
+        public void loadFinish(int code);
     }
 }

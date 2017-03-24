@@ -40,10 +40,10 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
     TFStateView stateView;
 
     CircleSelectHomeWorkAdapter selectHomeWorkAdapter;
-    int babyId;
+    long babyId;
     String circleId;
 
-    public static void open(Context context, String circleId, int babyId){
+    public static void open(Context context, String circleId, long babyId){
         Intent intent= new Intent(context, CircleSelectHomeWorkDetailActivity.class);
         intent.putExtra("circle_id", circleId);
         intent.putExtra("baby_id", babyId);
@@ -59,7 +59,7 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("作业详情");
         circleId = getIntent().getStringExtra("circle_id");
-        babyId = getIntent().getIntExtra("baby_id", 0);
+        babyId = getIntent().getLongExtra("baby_id", 0);
 
         if(!TextUtils.isEmpty(circleId))reqData();
     }
