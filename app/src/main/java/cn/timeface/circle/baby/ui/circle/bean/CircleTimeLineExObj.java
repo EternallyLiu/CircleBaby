@@ -69,4 +69,19 @@ public class CircleTimeLineExObj implements Parcelable {
             return new CircleTimeLineExObj[size];
         }
     };
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof CircleTimeLineExObj){
+            if(((CircleTimeLineExObj) obj).getCircleTimeline() != null
+                    && getCircleTimeline() != null
+                    && getCircleTimeline().equals(((CircleTimeLineExObj) obj).getCircleTimeline())){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
 }

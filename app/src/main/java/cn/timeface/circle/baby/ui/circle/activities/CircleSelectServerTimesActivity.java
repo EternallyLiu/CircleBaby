@@ -38,8 +38,11 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.dialogs.CircleSelectTimeTypeDialog;
+import cn.timeface.circle.baby.ui.circle.events.CircleSelectMediaEvent;
+import cn.timeface.circle.baby.ui.circle.events.CircleSelectMediaListEvent;
 import cn.timeface.circle.baby.ui.circle.events.CircleSelectTimeLineEvent;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleServerTimeFragment;
 import cn.timeface.circle.baby.ui.growth.events.SelectMediaEvent;
@@ -73,10 +76,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
     RelativeLayout contentSelectTime;
     @Bind(R.id.tv_content_type)
     TextView tvContentType;
-    @Bind(R.id.tv_content)
-    TextView tvContent;
 
-    boolean fragmentShow = false;
     CircleServerTimeFragment allTimeFragment;//全部动态
     CircleServerTimeFragment mineTimeFragment;//我发布的动态
     CircleServerTimeFragment aboutBabyTimeFragment;//与我宝宝相关的动态
@@ -87,7 +87,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
     String openBookId;
     String circleId;
 
-    List<MediaObj> allSelectMedias = new ArrayList<>();
+    List<CircleMediaObj> allSelectMedias = new ArrayList<>();
     List<CircleTimeLineExObj> allSelectTimeLines = new ArrayList<>();
 
     public static void open(Context context, int bookType, int openBookType, String bookId, String openBookId, String circleId) {
@@ -114,6 +114,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
         this.bookType = getIntent().getIntExtra("book_type", 0);
         this.bookId = getIntent().getStringExtra("book_id");
         this.openBookId = getIntent().getStringExtra("open_book_id");
+        this.circleId = getIntent().getStringExtra("circle_id");
         cbAllSel.setOnClickListener(this);
 
         //新建一本
@@ -285,22 +286,72 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
 
     @Override
     public void selectTypeAll() {
-
+        tvContentType.setText("全部动态");
+        if(allTimeFragment == null){
+            allTimeFragment = CircleServerTimeFragment.newInstance(
+                    CircleSelectTimeTypeDialog.TIME_TYPE_ALL,
+                    circleId,
+                    allSelectMedias,
+                    allSelectTimeLines);
+        }
+        showContent(allTimeFragment);
     }
 
     @Override
     public void selectTypeMe() {
-
+        tvContentType.setText("我发布的动态");
+        if(mineTimeFragment == null){
+            mineTimeFragment = CircleServerTimeFragment.newInstance(
+                    CircleSelectTimeTypeDialog.TIME_TYPE_ME,
+                    circleId,
+                    allSelectMedias,
+                    allSelectTimeLines);
+        }
+        showContent(mineTimeFragment);
     }
 
     @Override
     public void selectTypeAboutMyBaby() {
-
+        tvContentType.setText("与我宝宝相关的动态");
+        if(aboutBabyTimeFragment == null){
+            aboutBabyTimeFragment = CircleServerTimeFragment.newInstance(
+                    CircleSelectTimeTypeDialog.TIME_TYPE_ABOUT_BABY,
+                    circleId,
+                    allSelectMedias,
+                    allSelectTimeLines);
+        }
+        showContent(aboutBabyTimeFragment);
     }
 
     @Override
     public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.tv_content_type:
+                if(selectContentTypeDialog == null){
+                    selectContentTypeDialog = CircleSelectTimeTypeDialog.newInstance(this);
+                }
+                selectContentTypeDialog.show(getSupportFragmentManager(), "tag");
+                break;
 
+            case R.id.cb_all_sel:
+                if(cbAllSel.isChecked()){
+                    ((CircleServerTimeFragment) currentFragment).doAllSelImg();
+                    if(allSelectTimeLines.size() > 0){
+                        //处理全选照片处理
+                        for(CircleTimeLineExObj circleTimeLineExObj : allSelectTimeLines){
+                            allSelectMedias.addAll(circleTimeLineExObj.getCircleTimeline().getMediaList());
+                        }
+                    }
+                    cbAllSel.setChecked(false);
+                } else {
+                    ((CircleServerTimeFragment) currentFragment).doAllUnSelImg();
+                    cbAllSel.setChecked(true);
+                    allSelectMedias.clear();
+                }
+
+                initAllSelectView(!cbAllSel.isChecked(), allSelectTimeLines.size());
+                break;
+        }
     }
 
     public void setPhotoTipVisibility(int visibility){
@@ -323,7 +374,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
     }
 
     @Subscribe
-    public void selectMediaEvent(SelectMediaEvent selectMediaEvent){
+    public void selectMediaEvent(CircleSelectMediaEvent selectMediaEvent){
         if(selectMediaEvent.getType() != SelectMediaEvent.TYPE_TIME_MEDIA) return;
         //选中
         if(selectMediaEvent.getSelect()){
@@ -338,11 +389,11 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
     }
 
     @Subscribe
-    public void selectMediaListEvent(SelectMediaListEvent mediaListEvent) {
+    public void selectMediaListEvent(CircleSelectMediaListEvent mediaListEvent) {
         if (mediaListEvent.getType() != SelectMediaListEvent.TYPE_TIME_MEDIA) return;
         //选中
         if (mediaListEvent.isSelect()) {
-            for (MediaObj mediaObj : mediaListEvent.getMediaObjList()) {
+            for (CircleMediaObj mediaObj : mediaListEvent.getMediaObjList()) {
                 if (!allSelectMedias.contains(mediaObj)) {
                     allSelectMedias.add(mediaObj);
                 }
@@ -372,9 +423,6 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
         }
 
         if(currentFragment instanceof CircleServerTimeFragment){
-            initAllSelectView(((CircleServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
-            ((CircleServerTimeFragment) currentFragment).setTimeLineObjs(allSelectTimeLines);
-        } else if(currentFragment instanceof CircleServerTimeFragment) {
             initAllSelectView(((CircleServerTimeFragment) currentFragment).isAllSelect(), allSelectTimeLines.size());
             ((CircleServerTimeFragment) currentFragment).setTimeLineObjs(allSelectTimeLines);
         }

@@ -10,12 +10,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.AddCircleBookAdapter;
@@ -73,6 +78,12 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
         if (addCircleBookAdapter == null) {
             contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             addCircleBookAdapter = new AddCircleBookAdapter(this, dataList, this);
+//            contentRecyclerView.addItemDecoration(
+//                    new HorizontalDividerItemDecoration.Builder(this)
+//                            .sizeResId(R.dimen.view_space_medium)
+//                            .colorResId(R.color.trans)
+//                            .build()
+//            );
             contentRecyclerView.setAdapter(addCircleBookAdapter);
         } else {
             addCircleBookAdapter.setListData(dataList);
@@ -91,7 +102,24 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
         CircleBookTypeObj typeObj = (CircleBookTypeObj) view.getTag(R.string.tag_obj);
         switch (view.getId()){
             case R.id.tv_creat:
-
+                //家校纪念册
+                if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL){
+                    CircleSelectServeHomeWorksActivity.open(this, String.valueOf(FastData.getCircleId()));
+                //圈照片书
+                } else if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO){
+                    CircleSelectSeverAlbumsActivity.open(this, String.valueOf(FastData.getCircleId()));
+                //圈时光书
+                } else if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME) {
+                    CircleSelectServerTimesActivity.open(
+                            this,
+                            BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK,
+                            TypeConstants.OPEN_BOOK_TYPE_PAINTING,
+                            "",
+                            "",
+                            String.valueOf(FastData.getCircleId()));
+                } else {
+                    Log.e(TAG, "无法识别的作品类型");
+                }
                 break;
             case R.id.tv_detail:
 

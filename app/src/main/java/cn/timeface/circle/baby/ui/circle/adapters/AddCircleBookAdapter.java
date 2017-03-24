@@ -34,7 +34,7 @@ public class AddCircleBookAdapter extends BaseRecyclerAdapter<CircleBookTypeObj>
 
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_add_circle_book, null);
+        View view = mLayoutInflater.inflate(R.layout.item_add_circle_book, viewGroup, false);
         return new ViewHolder(view);
     }
 

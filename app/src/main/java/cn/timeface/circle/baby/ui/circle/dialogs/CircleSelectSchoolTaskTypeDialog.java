@@ -15,50 +15,43 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 
 /**
- * 选择圈时光类型dialog
- * author : sunyanwei Created on 17-3-20
+ * 圈作品选择作业类型筛选条件
+ * author : sunyanwei Created on 17-3-22
  * email : sunyanwei@timeface.cn
  */
-public class CircleSelectTimeTypeDialog extends DialogFragment implements View.OnClickListener {
+public class CircleSelectSchoolTaskTypeDialog extends DialogFragment implements View.OnClickListener {
 
-    public static int TIME_TYPE_ALL = 1;//全部
-    public static int TIME_TYPE_ME = 2;//按我发布的
-    public static int TIME_TYPE_ABOUT_BABY = 3;//按@我宝宝的
+    public static int TASK_TYPE_MEMBER = 1;//按成员
+    public static int TASK_TYPE_HOMEWORK = 2;//按作业
 
     SelectTypeListener selectTypeListener;
-    @Bind(R.id.tv_all_times)
-    TextView tvAllTimes;
-    @Bind(R.id.tv_mine_time)
-    TextView tvAllMineTime;
-    @Bind(R.id.tv_about_baby_times)
-    TextView tvAboutBabyTimes;
+    @Bind(R.id.tv_baby)
+    TextView tvBaby;
+    @Bind(R.id.tv_task)
+    TextView tvTask;
 
     @Override
     public void onClick(View view) {
         dismissAllowingStateLoss();
-        switch (view.getId()){
-            case R.id.tv_all_times:
-                selectTypeListener.selectTypeAll();
+        switch (view.getId()) {
+            case R.id.tv_baby:
+                selectTypeListener.selectTypeBaby();
                 break;
 
-            case R.id.tv_mine_time:
-                selectTypeListener.selectTypeMe();
+            case R.id.tv_task:
+                selectTypeListener.selectTypeTask();
                 break;
 
-            case R.id.tv_about_baby_times:
-                selectTypeListener.selectTypeAboutMyBaby();
-                break;
         }
     }
 
     public interface SelectTypeListener {
-        void selectTypeAll();
-        void selectTypeMe();
-        void selectTypeAboutMyBaby();
+        void selectTypeBaby();
+        void selectTypeTask();
     }
 
-    public static CircleSelectTimeTypeDialog newInstance(SelectTypeListener selectTypeListener) {
-        CircleSelectTimeTypeDialog selectTimeTypeDialog = new CircleSelectTimeTypeDialog();
+    public static CircleSelectSchoolTaskTypeDialog newInstance(CircleSelectSchoolTaskTypeDialog.SelectTypeListener selectTypeListener) {
+        CircleSelectSchoolTaskTypeDialog selectTimeTypeDialog = new CircleSelectSchoolTaskTypeDialog();
         selectTimeTypeDialog.setSelectTypeListener(selectTypeListener);
         return selectTimeTypeDialog;
     }
@@ -66,11 +59,10 @@ public class CircleSelectTimeTypeDialog extends DialogFragment implements View.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_circle_select_time_type, container, false);
+        View view = inflater.inflate(R.layout.dialog_circle_select_school_task_type, container, false);
         ButterKnife.bind(this, view);
-        tvAboutBabyTimes.setOnClickListener(this);
-        tvAllMineTime.setOnClickListener(this);
-        tvAllTimes.setOnClickListener(this);
+        tvBaby.setOnClickListener(this);
+        tvTask.setOnClickListener(this);
         return view;
     }
 
@@ -83,7 +75,7 @@ public class CircleSelectTimeTypeDialog extends DialogFragment implements View.O
         getDialog().getWindow().setGravity(Gravity.BOTTOM);
     }
 
-    public void setSelectTypeListener(SelectTypeListener selectTypeListener) {
+    public void setSelectTypeListener(CircleSelectSchoolTaskTypeDialog.SelectTypeListener selectTypeListener) {
         this.selectTypeListener = selectTypeListener;
     }
 

@@ -13,12 +13,10 @@ import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
  * 家长提交的作业
  * Created by lidonglin on 2017/3/14.
  */
-@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class CircleHomeworkObj extends CircleContentObj implements Parcelable {
+public class CircleHomeworkObj extends CircleSchoolTaskObj implements Parcelable {
     protected long homeworkId;             //家庭作业id
     protected List<String> notations;      //老师批改标签
     protected CircleUserInfo submitter;    //提交的家长
-    protected long taskId;                 //老师的作业id
     protected String teacherReview;        //老师评语
     private BabyObj babyInfo;
 
@@ -37,7 +35,6 @@ public class CircleHomeworkObj extends CircleContentObj implements Parcelable {
         this.taskId = taskId;
         setTitle(title);
     }
-
 
     public long getHomeworkId() {
         return homeworkId;
@@ -63,14 +60,6 @@ public class CircleHomeworkObj extends CircleContentObj implements Parcelable {
         this.submitter = submitter;
     }
 
-    public long getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(long taskId) {
-        this.taskId = taskId;
-    }
-
     public String getTeacherReview() {
         return teacherReview;
     }
@@ -90,7 +79,6 @@ public class CircleHomeworkObj extends CircleContentObj implements Parcelable {
         dest.writeLong(this.homeworkId);
         dest.writeStringList(this.notations);
         dest.writeParcelable(this.submitter, flags);
-        dest.writeLong(this.taskId);
         dest.writeString(this.teacherReview);
         dest.writeParcelable(this.babyInfo, flags);
     }
@@ -100,7 +88,6 @@ public class CircleHomeworkObj extends CircleContentObj implements Parcelable {
         this.homeworkId = in.readLong();
         this.notations = in.createStringArrayList();
         this.submitter = in.readParcelable(CircleUserInfo.class.getClassLoader());
-        this.taskId = in.readLong();
         this.teacherReview = in.readString();
         this.babyInfo = in.readParcelable(BabyObj.class.getClassLoader());
     }
