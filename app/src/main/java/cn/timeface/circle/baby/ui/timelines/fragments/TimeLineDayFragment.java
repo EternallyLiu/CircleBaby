@@ -230,7 +230,7 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
     }
 
     @Override
-    public void loadfinish(int code) {
+    public void loadFinish(int code) {
         if (helper != null)
             helper.finishTFPTRRefresh();
         if (adapter.getRealItemSize() <= 0) {
