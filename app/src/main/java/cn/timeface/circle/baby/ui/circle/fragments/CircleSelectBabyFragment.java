@@ -63,7 +63,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
     private void reqData() {
         stateView.loading();
         addSubscription(
-                apiService.getCircleAllBaby(circleId, 1)
+                apiService.getCircleAllBaby(circleId, 0)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .doOnCompleted(() -> stateView.finish())
                         .subscribe(
