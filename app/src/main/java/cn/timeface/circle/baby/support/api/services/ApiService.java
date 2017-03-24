@@ -1399,9 +1399,9 @@ public interface ApiService {
      */
     @GET("circle/allBaby")
     Observable<QueryCirclePhotoResponse<GetCircleAllBabyObj>> getCircleAllBaby(
-            @Query("circleId") String circleId,
+            @Query("circleId") long circleId,
             @Query("hasAlone") int hasAlone,
-            @Query("mediaId") int mediaId);
+            @Query("mediaId") long mediaId);
 
     /**
      * 获取圈内的所有宝宝
@@ -1773,7 +1773,7 @@ public interface ApiService {
     @GET("homework/queryHomeworkByBabyId")
     Observable<CircleHomeWorkListResponse> queryHomeworksByBaby(
             @Query("circleId") String circleId,
-            @Query("babyId") int babyId);
+            @Query("babyId") long babyId);
 
     /**
      * 删除圈动态
