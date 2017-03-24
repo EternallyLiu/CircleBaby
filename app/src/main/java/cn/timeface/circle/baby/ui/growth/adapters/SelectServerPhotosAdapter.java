@@ -44,6 +44,7 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
     List<MediaObj> selMedias = new ArrayList<>(10);//用于存储所有选中的图片
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
     int contentType;
+    int curSelectCount;
 
     public SelectServerPhotosAdapter(Context mContext, List<MediaWrapObj> listData, int maxCount, int contentType, List<MediaObj> mediaObjs) {
         super(mContext, listData);
@@ -302,6 +303,7 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
         }
         setupSelectData(img);
         EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_MEDIA_MEDIA, true, img));
+        curSelectCount++;
     }
 
     private void doUnSelImg(int dataIndex, MediaObj img) {
@@ -317,6 +319,7 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
         }
         setupUnSelectData(img);
         EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_MEDIA_MEDIA, false, img));
+        curSelectCount--;
     }
 
     public List<MediaObj> getSelImgs() {
@@ -326,5 +329,9 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
     public void setSelImgs(ArrayList<MediaObj> imgs) {
         this.selMedias = imgs;
         setupData();
+    }
+
+    public int getCurSelectCount() {
+        return curSelectCount;
     }
 }

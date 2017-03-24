@@ -28,15 +28,6 @@
                 android:drawableRight="@drawable/icon_arrow_down"
                 android:text="全部动态"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/tv_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:paddingRight="@dimen/view_space_normal"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

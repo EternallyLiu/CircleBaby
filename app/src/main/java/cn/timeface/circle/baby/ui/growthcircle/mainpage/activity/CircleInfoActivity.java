@@ -271,7 +271,7 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
                         response -> {
                             dismissProgressDialog();
                             Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
-                            if (response.success() && response.getErrorCode() != 0) {
+                            if (response.success() && response.getErrorCode() == 0) {
                                 EventBus.getDefault().post(
                                         new CircleChangedEvent(circleId,
                                                 CircleChangedEvent.TYPE_DISBANDED)

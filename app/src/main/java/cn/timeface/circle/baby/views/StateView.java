@@ -161,6 +161,8 @@ public class StateView extends LinearLayout {
         if (content == null) {
             this.setVisibility(GONE);
             return;
+        } else {
+            this.setVisibility(VISIBLE);
         }
         showImageView(content.haveImg());
         showTitle(content.haveTitle());

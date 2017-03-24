@@ -785,7 +785,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     @Override
-    public void loadfinish(int code) {
+    public void loadFinish(int code) {
         tfptrListViewHelper.finishTFPTRRefresh();
         if (emptyView != null) adapter.removeHeader(emptyView);
         if (code == 19999) showGuide();

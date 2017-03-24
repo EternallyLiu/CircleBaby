@@ -443,6 +443,9 @@
         <service android:name=".LoadMediaService" />
 
         <activity
+            android:name=".ui.growthcircle.mainpage.activity.CircleMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.growthcircle.mainpage.activity.CreateCircleActivity"
             android:label="@string/create_growth_circle"
             android:screenOrientation="portrait" />
@@ -522,16 +525,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/TimeFaceTheme.DayNight" />
         <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
-        android:theme="@style/TimeFaceTheme.DayNight"/>
-
-        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
         <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
         <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
 
-        android:theme="@style/TimeFaceTheme.DayNight" />
-        <activity android:name=".ui.circle.timelines.activity.PublishActivity" />
-        <activity android:name=".ui.circle.timelines.activity.SelectActiveActivity" />
-        <activity android:name=".ui.circle.timelines.activity.CreateActiveActivity" />
         <activity
             android:name=".ui.circle.photo.activities.CirclePhotoActivity"
             android:label="@string/title_circle_photo"
@@ -555,6 +551,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name="cn.timeface.circle.baby.ui.circle.activities.CircleBookActivity" />
 
+        <service android:name=".ui.timelines.services.UploadVideoService" />
         <service android:name=".ui.timelines.services.UploadVideoService" />
 
         //-----------------------countly----------------------------------
@@ -585,13 +582,38 @@
         <activity
             android:name=".ui.circle.activities.CircleSelectServerTimesActivity"
             android:label="@string/title_activity_circle_select_server_times"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
 
         <activity android:name=".ui.circle.timelines.activity.CircleTimeLineDetailActivitiy" />
 
         <activity android:name=".ui.circle.groupmembers.activity.GroupMembersActivity" />
         <activity android:name=".ui.circle.groupmembers.activity.InviteActivity" />
         <activity android:name=".ui.circle.groupmembers.activity.CheckMemberDetailActivity" />
+        <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectServerTimeDetailActivity"
+            android:label="@string/title_activity_circle_select_server_time_detail"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectSeverAlbumsActivity"
+            android:label="@string/title_activity_circle_select_sever_photos"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectServerPhotosActivity"
+            android:label="@string/title_activity_circle_select_server_photos"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectServeHomeWorksActivity"
+            android:label="@string/title_activity_circle_select_serve_home_works"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ui.circle.activities.CircleSelectHomeWorkDetailActivity"
+            android:label="@string/title_activity_circle_select_home_word_detail"
+            android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".ui.circle.activities.CircleSelectHomeWorkTaskDetailActivity"
+            android:label="@string/title_activity_circle_select_home_word_detail"
+            android:theme="@style/AppTheme"></activity>
         <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity"></activity>
         <activity android:name=".ui.circle.timelines.activity.HomwWorkListActivity"/>
     </application>

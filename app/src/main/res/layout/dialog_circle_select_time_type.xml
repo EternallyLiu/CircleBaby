@@ -40,7 +40,7 @@
         android:clickable="true"
         android:gravity="center"
         android:padding="16dp"
-        android:text="全部动态"
+        android:text="与我宝宝相关的动态"
         android:textColor="@color/text"
         android:textSize="16sp" />
 

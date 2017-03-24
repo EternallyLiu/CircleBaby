@@ -324,7 +324,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     }
 
     @Override
-    public void loadfinish(int code) {
+    public void loadFinish(int code) {
     }
 
     @Override

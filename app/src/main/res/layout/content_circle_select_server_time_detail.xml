@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_select_server_time_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeDetailActivity"
+    tools:showIn="@layout/activity_select_server_time_detail">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_space_medium"
+        android:background="@color/white"
+        android:lineSpacingMultiplier="1.2"
+        android:paddingBottom="@dimen/size_12"
+        android:paddingLeft="@dimen/size_12"
+        android:paddingRight="@dimen/size_12"
+        android:paddingTop="@dimen/size_12"
+        android:textColor="@color/text"
+        android:textSize="16sp"
+        tools:text="又到了周末，外面阳光明媚，却又天气凉爽，实在适合出去转转。" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/size_24"
+        android:paddingLeft="@dimen/view_space_normal"
+        android:paddingRight="@dimen/view_space_normal" />
+
+</LinearLayout>
