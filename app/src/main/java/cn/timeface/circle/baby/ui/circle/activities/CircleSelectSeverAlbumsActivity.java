@@ -23,13 +23,23 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.api.models.responses.GetThemeResponse;
+import cn.timeface.circle.baby.support.api.models.responses.ImageExInfoResponse;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerAlbumAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObjWrapper;
 import cn.timeface.circle.baby.views.TFStateView;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * 圈选择照片页面
@@ -56,6 +66,7 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
     final int REQUEST_CODE_SELECT_SERVER_PHOTO = 100;
     List<MediaObj> allSelectMedias = new ArrayList<>();
     int position = 0;//记录点击的那一个item
+    int openBookType;
 
     public static void open(Context context, String circleId){
         Intent intent = new Intent(context, CircleSelectSeverAlbumsActivity.class);
@@ -126,7 +137,87 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        if(item.getItemId() == R.id.save){
+
+            int pageNum = allSelectMedias.size();
+            if(pageNum == 0){
+                ToastUtil.showToast("请选择至少一张照片");
+                return true;
+            }
+
+            addSubscription(
+                    apiService.getDefaultTheme(BookModel.CIRCLE_BOOK_TYPE_PHOTO)
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .flatMap(new Func1<GetThemeResponse, Observable<ImageExInfoResponse>>() {
+                                @Override
+                                public Observable<ImageExInfoResponse> call(GetThemeResponse getThemeResponse) {
+                                    openBookType = getThemeResponse.getId();
+                                    return apiService.queryImageInfo(FastData.getBabyAvatar());
+                                }
+                            })
+                            .subscribe(
+                                    response -> {
+                                        if(response.success()){
+                                            //跳转开放平台POD接口；
+
+                                            List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+                                            StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                            int index = 0;
+                                            for(MediaObj mediaObj : allSelectMedias){
+                                                index++;
+                                                TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
+                                                tfoResourceObjs.add(tfoResourceObj);
+                                                sb.append(mediaObj.getId());
+                                                if (index < allSelectMedias.size()) {
+                                                    sb.append(",");
+                                                } else {
+                                                    sb.append("]}");
+                                                }
+                                            }
+
+
+                                            List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+                                            TFOContentObj tfoContentObj;
+                                            tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+                                            tfoContentObjs1.add(tfoContentObj);
+
+                                            ArrayList<String> keys = new ArrayList<>();
+                                            ArrayList<String> values = new ArrayList<>();
+                                            keys.add("book_author");
+                                            keys.add("book_title");
+
+                                            String author = FastData.getUserName();
+                                            String bookName = FastData.getBabyNickName() + "的照片书";
+                                            values.add(author);
+                                            values.add(bookName);
+
+                                            TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
+                                            List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+                                            tfoPublishObjs.add(tfoPublishObj);
+
+                                            MyPODActivity.open(
+                                                    this,
+                                                    "",
+                                                    "",
+                                                    BookModel.CIRCLE_BOOK_TYPE_PHOTO,
+                                                    openBookType,
+                                                    tfoPublishObjs,
+                                                    sb.toString(),true,FastData.getBabyId(),keys,values, 1);
+                                            finish();
+                                        }
+                                    },
+                                    throwable -> {
+                                        Log.e(TAG, throwable.getLocalizedMessage());
+                                    }
+                            )
+            );
+            return true;
+        } else if(item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

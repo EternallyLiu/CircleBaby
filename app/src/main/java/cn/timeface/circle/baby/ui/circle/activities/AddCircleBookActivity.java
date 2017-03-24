@@ -10,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
+
 import java.util.List;
 
 import butterknife.Bind;
@@ -76,6 +78,12 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
         if (addCircleBookAdapter == null) {
             contentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             addCircleBookAdapter = new AddCircleBookAdapter(this, dataList, this);
+//            contentRecyclerView.addItemDecoration(
+//                    new HorizontalDividerItemDecoration.Builder(this)
+//                            .sizeResId(R.dimen.view_space_medium)
+//                            .colorResId(R.color.trans)
+//                            .build()
+//            );
             contentRecyclerView.setAdapter(addCircleBookAdapter);
         } else {
             addCircleBookAdapter.setListData(dataList);
