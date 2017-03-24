@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.timelines.dialog;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.RelateBabyAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleBabyObj;
@@ -32,6 +36,7 @@ import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
+import cn.timeface.circle.baby.views.ClearableEditText;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
 import rx.Observable;
 import rx.Subscription;
@@ -45,12 +50,14 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
     private RecyclerView contentRecyclerView;
     private Button btnSubmit;
     private CircleMediaObj currentMediaObj = null;
-    private List<Long> babyIds = new ArrayList<>(0);
-    private List<Long> cancleCircleId = new ArrayList<>(0);
 
+    private CircleNewBabyDialog newDialog = null;
     private Subscription currentSubscription;
 
     private RelateBabyAdapter adapter = null;
+    private Animation leftMove;
+    private View mView;
+    private Animation rightMove;
 
     public CircleBabyDialog(Context context, CircleMediaObj mediaObj) {
         this(context);
@@ -73,7 +80,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
     }
 
     private void init() {
-        View mView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_circle_baby, null);
+        mView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_circle_baby, null);
         this.setContentView(mView);
         contentRecyclerView = (RecyclerView) mView.findViewById(R.id.content_recycler_view);
         btnSubmit = (Button) mView.findViewById(R.id.btn_submit);
@@ -89,10 +96,12 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = window.getAttributes();
         p.width = d.getWidth();
-        p.height = App.mScreenHeight / 2;
+        p.height = App.mScreenHeight / 3 * 2;
+        p.dimAmount = 0;
         window.setAttributes(p);
         window.setGravity(Gravity.BOTTOM);
         window.setWindowAnimations(R.style.bottom_dialog_animation);
+
     }
 
     @Override
@@ -107,7 +116,6 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
     @Override
     public void onItemClick(View view, int position) {
         GetCircleAllBabyObj babyObj = adapter.getItem(position);
-        LogUtil.showLog("baby:" + JSONUtils.parse2JSONString(babyObj));
         if (babyObj.getBaseType() == 0) {
             FlipImageView ivSelect = ViewHolder.getView(view, R.id.iv_select);
             if (ivSelect.getStatus() != RelateBabyAdapter.STATUS_FINAL) {
@@ -121,6 +129,43 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
                     ivSelect.changeStatus(RelateBabyAdapter.STATUS_NONE);
                 }
             }
+        } else {
+            if (newDialog == null) {
+                newDialog = new CircleNewBabyDialog(getContext());
+                newDialog.setOnDismissListener(new OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        updateBabys();
+                        if (rightMove == null)
+                            rightMove = AnimationUtils.loadAnimation(getContext(), R.anim.dialog_right_move);
+                        mView.setVisibility(View.VISIBLE);
+                        mView.startAnimation(rightMove);
+                    }
+                });
+            }
+            StringBuilder builder = new StringBuilder();
+            Observable.defer(() -> Observable.from((List<GetCircleAllBabyObj>) adapter.getData()))
+                    .filter(o -> o != null && o instanceof GetCircleAllBabyObj)
+                    .map(o -> (GetCircleAllBabyObj) o)
+                    .filter(getCircleAllBabyObj -> getCircleAllBabyObj.getBaseType() == 0)
+                    .doOnNext(getCircleAllBabyObj -> builder.append(getCircleAllBabyObj.getBabyName()).append(","))
+                    .toList()
+                    .map(getCircleAllBabyObjs -> builder)
+                    .subscribe(stringBuilder -> {
+                        newDialog.setBabyNames(builder.toString());
+                        showNewDialog();
+                    }, throwable -> LogUtil.showError(throwable));
+
+        }
+    }
+
+    private void showNewDialog() {
+        if (!newDialog.isShowing()) {
+            newDialog.show();
+            if (leftMove == null)
+                leftMove = AnimationUtils.loadAnimation(getContext(), R.anim.dialog_left_move);
+            mView.setVisibility(View.INVISIBLE);
+            mView.startAnimation(leftMove);
         }
     }
 
@@ -133,9 +178,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
         super.dismiss();
     }
 
-    @Override
-    public void show() {
-        super.show();
+    private void updateBabys() {
         if (currentMediaObj != null)
             currentSubscription = ApiFactory.getApi().getApiService().getCircleAllBaby(FastData.getCircleId(), 1, currentMediaObj.getId())
                     .compose(SchedulersCompat.applyIoSchedulers())
@@ -150,6 +193,12 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
                         dismiss();
                         LogUtil.showError(throwable);
                     });
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        updateBabys();
     }
 
     public void setMediaObj(CircleMediaObj mediaObj) {

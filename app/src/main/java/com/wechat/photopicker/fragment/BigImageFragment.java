@@ -386,9 +386,11 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             return;
         }
 //        ToastUtil.showToast("开始保存图片…");
-        tfProgressDialog = TFProgressDialog.getInstance("");
+        if (tfProgressDialog == null)
+            tfProgressDialog = TFProgressDialog.getInstance("");
         tfProgressDialog.setTvMessage("保存图片中…");
-        tfProgressDialog.show(getChildFragmentManager(), "");
+        if (tfProgressDialog.isHidden())
+            tfProgressDialog.show(getChildFragmentManager(), "");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -607,13 +609,23 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @Override
     public void circleResult(String babys, long mediaId) {
-        addSubscription(apiService.circleAtBaby(Uri.encode(babys), FastData.getCircleId(), mediaId)
-                .compose(SchedulersCompat.applyIoSchedulers()).subscribe(circleMediaResponse -> {
-                    if (circleMediaResponse.success()) {
-                        int currentIndex = mViewPager.getCurrentItem();
-                        ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
-                        initCircleBaby();
-                    } else ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
-                }, throwable -> LogUtil.showError(throwable)));
+        if (tfProgressDialog == null)
+            tfProgressDialog = TFProgressDialog.getInstance("");
+        tfProgressDialog.setTvMessage("正在执行此操作~");
+//        if (tfProgressDialog.isHidden())
+            tfProgressDialog.show(getChildFragmentManager(), "");
+//        addSubscription(apiService.circleAtBaby(Uri.encode(babys), FastData.getCircleId(), mediaId)
+//                .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(circleMediaResponse -> tfProgressDialog.dismiss()).
+//        subscribe(circleMediaResponse -> {
+//            if (circleMediaResponse.success()) {
+//                int currentIndex = mViewPager.getCurrentItem();
+//                ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
+//                initCircleBaby();
+//            } else ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
+//        }, throwable -> {
+//            if (!tfProgressDialog.isHidden())
+//                tfProgressDialog.dismiss();
+//            LogUtil.showError(throwable);
+//        }));
     }
 }
