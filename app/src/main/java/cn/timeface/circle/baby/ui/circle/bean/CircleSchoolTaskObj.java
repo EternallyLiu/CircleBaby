@@ -62,15 +62,4 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
         this.teacher = in.readParcelable(CircleUserInfo.class.getClassLoader());
     }
 
-    public static final Creator<CircleSchoolTaskObj> CREATOR = new Creator<CircleSchoolTaskObj>() {
-        @Override
-        public CircleSchoolTaskObj createFromParcel(Parcel source) {
-            return new CircleSchoolTaskObj(source);
-        }
-
-        @Override
-        public CircleSchoolTaskObj[] newArray(int size) {
-            return new CircleSchoolTaskObj[size];
-        }
-    };
 }

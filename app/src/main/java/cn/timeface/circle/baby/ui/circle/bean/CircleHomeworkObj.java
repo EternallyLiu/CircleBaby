@@ -31,43 +31,10 @@ public class CircleHomeworkObj extends CircleSchoolTaskObj implements Parcelable
     public CircleHomeworkObj() {
     }
 
-    protected CircleHomeworkObj(Parcel in) {
-        super(in);
-        homeworkId = in.readLong();
-        notations = in.createStringArrayList();
-        submitter = in.readParcelable(CircleUserInfo.class.getClassLoader());
-        teacherReview = in.readString();
     public CircleHomeworkObj(long taskId, String title) {
         this.taskId = taskId;
         setTitle(title);
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeLong(homeworkId);
-        dest.writeStringList(notations);
-        dest.writeParcelable(submitter, flags);
-        dest.writeString(teacherReview);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CircleHomeworkObj> CREATOR = new Creator<CircleHomeworkObj>() {
-        @Override
-        public CircleHomeworkObj createFromParcel(Parcel in) {
-            return new CircleHomeworkObj(in);
-        }
-
-        @Override
-        public CircleHomeworkObj[] newArray(int size) {
-            return new CircleHomeworkObj[size];
-        }
-    };
-
 
     public long getHomeworkId() {
         return homeworkId;
@@ -100,4 +67,40 @@ public class CircleHomeworkObj extends CircleSchoolTaskObj implements Parcelable
     public void setTeacherReview(String teacherReview) {
         this.teacherReview = teacherReview;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeLong(this.homeworkId);
+        dest.writeStringList(this.notations);
+        dest.writeParcelable(this.submitter, flags);
+        dest.writeString(this.teacherReview);
+        dest.writeParcelable(this.babyInfo, flags);
+    }
+
+    protected CircleHomeworkObj(Parcel in) {
+        super(in);
+        this.homeworkId = in.readLong();
+        this.notations = in.createStringArrayList();
+        this.submitter = in.readParcelable(CircleUserInfo.class.getClassLoader());
+        this.teacherReview = in.readString();
+        this.babyInfo = in.readParcelable(BabyObj.class.getClassLoader());
+    }
+
+    public static final Creator<CircleHomeworkObj> CREATOR = new Creator<CircleHomeworkObj>() {
+        @Override
+        public CircleHomeworkObj createFromParcel(Parcel source) {
+            return new CircleHomeworkObj(source);
+        }
+
+        @Override
+        public CircleHomeworkObj[] newArray(int size) {
+            return new CircleHomeworkObj[size];
+        }
+    };
 }
