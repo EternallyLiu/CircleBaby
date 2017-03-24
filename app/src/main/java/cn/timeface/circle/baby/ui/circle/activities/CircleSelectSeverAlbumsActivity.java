@@ -39,7 +39,9 @@ import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 圈选择照片页面
@@ -137,7 +139,7 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.save){
+        if(item.getItemId() == R.id.menu_complete){
 
             int pageNum = allSelectMedias.size();
             if(pageNum == 0){
@@ -147,7 +149,8 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
             addSubscription(
                     apiService.getDefaultTheme(BookModel.CIRCLE_BOOK_TYPE_PHOTO)
-                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(Schedulers.io())
                             .flatMap(new Func1<GetThemeResponse, Observable<ImageExInfoResponse>>() {
                                 @Override
                                 public Observable<ImageExInfoResponse> call(GetThemeResponse getThemeResponse) {
@@ -155,13 +158,14 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
                                     return apiService.queryImageInfo(FastData.getBabyAvatar());
                                 }
                             })
+                            .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(
                                     response -> {
                                         if(response.success()){
                                             //跳转开放平台POD接口；
 
                                             List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
-                                            StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                            StringBuffer sb = new StringBuffer("{\"mediaIds\":[");
                                             int index = 0;
                                             for(MediaObj mediaObj : allSelectMedias){
                                                 index++;
@@ -171,10 +175,10 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
                                                 if (index < allSelectMedias.size()) {
                                                     sb.append(",");
                                                 } else {
-                                                    sb.append("]}");
+                                                    sb.append("],");
                                                 }
                                             }
-
+                                            sb.append("\"circleId\":").append(circleId).append("}");
 
                                             List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
                                             TFOContentObj tfoContentObj;
