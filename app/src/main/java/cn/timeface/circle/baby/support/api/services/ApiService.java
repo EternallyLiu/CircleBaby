@@ -1836,6 +1836,8 @@ public interface ApiService {
     @GET("circle/book/list")
     Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList(@Query("circleId") long circleId,
                                                                        @Query("permissionType") int permissionType);
+    @GET("circle/book/list")
+    Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList();
 
     @GET("circleBook/typeList")
     Observable<QueryCirclePhotoResponse<CircleBookTypeObj>> circleBookTypeList();

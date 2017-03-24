@@ -3,7 +3,6 @@ package cn.timeface.circle.baby.support.mvp.model;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
-import cn.timeface.circle.baby.support.api.models.responses.CardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterModel;
@@ -188,5 +187,15 @@ public class BookModel extends BasePresenterModel implements BookPresentation.Mo
     @Override
     public Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList(long circleId, int permissionType) {
         return apiService.circleBookList(circleId, permissionType);
+    }
+
+    /**
+     * 圈作品列表
+     *
+     * @return
+     */
+    @Override
+    public Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList() {
+        return apiService.circleBookList();
     }
 }

@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.growth.fragments;
 
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,12 +50,9 @@ import cn.timeface.circle.baby.ui.growth.adapters.BookListAdapter;
 import cn.timeface.circle.baby.ui.growth.adapters.CirclcListAdapter;
 import cn.timeface.circle.baby.views.TFStateView;
 
-/**
- * 书籍相关作品列表页面
- * author : YW.SUN Created on 2017/2/13
- * email : sunyw10@gmail.com
- */
-public class BookListFragment extends BasePresenterFragment implements BookPresentation.View, View.OnClickListener, IEventBus {
+
+public class CircleListFragment extends BasePresenterFragment implements BookPresentation.View, View.OnClickListener, IEventBus {
+
 
     @Bind(R.id.tv_tip)
     TextView tvTip;
@@ -81,8 +79,8 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
 
     private boolean hasPic;
 
-    public static BookListFragment newInstance(int bookType) {
-        BookListFragment fragment = new BookListFragment();
+    public static CircleListFragment newInstance(int bookType) {
+        CircleListFragment fragment = new CircleListFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("book_type", bookType);
         fragment.setArguments(bundle);
@@ -97,7 +95,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
         this.bookType = getArguments().getInt("book_type", 0);
         tvTip.setVisibility(View.GONE);
         bookPresenter = new BookPresenter(this);
-        bookPresenter.loadData(bookType, 2);
+        bookPresenter.loadCircleDate();
         btnAskForPrint.setVisibility(View.GONE);
         return view;
     }
@@ -213,26 +211,26 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
 
     @Override
     public void setBookData(List<BookObj> bookObjs, boolean hasPic) {
-        if (bookListAdapter == null) {
-            bookListAdapter = new BookListAdapter(getActivity(), bookObjs, this);
+
+    }
+
+    @Override
+    public void setCircleBookData(List<CircleBookObj> bookObjs, boolean hasPic) {
+        if (circlcListAdapter == null) {
+            circlcListAdapter = new CirclcListAdapter(getActivity(), bookObjs, this);
             rvBooks.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            rvBooks.setAdapter(bookListAdapter);
+            rvBooks.setAdapter(circlcListAdapter);
         } else {
-            bookListAdapter.setListData(bookObjs);
-            bookListAdapter.notifyDataSetChanged();
+            circlcListAdapter.setListData(bookObjs);
+            circlcListAdapter.notifyDataSetChanged();
         }
 
         this.hasPic = hasPic;
         updateEmptyView();
     }
 
-    @Override
-    public void setCircleBookData(List<CircleBookObj> bookObjs, boolean hasPic) {
-
-    }
-
     private void updateEmptyView() {
-        if (bookListAdapter.getListData().isEmpty()) {
+        if (circlcListAdapter.getListData().isEmpty()) {
             llEmpty.setVisibility(View.VISIBLE);
             setupEmptyView(hasPic);
         } else {
@@ -372,4 +370,5 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
             }
         }
     }
+
 }

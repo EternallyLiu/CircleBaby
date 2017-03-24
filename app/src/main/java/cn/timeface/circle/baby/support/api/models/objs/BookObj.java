@@ -27,6 +27,7 @@ public class BookObj extends BaseObj implements Parcelable {
     private long openBookId;//开放平台bookid
     private int pageNum;//书的总页数
     private int openBookType;//
+    private long updateTime;
 
     public int getOpenBookType() {
         return openBookType;
@@ -116,17 +117,64 @@ public class BookObj extends BaseObj implements Parcelable {
         this.pageNum = pageNum;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public BookObj(UserObj author, BabyObj baby, String bookCover, long bookId, String bookName, int bookType, long createTime, int isCustom, long openBookId, int pageNum, int openBookType, long updateTime) {
+        this.author = author;
+        this.baby = baby;
+        this.bookCover = bookCover;
+        this.bookId = bookId;
+        this.bookName = bookName;
+        this.bookType = bookType;
+        this.createTime = createTime;
+        this.isCustom = isCustom;
+        this.openBookId = openBookId;
+        this.pageNum = pageNum;
+        this.openBookType = openBookType;
+        this.updateTime = updateTime;
+    }
+
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public static Creator<BookObj> getCREATOR() {
+        return CREATOR;
+    }
+
+    public BookObj(Parcel in, UserObj author, BabyObj baby, String bookCover, long bookId, String bookName, int bookType, long createTime, int isCustom, long openBookId, int pageNum, int openBookType, long updateTime) {
+        super(in);
+        this.author = author;
+        this.baby = baby;
+        this.bookCover = bookCover;
+        this.bookId = bookId;
+        this.bookName = bookName;
+        this.bookType = bookType;
+        this.createTime = createTime;
+        this.isCustom = isCustom;
+        this.openBookId = openBookId;
+        this.pageNum = pageNum;
+        this.openBookType = openBookType;
+        this.updateTime = updateTime;
     }
 
     public boolean showAuthor(){
         return isCustom == 1;
     }
 
+    public BookObj() {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeParcelable(this.author, flags);
         dest.writeParcelable(this.baby, flags);
         dest.writeString(this.bookCover);
@@ -137,12 +185,12 @@ public class BookObj extends BaseObj implements Parcelable {
         dest.writeInt(this.isCustom);
         dest.writeLong(this.openBookId);
         dest.writeInt(this.pageNum);
-    }
-
-    public BookObj() {
+        dest.writeInt(this.openBookType);
+        dest.writeLong(this.updateTime);
     }
 
     protected BookObj(Parcel in) {
+        super(in);
         this.author = in.readParcelable(UserObj.class.getClassLoader());
         this.baby = in.readParcelable(BabyObj.class.getClassLoader());
         this.bookCover = in.readString();
@@ -153,9 +201,11 @@ public class BookObj extends BaseObj implements Parcelable {
         this.isCustom = in.readInt();
         this.openBookId = in.readLong();
         this.pageNum = in.readInt();
+        this.openBookType = in.readInt();
+        this.updateTime = in.readLong();
     }
 
-    public static final Parcelable.Creator<BookObj> CREATOR = new Parcelable.Creator<BookObj>() {
+    public static final Creator<BookObj> CREATOR = new Creator<BookObj>() {
         @Override
         public BookObj createFromParcel(Parcel source) {
             return new BookObj(source);

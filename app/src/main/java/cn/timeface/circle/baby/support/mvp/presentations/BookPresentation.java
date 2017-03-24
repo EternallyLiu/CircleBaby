@@ -5,7 +5,6 @@ import java.util.List;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 import cn.timeface.circle.baby.support.api.models.responses.BookListResponse;
-import cn.timeface.circle.baby.support.api.models.responses.CardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.DiaryCardListResponse;
 import cn.timeface.circle.baby.support.api.models.responses.KnowledgeCardListResponse;
 import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
@@ -84,6 +83,7 @@ public interface BookPresentation {
         Observable<BaseResponse> deleteBook(String bookId);
 
         Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList(long circleId, int permissionType);
+        Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList();
     }
 
     interface Presenter{
@@ -93,6 +93,8 @@ public interface BookPresentation {
         void create();
 
         void loadData(int bookType, int permissionType);
+
+        void loadCircleDate();
 
         /**
          * 编辑书作品
@@ -127,6 +129,7 @@ public interface BookPresentation {
         void setStateView(boolean loading);
 
         void setBookData(List<BookObj> bookObjs, boolean hasPic);
+        void setCircleBookData(List<CircleBookObj> bookObjs, boolean hasPic);
 
     }
 

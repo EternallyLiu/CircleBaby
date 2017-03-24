@@ -4,6 +4,9 @@ import cn.timeface.circle.baby.support.mvp.bases.BasePresenter;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.mvp.presentations.BookPresentation;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
+import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
+import rx.functions.Action1;
 
 /**
  * book 各作品presenter
@@ -37,6 +40,26 @@ public class BookPresenter extends BasePresenter<BookPresentation.View, BookMode
                                 },
                                 throwable -> {
                                     view.showErr("数据获取失败");
+                                }
+                        )
+        );
+    }
+
+    @Override
+    public void loadCircleDate() {
+        view.setStateView(true);
+        view.addSubscription(
+                model.circleBookList()
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(new Action1<QueryCirclePhotoResponse<CircleBookObj>>() {
+                                       @Override
+                                       public void call(QueryCirclePhotoResponse<CircleBookObj> circleBookObjQueryCirclePhotoResponse) {
+                                           view.setCircleBookData(circleBookObjQueryCirclePhotoResponse.getDataList(), false);
+                                           view.setStateView(false);
+                                       }
+                                   },
+                                throwable -> {
+                                    view.showErr("成长圈数据获取失败");
                                 }
                         )
         );

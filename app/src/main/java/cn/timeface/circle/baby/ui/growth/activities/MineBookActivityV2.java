@@ -31,8 +31,10 @@ import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.activities.AddCircleBookActivity;
 import cn.timeface.circle.baby.ui.growth.adapters.MineBookAdapterV2;
 import cn.timeface.circle.baby.ui.growth.fragments.BookListFragment;
+import cn.timeface.circle.baby.ui.growth.fragments.CircleListFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.DiaryCardListFragment;
 import cn.timeface.circle.baby.ui.growth.fragments.RecognizeCardListFragment;
 
@@ -123,6 +125,9 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
                     createCalendarDialog.setCancelable(true);
                     createCalendarDialog.show(getSupportFragmentManager(), "CreateCalendarDialog");
                     break;
+                case 7://成长圈书
+                    AddCircleBookActivity.open(this);
+                    break;
             }
         }
         return super.onOptionsItemSelected(item);
@@ -137,7 +142,8 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
         adapter.addFragment(RecognizeCardListFragment.newInstance(), "识图卡片");
         adapter.addFragment(DiaryCardListFragment.newInstance(), "日记卡片");
         adapter.addFragment(BookListFragment.newInstance(BookModel.BOOK_TYPE_CALENDAR), "台历");
-        viewPager.setOffscreenPageLimit(7);
+        adapter.addFragment(CircleListFragment.newInstance(BookModel.CIRCLE_BOOK_TYPE_TIME), "成长圈书");
+        viewPager.setOffscreenPageLimit(8);
         viewPager.setAdapter(adapter);
 
         viewPager.setAdapter(adapter);

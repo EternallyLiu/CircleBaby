@@ -10,13 +10,13 @@ import cn.timeface.circle.baby.support.api.models.objs.BookObj;
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CircleBookObj extends BookObj{
-    protected String circleNumber;  //圈号
+    protected int circleId;  //圈号
 
-    public String getCircleNumber() {
-        return circleNumber;
+    public int getCircleNumber() {
+        return circleId;
     }
 
-    public void setCircleNumber(String circleNumber) {
-        this.circleNumber = circleNumber;
+    public void setCircleNumber(int circleNumber) {
+        this.circleId = circleNumber;
     }
 }
