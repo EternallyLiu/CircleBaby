@@ -17,13 +17,21 @@ import android.widget.Button;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
+import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.RelateBabyAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleBabyObj;
 import cn.timeface.circle.baby.ui.images.views.FlipImageView;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
+import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
 import cn.timeface.circle.baby.views.dialog.BaseDialog;
 import rx.Observable;
 import rx.Subscription;
@@ -36,7 +44,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
 
     private RecyclerView contentRecyclerView;
     private Button btnSubmit;
-
+    private CircleMediaObj currentMediaObj = null;
     private List<Long> babyIds = new ArrayList<>(0);
     private List<Long> cancleCircleId = new ArrayList<>(0);
 
@@ -81,6 +89,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = window.getAttributes();
         p.width = d.getWidth();
+        p.height = App.mScreenHeight / 2;
         window.setAttributes(p);
         window.setGravity(Gravity.BOTTOM);
         window.setWindowAnimations(R.style.bottom_dialog_animation);
@@ -88,12 +97,31 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        if (getCircleBabyCallBack() != null)
-            getCircleBabyCallBack().circleResult(JSONUtils.parse2JSONString(babyIds), JSONUtils.parse2JSONString(cancleCircleId));
+        if (getCircleBabyCallBack() != null) {
+            String babys = JSONUtils.parse2JSONString(adapter.getDataBaby());
+            getCircleBabyCallBack().circleResult(babys, currentMediaObj.getId());
+        }
+        dismiss();
     }
 
     @Override
     public void onItemClick(View view, int position) {
+        GetCircleAllBabyObj babyObj = adapter.getItem(position);
+        LogUtil.showLog("baby:" + JSONUtils.parse2JSONString(babyObj));
+        if (babyObj.getBaseType() == 0) {
+            FlipImageView ivSelect = ViewHolder.getView(view, R.id.iv_select);
+            if (ivSelect.getStatus() != RelateBabyAdapter.STATUS_FINAL) {
+                if (babyObj.getSelected() == 0) {
+                    babyObj.setSelected(1);
+                    ivSelect.setVisibility(View.VISIBLE);
+                    ivSelect.changeStatus(RelateBabyAdapter.STATUS_SELECT);
+                } else {
+                    babyObj.setSelected(0);
+                    ivSelect.setVisibility(View.GONE);
+                    ivSelect.changeStatus(RelateBabyAdapter.STATUS_NONE);
+                }
+            }
+        }
     }
 
     @Override
@@ -105,7 +133,33 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
         super.dismiss();
     }
 
-    private void setMediaObj(CircleMediaObj mediaObj) {
+    @Override
+    public void show() {
+        super.show();
+        if (currentMediaObj != null)
+            currentSubscription = ApiFactory.getApi().getApiService().getCircleAllBaby(FastData.getCircleId(), 1, currentMediaObj.getId())
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(getCircleAllBabyObjQueryCirclePhotoResponse -> {
+                        if (getCircleAllBabyObjQueryCirclePhotoResponse.success()) {
+                            adapter.addList(true, getCircleAllBabyObjQueryCirclePhotoResponse.getDataList());
+                        } else {
+                            ToastUtil.showToast(getContext(), getCircleAllBabyObjQueryCirclePhotoResponse.getInfo());
+                            dismiss();
+                        }
+                    }, throwable -> {
+                        dismiss();
+                        LogUtil.showError(throwable);
+                    });
+    }
+
+    public void setMediaObj(CircleMediaObj mediaObj) {
+        if (currentSubscription != null && !currentSubscription.isUnsubscribed()) {
+            currentSubscription.unsubscribe();
+            currentSubscription = null;
+        }
+        if (mediaObj != null) {
+            currentMediaObj = mediaObj;
+        }
     }
 
     private CircleBabyCallBack circleBabyCallBack;
@@ -119,7 +173,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
     }
 
     public interface CircleBabyCallBack {
-        public void circleResult(String babyids, String cancelBabyIds);
+        public void circleResult(String babys, long mediaId);
     }
 
 }

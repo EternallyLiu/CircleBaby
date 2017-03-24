@@ -168,6 +168,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
             handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, position, list.size(), list));
     }
 
+    public void add(Object object) {
+        add(getRealItemSize(), object);
+    }
+
     public void add(int index, Object object) {
         if (!containObj(object)) {
             handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, index, 1, object));

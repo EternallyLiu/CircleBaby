@@ -1,6 +1,7 @@
 package com.wechat.photopicker.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -36,12 +37,12 @@ import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ImageFactory;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
-import cn.timeface.circle.baby.ui.circle.bean.RelateBabyObj;
 import cn.timeface.circle.baby.ui.circle.timelines.dialog.CircleBabyDialog;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.guides.GuideHelper;
@@ -49,7 +50,6 @@ import cn.timeface.circle.baby.ui.guides.GuideUtils;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.images.views.FlipImageView;
-import cn.timeface.circle.baby.ui.images.views.FlowLayout;
 import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
@@ -63,7 +63,7 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 /**
  * Created by yellowstart on 15/12/15.
  */
-public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack, View.OnClickListener, DeleteDialog.SubmitListener, PhotoPagerAdapter.ImageClickListener {
+public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack, View.OnClickListener, DeleteDialog.SubmitListener, PhotoPagerAdapter.ImageClickListener, CircleBabyDialog.CircleBabyCallBack {
 
     public static int CIRCLE_MEDIA_IMAGE_EDITOR = 1009;
 
@@ -93,10 +93,10 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     FlipImageView ivTagAdd;
     @Bind(R.id.iv_image_like)
     FlipImageView ivImageLike;
-    @Bind(R.id.fl_baby_list)
-    FlowLayout flBabyList;
     @Bind(R.id.tv_relate_baby)
     TextView tvRelateBaby;
+    @Bind(R.id.tv_babys)
+    TextView tvBabys;
     private List<String> mPaths;
 
     private ArrayList<MediaObj> mMedias;
@@ -164,12 +164,12 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         ButterKnife.unbind(this);
     }
 
-
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
+
 
     private LayoutInflater inflate = null;
 
@@ -223,7 +223,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                             deletePostion = -1;
                             currentTip = null;
                             EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) mediaObj));
-                        }else ToastUtil.showToast(getActivity(), response.getInfo());
+                        } else ToastUtil.showToast(getActivity(), response.getInfo());
 
                     }, throwable -> {
                     }));
@@ -241,7 +241,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                                 EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
                             else
                                 EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, deletePostion));
-                        }else ToastUtil.showToast(getActivity(), response.getInfo());
+                        } else ToastUtil.showToast(getActivity(), response.getInfo());
 
                     }, throwable -> {
                     }));
@@ -541,26 +541,27 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         }
     }
 
-    private TextView initBabyName(RelateBabyObj babyObj) {
-        TextView textView = (TextView) inflate.inflate(R.layout.circle_relate_baby, flBabyList, false);
-        textView.setText(String.format("@%s", babyObj.getBabyName()));
-        textView.setTag(R.id.recycler_item_click_tag, babyObj);
-        return textView;
-    }
-
     private void initCircleBaby() {
         if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
-            flBabyList.removeAllViews();
+            tvBabys.setVisibility(View.GONE);
             addSubscription(Observable.defer(() -> Observable.just(mMedias.get(mViewPager.getCurrentItem())))
                     .map(mediaObj -> (CircleMediaObj) mediaObj)
                     .flatMap(circleMediaObj -> Observable.from(circleMediaObj.getRelateBabys()))
                     .filter(relateBabyObj -> relateBabyObj != null)
-                    .map(relateBabyObj -> initBabyName(relateBabyObj))
-                    .toList()
-                    .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(textViews -> flBabyList.removeAllViews())
-                    .flatMap(textViews -> Observable.from(textViews))
-                    .subscribe(textView -> flBabyList.addView(textView), throwable -> LogUtil.showError(throwable)));
-        } else tvRelateBaby.setVisibility(View.GONE);
+                    .toList().compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(relateBabyObjs -> {
+                        if (relateBabyObjs != null && relateBabyObjs.size() > 0) {
+                            tvBabys.setVisibility(View.VISIBLE);
+                            StringBuilder builder = new StringBuilder("已关联 ");
+                            for (int i = 0; i < relateBabyObjs.size(); i++) {
+                                if (i < 15)
+                                    builder.append("@").append(relateBabyObjs.get(i).getBabyName()).append("  ");
+                                else builder.append(" ").append("…………");
+                            }
+                            tvBabys.setText(builder);
+                        }
+                    }, throwable -> LogUtil.showError(throwable)));
+        }
     }
 
     @Subscribe
@@ -577,7 +578,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @Subscribe
     public void onEvent(CircleMediaEvent event) {
-        LogUtil.showLog("event  " + event.getType());
         if (event.getMediaObj() != null && event.getType() == 0) {
             int currentIndex = mViewPager.getCurrentItem();
             mMedias.get(currentIndex).setTips(event.getMediaObj().getTips());
@@ -593,7 +593,27 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @OnClick(R.id.tv_relate_baby)
     public void onClick() {
-//        if (circleBabyDialog == null)
-//            circleBabyDialog = new CircleBabyDialog(getActivity());
+        if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
+            if (circleBabyDialog == null) {
+                circleBabyDialog = new CircleBabyDialog(getActivity(), (CircleMediaObj) mMedias.get(mViewPager.getCurrentItem()));
+                circleBabyDialog.setCircleBabyCallBack(this);
+            } else
+                circleBabyDialog.setMediaObj((CircleMediaObj) mMedias.get(mViewPager.getCurrentItem()));
+            if (!circleBabyDialog.isShowing()) {
+                circleBabyDialog.show();
+            }
+        }
+    }
+
+    @Override
+    public void circleResult(String babys, long mediaId) {
+        addSubscription(apiService.circleAtBaby(Uri.encode(babys), FastData.getCircleId(), mediaId)
+                .compose(SchedulersCompat.applyIoSchedulers()).subscribe(circleMediaResponse -> {
+                    if (circleMediaResponse.success()) {
+                        int currentIndex = mViewPager.getCurrentItem();
+                        ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
+                        initCircleBaby();
+                    } else ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
+                }, throwable -> LogUtil.showError(throwable)));
     }
 }

@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -208,18 +209,18 @@ public class PublishActivity extends BaseAppCompatActivity {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .doOnNext(homeWorkSubmitResponse -> hideProgress())
                 .subscribe(homeWorkSubmitResponse -> {
-            if (homeWorkSubmitResponse.success()) {
-                UploadService.start(this, list);
-                finish();
-            } else {
-                clearGCMedia();
-                ToastUtil.showToast(this, homeWorkSubmitResponse.getInfo());
-            }
-        }, throwable -> {
-            clearGCMedia();
-            hideProgress();
-            LogUtil.showError(throwable);
-        }));
+                    if (homeWorkSubmitResponse.success()) {
+                        UploadService.start(this, list);
+                        finish();
+                    } else {
+                        clearGCMedia();
+                        ToastUtil.showToast(this, homeWorkSubmitResponse.getInfo());
+                    }
+                }, throwable -> {
+                    clearGCMedia();
+                    hideProgress();
+                    LogUtil.showError(throwable);
+                }));
     }
 
     private void clearGCMedia() {
@@ -404,7 +405,13 @@ public class PublishActivity extends BaseAppCompatActivity {
     }
 
 
-    public static void open(Context context, CircleHomeworkObj homeworkObj) {
+    /**
+     * 提交作业
+     *
+     * @param context
+     * @param homeworkObj
+     */
+    public static void open(Context context, @NonNull CircleHomeworkObj homeworkObj) {
         if (TextUtils.isEmpty(homeworkObj.getTitle()) || homeworkObj.getTaskId() <= 0) {
             ToastUtil.showToast(context, context.getString(R.string.please_select_school_work));
             return;
@@ -415,6 +422,11 @@ public class PublishActivity extends BaseAppCompatActivity {
         context.startActivity(new Intent(context, PublishActivity.class).putExtras(bundle));
     }
 
+    /**
+     * 发布作业
+     *
+     * @param context
+     */
     public static void openSchoolTask(Context context) {
         Bundle bundle = new Bundle();
         bundle.putInt("type", PublishAdapter.TYPE_SCHOOL);
