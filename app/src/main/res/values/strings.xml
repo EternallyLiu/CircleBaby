@@ -887,4 +887,6 @@
     </string>
     <string name="send_school_media_tip">添加说明图片（选填）</string>
     <string name="school_title_input_tip">作业标题不能为空</string>
+    <string name="activity_homework_title">圈作业</string>
+    <string name="please_select_school_work">请指定一个作业再进行此操作</string>
 </resources>

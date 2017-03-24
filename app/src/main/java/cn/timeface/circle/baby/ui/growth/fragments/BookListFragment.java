@@ -223,11 +223,6 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
         updateEmptyView();
     }
 
-    @Override
-    public void setCircleBookData(List<CircleBookObj> circleBookObjs) {
-
-    }
-
     private void updateEmptyView() {
         if (bookListAdapter.getListData().isEmpty()) {
             llEmpty.setVisibility(View.VISIBLE);

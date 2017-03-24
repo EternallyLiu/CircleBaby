@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.wechat.photopicker.fragment.BigImageFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -39,9 +40,12 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.images.views.FlowLayout;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 
 /**
  * author : wangshuai Created on 2017/1/16
@@ -62,7 +66,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     FlowLayout tagHis;
     @Bind(R.id.tag_suggest)
     FlowLayout tagSuggest;
-
+    private int type = 0;
 
     private List<MediaTipObj> hisList = null;
     private List<MediaTipObj> recommentList = null;
@@ -80,6 +84,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
         Bundle bundle = getArguments();
         if (bundle != null && bundle.containsKey("media"))
             currentMediaObj = bundle.getParcelable("media");
+        type = bundle.getInt("type", 0);
     }
 
     @Nullable
@@ -290,22 +295,82 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
             return;
         if (currentMediaObj.getId() <= 0) {
             currentMediaObj.setTips(selectList);
-            EventBus.getDefault().post(currentMediaObj);
+            if (type == BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR) {
+                EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) currentMediaObj));
+            } else
+                EventBus.getDefault().post(currentMediaObj);
             getActivity().finish();
             return;
         }
 
-        addSubscription(apiService.addLabel(currentMediaObj.getId() + "", Uri.encode(json))
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
-                    if (response.success()) {
-                        currentMediaObj.setTips(response.getTips());
-                        EventBus.getDefault().post(currentMediaObj);
-                        getActivity().finish();
-                    }
+        if (type == BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR) {
+            addSubscription(apiService.addCircleMediaLabal(currentMediaObj.getId(), Uri.encode(json))
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        if (response.success()) {
+                            currentMediaObj.setTips(response.getTips());
+                            EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) currentMediaObj));
+                            getActivity().finish();
+                        }
 
-                }, throwable -> {
-                }));
+                    }, throwable -> {
+                    }));
+        } else
+            addSubscription(apiService.addLabel(currentMediaObj.getId() + "", Uri.encode(json))
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        if (response.success()) {
+                            currentMediaObj.setTips(response.getTips());
+                            EventBus.getDefault().post(currentMediaObj);
+                            getActivity().finish();
+                        }
+
+                    }, throwable -> {
+                    }));
+    }
+
+    private void deleteTip(MediaTipObj currentTip, View parent) {
+        if (type == BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR) {
+            addSubscription(apiService.deleteCircleLabel(currentMediaObj.getId(), currentTip.getTipId())
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        if (response.success()) {
+                            if (currentMediaObj.getTips().contains(currentTip))
+                                currentMediaObj.getTips().remove(currentTip);
+                            if (selectList.contains(currentTip)) {
+                                flowLayout.removeView(parent);
+                                selectList.remove(currentTip);
+                                if (selectList.size() == 4) {
+                                    flowLayout.addView(input);
+                                    input.setVisibility(View.VISIBLE);
+                                }
+                            }
+                            EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) currentMediaObj));
+                        } else ToastUtil.showToast(getActivity(), response.getInfo());
+
+                    }, throwable -> {
+                    }));
+        } else {
+            addSubscription(apiService.deleteLabel(currentMediaObj.getId() + "", currentTip.getTipId() + "")
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        if (response.success()) {
+                            if (currentMediaObj.getTips().contains(currentTip))
+                                currentMediaObj.getTips().remove(currentTip);
+                            if (selectList.contains(currentTip)) {
+                                flowLayout.removeView(parent);
+                                selectList.remove(currentTip);
+                                if (selectList.size() == 4) {
+                                    flowLayout.addView(input);
+                                    input.setVisibility(View.VISIBLE);
+                                }
+                            }
+                            EventBus.getDefault().post(currentMediaObj);
+                        } else ToastUtil.showToast(getActivity(), response.getInfo());
+
+                    }, throwable -> {
+                    }));
+        }
     }
 
     @Override
@@ -322,12 +387,16 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
                     addView(tipObj);
                 break;
             case R.id.delete:
-                if (selectList.contains(tipObj)) {
-                    flowLayout.removeView(parent);
-                    selectList.remove(tipObj);
-                    if (selectList.size() == 4) {
-                        flowLayout.addView(input);
-                        input.setVisibility(View.VISIBLE);
+                if (tipObj.getTipId() > 0) {
+                    deleteTip(tipObj,parent);
+                } else {
+                    if (selectList.contains(tipObj)) {
+                        flowLayout.removeView(parent);
+                        selectList.remove(tipObj);
+                        if (selectList.size() == 4) {
+                            flowLayout.addView(input);
+                            input.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
                 break;

@@ -94,8 +94,6 @@ public interface BookPresentation {
 
         void loadData(int bookType, int permissionType);
 
-        void circleBooks(long circleId, int permissionType);
-
         /**
          * 编辑书作品
          */
@@ -129,8 +127,6 @@ public interface BookPresentation {
         void setStateView(boolean loading);
 
         void setBookData(List<BookObj> bookObjs, boolean hasPic);
-
-        void setCircleBookData(List<CircleBookObj> circleBookObjs);
 
     }
 

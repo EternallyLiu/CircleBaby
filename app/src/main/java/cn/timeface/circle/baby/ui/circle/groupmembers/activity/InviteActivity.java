@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.circle.groupmembers.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
@@ -24,10 +25,7 @@ import rx.functions.Action1;
 
 public class InviteActivity extends BaseAppCompatActivity {
 
-    @Bind(R.id.title)
-    TextView title;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+
     @Bind(R.id.iv_img)
     RatioImageView ivImg;
     @Bind(R.id.tv_circle)
@@ -36,6 +34,10 @@ public class InviteActivity extends BaseAppCompatActivity {
     TextView tvShareCircle;
 
     GrowthCircleObj circleObj;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
 
     public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, InviteActivity.class);
@@ -50,8 +52,7 @@ public class InviteActivity extends BaseAppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText("邀请");
+        getSupportActionBar().setTitle("邀请");
         circleObj = getIntent().getParcelableExtra("circleObj");
         tvCircle.setText(circleObj.getCircleNumber() + "");
         reqQrCode();
@@ -81,6 +82,6 @@ public class InviteActivity extends BaseAppCompatActivity {
     @OnClick(R.id.tv_share_circle)
     public void clickShare(View view) {
         new ShareDialog(this).share("成长圈", "快把这个成长圈分给你的朋友吧！"
-                ,"http://img1.timeface.cn/uploads/avator/default.png","http://img1.timeface.cn/uploads/avator/default.png");
+                , "http://img1.timeface.cn/uploads/avator/default.png", "http://img1.timeface.cn/uploads/avator/default.png");
     }
 }

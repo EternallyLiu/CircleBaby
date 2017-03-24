@@ -1,36 +1,29 @@
-package cn.timeface.circle.baby.ui.circle.response;
+package cn.timeface.circle.baby.ui.circle.timelines.bean;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-
-import java.util.List;
-
-import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
-import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 
 /**
- * 获取圈作业列表response
- * Created by lidonglin on 2017/3/17.
+ * author : wangshuai Created on 2017/3/23
+ * email : wangs1992321@gmail.com
  */
-@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class HomeWorkListResponse extends BaseResponse {
-    private List<HomeWorkListObj> dataList;
+public class CircleHomeWorkHeader implements Parcelable {
+
     private GrowthCircleObj growthCircle;             //圈对象
     private int hasTeacherCertification;              //是否有老师认证消息 1- 有 0 - 无
     private CircleHomeworkObj lastSubmitHomework;     //最新提交的作业
 
-    public List<HomeWorkListObj> getDataList() {
-        return dataList;
-    }
-
-    public void setDataList(List<HomeWorkListObj> dataList) {
-        this.dataList = dataList;
+    public CircleHomeWorkHeader(GrowthCircleObj growthCircle, int hasTeacherCertification, CircleHomeworkObj lastSubmitHomework) {
+        this.growthCircle = growthCircle;
+        this.hasTeacherCertification = hasTeacherCertification;
+        this.lastSubmitHomework = lastSubmitHomework;
     }
 
     public GrowthCircleObj getGrowthCircle() {
+
         return growthCircle;
     }
 
@@ -61,32 +54,29 @@ public class HomeWorkListResponse extends BaseResponse {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeTypedList(this.dataList);
         dest.writeParcelable(this.growthCircle, flags);
         dest.writeInt(this.hasTeacherCertification);
         dest.writeParcelable(this.lastSubmitHomework, flags);
     }
 
-    public HomeWorkListResponse() {
+    public CircleHomeWorkHeader() {
     }
 
-    protected HomeWorkListResponse(Parcel in) {
-        this.dataList = in.createTypedArrayList(HomeWorkListObj.CREATOR);
+    protected CircleHomeWorkHeader(Parcel in) {
         this.growthCircle = in.readParcelable(GrowthCircleObj.class.getClassLoader());
         this.hasTeacherCertification = in.readInt();
         this.lastSubmitHomework = in.readParcelable(CircleHomeworkObj.class.getClassLoader());
     }
 
-    public static final Creator<HomeWorkListResponse> CREATOR = new Creator<HomeWorkListResponse>() {
+    public static final Parcelable.Creator<CircleHomeWorkHeader> CREATOR = new Parcelable.Creator<CircleHomeWorkHeader>() {
         @Override
-        public HomeWorkListResponse createFromParcel(Parcel source) {
-            return new HomeWorkListResponse(source);
+        public CircleHomeWorkHeader createFromParcel(Parcel source) {
+            return new CircleHomeWorkHeader(source);
         }
 
         @Override
-        public HomeWorkListResponse[] newArray(int size) {
-            return new HomeWorkListResponse[size];
+        public CircleHomeWorkHeader[] newArray(int size) {
+            return new CircleHomeWorkHeader[size];
         }
     };
 }

@@ -270,12 +270,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 MineBookActivityV2.open(getActivity());
                 break;
             case R.id.ll_mine_order:
-//                OrderListActivity.open(getContext());
-                CirclePhotoActivity.open(getActivity(), 9);
+                OrderListActivity.open(getContext());
+//                CirclePhotoActivity.open(getActivity(), 9);
                 break;
             case R.id.ll_mine_car:
-//                CartActivity.open(getActivity());
-                CircleBookActivity.open(getActivity(), 9);
+                CartActivity.open(getActivity());
+//                CircleBookActivity.open(getActivity(), 9);
                 break;
         }
     }

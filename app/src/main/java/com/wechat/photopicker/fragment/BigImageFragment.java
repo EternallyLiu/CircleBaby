@@ -43,6 +43,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.RelateBabyObj;
 import cn.timeface.circle.baby.ui.circle.timelines.dialog.CircleBabyDialog;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.guides.GuideHelper;
 import cn.timeface.circle.baby.ui.guides.GuideUtils;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
@@ -170,17 +171,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         super.onDestroy();
     }
 
-    @Subscribe
-    public void onEvent(MediaObj mediaObj) {
-        int currentPosition = mViewPager.getCurrentItem();
-        mMedias.get(currentPosition).setTips(mediaObj.getTips());
-        initTips();
-        if (allDetailsListPosition >= 0)
-            EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
-        else
-            EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
-    }
-
     private LayoutInflater inflate = null;
 
     private void initTips() {
@@ -212,6 +202,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     }
 
     private int deletePostion = -1;
+
     private MediaTipObj currentTip = null;
 
     private void deleteTip() {
@@ -221,23 +212,39 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         MediaObj mediaObj = mMedias.get(deletePostion);
         if (!mediaObj.getTips().contains(currentTip))
             return;
-        addSubscription(apiService.deleteLabel(mediaObj.getId() + "", currentTip.getTipId() + "")
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(response -> {
-                    if (response.success()) {
-                        if (mediaObj.getTips().contains(currentTip))
-                            mediaObj.getTips().remove(currentTip);
-                        initTips();
-                        deletePostion = -1;
-                        currentTip = null;
-                        if (allDetailsListPosition >= -1)
-                            EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
-                        else
-                            EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, deletePostion));
-                    }
+        if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
+            addSubscription(apiService.deleteCircleLabel(mediaObj.getId(), currentTip.getTipId())
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        if (response.success()) {
+                            if (mediaObj.getTips().contains(currentTip))
+                                mediaObj.getTips().remove(currentTip);
+                            initTips();
+                            deletePostion = -1;
+                            currentTip = null;
+                            EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) mediaObj));
+                        }else ToastUtil.showToast(getActivity(), response.getInfo());
 
-                }, throwable -> {
-                }));
+                    }, throwable -> {
+                    }));
+        } else
+            addSubscription(apiService.deleteLabel(mediaObj.getId() + "", currentTip.getTipId() + "")
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(response -> {
+                        if (response.success()) {
+                            if (mediaObj.getTips().contains(currentTip))
+                                mediaObj.getTips().remove(currentTip);
+                            initTips();
+                            deletePostion = -1;
+                            currentTip = null;
+                            if (allDetailsListPosition >= -1)
+                                EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+                            else
+                                EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, deletePostion));
+                        }else ToastUtil.showToast(getActivity(), response.getInfo());
+
+                    }, throwable -> {
+                    }));
     }
 
     private DeleteDialog deleteDialog = null;
@@ -352,25 +359,11 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("media", mediaObj);
+        bundle.putInt("type", type);
         FragmentBridgeActivity.open(getActivity(), TagAddFragment.class.getSimpleName(), bundle);
     }
 
 //    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.tv_download:
-//                tvDownload.setEnabled(false);
-//                saveImage();
-//                break;
-//            case R.id.tv_delete:
-//                tvDelete.setEnabled(false);
-//                int currentItem = mViewPager.getCurrentItem();
-//                String path = mPaths.get(currentItem);
-//                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem, path));
-//                getActivity().finish();
-//                break;
-//        }
-//    }
 
     public void saveImage() {
         int currentItem = mViewPager.getCurrentItem();
@@ -414,7 +407,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     private List<MediaTipObj> tips;
 
-
     @Override
     public void click(View view, int type) {
         switch (type) {
@@ -442,28 +434,43 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
     }
 
+
     private void addLike() {
         int currentPosition = mViewPager.getCurrentItem();
         MediaObj mediaObj = mMedias.get(currentPosition);
         if (mediaObj != null && mediaObj.getId() > 0) {
-            addSubscription(apiService.addLabelLike(mediaObj.getIsFavorite() == 1 ? "0" : "1", mediaObj.getId() + "")
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-
-                        if (response.success()) {
-                            mediaObj.setFavoritecount(response.getFavoritecount());
-                            mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
-                            tvLikeCount.setText("+ " + response.getFavoritecount());
-                            ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
-                            if (allDetailsListPosition >= 0) {
-                                EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
-                            } else {
-                                EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
+            if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
+                addSubscription(apiService.addCircleMediaLike(mediaObj.getIsFavorite() == 1 ? 0 : 1, mediaObj.getId())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                mediaObj.setFavoritecount(response.getFavoritecount());
+                                mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
+                                tvLikeCount.setText("+ " + response.getFavoritecount());
+                                ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
+                                EventBus.getDefault().register(new CircleMediaEvent((CircleMediaObj) mediaObj));
                             }
-                        }
 
-                    }, throwable -> {
-                    }));
+                        }, throwable -> {
+                        }));
+            } else
+                addSubscription(apiService.addLabelLike(mediaObj.getIsFavorite() == 1 ? "0" : "1", mediaObj.getId() + "")
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                mediaObj.setFavoritecount(response.getFavoritecount());
+                                mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
+                                tvLikeCount.setText("+ " + response.getFavoritecount());
+                                ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
+                                if (allDetailsListPosition >= 0) {
+                                    EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+                                } else {
+                                    EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
+                                }
+                            }
+
+                        }, throwable -> {
+                        }));
         } else if (mediaObj != null) {
             mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
             ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
@@ -553,9 +560,30 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                     .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(textViews -> flBabyList.removeAllViews())
                     .flatMap(textViews -> Observable.from(textViews))
                     .subscribe(textView -> flBabyList.addView(textView), throwable -> LogUtil.showError(throwable)));
-        }
+        } else tvRelateBaby.setVisibility(View.GONE);
     }
 
+    @Subscribe
+    public void onEvent(MediaObj mediaObj) {
+        int currentPosition = mViewPager.getCurrentItem();
+        mMedias.get(currentPosition).setTips(mediaObj.getTips());
+        initTips();
+        if (allDetailsListPosition >= 0)
+            EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+        else
+            EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
+    }
+
+
+    @Subscribe
+    public void onEvent(CircleMediaEvent event) {
+        LogUtil.showLog("event  " + event.getType());
+        if (event.getMediaObj() != null && event.getType() == 0) {
+            int currentIndex = mViewPager.getCurrentItem();
+            mMedias.get(currentIndex).setTips(event.getMediaObj().getTips());
+            initTips();
+        }
+    }
 
     @Override
     public void imageClcik() {

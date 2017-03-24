@@ -40,6 +40,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/rl_search"
         android:layout_centerInParent="true"
+        android:clipToPadding="false"
+        android:scrollbars="none"
         android:paddingLeft="@dimen/size_8" />
 
 

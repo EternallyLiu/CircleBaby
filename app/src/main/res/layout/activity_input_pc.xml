@@ -75,7 +75,7 @@
         android:layout_marginTop="@dimen/size_12"
         android:textColor="@color/text_color30"
         android:textSize="@dimen/text_normal"
-        tools:text="也可以账号密码登录" />
+        android:text="也可以账号密码登录"/>
 
     <TextView
         android:id="@+id/tv_account"
@@ -85,7 +85,7 @@
         android:layout_marginTop="@dimen/size_2"
         android:textColor="@color/text_color30"
         android:textSize="@dimen/text_normal"
-        tools:text="账号： 18766554235" />
+        android:text=""/>
 
     <Button
         android:id="@+id/btn_forget"

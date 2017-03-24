@@ -7,6 +7,8 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import java.util.List;
 
+import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
+
 /**
  * 家长提交的作业
  * Created by lidonglin on 2017/3/14.
@@ -16,6 +18,15 @@ public class CircleHomeworkObj extends CircleSchoolTaskObj implements Parcelable
     protected List<String> notations;      //老师批改标签
     protected CircleUserInfo submitter;    //提交的家长
     protected String teacherReview;        //老师评语
+    private BabyObj babyInfo;
+
+    public BabyObj getBabyInfo() {
+        return babyInfo;
+    }
+
+    public void setBabyInfo(BabyObj babyInfo) {
+        this.babyInfo = babyInfo;
+    }
 
     public CircleHomeworkObj() {
     }
@@ -26,6 +37,9 @@ public class CircleHomeworkObj extends CircleSchoolTaskObj implements Parcelable
         notations = in.createStringArrayList();
         submitter = in.readParcelable(CircleUserInfo.class.getClassLoader());
         teacherReview = in.readString();
+    public CircleHomeworkObj(long taskId, String title) {
+        this.taskId = taskId;
+        setTitle(title);
     }
 
     @Override

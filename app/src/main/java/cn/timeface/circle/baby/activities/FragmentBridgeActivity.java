@@ -41,7 +41,6 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
-import cn.timeface.circle.baby.ui.circle.fragments.CircleBooksFragment;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
@@ -70,6 +69,18 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
 
     public static void openBigimageFragment(Context context, ArrayList<MediaObj> list, ArrayList<String> paths, int index, boolean download, boolean delete) {
         Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("mediaList", list);
+        bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
+        bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
+        bundle.putBoolean("download", download);
+        bundle.putBoolean("delete", delete);
+        open(context, "BigImageFragment", "", bundle);
+    }
+
+    public static void openBigimageFragment(Context context, int allDetailsListPosition, ArrayList<? extends MediaObj> list, ArrayList<String> paths, int index, int type, boolean download, boolean delete) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR);
+        bundle.putInt("allDetailsListPosition", allDetailsListPosition);
         bundle.putParcelableArrayList("mediaList", list);
         bundle.putStringArrayList(BigImageShowIntent.KEY_PHOTO_PATHS, paths);
         bundle.putInt(BigImageShowIntent.KEY_SELECTOR_POSITION, index);
@@ -173,12 +184,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         bundle.putString("url", url);
         bundle.putString("title", title);
         open(context, "WebViewFragment", title, bundle);
-    }
-
-    public static void openCircleBooksFragment(Context context, long circleId) {
-        Bundle bundle = new Bundle();
-        bundle.putLong("circle_id", circleId);
-        open(context, "CircleBooksFragment", bundle);
     }
 
     public static void open(Context context, String fragmentName) {
@@ -373,9 +378,6 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
             case "LocationListFragment":
 
                 return new LocationListFragment();
-            case "CircleBooksFragment":
-
-                return new CircleBooksFragment();
             default:
                 return null;
         }

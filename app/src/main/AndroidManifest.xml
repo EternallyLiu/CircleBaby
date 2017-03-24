@@ -611,6 +611,8 @@
             android:name=".ui.circle.activities.CircleSelectHomeWorkTaskDetailActivity"
             android:label="@string/title_activity_circle_select_home_word_detail"
             android:theme="@style/AppTheme"></activity>
+        <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity"></activity>
+        <activity android:name=".ui.circle.timelines.activity.HomwWorkListActivity"/>
     </application>
 
 </manifest>

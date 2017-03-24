@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -273,6 +274,22 @@ public class MediaObj extends BaseObj implements Parcelable {
         return imgObj;
     }
 
+
+    public static ArrayList<? extends MediaObj> getMediaArray(List<? extends MediaObj> list) {
+        ArrayList<MediaObj> arrayList = new ArrayList<>(0);
+        for (int i = 0; i < list.size(); i++) {
+            arrayList.add(list.get(i));
+        }
+        return arrayList;
+    }
+
+    public static ArrayList<String> getUrls(List<? extends MediaObj> list) {
+        ArrayList<String> urls = new ArrayList<>(0);
+        for (int i = 0; i < list.size(); i++) {
+            urls.add(list.get(i).getImgUrl());
+        }
+        return urls;
+    }
 
     public int getIsCover() {
         return isCover;

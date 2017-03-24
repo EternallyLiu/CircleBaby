@@ -105,11 +105,6 @@ public class BookListActivity extends ProductionListActivity implements BookPres
     }
 
     @Override
-    public void setCircleBookData(List<CircleBookObj> circleBookObjs) {
-
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_add) {
             switch (bookType) {

@@ -21,23 +21,29 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.wechat.photopicker.fragment.BigImageFragment;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleCommentObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineDetailAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.TimeLikeUserList;
@@ -305,7 +311,10 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
 
     @Override
     public void onItemClick(View view, int position) {
-
+        Object item = adapter.getItem(position);
+        if (item instanceof CircleMediaObj) {
+            FragmentBridgeActivity.openBigimageFragment(this, 0, MediaObj.getMediaArray(currentTimeLineObj.getMediaList()), MediaObj.getUrls(currentTimeLineObj.getMediaList()), position, BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR, true, false);
+        }
     }
 
     @Override

@@ -31,7 +31,7 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
     protected void convertHead(BaseViewHolder baseViewHolder, GroupMemberSection groupMemberSection) {
         String[] split = groupMemberSection.header.split("&");
         if (isExpand) {
-            baseViewHolder.setText(R.id.tv_expand, "收缩全部成员");
+            baseViewHolder.setText(R.id.tv_expand, "收起");
         } else {
             baseViewHolder.setText(R.id.tv_expand, "展开全部成员");
         }
