@@ -347,7 +347,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
                 break;
         }
         if (getLoadDataFinish() != null)
-            getLoadDataFinish().loadfinish(msg.what);
+            getLoadDataFinish().loadFinish(msg.what);
     }
 
     @Override

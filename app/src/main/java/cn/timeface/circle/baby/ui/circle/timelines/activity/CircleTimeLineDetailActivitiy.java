@@ -318,7 +318,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     }
 
     @Override
-    public void loadfinish(int code) {
+    public void loadFinish(int code) {
 
     }
 

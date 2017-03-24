@@ -207,7 +207,7 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     }
 
     @Override
-    public void loadfinish(int cpde) {
+    public void loadFinish(int cpde) {
         empty();
     }
 }
