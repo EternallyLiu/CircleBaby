@@ -8,10 +8,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.wechat.photopicker.fragment.BigImageFragment;
+
 import java.util.List;
 
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -101,7 +104,7 @@ public class SchoolTaskAdapter extends BaseAdapter {
         tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 EEEE", item.getSchoolTask().getCreateDate()));
         tvCreater.setText(String.format("由%s发起", item.getSchoolTask().getTeacher().getCircleNickName()));
         title.setText(item.getSchoolTask().getTitle());
-        tvCommited.setVisibility(item.getSchoolTask().isCommit() == 0 ? View.GONE : View.VISIBLE);
+        tvCommited.setVisibility(item.getSchoolTask().getIsCommit() == 0 ? View.GONE : View.VISIBLE);
         tvDetail.setText(item.getSchoolTask().getContent());
         marker.setDrawEnd(true);
         if (hashSubmit) {
@@ -125,6 +128,9 @@ public class SchoolTaskAdapter extends BaseAdapter {
             view.setPadding(paddingImage, paddingImage, paddingImage, paddingImage);
             ImageView icon = (ImageView) view.findViewById(R.id.icon);
             GlideUtil.displayImage(list.get(i).getImgUrl(), icon, true);
+            icon.setTag(R.id.recycler_item_click_tag, i);
+            icon.setTag(R.id.recycler_item_input_tag, position);
+            icon.setOnClickListener(this);
             gridLayout.addView(view);
         }
     }
@@ -140,6 +146,15 @@ public class SchoolTaskAdapter extends BaseAdapter {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.icon:
+                try{
+                    int position = (int) v.getTag(R.id.recycler_item_input_tag);
+                    int index = (int) v.getTag(R.id.recycler_item_click_tag);
+                    HomeWorkListObj item = getItem(position);
+                    FragmentBridgeActivity.openBigimageFragment(context(), 0, MediaObj.getMediaArray(item.getSchoolTask().getMediaList()),MediaObj.getUrls(item.getSchoolTask().getMediaList()),index, BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, true, false);
+                }catch (Exception e){
+                }
+                break;
             case R.id.btn_publish_schooltask:
                 PublishActivity.openSchoolTask(context());
                 break;

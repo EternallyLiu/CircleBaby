@@ -1,5 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.response;
 
+import android.os.Parcel;
+
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -20,4 +22,34 @@ public class HomeWorkDetailResponse extends BaseResponse {
     public void setSchoolTaskDetailObj(CircleSchoolTaskDetailObj schoolTaskDetailObj) {
         this.schoolTaskDetailObj = schoolTaskDetailObj;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeParcelable(this.schoolTaskDetailObj, flags);
+    }
+
+    public HomeWorkDetailResponse() {
+    }
+
+    protected HomeWorkDetailResponse(Parcel in) {
+        this.schoolTaskDetailObj = in.readParcelable(CircleSchoolTaskDetailObj.class.getClassLoader());
+    }
+
+    public static final Creator<HomeWorkDetailResponse> CREATOR = new Creator<HomeWorkDetailResponse>() {
+        @Override
+        public HomeWorkDetailResponse createFromParcel(Parcel source) {
+            return new HomeWorkDetailResponse(source);
+        }
+
+        @Override
+        public HomeWorkDetailResponse[] newArray(int size) {
+            return new HomeWorkDetailResponse[size];
+        }
+    };
 }
