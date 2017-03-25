@@ -613,19 +613,20 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             tfProgressDialog = TFProgressDialog.getInstance("");
         tfProgressDialog.setTvMessage("正在执行此操作~");
 //        if (tfProgressDialog.isHidden())
-            tfProgressDialog.show(getChildFragmentManager(), "");
-//        addSubscription(apiService.circleAtBaby(Uri.encode(babys), FastData.getCircleId(), mediaId)
-//                .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(circleMediaResponse -> tfProgressDialog.dismiss()).
-//        subscribe(circleMediaResponse -> {
-//            if (circleMediaResponse.success()) {
-//                int currentIndex = mViewPager.getCurrentItem();
-//                ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
-//                initCircleBaby();
-//            } else ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
-//        }, throwable -> {
-//            if (!tfProgressDialog.isHidden())
-//                tfProgressDialog.dismiss();
-//            LogUtil.showError(throwable);
-//        }));
+        tfProgressDialog.show(getChildFragmentManager(), "");
+        addSubscription(apiService.circleAtBaby(Uri.encode(babys), FastData.getCircleId(), mediaId)
+                .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(circleMediaResponse -> tfProgressDialog.dismiss()).
+                        subscribe(circleMediaResponse -> {
+                            if (circleMediaResponse.success()) {
+                                int currentIndex = mViewPager.getCurrentItem();
+                                ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
+                                initCircleBaby();
+                            } else
+                                ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
+                        }, throwable -> {
+                            if (!tfProgressDialog.isHidden())
+                                tfProgressDialog.dismiss();
+                            LogUtil.showError(throwable);
+                        }));
     }
 }
