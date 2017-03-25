@@ -16,7 +16,7 @@ public class CircleBabyBriefObj implements Parcelable {
      */
 
     private String babyAvatarUrl;
-    private int babyId;
+    private long babyId;
     private String babyName;
 
     public String getBabyAvatarUrl() {
@@ -27,7 +27,7 @@ public class CircleBabyBriefObj implements Parcelable {
         this.babyAvatarUrl = babyAvatarUrl;
     }
 
-    public int getBabyId() {
+    public long getBabyId() {
         return babyId;
     }
 
@@ -51,7 +51,7 @@ public class CircleBabyBriefObj implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.babyAvatarUrl);
-        dest.writeInt(this.babyId);
+        dest.writeLong(this.babyId);
         dest.writeString(this.babyName);
     }
 

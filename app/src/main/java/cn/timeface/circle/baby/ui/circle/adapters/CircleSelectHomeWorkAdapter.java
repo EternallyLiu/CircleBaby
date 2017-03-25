@@ -49,7 +49,7 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
         super(mContext, listData);
         this.maxCount = maxCount;
 //        this.clickListener = clickListener;
-        this.selMedias = mediaObjs;
+//        this.selMedias = mediaObjs;
         this.selMedias = mediaObjs;
         setupData();
     }

@@ -16,6 +16,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -24,7 +25,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * email : sunyanwei@timeface.cn
  */
 
-public class CircleSelectBabyAdapter extends BaseRecyclerAdapter<GetCircleAllBabyObj> {
+public class CircleSelectBabyAdapter extends BaseRecyclerAdapter<CircleBabyBriefObj> {
     @Bind(R.id.iv_avatar)
     CircleImageView ivAvatar;
     @Bind(R.id.tv_name)
@@ -34,7 +35,7 @@ public class CircleSelectBabyAdapter extends BaseRecyclerAdapter<GetCircleAllBab
 
     View.OnClickListener onClickListener;
 
-    public CircleSelectBabyAdapter(Context mContext, List<GetCircleAllBabyObj> listData, View.OnClickListener onClickListener) {
+    public CircleSelectBabyAdapter(Context mContext, List<CircleBabyBriefObj> listData, View.OnClickListener onClickListener) {
         super(mContext, listData);
         this.onClickListener = onClickListener;
     }
@@ -47,7 +48,7 @@ public class CircleSelectBabyAdapter extends BaseRecyclerAdapter<GetCircleAllBab
 
     @Override
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
-        final GetCircleAllBabyObj babyObj = listData.get(position);
+        final CircleBabyBriefObj babyObj = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.tvName.setText(babyObj.getBabyName());
         holder.tvSelectCount.setText("已选择10条记录");

@@ -88,7 +88,7 @@ def dbflow_version = "3.1.1"
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile(name: 'library-0.9.9', ext: 'aar')
-    compile(name: 'open-release', ext: 'aar')
+//    compile(name: 'open-release', ext: 'aar')
     //    compile(name: 'open-debug', ext: 'aar')
     compile(name: 'refreshload-release', ext: 'aar')
     compile(name: 'timeface-common-release', ext: 'aar')
@@ -102,9 +102,9 @@ dependencies {
 
     //    compile project(':open')
 
-    //    releaseCompile project(path: ':open', configuration: 'release')
+        releaseCompile project(path: ':open', configuration: 'release')
 
-    //    debugCompile project(path: ':open', configuration: 'debug')
+        debugCompile project(path: ':open', configuration: 'debug')
 
     // 仅支持 WebP 静态图，需要添加
 

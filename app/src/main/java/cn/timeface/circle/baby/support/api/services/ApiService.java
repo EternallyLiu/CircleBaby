@@ -98,6 +98,7 @@ import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkSubmitResponse;
 import cn.timeface.circle.baby.ui.circle.response.QrcodeResponse;
+import cn.timeface.circle.baby.ui.circle.response.QueryBindingBabyResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleByTimeResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleLastActivityResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
@@ -1880,5 +1881,13 @@ public interface ApiService {
     @POST("circleMedia/delLabel")
     Observable<BaseResponse> deleteCircleLabel(@Query("mediaId") long mediaId,
                                                @Query("tipId") long tips);
+
+    /**
+     * 查询绑定了家长的宝宝列表
+     * @param circleId
+     * @return
+     */
+    @POST("circle/bindingBaby")
+    Observable<QueryBindingBabyResponse> queryBindingBaby(@Query("circleId") String circleId);
 
 }

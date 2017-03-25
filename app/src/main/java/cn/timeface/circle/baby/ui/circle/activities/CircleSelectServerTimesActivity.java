@@ -215,6 +215,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                             }
                                             if(sb.lastIndexOf(",") > -1)sb.replace(sb.lastIndexOf(","), sb.length(), "]");
                                             if(sbTime.lastIndexOf(",") > -1)sbTime.replace(sbTime.lastIndexOf(","), sbTime.length(), "]");
+                                            sbTime.append(",\"circleId\":").append(circleId);
                                             sb.append(",").append(sbTime).append("}");
 
                                             finish();

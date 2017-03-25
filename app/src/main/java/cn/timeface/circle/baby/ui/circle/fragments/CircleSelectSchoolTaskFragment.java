@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.fragments;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,9 +20,12 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.activities.CircleSelectHomeWorkTaskDetailActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServeHomeWorksActivity;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectSchoolTaskAdapter;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.views.TFStateView;
 
@@ -39,11 +43,13 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment implem
 
     String circleId;
     CircleSelectSchoolTaskAdapter selectSchoolTaskAdapter;
+    List<CircleHomeworkExObj> allSelHomeWorks;
 
-    public static CircleSelectSchoolTaskFragment newInstance(String circleId){
+    public static CircleSelectSchoolTaskFragment newInstance(String circleId, List<CircleHomeworkExObj> allSelHomeWorks){
         CircleSelectSchoolTaskFragment fragment = new CircleSelectSchoolTaskFragment();
         Bundle bundle = new Bundle();
         bundle.putString("circle_id", circleId);
+        bundle.putParcelableArrayList("all_sel_home_works", (ArrayList<? extends Parcelable>) allSelHomeWorks);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -55,6 +61,7 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment implem
         ButterKnife.bind(this, view);
 
         circleId = getArguments().getString("circle_id");
+        this.allSelHomeWorks = getArguments().getParcelableArrayList("all_sel_home_works");
         reqData();
         return view;
     }
@@ -92,6 +99,10 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment implem
         }
     }
 
+    public void setAllSelHomeWorks(List<CircleHomeworkExObj> allSelHomeWorks) {
+        this.allSelHomeWorks = allSelHomeWorks;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -102,7 +113,15 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment implem
     public void onClick(View view) {
         if(view.getId() == R.id.rl_root){
             CircleSchoolTaskObj schoolTaskObj = (CircleSchoolTaskObj) view.getTag(R.string.tag_obj);
-            CircleSelectHomeWorkTaskDetailActivity.open(getActivity(), schoolTaskObj.getTitle());
+            if(getActivity() instanceof CircleSelectServeHomeWorksActivity){
+                CircleSelectHomeWorkTaskDetailActivity.open4Result(
+                        getActivity(),
+                        ((CircleSelectServeHomeWorksActivity) getActivity()).REQUEST_CODE_SELECT_HOME_WORK,
+                        schoolTaskObj.getTaskId(),
+                        circleId,
+                        FastData.getBabyId(),
+                        allSelHomeWorks);
+            }
         }
     }
 }

@@ -1,8 +1,10 @@
 package cn.timeface.circle.baby.ui.circle.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +25,7 @@ import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectHomeWorkAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeWorkExWrapperObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -42,12 +45,21 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
     CircleSelectHomeWorkAdapter selectHomeWorkAdapter;
     long babyId;
     String circleId;
+    List<CircleHomeworkExObj> allSelHomeWorks;
 
-    public static void open(Context context, String circleId, long babyId){
+    public void open(Context context, String circleId, long babyId){
         Intent intent= new Intent(context, CircleSelectHomeWorkDetailActivity.class);
         intent.putExtra("circle_id", circleId);
         intent.putExtra("baby_id", babyId);
         context.startActivity(intent);
+    }
+
+    public static void open4Result(Context context, int reqCode, String circleId, long babyId, List<CircleHomeworkExObj> allSelHomeWorks){
+        Intent intent= new Intent(context, CircleSelectHomeWorkDetailActivity.class);
+        intent.putExtra("circle_id", circleId);
+        intent.putExtra("baby_id", babyId);
+        intent.putParcelableArrayListExtra("all_sel_home_works", (ArrayList<? extends Parcelable>) allSelHomeWorks);
+        ((Activity) context).startActivityForResult(intent, reqCode);
     }
 
     @Override
@@ -60,6 +72,7 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         getSupportActionBar().setTitle("作业详情");
         circleId = getIntent().getStringExtra("circle_id");
         babyId = getIntent().getLongExtra("baby_id", 0);
+        this.allSelHomeWorks = getIntent().getParcelableArrayListExtra("all_sel_home_works");
 
         if(!TextUtils.isEmpty(circleId))reqData();
     }
@@ -87,7 +100,7 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
 
     protected void setData(List<CircleHomeWorkExWrapperObj> homeWorkExWrapperObjList){
         if(selectHomeWorkAdapter == null){
-            selectHomeWorkAdapter = new CircleSelectHomeWorkAdapter(this, homeWorkExWrapperObjList, Integer.MAX_VALUE, new ArrayList<>());
+            selectHomeWorkAdapter = new CircleSelectHomeWorkAdapter(this, homeWorkExWrapperObjList, Integer.MAX_VALUE, allSelHomeWorks);
             rvContent.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             rvContent.addItemDecoration(
                     new HorizontalDividerItemDecoration.Builder(this)
@@ -114,8 +127,22 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_complete){
-            finish();
+            close();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        close();
+    }
+
+    private void close(){
+        Intent intent = new Intent();
+        intent.putParcelableArrayListExtra("all_select_works", (ArrayList<? extends Parcelable>) selectHomeWorkAdapter.getSelImgs());
+        intent.putExtra("photo_count", selectHomeWorkAdapter.getSelImgs().size());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

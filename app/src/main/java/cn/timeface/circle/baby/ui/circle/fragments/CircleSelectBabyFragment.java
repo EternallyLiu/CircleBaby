@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.fragments;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -20,8 +22,11 @@ import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.activities.CircleSelectHomeWorkDetailActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServeHomeWorksActivity;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectBabyAdapter;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -38,11 +43,13 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
 
     String circleId;
     CircleSelectBabyAdapter selectBabyAdapter;
+    List<CircleHomeworkExObj> allSelHomeWorks;
 
-    public static CircleSelectBabyFragment newInstance(String circleId){
+    public static CircleSelectBabyFragment newInstance(String circleId, List<CircleHomeworkExObj> allSelHomeWorks){
         CircleSelectBabyFragment fragment = new CircleSelectBabyFragment();
         Bundle bundle = new Bundle();
         bundle.putString("circle_id", circleId);
+        bundle.putParcelableArrayList("all_sel_home_works", (ArrayList<? extends Parcelable>) allSelHomeWorks);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -55,6 +62,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
         ButterKnife.bind(this, view);
 
         circleId = getArguments().getString("circle_id");
+        allSelHomeWorks = getArguments().getParcelableArrayList("all_sel_home_works");
 
         reqData();
         return view;
@@ -63,7 +71,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
     private void reqData() {
         stateView.loading();
         addSubscription(
-                apiService.getCircleAllBaby(circleId, 0)
+                apiService.queryBindingBaby(circleId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .doOnCompleted(() -> stateView.finish())
                         .subscribe(
@@ -81,7 +89,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
         );
     }
 
-    private void setData(List<GetCircleAllBabyObj> allBabyObjList){
+    private void setData(List<CircleBabyBriefObj> allBabyObjList){
         if(selectBabyAdapter == null){
             selectBabyAdapter = new CircleSelectBabyAdapter(getActivity(), allBabyObjList, this);
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -97,6 +105,10 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
         }
     }
 
+    public void setAllSelHomeWorks(List<CircleHomeworkExObj> allSelHomeWorks) {
+        this.allSelHomeWorks = allSelHomeWorks;
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -107,8 +119,13 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.rl_root:
-                GetCircleAllBabyObj babyObj = (GetCircleAllBabyObj) view.getTag(R.string.tag_obj);
-                CircleSelectHomeWorkDetailActivity.open(getActivity(), circleId, babyObj.getCircleBabyId());
+                CircleBabyBriefObj babyObj = (CircleBabyBriefObj) view.getTag(R.string.tag_obj);
+                if(getActivity() instanceof CircleSelectServeHomeWorksActivity){
+                    CircleSelectHomeWorkDetailActivity.open4Result(
+                            getActivity(),
+                            ((CircleSelectServeHomeWorksActivity) getActivity()).REQUEST_CODE_SELECT_HOME_WORK,
+                            circleId, babyObj.getBabyId(), allSelHomeWorks);
+                }
                 break;
         }
     }
