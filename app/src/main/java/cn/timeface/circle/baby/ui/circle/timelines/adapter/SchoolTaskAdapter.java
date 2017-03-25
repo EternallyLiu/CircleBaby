@@ -3,11 +3,16 @@ package cn.timeface.circle.baby.ui.circle.timelines.adapter;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
@@ -26,9 +31,13 @@ import cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker;
 public class SchoolTaskAdapter extends BaseAdapter {
 
     public static final int TYPE_CIRCLE_HEADER = 1992;
+    private final int paddingImage;
+    private final int width;
 
     public SchoolTaskAdapter(Context activity) {
         super(activity);
+        paddingImage = (int) (context().getResources().getDimension(R.dimen.size_2));
+        width = App.mScreenWidth / 3;
     }
 
     private boolean hashSubmit = false;
@@ -61,6 +70,7 @@ public class SchoolTaskAdapter extends BaseAdapter {
             TextView tvName = ViewHolder.getView(contentView, R.id.tv_name);
             Button btnPublishSchooltask = ViewHolder.getView(contentView, R.id.btn_publish_schooltask);
             btnPublishSchooltask.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 2 ? View.VISIBLE : View.GONE);
+            btnPublishSchooltask.setOnClickListener(this);
             TextView tvLastTask = ViewHolder.getView(contentView, R.id.tv_last_homework);
             tvLastTask.setVisibility(header.getLastSubmitHomework() == null ? View.GONE : View.VISIBLE);
             GlideUtil.displayImage(header.getGrowthCircle().getCircleCoverUrl(), ivIcon, true);
@@ -78,64 +88,53 @@ public class SchoolTaskAdapter extends BaseAdapter {
         TextView title = ViewHolder.getView(contentView, R.id.title);
         TextView tvCommited = ViewHolder.getView(contentView, R.id.tv_commited);
         TextView tvDetail = ViewHolder.getView(contentView, R.id.tv_detail);
-        LinearLayout llHomeworkList = ViewHolder.getView(contentView, R.id.ll_homework_list);
-        TextView tvMore = ViewHolder.getView(contentView, R.id.tv_more);
-        LinearLayout llImageList = ViewHolder.getView(contentView, R.id.ll_image_list);
-        ImageView image_1 = ViewHolder.getView(contentView, R.id.image_1);
-        ImageView image_2 = ViewHolder.getView(contentView, R.id.image_2);
-        ImageView image_3 = ViewHolder.getView(contentView, R.id.image_3);
+        GridLayout glImageList = ViewHolder.getView(contentView, R.id.gl_image_list);
+        TextView tvSubmitCount = ViewHolder.getView(contentView, R.id.tv_commit_count);
 
-        tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 E", item.getSchoolTask().getCreateDate()));
+        if (item.getSchoolTask().getMediaList().size() <= 0) {
+            glImageList.setVisibility(View.GONE);
+        } else glImageList.setVisibility(View.VISIBLE);
+
+        doMediaList(glImageList, position, item.getSchoolTask().getMediaList());
+
+        tvSubmitCount.setText(String.format("已有%d人提交", item.getSubmitCount()));
+        tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 EEEE", item.getSchoolTask().getCreateDate()));
         tvCreater.setText(String.format("由%s发起", item.getSchoolTask().getTeacher().getCircleNickName()));
         title.setText(item.getSchoolTask().getTitle());
         tvCommited.setVisibility(item.getSchoolTask().isCommit() == 0 ? View.GONE : View.VISIBLE);
         tvDetail.setText(item.getSchoolTask().getContent());
-        int mediaSize = item.getMeidaList().size();
-        llHomeworkList.setVisibility(mediaSize > 0 ? View.VISIBLE : View.GONE);
-        llImageList.setVisibility(mediaSize > 0 ? View.VISIBLE : View.GONE);
-        image_1.setVisibility(View.GONE);
-        image_2.setVisibility(View.GONE);
-        image_3.setVisibility(View.GONE);
-        tvMore.setVisibility(mediaSize > 3 ? View.VISIBLE : View.GONE);
-        if (mediaSize == 1) {
-            GlideUtil.displayImage(item.getMeidaList().get(0).getImgUrl(), image_1, true);
-            image_1.setVisibility(View.VISIBLE);
-        } else if (mediaSize == 2) {
-            GlideUtil.displayImage(item.getMeidaList().get(0).getImgUrl(), image_1, true);
-            GlideUtil.displayImage(item.getMeidaList().get(1).getImgUrl(), image_2, true);
-            image_1.setVisibility(View.VISIBLE);
-            image_2.setVisibility(View.VISIBLE);
-        } else if (mediaSize >= 3) {
-            GlideUtil.displayImage(item.getMeidaList().get(0).getImgUrl(), image_1, true);
-            GlideUtil.displayImage(item.getMeidaList().get(1).getImgUrl(), image_2, true);
-            GlideUtil.displayImage(item.getMeidaList().get(2).getImgUrl(), image_3, true);
-            image_1.setVisibility(View.VISIBLE);
-            image_2.setVisibility(View.VISIBLE);
-            image_3.setVisibility(View.VISIBLE);
+        marker.setDrawEnd(true);
+        if (hashSubmit) {
+            marker.setDrawBegin(true);
+        } else marker.setDrawBegin(position == 1);
+    }
+
+    private void doMediaList(GridLayout gridLayout, int position, List<? extends MediaObj> list) {
+        if (list.size() <= 0) return;
+        if (gridLayout.getChildCount() > 0) gridLayout.removeAllViews();
+        gridLayout.setColumnCount(3);
+        View view;
+        for (int i = 0; i < list.size(); i++) {
+            view = inflater.inflate(R.layout.time_line_list_image, gridLayout, false);
+            GridLayout.LayoutParams params = (GridLayout.LayoutParams) view.getLayoutParams();
+            if (params == null)
+                params = new GridLayout.LayoutParams();
+            params.width = width;
+            params.height = width;
+            view.setLayoutParams(params);
+            view.setPadding(paddingImage, paddingImage, paddingImage, paddingImage);
+            ImageView icon = (ImageView) view.findViewById(R.id.icon);
+            GlideUtil.displayImage(list.get(i).getImgUrl(), icon, true);
+            gridLayout.addView(view);
         }
-        if (getItem(0) instanceof CircleHomeWorkHeader) {
-            if (position > 1 && position < getRealItemSize() - 1) {
-                marker.setDrawBegin(true);
-                marker.setDrawEnd(true);
-            } else if (position == getRealItemSize() - 1) {
-                marker.setDrawEnd(false);
-                marker.setDrawBegin(true);
-            } else {
-                marker.setDrawEnd(true);
-                marker.setDrawBegin(hashSubmit);
-            }
-        } else {
-            if (position > 0 && position < getRealItemSize() - 1) {
-                marker.setDrawBegin(true);
-                marker.setDrawEnd(true);
-            } else if (position == getRealItemSize() - 1) {
-                marker.setDrawEnd(false);
-                marker.setDrawBegin(position == 1 ? hashSubmit ? true : false : true);
-            } else {
-                marker.setDrawEnd(true);
-                marker.setDrawBegin(hashSubmit);
-            }
-        }
+    }
+
+    public boolean isHashSubmit() {
+        return hashSubmit;
+    }
+
+    public void setHashSubmit(boolean hashSubmit) {
+        this.hashSubmit = hashSubmit;
     }
 
     @Override

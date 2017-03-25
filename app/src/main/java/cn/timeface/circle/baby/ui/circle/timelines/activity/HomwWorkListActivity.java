@@ -113,10 +113,13 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
                             homeWorkHeader.setLastSubmitHomework(homeWorkListResponse.getLastSubmitHomework());
                         }
                         if (currentPage == 1) {
-                            adapter.addList(true, homeWorkListResponse.getDataList());
-                        } else adapter.addList(homeWorkListResponse.getDataList());
-                        adapter.add(0, homeWorkHeader);
+                            adapter.addList(true, homeWorkListResponse.getDataList(), 0, homeWorkHeader);
+                        } else {
+                            adapter.updateItem(homeWorkHeader);
+                            adapter.addList(homeWorkListResponse.getDataList());
+                        }
                     } else ToastUtil.showToast(this, homeWorkListResponse.getInfo());
+                    adapter.setHashSubmit(homeWorkHeader.getLastSubmitHomework() != null);
                 }, throwable -> {
                     helper.finishTFPTRRefresh();
                     LogUtil.showError(throwable);
