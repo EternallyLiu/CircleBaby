@@ -157,7 +157,9 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements B
 
     @Override
     public void onItemClick(View view, int position) {
-
+        if (position > 0) {
+            HomeWorkActivity.open(this, adapter.getItem(position));
+        }
     }
 
     @OnClick(R.id.iv_submit_task)

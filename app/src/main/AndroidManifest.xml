@@ -617,6 +617,7 @@
         <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity"></activity>
         <activity android:name=".ui.circle.timelines.activity.HomwWorkListActivity"/>
         <activity android:name=".ui.circle.timelines.activity.SchoolTaskDetailActivity"/>
+        <activity android:name=".ui.circle.timelines.activity.HomeWorkActivity"/>
     </application>
 
 </manifest>

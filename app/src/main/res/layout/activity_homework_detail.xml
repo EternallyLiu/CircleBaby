@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg_color3"
+              android:orientation="vertical"
+    >
+
+    <include layout="@layout/head"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/size_4"
+                android:text="标题"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_normal"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right|center_vertical"
+                android:padding="@dimen/size_6"
+                android:text="子涵"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_small"/>
+
+            <TextView
+                android:id="@+id/tv_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:padding="@dimen/size_6"
+                android:text="子涵"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_small"/>
+
+            <GridLayout
+                android:id="@+id/gl_image_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_4"
+                android:background="@color/white"></GridLayout>
+
+            <cn.timeface.circle.baby.ui.images.views.FlowLayout
+                android:id="@+id/tag_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/size_12"></cn.timeface.circle.baby.ui.images.views.FlowLayout>
+
+            <TextView
+                android:id="@+id/tv_tearcher_tip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_4"
+                android:padding="@dimen/size_6"
+                android:text="老师评语"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_small"/>
+
+            <TextView
+                android:id="@+id/tv_tearcher_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_4"
+                android:background="@color/white"
+                android:padding="@dimen/size_6"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_small"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
