@@ -1002,6 +1002,10 @@ public interface ApiService {
     Observable<QuerySelectedPhotoResponse> bookMedias(@Query("bookId") String bookId);
 
 
+    @GET("circle/book/medialist")
+    Observable<QuerySelectedPhotoResponse> circleBookMedias(@Query("bookId") String bookId);
+
+
     /**
      * 印品介绍
      */

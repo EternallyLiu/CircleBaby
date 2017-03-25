@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,7 +40,9 @@ import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 圈选择照片页面
@@ -67,10 +70,17 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
     List<MediaObj> allSelectMedias = new ArrayList<>();
     int position = 0;//记录点击的那一个item
     int openBookType;
+    int bookType;
+    String bookId;
+    String openBookId;
 
-    public static void open(Context context, String circleId){
+    public static void open(Context context, String circleId, int bookType, String bookId, int openBookType, String openBookId){
         Intent intent = new Intent(context, CircleSelectSeverAlbumsActivity.class);
         intent.putExtra("circle_id", circleId);
+        intent.putExtra("book_type", bookType);
+        intent.putExtra("open_book_type", openBookType);
+        intent.putExtra("book_id", bookId);
+        intent.putExtra("open_book_id", openBookId);
         context.startActivity(intent);
     }
 
@@ -84,6 +94,24 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
         getSupportActionBar().setTitle("圈照片书");
 
         circleId = getIntent().getStringExtra("circle_id");
+        bookType = getIntent().getIntExtra("book_type", BookModel.CIRCLE_BOOK_TYPE_PHOTO);
+        openBookType = getIntent().getIntExtra("open_book_type", 175);
+        bookId = getIntent().getStringExtra("book_id");
+        openBookId = getIntent().getStringExtra("open_book_id");
+
+        if(!TextUtils.isEmpty(bookId)) {
+            apiService.circleBookMedias(bookId)
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(
+                            response -> {
+                                allSelectMedias = response.getDataList();
+                            },
+                            throwable -> {
+                                Log.e(TAG, throwable.getLocalizedMessage());
+                            }
+                    );
+        }
+
         reqDate();
         initPhotoTip();
     }
@@ -137,7 +165,7 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.save){
+        if(item.getItemId() == R.id.menu_complete){
 
             int pageNum = allSelectMedias.size();
             if(pageNum == 0){
@@ -147,21 +175,23 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
             addSubscription(
                     apiService.getDefaultTheme(BookModel.CIRCLE_BOOK_TYPE_PHOTO)
-                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(Schedulers.io())
                             .flatMap(new Func1<GetThemeResponse, Observable<ImageExInfoResponse>>() {
                                 @Override
                                 public Observable<ImageExInfoResponse> call(GetThemeResponse getThemeResponse) {
-                                    openBookType = getThemeResponse.getId();
+                                    if(TextUtils.isEmpty(bookId))openBookType = getThemeResponse.getId();
                                     return apiService.queryImageInfo(FastData.getBabyAvatar());
                                 }
                             })
+                            .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(
                                     response -> {
                                         if(response.success()){
                                             //跳转开放平台POD接口；
 
                                             List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
-                                            StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                                            StringBuffer sb = new StringBuffer("{\"mediaIds\":[");
                                             int index = 0;
                                             for(MediaObj mediaObj : allSelectMedias){
                                                 index++;
@@ -171,10 +201,10 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
                                                 if (index < allSelectMedias.size()) {
                                                     sb.append(",");
                                                 } else {
-                                                    sb.append("]}");
+                                                    sb.append("],");
                                                 }
                                             }
-
+                                            sb.append("\"circleId\":").append(circleId).append("}");
 
                                             List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
                                             TFOContentObj tfoContentObj;
@@ -197,8 +227,8 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
                                             MyPODActivity.open(
                                                     this,
-                                                    "",
-                                                    "",
+                                                    bookId,
+                                                    openBookId,
                                                     BookModel.CIRCLE_BOOK_TYPE_PHOTO,
                                                     openBookType,
                                                     tfoPublishObjs,
@@ -253,9 +283,6 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
 
         if(requestCode == REQUEST_CODE_SELECT_SERVER_PHOTO){
             this.allSelectMedias = (data.getParcelableArrayListExtra("all_select_medias"));
-//            int photoCount = data.getIntExtra("photo_count", 0);
-//            selectServerAlbumAdapter.getItem(position).getActivityAlbum().setMediaCount(photoCount);
-//            selectServerAlbumAdapter.notifyItemChanged(position);
             initPhotoTip();
         }
         super.onActivityResult(requestCode, resultCode, data);
