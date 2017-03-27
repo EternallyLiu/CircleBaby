@@ -21,6 +21,7 @@ import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActiv
 import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleInfoActivity;
+import cn.timeface.circle.baby.views.ShareDialog;
 
 public class CircleMoreDialog extends DialogFragment {
 
@@ -91,7 +92,8 @@ public class CircleMoreDialog extends DialogFragment {
                 CircleInfoActivity.open(getContext(), circleObj);
                 break;
             case R.id.tv_share:
-
+                new ShareDialog(getContext()).share("成长圈", "快把这个成长圈分给你的朋友吧！"
+                        , "http://img1.timeface.cn/uploads/avator/default.png", "http://img1.timeface.cn/uploads/avator/default.png");
                 break;
             case R.id.tv_production:
                 CircleBookActivity.open(getActivity(), circleObj.getCircleId());

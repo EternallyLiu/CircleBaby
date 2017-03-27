@@ -631,12 +631,15 @@
     <string name="phone_contacts">手机通讯录</string>
     <string name="add">添加</string>
     <string name="circle_setting">圈设置</string>
+    <string name="menu_edit_circle_info">编辑资料</string>
     <string name="edit_circle_info">编辑圈资料</string>
     <string name="circle_introduction">圈简介</string>
     <string name="circle_member_list">成员列表</string>
     <string name="search_circle_member">搜索圈成员</string>
     <string name="apply_join">申请加入</string>
     <string name="commit">提交</string>
+    <string name="edit_circle_cover">更换圈封面</string>
+    <string name="circle_recommend_cover">推荐图片</string>
     <string name="title_activity_photo_viewer_new">PhotoViewerNewActivity</string>
     <string name="title_activity_circle_book_permisson">CircleBookPermissonActivity</string>
     <string name="pod_change_theme">更改主题</string>

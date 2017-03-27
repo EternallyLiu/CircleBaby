@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:fitsSystemWindows="false"
+    tools:context=".ui.growthcircle.mainpage.activity.CircleInfoRecommendCoverDetailActivity">
+
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/layout_toolbar" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_layout" />
+
+    <TextView
+        android:id="@+id/tv_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/view_space_medium"
+        android:background="@drawable/selector_btn_login"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="@dimen/view_space_normal"
+        android:text="设为圈封面"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_normal" />
+</RelativeLayout>

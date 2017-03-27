@@ -125,8 +125,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     }
 
     private void setupData() {
-//        tfStateView.loading();
-        tfStateView.empty(R.string.circle_no_dynamic);
+        tfStateView.loading();
         reqInfo(circleId);
         reqData(circleId);
     }
@@ -283,7 +282,8 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     @Subscribe
     public void onEvent(CircleChangedEvent event) {
         if (event.type == CircleChangedEvent.TYPE_QUIT
-                || event.type == CircleChangedEvent.TYPE_DISBANDED) {
+                || event.type == CircleChangedEvent.TYPE_DISBANDED
+                || event.type == CircleChangedEvent.TYPE_INFO_CHANGED) {
             FastData.clearCircleData();
             finish();
         }

@@ -38,7 +38,7 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
     final int TYPE_TITLE = 0;
     final int TYPE_PHOTOS = 1;
     int[] lineEnd;//用于存储每个PhotoGroupItem的最大行号
-    final int COLUMN_NUM = 4;
+    final int COLUMN_NUM = 1;
     final int maxCount;
 
     List<CircleHomeworkExObj> selMedias = new ArrayList<>(10);//用于存储所有选中的图片
@@ -49,7 +49,7 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
         super(mContext, listData);
         this.maxCount = maxCount;
 //        this.clickListener = clickListener;
-        this.selMedias = mediaObjs;
+//        this.selMedias = mediaObjs;
         this.selMedias = mediaObjs;
         setupData();
     }
@@ -282,7 +282,7 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
         setupData();
     }
 
-    static class HomeworkViewHolder extends RecyclerView.ViewHolder {
+    class HomeworkViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_image)
         ImageView ivImage;
         @Bind(R.id.tv_img_count)
@@ -301,6 +301,7 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
         HomeworkViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            cbSelect.setOnClickListener(onCheckedListener);
         }
     }
 }

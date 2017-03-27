@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:fitsSystemWindows="false"
+    android:orientation="vertical"
+    tools:context=".ui.growthcircle.mainpage.activity.CircleInfoSelectCoverActivity">
+
+    <include layout="@layout/layout_toolbar" />
+
+    <FrameLayout
+        android:id="@+id/fl_album"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_space_medium"
+        android:background="@android:color/white"
+        android:padding="@dimen/view_space_medium">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="从手机相册中选择"
+            android:textColor="@color/text_color12"
+            android:textSize="@dimen/text_normal" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:src="@drawable/arrow_right_grey" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_recommend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_space_medium"
+        android:background="@android:color/white"
+        android:padding="@dimen/view_space_medium">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="查看推荐图片"
+            android:textColor="@color/text_color12"
+            android:textSize="@dimen/text_normal" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:src="@drawable/arrow_right_grey" />
+    </FrameLayout>
+</LinearLayout>

@@ -40,9 +40,16 @@ public class CircleSelectSchoolTaskAdapter extends BaseRecyclerAdapter<CircleSch
         final CircleSchoolTaskObj schoolTaskObj = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.tvTitle.setText(schoolTaskObj.getTitle());
-        holder.tvSelectCount.setText("已选择300条记录");
+        if(schoolTaskObj.getSelectCount() > 0){
+            holder.tvSelectCount.setVisibility(View.VISIBLE);
+            holder.tvSelectCount.setText("已选择" + schoolTaskObj.getSelectCount() + "条记录");
+        } else {
+            holder.tvSelectCount.setVisibility(View.GONE);
+        }
+
         if(onClickListener != null)holder.rlRoot.setOnClickListener(onClickListener);
         holder.rlRoot.setTag(R.string.tag_obj, schoolTaskObj);
+        holder.rlRoot.setTag(R.string.tag_index, position);
     }
 
     @Override

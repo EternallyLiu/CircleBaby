@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,8 +39,10 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineWrapperObj;
 import cn.timeface.circle.baby.ui.circle.dialogs.CircleSelectTimeTypeDialog;
 import cn.timeface.circle.baby.ui.circle.events.CircleSelectMediaEvent;
 import cn.timeface.circle.baby.ui.circle.events.CircleSelectMediaListEvent;
@@ -118,15 +121,44 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
         cbAllSel.setOnClickListener(this);
 
         //新建一本
-        tfStateView.setVisibility(View.GONE);
-        allTimeFragment = CircleServerTimeFragment.newInstance(
-                CircleSelectTimeTypeDialog.TIME_TYPE_ALL,
-                circleId,
-                allSelectMedias,
-                allSelectTimeLines);
-        allTimeFragment.setTimeLineObjs(allSelectTimeLines);
-        allTimeFragment.setMediaObjs(allSelectMedias);
-        showContent(allTimeFragment);
+        if(TextUtils.isEmpty(bookId)){
+            tfStateView.setVisibility(View.GONE);
+            allTimeFragment = CircleServerTimeFragment.newInstance(
+                    CircleSelectTimeTypeDialog.TIME_TYPE_ALL,
+                    circleId,
+                    allSelectMedias,
+                    allSelectTimeLines);
+            allTimeFragment.setTimeLineObjs(allSelectTimeLines);
+            allTimeFragment.setMediaObjs(allSelectMedias);
+            showContent(allTimeFragment);
+        } else {
+            addSubscription(
+                    apiService.queryBookTimes(bookId)
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(
+                                    response -> {
+//                                        if(response.success()){
+                                            this.allSelectTimeLines.addAll(response.getDataList());
+
+                                            tfStateView.setVisibility(View.GONE);
+                                            allTimeFragment = CircleServerTimeFragment.newInstance(
+                                                    CircleSelectTimeTypeDialog.TIME_TYPE_ALL,
+                                                    circleId,
+                                                    allSelectMedias,
+                                                    allSelectTimeLines);
+                                            allTimeFragment.setTimeLineObjs(allSelectTimeLines);
+                                            allTimeFragment.setMediaObjs(allSelectMedias);
+                                            showContent(allTimeFragment);
+//                                        } else {
+//                                            showToast(response.info);
+//                                        }
+                                    },
+                                    throwable -> {
+                                        Log.e(TAG, throwable.getLocalizedMessage());
+                                    }
+                            )
+            );
+        }
     }
 
     @Override
@@ -215,6 +247,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                             }
                                             if(sb.lastIndexOf(",") > -1)sb.replace(sb.lastIndexOf(","), sb.length(), "]");
                                             if(sbTime.lastIndexOf(",") > -1)sbTime.replace(sbTime.lastIndexOf(","), sbTime.length(), "]");
+                                            sbTime.append(",\"circleId\":").append(circleId);
                                             sb.append(",").append(sbTime).append("}");
 
                                             finish();

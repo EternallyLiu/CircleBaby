@@ -14,8 +14,17 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
     protected int isCommit;             //当前宝宝是否已经交作业  0否，1是
     protected long taskId;              //作业id
     protected CircleUserInfo teacher;   //布置作业的老师对象
+    protected int selectCount;
 
     public CircleSchoolTaskObj() {
+    }
+
+    public int getSelectCount() {
+        return selectCount;
+    }
+
+    public void setSelectCount(int selectCount) {
+        this.selectCount = selectCount;
     }
 
     public int getIsCommit() {

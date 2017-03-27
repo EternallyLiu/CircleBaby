@@ -30,7 +30,6 @@ import cn.timeface.circle.baby.events.UpdateMemberEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
-import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.PhotosShowAdapter;
@@ -70,12 +69,6 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     TextView tvEmpty;
     @Bind(R.id.tv_want_reason)
     TextView tvWantReason;
-
-    CircleUserInfo circleUserInfo;
-    cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo circleUserSelf;
-    PhotosShowAdapter adapter;
-    ArrayList<String> mPathList;
-    MenemberInfo menemberInfo;
     @Bind(R.id.tv_go_see)
     TextView tvGoSee;
     @Bind(R.id.toolbar)
@@ -84,6 +77,12 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     AppBarLayout appbarLayout;
     @Bind(R.id.tv_btn_mid)
     TextView tvBtnMid;
+
+    CircleUserInfo circleUserInfo;
+    cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo circleUserSelf;
+    PhotosShowAdapter adapter;
+    ArrayList<String> mPathList;
+    MenemberInfo menemberInfo;
 
 
     public static void open(Context context, MenemberInfo circleUserInfo) {
@@ -113,9 +112,14 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     }
 
     private void setPhotoView() {
-        GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(), ivChildImg);
+        //GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(), ivChildImg);
+        Glide.with(this)
+                .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
+                .error(R.drawable.ic_launcher)
+                .into(ivChildImg);
         Glide.with(this)
                 .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
+                .error(R.drawable.ic_launcher)
                 .into(ivContentImg);
     }
 
@@ -141,18 +145,10 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvBtnDown.setOnClickListener(v -> {
                 TFDialog tfDialog = TFDialog.getInstance();
                 tfDialog.setMessage("是否发起认证" + circleUserInfo.getCircleNickName() + "的教师资格");
-                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tfDialog.dismiss();
-                    }
-                });
-                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        start(1);
-                        tfDialog.dismiss();
-                    }
+                tfDialog.setNegativeButton("取消", v12 -> tfDialog.dismiss());
+                tfDialog.setPositiveButton("确定", v1 -> {
+                    start(1);
+                    tfDialog.dismiss();
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
             });
@@ -195,35 +191,17 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvBtnUp.setOnClickListener(v -> {
                 TFDialog tfDialog = TFDialog.getInstance();
                 tfDialog.setMessage("是否移除" + circleUserInfo.getCircleNickName());
-                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tfDialog.dismiss();
-                    }
-                });
-                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        removeMember();
-                    }
-                });
+                tfDialog.setNegativeButton("取消", v13 -> tfDialog.dismiss());
+                tfDialog.setPositiveButton("确定", v14 -> removeMember());
                 tfDialog.show(getSupportFragmentManager(), "");
             });
             tvBtnDown.setOnClickListener(v -> {
                 TFDialog tfDialog = TFDialog.getInstance();
                 tfDialog.setMessage("是否取消认证" + circleUserInfo.getCircleNickName() + "的教师资格");
-                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tfDialog.dismiss();
-                    }
-                });
-                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        start(0);
-                        tfDialog.dismiss();
-                    }
+                tfDialog.setNegativeButton("取消", v15 -> tfDialog.dismiss());
+                tfDialog.setPositiveButton("确定", v16 -> {
+                    start(0);
+                    tfDialog.dismiss();
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
             });
@@ -239,36 +217,20 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvBtnUp.setOnClickListener(v -> {
                 TFDialog tfDialog = TFDialog.getInstance();
                 tfDialog.setMessage("是否移除" + circleUserInfo.getCircleNickName());
-                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tfDialog.dismiss();
-                    }
-                });
-                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        removeMember();
-                        tfDialog.dismiss();
-                    }
+                tfDialog.setNegativeButton("取消", v17 -> tfDialog.dismiss());
+                tfDialog.setPositiveButton("确定", v18 -> {
+                    removeMember();
+                    tfDialog.dismiss();
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
             });
             tvBtnDown.setOnClickListener(v -> {
                 TFDialog tfDialog = TFDialog.getInstance();
                 tfDialog.setMessage("是否发起认证" + circleUserInfo.getCircleNickName() + "的教师资格");
-                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        tfDialog.dismiss();
-                    }
-                });
-                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        start(1);
-                        tfDialog.dismiss();
-                    }
+                tfDialog.setNegativeButton("取消", v19 -> tfDialog.dismiss());
+                tfDialog.setPositiveButton("确定", v110 -> {
+                    start(1);
+                    tfDialog.dismiss();
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
             });

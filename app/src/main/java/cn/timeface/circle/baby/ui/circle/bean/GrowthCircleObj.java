@@ -59,9 +59,9 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         return currentGrowthCircleObj;
     }
 
-    public static void clearAll(){
+    public static void clearAll() {
         SQLite.delete().from(GrowthCircleObj.class).query();
-        currentGrowthCircleObj=null;
+        currentGrowthCircleObj = null;
     }
 
     public static GrowthCircleObj refreshInstance() {
@@ -157,7 +157,7 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         this.workCount = workCount;
     }
 
-    public static void deleteAll(){
+    public static void deleteAll() {
         SQLite.delete().from(GrowthCircleObj.class).query();
     }
 
@@ -219,6 +219,13 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
      */
     public boolean isPublic() {
         return openLever == 1;
+    }
+
+    /**
+     * 设置为公开圈
+     */
+    public void setCirclePublic(boolean circlePublic) {
+        this.openLever = circlePublic ? 1 : 0;
     }
 
 }

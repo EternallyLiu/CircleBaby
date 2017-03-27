@@ -80,6 +80,7 @@ import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
+import cn.timeface.circle.baby.ui.circle.response.CircleBookTimesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleDetailResponse;
@@ -98,6 +99,7 @@ import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkSubmitResponse;
 import cn.timeface.circle.baby.ui.circle.response.QrcodeResponse;
+import cn.timeface.circle.baby.ui.circle.response.QueryBindingBabyResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleByTimeResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleLastActivityResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
@@ -1555,12 +1557,11 @@ public interface ApiService {
     /**
      * 圈资料编辑
      *
-     * @param circleDetailInfo
+     * @param circleDetailInfo 圈资料
      * @return
      */
     @GET("circle/update")
-    Observable<BaseResponse> editCircleInfo(
-            @Query("circleDetailInfo") String circleDetailInfo);
+    Observable<BaseResponse> editCircleInfo(@Query("circleDetailInfo") String circleDetailInfo);
 
     /**
      * 发起/取消 某个成员的教师认证
@@ -1606,7 +1607,7 @@ public interface ApiService {
      * @return
      */
     @GET("circle/getDefaultCover")
-    Observable<QueryCirclePhotoResponse<MediaObj>> getDefaultCover();
+    Observable<QueryCirclePhotoResponse<MediaObj>> getCircleDefaultCover();
 
     /**
      * 修改圈成员昵称
@@ -1880,5 +1881,23 @@ public interface ApiService {
     @POST("circleMedia/delLabel")
     Observable<BaseResponse> deleteCircleLabel(@Query("mediaId") long mediaId,
                                                @Query("tipId") long tips);
+
+    /**
+     * 查询绑定了家长的宝宝列表
+     * @param circleId
+     * @return
+     */
+    @POST("circle/bindingBaby")
+    Observable<QueryBindingBabyResponse> queryBindingBaby(@Query("circleId") String circleId);
+
+    /**
+     * 获取书中的所有时光信息
+     * @param bookId
+     * @return
+     */
+    @POST("circle/book/times")
+    Observable<CircleBookTimesResponse> queryBookTimes(@Query("bookId") String bookId);
+
+
 
 }
