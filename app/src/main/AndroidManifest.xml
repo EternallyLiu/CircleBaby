@@ -423,10 +423,6 @@
             android:name=".ui.babyInfo.activity.BigNameActivity"
             android:label="@string/baby_real_name_title"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.growth.activities.ProductionListActivity"
-            android:label="@string/title_activity_book_list"
-            android:theme="@style/AppTheme" />
         <activity android:name=".ui.growth.activities.BookListActivity" />
         <activity android:name=".ui.growth.activities.DiaryCardListActivity" />
         <activity android:name=".ui.growth.activities.RecognizeCardListActivity" />
@@ -631,7 +627,7 @@
             android:name=".ui.circle.activities.CircleSelectHomeWorkTaskDetailActivity"
             android:label="@string/title_activity_circle_select_home_word_detail"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity" />
+        <!--<activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity" />-->
         <activity android:name=".ui.circle.timelines.activity.HomwWorkListActivity" />
         <activity android:name=".ui.circle.timelines.activity.SchoolTaskDetailActivity" />
         <activity android:name=".ui.circle.timelines.activity.HomeWorkActivity" />
