@@ -2,8 +2,13 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-    android:textSize="@dimen/text_normal"
-    android:textColor="@color/aluminum"
-    android:text="@string/send_school_media_tip">
+          android:background="@color/alabaster"
+          android:paddingBottom="@dimen/size_12"
+          android:layout_marginLeft="@dimen/size_4"
+          android:layout_marginRight="@dimen/size_4"
+          android:paddingTop="@dimen/size_12"
+          android:text="@string/send_school_media_tip"
+          android:textColor="@color/text"
+          android:textSize="@dimen/text_normal">
 
 </TextView>

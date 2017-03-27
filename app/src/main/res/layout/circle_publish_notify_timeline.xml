@@ -3,19 +3,19 @@
                 xmlns:select="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/size_6"
-                android:paddingLeft="@dimen/size_4"
-                android:background="@color/white"
-                android:paddingRight="@dimen/size_4"
-                android:paddingTop="@dimen/size_12"
+                android:layout_marginBottom="@dimen/size_12"
     >
+
 
     <TextView
         android:id="@+id/tv_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/size_6"
+        android:layout_marginLeft="@dimen/size_4"
+        android:layout_marginRight="@dimen/size_4"
+        android:layout_marginTop="@dimen/size_12"
         android:gravity="left|center_vertical"
         android:lines="1"
         android:text="@string/circle_publish_notify_timeline_tip"
@@ -27,8 +27,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/size_6"
+        android:layout_marginLeft="@dimen/size_4"
+        android:layout_marginRight="@dimen/size_4"
+        android:layout_marginTop="@dimen/size_12"
         />
 
 
+    <View
+        android:layout_below="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/alabaster"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@color/bg_color6"/>
 </RelativeLayout>

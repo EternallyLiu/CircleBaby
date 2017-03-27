@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/rl_active"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_12"
-                android:id="@+id/rl_active"
-                android:background="@color/white"
-                android:paddingBottom="@dimen/size_6"
-                android:paddingLeft="@dimen/size_4"
-                android:paddingRight="@dimen/size_4"
-                android:paddingTop="@dimen/size_12">
+    >
+
 
     <TextView
         android:id="@+id/tv_tip"
@@ -16,6 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/size_6"
+        android:layout_marginLeft="@dimen/size_4"
+        android:layout_marginRight="@dimen/size_4"
+        android:layout_marginTop="@dimen/size_12"
         android:gravity="left|center_vertical"
         android:lines="1"
         android:text="@string/circle_publish_select_acctive_tip"
@@ -28,19 +29,29 @@
         android:layout_height="@dimen/size_12"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/size_6"
+        android:layout_marginLeft="@dimen/size_4"
+        android:layout_marginRight="@dimen/size_4"
+        android:layout_marginTop="@dimen/size_12"
         android:src="@drawable/mine_data_go"/>
 
     <TextView
         android:id="@+id/tv_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/size_6"
         android:layout_marginLeft="@dimen/size_4"
         android:layout_marginRight="@dimen/size_4"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/size_12"
         android:layout_toLeftOf="@+id/iv_right"
         android:layout_toRightOf="@+id/tv_tip"
         android:gravity="right|center_vertical"
         android:text="手工课"
         android:textSize="@dimen/text_small"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@color/bg_color6"/>
 </RelativeLayout>

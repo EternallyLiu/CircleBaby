@@ -14,6 +14,6 @@
         android:textSize="@dimen/text_normal"
         android:textColor="@color/black"
         android:textStyle="bold"
-        tools:something="标题"/>
+        />
     
 </RelativeLayout>
