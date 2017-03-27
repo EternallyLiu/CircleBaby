@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="false"
+    android:orientation="vertical"
+    tools:context=".ui.growthcircle.mainpage.activity.CircleInfoActivity">
+
+    <include layout="@layout/layout_toolbar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.github.rayboot.widget.ratioview.RatioImageView
+                    android:id="@+id/iv_circle_cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_none_photo"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:scaleType="fitXY"
+                    app:fixRatio="fixWidth"
+                    app:heightRatio="334"
+                    app:widthRatio="640" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#99000000"
+                    android:gravity="center"
+                    android:text="轻触图片更换圈封面"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_normal" />
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_space_normal"
+                android:background="@color/bg_main" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/view_space_normal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="圈子简介"
+                    android:textColor="@color/text_color16"
+                    android:textSize="@dimen/text_normal" />
+
+                <EditText
+                    android:id="@+id/et_circle_intro"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/view_space_normal"
+                    android:background="@drawable/shape_create_circle_edit_bg"
+                    android:gravity="start"
+                    android:hint="请输入简介"
+                    android:inputType="textMultiLine"
+                    android:maxLength="80"
+                    android:padding="@dimen/view_space_normal"
+                    android:textColor="@color/text_color12"
+                    android:textColorHint="@color/text_color33"
+                    android:textSize="@dimen/text_normal"
+                    tools:text="" />
+
+                <TextView
+                    android:id="@+id/tv_circle_intro_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/view_space_small"
+                    android:text="0/80"
+                    android:textColor="@color/text_color33"
+                    android:textSize="@dimen/text_small" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_space_normal"
+                android:background="@color/bg_main" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/view_space_normal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="圈子名称"
+                    android:textColor="@color/text_color16"
+                    android:textSize="@dimen/text_normal" />
+
+                <EditText
+                    android:id="@+id/et_circle_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/view_space_normal"
+                    android:background="@drawable/shape_create_circle_edit_bg"
+                    android:gravity="start"
+                    android:hint="请输入圈子名称"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:maxLength="16"
+                    android:padding="@dimen/view_space_normal"
+                    android:textColor="@color/text_color12"
+                    android:textColorHint="@color/text_color33"
+                    android:textSize="@dimen/text_normal"
+                    tools:text="" />
+
+                <TextView
+                    android:id="@+id/tv_circle_name_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="@dimen/view_space_small"
+                    android:text="0/16"
+                    android:textColor="@color/text_color33"
+                    android:textSize="@dimen/text_small" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_space_normal"
+                android:background="@color/bg_main" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/view_space_normal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="圈子属性"
+                    android:textColor="@color/text_color16"
+                    android:textSize="@dimen/text_normal" />
+
+                <RadioGroup
+                    android:id="@+id/rg_publish"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="@dimen/view_space_normal"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_publish"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="公开"
+                        android:textColor="@color/text_color12"
+                        android:textSize="@dimen/text_normal" />
+
+                    <RadioButton
+                        android:id="@+id/rb_private"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/view_space_medium"
+                        android:text="非公开"
+                        android:textColor="@color/text_color12"
+                        android:textSize="@dimen/text_normal" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_space_normal"
+                android:background="@color/bg_main" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/view_space_normal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="圈子规则"
+                    android:textColor="@color/text_color16"
+                    android:textSize="@dimen/text_normal" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/et_circle_rule"
+                        android:layout_width="match_parent"
+                        android:layout_height="230dp"
+                        android:layout_marginTop="@dimen/view_space_normal"
+                        android:background="@drawable/shape_create_circle_edit_bg"
+                        android:gravity="start"
+                        android:hint="请输入圈子规则"
+                        android:inputType="textMultiLine"
+                        android:maxLength="200"
+                        android:padding="@dimen/view_space_normal"
+                        android:textColor="@color/text_color12"
+                        android:textColorHint="@color/text_color33"
+                        android:textSize="@dimen/text_normal"
+                        tools:text="" />
+
+                    <TextView
+                        android:id="@+id/tv_circle_rule_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="@dimen/view_space_small"
+                        android:text="0/200"
+                        android:textColor="@color/text_color33"
+                        android:textSize="@dimen/text_small" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/view_space_medium"
+                android:layout_marginLeft="@dimen/view_space_normal"
+                android:layout_marginRight="@dimen/view_space_normal"
+                android:layout_marginTop="@dimen/view_space_medium"
+                android:background="@drawable/selector_ios_btn_empty"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="@string/submit"
+                android:textColor="@color/text_color16"
+                android:textSize="@dimen/text_normal" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +15,8 @@ import android.widget.Toast;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -21,6 +25,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.TFDialog;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.network.NetworkError;
@@ -38,7 +43,7 @@ import rx.Subscription;
 /**
  * 圈资料
  */
-public class CircleInfoActivity extends BaseAppCompatActivity {
+public class CircleInfoActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -68,6 +73,7 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
     TextView tvSubmit;
 
     private GrowthCircleObj circleObj;
+    private GrowthCircleDetailObj circleDetailObj;
     private boolean isJoined;
 
     private TFProgressDialog progressDialog;
@@ -100,6 +106,27 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (circleObj != null && circleObj.isCreator()) {
+            getMenuInflater().inflate(R.menu.menu_circle_edit_circle_info, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_edit:
+                if (circleDetailObj != null) {
+                    CircleInfoEditActivity.open(this, circleDetailObj);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void reqData(long circleId) {
         Subscription s = apiService.circleDetail(circleId)
                 .compose(SchedulersCompat.applyIoSchedulers())
@@ -108,7 +135,8 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
                             dismissProgressDialog();
                             if (response.success()) {
                                 isJoined = response.isJoined();
-                                setupDetailData(response.getCircleDetailInfo());
+                                circleDetailObj = response.getCircleDetailInfo();
+                                setupDetailData(circleDetailObj);
                             } else {
                                 Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
                             }
@@ -134,12 +162,16 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
     }
 
     private void setupDetailData(GrowthCircleDetailObj circleDetailObj) {
-        tvCircleIntro.setText(circleDetailObj.getCircleDescription());
+        setupData(circleDetailObj);
+
+        tvCircleIntro.setText(TextUtils.isEmpty(circleDetailObj.getCircleDescription()) ?
+                "暂无简介" : circleDetailObj.getCircleDescription());
 
         tvCirclePhotoPercent.setText("超过" + circleDetailObj.getMediaAchievement() + "%的圈子");
         tvCircleProductPercent.setText("超过" + circleDetailObj.getWrokAchievement() + "%的圈子");
 
-        tvCircleRule.setText(circleDetailObj.getRule());
+        tvCircleRule.setText(TextUtils.isEmpty(circleDetailObj.getRule()) ?
+                "暂无圈规则" : circleDetailObj.getRule());
 
         if (circleDetailObj.getMemberList() != null
                 && circleDetailObj.getMemberList().size() > 0) {
@@ -297,6 +329,14 @@ public class CircleInfoActivity extends BaseAppCompatActivity {
     private void dismissProgressDialog() {
         if (progressDialog != null) {
             progressDialog.dismiss();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(CircleChangedEvent event) {
+        if (event.type == CircleChangedEvent.TYPE_INFO_CHANGED) {
+            showProgressDialog();
+            reqData(circleObj.getCircleId());
         }
     }
 

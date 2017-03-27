@@ -224,7 +224,8 @@ public class GrowthCircleListFragment extends BaseFragment implements IEventBus 
         if (event.type == CircleChangedEvent.TYPE_CREATED
                 || event.type == CircleChangedEvent.TYPE_JOINED
                 || event.type == CircleChangedEvent.TYPE_QUIT
-                || event.type == CircleChangedEvent.TYPE_DISBANDED) {
+                || event.type == CircleChangedEvent.TYPE_DISBANDED
+                || event.type == CircleChangedEvent.TYPE_INFO_CHANGED) {
             reqData();
         }
     }

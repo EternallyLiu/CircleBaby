@@ -28,8 +28,8 @@
                 android:gravity="center"
                 android:scaleType="fitXY"
                 app:fixRatio="fixWidth"
-                app:heightRatio="1"
-                app:widthRatio="2" />
+                app:heightRatio="334"
+                app:widthRatio="640" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -180,8 +180,10 @@
                         android:id="@+id/tv_circle_photo_percent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_circle_info_over_percent"
+                        android:drawablePadding="@dimen/view_space_small"
                         android:textColor="@color/text"
-                        android:textSize="@dimen/text_normal"
+                        android:textSize="@dimen/text_small"
                         tools:text="超过58%的圈子" />
                 </LinearLayout>
 
@@ -212,9 +214,11 @@
                         android:id="@+id/tv_circle_product_percent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_circle_info_over_percent"
+                        android:drawablePadding="@dimen/view_space_small"
                         android:textColor="@color/text"
-                        android:textSize="@dimen/text_normal"
-                        tools:text="低于58%的圈子" />
+                        android:textSize="@dimen/text_small"
+                        tools:text="超过58%的圈子" />
                 </LinearLayout>
             </LinearLayout>
 

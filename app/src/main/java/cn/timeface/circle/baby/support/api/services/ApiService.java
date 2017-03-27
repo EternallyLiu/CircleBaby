@@ -1551,12 +1551,11 @@ public interface ApiService {
     /**
      * 圈资料编辑
      *
-     * @param circleDetailInfo
+     * @param circleDetailInfo 圈资料
      * @return
      */
     @GET("circle/update")
-    Observable<BaseResponse> editCircleInfo(
-            @Query("circleDetailInfo") String circleDetailInfo);
+    Observable<BaseResponse> editCircleInfo(@Query("circleDetailInfo") String circleDetailInfo);
 
     /**
      * 发起/取消 某个成员的教师认证
@@ -1602,7 +1601,7 @@ public interface ApiService {
      * @return
      */
     @GET("circle/getDefaultCover")
-    Observable<QueryCirclePhotoResponse<MediaObj>> getDefaultCover();
+    Observable<QueryCirclePhotoResponse<MediaObj>> getCircleDefaultCover();
 
     /**
      * 修改圈成员昵称
