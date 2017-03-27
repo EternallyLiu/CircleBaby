@@ -8,28 +8,26 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
-import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
-import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 /**
  * Created by lidonglin on 2017/3/17.
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class GetCirclePhotoByUserObj extends BaseObj implements Parcelable {
-    protected List<MediaObj> mediaList;
+    protected List<CircleMediaObj> mediaList;
     protected String date;                  //发布的时间
 
     public GetCirclePhotoByUserObj() {
     }
 
-    public GetCirclePhotoByUserObj(List<MediaObj> mediaList, String date) {
+    public GetCirclePhotoByUserObj(List<CircleMediaObj> mediaList, String date) {
         this.mediaList = mediaList;
         this.date = date;
     }
 
     public GetCirclePhotoByUserObj(Parcel in) {
         super(in);
-        mediaList = in.createTypedArrayList(MediaObj.CREATOR);
+        mediaList = in.createTypedArrayList(CircleMediaObj.CREATOR);
         date = in.readString();
     }
 
@@ -57,11 +55,11 @@ public class GetCirclePhotoByUserObj extends BaseObj implements Parcelable {
         }
     };
 
-    public List<MediaObj> getMediaList() {
+    public List<CircleMediaObj> getMediaList() {
         return mediaList;
     }
 
-    public void setMediaList(List<MediaObj> mediaList) {
+    public void setMediaList(List<CircleMediaObj> mediaList) {
         this.mediaList = mediaList;
     }
 
