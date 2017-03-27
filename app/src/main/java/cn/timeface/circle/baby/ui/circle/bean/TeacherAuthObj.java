@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
@@ -56,6 +57,7 @@ public class TeacherAuthObj extends BaseObj implements Parcelable {
     };
 
     public List<CircleUserInfo> getAgreeUserList() {
+        if (agreeUserList == null) agreeUserList = new ArrayList<>(0);
         return agreeUserList;
     }
 

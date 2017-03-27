@@ -3,9 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/bg_color3"
-    >
-
-    <!--<include layout="@layout/head"/>-->
+                android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -18,48 +16,16 @@
         android:theme="@style/ToolbarColor">
 
 
-    </android.support.v7.widget.Toolbar>
-
-    <RelativeLayout
-        android:layout_alignTop="@+id/toolbar"
-        android:layout_alignBottom="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingRight="@dimen/size_6">
-
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:gravity="center"
-            android:text="标题"
             android:textColor="@color/text_color1"
             android:textSize="@dimen/text_normal"/>
 
-        <TextView
-            android:id="@+id/tv_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="right"
-            android:gravity="center"
-            android:text="教师认证"
-            android:textColor="@color/text_color1"
-            android:textSize="@dimen/text_normal"/>
-
-        <ImageView
-            android:id="@+id/iv_dot"
-            android:layout_marginTop="@dimen/size_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/tv_right"
-            android:layout_alignTop="@+id/tv_right"
-            android:src="@drawable/shape_dot_red"
-            android:visibility="visible"/>
-    </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -72,5 +38,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </RelativeLayout>

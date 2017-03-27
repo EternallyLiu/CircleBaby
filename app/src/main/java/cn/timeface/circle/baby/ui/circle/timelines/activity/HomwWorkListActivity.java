@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.Bind;
@@ -20,7 +21,6 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.SchoolTaskAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleHomeWorkHeader;
@@ -43,6 +43,8 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
     SwipeRefreshLayout swipeRefresh;
     @Bind(R.id.tv_right)
     TextView tvRight;
+    @Bind(R.id.iv_dot)
+    ImageView ivDot;
 
     private SchoolTaskAdapter adapter = null;
     private TFPTRRecyclerViewHelper helper;
@@ -112,6 +114,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
                             homeWorkHeader.setHasTeacherCertification(homeWorkListResponse.getHasTeacherCertification());
                             homeWorkHeader.setLastSubmitHomework(homeWorkListResponse.getLastSubmitHomework());
                         }
+                        ivDot.setVisibility(homeWorkHeader.getHasTeacherCertification() == 1 ? View.VISIBLE : View.GONE);
                         if (currentPage == 1) {
                             adapter.addList(true, homeWorkListResponse.getDataList(), 0, homeWorkHeader);
                         } else {
@@ -119,7 +122,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
                             adapter.addList(homeWorkListResponse.getDataList());
                         }
                     } else ToastUtil.showToast(this, homeWorkListResponse.getInfo());
-                    adapter.setHashSubmit(homeWorkHeader.getLastSubmitHomework() != null);
+                    adapter.setHashSubmit(homeWorkHeader.getLastSubmitHomework().getSubmitter() != null);
                 }, throwable -> {
                     helper.finishTFPTRRefresh();
                     LogUtil.showError(throwable);
@@ -143,5 +146,6 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements BaseA
 
     @OnClick(R.id.tv_right)
     public void onViewClicked() {
+        TeacherAuthoActivity.open(this);
     }
 }

@@ -75,10 +75,11 @@ public class SchoolTaskAdapter extends BaseAdapter {
             btnPublishSchooltask.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 2 ? View.VISIBLE : View.GONE);
             btnPublishSchooltask.setOnClickListener(this);
             TextView tvLastTask = ViewHolder.getView(contentView, R.id.tv_last_homework);
-            tvLastTask.setVisibility(header.getLastSubmitHomework() == null ? View.GONE : View.VISIBLE);
+            tvLastTask.setVisibility(header.getLastSubmitHomework().getSubmitter() == null ? View.GONE : View.VISIBLE);
             GlideUtil.displayImage(header.getGrowthCircle().getCircleCoverUrl(), ivIcon, true);
             tvName.setText(header.getGrowthCircle().getCircleName());
-            tvLastTask.setText(String.format("%s上传了作业 \"%s\"", header.getLastSubmitHomework().getSubmitter().getCircleNickName(), header.getLastSubmitHomework().getTitle()));
+            if (header.getLastSubmitHomework().getSubmitter() != null)
+                tvLastTask.setText(String.format("%s上传了作业 \"%s\"", header.getLastSubmitHomework().getSubmitter().getCircleNickName(), header.getLastSubmitHomework().getTitle()));
         }
 
     }
@@ -147,12 +148,12 @@ public class SchoolTaskAdapter extends BaseAdapter {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.icon:
-                try{
+                try {
                     int position = (int) v.getTag(R.id.recycler_item_input_tag);
                     int index = (int) v.getTag(R.id.recycler_item_click_tag);
                     HomeWorkListObj item = getItem(position);
-                    FragmentBridgeActivity.openBigimageFragment(context(), 0, MediaObj.getMediaArray(item.getSchoolTask().getMediaList()),MediaObj.getUrls(item.getSchoolTask().getMediaList()),index, BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, true, false);
-                }catch (Exception e){
+                    FragmentBridgeActivity.openBigimageFragment(context(), 0, MediaObj.getMediaArray(item.getSchoolTask().getMediaList()), MediaObj.getUrls(item.getSchoolTask().getMediaList()), index, BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, true, false);
+                } catch (Exception e) {
                 }
                 break;
             case R.id.btn_publish_schooltask:
