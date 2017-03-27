@@ -16,8 +16,8 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CircleMediaObj extends MediaObj implements Parcelable {
-    List<RelateBabyObj> relateBabys;
-
+    List<RelateBabyObj> relateBabys;    //图片关联的宝宝
+    long publisherId;                   //图片上传者的id
     public CircleMediaObj() {
     }
 
@@ -37,12 +37,14 @@ public class CircleMediaObj extends MediaObj implements Parcelable {
     protected CircleMediaObj(Parcel in) {
         super(in);
         relateBabys = in.createTypedArrayList(RelateBabyObj.CREATOR);
+        publisherId = in.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeTypedList(relateBabys);
+        dest.writeLong(publisherId);
     }
 
     @Override
@@ -68,5 +70,13 @@ public class CircleMediaObj extends MediaObj implements Parcelable {
 
     public void setRelateBabys(List<RelateBabyObj> relateBabys) {
         this.relateBabys = relateBabys;
+    }
+
+    public long getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(long publisherId) {
+        this.publisherId = publisherId;
     }
 }

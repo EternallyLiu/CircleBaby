@@ -35,6 +35,7 @@ import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleActivityFra
 import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleBabyFragment;
 import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleTimeFragment;
 import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleUserFragment;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -70,7 +71,6 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     private MenuItem itemActivity;
     private long circleId;
     private boolean user;
-    private long circle_useridd;
     private CircleUserInfo circleUserInfo;
 
 
@@ -82,8 +82,8 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
 
     public static void open(Context context, CircleUserInfo circleUserInfo, boolean user) {
         Intent intent = new Intent(context, CirclePhotoActivity.class);
-        intent.putExtra("circleUserInfo",circleUserInfo);
-        intent.putExtra("user",user);
+        intent.putExtra("circleUserInfo", circleUserInfo);
+        intent.putExtra("user", user);
         context.startActivity(intent);
     }
 
@@ -201,7 +201,6 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         }
         showContent(selectCircleActivityFragment);
         if (fragmentShow)
-        if (fragmentShow)
             onClick(tvContentType);
     }
 
@@ -222,17 +221,14 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     }
 
     public void clickCirclePhotoView(View view) {
-        int position = 0;
         ArrayList<String> paths = new ArrayList<>();
         MediaObj mediaObj = (MediaObj) view.getTag(R.string.tag_obj);
         ArrayList<MediaObj> mediaList = (ArrayList<MediaObj>) view.getTag(R.string.tag_ex);
         for (int i = 0; i < mediaList.size(); i++) {
             paths.add(mediaList.get(i).getImgUrl());
-            if (mediaList.get(i).getImgUrl().equals(mediaObj.getImgUrl())) {
-                position = i;
-            }
         }
-        FragmentBridgeActivity.openBigimageFragment(this, mediaList, paths, position, false, false);
+        int index = mediaList.indexOf(mediaObj);
+        FragmentBridgeActivity.openBigimageFragment(this, 0, mediaList, paths, index, true, false);
 
     }
 
@@ -312,7 +308,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         itemActivity = menu.findItem(R.id.action_by_actvity);
         itemTime = menu.findItem(R.id.action_by_time);
         selectTypeActivity();
-        if(user){
+        if (user) {
             tvContentType.setVisibility(View.GONE);
             tvContent.setVisibility(View.VISIBLE);
             tvContent.setText(circleUserInfo.getCircleNickName());
@@ -355,7 +351,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
 
     @Override
     public void inputMobile() {
-        showToast("导入手机照片");
+        PublishActivity.open(this);
     }
 
     @Override
