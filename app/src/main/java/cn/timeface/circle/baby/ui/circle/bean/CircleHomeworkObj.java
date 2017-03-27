@@ -106,4 +106,13 @@ public class CircleHomeworkObj extends CircleSchoolTaskObj implements Parcelable
             return new CircleHomeworkObj[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof CircleHomeworkObj){
+            return homeworkId == ((CircleHomeworkObj) o).getHomeworkId();
+        }
+
+        return false;
+    }
 }

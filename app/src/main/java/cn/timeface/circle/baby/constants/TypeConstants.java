@@ -65,11 +65,12 @@ public class TypeConstants {
     public static final int PHOTO_TYPE_ACTIVITY = 4;//按活动
     public static final int PHOTO_TYPE_ATBABY = 5;//按@圈的宝宝
 
-    // 开放平台BookType
+    // 开放平台BookType\
     public static final int OPEN_BOOK_TYPE_PAINTING = 111; //绘画集：111
     public static final int OPEN_BOOK_TYPE_GROWTH_COMMEMORATION_BOOK = 113; // 成长纪念册：113
     public static final int OPEN_BOOK_TYPE_GROWTH_QUOTATIONS = 114; // 成长语录：114
-    public static final int OPEN_BOOK_TYPE_CIRCLE_TIME_BOOK = 117; // 圈时光书：117
+    public static final int OPEN_BOOK_TYPE_CIRCLE_TIME_BOOK = 177; // 圈时光书：177
+    public static final int OPEN_BOOK_TYPE_CIRCLE_HOME_SCHOOL_BOOK = 163; // 圈家校纪念册：163
 
     // 成长圈成员人数上限
     public static final int GROWTH_CIRCLE_MEMBER_MAX_COUNT = 500;

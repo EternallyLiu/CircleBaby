@@ -1,8 +1,10 @@
 package cn.timeface.circle.baby.ui.circle.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -24,10 +26,19 @@ public class CircleSelectHomeWorkTaskDetailActivity extends CircleSelectHomeWork
 
     long taskId;
 
-    public static void open(Context context, String taskId){
+    public void open(Context context, long taskId){
         Intent intent= new Intent(context, CircleSelectHomeWorkTaskDetailActivity.class);
         intent.putExtra("task_id", taskId);
         context.startActivity(intent);
+    }
+
+    public static void open4Result(Context context, int reqCode, long taskId, String circleId, long babyId, List<CircleHomeworkExObj> allSelHomeWorks){
+        Intent intent= new Intent(context, CircleSelectHomeWorkTaskDetailActivity.class);
+        intent.putExtra("task_id", taskId);
+        intent.putExtra("circle_id", circleId);
+        intent.putExtra("baby_id", babyId);
+        intent.putParcelableArrayListExtra("all_sel_home_works", (ArrayList<? extends Parcelable>) allSelHomeWorks);
+        ((Activity) context).startActivityForResult(intent, reqCode);
     }
 
     @Override
@@ -42,6 +53,7 @@ public class CircleSelectHomeWorkTaskDetailActivity extends CircleSelectHomeWork
         addSubscription(
                 apiService.teacherHomeworkDetal(taskId, 1, Integer.MAX_VALUE)
                         .compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnCompleted(() -> stateView.finish())
                         .subscribe(
                                 response -> {
                                     if (response.success()) {
@@ -49,16 +61,17 @@ public class CircleSelectHomeWorkTaskDetailActivity extends CircleSelectHomeWork
 
                                         List<CircleHomeWorkExWrapperObj> homeWorkExWrapperObjList = new ArrayList<>();
                                         CircleHomeWorkExWrapperObj homeWorkExWrapperObj = new CircleHomeWorkExWrapperObj();
-                                        homeWorkExWrapperObj.setDate("寒假为父母做一件事情");
+                                        homeWorkExWrapperObj.setDate(schoolTaskDetailObj.getTitle());
 
                                         List<CircleHomeworkExObj> homeworkExObjList = new ArrayList<>();
                                         for(CircleHomeworkObj circleHomeworkObj : schoolTaskDetailObj.getHomeworkList()){
                                             CircleHomeworkExObj homeworkExObj = new CircleHomeworkExObj();
                                             homeworkExObj.setHomework(circleHomeworkObj);
-                                            homeworkExObj.setSchoolTaskName("");
+                                            homeworkExObj.setSchoolTaskName(schoolTaskDetailObj.getTitle());
                                             homeworkExObjList.add(homeworkExObj);
                                         }
                                         homeWorkExWrapperObj.setHomeworkList(homeworkExObjList);
+                                        homeWorkExWrapperObjList.add(homeWorkExWrapperObj);
                                         setData(homeWorkExWrapperObjList);
 
                                     } else {
