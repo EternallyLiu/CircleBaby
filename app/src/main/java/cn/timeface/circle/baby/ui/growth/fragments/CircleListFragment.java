@@ -165,7 +165,8 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
             case R.id.tv_edit:
                 //精装照片书&绘画集
                 if (bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK
-                        || bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING) {
+                        || bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING || bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL
+                        || bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO || bookObj.getBookType()==BookModel.CIRCLE_BOOK_TYPE_TIME) {
                     SelectServerPhotoActivity.open(
                             getActivity(),
                             bookType,

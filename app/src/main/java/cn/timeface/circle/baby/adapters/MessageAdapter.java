@@ -98,6 +98,8 @@ public class MessageAdapter extends BaseRecyclerAdapter<Msg> {
             case 4:
                 content = "加入了宝宝印记，关注" + FastData.getBabyNickName() + "成长";
                 break;
+            default:
+                content = info.getContent();
         }
         holder.tvContent.setText(content);
     }
