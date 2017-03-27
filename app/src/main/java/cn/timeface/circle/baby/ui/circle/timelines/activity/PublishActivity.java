@@ -37,6 +37,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.utils.DateUtil;
@@ -66,6 +67,7 @@ public class PublishActivity extends BaseAppCompatActivity {
 
     public static final int PICTURE = 2017;
     public static final int TIME = 2018;
+
     @Bind(R.id.title)
     TextView title;
     @Bind(R.id.toolbar)
@@ -175,13 +177,23 @@ public class PublishActivity extends BaseAppCompatActivity {
         if (adapter.getType() == PublishAdapter.TYPE_TIMELINE) {
             doTimeLine();
         } else if (adapter.getType() == PublishAdapter.TYPE_SCHOOL) {
-            doSchool();
+            sendSchoolTask();
         } else if (adapter.getType() == PublishAdapter.TYPE_WORK) {
             doHomeWork();
         }
     }
 
-    private void doHomeWork() {
+    private void clearGCMedia() {
+        int size = adapter.getContentObj().getMediaList().size();
+        for (int i = 0; i < size; ) {
+            if (adapter.getContentObj().getMediaList().get(i).getId() <= 0) {
+                adapter.getContentObj().getMediaList().remove(i);
+                size--;
+            } else i++;
+        }
+    }
+
+    private void sendHomwWork() {
         CircleHomeworkObj homework = (CircleHomeworkObj) adapter.getContentObj();
         if (homework.getMediaList().size() <= 0 && TextUtils.isEmpty(homework.getContent())) {
             ToastUtil.showToast(this, "作业内容不能为空");
@@ -203,14 +215,22 @@ public class PublishActivity extends BaseAppCompatActivity {
             ToastUtil.showToast(this, String.format(getString(R.string.pic_select_max_tip), PublishAdapter.MAX_PIC_WORK_COUNT));
             return;
         }
-        String send = new Gson().toJson(homework);
+        if (homework.getMediaList().size() <= 0 && TextUtils.isEmpty(homework.getContent())) {
+            ToastUtil.showToast(this, "作业内容不能为空\n");
+            return;
+        }
         showProgress();
+        UploadService.start(this, type, list);
+    }
+
+    private void doHomeWork() {
+        CircleHomeworkObj homework = (CircleHomeworkObj) adapter.getContentObj();
+        String send = new Gson().toJson(homework);
         addSubscription(apiService.homeWorkSubmit(homework.getTaskId(), send)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .doOnNext(homeWorkSubmitResponse -> hideProgress())
                 .subscribe(homeWorkSubmitResponse -> {
                     if (homeWorkSubmitResponse.success()) {
-                        UploadService.start(this, list);
                         finish();
                     } else {
                         clearGCMedia();
@@ -223,17 +243,7 @@ public class PublishActivity extends BaseAppCompatActivity {
                 }));
     }
 
-    private void clearGCMedia() {
-        int size = adapter.getContentObj().getMediaList().size();
-        for (int i = 0; i < size; ) {
-            if (adapter.getContentObj().getMediaList().get(i).getId() <= 0) {
-                adapter.getContentObj().getMediaList().remove(i);
-                size--;
-            } else i++;
-        }
-    }
-
-    private void doSchool() {
+    private void sendSchoolTask() {
         CircleSchoolTaskObj schoolTask = (CircleSchoolTaskObj) adapter.getContentObj();
         if (TextUtils.isEmpty(schoolTask.getTitle())) {
             ToastUtil.showToast(this, getString(R.string.school_title_input_tip));
@@ -257,14 +267,22 @@ public class PublishActivity extends BaseAppCompatActivity {
             ToastUtil.showToast(this, String.format(getString(R.string.pic_select_max_tip), PublishAdapter.MAX_PIC_WORK_COUNT));
             return;
         }
-        String send = new Gson().toJson(schoolTask);
+        if (schoolTask.getMediaList().size() <= 0 && TextUtils.isEmpty(schoolTask.getContent())) {
+            ToastUtil.showToast(this, "作业内容不能为空\n");
+            return;
+        }
         showProgress();
+        UploadService.start(this, type, list);
+    }
+
+    private void doSchool() {
+        CircleSchoolTaskObj schoolTask = (CircleSchoolTaskObj) adapter.getContentObj();
+        String send = new Gson().toJson(schoolTask);
         addSubscription(apiService.sendSchoolTask(FastData.getCircleId(), Uri.encode(send))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .doOnNext(circleSchoolTaskResponse -> hideProgress())
                 .subscribe(circleSchoolTaskResponse -> {
                     if (circleSchoolTaskResponse.success()) {
-                        UploadService.start(this, list);
                         finish();
                     } else {
                         clearGCMedia();
@@ -376,6 +394,21 @@ public class PublishActivity extends BaseAppCompatActivity {
         tvProgress.setText("正在发送请求~~");
         ((Animatable) ivLoad.getDrawable()).start();
         return view;
+    }
+
+    @Subscribe
+    public void onEvent(UploadEvent event) {
+        LogUtil.showLog("event", JSONUtils.parse2JSONString(event));
+        if (event.isComplete()) {
+            switch (event.getTimeId()) {
+                case PublishAdapter.TYPE_SCHOOL:
+                    doSchool();
+                    break;
+                case PublishAdapter.TYPE_WORK:
+                    doHomeWork();
+                    break;
+            }
+        }
     }
 
     @Override

@@ -74,7 +74,7 @@ public class UploadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) return START_STICKY;
         int id = intent.getIntExtra("timeId", currentNegative);
-        if (id <= 0) {
+        if (id == currentNegative) {
             id = currentNegative;
             currentNegative--;
         }
