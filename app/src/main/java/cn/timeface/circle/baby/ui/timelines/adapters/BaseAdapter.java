@@ -171,9 +171,10 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     }
 
     public void add(int index, Object object) {
-        if (!containObj(object)) {
-            handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, index, 1, object));
-        } else updateItem(object);
+        if (object != null)
+            if (!containObj(object)) {
+                handler.sendMessage(handler.obtainMessage(UPDATE_DATA_ADD_LIST_CENTER, index, 1, object));
+            } else updateItem(object);
     }
 
     public void addList(Object item) {
@@ -191,6 +192,14 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseViewHolder> i
     public void addList(boolean isClear, List list) {
         if (isClear) clearAll();
         addList(isClear ? 0 : getRealItemSize(), list);
+    }
+
+    public void addList(boolean isClear, List list, int postion, Object... objects) {
+        if (objects != null && objects.length > 0)
+            for (int i = objects.length - 1; i >= 0; i--) {
+                list.add(postion, objects[i]);
+            }
+        addList(isClear, list);
     }
 
     private View emptyDataView = null;

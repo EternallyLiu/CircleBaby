@@ -631,7 +631,10 @@
             android:name=".ui.circle.activities.CircleSelectHomeWorkTaskDetailActivity"
             android:label="@string/title_activity_circle_select_home_word_detail"
             android:theme="@style/AppTheme" />
+        <activity android:name=".ui.circle.groupmembers.activity.ChangNameActivity" />
         <activity android:name=".ui.circle.timelines.activity.HomwWorkListActivity" />
+        <activity android:name=".ui.circle.timelines.activity.SchoolTaskDetailActivity" />
+        <activity android:name=".ui.circle.timelines.activity.HomeWorkActivity" />
     </application>
 
 </manifest>

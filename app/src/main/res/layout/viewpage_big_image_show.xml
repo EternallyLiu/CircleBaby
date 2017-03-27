@@ -81,7 +81,7 @@
         android:layout_alignParentBottom="true"
         android:background="#F4F3F1"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_babys"

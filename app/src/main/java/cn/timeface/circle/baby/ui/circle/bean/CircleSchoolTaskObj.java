@@ -18,12 +18,12 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
     public CircleSchoolTaskObj() {
     }
 
-    public int isCommit() {
+    public int getIsCommit() {
         return isCommit;
     }
 
-    public void setCommit(int commit) {
-        isCommit = commit;
+    public void setIsCommit(int isCommit) {
+        this.isCommit = isCommit;
     }
 
     public long getTaskId() {
@@ -40,6 +40,26 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
 
     public void setTeacher(CircleUserInfo teacher) {
         this.teacher = teacher;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CircleSchoolTaskObj that = (CircleSchoolTaskObj) o;
+
+        if (taskId > 0 && taskId == that.taskId) return true;
+        return false;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = isCommit;
+        result = 31 * result + (int) (taskId ^ (taskId >>> 32));
+        result = 31 * result + (teacher != null ? teacher.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -62,4 +82,15 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
         this.teacher = in.readParcelable(CircleUserInfo.class.getClassLoader());
     }
 
+    public static final Creator<CircleSchoolTaskObj> CREATOR = new Creator<CircleSchoolTaskObj>() {
+        @Override
+        public CircleSchoolTaskObj createFromParcel(Parcel source) {
+            return new CircleSchoolTaskObj(source);
+        }
+
+        @Override
+        public CircleSchoolTaskObj[] newArray(int size) {
+            return new CircleSchoolTaskObj[size];
+        }
+    };
 }

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
@@ -45,6 +46,8 @@ public class CircleHomeworkObj extends CircleSchoolTaskObj implements Parcelable
     }
 
     public List<String> getNotations() {
+        if (notations==null)
+            notations=new ArrayList<>(0);
         return notations;
     }
 

@@ -151,11 +151,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                     response -> {
                                         if (response.success()) {
                                             //跳转开放平台POD接口；
-                                            String bookName = FastData.getBabyNickName() + "的成长纪念册";
-                                            if (bookType == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
-                                                bookName = FastData.getBabyNickName() + "的成长语录";
-                                            }
-
+                                            String bookName = FastData.getBabyNickName() + "的时光书";
 
                                             //按月份分组时光
                                             HashMap<String, List<CircleTimeLineExObj>> timelineMap = new HashMap<>();
@@ -198,29 +194,6 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                             keys.add("book_title");
                                             values.add(FastData.getUserName());
                                             values.add(bookName);
-
-                                            if (bookType == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
-                                                //成长语录插页数据，content_list第一条数据为插页信息
-                                                List<TFOResourceObj> insertPageResources = new ArrayList<>(1);
-                                                TFOResourceObj insertPageResourceObj = new TFOResourceObj();
-                                                insertPageResourceObj.setImageUrl(FastData.getBabyAvatar());
-                                                insertPageResourceObj.setImageOrientation(response.getImageRotation());
-                                                insertPageResourceObj.setImageHeight(response.getImageHeight());
-                                                insertPageResourceObj.setImageWidth(response.getImageWidth());
-                                                insertPageResources.add(insertPageResourceObj);
-                                                TFOContentObj insertPageContent = new TFOContentObj("", insertPageResources);//没有subtitile
-                                                String insertContent = FastData.getBabyNickName()
-                                                        + ","
-                                                        + FastData.getBabyAge()
-                                                        + ","
-                                                        + "是一个活泼可爱的小宝宝，在"
-                                                        + FastData.getBabyNickName()
-                                                        + "成长的过程中经常会\"语出惊人\"，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了"
-                                                        + FastData.getBabyNickName()
-                                                        + "成长中的童言趣语，一起来看看吧~";
-                                                insertPageContent.setContent(insertContent);
-                                                tfoPublishObjs.get(0).getContentList().add(0, insertPageContent);//插入插页信息
-                                            }
 
                                             //拼接所有图片的id，作为保存书籍接口使用
                                             StringBuffer sb = new StringBuffer("{\"mediaIds\":[");

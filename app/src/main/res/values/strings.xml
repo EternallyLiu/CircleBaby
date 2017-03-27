@@ -894,4 +894,5 @@
     <string name="please_select_school_work">请指定一个作业再进行此操作</string>
     <string name="please_input_add_baby_real_name">请输入新增宝贝名字</string>
     <string name="please_input_baby_real_name_tip">小贴士： 请填写宝贝真实姓名</string>
+    <string name="activity_look_homework">查看作业</string>
 </resources>

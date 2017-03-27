@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -148,5 +149,7 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
         setResult(RESULT_OK, intent);
         finish();
     }
+
+    public void clickPhotoView(View view){}
 
 }
