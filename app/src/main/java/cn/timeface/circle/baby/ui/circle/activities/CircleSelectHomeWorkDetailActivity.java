@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -74,7 +75,7 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         babyId = getIntent().getLongExtra("baby_id", 0);
         this.allSelHomeWorks = getIntent().getParcelableArrayListExtra("all_sel_home_works");
 
-        if(!TextUtils.isEmpty(circleId))reqData();
+        if(!getIntent().hasExtra("task_id"))reqData();
     }
 
     private void reqData() {
@@ -115,6 +116,8 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
 
         if(selectHomeWorkAdapter.getListData().isEmpty()){
             stateView.empty();
+        } else {
+            stateView.setVisibility(View.GONE);
         }
     }
 
@@ -128,14 +131,18 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_complete){
             close();
+            return true;
+        } else if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         close();
+        super.onBackPressed();
     }
 
     private void close(){

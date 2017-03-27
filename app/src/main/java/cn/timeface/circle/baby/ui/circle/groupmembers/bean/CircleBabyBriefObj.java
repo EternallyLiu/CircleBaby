@@ -18,6 +18,15 @@ public class CircleBabyBriefObj implements Parcelable {
     private String babyAvatarUrl;
     private long babyId;
     private String babyName;
+    private int selectCount;
+
+    public int getSelectCount() {
+        return selectCount;
+    }
+
+    public void setSelectCount(int selectCount) {
+        this.selectCount = selectCount;
+    }
 
     public String getBabyAvatarUrl() {
         return babyAvatarUrl;

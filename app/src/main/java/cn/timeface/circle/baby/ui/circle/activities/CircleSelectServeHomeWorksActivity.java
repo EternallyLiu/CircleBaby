@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +14,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -23,8 +26,9 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
+import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -32,9 +36,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
 import cn.timeface.circle.baby.ui.circle.dialogs.CircleSelectSchoolTaskTypeDialog;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleSelectBabyFragment;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleSelectSchoolTaskFragment;
-import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
-import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
  * 圈作品家校纪念册选择作业
@@ -99,104 +101,102 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
             }
 
 
-//            addSubscription(
-//                    apiService.queryImageInfo(FastData.getBabyAvatar())
-//                            .compose(SchedulersCompat.applyIoSchedulers())
-//                            .subscribe(
-//                                    response -> {
-//                                        if (response.success()) {
-//                                            //跳转开放平台POD接口；
-//
-//                                            //组装发布数据
-//                                            //每条作业是一个tfopublishobj
-//                                            List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
-//
-//                                                //content list，代表一个时光
-//                                                List<TFOContentObj> tfoContentObjs = new ArrayList<>(allSelHomeWorks.size());
-//                                                for (CircleHomeworkExObj timeLineObj : allSelHomeWorks) {
-//                                                    tfoContentObjs.add(timeLineObj.toTFOContentObj());
-//                                                }
-//
-//                                                TFOPublishObj tfoPublishObj = new TFOPublishObj(key, tfoContentObjs);
-//                                                tfoPublishObjs.add(tfoPublishObj);
-//
-//
-//                                            ArrayList<String> keys = new ArrayList<>();
-//                                            ArrayList<String> values = new ArrayList<>();
-//                                            keys.add("book_author");
-//                                            keys.add("book_title");
-//                                            values.add(author);
-//                                            values.add(bookName);
-//
-//                                            if (bookType == BookModel.BOOK_TYPE_GROWTH_QUOTATIONS) {
-//                                                //成长语录插页数据，content_list第一条数据为插页信息
-//                                                List<TFOResourceObj> insertPageResources = new ArrayList<>(1);
-//                                                TFOResourceObj insertPageResourceObj = new TFOResourceObj();
-//                                                insertPageResourceObj.setImageUrl(FastData.getBabyAvatar());
-//                                                insertPageResourceObj.setImageOrientation(response.getImageRotation());
-//                                                insertPageResourceObj.setImageHeight(response.getImageHeight());
-//                                                insertPageResourceObj.setImageWidth(response.getImageWidth());
-//                                                insertPageResources.add(insertPageResourceObj);
-//                                                TFOContentObj insertPageContent = new TFOContentObj("", insertPageResources);//没有subtitile
-//                                                String insertContent = FastData.getBabyNickName()
-//                                                        + ","
-//                                                        + FastData.getBabyAge()
-//                                                        + ","
-//                                                        + "是一个活泼可爱的小宝宝，在"
-//                                                        + FastData.getBabyNickName()
-//                                                        + "成长的过程中经常会\"语出惊人\"，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了"
-//                                                        + FastData.getBabyNickName()
-//                                                        + "成长中的童言趣语，一起来看看吧~";
-//                                                insertPageContent.setContent(insertContent);
-//                                                tfoPublishObjs.get(0).getContentList().add(0, insertPageContent);//插入插页信息
-//                                            }
-//
-//                                            //拼接所有图片的id，作为保存书籍接口使用
-//                                            StringBuffer sb = new StringBuffer("{\"mediaIds\":[");
-//                                            StringBuffer sbTime = new StringBuffer("\"timeIds\":[");
-//                                            for (CircleHomeworkExObj timeLineObj : allSelHomeWorks) {
-//                                                if (timeLineObj != null) {
-//                                                    sbTime.append(timeLineObj.getTimeId());
-//                                                    sbTime.append(",");
-//
-//                                                    if (!timeLineObj.getHomework().getMediaList().isEmpty()) {
-//                                                        for (MediaObj mediaObj : timeLineObj.getHomework().getMediaList()) {
-//                                                            if(allSelectMedias.contains(mediaObj)){
-//                                                                sb.append(mediaObj.getId());
-//                                                                sb.append(",");
-//                                                            }
-//                                                        }
-//                                                    }
-//                                                }
-//                                            }
-//                                            if(sb.lastIndexOf(",") > -1)sb.replace(sb.lastIndexOf(","), sb.length(), "]");
-//                                            if(sbTime.lastIndexOf(",") > -1)sbTime.replace(sbTime.lastIndexOf(","), sbTime.length(), "]");
-//                                            sb.append(",").append(sbTime).append("}");
-//
-//                                            finish();
-//                                            MyPODActivity.open(this, bookId, openBookId, bookType, openBookType, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, TextUtils.isEmpty(bookId) ? 1 : 2);
-//                                        }
-//                                    },
-//                                    throwable -> Log.e(TAG, throwable.getLocalizedMessage())
-//                            ));
+            addSubscription(
+                    apiService.queryImageInfo(FastData.getBabyAvatar())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(
+                                    response -> {
+                                        if (response.success()) {
+                                            //跳转开放平台POD接口；
+                                            String author = FastData.getUserName();
+                                            String bookName = FastData.getBabyNickName() + "的家校纪念册";
+                                            //组装发布数据
+                                            //每条作业是一个tfopublishobj
+                                            List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+                                            CircleHomeworkExObj minHomework = null;
+                                            CircleHomeworkExObj maxHomework = null;
+                                            if(allSelHomeWorks.size() > 0) {
+                                                minHomework = maxHomework = allSelHomeWorks.get(0);
+                                            }
 
+                                            //转换成发布obj and 取出最大小值 and 拼接所有homework的id，作为保存书籍接口使用
+                                            HashMap<Long, List<Long>> taskMap = new HashMap<>();
+                                            for(CircleHomeworkExObj circleHomeworkExObj : allSelHomeWorks){
+                                                tfoPublishObjs.add(circleHomeworkExObj.toTFOPublishObj());
+                                                if(circleHomeworkExObj.getHomework().getCreateDate() >= maxHomework.getHomework().getCreateDate()){
+                                                    maxHomework = circleHomeworkExObj;
+                                                } else {
+                                                    minHomework = circleHomeworkExObj;
+                                                }
 
+                                                if(taskMap.containsKey(circleHomeworkExObj.getHomework().getTaskId())){
+                                                    taskMap.get(circleHomeworkExObj.getHomework().getTaskId()).add(circleHomeworkExObj.getHomework().getHomeworkId());
+                                                } else {
+                                                    List<Long> homeWorkIds = new ArrayList<>();
+                                                    homeWorkIds.add(circleHomeworkExObj.getHomework().getHomeworkId());
+                                                    taskMap.put(circleHomeworkExObj.getHomework().getTaskId(), homeWorkIds);
+                                                }
+                                            }
 
+                                            ArrayList<String> keys = new ArrayList<>();
+                                            ArrayList<String> values = new ArrayList<>();
+                                            keys.add("book_author");
+                                            keys.add("book_title");
+                                            keys.add("book_period");
+                                            keys.add("stu_class");
+                                            keys.add("stu_name");
+                                            values.add(author);
+                                            values.add(bookName);
+                                            values.add(DateUtil.getAge(FastData.getBabyBithday(), minHomework.getHomework().getCreateDate())
+                                                    + "～"
+                                                    + DateUtil.getAge(FastData.getBabyBithday(), maxHomework.getHomework().getCreateDate()));
+                                            values.add("班级：" + FastData.getCircleUserInfo().getCircleNickName());
+                                            values.add("姓名：" + FastData.getBabyNickName());
 
+                                            //成长语录插页数据，content_list第一条数据为寄语
+                                            TFOPublishObj tfoPublishObjWord = new TFOPublishObj();
+                                            tfoPublishObjWord.setContent("“成长”是一个色彩斑斓的字眼，在这成长的过程中，喜悦与烦恼在不经意间在这成长的路上烙上了一个又一个的脚印，可谓是“让我欢喜让我忧”。成长像一条小河，而成长就像一个鱼网，捕捉着成长中的喜悦与忧愁，而这些忧愁就好象入口的茉莉花，在口中不断地回味着，回味着……<br/>" +
+                                                    "　　而在这成长的路上，正因为有了忧愁，正因为有了快乐，才构成了这条五彩缤纷的人生路，也许昨天给予我的是无穷的忧愁，但人不能总背着那么多的包袱，我们不该带着忧愁去面对今天，不管是今天，还是昨天，我只知道“希望在明天”，相信吧：明天的阳光一定比今天要灿烂夺目。<br/>" +
+                                                    "　　我们的未来仍然等着我们去填充颜色，让我们握着手中的画笔，用自己的双手。<br/>" +
+                                                    "　　“成长”是一个色彩斑斓的字眼，在这成长的过程中，喜悦与烦恼在不经意间在这成长的路上烙上了一个又一个的脚印，可谓是“让我欢喜让我忧”。入口的茉莉花，在口中不断地回味着，回味着……<br/>" +
+                                                    "　　而在这成长的路上，正因为有了忧愁，正因为有了快乐，才构成了这条五彩缤纷的人生路，也许昨天给予我的是无穷的忧愁，但人不能总背着那么多的包袱，我们不该带着忧愁去面对今天，不管是今天，还是昨天，我只知道“希望在明天”，相信吧：明天的阳光一定比今天要灿烂夺目。<br/>" +
+                                                    "　　我们的未来仍然等着我们去填充颜色，让我们握着手中的画笔，用自己的双手。");
+                                            tfoPublishObjs.add(0, tfoPublishObjWord);//插入寄语信息
 
+                                            //成长语录插页数据，content_list第二条数据为简介
+                                            TFOPublishObj tfoPublishObjSummary = new TFOPublishObj();
+                                            tfoPublishObjSummary.setContent(
+                                                    FastData.getBabyNickName() + FastData.getBabyAge() + "，是一个活波可爱的小宝宝，在" +
+                                                            FastData.getBabyNickName() + "成长的过程中经常会“语出惊人”，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了洋洋仔成长中的童言趣语，一起来看看吧~");
+                                            tfoPublishObjs.add(1, tfoPublishObjSummary);
 
+                                            //拼接所有的homework id {"taskIds":[{"42":[53,52,48,51,47,46]},{"43":[45]},{"41":[54,62]}],"circleId":32}
+                                            StringBuffer sbTaskIds = new StringBuffer("{\"taskIds\":[");
+                                            Gson gson = new Gson();
+                                            Iterator iterator = taskMap.keySet().iterator();
+                                            while (iterator.hasNext()){
+                                                long taskId = (long) iterator.next();
+                                                sbTaskIds.append("{")
+                                                        .append("\"" + taskId + "\"")
+                                                        .append(":")
+                                                        .append(gson.toJson(taskMap.get(taskId)))
+                                                        .append("},");
+                                            }
+                                            sbTaskIds.replace(sbTaskIds.lastIndexOf(","), sbTaskIds.lastIndexOf(",") + 1, "");
+                                            sbTaskIds.append("],\"circleId\":").append(circleId).append("}");
 
-
-
-
-
-
-
-
-
-
+                                            finish();
+                                            MyPODActivity.open(
+                                                    this, "", "",
+                                                    BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL,
+                                                    TypeConstants.OPEN_BOOK_TYPE_CIRCLE_HOME_SCHOOL_BOOK, tfoPublishObjs, sbTaskIds.toString(),
+                                                    true, FastData.getBabyId(), keys, values,
+                                                    1);
+                                        }
+                                    },
+                                    throwable -> Log.e(TAG, throwable.getLocalizedMessage())
+                            ));
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -219,6 +219,7 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
         }
         selectBabyFragment.setAllSelHomeWorks(allSelHomeWorks);
         showContent(selectBabyFragment);
+        tvContentType.setText("按成员");
     }
 
     Fragment currentFragment = null;
@@ -244,6 +245,7 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
         }
         selectSchoolTaskFragment.setAllSelHomeWorks(allSelHomeWorks);
         showContent(selectSchoolTaskFragment);
+        tvContentType.setText("按作业");
     }
 
     @Override
@@ -253,6 +255,16 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
             return;
         }
 
-        allSelHomeWorks = getIntent().getParcelableArrayListExtra("all_sel_home_works");
+        if(requestCode == REQUEST_CODE_SELECT_HOME_WORK){
+            allSelHomeWorks = data.getParcelableArrayListExtra("all_select_works");
+        }
+
+        if(currentFragment instanceof CircleSelectBabyFragment){
+            ((CircleSelectBabyFragment) currentFragment).setActivityResult(requestCode, resultCode, data);
+        } else if(currentFragment instanceof CircleSelectSchoolTaskFragment){
+            ((CircleSelectSchoolTaskFragment) currentFragment).setActivityResult(requestCode, resultCode, data);
+        } else {
+            Log.e(TAG, "not known fragment");
+        }
     }
 }

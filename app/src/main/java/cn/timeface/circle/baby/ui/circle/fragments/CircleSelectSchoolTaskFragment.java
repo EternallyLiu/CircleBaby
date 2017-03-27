@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.circle.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -29,6 +30,8 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.views.TFStateView;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * 圈作品选择school task 界面
  * author : sunyanwei Created on 17-3-22
@@ -44,6 +47,7 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment implem
     String circleId;
     CircleSelectSchoolTaskAdapter selectSchoolTaskAdapter;
     List<CircleHomeworkExObj> allSelHomeWorks;
+    int position;
 
     public static CircleSelectSchoolTaskFragment newInstance(String circleId, List<CircleHomeworkExObj> allSelHomeWorks){
         CircleSelectSchoolTaskFragment fragment = new CircleSelectSchoolTaskFragment();
@@ -113,6 +117,7 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment implem
     public void onClick(View view) {
         if(view.getId() == R.id.rl_root){
             CircleSchoolTaskObj schoolTaskObj = (CircleSchoolTaskObj) view.getTag(R.string.tag_obj);
+            position = (int) view.getTag(R.string.tag_index);
             if(getActivity() instanceof CircleSelectServeHomeWorksActivity){
                 CircleSelectHomeWorkTaskDetailActivity.open4Result(
                         getActivity(),
@@ -121,6 +126,21 @@ public class CircleSelectSchoolTaskFragment extends BasePresenterFragment implem
                         circleId,
                         FastData.getBabyId(),
                         allSelHomeWorks);
+            }
+        }
+    }
+
+    public void setActivityResult(int requestCode, int resultCode, Intent data) {
+        if(getActivity() instanceof CircleSelectServeHomeWorksActivity){
+
+            if(resultCode != RESULT_OK || data == null){
+                return;
+            }
+
+            if(requestCode == ((CircleSelectServeHomeWorksActivity) getActivity()).REQUEST_CODE_SELECT_HOME_WORK){
+                int photoCount = data.getIntExtra("photo_count", 0);
+                selectSchoolTaskAdapter.getItem(position).setSelectCount(photoCount);
+                selectSchoolTaskAdapter.notifyItemChanged(position);
             }
         }
     }

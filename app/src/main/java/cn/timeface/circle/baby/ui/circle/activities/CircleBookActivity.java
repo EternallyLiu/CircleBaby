@@ -244,7 +244,14 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                             String.valueOf(bookObj.getOpenBookId()));
                 //圈时光书
                 } else if(bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME){
-
+                    CircleSelectServerTimesActivity.open(
+                            this,
+                            bookObj.getBookType(),
+                            bookObj.getOpenBookType(),
+                            String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            String.valueOf(circleId)
+                    );
                 } else {
                     Log.e(TAG, "无法识别的书籍类型: " + bookObj.getBookType());
                 }

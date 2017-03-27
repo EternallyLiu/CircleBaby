@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.ui.circle.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -51,8 +52,14 @@ public class CircleSelectBabyAdapter extends BaseRecyclerAdapter<CircleBabyBrief
         final CircleBabyBriefObj babyObj = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
         holder.tvName.setText(babyObj.getBabyName());
-        holder.tvSelectCount.setText("已选择10条记录");
+        if(babyObj.getSelectCount() > 0){
+            holder.tvSelectCount.setVisibility(View.VISIBLE);
+            holder.tvSelectCount.setText("已选择" + babyObj.getSelectCount() +  "条记录");
+        } else {
+            holder.tvSelectCount.setVisibility(View.GONE);
+        }
         if(onClickListener != null)holder.rlRoot.setOnClickListener(onClickListener);
+        holder.rlRoot.setTag(R.string.tag_index, position);
         holder.rlRoot.setTag(R.string.tag_obj, babyObj);
         GlideUtil.displayImage(babyObj.getBabyAvatarUrl(), holder.ivAvatar);
     }

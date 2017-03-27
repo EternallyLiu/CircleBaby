@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.circle.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -29,6 +30,8 @@ import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
 import cn.timeface.circle.baby.views.TFStateView;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * 选择圈内宝宝fragment
  * author : sunyanwei Created on 17-3-22
@@ -44,6 +47,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
     String circleId;
     CircleSelectBabyAdapter selectBabyAdapter;
     List<CircleHomeworkExObj> allSelHomeWorks;
+    int position = 0;
 
     public static CircleSelectBabyFragment newInstance(String circleId, List<CircleHomeworkExObj> allSelHomeWorks){
         CircleSelectBabyFragment fragment = new CircleSelectBabyFragment();
@@ -120,6 +124,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
         switch (view.getId()){
             case R.id.rl_root:
                 CircleBabyBriefObj babyObj = (CircleBabyBriefObj) view.getTag(R.string.tag_obj);
+                position = (int) view.getTag(R.string.tag_index);
                 if(getActivity() instanceof CircleSelectServeHomeWorksActivity){
                     CircleSelectHomeWorkDetailActivity.open4Result(
                             getActivity(),
@@ -127,6 +132,21 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
                             circleId, babyObj.getBabyId(), allSelHomeWorks);
                 }
                 break;
+        }
+    }
+
+    public void setActivityResult(int requestCode, int resultCode, Intent data) {
+        if(getActivity() instanceof CircleSelectServeHomeWorksActivity){
+
+            if(resultCode != RESULT_OK || data == null){
+                return;
+            }
+
+            if(requestCode == ((CircleSelectServeHomeWorksActivity) getActivity()).REQUEST_CODE_SELECT_HOME_WORK){
+               int photoCount = data.getIntExtra("photo_count", 0);
+                selectBabyAdapter.getItem(position).setSelectCount(photoCount);
+                selectBabyAdapter.notifyItemChanged(position);
+            }
         }
     }
 }

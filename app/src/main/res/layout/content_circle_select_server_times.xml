@@ -5,6 +5,7 @@
     android:id="@+id/content_select_time"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_main"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity"
     tools:showIn="@layout/activity_select_server_time">
