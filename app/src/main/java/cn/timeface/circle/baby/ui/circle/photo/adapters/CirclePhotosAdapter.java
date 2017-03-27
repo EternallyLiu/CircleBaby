@@ -3,7 +3,6 @@ package cn.timeface.circle.baby.ui.circle.photo.adapters;
 import android.animation.Animator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
-import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
-import cn.timeface.circle.baby.support.api.models.objs.MediaWrapObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.views.CirclePhotoImageView;
 
@@ -33,7 +29,7 @@ public class CirclePhotosAdapter extends BaseRecyclerAdapter<GetCirclePhotoByUse
     int[] lineEnd;//用于存储每个PhotoGroupItem的最大行号
     final int COLUMN_NUM = 4;
     final int maxCount;
-    List<MediaObj> mediaObjs = new ArrayList<>();
+    List<CircleMediaObj> mediaObjs = new ArrayList<>();
 
     int contentType;
 
@@ -58,7 +54,7 @@ public class CirclePhotosAdapter extends BaseRecyclerAdapter<GetCirclePhotoByUse
         }*/
 
         for(GetCirclePhotoByUserObj obj : listData){
-            List<MediaObj> mediaList = obj.getMediaList();
+            List<CircleMediaObj> mediaList = obj.getMediaList();
             mediaObjs.addAll(mediaList);
         }
 
@@ -96,7 +92,7 @@ public class CirclePhotosAdapter extends BaseRecyclerAdapter<GetCirclePhotoByUse
             holder.tvTitle.setText(item.getDate());
         } else if (viewType == TYPE_PHOTOS) {
             CirclePhotosAdapter.PhotosViewHolder holder = ((CirclePhotosAdapter.PhotosViewHolder) viewHolder);
-            List<MediaObj> imgs = getLineImgObj(position);
+            List<CircleMediaObj> imgs = getLineImgObj(position);
 
             for (int i = 0; i < COLUMN_NUM; i++) {
                 if (i < imgs.size()) {
@@ -104,9 +100,6 @@ public class CirclePhotosAdapter extends BaseRecyclerAdapter<GetCirclePhotoByUse
                     holder.ivImgs[i].setContent(imgs.get(i));
                     holder.ivImgs[i].setTag(R.string.tag_obj, imgs.get(i));
                     holder.ivImgs[i].setTag(R.string.tag_ex, mediaObjs);
-                    holder.ivImgs[i].setTag(R.string.tag, position);
-
-                    //选中状态
                 } else {
                     holder.ivImgs[i].setVisibility(View.INVISIBLE);
                 }
@@ -125,7 +118,7 @@ public class CirclePhotosAdapter extends BaseRecyclerAdapter<GetCirclePhotoByUse
     }
 
     //获取该行数据再PhotoGroupItem对象中需要显示哪些图片
-    public List<MediaObj> getLineImgObj(int line) {
+    public List<CircleMediaObj> getLineImgObj(int line) {
         int dataPos = getDataPosition(line);
         int imgCount = listData.get(dataPos).getMediaList().size();
         int innerLine = line - 1;

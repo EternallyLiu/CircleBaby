@@ -118,8 +118,8 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
                 } else if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME) {
                     CircleSelectServerTimesActivity.open(
                             this,
-                            BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK,
-                            TypeConstants.OPEN_BOOK_TYPE_PAINTING,
+                            BookModel.CIRCLE_BOOK_TYPE_TIME,
+                            TypeConstants.OPEN_BOOK_TYPE_CIRCLE_TIME_BOOK,
                             "",
                             "",
                             String.valueOf(FastData.getCircleId()));
