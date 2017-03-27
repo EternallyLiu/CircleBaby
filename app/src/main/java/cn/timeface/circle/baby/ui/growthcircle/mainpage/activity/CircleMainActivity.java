@@ -245,7 +245,8 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     @Override
     public void loadFinish(int code) {
         if (adapter.getRealItemSize() <= 0) {
-//            tfStateView.empty(R.string.circle_no_dynamic);
+            tfStateView.empty(R.string.circle_no_dynamic);
+            adapter.addFooter(footerView);
         }
     }
 

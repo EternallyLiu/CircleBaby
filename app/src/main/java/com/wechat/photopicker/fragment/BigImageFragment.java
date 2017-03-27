@@ -66,7 +66,7 @@ import static com.wechat.photopicker.utils.IntentUtils.BigImageShowIntent.KEY_SE
 public class BigImageFragment extends BaseFragment implements ImageActionDialog.ClickCallBack, View.OnClickListener, DeleteDialog.SubmitListener, PhotoPagerAdapter.ImageClickListener, CircleBabyDialog.CircleBabyCallBack {
 
     public static int CIRCLE_MEDIA_IMAGE_EDITOR = 1009;
-
+    public static int CIRCLE_MEDIA_IMAGE_NONE = 1010;
     @Bind(R.id.tv_title)
     TextView tvTitle;
     @Bind(R.id.toolbar)
@@ -146,15 +146,17 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         mViewPager.setCurrentItem(mCurrenItem);
         initTips();
         initLikeCount();
-        if (mMedias != null && mMedias.size() > 0)
-            llBotton.setVisibility(View.VISIBLE);
-        else llBotton.setVisibility(View.GONE);
 
         tag.setOnClickListener(this);
         love.setOnClickListener(this);
         initListener();
         showGuide();
-        initCircleBaby();
+        if (mMedias != null && mMedias.size() > 0)
+            llBotton.setVisibility(View.VISIBLE);
+        else llBotton.setVisibility(View.GONE);
+        if (type == CIRCLE_MEDIA_IMAGE_NONE) llBotton.setVisibility(View.GONE);
+        if (type == CIRCLE_MEDIA_IMAGE_EDITOR)
+            initCircleBaby();
         return view;
     }
 
@@ -591,6 +593,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     public void imageClcik() {
         if (llBotton != null)
             llBotton.setVisibility(llBotton.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+        if (type == CIRCLE_MEDIA_IMAGE_NONE) llBotton.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.tv_relate_baby)
@@ -613,19 +616,20 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             tfProgressDialog = TFProgressDialog.getInstance("");
         tfProgressDialog.setTvMessage("正在执行此操作~");
 //        if (tfProgressDialog.isHidden())
-            tfProgressDialog.show(getChildFragmentManager(), "");
-//        addSubscription(apiService.circleAtBaby(Uri.encode(babys), FastData.getCircleId(), mediaId)
-//                .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(circleMediaResponse -> tfProgressDialog.dismiss()).
-//        subscribe(circleMediaResponse -> {
-//            if (circleMediaResponse.success()) {
-//                int currentIndex = mViewPager.getCurrentItem();
-//                ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
-//                initCircleBaby();
-//            } else ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
-//        }, throwable -> {
-//            if (!tfProgressDialog.isHidden())
-//                tfProgressDialog.dismiss();
-//            LogUtil.showError(throwable);
-//        }));
+        tfProgressDialog.show(getChildFragmentManager(), "");
+        addSubscription(apiService.circleAtBaby(Uri.encode(babys), FastData.getCircleId(), mediaId)
+                .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(circleMediaResponse -> tfProgressDialog.dismiss()).
+                        subscribe(circleMediaResponse -> {
+                            if (circleMediaResponse.success()) {
+                                int currentIndex = mViewPager.getCurrentItem();
+                                ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
+                                initCircleBaby();
+                            } else
+                                ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
+                        }, throwable -> {
+                            if (!tfProgressDialog.isHidden())
+                                tfProgressDialog.dismiss();
+                            LogUtil.showError(throwable);
+                        }));
     }
 }

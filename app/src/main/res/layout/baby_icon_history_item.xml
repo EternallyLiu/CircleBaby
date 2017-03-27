@@ -31,6 +31,8 @@
         android:layout_below="@+id/icon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/size_6"
-        android:gravity="center"/>
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"/>
 
 </RelativeLayout>

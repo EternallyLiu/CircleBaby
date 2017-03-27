@@ -19,39 +19,19 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 public class HomeWorkListObj extends BaseObj implements Parcelable {
     protected List<MediaObj> meidaList;        //该作业下作品图片
     protected CircleSchoolTaskObj schoolTask;  //老师的作业
+    protected int submitCount;//作业提交数量
+
 
     public HomeWorkListObj() {
     }
 
-    public HomeWorkListObj(Parcel in) {
-        super(in);
-        meidaList = in.createTypedArrayList(MediaObj.CREATOR);
-        schoolTask = in.readParcelable(CircleSchoolTaskObj.class.getClassLoader());
+    public int getSubmitCount() {
+        return submitCount;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeTypedList(meidaList);
-        dest.writeParcelable(schoolTask, flags);
+    public void setSubmitCount(int submitCount) {
+        this.submitCount = submitCount;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<HomeWorkListObj> CREATOR = new Creator<HomeWorkListObj>() {
-        @Override
-        public HomeWorkListObj createFromParcel(Parcel in) {
-            return new HomeWorkListObj(in);
-        }
-
-        @Override
-        public HomeWorkListObj[] newArray(int size) {
-            return new HomeWorkListObj[size];
-        }
-    };
 
     public List<MediaObj> getMeidaList() {
         if (meidaList==null)meidaList=new ArrayList<>(0);
@@ -73,4 +53,36 @@ public class HomeWorkListObj extends BaseObj implements Parcelable {
     public static Creator<HomeWorkListObj> getCREATOR() {
         return CREATOR;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeTypedList(this.meidaList);
+        dest.writeParcelable(this.schoolTask, flags);
+        dest.writeInt(this.submitCount);
+    }
+
+    protected HomeWorkListObj(Parcel in) {
+        super(in);
+        this.meidaList = in.createTypedArrayList(MediaObj.CREATOR);
+        this.schoolTask = in.readParcelable(CircleSchoolTaskObj.class.getClassLoader());
+        this.submitCount = in.readInt();
+    }
+
+    public static final Creator<HomeWorkListObj> CREATOR = new Creator<HomeWorkListObj>() {
+        @Override
+        public HomeWorkListObj createFromParcel(Parcel source) {
+            return new HomeWorkListObj(source);
+        }
+
+        @Override
+        public HomeWorkListObj[] newArray(int size) {
+            return new HomeWorkListObj[size];
+        }
+    };
 }
