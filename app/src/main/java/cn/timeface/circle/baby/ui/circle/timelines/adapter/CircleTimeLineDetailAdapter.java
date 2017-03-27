@@ -52,6 +52,7 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
 
     @Override
     public int getViewLayoutID(int viewType) {
+        LogUtil.showLog("viewType===" + viewType);
         switch (viewType) {
             case 0:
                 return R.layout.tiime_line_detail_imageview;
@@ -73,6 +74,7 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
     @Override
     public int getViewType(int position) {
         Object item = getItem(position);
+        LogUtil.showLog("comment instanceof===" + (item instanceof CircleCommentObj));
         if (item instanceof CircleMediaObj) {
             CircleMediaObj mediaObj = (CircleMediaObj) item;
             if (mediaObj.isVideo())
@@ -80,22 +82,25 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
             return 0;
         } else if (item instanceof CircleCommentObj)
             return 1;
-        else if (item instanceof LikeUserList)
+        else if (item instanceof TimeLikeUserList)
             return 2;
         else if (item instanceof TitleBean)
             return 5;
         else if (item instanceof String)
             return 3;
-        else return -1;
+        else {
+            LogUtil.showLog(item.toString() + "===item detail:" + JSONUtils.parse2JSONString(item));
+            return -1;
+        }
     }
 
     @Override
     public void initView(View contentView, int position) {
         Object item = getItem(position);
         if (item instanceof MediaObj) doMediaObj(contentView, position, (CircleMediaObj) item);
-        else if (item instanceof CommentObj)
+        else if (item instanceof CircleCommentObj)
             doCommentObj(contentView, (CircleCommentObj) item);
-        else if (item instanceof LikeUserList)
+        else if (item instanceof TimeLikeUserList)
             doLikeList(contentView, (TimeLikeUserList) item);
         else if (item instanceof TitleBean)
             doTitle(contentView, (TitleBean) item);
@@ -175,7 +180,7 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
         String relationName = comment.getCommentUserInfo().getCircleNickName();
         SpannableStringBuilder msb = new SpannableStringBuilder();
         msb.append(relationName)
-                .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), 0, relationName.length(),
+                .setSpan(new ForegroundColorSpan(Color.parseColor("#000000")), 0, relationName.length(),
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//第一个人名
         if (comment.getToCommentUserInfo() != null && !TextUtils.isEmpty(comment.getToCommentUserInfo().getCircleNickName())) {
             msb.append("回复");
@@ -190,10 +195,11 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
     private void doLikeList(View contentView, TimeLikeUserList likeUserList) {
         RecyclerView likeList = ViewHolder.getView(contentView, R.id.like_list);
         LinearLayoutManager manager = new LinearLayoutManager(context(), LinearLayoutManager.HORIZONTAL, false);
-        LikeAdapter adapter = new LikeAdapter(context());
+        CircleLikeAdapter adapter = new CircleLikeAdapter(context());
         likeList.setAdapter(adapter);
         likeList.setLayoutManager(manager);
         CircleUserInfo userObj = new CircleUserInfo();
+        userObj.setCircleUserId(-1);
         if (!likeUserList.getUserInfos().contains(userObj))
             likeUserList.getUserInfos().add(0, userObj);
         adapter.addList(true, likeUserList.getUserInfos());

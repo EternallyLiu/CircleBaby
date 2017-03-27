@@ -22,7 +22,7 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
     protected CircleActivityAlbumObj activityAlbum;         //圈活动相册对象
     protected long circleTimelineId;                        //时光id
     protected int commentCount;                             //评论的数量
-    protected List<CircleCommentObj> commmentList;          //评论列表
+    protected List<CircleCommentObj> commentList;          //评论列表
     protected int isSync;                                   //是否同步  0 否 1 是
     protected int likeCount;                                //点赞数量
     protected List<CircleUserInfo> likeList;                //点赞列表
@@ -38,7 +38,7 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
         activityAlbum = in.readParcelable(CircleActivityAlbumObj.class.getClassLoader());
         circleTimelineId = in.readLong();
         commentCount = in.readInt();
-        commmentList = in.createTypedArrayList(CircleCommentObj.CREATOR);
+        commentList = in.createTypedArrayList(CircleCommentObj.CREATOR);
         isSync = in.readInt();
         likeCount = in.readInt();
         likeList = in.createTypedArrayList(CircleUserInfo.CREATOR);
@@ -65,7 +65,7 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
         dest.writeParcelable(activityAlbum, flags);
         dest.writeLong(circleTimelineId);
         dest.writeInt(commentCount);
-        dest.writeTypedList(commmentList);
+        dest.writeTypedList(commentList);
         dest.writeInt(isSync);
         dest.writeInt(likeCount);
         dest.writeTypedList(likeList);
@@ -114,14 +114,13 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
         this.commentCount = commentCount;
     }
 
-    public List<CircleCommentObj> getCommmentList() {
-
-        if (commmentList == null) commmentList = new ArrayList<>(0);
-        return commmentList;
+    public List<CircleCommentObj> getcommentList() {
+        if (commentList == null) commentList = new ArrayList<>(0);
+        return commentList;
     }
 
-    public void setCommmentList(List<CircleCommentObj> commmentList) {
-        this.commmentList = commmentList;
+    public void setcommentList(List<CircleCommentObj> commentList) {
+        this.commentList = commentList;
     }
 
     public int getLikeCount() {

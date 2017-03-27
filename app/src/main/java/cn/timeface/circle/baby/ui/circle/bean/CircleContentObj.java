@@ -80,4 +80,15 @@ public class CircleContentObj extends BaseObj implements Parcelable {
         this.title = in.readString();
     }
 
+    public static final Creator<CircleContentObj> CREATOR = new Creator<CircleContentObj>() {
+        @Override
+        public CircleContentObj createFromParcel(Parcel source) {
+            return new CircleContentObj(source);
+        }
+
+        @Override
+        public CircleContentObj[] newArray(int size) {
+            return new CircleContentObj[size];
+        }
+    };
 }

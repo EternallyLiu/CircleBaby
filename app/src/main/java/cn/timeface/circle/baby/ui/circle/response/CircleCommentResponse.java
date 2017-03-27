@@ -1,5 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.response;
 
+import android.os.Parcel;
+
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -20,4 +22,34 @@ public class CircleCommentResponse extends BaseResponse {
     public void setCommentInfo(CircleCommentObj commentInfo) {
         this.commentInfo = commentInfo;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeParcelable(this.commentInfo, flags);
+    }
+
+    public CircleCommentResponse() {
+    }
+
+    protected CircleCommentResponse(Parcel in) {
+        this.commentInfo = in.readParcelable(CircleCommentObj.class.getClassLoader());
+    }
+
+    public static final Creator<CircleCommentResponse> CREATOR = new Creator<CircleCommentResponse>() {
+        @Override
+        public CircleCommentResponse createFromParcel(Parcel source) {
+            return new CircleCommentResponse(source);
+        }
+
+        @Override
+        public CircleCommentResponse[] newArray(int size) {
+            return new CircleCommentResponse[size];
+        }
+    };
 }

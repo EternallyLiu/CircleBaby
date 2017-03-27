@@ -8,10 +8,9 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 
 /**
- *  圈评论对象
+ * 圈评论对象
  * Created by lidonglin on 2017/3/14.
  */
-@JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
 public class CircleCommentObj extends BaseObj implements Parcelable {
     protected String commentContent;                //评论/回复的内容
     protected long commentDate;                     //评论的日期
@@ -23,43 +22,17 @@ public class CircleCommentObj extends BaseObj implements Parcelable {
     public CircleCommentObj() {
     }
 
-    protected CircleCommentObj(Parcel in) {
-        super(in);
-        commentContent = in.readString();
-        commentDate = in.readLong();
-        commentId = in.readLong();
-        commentUserInfo = in.readParcelable(CircleUserInfo.class.getClassLoader());
-        toCommentId = in.readLong();
-        toCommentUserInfo = in.readParcelable(CircleUserInfo.class.getClassLoader());
-    }
-
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(commentContent);
-        dest.writeLong(commentDate);
-        dest.writeLong(commentId);
-        dest.writeParcelable(commentUserInfo, flags);
-        dest.writeLong(toCommentId);
-        dest.writeParcelable(toCommentUserInfo, flags);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CircleCommentObj that = (CircleCommentObj) o;
+
+        if (getCommentId() > 0 && getCommentId() == that.getCommentId()) return true;
+        return false;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CircleCommentObj> CREATOR = new Creator<CircleCommentObj>() {
-        @Override
-        public CircleCommentObj createFromParcel(Parcel in) {
-            return new CircleCommentObj(in);
-        }
-
-        @Override
-        public CircleCommentObj[] newArray(int size) {
-            return new CircleCommentObj[size];
-        }
-    };
 
     public String getCommentContent() {
         return commentContent;
@@ -108,4 +81,42 @@ public class CircleCommentObj extends BaseObj implements Parcelable {
     public void setToCommentUserInfo(CircleUserInfo toCommentUserInfo) {
         this.toCommentUserInfo = toCommentUserInfo;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.commentContent);
+        dest.writeLong(this.commentDate);
+        dest.writeLong(this.commentId);
+        dest.writeParcelable(this.commentUserInfo, flags);
+        dest.writeLong(this.toCommentId);
+        dest.writeParcelable(this.toCommentUserInfo, flags);
+    }
+
+    protected CircleCommentObj(Parcel in) {
+        super(in);
+        this.commentContent = in.readString();
+        this.commentDate = in.readLong();
+        this.commentId = in.readLong();
+        this.commentUserInfo = in.readParcelable(CircleUserInfo.class.getClassLoader());
+        this.toCommentId = in.readLong();
+        this.toCommentUserInfo = in.readParcelable(CircleUserInfo.class.getClassLoader());
+    }
+
+    public static final Creator<CircleCommentObj> CREATOR = new Creator<CircleCommentObj>() {
+        @Override
+        public CircleCommentObj createFromParcel(Parcel source) {
+            return new CircleCommentObj(source);
+        }
+
+        @Override
+        public CircleCommentObj[] newArray(int size) {
+            return new CircleCommentObj[size];
+        }
+    };
 }

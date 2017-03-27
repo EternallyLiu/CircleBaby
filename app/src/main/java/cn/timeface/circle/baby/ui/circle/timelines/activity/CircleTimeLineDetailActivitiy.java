@@ -4,20 +4,30 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,6 +37,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -36,7 +47,9 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
+import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.support.api.ApiFactory;
+import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -60,12 +73,13 @@ import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.GridStaggerLookup;
 import cn.timeface.circle.baby.ui.timelines.views.SelectImageView;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * author : wangshuai Created on 2017/3/21
  * email : wangs1992321@gmail.com
  */
-public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister, BaseAdapter.LoadDataFinish, SwipeRefreshLayout.OnRefreshListener, ImageActionDialog.ClickCallBack {
+public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister, BaseAdapter.LoadDataFinish, SwipeRefreshLayout.OnRefreshListener, ImageActionDialog.ClickCallBack, TextView.OnEditorActionListener, View.OnFocusChangeListener, View.OnClickListener {
 
     @Bind(R.id.title)
     TextView title;
@@ -132,6 +146,8 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
 
     private void init() {
         swipeRefresh.setOnRefreshListener(this);
+        etCommment.setOnEditorActionListener(this);
+        etCommment.setOnFocusChangeListener(this);
     }
 
     private void initRecyclerView() {
@@ -153,11 +169,6 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 int firstVisibleItemPosition = layoutmanager.findFirstVisibleItemPosition();
-//                if (lookup.isShowSmail()) {
-//                    if (firstVisibleItemPosition > 4) {
-//                        backUp.setVisibility(View.VISIBLE);
-//                    } else backUp.setVisibility(View.GONE);
-//                } else
                 backUp.setVisibility(firstVisibleItemPosition > (lookup.getBeginCount() > 0 ? lookup.getBeginCount() - 1 : 0) ? View.VISIBLE : View.GONE);
             }
         });
@@ -171,8 +182,9 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
             TimeLikeUserList likeUserList = new TimeLikeUserList(currentTimeLineObj.getLikeList());
             contentList.add(likeUserList);
         }
-        if (currentTimeLineObj.getCommmentList().size() > 0)
-            contentList.addAll(currentTimeLineObj.getCommmentList());
+        if (currentTimeLineObj.getcommentList().size() > 0)
+            contentList.addAll(currentTimeLineObj.getcommentList());
+        LogUtil.showLog("comment size==" + currentTimeLineObj.getcommentList().size());
         adapter.addList(true, contentList);
         addLike.setChecked(currentTimeLineObj.getLike() % 2 == 1 ? true : false);
         if (commentable)
@@ -293,7 +305,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
                             }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-//                            deleteComment(commment);
+                            deleteComment(commment);
                         }
                     }).show();
                 } else {
@@ -309,11 +321,44 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         }
     }
 
+    private void deleteComment(CircleCommentObj commment) {
+
+    }
+
+    public View initCommentMenu(CircleCommentObj comment) {
+        View view = LayoutInflater.from(this).inflate(R.layout.view_comment_menu, null);
+        LinearLayout backView = (LinearLayout) view.findViewById(R.id.ll_publish_menu);
+        backView.setBackgroundColor(getResources().getColor(R.color.trans));
+        RelativeLayout tvAction = (RelativeLayout) view.findViewById(R.id.rl_action);
+        TextView tv = (TextView) view.findViewById(R.id.tv_action);
+        RelativeLayout tvCancel = (RelativeLayout) view.findViewById(R.id.rl_cancel);
+        if (comment.getCommentUserInfo().getCircleUserId()==FastData.getCircleUserId()) {
+            tv.setText("删除");
+        }
+        tvAction.setTag(R.string.tag_obj, comment);
+        tvAction.setOnClickListener(this);
+        tvCancel.setOnClickListener(this);
+        return view;
+    }
+
     @Override
     public void onItemClick(View view, int position) {
         Object item = adapter.getItem(position);
         if (item instanceof CircleMediaObj) {
             FragmentBridgeActivity.openBigimageFragment(this, 0, MediaObj.getMediaArray(currentTimeLineObj.getMediaList()), MediaObj.getUrls(currentTimeLineObj.getMediaList()), position, BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR, true, false);
+        } else if (item instanceof CircleCommentObj) {
+            dialog = new AlertDialog.Builder(this).setView(initCommentMenu((CircleCommentObj) item)).show();
+            dialog.setCanceledOnTouchOutside(true);
+            Window window = dialog.getWindow();
+            WindowManager m = window.getWindowManager();
+            Display d = m.getDefaultDisplay();
+            WindowManager.LayoutParams p = window.getAttributes();
+
+            p.width = d.getWidth();
+            window.setAttributes(p);
+            window.setGravity(Gravity.BOTTOM);
+            window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+            window.setWindowAnimations(R.style.bottom_dialog_animation);
         }
     }
 
@@ -334,6 +379,52 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     @Override
     public void onRefresh() {
         reqData();
+    }
+
+    private void readComment() {
+        for (int i = 0; i < currentTimeLineObj.getcommentList().size(); i++) {
+            if (adapter.containObj(currentTimeLineObj.getcommentList().get(i)))
+                continue;
+            adapter.addList(currentTimeLineObj.getcommentList().get(i));
+        }
+    }
+
+    /**
+     * 发送评论
+     */
+    private void sendComment() {
+        String s = etCommment.getText().toString();
+        if (TextUtils.isEmpty(s)) {
+            ToastUtil.showToast("请填写评论内容");
+            return;
+        }
+        apiService.circleComment(currentTimeLineObj.getCircleTimelineId(), Uri.encode(s), System.currentTimeMillis(), commmentId > 0 ? commmentId + "" : "")
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(circleCommentResponse -> {
+                    if (circleCommentResponse.success()) {
+//                        readComment();
+                        if (!adapter.containObj(circleCommentResponse.getCommentInfo()))
+                            adapter.addList(circleCommentResponse.getCommentInfo());
+                        hideKeyboard();
+                        ToastUtil.showToast(circleCommentResponse.getInfo());
+                        if (circleCommentResponse.success()) {
+                            etCommment.setText("");
+                            commmentId = 0;
+                        }
+                    }
+                }, error -> {
+                    error.printStackTrace();
+                });
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        switch (actionId) {
+            case EditorInfo.IME_ACTION_SEND:
+                sendComment();
+                break;
+        }
+        return false;
     }
 
     @Override
@@ -362,5 +453,12 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
 
                 break;
         }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            showKeyboard();
+        } else hideKeyboard();
     }
 }

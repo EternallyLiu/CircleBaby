@@ -1122,7 +1122,7 @@ public interface ApiService {
             @Query("circleTimelineId") long circleTimelineId,
             @Query("commentContent") String commentContent,
             @Query("commentDate") long commentDate,
-            @Query("commentId") long commentId);
+            @Query("commentId") String commentId);
 
     /**
      * 编辑某条时光
