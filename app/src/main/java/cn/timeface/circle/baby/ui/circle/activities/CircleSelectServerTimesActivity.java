@@ -137,7 +137,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(
                                     response -> {
-//                                        if(response.success()){
+                                        if (response.success()) {
                                             this.allSelectTimeLines.addAll(response.getDataList());
 
                                             tfStateView.setVisibility(View.GONE);
@@ -149,9 +149,9 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                             allTimeFragment.setTimeLineObjs(allSelectTimeLines);
                                             allTimeFragment.setMediaObjs(allSelectMedias);
                                             showContent(allTimeFragment);
-//                                        } else {
-//                                            showToast(response.info);
-//                                        }
+                                        } else {
+                                            showToast(response.info);
+                                        }
                                     },
                                     throwable -> {
                                         Log.e(TAG, throwable.getLocalizedMessage());
