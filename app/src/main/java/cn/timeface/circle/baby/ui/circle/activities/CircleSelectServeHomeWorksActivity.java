@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,11 +15,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -27,6 +24,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -59,6 +57,9 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
     String circleId;
     public final int REQUEST_CODE_SELECT_HOME_WORK = 100;
     List<CircleHomeworkExObj> allSelHomeWorks = new ArrayList<>();
+    boolean edit = false;
+    String bookId = "";
+    String openBookId = "";
 
     public static void open(Context context, String circleId){
         Intent intent = new Intent(context, CircleSelectServeHomeWorksActivity.class);
@@ -76,13 +77,14 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
         getSupportActionBar().setTitle("");
 
         circleId = getIntent().getStringExtra("circle_id");
-        tvContentType.setOnClickListener(this);
 
-        if(selectBabyFragment == null) {
-            selectBabyFragment = CircleSelectBabyFragment.newInstance(circleId, allSelHomeWorks);
+        if (!edit) {
+            tvContentType.setOnClickListener(this);
+            if (selectBabyFragment == null) {
+                selectBabyFragment = CircleSelectBabyFragment.newInstance(circleId, allSelHomeWorks);
+            }
+            showContent(selectBabyFragment);
         }
-        showContent(selectBabyFragment);
-
     }
 
     @Override
@@ -99,7 +101,6 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                 ToastUtil.showToast("请选择至少一条记录");
                 return true;
             }
-
 
             addSubscription(
                     apiService.queryImageInfo(FastData.getBabyAvatar())
@@ -120,7 +121,7 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                                             }
 
                                             //转换成发布obj and 取出最大小值 and 拼接所有homework的id，作为保存书籍接口使用
-                                            HashMap<Long, List<Long>> taskMap = new HashMap<>();
+                                            StringBuffer sbTaskIds = new StringBuffer("{\"mediaIds\":[");
                                             for(CircleHomeworkExObj circleHomeworkExObj : allSelHomeWorks){
                                                 tfoPublishObjs.add(circleHomeworkExObj.toTFOPublishObj());
                                                 if(circleHomeworkExObj.getHomework().getCreateDate() >= maxHomework.getHomework().getCreateDate()){
@@ -129,14 +130,15 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                                                     minHomework = circleHomeworkExObj;
                                                 }
 
-                                                if(taskMap.containsKey(circleHomeworkExObj.getHomework().getTaskId())){
-                                                    taskMap.get(circleHomeworkExObj.getHomework().getTaskId()).add(circleHomeworkExObj.getHomework().getHomeworkId());
-                                                } else {
-                                                    List<Long> homeWorkIds = new ArrayList<>();
-                                                    homeWorkIds.add(circleHomeworkExObj.getHomework().getHomeworkId());
-                                                    taskMap.put(circleHomeworkExObj.getHomework().getTaskId(), homeWorkIds);
+                                                //拼接所有的media id
+                                                for(MediaObj mediaObj : circleHomeworkExObj.getHomework().getMediaList()) {
+                                                    sbTaskIds.append(mediaObj.getId());
+                                                    sbTaskIds.append(",");
                                                 }
                                             }
+
+                                            sbTaskIds.replace(sbTaskIds.lastIndexOf(","), sbTaskIds.lastIndexOf(",") + 1, "],");
+                                            sbTaskIds.append("\"circleId\":").append(circleId).append("}");
 
                                             ArrayList<String> keys = new ArrayList<>();
                                             ArrayList<String> values = new ArrayList<>();
@@ -170,28 +172,13 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                                                             FastData.getBabyNickName() + "成长的过程中经常会“语出惊人”，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了洋洋仔成长中的童言趣语，一起来看看吧~");
                                             tfoPublishObjs.add(1, tfoPublishObjSummary);
 
-                                            //拼接所有的homework id {"taskIds":[{"42":[53,52,48,51,47,46]},{"43":[45]},{"41":[54,62]}],"circleId":32}
-                                            StringBuffer sbTaskIds = new StringBuffer("{\"taskIds\":[");
-                                            Gson gson = new Gson();
-                                            Iterator iterator = taskMap.keySet().iterator();
-                                            while (iterator.hasNext()){
-                                                long taskId = (long) iterator.next();
-                                                sbTaskIds.append("{")
-                                                        .append("\"" + taskId + "\"")
-                                                        .append(":")
-                                                        .append(gson.toJson(taskMap.get(taskId)))
-                                                        .append("},");
-                                            }
-                                            sbTaskIds.replace(sbTaskIds.lastIndexOf(","), sbTaskIds.lastIndexOf(",") + 1, "");
-                                            sbTaskIds.append("],\"circleId\":").append(circleId).append("}");
-
                                             finish();
                                             MyPODActivity.open(
-                                                    this, "", "",
+                                                    this, bookId, openBookId,
                                                     BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL,
                                                     TypeConstants.OPEN_BOOK_TYPE_CIRCLE_HOME_SCHOOL_BOOK, tfoPublishObjs, sbTaskIds.toString(),
                                                     true, FastData.getBabyId(), keys, values,
-                                                    1);
+                                                    TextUtils.isEmpty(bookId) ? 1 : 2);
                                         }
                                     },
                                     throwable -> Log.e(TAG, throwable.getLocalizedMessage())

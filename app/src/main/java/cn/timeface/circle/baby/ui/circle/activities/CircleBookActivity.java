@@ -252,6 +252,12 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                             String.valueOf(bookObj.getOpenBookId()),
                             String.valueOf(circleId)
                     );
+                //家校纪念册
+                } else if(bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL){
+                    CircleSelectServerHomeWorksEditActivity.openEdit(
+                            this, String.valueOf(circleId), String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId())
+                    );
                 } else {
                     Log.e(TAG, "无法识别的书籍类型: " + bookObj.getBookType());
                 }

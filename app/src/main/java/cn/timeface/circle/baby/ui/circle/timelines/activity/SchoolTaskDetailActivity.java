@@ -24,10 +24,12 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServeHomeWorksActivity;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskDetailObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
@@ -135,6 +137,7 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.complete) {
+            CircleSelectServeHomeWorksActivity.open(this, String.valueOf(FastData.getCircleId()));
         }
         return super.onOptionsItemSelected(item);
     }
