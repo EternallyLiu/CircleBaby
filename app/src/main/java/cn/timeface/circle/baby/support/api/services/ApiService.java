@@ -80,6 +80,7 @@ import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MediasResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
+import cn.timeface.circle.baby.ui.circle.response.CircleBookHomeworkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleBookTimesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCommentResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleCreateResponse;
@@ -1897,6 +1898,14 @@ public interface ApiService {
      */
     @POST("circle/book/times")
     Observable<CircleBookTimesResponse> queryBookTimes(@Query("bookId") String bookId);
+
+    /**
+     * 获取书中的所有作业
+     * @param bookId
+     * @return
+     */
+    @POST("book/homework/times")
+    Observable<CircleBookHomeworkListResponse> queryBookHomeworks(@Query("bookId") String bookId);
 
 
 

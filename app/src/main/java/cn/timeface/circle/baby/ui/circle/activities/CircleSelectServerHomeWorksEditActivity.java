@@ -3,7 +3,15 @@ package cn.timeface.circle.baby.ui.circle.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleSelectSchoolTaskFragment;
 
 /**
@@ -29,10 +37,33 @@ public class CircleSelectServerHomeWorksEditActivity extends CircleSelectServeHo
         openBookId = getIntent().getStringExtra("open_book_id");
         tvContentType.setText("编辑");
         tvContentType.setCompoundDrawables(null, null, null, null);
+        reqData();
+    }
 
-        if (selectSchoolTaskFragment == null) {
-            selectSchoolTaskFragment = CircleSelectSchoolTaskFragment.newInstance(circleId, allSelHomeWorks);
-        }
-        showContent(selectSchoolTaskFragment);
+    private void reqData() {
+        addSubscription(
+                apiService.queryBookHomeworks(circleId)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(
+                                response -> {
+                                    if (response.success()) {
+                                        List<CircleHomeworkExObj> dataList = new ArrayList<>();
+                                        for (CircleHomeworkObj homeworkObj : response.getDataList()) {
+                                            CircleHomeworkExObj homeworkExObj = new CircleHomeworkExObj();
+                                            homeworkExObj.setHomework(homeworkObj);
+                                            dataList.add(homeworkExObj);
+                                        }
+                                        this.allSelHomeWorks = dataList;
+                                    }
+                                    if (selectSchoolTaskFragment == null) {
+                                        selectSchoolTaskFragment = CircleSelectSchoolTaskFragment.newInstance(circleId, allSelHomeWorks);
+                                    }
+                                    showContent(selectSchoolTaskFragment);
+                                },
+                                throwable -> {
+                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                }
+                        )
+        );
     }
 }
