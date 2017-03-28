@@ -355,7 +355,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                                 for (ImgObj imgObj : selImage) {
                                     list.add(imgObj.getCircleMediaObj());
                                 }
-                                FragmentBridgeActivity.openBigimageFragment(context(), 0, list, MediaObj.getUrls(list), index, BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR, false, true);
+                                FragmentBridgeActivity.openBigimageFragment(context(), 0, list, MediaObj.getUrls(list), index, getType()==TYPE_TIMELINE?BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR:BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, false, true);
                             }
                         }, throwable -> LogUtil.showError(throwable));
                 break;

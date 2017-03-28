@@ -37,6 +37,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.managers.services.UploadService;

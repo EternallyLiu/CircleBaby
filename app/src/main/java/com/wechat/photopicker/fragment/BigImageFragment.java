@@ -417,7 +417,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         switch (type) {
             case 2:
                 int currentItem = mViewPager.getCurrentItem();
-                if (this.type == CIRCLE_MEDIA_IMAGE_EDITOR) {
+                if (this.type == CIRCLE_MEDIA_IMAGE_EDITOR || this.type == CIRCLE_MEDIA_IMAGE_NONE) {
                     EventBus.getDefault().post(new CircleMediaEvent(1, (CircleMediaObj) mMedias.get(currentItem)));
                 } else
                     EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(mMedias.get(currentItem), allDetailsListPosition, currentItem));
