@@ -17,11 +17,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.support.api.models.objs.BookObj;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.mvp.model.CalendarModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
 
 /**
@@ -91,6 +91,11 @@ public class CircleBookListAdapter extends BaseRecyclerAdapter<CircleBookObj> {
         holder.tvTitle.setText(bookObj.getBookName());
         holder.tvPagenum.setText("页      数: " + String.valueOf(bookObj.getPageNum()));
         holder.tvAuthor.setText("作      者: " + (bookObj.getAuthor() != null ? bookObj.getAuthor().getNickName() : ""));
+        if (bookObj.getAuthor().getUserId().equals(FastData.getUserId())) {
+            holder.tvEdit.setText("编辑内容");
+        } else {
+            holder.tvEdit.setText("查看内容");
+        }
 
         if (clickListener != null) {
             holder.ivMenu.setOnClickListener(clickListener);
