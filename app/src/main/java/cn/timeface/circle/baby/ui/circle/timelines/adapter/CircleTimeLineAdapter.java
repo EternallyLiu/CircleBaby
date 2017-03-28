@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.ui.circle.timelines.adapter;
 
 import android.content.Context;
 import android.os.Message;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -110,6 +111,8 @@ public class CircleTimeLineAdapter extends BaseAdapter {
 
     public void addFooter(View view) {
         if (!mFooter.contains(view)) {
+            RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            view.setLayoutParams(params);
             mFooter.add(view);
             notifyDataSetChanged();
         }
