@@ -1669,8 +1669,7 @@ public interface ApiService {
     /**
      * 圈中/取消宝宝
      *
-     * @param babyIds
-     * @param cancleCircleId
+     * @param babys
      * @param circleId
      * @param mediaId
      * @return

@@ -96,7 +96,11 @@ public class CircleBookListAdapter extends BaseRecyclerAdapter<CircleBookObj> {
         } else {
             holder.tvEdit.setText("查看内容");
         }
-
+        if (bookObj.getAuthor().getUserId().equals(FastData.getUserId()) || FastData.getCircleUserInfo().isCreater()) {
+            holder.ivMenu.setVisibility(View.VISIBLE);
+        } else {
+            holder.ivMenu.setVisibility(View.GONE);
+        }
         if (clickListener != null) {
             holder.ivMenu.setOnClickListener(clickListener);
             holder.tvPrint.setOnClickListener(clickListener);

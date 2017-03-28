@@ -20,6 +20,20 @@ public class CircleBabyBriefObj implements Parcelable {
     private String babyName;
     private int selectCount;
 
+    public CircleBabyBriefObj(String babyAvatarUrl, long babyId, String babyName) {
+        this.babyAvatarUrl = babyAvatarUrl;
+        this.babyId = babyId;
+        this.babyName = babyName;
+    }
+
+    public CircleBabyBriefObj(String babyAvatarUrl, long babyId, String babyName, int selectCount) {
+        this.babyAvatarUrl = babyAvatarUrl;
+        this.babyId = babyId;
+
+        this.babyName = babyName;
+        this.selectCount = selectCount;
+    }
+
     public int getSelectCount() {
         return selectCount;
     }
@@ -52,6 +66,9 @@ public class CircleBabyBriefObj implements Parcelable {
         this.babyName = babyName;
     }
 
+    public CircleBabyBriefObj() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -62,18 +79,17 @@ public class CircleBabyBriefObj implements Parcelable {
         dest.writeString(this.babyAvatarUrl);
         dest.writeLong(this.babyId);
         dest.writeString(this.babyName);
-    }
-
-    public CircleBabyBriefObj() {
+        dest.writeInt(this.selectCount);
     }
 
     protected CircleBabyBriefObj(Parcel in) {
         this.babyAvatarUrl = in.readString();
-        this.babyId = in.readInt();
+        this.babyId = in.readLong();
         this.babyName = in.readString();
+        this.selectCount = in.readInt();
     }
 
-    public static final Parcelable.Creator<CircleBabyBriefObj> CREATOR = new Parcelable.Creator<CircleBabyBriefObj>() {
+    public static final Creator<CircleBabyBriefObj> CREATOR = new Creator<CircleBabyBriefObj>() {
         @Override
         public CircleBabyBriefObj createFromParcel(Parcel source) {
             return new CircleBabyBriefObj(source);
