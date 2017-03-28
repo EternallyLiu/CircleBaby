@@ -274,8 +274,9 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         } else if (event.getTimelineObj() != null && event.getType() == 0) {
             adapter.updateItem(event.getTimelineObj());
         } else if (event.getTimelineObj() != null && event.getType() == 2) {
-            currentPage = 1;
-            reqData(circleId);
+//            currentPage = 1;
+//            reqData(circleId);
+            adapter.add(0, event.getTimelineObj());
         }
     }
 

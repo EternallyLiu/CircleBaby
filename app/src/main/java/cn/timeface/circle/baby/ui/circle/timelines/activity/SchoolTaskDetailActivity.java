@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -20,6 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
@@ -28,13 +32,14 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskDetailObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.SchoolTaskDetailAdapter;
+import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 
 /**
  * author : wangshuai Created on 2017/3/25
  * email : wangs1992321@gmail.com
  */
-public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister {
+public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements IEventBus, BaseAdapter.OnItemClickLister {
 
     @Bind(R.id.title)
     TextView title;
@@ -54,6 +59,7 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements B
     private static final int PAGE_SIZE = 20;
 
     private CircleSchoolTaskObj currentTaskObj = null;
+    private long clickToolBarLastTime;
 
     public static void open(Context context, CircleSchoolTaskObj task) {
         Bundle bundle = new Bundle();
@@ -155,6 +161,15 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements B
         super.onDestroy();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(SchoolTaskEvent event) {
+        if (event.getType() == SchoolTaskEvent.HOMEWORK_NEW_HOMEWORK) {
+            currentPage = 1;
+            reqData();
+        }
+    }
+
+
     @Override
     public void onItemClick(View view, int position) {
         if (position > 0) {
@@ -165,5 +180,12 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements B
     @OnClick(R.id.iv_submit_task)
     public void onViewClicked() {
         PublishActivity.open(this, new CircleHomeworkObj(currentTaskObj.getTaskId(), currentTaskObj.getTitle()));
+    }
+
+    @OnClick(R.id.toolbar)
+    public void viewclick() {
+        if (System.currentTimeMillis() - clickToolBarLastTime <= 500 && adapter != null && adapter.getRealItemSize() > 0 && contentRecyclerView != null)
+            contentRecyclerView.scrollToPosition(0);
+        clickToolBarLastTime = System.currentTimeMillis();
     }
 }

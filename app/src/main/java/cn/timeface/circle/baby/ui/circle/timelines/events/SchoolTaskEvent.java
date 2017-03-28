@@ -12,6 +12,8 @@ public class SchoolTaskEvent {
     public static final int SCHOOLTASK_UPDATE = 2;
     public static final int SCHOOLTASK_NEW_HOMEWORK = 0;
 
+    public static final int HOMEWORK_NEW_HOMEWORK = 39;
+
     private int type;
     private CircleSchoolTaskObj schoolTaskObj;
 

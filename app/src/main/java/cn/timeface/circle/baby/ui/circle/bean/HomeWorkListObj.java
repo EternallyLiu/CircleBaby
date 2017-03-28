@@ -25,6 +25,11 @@ public class HomeWorkListObj extends BaseObj implements Parcelable {
     public HomeWorkListObj() {
     }
 
+    public HomeWorkListObj(CircleSchoolTaskObj schoolTask, int submitCount) {
+        this.schoolTask = schoolTask;
+        this.submitCount = submitCount;
+    }
+
     public int getSubmitCount() {
         return submitCount;
     }
@@ -34,7 +39,7 @@ public class HomeWorkListObj extends BaseObj implements Parcelable {
     }
 
     public List<MediaObj> getMeidaList() {
-        if (meidaList==null)meidaList=new ArrayList<>(0);
+        if (meidaList == null) meidaList = new ArrayList<>(0);
         return meidaList;
     }
 
@@ -53,6 +58,18 @@ public class HomeWorkListObj extends BaseObj implements Parcelable {
     public static Creator<HomeWorkListObj> getCREATOR() {
         return CREATOR;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        HomeWorkListObj that = (HomeWorkListObj) o;
+
+        if (getSchoolTask() == that.getSchoolTask()) return true;
+        return false;
+    }
+
 
     @Override
     public int describeContents() {

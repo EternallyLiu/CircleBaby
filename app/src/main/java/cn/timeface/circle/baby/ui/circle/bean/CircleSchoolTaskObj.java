@@ -19,6 +19,11 @@ public class CircleSchoolTaskObj extends CircleContentObj implements Parcelable 
     public CircleSchoolTaskObj() {
     }
 
+    public CircleSchoolTaskObj(int isCommit, long taskId) {
+        this.isCommit = isCommit;
+        this.taskId = taskId;
+    }
+
     public int getSelectCount() {
         return selectCount;
     }

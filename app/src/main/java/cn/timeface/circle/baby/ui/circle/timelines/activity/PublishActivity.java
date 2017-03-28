@@ -50,10 +50,13 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
+import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.PublishAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.ItemObj;
 import cn.timeface.circle.baby.ui.circle.timelines.events.ActiveSelectEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
+import cn.timeface.circle.baby.ui.circle.timelines.events.HomeWorkListEvent;
+import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleGridStaggerLookup;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -179,7 +182,7 @@ public class PublishActivity extends BaseAppCompatActivity {
         } else if (adapter.getType() == PublishAdapter.TYPE_SCHOOL) {
             sendSchoolTask();
         } else if (adapter.getType() == PublishAdapter.TYPE_WORK) {
-            doHomeWork();
+            sendHomwWork();
         }
     }
 
@@ -231,6 +234,7 @@ public class PublishActivity extends BaseAppCompatActivity {
                 .doOnNext(homeWorkSubmitResponse -> hideProgress())
                 .subscribe(homeWorkSubmitResponse -> {
                     if (homeWorkSubmitResponse.success()) {
+                        EventBus.getDefault().post(new SchoolTaskEvent(SchoolTaskEvent.HOMEWORK_NEW_HOMEWORK, homeWorkSubmitResponse.getHomework()));
                         finish();
                     } else {
                         clearGCMedia();
@@ -283,6 +287,7 @@ public class PublishActivity extends BaseAppCompatActivity {
                 .doOnNext(circleSchoolTaskResponse -> hideProgress())
                 .subscribe(circleSchoolTaskResponse -> {
                     if (circleSchoolTaskResponse.success()) {
+                        EventBus.getDefault().post(new SchoolTaskEvent(SchoolTaskEvent.SCHOOLTASK_NEW_HOMEWORK, circleSchoolTaskResponse.getSchoolTask()));
                         finish();
                     } else {
                         clearGCMedia();
@@ -353,8 +358,11 @@ public class PublishActivity extends BaseAppCompatActivity {
                     .doOnNext(timeLineSendResponse -> hideProgress())
                     .subscribe(timeLineSendResponse -> {
                         if (timeLineSendResponse.success()) {
+                            timelineObj.setCircleTimelineId(timeLineSendResponse.getCircleTimeline().getCircleTimelineId());
+                            timelineObj.setPublisher(FastData.getCircleUserInfo());
                             if (list.size() > 0)
                                 UploadService.start(this, list);
+                            EventBus.getDefault().post(new CircleTimeLineEditEvent(2, timelineObj));
                             finish();
                         } else {
                             clearGCMedia();

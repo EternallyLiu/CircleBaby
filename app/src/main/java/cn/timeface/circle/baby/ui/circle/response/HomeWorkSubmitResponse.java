@@ -1,5 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.response;
 
+import android.os.Parcel;
+
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -17,7 +19,46 @@ public class HomeWorkSubmitResponse extends BaseResponse {
         return homework;
     }
 
+    public CircleHomeworkObj getHomework() {
+        return homework;
+    }
+
+    public void setHomework(CircleHomeworkObj homework) {
+        this.homework = homework;
+    }
+
     public void setCircleTimeline(CircleHomeworkObj homework) {
         this.homework = homework;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeParcelable(this.homework, flags);
+    }
+
+    public HomeWorkSubmitResponse() {
+    }
+
+    protected HomeWorkSubmitResponse(Parcel in) {
+        super(in);
+        this.homework = in.readParcelable(CircleHomeworkObj.class.getClassLoader());
+    }
+
+    public static final Creator<HomeWorkSubmitResponse> CREATOR = new Creator<HomeWorkSubmitResponse>() {
+        @Override
+        public HomeWorkSubmitResponse createFromParcel(Parcel source) {
+            return new HomeWorkSubmitResponse(source);
+        }
+
+        @Override
+        public HomeWorkSubmitResponse[] newArray(int size) {
+            return new HomeWorkSubmitResponse[size];
+        }
+    };
 }

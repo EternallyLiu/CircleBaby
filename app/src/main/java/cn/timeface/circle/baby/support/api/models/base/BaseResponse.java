@@ -62,15 +62,4 @@ public class BaseResponse extends BaseObj {
         this.status = in.readInt();
     }
 
-    public static final Creator<BaseResponse> CREATOR = new Creator<BaseResponse>() {
-        @Override
-        public BaseResponse createFromParcel(Parcel source) {
-            return new BaseResponse(source);
-        }
-
-        @Override
-        public BaseResponse[] newArray(int size) {
-            return new BaseResponse[size];
-        }
-    };
 }
