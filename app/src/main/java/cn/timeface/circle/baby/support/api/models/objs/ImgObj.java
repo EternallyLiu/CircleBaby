@@ -67,6 +67,7 @@ public class ImgObj extends BaseImgObj {
     private int primaryColor;
     private List<ImgTagObj> tags;
     private String remark;
+    private MediaObj mediaObj;
 
     public ImgObj() {
     }
@@ -298,20 +299,25 @@ public class ImgObj extends BaseImgObj {
     }
 
     public MediaObj getMediaObj() {
-        MediaObj mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
-        mediaObj.setLocalIdentifier(getId());
-        mediaObj.setLocalPath(getLocalPath());
-        mediaObj.setLocation(new LocationObj(getLat(), getLng()));
-        mediaObj.setImageOrientation(PhotoModel.getPhotoModel(getId(), getLocalPath(), getUrl()).getOrientation());
+        if (mediaObj == null) {
+            mediaObj = new MediaObj(getContent(), getUrl(), width, height, getDateMills());
+            mediaObj.setLocalIdentifier(getId());
+            mediaObj.setLocalPath(getLocalPath());
+            mediaObj.setLocation(new LocationObj(getLat(), getLng()));
+            mediaObj.setImageOrientation(PhotoModel.getPhotoModel(getId(), getLocalPath(), getUrl()).getOrientation());
+        }
         return mediaObj;
     }
+
     public CircleMediaObj getCircleMediaObj() {
-        CircleMediaObj mediaObj = new CircleMediaObj(getContent(), getUrl(), width, height, getDateMills());
-        mediaObj.setLocalIdentifier(getId());
-        mediaObj.setLocalPath(getLocalPath());
-        mediaObj.setLocation(new LocationObj(getLat(), getLng()));
-        mediaObj.setImageOrientation(PhotoModel.getPhotoModel(getId(), getLocalPath(), getUrl()).getOrientation());
-        return mediaObj;
+        if (mediaObj == null) {
+            mediaObj = new CircleMediaObj(getContent(), getUrl(), width, height, getDateMills());
+            mediaObj.setLocalIdentifier(getId());
+            mediaObj.setLocalPath(getLocalPath());
+            mediaObj.setLocation(new LocationObj(getLat(), getLng()));
+            mediaObj.setImageOrientation(PhotoModel.getPhotoModel(getId(), getLocalPath(), getUrl()).getOrientation());
+        }
+        return (CircleMediaObj) mediaObj;
     }
 
 

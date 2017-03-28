@@ -71,9 +71,6 @@ public class GetCircleAllBabyObj extends BaseObj implements Parcelable {
         this.selectUserId = selectUserId;
     }
 
-    public static Creator<GetCircleAllBabyObj> getCREATOR() {
-        return CREATOR;
-    }
 
     @Override
     public boolean equals(Object o) {

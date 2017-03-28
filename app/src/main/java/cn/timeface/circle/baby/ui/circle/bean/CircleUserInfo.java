@@ -57,6 +57,12 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
     public CircleUserInfo() {
     }
 
+    public CircleUserInfo(int circleUserType, String circleAvatarUrl, String circleNickName) {
+        this.circleUserType = circleUserType;
+        this.circleAvatarUrl = circleAvatarUrl;
+        this.circleNickName = circleNickName;
+    }
+
     public CircleUserInfo(String circleAvatarUrl, String circleNickName, long circleId, long circleUserId, int circleUserType) {
         this.circleAvatarUrl = circleAvatarUrl;
         this.circleNickName = circleNickName;
@@ -107,6 +113,10 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
 
     public boolean isTeacher() {
         return circleUserType == 2;
+    }
+
+    public boolean isCreater() {
+        return circleUserType == 1;
     }
 
     public static void deleteAll() {

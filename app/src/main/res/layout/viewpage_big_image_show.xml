@@ -158,7 +158,8 @@
                 android:gravity="center"
                 android:text="@string/circle_relate_baby"
                 android:textColor="@color/aluminum"
-                android:textSize="@dimen/text_normal"/>
+                android:textSize="@dimen/text_normal"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </LinearLayout>

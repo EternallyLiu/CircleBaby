@@ -30,10 +30,10 @@ import cn.timeface.circle.baby.events.UpdateNameEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.GroupMemberAdapter;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
-import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.responses.MemberListResponse;
 import cn.timeface.circle.baby.ui.circle.groupmembers.section.GroupMemberSection;
@@ -45,6 +45,12 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
 
     @Bind(R.id.rv_content)
     RecyclerView rvContent;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @Bind(R.id.srl_content)
+    SwipeRefreshLayout srlContent;
 
     GroupMemberAdapter adapter;
     boolean isExpand = true;
@@ -53,12 +59,6 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
     List<MenemberInfo> appliUserInfoList;
     GrowthCircleObj circleObj;
     MenemberInfo menemberInfo;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.appbar_layout)
-    AppBarLayout appbarLayout;
-    @Bind(R.id.srl_content)
-    SwipeRefreshLayout srlContent;
 
     public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, GroupMembersActivity.class);
@@ -156,7 +156,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         } else {
             circleUserInfos.addAll(normalUserInfoList);
         }
-        CircleUserInfo circleUserInfo = new CircleUserInfo("", "新增成员", 4);
+        CircleUserInfo circleUserInfo = new CircleUserInfo(4,"", "新增成员");
         circleUserInfos.add(new MenemberInfo(new CircleBabyBriefObj(), "", circleUserInfo));
         return circleUserInfos;
     }

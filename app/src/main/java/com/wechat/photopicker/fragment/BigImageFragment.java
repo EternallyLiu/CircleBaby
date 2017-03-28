@@ -43,6 +43,8 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
+import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
+import cn.timeface.circle.baby.ui.circle.bean.RelateBabyObj;
 import cn.timeface.circle.baby.ui.circle.timelines.dialog.CircleBabyDialog;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.guides.GuideHelper;
@@ -51,6 +53,7 @@ import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.images.views.FlipImageView;
 import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
@@ -154,9 +157,12 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         if (mMedias != null && mMedias.size() > 0)
             llBotton.setVisibility(View.VISIBLE);
         else llBotton.setVisibility(View.GONE);
+        tvBabys.setVisibility(View.GONE);
         if (type == CIRCLE_MEDIA_IMAGE_NONE) llBotton.setVisibility(View.GONE);
-        if (type == CIRCLE_MEDIA_IMAGE_EDITOR)
+        if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
+            tvRelateBaby.setVisibility(View.VISIBLE);
             initCircleBaby();
+        }
         return view;
     }
 
@@ -215,38 +221,59 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         if (!mediaObj.getTips().contains(currentTip))
             return;
         if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
-            addSubscription(apiService.deleteCircleLabel(mediaObj.getId(), currentTip.getTipId())
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-                        if (response.success()) {
-                            if (mediaObj.getTips().contains(currentTip))
-                                mediaObj.getTips().remove(currentTip);
-                            initTips();
-                            deletePostion = -1;
-                            currentTip = null;
-                            EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) mediaObj));
-                        } else ToastUtil.showToast(getActivity(), response.getInfo());
+            if (mediaObj.getId() <= 0) {
+                if (mediaObj.getTips().contains(currentTip))
+                    mediaObj.getTips().remove(currentTip);
+                initTips();
+                deletePostion = -1;
+                currentTip = null;
+                EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) mediaObj));
+            } else
+                addSubscription(apiService.deleteCircleLabel(mediaObj.getId(), currentTip.getTipId())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                if (mediaObj.getTips().contains(currentTip))
+                                    mediaObj.getTips().remove(currentTip);
+                                initTips();
+                                deletePostion = -1;
+                                currentTip = null;
+                                EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) mediaObj));
+                            } else ToastUtil.showToast(getActivity(), response.getInfo());
 
-                    }, throwable -> {
-                    }));
-        } else
-            addSubscription(apiService.deleteLabel(mediaObj.getId() + "", currentTip.getTipId() + "")
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-                        if (response.success()) {
-                            if (mediaObj.getTips().contains(currentTip))
-                                mediaObj.getTips().remove(currentTip);
-                            initTips();
-                            deletePostion = -1;
-                            currentTip = null;
-                            if (allDetailsListPosition >= -1)
-                                EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
-                            else
-                                EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, deletePostion));
-                        } else ToastUtil.showToast(getActivity(), response.getInfo());
+                        }, throwable -> {
+                        }));
+        } else {
+            if (mediaObj.getId() <= 0) {
+                if (mediaObj.getTips().contains(currentTip))
+                    mediaObj.getTips().remove(currentTip);
+                initTips();
+                deletePostion = -1;
+                currentTip = null;
+                if (allDetailsListPosition >= -1)
+                    EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+                else
+                    EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, deletePostion));
+            } else
+                addSubscription(apiService.deleteLabel(mediaObj.getId() + "", currentTip.getTipId() + "")
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                if (mediaObj.getTips().contains(currentTip))
+                                    mediaObj.getTips().remove(currentTip);
+                                initTips();
+                                deletePostion = -1;
+                                currentTip = null;
+                                if (allDetailsListPosition >= -1)
+                                    EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
+                                else
+                                    EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, deletePostion));
+                            } else ToastUtil.showToast(getActivity(), response.getInfo());
 
-                    }, throwable -> {
-                    }));
+                        }, throwable -> {
+                        }));
+
+        }
     }
 
     private DeleteDialog deleteDialog = null;
@@ -306,15 +333,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (delete || download)
             inflater.inflate(R.menu.menu_timeline_detail, menu);
-//        save = menu.findItem(R.id.save);
-//        if (delete) {
-//            save.setTitle("删除");
-//        } else {
-//            if (!download) {
-//                save.setTitle("");
-//            }
-//        }
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -322,23 +340,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.save) {
-//            if (delete) {
-//                //删除
-//                save.setEnabled(false);
-//                int currentItem = mViewPager.getCurrentItem();
-//                String path = mPaths.get(currentItem);
-//                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(currentItem, path));
-//                getActivity().finish();
-//            } else if (download) {
-//                //保存图片到本地
-////                save.setEnabled(false);
-////                saveImage();
-//
-//                addTag();
-//            }
-//
-//        }
         switch (item.getItemId()) {
             case R.id.action_more:
                 if (dialog == null) {
@@ -416,7 +417,10 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         switch (type) {
             case 2:
                 int currentItem = mViewPager.getCurrentItem();
-                EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(mMedias.get(currentItem), allDetailsListPosition, currentItem));
+                if (this.type == CIRCLE_MEDIA_IMAGE_EDITOR || this.type == CIRCLE_MEDIA_IMAGE_NONE) {
+                    EventBus.getDefault().post(new CircleMediaEvent(1, (CircleMediaObj) mMedias.get(currentItem)));
+                } else
+                    EventBus.getDefault().post(new TimeEditPhotoDeleteEvent(mMedias.get(currentItem), allDetailsListPosition, currentItem));
                 getActivity().finish();
                 break;
             case 3:
@@ -480,7 +484,9 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
             mediaObj.setFavoritecount(mediaObj.getIsFavorite() == 1 ? mediaObj.getFavoritecount() + 1 : mediaObj.getFavoritecount() - 1);
             tvLikeCount.setText("+ " + mediaObj.getFavoritecount());
-            if (allDetailsListPosition >= 0) {
+            if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
+                EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) mediaObj));
+            } else if (allDetailsListPosition >= 0) {
                 EventBus.getDefault().post(new MediaUpdateEvent(allDetailsListPosition, mediaObj));
             } else
                 EventBus.getDefault().post(new MediaUpdateEvent(mediaObj, currentPosition));
@@ -501,6 +507,12 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     private GuideHelper guideHelper = null;
 
+
+    /**
+     * 标签导航
+     *
+     * @return
+     */
     private GuideHelper.TipData getTagTipData() {
         if (inflate == null) inflate = LayoutInflater.from(getActivity());
         View view = inflate.inflate(R.layout.guide_bigimage_tag_tip, null);
@@ -510,6 +522,11 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         return tipData;
     }
 
+    /**
+     * 添加喜欢导航
+     *
+     * @return
+     */
     private GuideHelper.TipData getLikeTipData() {
         if (inflate == null) inflate = LayoutInflater.from(getActivity());
         View view = inflate.inflate(R.layout.guide_bigimage_like_tip, null);
@@ -527,11 +544,12 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     }
 
     private void showGuide() {
+        if (type == CIRCLE_MEDIA_IMAGE_NONE) return;
         if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
             return;
         }
         Observable.defer(() -> Observable.just(getTagTipData(), getLikeTipData())).filter(tipData -> tipData != null)
-                .toList().doOnNext(tipDatas -> initGuideHelper(tipDatas))
+                .toList().filter(tipDatas -> tipDatas != null && tipDatas.size() > 0).doOnNext(tipDatas -> initGuideHelper(tipDatas))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(list -> guideHelper.show(false), throwable -> LogUtil.showError(throwable));
 
@@ -611,25 +629,42 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     }
 
     @Override
-    public void circleResult(String babys, long mediaId) {
-        if (tfProgressDialog == null)
-            tfProgressDialog = TFProgressDialog.getInstance("");
-        tfProgressDialog.setTvMessage("正在执行此操作~");
-//        if (tfProgressDialog.isHidden())
-        tfProgressDialog.show(getChildFragmentManager(), "");
-        addSubscription(apiService.circleAtBaby(Uri.encode(babys), FastData.getCircleId(), mediaId)
-                .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(circleMediaResponse -> tfProgressDialog.dismiss()).
-                        subscribe(circleMediaResponse -> {
-                            if (circleMediaResponse.success()) {
-                                int currentIndex = mViewPager.getCurrentItem();
-                                ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
-                                initCircleBaby();
-                            } else
-                                ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
-                        }, throwable -> {
-                            if (!tfProgressDialog.isHidden())
-                                tfProgressDialog.dismiss();
-                            LogUtil.showError(throwable);
-                        }));
+    public void circleResult(List<GetCircleAllBabyObj> babys, long mediaId) {
+        if (babys == null || babys.size() <= 0) return;
+        if (mediaId > 0) {
+            if (tfProgressDialog == null)
+                tfProgressDialog = TFProgressDialog.getInstance("");
+            tfProgressDialog.setTvMessage("正在执行此操作~");
+            tfProgressDialog.show(getChildFragmentManager(), "");
+            addSubscription(apiService.circleAtBaby(Uri.encode(JSONUtils.parse2JSONString(babys)), FastData.getCircleId(), mediaId)
+                    .compose(SchedulersCompat.applyIoSchedulers()).doOnNext(circleMediaResponse -> tfProgressDialog.dismiss()).
+                            subscribe(circleMediaResponse -> {
+                                if (circleMediaResponse.success()) {
+                                    int currentIndex = mViewPager.getCurrentItem();
+                                    ((CircleMediaObj) mMedias.get(currentIndex)).setRelateBabys(circleMediaResponse.getCircleMedia().getRelateBabys());
+                                    EventBus.getDefault().post(new CircleMediaEvent(((CircleMediaObj) mMedias.get(currentIndex))));
+                                    initCircleBaby();
+                                } else
+                                    ToastUtil.showToast(getActivity(), circleMediaResponse.getInfo());
+                            }, throwable -> {
+                                if (!tfProgressDialog.isHidden())
+                                    tfProgressDialog.dismiss();
+                                LogUtil.showError(throwable);
+                            }));
+        } else {
+            int currentPostion = mViewPager.getCurrentItem();
+            CircleMediaObj mediaObj = (CircleMediaObj) mMedias.get(currentPostion);
+            mediaObj.getRelateBabys().clear();
+            mediaObj.getRelateBabys().addAll(babys);
+            tvBabys.setVisibility(View.VISIBLE);
+            StringBuilder builder = new StringBuilder("已关联 ");
+            for (int i = 0; i < mediaObj.getRelateBabys().size(); i++) {
+                if (i < 15)
+                    builder.append("@").append(mediaObj.getRelateBabys().get(i).getBabyName()).append("  ");
+                else builder.append(" ").append("…………");
+            }
+            tvBabys.setText(builder);
+            EventBus.getDefault().post(new CircleMediaEvent(mediaObj));
+        }
     }
 }

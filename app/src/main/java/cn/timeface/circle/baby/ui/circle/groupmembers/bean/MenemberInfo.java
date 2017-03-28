@@ -3,6 +3,8 @@ package cn.timeface.circle.baby.ui.circle.groupmembers.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
+
 /**
  * Created by wangwei on 2017/3/20.
  */

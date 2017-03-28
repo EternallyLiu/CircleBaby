@@ -43,6 +43,9 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.calendar.CalendarPreviewActivity;
 import cn.timeface.circle.baby.ui.circle.activities.AddCircleBookActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerHomeWorksEditActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerTimesActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectSeverAlbumsActivity;
 import cn.timeface.circle.baby.ui.circle.bean.CircleBookObj;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
@@ -115,7 +118,17 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
                 if (productionMenuDialog == null) {
                     productionMenuDialog = ProductionMenuDialog.newInstance(
                             bookObj,
-                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
+                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
+                    productionMenuDialog.show(getChildFragmentManager(), "");
+                } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO) {
+                    productionMenuDialog = ProductionMenuDialog.newInstance(
+                            bookObj,
+                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
+                    productionMenuDialog.show(getChildFragmentManager(), "");
+                } else {
+                    productionMenuDialog = ProductionMenuDialog.newInstance(
+                            bookObj,
+                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
                     productionMenuDialog.show(getChildFragmentManager(), "");
                 }
                 break;
@@ -165,8 +178,7 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
             case R.id.tv_edit:
                 //精装照片书&绘画集
                 if (bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK
-                        || bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING || bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL
-                        || bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO || bookObj.getBookType()==BookModel.CIRCLE_BOOK_TYPE_TIME) {
+                        || bookObj.getBookType() == BookModel.BOOK_TYPE_PAINTING) {
                     SelectServerPhotoActivity.open(
                             getActivity(),
                             bookType,
@@ -188,8 +200,33 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
                             bookObj.getBaby().getBabyId(),
                             bookObj.getAuthor().getNickName(),
                             bookObj.getBookName());
+                }//圈照片书
+                if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO) {
+                    CircleSelectSeverAlbumsActivity.open(
+                            getActivity(),
+                            String.valueOf(FastData.getCircleId()),
+                            bookObj.getBookType(),
+                            String.valueOf(bookObj.getBookId()),
+                            bookObj.getOpenBookType(),
+                            String.valueOf(bookObj.getOpenBookId()));
+                    //圈时光书
+                } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME) {
+                    CircleSelectServerTimesActivity.open(
+                            getActivity(),
+                            bookObj.getBookType(),
+                            bookObj.getOpenBookType(),
+                            String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            String.valueOf(FastData.getCircleId())
+                    );
+                    //家校纪念册
+                } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL) {
+                    CircleSelectServerHomeWorksEditActivity.openEdit(
+                            getActivity(), String.valueOf(FastData.getCircleId()), String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId())
+                    );
                 } else {
-                    Log.e(TAG, "无法识别的书籍类型");
+                    Log.e(TAG, "无法识别的书籍类型: " + bookObj.getBookType());
                 }
                 break;
         }

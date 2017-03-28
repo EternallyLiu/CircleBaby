@@ -22,7 +22,7 @@ import cn.timeface.circle.baby.events.UpdateNameEvent;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
+import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import rx.Subscription;
 
 public class ChangNameActivity extends BaseAppCompatActivity {

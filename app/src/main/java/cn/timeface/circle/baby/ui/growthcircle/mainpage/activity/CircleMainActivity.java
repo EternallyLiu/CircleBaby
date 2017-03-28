@@ -251,6 +251,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onEvent(CircleMediaEvent event) {
+        LogUtil.showLog("event===" + event.getType());
         if (event.getType() == 0 && event.getMediaObj() != null) {
             for (int i = 0; i < adapter.getRealItemSize(); i++) {
                 Object item = adapter.getData().get(i);
@@ -261,6 +262,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                         timelineObj.getMediaList().get(index).setTips(event.getMediaObj().getTips());
                         timelineObj.getMediaList().get(index).setIsFavorite(event.getMediaObj().getIsFavorite());
                         timelineObj.getMediaList().get(index).setFavoritecount(event.getMediaObj().getFavoritecount());
+                        timelineObj.getMediaList().get(index).setRelateBabys(event.getMediaObj().getRelateBabys());
                     }
                 }
             }
@@ -279,6 +281,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
             adapter.add(0, event.getTimelineObj());
         }
     }
+
 
     @Subscribe
     public void onEvent(CircleChangedEvent event) {

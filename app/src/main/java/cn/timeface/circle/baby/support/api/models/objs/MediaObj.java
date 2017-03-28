@@ -43,24 +43,24 @@ public class MediaObj extends BaseObj implements Parcelable {
 
     /**
      * {
-     "content": "",
-     "favoritecount": 0,
-     "h": 4000,
-     "id": 520,
-     "imageOrientation": 0,
-     "imgUrl": "http://img1.timeface.cn/baby/6d1c59dbf1122726441bafa82741bc16.jpg",
-     "isCover": 0,
-     "isFavorite": 0,
-     "length": 0,
-     "localIdentifier": "17522",
-     "localPath": "",
-     "location": {},
-     "photographTime": 1490175913000,
-     "selected": 0,
-     "tips": [],
-     "videoUrl": "",
-     "w": 3000
-     }
+     * "content": "",
+     * "favoritecount": 0,
+     * "h": 4000,
+     * "id": 520,
+     * "imageOrientation": 0,
+     * "imgUrl": "http://img1.timeface.cn/baby/6d1c59dbf1122726441bafa82741bc16.jpg",
+     * "isCover": 0,
+     * "isFavorite": 0,
+     * "length": 0,
+     * "localIdentifier": "17522",
+     * "localPath": "",
+     * "location": {},
+     * "photographTime": 1490175913000,
+     * "selected": 0,
+     * "tips": [],
+     * "videoUrl": "",
+     * "w": 3000
+     * }
      */
     public MediaObj() {
     }
@@ -286,7 +286,9 @@ public class MediaObj extends BaseObj implements Parcelable {
     public static ArrayList<String> getUrls(List<? extends MediaObj> list) {
         ArrayList<String> urls = new ArrayList<>(0);
         for (int i = 0; i < list.size(); i++) {
-            urls.add(list.get(i).getImgUrl());
+            if (list.get(i).getId() > 0)
+                urls.add(list.get(i).getImgUrl());
+            else urls.add(list.get(i).getLocalPath());
         }
         return urls;
     }
@@ -421,7 +423,7 @@ public class MediaObj extends BaseObj implements Parcelable {
         this.localIdentifier = in.readString();
         this.location = in.readParcelable(LocationObj.class.getClassLoader());
         this.tips = in.createTypedArrayList(MediaTipObj.CREATOR);
-        this.tip = in.readParcelable(MediaObj.class.getClassLoader());
+        this.tip = in.readParcelable(MediaTipObj.class.getClassLoader());
     }
 
     public static final Creator<MediaObj> CREATOR = new Creator<MediaObj>() {
@@ -435,5 +437,4 @@ public class MediaObj extends BaseObj implements Parcelable {
             return new MediaObj[size];
         }
     };
-
 }

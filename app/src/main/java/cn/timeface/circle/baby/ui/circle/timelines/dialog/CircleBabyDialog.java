@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
+import cn.timeface.circle.baby.ui.circle.bean.RelateBabyObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.RelateBabyAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleBabyObj;
 import cn.timeface.circle.baby.ui.images.views.FlipImageView;
@@ -106,10 +107,8 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        if (getCircleBabyCallBack() != null) {
-            String babys = JSONUtils.parse2JSONString(adapter.getDataBaby());
-            getCircleBabyCallBack().circleResult(babys, currentMediaObj.getId());
-        }
+        if (getCircleBabyCallBack() != null)
+            getCircleBabyCallBack().circleResult(currentMediaObj.getId() > 0 ? adapter.getDataBaby() : adapter.getselectBaby(), currentMediaObj.getId());
         dismiss();
     }
 
@@ -181,6 +180,13 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
     private void updateBabys() {
         if (currentMediaObj != null)
             currentSubscription = ApiFactory.getApi().getApiService().getCircleAllBaby(FastData.getCircleId(), 1, currentMediaObj.getId())
+                    .doOnNext(getCircleAllBabyObjQueryCirclePhotoResponse -> {
+                        if (currentMediaObj.getId() <= 0 && currentMediaObj.getRelateBabys().size() > 0) {
+                            for (int i = 0; i < getCircleAllBabyObjQueryCirclePhotoResponse.getDataList().size(); i++) {
+                                getCircleAllBabyObjQueryCirclePhotoResponse.getDataList().get(i).setSelected(currentMediaObj.getRelateBabys().contains(getCircleAllBabyObjQueryCirclePhotoResponse.getDataList().get(i)) ? 1 : 0);
+                            }
+                        }
+                    })
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(getCircleAllBabyObjQueryCirclePhotoResponse -> {
                         if (getCircleAllBabyObjQueryCirclePhotoResponse.success()) {
@@ -222,7 +228,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
     }
 
     public interface CircleBabyCallBack {
-        public void circleResult(String babys, long mediaId);
+        public void circleResult(List<GetCircleAllBabyObj> babys, long mediaId);
     }
 
 }

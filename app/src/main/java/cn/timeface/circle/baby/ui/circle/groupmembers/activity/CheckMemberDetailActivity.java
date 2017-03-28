@@ -32,8 +32,8 @@ import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.PhotosShowAdapter;
-import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -79,15 +79,15 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     TextView tvBtnMid;
 
     CircleUserInfo circleUserInfo;
-    cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo circleUserSelf;
+    CircleUserInfo circleUserSelf;
     PhotosShowAdapter adapter;
     ArrayList<String> mPathList;
     MenemberInfo menemberInfo;
 
 
-    public static void open(Context context, MenemberInfo circleUserInfo) {
+    public static void open(Context context, MenemberInfo menemberInfo) {
         Intent intent = new Intent(context, CheckMemberDetailActivity.class);
-        intent.putExtra("circleUserInfo", circleUserInfo);
+        intent.putExtra("menemberInfo", menemberInfo);
         context.startActivity(intent);
     }
 
@@ -100,7 +100,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mPathList = new ArrayList<>();
-        menemberInfo = getIntent().getParcelableExtra("circleUserInfo");
+        menemberInfo = getIntent().getParcelableExtra("menemberInfo");
         circleUserInfo = menemberInfo.getUserInfo();
         circleUserSelf = FastData.getCircleUserInfo();
         setPhotoView();
@@ -113,14 +113,18 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
 
     private void setPhotoView() {
         //GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(), ivChildImg);
-        Glide.with(this)
-                .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
-                .error(R.drawable.ic_launcher)
-                .into(ivChildImg);
-        Glide.with(this)
-                .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
-                .error(R.drawable.ic_launcher)
-                .into(ivContentImg);
+        if (!menemberInfo.getBabyBrief().getBabyAvatarUrl().equals("")) {
+            Glide.with(this)
+                    .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
+                    .error(R.drawable.ic_launcher)
+                    .into(ivChildImg);
+        }
+        if (!menemberInfo.getUserInfo().getCircleAvatarUrl().equals("")) {
+            Glide.with(this)
+                    .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
+                    .error(R.drawable.ic_launcher)
+                    .into(ivContentImg);
+        }
     }
 
     private void setUpView() {
@@ -128,7 +132,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
         long circleUserIdself = circleUserSelf.getCircleUserId();
         int circleUserTypeSelf = circleUserSelf.getCircleUserType();
 
-        int circleUserId = circleUserInfo.getCircleUserId();
+        long circleUserId = circleUserInfo.getCircleUserId();
         int circleUserType = circleUserInfo.getCircleUserType();
         if (circleUserIdself == circleUserId && circleUserType == 1) {
             getSupportActionBar().setTitle("我的圈资料");
