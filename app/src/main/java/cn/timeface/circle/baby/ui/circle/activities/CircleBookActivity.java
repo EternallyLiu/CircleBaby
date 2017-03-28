@@ -96,12 +96,13 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
 
         tvTip.setVisibility(View.GONE);
         btnAskForPrint.setVisibility(View.GONE);
+
+        reqData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        reqData();
     }
 
     private void reqData() {

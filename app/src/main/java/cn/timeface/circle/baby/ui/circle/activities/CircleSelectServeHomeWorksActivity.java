@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -50,6 +51,10 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
     Toolbar toolbar;
     @Bind(R.id.fl_container)
     FrameLayout flContainer;
+    @Bind(R.id.tv_sel_count)
+    TextView tvSelCount;
+    @Bind(R.id.rl_photo_tip)
+    RelativeLayout rlPhotoTip;
 
     CircleSelectBabyFragment selectBabyFragment;
     CircleSelectSchoolTaskFragment selectSchoolTaskFragment;
@@ -122,6 +127,7 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
 
                                             //转换成发布obj and 取出最大小值 and 拼接所有homework的id，作为保存书籍接口使用
                                             StringBuffer sbTaskIds = new StringBuffer("{\"mediaIds\":[");
+                                            StringBuffer sbHomeworkIds = new StringBuffer("\"homeworkIds\":[");
                                             for(CircleHomeworkExObj circleHomeworkExObj : allSelHomeWorks){
                                                 tfoPublishObjs.add(circleHomeworkExObj.toTFOPublishObj());
                                                 if(circleHomeworkExObj.getHomework().getCreateDate() >= maxHomework.getHomework().getCreateDate()){
@@ -135,10 +141,14 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                                                     sbTaskIds.append(mediaObj.getId());
                                                     sbTaskIds.append(",");
                                                 }
+                                                sbHomeworkIds.append(circleHomeworkExObj.getHomework().getHomeworkId());
+                                                sbHomeworkIds.append(",");
                                             }
 
                                             sbTaskIds.replace(sbTaskIds.lastIndexOf(","), sbTaskIds.lastIndexOf(",") + 1, "],");
-                                            sbTaskIds.append("\"circleId\":").append(circleId).append("}");
+                                            sbHomeworkIds.replace(sbHomeworkIds.lastIndexOf(","), sbHomeworkIds.lastIndexOf(",") + 1, "],");
+                                            sbTaskIds.append(sbHomeworkIds)
+                                                    .append("\"circleId\":").append(circleId).append("}");
 
                                             ArrayList<String> keys = new ArrayList<>();
                                             ArrayList<String> values = new ArrayList<>();
@@ -252,6 +262,13 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
             ((CircleSelectSchoolTaskFragment) currentFragment).setActivityResult(requestCode, resultCode, data);
         } else {
             Log.e(TAG, "not known fragment");
+        }
+
+        if(allSelHomeWorks.size() > 0){
+            rlPhotoTip.setVisibility(View.VISIBLE);
+            tvSelCount.setText("已选择" + allSelHomeWorks.size() + "条记录");
+        } else {
+            rlPhotoTip.setVisibility(View.GONE);
         }
     }
 }

@@ -6,9 +6,9 @@
     android:orientation="vertical">
 
     <TextView
-        android:layout_margin="@dimen/view_space_medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/view_space_medium"
         android:text="请选择相关成员"
         android:textColor="@color/text"
         android:textSize="18sp" />
@@ -16,11 +16,13 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="42dp" />
 
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

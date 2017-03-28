@@ -11,18 +11,30 @@
     tools:context="cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeDetailActivity"
     tools:showIn="@layout/activity_select_server_time_detail">
 
+    <CheckBox
+        android:layout_marginRight="12dp"
+        android:id="@+id/cb_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
+        android:button="@drawable/selector_item_photo_select"
+        android:drawablePadding="@dimen/view_space_normal"
+        android:text="全选"
+        android:textColor="@color/colorPrimary" />
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_space_medium"
         android:background="@color/white"
         android:lineSpacingMultiplier="1.2"
         android:paddingBottom="@dimen/size_12"
         android:paddingLeft="@dimen/size_12"
         android:paddingRight="@dimen/size_12"
         android:paddingTop="@dimen/size_12"
-        android:textColor="@color/text"
+        android:textColor="@color/text_color13"
         android:textSize="16sp"
         tools:text="又到了周末，外面阳光明媚，却又天气凉爽，实在适合出去转转。" />
 

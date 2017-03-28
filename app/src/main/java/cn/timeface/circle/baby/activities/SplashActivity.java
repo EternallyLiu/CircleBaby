@@ -148,9 +148,9 @@ public class SplashActivity extends BaseAppCompatActivity {
                                     showGuide();
                                 }
                             } else {
-                                if (!response.getInfo().equals("已是最新版本")) {
-                                    Toast.makeText(SplashActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
-                                }
+//                                if (!response.getInfo().equals("已是最新版本")) {
+//                                    Toast.makeText(SplashActivity.this, response.getInfo(), Toast.LENGTH_SHORT).show();
+//                                }
                                 showGuide();
                             }
                         }

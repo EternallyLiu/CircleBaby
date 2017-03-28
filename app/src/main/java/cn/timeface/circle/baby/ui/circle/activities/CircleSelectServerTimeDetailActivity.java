@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -54,6 +55,8 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
     RecyclerView rvContent;
     @Bind(R.id.content_select_server_time_detail)
     LinearLayout contentSelectServerTimeDetail;
+    @Bind(R.id.cb_select)
+    CheckBox cbSelectAll;
 
     CircleSelectServerTimeMediaAdapter serverTimesAdapter;
     CircleTimeLineExObj timeLineObj;
@@ -80,6 +83,7 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
         tvCancel.setOnClickListener(this);
         tvSelectAll.setOnClickListener(this);
         tvFinish.setOnClickListener(this);
+        cbSelectAll.setOnClickListener(this);
 
         tvSelectAll.setText(isAllSelect() ? "取消全选" : "全选");
         setData(timeLineObj.getCircleTimeline().getMediaList());
@@ -123,6 +127,24 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
 
             case R.id.tv_finish:
                 finish();
+                break;
+
+            case R.id.cb_select:
+                if(cbSelectAll.isChecked()){
+                    if(!selMedias.containsAll(timeLineObj.getCircleTimeline().getMediaList())){
+                        selMedias.addAll(timeLineObj.getCircleTimeline().getMediaList());
+                    }
+                    EventBus.getDefault().post(new CircleSelectMediaListEvent(
+                            CircleSelectMediaListEvent.TYPE_TIME_MEDIA,
+                            true, timeLineObj.getCircleTimeline().getMediaList()));
+                } else {
+                    if(selMedias.containsAll(timeLineObj.getCircleTimeline().getMediaList())){
+                        selMedias.removeAll(timeLineObj.getCircleTimeline().getMediaList());
+                    }
+                    EventBus.getDefault().post(new CircleSelectMediaListEvent(
+                            CircleSelectMediaListEvent.TYPE_TIME_MEDIA,
+                            false, timeLineObj.getCircleTimeline().getMediaList()));
+                }
                 break;
         }
     }

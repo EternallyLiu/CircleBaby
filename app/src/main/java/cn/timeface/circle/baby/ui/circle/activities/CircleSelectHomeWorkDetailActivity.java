@@ -27,7 +27,9 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectHomeWorkAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeWorkExWrapperObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
+import cn.timeface.circle.baby.ui.circle.response.CircleHomeWorkListResponse;
 import cn.timeface.circle.baby.views.TFStateView;
+import rx.functions.Action1;
 
 /**
  * 圈作品选择作业列表详情页面
@@ -83,9 +85,9 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         addSubscription(
                 apiService.queryHomeworksByBaby(circleId, babyId)
                         .compose(SchedulersCompat.applyIoSchedulers())
-                        .doOnCompleted(() -> stateView.finish())
                         .subscribe(
                                 response -> {
+                                    stateView.finish();
                                     if (response.success()) {
                                         setData(response.getDataList());
                                     } else {
@@ -93,6 +95,7 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
                                     }
                                 },
                                 throwable -> {
+                                    stateView.showException(throwable);
                                     Log.e(TAG, throwable.getLocalizedMessage());
                                 }
                         )
@@ -116,8 +119,6 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
 
         if(selectHomeWorkAdapter.getListData().isEmpty()){
             stateView.empty();
-        } else {
-            stateView.setVisibility(View.GONE);
         }
     }
 
