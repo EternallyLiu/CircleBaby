@@ -65,8 +65,8 @@
 
         <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
             android:id="@+id/add_like"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/size_30"
+            android:layout_height="@dimen/size_27"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/add_comment"
             android:padding="@dimen/size_4"
@@ -76,8 +76,8 @@
 
         <ImageView
             android:id="@+id/add_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/size_30"
+            android:layout_height="@dimen/size_27"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:padding="@dimen/size_4"

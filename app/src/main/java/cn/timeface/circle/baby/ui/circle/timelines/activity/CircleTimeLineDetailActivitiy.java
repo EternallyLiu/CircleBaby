@@ -184,7 +184,6 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         }
         if (currentTimeLineObj.getcommentList().size() > 0)
             contentList.addAll(currentTimeLineObj.getcommentList());
-        LogUtil.showLog("comment size==" + currentTimeLineObj.getcommentList().size());
         adapter.addList(true, contentList);
         addLike.setChecked(currentTimeLineObj.getLike() % 2 == 1 ? true : false);
         if (commentable)
@@ -194,13 +193,18 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
 
     private void reqData() {
         addSubscription(apiService.queryCircleTimeLineDetail(currentTimeLineObj.getCircleTimelineId()).compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(circleTimeLineDetailResponse -> addLike.setEnabled(true))
                 .doOnNext(circleTimeLineDetailResponse -> swipeRefresh.setRefreshing(false))
                 .subscribe(circleTimeLineDetailResponse -> {
                     if (circleTimeLineDetailResponse.success() && circleTimeLineDetailResponse.getCircleTimelineInfo() != null) {
                         currentTimeLineObj = circleTimeLineDetailResponse.getCircleTimelineInfo();
+                        EventBus.getDefault().post(new CircleTimeLineEditEvent(currentTimeLineObj));
                         initRecyclerView();
                     } else ToastUtil.showToast(this, circleTimeLineDetailResponse.getInfo());
-                }, throwable -> swipeRefresh.setRefreshing(false)));
+                }, throwable -> {
+                    addLike.setEnabled(true);
+                    swipeRefresh.setRefreshing(false);
+                }));
     }
 
     @Override
@@ -268,10 +272,24 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         }
     }
 
+    private void addLike() {
+        addLike.setEnabled(false);
+        addSubscription(apiService.circleLike(currentTimeLineObj.getCircleTimelineId(), currentTimeLineObj.getLike() == 0 ? 1 : 0)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(baseResponse -> {
+                    if (baseResponse.success()) {
+                        reqData();
+                    } else ToastUtil.showToast(this, baseResponse.getInfo());
+                }, throwable -> {
+                    LogUtil.showError(throwable);
+                }));
+    }
+
     @OnClick({R.id.add_like, R.id.add_comment, R.id.back_up})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.add_like:
+                addLike();
                 break;
             case R.id.add_comment:
                 if (commmentId > 0 && TextUtils.isEmpty(etCommment.getText().toString())) {
@@ -322,7 +340,13 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     }
 
     private void deleteComment(CircleCommentObj commment) {
-
+        addSubscription(apiService.deleteComment(commment.getCommentId()).compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(baseResponse -> {
+                    if (baseResponse.success()) {
+                        adapter.deleteItem(commment);
+                        currentTimeLineObj.getcommentList().remove(commment);
+                    } else ToastUtil.showToast(this, baseResponse.getInfo());
+                }, throwable -> LogUtil.showError(throwable)));
     }
 
     public View initCommentMenu(CircleCommentObj comment) {
@@ -332,7 +356,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         RelativeLayout tvAction = (RelativeLayout) view.findViewById(R.id.rl_action);
         TextView tv = (TextView) view.findViewById(R.id.tv_action);
         RelativeLayout tvCancel = (RelativeLayout) view.findViewById(R.id.rl_cancel);
-        if (comment.getCommentUserInfo().getCircleUserId()==FastData.getCircleUserId()) {
+        if (comment.getCommentUserInfo().getCircleUserId() == FastData.getCircleUserId()) {
             tv.setText("删除");
         }
         tvAction.setTag(R.string.tag_obj, comment);
