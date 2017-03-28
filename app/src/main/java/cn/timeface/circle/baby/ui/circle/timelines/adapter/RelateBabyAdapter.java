@@ -62,6 +62,16 @@ public class RelateBabyAdapter extends BaseAdapter {
         return arrayList;
     }
 
+    public ArrayList<GetCircleAllBabyObj> getselectBaby() {
+        ArrayList<GetCircleAllBabyObj> arrayList = new ArrayList<GetCircleAllBabyObj>();
+        for (int i = 0; i < getItemCount(); i++) {
+            GetCircleAllBabyObj babyObj = getItem(i);
+            if (babyObj.getBaseType() == 0 && babyObj.getSelected() == 1)
+                arrayList.add(babyObj);
+        }
+        return arrayList;
+    }
+
     @Override
     public void addList(boolean isClear, List list) {
         list.add(initNewBaby());

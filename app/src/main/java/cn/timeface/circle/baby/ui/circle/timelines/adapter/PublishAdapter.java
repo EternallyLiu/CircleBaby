@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wechat.photopicker.fragment.BigImageFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +27,7 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.activities.SelectTimeActivity;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
@@ -160,7 +163,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         if (index >= 0 && index >= contentObj.getMediaList().size()) {
             index = index - contentObj.getMediaList().size();
             if (index >= 0 && index < selImage.size()) {
-                ivImg.setTag(R.id.recycler_item_click_tag, index);
+                ivImg.setTag(R.id.recycler_item_click_tag, index+contentObj.getMediaList().size());
                 GlideUtil.displayImage(selImage.get(index).getLocalPath(), ivImg, false);
             } else {
                 ivImg.setTag(R.id.recycler_item_click_tag, -1);
@@ -238,7 +241,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         } else {
             etInput.setText("");
         }
-        if (getType()!=TYPE_TIMELINE){
+        if (getType() != TYPE_TIMELINE) {
             etInput.setHint("请输入作业描述（选填）");
         }
         int size = Utils.getByteSize(contentObj.getContent());
@@ -347,7 +350,12 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                                 } else
                                     SelectPhotoActivity.openForResult(context(), selImage, maxCount, PublishActivity.PICTURE);
                             } else {
-
+                                ArrayList<MediaObj> list = new ArrayList<MediaObj>(0);
+                                list.addAll(MediaObj.getMediaArray(contentObj.getMediaList()));
+                                for (ImgObj imgObj : selImage) {
+                                    list.add(imgObj.getCircleMediaObj());
+                                }
+                                FragmentBridgeActivity.openBigimageFragment(context(), 0, list, MediaObj.getUrls(list), index, getType()==TYPE_TIMELINE?BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR:BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, false, true);
                             }
                         }, throwable -> LogUtil.showError(throwable));
                 break;

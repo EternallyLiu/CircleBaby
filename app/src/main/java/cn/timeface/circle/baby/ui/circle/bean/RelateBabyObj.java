@@ -12,42 +12,35 @@ import cn.timeface.circle.baby.support.api.models.base.BaseObj;
  * Created by lidonglin on 2017/3/14.
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class RelateBabyObj extends BaseObj implements Parcelable {
+public class RelateBabyObj extends GetCircleAllBabyObj implements Parcelable {
     protected long babyId;       //宝宝id
-    protected String babyName;  //宝宝姓名
 
     public RelateBabyObj() {
     }
 
-    protected RelateBabyObj(Parcel in) {
+    public RelateBabyObj(long babyId, String babyName) {
+        this.babyId = babyId;
+        setBabyName(babyName);
+    }
+
+    public RelateBabyObj(Parcel in, long babyId, String babyName) {
         super(in);
-        babyId = in.readLong();
-        babyName = in.readString();
+        this.babyId = babyId;
+        setBabyName(babyName);
     }
+
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeLong(babyId);
-        dest.writeString(babyName);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RelateBabyObj babyObj = (RelateBabyObj) o;
+
+        if (babyId != babyObj.babyId) return false;
+        return getBabyName() != null ? getBabyName().equals(babyObj.getBabyName()) : babyObj.getBabyName() == null;
+
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<RelateBabyObj> CREATOR = new Creator<RelateBabyObj>() {
-        @Override
-        public RelateBabyObj createFromParcel(Parcel in) {
-            return new RelateBabyObj(in);
-        }
-
-        @Override
-        public RelateBabyObj[] newArray(int size) {
-            return new RelateBabyObj[size];
-        }
-    };
 
     public long getBabyId() {
         return babyId;
@@ -57,11 +50,31 @@ public class RelateBabyObj extends BaseObj implements Parcelable {
         this.babyId = babyId;
     }
 
-    public String getBabyName() {
-        return babyName;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setBabyName(String babyName) {
-        this.babyName = babyName;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeLong(this.babyId);
     }
+
+    protected RelateBabyObj(Parcel in) {
+        super(in);
+        this.babyId = in.readLong();
+    }
+
+    public static final Creator<RelateBabyObj> CREATOR = new Creator<RelateBabyObj>() {
+        @Override
+        public RelateBabyObj createFromParcel(Parcel source) {
+            return new RelateBabyObj(source);
+        }
+
+        @Override
+        public RelateBabyObj[] newArray(int size) {
+            return new RelateBabyObj[size];
+        }
+    };
 }
