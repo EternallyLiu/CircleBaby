@@ -228,11 +228,6 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         return tfoContentObj;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -290,7 +285,13 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeString(this.age);
         dest.writeString(this.dateEx);
         dest.writeParcelable(this.author, flags);
@@ -308,9 +309,11 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         dest.writeInt(this.type);
         dest.writeString(this.content);
         dest.writeParcelable(this.locationInfo, flags);
+        dest.writeInt(this.allDetailsListPosition);
     }
 
     protected TimeLineObj(Parcel in) {
+        super(in);
         this.age = in.readString();
         this.dateEx = in.readString();
         this.author = in.readParcelable(UserObj.class.getClassLoader());
@@ -328,6 +331,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.type = in.readInt();
         this.content = in.readString();
         this.locationInfo = in.readParcelable(NearLocationObj.class.getClassLoader());
+        this.allDetailsListPosition = in.readInt();
     }
 
     public static final Creator<TimeLineObj> CREATOR = new Creator<TimeLineObj>() {

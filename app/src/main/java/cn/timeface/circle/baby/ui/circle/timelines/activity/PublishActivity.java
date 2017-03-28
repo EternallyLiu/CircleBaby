@@ -54,6 +54,7 @@ import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.PublishAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.ItemObj;
 import cn.timeface.circle.baby.ui.circle.timelines.events.ActiveSelectEvent;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.HomeWorkListEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
@@ -417,6 +418,29 @@ public class PublishActivity extends BaseAppCompatActivity {
                     break;
             }
         }
+    }
+
+    @Subscribe
+    public void onEvent(CircleMediaEvent event) {
+        Observable.defer(() -> Observable.from(adapter.getSelImage()))
+                .map(imgObj -> imgObj.getCircleMediaObj())
+                .toList()
+                .doOnNext(circleMediaObjs -> circleMediaObjs.addAll(event.getMediaObj().getId() > 0 ? adapter.getContentObj().getMediaList() : new ArrayList<CircleMediaObj>(0)))
+                .flatMap(circleMediaObjs -> Observable.from(circleMediaObjs))
+                .filter(mediaObj -> mediaObj.getId() == event.getMediaObj().getId() && mediaObj.getImgUrl().equals(event.getMediaObj().getImgUrl()) && mediaObj.getLocalPath().equals(event.getMediaObj().getLocalPath()))
+                .subscribe(mediaObj -> {
+                    if (event.getType() == 0) {
+                        mediaObj.setRelateBabys(event.getMediaObj().getRelateBabys());
+                        mediaObj.setTips(event.getMediaObj().getTips());
+                        mediaObj.setFavoritecount(event.getMediaObj().getFavoritecount());
+                        mediaObj.setIsFavorite(event.getMediaObj().getIsFavorite());
+                    } else {
+                        boolean remove = adapter.getSelImage().remove(event.getMediaObj().getImgObj());
+                        LogUtil.showLog("remove=====" + remove);
+                        adapter.getContentObj().getMediaList().remove(event.getMediaObj());
+                    }
+                    adapter.notifyDataSetChanged();
+                }, throwable -> LogUtil.showError(throwable));
     }
 
     @Override
