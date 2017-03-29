@@ -10,13 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
-
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.ProductionIntroActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
@@ -128,7 +127,7 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
                 }
                 break;
             case R.id.tv_detail:
-
+                ProductionIntroActivity.open(this, typeObj.getBookType());
                 break;
         }
     }
