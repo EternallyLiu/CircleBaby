@@ -36,6 +36,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
@@ -137,6 +138,8 @@ public class PublishActivity extends BaseAppCompatActivity {
                 title.setText(R.string.send_circle_time_line_title);
                 CircleTimelineObj timelineObj = bundle.getParcelable(CircleTimelineObj.class.getSimpleName());
                 adapter.setContentObj(timelineObj);
+                if (timelineObj == null)
+                    SelectPhotoActivity.openForResult(this, adapter.getSelImage(), PublishAdapter.MAX_PIC_TIMELINE_COUNT, PublishActivity.PICTURE);
                 break;
             case PublishAdapter.TYPE_SCHOOL:
                 title.setText(R.string.send_circle_school_title);
@@ -446,6 +449,7 @@ public class PublishActivity extends BaseAppCompatActivity {
                 }, throwable -> LogUtil.showError(throwable));
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -457,7 +461,8 @@ public class PublishActivity extends BaseAppCompatActivity {
                         adapter.getSelImage().clear();
                         adapter.getSelImage().addAll(selImages);
                         adapter.notifyDataSetChanged();
-                    }
+                    } else if (type == PublishAdapter.TYPE_TIMELINE && adapter.getContentObj().getMediaList().size() <= 0)
+                        finish();
                     break;
                 case TIME:
                     long time = data.getLongExtra("timeMillis", System.currentTimeMillis());
