@@ -3,14 +3,15 @@
                 xmlns:timeLine="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/size_10"
+                android:paddingRight="@dimen/size_10"
     >
 
     <RelativeLayout
         android:id="@+id/rl_time_line"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/alabaster"
-        android:paddingLeft="@dimen/size_6"
+        android:paddingLeft="@dimen/size_4"
         android:paddingRight="@dimen/size_6">
 
         <cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker
@@ -18,15 +19,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/size_24"
-            android:paddingLeft="@dimen/size_12"
-            android:paddingRight="@dimen/size_12"
-            android:paddingTop="@dimen/size_24"
-            timeLine:beginLine="@color/sea_buckthorn"
-            timeLine:endLine="@color/sea_buckthorn"
+            android:paddingBottom="@dimen/size_12"
+            android:paddingTop="@dimen/size_12"
+            timeLine:beginLine="@color/lily_white"
+            timeLine:endLine="@color/lily_white"
             timeLine:lineSize="@dimen/size_2"
             timeLine:marker="@drawable/circle_market_drawable"
-            timeLine:markerSize="@dimen/size_18"/>
+            timeLine:markerSize="@dimen/size_12"/>
 
         <TextView
             android:id="@+id/tv_date_time"
@@ -37,7 +36,7 @@
             android:layout_toRightOf="@+id/line"
             android:gravity="center_vertical"
             android:text="@string/time_line_select_year"
-            android:textColor="@color/sea_buckthorn"
+            android:textColor="@color/text"
             android:textSize="@dimen/text_normal"/>
     </RelativeLayout>
 
@@ -46,13 +45,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_time_line"
         android:background="@color/white"
-        android:padding="@dimen/size_4">
+        android:paddingBottom="@dimen/size_10"
+        >
 
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/size_12"
             android:text="@string/tv_circle_time_line_titl_tip"
             android:textColor="@color/text"
             android:textSize="@dimen/text_normal"/>
@@ -62,13 +63,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_title"
+            android:layout_marginTop="@dimen/size_10"
             android:orientation="vertical"></LinearLayout>
 
         <RelativeLayout
-            android:layout_below="@+id/ll_gv"
             android:id="@+id/rl_pic_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_gv"
             android:gravity="center"
             android:padding="@dimen/size_6"
             android:visibility="gone">
@@ -84,7 +86,7 @@
                 android:text="共9张图片  "
                 android:textColor="@color/sea_buckthorn"
                 android:textSize="@dimen/text_medium"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <ImageView
                 android:id="@+id/iv_pic_count"
@@ -93,7 +95,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@+id/pic_count"
                 android:scaleType="fitCenter"
-                android:src="@drawable/home_pic_count" />
+                android:src="@drawable/home_pic_count"/>
         </RelativeLayout>
 
         <TextView
@@ -115,20 +117,20 @@
 
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="@dimen/size_20"
-                android:layout_height="@dimen/size_20"
+                android:layout_width="@dimen/size_36"
+                android:layout_height="@dimen/size_36"
                 android:layout_centerVertical="true"
                 android:scaleType="fitCenter"/>
 
             <TextView
                 android:id="@id/tv_name"
-                android:maxLength="8"
-                android:ellipsize="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/size_4"
+                android:layout_marginLeft="@dimen/size_6"
                 android:layout_toRightOf="@+id/iv_icon"
+                android:ellipsize="end"
+                android:maxLength="8"
                 android:textColor="@color/sea_buckthorn"
                 android:textSize="@dimen/text_normal"/>
 
@@ -137,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/size_4"
+                android:layout_marginLeft="@dimen/size_10"
                 android:layout_toRightOf="@+id/tv_name"
                 android:text="删除"
                 android:textColor="@color/text"
@@ -146,7 +148,7 @@
             <ImageView
                 android:id="@+id/iv_message"
                 android:layout_width="@dimen/size_20"
-                android:layout_height="@dimen/size_20"
+                android:layout_height="@dimen/size_18"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:scaleType="fitCenter"
@@ -155,7 +157,7 @@
             <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
                 android:id="@+id/iv_like"
                 android:layout_width="@dimen/size_20"
-                android:layout_height="@dimen/size_20"
+                android:layout_height="@dimen/size_18"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/size_6"
                 android:layout_toLeftOf="@+id/iv_message"

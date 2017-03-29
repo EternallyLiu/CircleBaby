@@ -62,10 +62,10 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                 TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
                 emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
                 if (emptyLayoutParams == null) {
-                    emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
-                emptyLayoutParams.width = App.mScreenWidth;
-                emptyLayoutParams.height = App.mScreenHeight;
+//                emptyLayoutParams.width = App.mScreenWidth;
+//                emptyLayoutParams.height = App.mScreenHeight;
                 contentView.setLayoutParams(emptyLayoutParams);
                 switch (getEmptyItem().getOperationType()) {
                     case -1:

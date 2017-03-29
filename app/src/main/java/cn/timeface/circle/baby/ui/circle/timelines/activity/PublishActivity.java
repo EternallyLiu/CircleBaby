@@ -330,8 +330,11 @@ public class PublishActivity extends BaseAppCompatActivity {
         List<String> list = new ArrayList<>(0);
         for (CircleMediaObj mediaObj : timelineObj.getMediaList())
             if (mediaObj.getId() <= 0) list.add(mediaObj.getLocalPath());
+        if (timelineObj.getMediaList().size() <= 0) {
+            ToastUtil.showToast(this, getString(R.string.please_send_some_pic));
+            return;
+        }
         String send = new Gson().toJson(timelineObj);
-        LogUtil.showLog("send:" + send);
         showProgress();
         if (timelineObj.getCircleTimelineId() > 0) {
             addSubscription(apiService.editorCircleTimeLine(Uri.encode(send))
@@ -408,7 +411,6 @@ public class PublishActivity extends BaseAppCompatActivity {
 
     @Subscribe
     public void onEvent(UploadEvent event) {
-        LogUtil.showLog("event", JSONUtils.parse2JSONString(event));
         if (event.isComplete()) {
             switch (event.getTimeId()) {
                 case PublishAdapter.TYPE_SCHOOL:

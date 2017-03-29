@@ -39,4 +39,5 @@
     <dimen name="size_8">8dp</dimen>
     <dimen name="size_21">21dp</dimen>
     <dimen name="size_66">66dp</dimen>
+    <dimen name="size_28">28dp</dimen>
 </resources>

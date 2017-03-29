@@ -64,7 +64,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     public CircleTimeLineAdapter(Context activity) {
         super(activity);
         maxImageHeight = (int) (context().getResources().getDimension(R.dimen.size_120) * 1.5f);
-        paddingImage = (int) (context().getResources().getDimension(R.dimen.size_2));
+        paddingImage = (int) (context().getResources().getDimension(R.dimen.size_4));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     }
 
     public void addFooter(View view) {
-        if (!mFooter.contains(view)) {
+        if (mFooter.size() > 0 || !mFooter.contains(view)) {
             RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(params);
             mFooter.add(view);
@@ -179,12 +179,16 @@ public class CircleTimeLineAdapter extends BaseAdapter {
             rlPicCount.setVisibility(View.VISIBLE);
             picCount.setText(String.format("共%d张图片  ", timelineObj.getMediaList().size()));
         } else rlPicCount.setVisibility(View.GONE);
-        tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 E", timelineObj.getCreateDate()));
+        tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 EEEE", timelineObj.getCreateDate()));
         tvTitle.setText(timelineObj.getTitle());
+        tvTitle.setVisibility(TextUtils.isEmpty(timelineObj.getTitle()) ? View.GONE : View.VISIBLE);
         tvDetail.setText(timelineObj.getContent());
+        tvDetail.setVisibility(TextUtils.isEmpty(timelineObj.getContent()) ? View.GONE : View.VISIBLE);
         tvName.setText(timelineObj.getPublisher().getCircleNickName());
         GlideUtil.displayImageCircle(timelineObj.getPublisher().getCircleAvatarUrl(), ivIcon);
         ivLike.setChecked(timelineObj.getLike() % 2 == 0 ? false : true);
+        ivLike.setTag(R.id.recycler_item_click_tag, timelineObj);
+        ivLike.setOnClickListener(this);
         marker.setDrawBegin(true);
         marker.setDrawEnd(true);
         if (position == getRealItemSize() - 1) {
@@ -310,7 +314,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
 
     @Override
     protected void handleMsg(Message msg) {
-        clearFooter();
+//        clearFooter();
         switch (msg.what) {
             case DELETE_ALL:
                 if (list != null && list.size() > 0) {
@@ -356,6 +360,19 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.iv_like:
+                v.setEnabled(false);
+                Observable.defer(() -> Observable.just((CircleTimelineObj) v.getTag(R.id.recycler_item_click_tag)))
+                        .flatMap(circleTimelineObj -> ApiFactory.getApi().getApiService().circleLike(circleTimelineObj.getCircleTimelineId(), circleTimelineObj.getLike() == 0 ? 1 : 0))
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnNext(baseResponse -> v.setEnabled(true))
+                        .subscribe(baseResponse -> {
+                            if (baseResponse.success()) {
+                                SelectImageView imageView = (SelectImageView) v;
+                                imageView.setChecked(!imageView.isChecked());
+                            }
+                        }, throwable -> v.setEnabled(true));
+                break;
             case R.id.icon:
                 Observable.defer(() -> Observable.just(v))
                         .map(view -> (int) view.getTag(R.id.recycler_item_click_tag))

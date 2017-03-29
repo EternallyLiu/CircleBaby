@@ -2,7 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/size_4">
+                android:paddingBottom="@dimen/size_10"
+                android:paddingLeft="@dimen/size_10"
+                android:paddingRight="@dimen/size_10"
+                android:paddingTop="@dimen/size_10"
+    >
 
     <cn.timeface.circle.baby.ui.circle.timelines.views.InputListenerEditText
         android:id="@+id/et_input_title"

@@ -142,7 +142,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         tfStateView = ButterKnife.findById(footerView, R.id.tf_stateView);
 
         adapter.addHeader(headerView);
-        adapter.addFooter(footerView);
+//        adapter.addFooter(footerView);
     }
 
     private void setupCircleInfo(CircleIndexInfoResponse circleIndexInfo) {
@@ -182,7 +182,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                             }
                         },
                         throwable -> {
-                            tfStateView.showException(throwable);
+//                            tfStateView.showException(throwable);
                             tfptrListViewHelper.finishTFPTRRefresh();
                             LogUtil.showError(throwable);
                         }

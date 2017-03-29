@@ -3,7 +3,6 @@
                 xmlns:select="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/size_12"
     >
 
 
@@ -12,10 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="@dimen/size_6"
-        android:layout_marginLeft="@dimen/size_4"
-        android:layout_marginRight="@dimen/size_4"
-        android:layout_marginTop="@dimen/size_12"
+        android:layout_marginBottom="@dimen/size_10"
+        android:layout_marginLeft="@dimen/size_10"
+        android:layout_marginRight="@dimen/size_10"
+        android:layout_marginTop="@dimen/size_10"
         android:gravity="left|center_vertical"
         android:lines="1"
         android:text="@string/circle_publish_notify_timeline_tip"
@@ -27,10 +26,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="@dimen/size_6"
-        android:layout_marginLeft="@dimen/size_4"
-        android:layout_marginRight="@dimen/size_4"
-        android:layout_marginTop="@dimen/size_12"
+        android:layout_marginBottom="@dimen/size_10"
+        android:layout_marginLeft="@dimen/size_10"
+        android:layout_marginRight="@dimen/size_10"
+        android:layout_marginTop="@dimen/size_10"
         />
 
 
