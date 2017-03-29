@@ -144,7 +144,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
                 CirclePhotoMonthObj monthObj = (CirclePhotoMonthObj) view.getTag(R.string.tag_obj);
                 tvContentType.setVisibility(View.GONE);
                 tvContent.setVisibility(View.VISIBLE);
-                tvContent.setText(monthObj.getYear() + monthObj.getMonth());
+                tvContent.setText(monthObj.getYear() + "年" + monthObj.getMonth() + "月");
 
                 showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, circleId, monthObj.getYear(), monthObj.getMonth()));
                 break;

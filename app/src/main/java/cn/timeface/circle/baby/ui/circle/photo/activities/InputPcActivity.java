@@ -13,6 +13,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.ForgetPasswordActivity;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.FastBlur;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -73,7 +74,7 @@ public class InputPcActivity extends BasePresenterAppCompatActivity implements V
                 CaptureActivity.open(this);
                 break;
             case R.id.btn_forget:
-
+                ForgetPasswordActivity.open(this);
                 break;
         }
     }
