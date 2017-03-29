@@ -1906,6 +1906,6 @@ public interface ApiService {
     @POST("book/homework/times")
     Observable<CircleBookHomeworkListResponse> queryBookHomeworks(@Query("bookId") String bookId);
 
-
-
+    @GET("index/scanLogin")
+    Observable<BaseResponse> scanLogin(@Query("code") String code);
 }

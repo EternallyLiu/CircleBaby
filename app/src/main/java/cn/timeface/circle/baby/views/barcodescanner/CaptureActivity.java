@@ -30,6 +30,7 @@ import java.util.Map;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.views.barcodescanner.camera.CameraManager;
 import cn.timeface.circle.baby.views.barcodescanner.decode.CaptureActivityHandler;
 import cn.timeface.circle.baby.views.barcodescanner.view.ViewfinderView;
@@ -310,10 +311,10 @@ public final class CaptureActivity extends BaseAppCompatActivity
     }
 
     private void doAnalysisResult(String result) {
-        if(TextUtils.isEmpty(result)){
+        if (TextUtils.isEmpty(result)) {
             showToast("二维码识别失败");
         } else {
-//            webLogin(result);
+            scanLogin(result);
         }
         restartPreviewAfterDelay(0L);
     }
@@ -409,13 +410,13 @@ public final class CaptureActivity extends BaseAppCompatActivity
         this.finish();
     }
 
-    /*private void webLogin(String qrCode){
+    private void scanLogin(String qrCode) {
         addSubscription(
-                apiService.webLogin(new WebLoginRequest(qrCode, String.valueOf(contentObj.getContent_id())))
+                apiService.scanLogin(qrCode)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(
                                 response -> {
-                                    if(response.success()){
+                                    if (response.success()) {
                                         showToast("登录成功");
                                     } else {
                                         showToast(response.getInfo());
@@ -426,7 +427,7 @@ public final class CaptureActivity extends BaseAppCompatActivity
                                 }
                         )
         );
-    }*/
+    }
 
     @Override
     public void onBackPressed() {

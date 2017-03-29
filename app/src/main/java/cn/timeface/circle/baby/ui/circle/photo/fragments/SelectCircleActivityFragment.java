@@ -144,6 +144,7 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
                                         llNoData.setVisibility(View.GONE);
                                     } else {
                                         llNoData.setVisibility(View.VISIBLE);
+                                        tvMsg.setText("没有搜索到相关活动哦");
                                     }
                                 } else {
                                     ToastUtil.showToast(response.getInfo());

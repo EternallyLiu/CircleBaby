@@ -67,7 +67,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:text="没有内容哦~"
-            android:textColor="@color/text_color30"
+            android:textColor="@color/text"
             android:textSize="20sp"
             android:textStyle="bold" />
 
