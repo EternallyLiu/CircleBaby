@@ -12,8 +12,11 @@
         android:background="@color/white"
         android:gravity="left"
         android:hint="@string/input_title_tip"
-        android:minHeight="@dimen/size_220"
-        android:padding="@dimen/size_4"
+        android:minHeight="@dimen/size_160"
+        android:paddingBottom="@dimen/size_10"
+        android:paddingLeft="@dimen/size_10"
+        android:paddingRight="@dimen/size_10"
+        android:paddingTop="@dimen/size_10"
         android:textColorHint="@color/aluminum"
         android:textSize="@dimen/text_normal"/>
 
@@ -23,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/et_input"
-        android:layout_margin="@dimen/size_8"
+        android:layout_margin="@dimen/size_10"
         android:text="0/10"
         android:textColor="@color/aluminum"
         android:textSize="@dimen/text_small"

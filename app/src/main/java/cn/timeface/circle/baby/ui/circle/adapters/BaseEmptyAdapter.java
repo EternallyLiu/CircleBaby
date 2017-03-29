@@ -73,11 +73,11 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
         addEmpty(0);
     }
 
-    private void addEmpty(int size) {
+    protected void addEmpty(int size) {
         if (getEmptyItem() != null && containObj(getEmptyItem())) {
             if (getRealItemSize() > size + 1) deleteItem(getEmptyItem());
         } else if (getEmptyItem() != null && !containObj(getEmptyItem())) {
-            if (getRealItemSize() <= size) add(getEmptyItem());
+            if (getRealItemSize() == size) add(getEmptyItem());
         }
     }
 

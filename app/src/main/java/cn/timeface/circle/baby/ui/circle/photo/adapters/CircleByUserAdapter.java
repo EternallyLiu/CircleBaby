@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -33,7 +35,7 @@ public class CircleByUserAdapter extends BaseRecyclerAdapter<QueryByCircleUserOb
 
     @Override
     public RecyclerView.ViewHolder getViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = mLayoutInflater.inflate(R.layout.item_user, null);
+        View view = mLayoutInflater.inflate(R.layout.item_circle_byuser, null);
         return new ViewHolder(view);
     }
 
@@ -41,6 +43,11 @@ public class CircleByUserAdapter extends BaseRecyclerAdapter<QueryByCircleUserOb
     public void bindData(RecyclerView.ViewHolder viewHolder, int position) {
         final QueryByCircleUserObj obj = listData.get(position);
         ViewHolder holder = (ViewHolder) viewHolder;
+        if(FastData.getCircleUserId() == obj.getUserInfo().getCircleUserId()){
+            holder.ivMe.setVisibility(View.VISIBLE);
+        }else{
+            holder.ivMe.setVisibility(View.GONE);
+        }
         holder.tvUserName.setText(obj.getUserInfo().getCircleNickName());
         holder.tvPhotoCount.setText(obj.getMediaCount() + "张");
         Glide.with(mContext)
@@ -69,6 +76,8 @@ public class CircleByUserAdapter extends BaseRecyclerAdapter<QueryByCircleUserOb
         TextView tvPhotoCount;
         @Bind(R.id.ll_root)
         LinearLayout llRoot;
+        @Bind(R.id.iv_me)
+        ImageView ivMe;
 
         ViewHolder(View view) {
             super(view);

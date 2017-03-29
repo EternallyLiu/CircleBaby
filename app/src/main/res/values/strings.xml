@@ -897,4 +897,6 @@
     <string name="activity_look_homework">查看作业</string>
     <string name="activity_teacher_author_title">教师认证</string>
     <string name="teacher_empty_message">暂时没有需要处理的认证消息</string>
+    <string name="please_send_some_pic">发张照片吧~</string>
+    <string name="active_album_null">您还没有活动相册哦~</string>
 </resources>

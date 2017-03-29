@@ -59,4 +59,7 @@
     <dimen name="size_8">8dp</dimen>
     <dimen name="size_21">21dp</dimen>
     <dimen name="size_66">66dp</dimen>
+    <dimen name="size_28">28dp</dimen>
+    <dimen name="size_70">70dp</dimen>
+    <dimen name="size_25">25dp</dimen>
 </resources>

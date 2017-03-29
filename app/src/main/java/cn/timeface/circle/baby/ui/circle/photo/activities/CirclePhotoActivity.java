@@ -14,6 +14,11 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.wechat.photopicker.fragment.BigImageFragment;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -21,9 +26,10 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CirclePhotoMonthObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
@@ -36,6 +42,8 @@ import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleBabyFragmen
 import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleTimeFragment;
 import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleUserFragment;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -43,7 +51,7 @@ import cn.timeface.circle.baby.views.TFStateView;
  * Created by lidonglin on 2017/3/15.
  */
 
-public class CirclePhotoActivity extends BasePresenterAppCompatActivity implements View.OnClickListener, SelectCirclePhotoTypeDialog.CirclePhotoTypeListener, CircleByTimeMenuDialog.CircleByTimeMenuListener {
+public class CirclePhotoActivity extends BasePresenterAppCompatActivity implements IEventBus, View.OnClickListener, SelectCirclePhotoTypeDialog.CirclePhotoTypeListener, CircleByTimeMenuDialog.CircleByTimeMenuListener {
     boolean fragmentShow = false;
     boolean canBack = false;
     @Bind(R.id.tv_content_type)
@@ -72,6 +80,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     private long circleId;
     private boolean user;
     private CircleUserInfo circleUserInfo;
+    private ArrayList<CircleMediaObj> mediaList;
 
 
     public static void open(Context context, long circleId) {
@@ -144,7 +153,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
                 CirclePhotoMonthObj monthObj = (CirclePhotoMonthObj) view.getTag(R.string.tag_obj);
                 tvContentType.setVisibility(View.GONE);
                 tvContent.setVisibility(View.VISIBLE);
-                tvContent.setText(monthObj.getYear() + monthObj.getMonth());
+                tvContent.setText(monthObj.getYear() + "年" + monthObj.getMonth() + "月");
 
                 showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_TIME, circleId, monthObj.getYear(), monthObj.getMonth()));
                 break;
@@ -222,13 +231,15 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
 
     public void clickCirclePhotoView(View view) {
         ArrayList<String> paths = new ArrayList<>();
-        MediaObj mediaObj = (MediaObj) view.getTag(R.string.tag_obj);
-        ArrayList<MediaObj> mediaList = (ArrayList<MediaObj>) view.getTag(R.string.tag_ex);
+        CircleMediaObj mediaObj = (CircleMediaObj) view.getTag(R.string.tag_obj);
+        if(mediaList == null){
+            mediaList = (ArrayList<CircleMediaObj>) view.getTag(R.string.tag_ex);
+        }
         for (int i = 0; i < mediaList.size(); i++) {
             paths.add(mediaList.get(i).getImgUrl());
         }
         int index = mediaList.indexOf(mediaObj);
-        FragmentBridgeActivity.openBigimageFragment(this, 0, mediaList, paths, index, true, false);
+        FragmentBridgeActivity.openBigimageFragment(this, 0, mediaList, paths, index, BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR, true, false);
 
     }
 
@@ -357,5 +368,17 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     @Override
     public void inputPc() {
         InputPcActivity.open(this, 0);
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onEvent(CircleMediaEvent event) {
+        LogUtil.showLog("event===" + event.getType());
+        if (event.getType() == 0 && event.getMediaObj() != null) {
+            int index = mediaList.indexOf(event.getMediaObj());
+            mediaList.get(index).setTips(event.getMediaObj().getTips());
+            mediaList.get(index).setIsFavorite(event.getMediaObj().getIsFavorite());
+            mediaList.get(index).setFavoritecount(event.getMediaObj().getFavoritecount());
+            mediaList.get(index).setRelateBabys(event.getMediaObj().getRelateBabys());
+        }
     }
 }

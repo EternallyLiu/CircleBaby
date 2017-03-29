@@ -155,6 +155,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
 
     @Override
     public void onItemClick(View view, int position) {
+        if (position < 1) return;
         HomeWorkListObj item = adapter.getItem(position);
         if (item != null) {
             SchoolTaskDetailActivity.open(this, item.getSchoolTask());

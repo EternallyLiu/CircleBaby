@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.adapter.ActiveSelectAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.events.ActiveSelectEvent;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
+import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
 import cn.timeface.circle.baby.views.DividerItemDecoration;
 
 /**
@@ -48,8 +49,8 @@ public class SelectActiveActivity extends BaseAppCompatActivity {
     private ActiveSelectAdapter adapter = null;
     private LinearLayoutManager layoutManager;
 
-    public static void open(Context context){
-        context.startActivity(new Intent(context,SelectActiveActivity.class));
+    public static void open(Context context) {
+        context.startActivity(new Intent(context, SelectActiveActivity.class));
     }
 
     @Override
@@ -62,6 +63,8 @@ public class SelectActiveActivity extends BaseAppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         title.setText(R.string.activity_select_active_tip);
         adapter = new ActiveSelectAdapter(this);
+        adapter.setEmptyItem(new EmptyItem(1001));
+        adapter.getEmptyItem().setOperationType(1);
         adapter.setItemClickLister(new BaseAdapter.OnItemClickLister() {
             @Override
             public void onItemClick(View view, int position) {
@@ -93,7 +96,7 @@ public class SelectActiveActivity extends BaseAppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==R.id.complete)
+        if (item.getItemId() == R.id.complete)
             CreateActiveActivity.open(this);
         return super.onOptionsItemSelected(item);
     }
@@ -101,11 +104,16 @@ public class SelectActiveActivity extends BaseAppCompatActivity {
     private void reqData() {
         addSubscription(apiService.queryActiveList(FastData.getCircleId())
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(activeSelectListResponse -> adapter.getEmptyItem().setOperationType(2))
                 .subscribe(activeSelectListResponse -> {
                     if (activeSelectListResponse.success()) {
                         adapter.addList(true, activeSelectListResponse.getDataList());
                     } else ToastUtil.showToast(this, activeSelectListResponse.getInfo());
-                }, throwable -> LogUtil.showError(throwable)));
+                }, throwable -> {
+                    adapter.getEmptyItem().setThrowable(throwable);
+                    adapter.getEmptyItem().setOperationType(-1);
+                    LogUtil.showError(throwable);
+                }));
     }
 
     @Override
