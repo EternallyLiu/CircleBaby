@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/alabaster"
-        android:paddingLeft="@dimen/size_6"
+        android:paddingLeft="@dimen/size_14"
         android:paddingRight="@dimen/size_6">
 
         <cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker
@@ -21,14 +21,12 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:paddingBottom="@dimen/size_24"
-            android:paddingLeft="@dimen/size_12"
-            android:paddingRight="@dimen/size_12"
             android:paddingTop="@dimen/size_12"
-            timeLine:beginLine="@color/sea_buckthorn"
-            timeLine:endLine="@color/sea_buckthorn"
+            timeLine:beginLine="@color/lily_white"
+            timeLine:endLine="@color/lily_white"
             timeLine:lineSize="@dimen/size_2"
             timeLine:marker="@drawable/circle_market_drawable"
-            timeLine:markerSize="@dimen/size_18"/>
+            timeLine:markerSize="@dimen/size_12"/>
 
 
         <LinearLayout
@@ -60,15 +58,11 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@color/white"-->
-    <!--android:padding="@dimen/size_4">-->
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
+        android:padding="@dimen/size_10"
         android:layout_height="wrap_content"
         android:text="标题"
         android:textColor="@color/black"
@@ -80,7 +74,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:padding="@dimen/size_2"
+        android:paddingLeft="@dimen/size_10"
+        android:paddingRight="@dimen/size_10"
+        android:paddingBottom="@dimen/size_10"
         android:text="作业描述"
         android:textColor="@color/aluminum"
         android:textSize="@dimen/text_small"/>
@@ -94,7 +90,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/size_6">
+        android:padding="@dimen/size_10">
 
         <TextView
             android:id="@+id/tv_commit_count"
@@ -122,7 +118,5 @@
             android:textSize="@dimen/text_normal"/>
     </RelativeLayout>
 
-
-    <!--</RelativeLayout>-->
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.timelines.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
@@ -105,6 +106,7 @@ public class SchoolTaskAdapter extends BaseAdapter {
         tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 EEEE", item.getSchoolTask().getCreateDate()));
         tvCreater.setText(String.format("由%s发起", item.getSchoolTask().getTeacher().getCircleNickName()));
         title.setText(item.getSchoolTask().getTitle());
+        tvDetail.setVisibility(TextUtils.isEmpty(item.getSchoolTask().getContent()) ? View.GONE : View.VISIBLE);
         tvCommited.setVisibility(item.getSchoolTask().getIsCommit() == 0 ? View.GONE : View.VISIBLE);
         tvDetail.setText(item.getSchoolTask().getContent());
         marker.setDrawEnd(true);

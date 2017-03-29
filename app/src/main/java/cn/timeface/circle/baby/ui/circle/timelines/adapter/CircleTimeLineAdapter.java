@@ -371,7 +371,10 @@ public class CircleTimeLineAdapter extends BaseAdapter {
                                 SelectImageView imageView = (SelectImageView) v;
                                 imageView.setChecked(!imageView.isChecked());
                             }
-                        }, throwable -> v.setEnabled(true));
+                        }, throwable -> {
+                            if (v != null)
+                                v.setEnabled(true);
+                        });
                 break;
             case R.id.icon:
                 Observable.defer(() -> Observable.just(v))
