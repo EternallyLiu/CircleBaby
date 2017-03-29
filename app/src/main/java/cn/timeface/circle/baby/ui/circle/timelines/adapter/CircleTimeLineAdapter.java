@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.trello.rxlifecycle.components.RxDialogFragment;
 import com.wechat.photopicker.fragment.BigImageFragment;
 
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import butterknife.ButterKnife;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
@@ -31,10 +33,14 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
+import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.CircleTimeLineDetailActivitiy;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.HomwWorkListActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleHomeWorkHeader;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -44,22 +50,24 @@ import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineGroupListAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
 import cn.timeface.circle.baby.ui.timelines.views.SelectImageView;
 import cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker;
+import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
 
 /**
  * author : wangshuai Created on 2017/3/17
  * email : wangs1992321@gmail.com
  */
-public class CircleTimeLineAdapter extends BaseAdapter {
+public class CircleTimeLineAdapter extends BaseEmptyAdapter {
     private boolean hasWork = false;
-    private List<View> mHeadView = new ArrayList<>(0);
-    private List<View> mFooter = new ArrayList<>(0);
     private static final int VIEW_TYPE_HEADER = -49999;
     private static final int VIEW_TYPE_FOOTER = -39999;
 
     private int paddingImage = 4;
     private int maxImageHeight = 240;
     private DeleteDialog deleteDialog;
+    private RecyclerView.LayoutParams emptyLayoutParams;
+
+    private CircleIndexInfoResponse headerInfo;
 
     public CircleTimeLineAdapter(Context activity) {
         super(activity);
@@ -68,95 +76,59 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getItemCount() {
-        return mHeadView.size() + getRealItemSize() + mFooter.size();
-    }
-
-    @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == 1) {
-            return super.onCreateViewHolder(parent, viewType);
-        } else if (viewType < VIEW_TYPE_FOOTER) {
-            View headerView = mHeadView.get(viewType - VIEW_TYPE_HEADER);
-            return new BaseViewHolder(headerView, null);
-        } else if (viewType >= VIEW_TYPE_FOOTER && viewType < 0) {
-            View footer = mFooter.get(viewType - VIEW_TYPE_FOOTER - mHeadView.size() - getRealItemSize());
-            return new BaseViewHolder(footer, null);
-        } else return null;
-    }
-
-    @Override
-    public <T> T getItem(int position) {
-        return super.getItem(position - mHeadView.size());
-    }
-
-    @Override
-    public void onBindViewHolder(BaseViewHolder holder, int position) {
-        if (position < mHeadView.size()) {
-
-        } else if (position < (mHeadView.size() + getRealItemSize())) {
-            super.onBindViewHolder(holder, position);
-
-        } else {
-        }
-
-    }
-
-    public void addHeader(View view) {
-        if (!mHeadView.contains(view)) {
-            mHeadView.add(view);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void addFooter(View view) {
-        if (mFooter.size() > 0 || !mFooter.contains(view)) {
-            RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            view.setLayoutParams(params);
-            mFooter.add(view);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void removeHeader(int index) {
-        if (index < mHeadView.size() && index >= 0) {
-            mHeadView.remove(index);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void removeHeader(View view) {
-        if (mHeadView.contains(view)) {
-            removeHeader(mHeadView.indexOf(view));
-        }
-    }
-
-    public void removeFooter(int index) {
-        if (index >= 0 && index < mFooter.size()) {
-            mFooter.remove(index);
-            notifyDataSetChanged();
-        }
-    }
-
-    public void removeFooter(View view) {
-        if (mFooter.contains(view)) {
-            removeFooter(mFooter.indexOf(view));
-        }
-    }
-
-    @Override
     public int getViewLayoutID(int viewType) {
-        return R.layout.circle_time_line_list_layout;
+        switch (viewType) {
+            case 1:
+                return R.layout.circle_time_line_list_layout;
+            case 2:
+                return R.layout.header_circle_dynamic_list;
+        }
+        return 0;
     }
 
     @Override
     public int getViewType(int position) {
-        if (position >= 0 && position < mHeadView.size()) {
-            return VIEW_TYPE_HEADER + position;
-        } else if (position >= 0 && position >= mHeadView.size() + getRealItemSize()) {
-            return VIEW_TYPE_FOOTER + position;
+        if (getItem(position) instanceof CircleTimelineObj) {
+            return 1;
+        } else if (getItem(position) instanceof CircleIndexInfoResponse) {
+            return 2;
         }
-        return 1;
+        return 0;
+    }
+
+    /**
+     * 处理头部
+     *
+     * @param headerView
+     * @param postion
+     * @param header
+     */
+    private void doHeader(View headerView, int postion, CircleIndexInfoResponse header) {
+        ImageView ivCircleCover = ViewHolder.getView(headerView, R.id.iv_circle_cover);
+        TextView tvCircleName = ViewHolder.getView(headerView, R.id.tv_circle_name);
+        TextView tvHomework = ViewHolder.getView(headerView, R.id.tv_homework);
+        TextView tvHomeworkDetail = ViewHolder.getView(headerView, R.id.tv_homework_detail);
+        RelativeLayout rlHomework = ViewHolder.getView(headerView, R.id.rl_homework);
+
+        tvCircleName.setText(header.getGrowthCircle().getCircleName());
+        Glide.with(context())
+                .load(header.getGrowthCircle().getCircleCoverUrl())
+                .centerCrop()
+                .into(ivCircleCover);
+
+        // 圈作业
+        if (header.getLastSchoolTask() != null
+                && header.getLastSchoolTask().getTeacher() != null) {
+            rlHomework.setVisibility(View.VISIBLE);
+            tvHomework.setText("“" + header.getLastSchoolTask().getTeacher().getCircleNickName()
+                    + "” 发起了新的作业 “" + header.getLastSchoolTask().getTitle() + "”");
+            tvHomeworkDetail.setOnClickListener(v -> {
+                // 跳转作业详情
+                HomwWorkListActivity.open(context());
+            });
+        } else {
+            rlHomework.setVisibility(View.GONE);
+        }
     }
 
     private void doTimeLine(View contentView, int position, CircleTimelineObj timelineObj) {
@@ -293,68 +265,45 @@ public class CircleTimeLineAdapter extends BaseAdapter {
     }
 
     @Override
-    public void initView(View contentView, int position) {
-
-        if (position < mHeadView.size()) {
-
-        } else if (position < (mHeadView.size() + getRealItemSize())) {
-            doTimeLine(contentView, position - mHeadView.size(), getItem(position));
-        } else {
-        }
-
-    }
-
-    public void clearFooter() {
-        if (mFooter != null && mFooter.size() > 0) {
-            mFooter.clear();
-            notifyDataSetChanged();
-        }
-
+    public void addEmpty() {
+        addEmpty(1);
     }
 
     @Override
-    protected void handleMsg(Message msg) {
-//        clearFooter();
-        switch (msg.what) {
-            case DELETE_ALL:
-                if (list != null && list.size() > 0) {
-                    list.clear();
-                    notifyDataSetChanged();
-                }
+    public void initView(View contentView, int position) {
+
+        switch (getItemViewType(position)) {
+            case 1:
+                doTimeLine(contentView, position, getItem(position));
                 break;
-            case UPDATE_DATA_ADD_LIST_CENTER:
-                if (msg.obj != null) {
-                    if (msg.arg1 >= 0 && msg.arg1 <= getRealItemSize() && msg.arg2 > 0) {
-                        if (msg.arg2 == 1) list.add(msg.arg1, msg.obj);
-                        else list.addAll(msg.arg1, (Collection<Object>) msg.obj);
-                        notifyItemRangeInserted(msg.arg1 + mHeadView.size(), msg.arg2);
-                        if (msg.arg1 + mHeadView.size() < getItemCount())
-                            notifyItemRangeChanged(msg.arg1 + mHeadView.size(), getItemCount() - msg.arg1 - mHeadView.size());
-                    }
-                }
+            case 2:
+                doHeader(contentView, position, getItem(position));
                 break;
-            case UPDATE_DATA_DELETE_DATA:
-                if (msg.arg1 >= 0 && msg.arg1 < getRealItemSize()) {
-                    for (int i = 0; i < msg.arg2; i++) {
-                        list.remove(msg.arg1);
-                        notifyItemRemoved(msg.arg1 + mHeadView.size());
-                    }
+            case BaseEmptyAdapter.EMPTY_CODE:
+                TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
+                emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
+                if (emptyLayoutParams == null) {
+                    emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
-                if (msg.arg1 + mHeadView.size() < getItemCount())
-                    notifyItemRangeChanged(msg.arg1 + mHeadView.size(), getItemCount() - msg.arg1 - mHeadView.size());
-                break;
-            case UPDATE_DATA_UPDATE_DATA:
-                if (msg.obj != null) {
-                    list.remove(msg.arg1);
-                    list.add(msg.arg1, msg.obj);
+                contentView.setLayoutParams(emptyLayoutParams);
+                switch (getEmptyItem().getOperationType()) {
+                    case -1:
+                        tfStateView.showException(getEmptyItem().getThrowable());
+                        break;
+                    case 0:
+                        tfStateView.empty(R.string.circle_no_dynamic);
+                        break;
+                    case 1:
+                        tfStateView.loading();
+                        break;
+                    case 2:
+                        tfStateView.finish();
+                        break;
                 }
-                notifyItemChanged(msg.arg1 + mHeadView.size());
-//                if (msg.arg1 != getRealItemSize())
-//                    notifyItemRangeChanged(msg.arg1, getRealItemSize() - msg.arg1);
                 break;
         }
-        if (getLoadDataFinish() != null)
-            getLoadDataFinish().loadFinish(msg.what);
+
+
     }
 
     @Override
@@ -381,7 +330,7 @@ public class CircleTimeLineAdapter extends BaseAdapter {
                         .map(view -> (int) view.getTag(R.id.recycler_item_click_tag))
                         .subscribe(integer -> {
                             int postion = (int) v.getTag(R.id.recycler_item_input_tag);
-                            CircleTimelineObj currentTimeLineObj = getItem(postion + mHeadView.size());
+                            CircleTimelineObj currentTimeLineObj = getItem(postion);
                             FragmentBridgeActivity.openBigimageFragment(context(), 0, MediaObj.getMediaArray(currentTimeLineObj.getMediaList()), MediaObj.getUrls(currentTimeLineObj.getMediaList()), integer, BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR, true, false);
                         }, throwable -> LogUtil.showError(throwable));
                 break;
@@ -413,6 +362,21 @@ public class CircleTimeLineAdapter extends BaseAdapter {
                         .subscribe(o -> CircleTimeLineDetailActivitiy.open(context(), (CircleTimelineObj) o), throwable -> LogUtil.showError(throwable));
                 break;
         }
+    }
+
+    @Override
+    public void addList(boolean isClear, List list) {
+        if (isClear && getHeaderInfo() != null && !list.contains(getHeaderInfo()))
+            list.add(0, getHeaderInfo());
+        super.addList(isClear, list);
+    }
+
+    public CircleIndexInfoResponse getHeaderInfo() {
+        return headerInfo;
+    }
+
+    public void setHeaderInfo(CircleIndexInfoResponse headerInfo) {
+        this.headerInfo = headerInfo;
     }
 
     public boolean isHasWork() {

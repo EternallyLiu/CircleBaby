@@ -59,6 +59,18 @@ public class CircleIndexInfoResponse extends BaseResponse {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CircleIndexInfoResponse that = (CircleIndexInfoResponse) o;
+        if (growthCircle != null && that.getGrowthCircle() != null && getUserInfo() != null && that.getUserInfo() != null && growthCircle.getCircleId() == that.getGrowthCircle().getCircleId() && getUserInfo().getCircleUserId() == that.getUserInfo().getCircleUserId())
+            return true;
+        else return false;
+    }
+
+
+    @Override
     public int describeContents() {
         return 0;
     }

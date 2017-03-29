@@ -26,6 +26,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.network.NetworkError;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
@@ -42,7 +43,7 @@ import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
-import cn.timeface.circle.baby.views.TFStateView;
+import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
 import rx.Subscription;
 
 /**
@@ -62,8 +63,6 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
 
     private TFPTRRecyclerViewHelper tfptrListViewHelper;
 
-    private View headerView;
-    private TFStateView tfStateView;
 
     private View footerView;
     private RatioImageView ivCircleCover;
@@ -94,6 +93,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
 
     private void setupPTR() {
         adapter = new CircleTimeLineAdapter(this);
+        adapter.setEmptyItem(new EmptyItem(1002));
         adapter.setLoadDataFinish(this);
         recyclerView.setAdapter(adapter);
 
@@ -101,7 +101,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
             @Override
             public void onTFPullDownToRefresh(View refreshView) {
                 currentPage = 1;
-                reqData(circleId);
+                setupData();
             }
 
             @Override
@@ -125,47 +125,66 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     }
 
     private void setupData() {
-        tfStateView.loading();
-        reqInfo(circleId);
-        reqData(circleId);
+        adapter.getEmptyItem().setOperationType(1);
+        adapter.notifyDataSetChanged();
+//        reqInfo(circleId);
+//        reqData(circleId);
+        apiService.queryCircleIndexInfo(circleId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        FastData.setGrowthCircleObj(response.getGrowthCircle());
+                        FastData.setCircleUserInfo(response.getUserInfo());
+                        setupCircleInfo(response);
+                        reqData(circleId);
+                    } else {
+                        Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
+                    }
+                }, throwable -> {
+                    NetworkError.showException(this, throwable);
+                    LogUtil.showError(throwable);
+                    ToastUtil.showToast(this, "未知错误，获取圈信息失败，请稍后重试！");
+                    finish();
+                });
     }
 
     private void initHeaderFooter() {
-        headerView = LayoutInflater.from(this).inflate(R.layout.header_circle_dynamic_list, null);
-        ivCircleCover = ButterKnife.findById(headerView, R.id.iv_circle_cover);
-        tvCircleName = ButterKnife.findById(headerView, R.id.tv_circle_name);
-        tvHomework = ButterKnife.findById(headerView, R.id.tv_homework);
-        tvHomeworkDetail = ButterKnife.findById(headerView, R.id.tv_homework_detail);
-        rlHomework = ButterKnife.findById(headerView, R.id.rl_homework);
+//        headerView = LayoutInflater.from(this).inflate(R.layout.header_circle_dynamic_list, null);
+//        ivCircleCover = ButterKnife.findById(headerView, R.id.iv_circle_cover);
+//        tvCircleName = ButterKnife.findById(headerView, R.id.tv_circle_name);
+//        tvHomework = ButterKnife.findById(headerView, R.id.tv_homework);
+//        tvHomeworkDetail = ButterKnife.findById(headerView, R.id.tv_homework_detail);
+//        rlHomework = ButterKnife.findById(headerView, R.id.rl_homework);
 
-        footerView = LayoutInflater.from(this).inflate(R.layout.footer_circle_dynamic_list, null);
-        tfStateView = ButterKnife.findById(footerView, R.id.tf_stateView);
+//        footerView = LayoutInflater.from(this).inflate(R.layout.footer_circle_dynamic_list, null);
+//        tfStateView = ButterKnife.findById(footerView, R.id.tf_stateView);
 
-        adapter.addHeader(headerView);
+//        adapter.addHeader(headerView);
 //        adapter.addFooter(footerView);
     }
 
     private void setupCircleInfo(CircleIndexInfoResponse circleIndexInfo) {
         this.circleObj = circleIndexInfo.getGrowthCircle();
-        tvCircleName.setText(circleObj.getCircleName());
-        Glide.with(this)
-                .load(circleObj.getCircleCoverUrl())
-                .centerCrop()
-                .into(ivCircleCover);
-
-        // 圈作业
-        if (circleIndexInfo.getLastSchoolTask() != null
-                && circleIndexInfo.getLastSchoolTask().getTeacher() != null) {
-            rlHomework.setVisibility(View.VISIBLE);
-            tvHomework.setText("“" + circleIndexInfo.getLastSchoolTask().getTeacher().getCircleNickName()
-                    + "” 发起了新的作业 “" + circleIndexInfo.getLastSchoolTask().getTitle() + "”");
-            tvHomeworkDetail.setOnClickListener(v -> {
-                // 跳转作业详情
-                HomwWorkListActivity.open(this);
-            });
-        } else {
-            rlHomework.setVisibility(View.GONE);
-        }
+        adapter.setHeaderInfo(circleIndexInfo);
+//        tvCircleName.setText(circleObj.getCircleName());
+//        Glide.with(this)
+//                .load(circleObj.getCircleCoverUrl())
+//                .centerCrop()
+//                .into(ivCircleCover);
+//
+//        // 圈作业
+//        if (circleIndexInfo.getLastSchoolTask() != null
+//                && circleIndexInfo.getLastSchoolTask().getTeacher() != null) {
+//            rlHomework.setVisibility(View.VISIBLE);
+//            tvHomework.setText("“" + circleIndexInfo.getLastSchoolTask().getTeacher().getCircleNickName()
+//                    + "” 发起了新的作业 “" + circleIndexInfo.getLastSchoolTask().getTitle() + "”");
+//            tvHomeworkDetail.setOnClickListener(v -> {
+//                // 跳转作业详情
+//                HomwWorkListActivity.open(this);
+//            });
+//        } else {
+//            rlHomework.setVisibility(View.GONE);
+//        }
     }
 
     private void reqData(long circleId) {
@@ -173,7 +192,8 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
-                            tfStateView.finish();
+                            adapter.getEmptyItem().setOperationType(0);
+                            adapter.notifyDataSetChanged();
                             tfptrListViewHelper.finishTFPTRRefresh();
                             if (response.success()) {
                                 setupListData(response.getDataList());
@@ -182,7 +202,9 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                             }
                         },
                         throwable -> {
-//                            tfStateView.showException(throwable);
+                            adapter.getEmptyItem().setThrowable(throwable);
+                            adapter.getEmptyItem().setOperationType(-1);
+                            adapter.notifyDataSetChanged();
                             tfptrListViewHelper.finishTFPTRRefresh();
                             LogUtil.showError(throwable);
                         }
@@ -190,29 +212,6 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         addSubscription(s);
     }
 
-    private void reqInfo(long circleId) {
-        Subscription s = apiService.queryCircleIndexInfo(circleId)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(
-                        response -> {
-                            tfptrListViewHelper.finishTFPTRRefresh();
-                            if (response.success()) {
-                                FastData.setGrowthCircleObj(response.getGrowthCircle());
-                                FastData.setCircleUserInfo(response.getUserInfo());
-
-                                setupCircleInfo(response);
-                            } else {
-                                Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
-                            }
-                        },
-                        throwable -> {
-                            tfptrListViewHelper.finishTFPTRRefresh();
-                            NetworkError.showException(this, throwable);
-                            LogUtil.showError(throwable);
-                        }
-                );
-        addSubscription(s);
-    }
 
     private void setupListData(List<CircleTimelineObj> dataList) {
         if (currentPage <= 1)
@@ -243,15 +242,10 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
 
     @Override
     public void loadFinish(int code) {
-        if (adapter.getRealItemSize() <= 0) {
-            tfStateView.empty(R.string.circle_no_dynamic);
-            adapter.addFooter(footerView);
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onEvent(CircleMediaEvent event) {
-        LogUtil.showLog("event===" + event.getType());
         if (event.getType() == 0 && event.getMediaObj() != null) {
             for (int i = 0; i < adapter.getRealItemSize(); i++) {
                 Object item = adapter.getData().get(i);
@@ -278,7 +272,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         } else if (event.getTimelineObj() != null && event.getType() == 2) {
 //            currentPage = 1;
 //            reqData(circleId);
-            adapter.add(0, event.getTimelineObj());
+            adapter.add(1, event.getTimelineObj());
         }
     }
 
