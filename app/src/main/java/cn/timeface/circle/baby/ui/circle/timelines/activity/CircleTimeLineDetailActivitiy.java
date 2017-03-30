@@ -144,7 +144,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         if (currentTimeLineObj != null)
             currentTimeLineId = currentTimeLineObj.getCircleTimelineId();
         init();
-        reqData();
+//        reqData();
 //        initRecyclerView();
 
     }
@@ -254,8 +254,8 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
                 actionDialog.setClickListener(this);
                 actionDialog.isShared(true);
                 actionDialog.isDownload(false);
-                actionDialog.isDelete(true);
-                actionDialog.isEdit(true);
+                actionDialog.isDelete(FastData.getCircleUserInfo().getCircleUserType() == 1 || currentTimeLineObj.getPublisher().getCircleUserId() == FastData.getCircleUserId());
+                actionDialog.isEdit(FastData.getCircleUserInfo().getCircleUserType() == 1 || currentTimeLineObj.getPublisher().getCircleUserId() == FastData.getCircleUserId());
             }
             actionDialog.show();
         }

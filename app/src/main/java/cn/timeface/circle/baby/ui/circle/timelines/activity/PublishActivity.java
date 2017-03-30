@@ -158,7 +158,7 @@ public class PublishActivity extends BaseAppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_complete, menu);
-        menu.findItem(R.id.complete).setTitle(R.string.comfirm);
+        menu.findItem(R.id.complete).setTitle(type == PublishAdapter.TYPE_WORK ? R.string.comfirm : R.string.publish);
         return super.onCreateOptionsMenu(menu);
     }
 
