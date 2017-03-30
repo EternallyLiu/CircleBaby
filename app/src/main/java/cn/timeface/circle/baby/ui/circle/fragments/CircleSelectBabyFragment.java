@@ -143,7 +143,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
             }
 
             if(requestCode == ((CircleSelectServeHomeWorksActivity) getActivity()).REQUEST_CODE_SELECT_HOME_WORK){
-               int photoCount = data.getIntExtra("photo_count", 0);
+                int photoCount = data.getIntExtra("photo_count", 0);
                 selectBabyAdapter.getItem(position).setSelectCount(photoCount);
                 selectBabyAdapter.notifyItemChanged(position);
             }

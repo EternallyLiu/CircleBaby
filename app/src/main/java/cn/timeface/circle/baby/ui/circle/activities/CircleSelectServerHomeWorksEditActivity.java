@@ -42,7 +42,7 @@ public class CircleSelectServerHomeWorksEditActivity extends CircleSelectServeHo
 
     private void reqData() {
         addSubscription(
-                apiService.queryBookHomeworks(circleId)
+                apiService.queryBookHomeworks(bookId)
                         .compose(SchedulersCompat.applyIoSchedulers())
                         .subscribe(
                                 response -> {

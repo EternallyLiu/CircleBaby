@@ -271,7 +271,7 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
             rlPhotoTip.setVisibility(View.GONE);
         } else {
             rlPhotoTip.setVisibility(View.VISIBLE);
-            tvSelCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_photo_select_count), String.valueOf(allSelectMedias.size()))));
+            tvSelCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_time_select_count), String.valueOf(allSelectMedias.size()))));
         }
     }
 

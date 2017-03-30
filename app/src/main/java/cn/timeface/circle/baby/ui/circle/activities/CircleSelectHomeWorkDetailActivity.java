@@ -8,11 +8,14 @@ import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -28,16 +31,14 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectHomeWorkAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeWorkExWrapperObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
-import cn.timeface.circle.baby.ui.circle.response.CircleHomeWorkListResponse;
 import cn.timeface.circle.baby.views.TFStateView;
-import rx.functions.Action1;
 
 /**
  * 圈作品选择作业列表详情页面
  * author : sunyanwei Created on 17-3-22
  * email : sunyanwei@timeface.cn
  */
-public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatActivity {
+public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatActivity implements View.OnClickListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -45,21 +46,27 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
     RecyclerView rvContent;
     @Bind(R.id.tf_stateView)
     TFStateView stateView;
+    @Bind(R.id.cb_all_sel)
+    CheckBox cbAllSel;
+    @Bind(R.id.tv_sel_count)
+    TextView tvSelCount;
+    @Bind(R.id.rl_photo_tip)
+    RelativeLayout rlPhotoTip;
 
     CircleSelectHomeWorkAdapter selectHomeWorkAdapter;
     long babyId;
     String circleId;
     List<CircleHomeworkExObj> allSelHomeWorks;
 
-    public void open(Context context, String circleId, long babyId){
-        Intent intent= new Intent(context, CircleSelectHomeWorkDetailActivity.class);
+    public void open(Context context, String circleId, long babyId) {
+        Intent intent = new Intent(context, CircleSelectHomeWorkDetailActivity.class);
         intent.putExtra("circle_id", circleId);
         intent.putExtra("baby_id", babyId);
         context.startActivity(intent);
     }
 
-    public static void open4Result(Context context, int reqCode, String circleId, long babyId, List<CircleHomeworkExObj> allSelHomeWorks){
-        Intent intent= new Intent(context, CircleSelectHomeWorkDetailActivity.class);
+    public static void open4Result(Context context, int reqCode, String circleId, long babyId, List<CircleHomeworkExObj> allSelHomeWorks) {
+        Intent intent = new Intent(context, CircleSelectHomeWorkDetailActivity.class);
         intent.putExtra("circle_id", circleId);
         intent.putExtra("baby_id", babyId);
         intent.putParcelableArrayListExtra("all_sel_home_works", (ArrayList<? extends Parcelable>) allSelHomeWorks);
@@ -77,8 +84,9 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         circleId = getIntent().getStringExtra("circle_id");
         babyId = getIntent().getLongExtra("baby_id", 0);
         this.allSelHomeWorks = getIntent().getParcelableArrayListExtra("all_sel_home_works");
+        cbAllSel.setOnClickListener(this);
 
-        if(!getIntent().hasExtra("task_id"))reqData();
+        if (!getIntent().hasExtra("task_id")) reqData();
     }
 
     private void reqData() {
@@ -103,8 +111,8 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         );
     }
 
-    protected void setData(List<CircleHomeWorkExWrapperObj> homeWorkExWrapperObjList, String taskId){
-        if(selectHomeWorkAdapter == null){
+    protected void setData(List<CircleHomeWorkExWrapperObj> homeWorkExWrapperObjList, String taskId) {
+        if (selectHomeWorkAdapter == null) {
             selectHomeWorkAdapter = new CircleSelectHomeWorkAdapter(
                     this, homeWorkExWrapperObjList,
                     Integer.MAX_VALUE, allSelHomeWorks, taskId);
@@ -120,9 +128,11 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
             selectHomeWorkAdapter.notifyDataSetChanged();
         }
 
-        if(selectHomeWorkAdapter.getListData().isEmpty()){
+        if (selectHomeWorkAdapter.getListData().isEmpty()) {
             stateView.empty();
         }
+
+        initPhotoTip();
     }
 
     @Override
@@ -133,10 +143,10 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.menu_complete){
+        if (item.getItemId() == R.id.menu_complete) {
             close();
             return true;
-        } else if(item.getItemId() == android.R.id.home){
+        } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }
@@ -149,11 +159,35 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         super.onBackPressed();
     }
 
-    private void close(){
+    public void initPhotoTip() {
+        if(selectHomeWorkAdapter.getListData().isEmpty()){
+            rlPhotoTip.setVisibility(View.GONE);
+        } else {
+            rlPhotoTip.setVisibility(View.VISIBLE);
+            tvSelCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_time_select_count), String.valueOf(allSelHomeWorks.size()))));
+            cbAllSel.setChecked(allSelHomeWorks.containsAll(selectHomeWorkAdapter.getHomeworkExObjList()));
+        }
+    }
+
+    private void close() {
         Intent intent = new Intent();
         intent.putParcelableArrayListExtra("all_select_works", (ArrayList<? extends Parcelable>) selectHomeWorkAdapter.getSelImgs());
-        intent.putExtra("photo_count", selectHomeWorkAdapter.getSelImgs().size());
+        intent.putExtra("photo_count", selectHomeWorkAdapter.getSelectCount());
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.cb_all_sel:
+                if (((CheckBox) view).isChecked()) {
+                    selectHomeWorkAdapter.doAllSelImg();
+                } else {
+                    selectHomeWorkAdapter.doAllUnSelImg();
+                }
+                initPhotoTip();
+                break;
+        }
     }
 }
