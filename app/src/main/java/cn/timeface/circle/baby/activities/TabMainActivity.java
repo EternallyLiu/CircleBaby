@@ -120,7 +120,11 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 });
 
         setupBottomMenu();
-        showContent(TAB1);
+        if(FastData.getBabyObj() == null){
+            ChangeBabyActivity.open(this);
+        } else {
+            showContent(TAB1);
+        }
 
         tvToensurerelation.setOnClickListener(this);
         rlToensurerelation.setOnClickListener(this);

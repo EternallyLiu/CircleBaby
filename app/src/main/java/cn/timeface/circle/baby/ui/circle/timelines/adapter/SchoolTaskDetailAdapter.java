@@ -1,6 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.timelines.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleContentObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
@@ -29,7 +31,7 @@ import cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker;
  * author : wangshuai Created on 2017/3/25
  * email : wangs1992321@gmail.com
  */
-public class SchoolTaskDetailAdapter extends BaseAdapter {
+public class SchoolTaskDetailAdapter extends BaseEmptyAdapter {
 
     private static final int TYPE_SCHOOL_TASK = 1001;
     private static final int TYPE_HOMEWORK = 1002;
@@ -99,11 +101,11 @@ public class SchoolTaskDetailAdapter extends BaseAdapter {
             doMediaList(glImageList, position, item.getMediaList());
         }
 
-
         tvDateTime.setText(DateUtil.formatDate("yyyy年MM月dd日 EEEE", item.getCreateDate()));
         tvCreater.setText(String.format("由%s发起", item.getTeacher().getCircleNickName()));
         title.setText(item.getTitle());
         tvDetail.setText(item.getContent());
+        tvDetail.setVisibility(TextUtils.isEmpty(item.getContent()) ? View.GONE : View.VISIBLE);
     }
 
     private void doHomework(View contentView, int position) {
@@ -122,19 +124,19 @@ public class SchoolTaskDetailAdapter extends BaseAdapter {
 
         tvCreater.setText(item.getSubmitter().getCircleNickName());
         tvDetail.setText(item.getContent());
-
+        tvDetail.setVisibility(TextUtils.isEmpty(item.getContent()) ? View.GONE : View.VISIBLE);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.icon:
-                try{
+                try {
                     int position = (int) v.getTag(R.id.recycler_item_input_tag);
                     int index = (int) v.getTag(R.id.recycler_item_click_tag);
                     CircleContentObj item = getItem(position);
-                    FragmentBridgeActivity.openBigimageFragment(context(), 0, MediaObj.getMediaArray(item.getMediaList()),MediaObj.getUrls(item.getMediaList()),index, BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, true, false);
-                }catch (Exception e){
+                    FragmentBridgeActivity.openBigimageFragment(context(), 0, MediaObj.getMediaArray(item.getMediaList()), MediaObj.getUrls(item.getMediaList()), index, BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, true, false);
+                } catch (Exception e) {
                 }
                 break;
             default:
@@ -144,8 +146,16 @@ public class SchoolTaskDetailAdapter extends BaseAdapter {
     }
 
     @Override
+    public void addEmpty() {
+        addEmpty(1);
+    }
+
+    @Override
     public void initView(View contentView, int position) {
-        switch (getViewType(position)) {
+        switch (getItemViewType(position)) {
+            case EMPTY_CODE:
+                doEmpty(contentView);
+                break;
             case TYPE_HOMEWORK:
                 doHomework(contentView, position);
                 break;

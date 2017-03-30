@@ -23,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectHomeWorkAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeWorkExWrapperObj;
@@ -72,7 +73,7 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("作业详情");
+        getSupportActionBar().setTitle(FastData.getBabyNickName() + "的作业");
         circleId = getIntent().getStringExtra("circle_id");
         babyId = getIntent().getLongExtra("baby_id", 0);
         this.allSelHomeWorks = getIntent().getParcelableArrayListExtra("all_sel_home_works");
@@ -89,7 +90,7 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
                                 response -> {
                                     stateView.finish();
                                     if (response.success()) {
-                                        setData(response.getDataList());
+                                        setData(response.getDataList(), "");
                                     } else {
                                         showToast(response.info);
                                     }
@@ -102,9 +103,11 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         );
     }
 
-    protected void setData(List<CircleHomeWorkExWrapperObj> homeWorkExWrapperObjList){
+    protected void setData(List<CircleHomeWorkExWrapperObj> homeWorkExWrapperObjList, String taskId){
         if(selectHomeWorkAdapter == null){
-            selectHomeWorkAdapter = new CircleSelectHomeWorkAdapter(this, homeWorkExWrapperObjList, Integer.MAX_VALUE, allSelHomeWorks);
+            selectHomeWorkAdapter = new CircleSelectHomeWorkAdapter(
+                    this, homeWorkExWrapperObjList,
+                    Integer.MAX_VALUE, allSelHomeWorks, taskId);
             rvContent.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             rvContent.addItemDecoration(
                     new HorizontalDividerItemDecoration.Builder(this)

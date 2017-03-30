@@ -1474,7 +1474,7 @@ public interface ApiService {
      * @param pageSize
      * @return
      */
-    @GET("homework/teacherHomeworkDetal")
+    @POST("homework/teacherHomeworkDetal")
     Observable<HomeWorkDetailResponse> teacherHomeworkDetal(
             @Query("taskId") long taskId,
             @Query("currentPage") int currentPage,

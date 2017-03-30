@@ -79,14 +79,14 @@ public class CircleBabyBriefObj implements Parcelable {
         dest.writeString(this.babyAvatarUrl);
         dest.writeLong(this.babyId);
         dest.writeString(this.babyName);
-        dest.writeInt(this.selectCount);
+//        dest.writeInt(this.selectCount);
     }
 
     protected CircleBabyBriefObj(Parcel in) {
         this.babyAvatarUrl = in.readString();
         this.babyId = in.readLong();
         this.babyName = in.readString();
-        this.selectCount = in.readInt();
+//        this.selectCount = in.readInt();
     }
 
     public static final Creator<CircleBabyBriefObj> CREATOR = new Creator<CircleBabyBriefObj>() {

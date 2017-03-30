@@ -45,6 +45,7 @@ public class CircleSelectHomeWorkTaskDetailActivity extends CircleSelectHomeWork
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         taskId = getIntent().getLongExtra("task_id", 0);
+        getSupportActionBar().setTitle("作业详情");
         reqData();
     }
 
@@ -72,7 +73,7 @@ public class CircleSelectHomeWorkTaskDetailActivity extends CircleSelectHomeWork
                                         }
                                         homeWorkExWrapperObj.setHomeworkList(homeworkExObjList);
                                         homeWorkExWrapperObjList.add(homeWorkExWrapperObj);
-                                        setData(homeWorkExWrapperObjList);
+                                        setData(homeWorkExWrapperObjList, String.valueOf(taskId));
 
                                     } else {
                                         ToastUtil.showToast(response.getInfo());

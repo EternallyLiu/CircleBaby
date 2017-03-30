@@ -899,4 +899,5 @@
     <string name="teacher_empty_message">暂时没有需要处理的认证消息</string>
     <string name="please_send_some_pic">发张照片吧~</string>
     <string name="active_album_null">您还没有活动相册哦~</string>
+    <string name="do_not_get_datat">没有获取到数据</string>
 </resources>

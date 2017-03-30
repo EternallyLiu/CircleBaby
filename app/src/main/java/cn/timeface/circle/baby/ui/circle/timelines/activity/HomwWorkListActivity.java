@@ -158,7 +158,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
         if (position < 1) return;
         HomeWorkListObj item = adapter.getItem(position);
         if (item != null) {
-            SchoolTaskDetailActivity.open(this, item.getSchoolTask());
+            SchoolTaskDetailActivity.open(this, item.getSchoolTask().getTaskId());
 //            PublishActivity.open(this, new CircleHomeworkObj(item.getSchoolTask().getTaskId(), item.getSchoolTask().getTitle()));
         }
     }
