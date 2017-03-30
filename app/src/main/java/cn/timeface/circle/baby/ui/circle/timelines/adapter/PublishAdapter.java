@@ -243,7 +243,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         }
         if (getType() != TYPE_TIMELINE) {
             etInput.setHint("请输入作业描述（选填）");
-        }
+        }else etInput.setHint(R.string.please_input_want_say);
         int size = Utils.getByteSize(contentObj.getContent());
         int count = size / 2;
         if (size % 2 != 0) count++;

@@ -352,6 +352,21 @@ public class FastData extends Remember {
         }
     }
 
+    public static void clearUserInfo() {
+        BabyObj.deleteAll();
+        remove(USER_NAME);
+        remove(USER_ID);
+        remove(USER_LEVEL);
+        remove(USER_FROM);
+        remove(USER_TOKEN);
+        remove(USER_TYPE);
+        remove(AVATAR);
+        remove("phoneNumber");
+        remove(IS_CREATOR);
+        remove("uniId");
+        remove(RELATION_NAME);
+    }
+
     public static int getSendSms() {
         return getInt("send_sms", 0);
     }
@@ -361,6 +376,9 @@ public class FastData extends Remember {
     }
 
     public static UserObj getUserInfo() {
+        if (!containsKey(USER_ID)) {
+            return null;
+        }
         String userName = getUserName();
         String userId = getUserId();
         String avatar = getAvatar();

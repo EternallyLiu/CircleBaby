@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="left"
-        android:hint="@string/input_title_tip"
+        android:hint="@string/please_input_want_say"
         android:minHeight="@dimen/size_160"
         android:paddingBottom="@dimen/size_10"
         android:paddingLeft="@dimen/size_10"
