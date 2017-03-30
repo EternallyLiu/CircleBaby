@@ -73,7 +73,8 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("群成员管理");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("圈成员管理");
         circleObj = getIntent().getParcelableExtra("circleObj");
 
         setUpView();

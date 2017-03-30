@@ -43,9 +43,13 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
                 baseViewHolder.setText(R.id.tv_count, split[2] + "人");
                 break;
             case "2":
-                baseViewHolder.setVisible(R.id.tv_expand, true);
                 baseViewHolder.setText(R.id.tv_header, split[1]);
                 baseViewHolder.setText(R.id.tv_count, split[2] + "人");
+                if (Integer.parseInt(split[2]) > 9) {
+                    baseViewHolder.setVisible(R.id.tv_expand, true);
+                } else {
+                    baseViewHolder.setVisible(R.id.tv_expand, false);
+                }
                 break;
             case "3":
                 baseViewHolder.setVisible(R.id.tv_expand, false);
