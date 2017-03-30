@@ -397,15 +397,6 @@ public class FastData extends Remember {
             babyObj.setUserId(FastData.getUserId());
             babyObj.save();
             BabyObj.refreshBaby(babyObj.getBabyId());
-//            setBabyAge(babyObj.getAge());
-//            setBabyAvatar(babyObj.getAvatar());
-//            setBabyBithday(babyObj.getBithday());
-//            setBabyBlood(babyObj.getBlood());
-//            setBabyConstellation(babyObj.getConstellation());
-//            setBabyGender(babyObj.getGender());
-//            setBabyName(babyObj.getName());
-//            setBabyRealName(babyObj.getRealName());
-//            setShowRealName(babyObj.getShowRealName());
         }
     }
 
