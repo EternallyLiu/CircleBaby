@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.ui.circle.adapters;
 
 import android.content.Context;
 import android.os.Message;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,6 +12,8 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseViewHolder;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
+import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
+import cn.timeface.circle.baby.views.TFStateView;
 
 /**
  * author : wangshuai Created on 2017/3/27
@@ -20,6 +23,7 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
     public static final int EMPTY_CODE = -0xeeffffee;
 
     private EmptyItem emptyItem;
+    private RecyclerView.LayoutParams emptyLayoutParams;
 
     public BaseEmptyAdapter(Context activity) {
         super(activity);
@@ -97,6 +101,29 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
         } else
             return new BaseViewHolder(inflater.inflate(getViewLayoutID(viewType),
                     parent, false), this);
+    }
+
+    protected void doEmpty(View contentView){
+        TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
+        emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
+        if (emptyLayoutParams == null) {
+            emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+        contentView.setLayoutParams(emptyLayoutParams);
+        switch (getEmptyItem().getOperationType()) {
+            case -1:
+                tfStateView.showException(getEmptyItem().getThrowable());
+                break;
+            case 0:
+                tfStateView.empty(R.string.do_not_get_datat);
+                break;
+            case 1:
+                tfStateView.loading();
+                break;
+            case 2:
+                tfStateView.finish();
+                break;
+        }
     }
 
     public EmptyItem getEmptyItem() {

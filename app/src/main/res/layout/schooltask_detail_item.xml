@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/size_6">
+        android:padding="@dimen/size_10">
 
         <ImageView
             android:id="@+id/iv_icon"
@@ -23,7 +23,7 @@
             android:id="@+id/tv_creater"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/size_6"
+            android:layout_marginLeft="@dimen/size_10"
             android:gravity="center"
             android:textColor="@color/text"
             android:textSize="@dimen/text_normal"/>
@@ -33,8 +33,8 @@
         android:id="@+id/tv_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/size_2"
-        android:paddingLeft="@dimen/size_4"
+        android:paddingBottom="@dimen/size_10"
+        android:paddingLeft="@dimen/size_10"
         android:text="作业描述"
         android:textColor="@color/aluminum"
         android:textSize="@dimen/text_small"/>
