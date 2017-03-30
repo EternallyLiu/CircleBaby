@@ -79,8 +79,11 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     private MenuItem itemActivity;
     private long circleId;
     private boolean user;
+    private boolean atBaby;
     private CircleUserInfo circleUserInfo;
     private ArrayList<CircleMediaObj> mediaList;
+    private int babyId;
+    private String babyName;
 
 
     public static void open(Context context, long circleId) {
@@ -93,6 +96,14 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         Intent intent = new Intent(context, CirclePhotoActivity.class);
         intent.putExtra("circleUserInfo", circleUserInfo);
         intent.putExtra("user", user);
+        context.startActivity(intent);
+    }
+
+    public static void open(Context context, String babyName, int babyId, boolean atBaby) {
+        Intent intent = new Intent(context, CirclePhotoActivity.class);
+        intent.putExtra("baby_name", babyName);
+        intent.putExtra("baby_id", babyId);
+        intent.putExtra("at_baby", atBaby);
         context.startActivity(intent);
     }
 
@@ -112,7 +123,9 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
             circleId = circleUserInfo.getCircleId();
         }
         user = getIntent().getBooleanExtra("user", false);
-
+        atBaby = getIntent().getBooleanExtra("at_baby", false);
+        babyId = getIntent().getIntExtra("baby_id",0);
+        babyName = getIntent().getStringExtra("baby_name");
     }
 
     @Override
@@ -324,6 +337,12 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
             tvContent.setVisibility(View.VISIBLE);
             tvContent.setText(circleUserInfo.getCircleNickName());
             showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, circleUserInfo.getCircleId(), Long.valueOf(circleUserInfo.getCircleUserId())));
+            canBack = false;
+        }else if(atBaby){
+            tvContentType.setVisibility(View.GONE);
+            tvContent.setVisibility(View.VISIBLE);
+            tvContent.setText(babyName);
+            showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_ATBABY, circleId, babyId));
             canBack = false;
         }
         return super.onCreateOptionsMenu(menu);

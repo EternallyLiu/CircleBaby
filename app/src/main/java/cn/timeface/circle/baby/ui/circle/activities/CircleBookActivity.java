@@ -193,15 +193,15 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                             bookObj,
                             bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
                     productionMenuDialog.show(getSupportFragmentManager(), "");
-                } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO) {
+                } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO && bookObj.getAuthor().getUserId().equals(FastData.getUserId())) {
                     productionMenuDialog = ProductionMenuDialog.newInstance(
                             bookObj,
-                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
+                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO && bookObj.getAuthor().getUserId().equals(FastData.getUserId()));
                     productionMenuDialog.show(getSupportFragmentManager(), "");
                 } else {
                     productionMenuDialog = ProductionMenuDialog.newInstance(
                             bookObj,
-                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
+                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO && bookObj.getAuthor().getUserId().equals(FastData.getUserId()));
                     productionMenuDialog.show(getSupportFragmentManager(), "");
                 }
                 break;
@@ -221,23 +221,42 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                 break;
 
             case R.id.rl_book_cover:
-                //跳转POD预览
                 ArrayList<String> keys = new ArrayList<>();
                 ArrayList<String> values = new ArrayList<>();
-                keys.add("book_author");
-                keys.add("book_title");
-                values.add(FastData.getUserName());
-                values.add(FastData.getBabyNickName() + "的照片书");
-                MyPODActivity.open(
-                        this,
-                        String.valueOf(bookObj.getBookId()),
-                        String.valueOf(bookObj.getOpenBookId()),
-                        bookObj.getBookType(),
-                        bookObj.getOpenBookType(),
-                        null,
-                        "",
-                        false,
-                        bookObj.getBaby().getBabyId(), keys, values, 0);
+                if (bookObj.getAuthor().getUserId().equals(FastData.getUserId())) {
+                    //跳转POD预览
+                    keys.add("book_author");
+                    keys.add("book_title");
+                    values.add(FastData.getUserName());
+                    values.add(FastData.getBabyNickName() + "的照片书");
+                    MyPODActivity.open(
+                            this,
+                            String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            bookObj.getBookType(),
+                            bookObj.getOpenBookType(),
+                            null,
+                            "",
+                            true,
+                            bookObj.getBaby().getBabyId(), keys, values, 0);
+                } else {
+                    //跳转POD预览
+                    keys.add("book_author");
+                    keys.add("book_title");
+                    values.add(FastData.getUserName());
+                    values.add(FastData.getBabyNickName() + "的照片书");
+                    MyPODActivity.open(
+                            this,
+                            String.valueOf(bookObj.getBookId()),
+                            String.valueOf(bookObj.getOpenBookId()),
+                            bookObj.getBookType(),
+                            bookObj.getOpenBookType(),
+                            null,
+                            "",
+                            false,
+                            bookObj.getBaby().getBabyId(), keys, values, 0);
+                }
+
                 break;
 
             case R.id.tv_edit:
@@ -252,7 +271,7 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                                 bookObj.getOpenBookType(),
                                 String.valueOf(bookObj.getOpenBookId()));
                         //圈时光书
-                    } else if(bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME){
+                    } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME) {
                         CircleSelectServerTimesActivity.open(
                                 this,
                                 bookObj.getBookType(),
@@ -262,7 +281,7 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                                 String.valueOf(circleId)
                         );
                         //家校纪念册
-                    } else if(bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL){
+                    } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL) {
                         CircleSelectServerHomeWorksEditActivity.openEdit(
                                 this, String.valueOf(circleId), String.valueOf(bookObj.getBookId()),
                                 String.valueOf(bookObj.getOpenBookId())
@@ -296,20 +315,20 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
 
     @Subscribe
     public void bookOptionEvent(BookOptionEvent optionEvent) {
-            //删除书籍操作
-            if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
-                for (int i = 0; i < circleBookListAdapter.getListData().size(); i++) {
-                    BookObj bookObj = circleBookListAdapter.getListData().get(i);
-                    if(optionEvent.getBookType() == bookObj.getBookType()
-                            && TextUtils.equals(optionEvent.getBookId(), String.valueOf(bookObj.getBookId()))){
-                        circleBookListAdapter.getListData().remove(i);
-                        circleBookListAdapter.notifyItemRemoved(i);
-                        break;
-                    }
+        //删除书籍操作
+        if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
+            for (int i = 0; i < circleBookListAdapter.getListData().size(); i++) {
+                BookObj bookObj = circleBookListAdapter.getListData().get(i);
+                if (optionEvent.getBookType() == bookObj.getBookType()
+                        && TextUtils.equals(optionEvent.getBookId(), String.valueOf(bookObj.getBookId()))) {
+                    circleBookListAdapter.getListData().remove(i);
+                    circleBookListAdapter.notifyItemRemoved(i);
+                    break;
                 }
-                updateEmptyView(circleBookListAdapter.getListData());
-            } else {
-                reqData();
             }
+            updateEmptyView(circleBookListAdapter.getListData());
+        } else {
+            reqData();
+        }
     }
 }

@@ -5,9 +5,9 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectHomeWorkDetailActivity;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeWorkExWrapperObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
 
@@ -42,6 +43,7 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
     final int COLUMN_NUM = 1;
     final int maxCount;
     String taskId;
+    int selectCount;
 
     List<CircleHomeworkExObj> selMedias = new ArrayList<>(10);//用于存储所有选中的图片
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
@@ -68,6 +70,7 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
             for (CircleHomeworkExObj circleHomeworkExObj : selMedias) {
                 if (listData.get(i).getHomeworkList().contains(circleHomeworkExObj)) {
                     everyGroupUnSelImgSize[i]--;
+                    selectCount++;
                 }
             }
 
@@ -257,11 +260,16 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
             //选中上传
 //            UploadAllPicService.addUrgent(App.getInstance(), img);
             selMedias.add(img);
+            selectCount++;
             everyGroupUnSelImgSize[dataIndex] -= 1;
             if (everyGroupUnSelImgSize[dataIndex] == 0) {
 //            全选
 
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
+            }
+
+            if(mContext instanceof CircleSelectHomeWorkDetailActivity){
+                ((CircleSelectHomeWorkDetailActivity) mContext).initPhotoTip();
             }
         }
     }
@@ -269,16 +277,99 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
     private void doUnSelImg(int dataIndex, CircleHomeworkExObj img) {
         if (selMedias.contains(img)) {
             selMedias.remove(img);
+            selectCount--;
             everyGroupUnSelImgSize[dataIndex] += 1;
             if (everyGroupUnSelImgSize[dataIndex] == 1) {
             //非全选
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
             }
+
+            if(mContext instanceof CircleSelectHomeWorkDetailActivity){
+                ((CircleSelectHomeWorkDetailActivity) mContext).initPhotoTip();
+            }
         }
+    }
+
+    public void doAllUnSelImg(){
+        for(CircleHomeworkExObj homeworkExObj : getHomeworkExObjList()){
+            if(selMedias.contains(homeworkExObj)){
+                selMedias.remove(homeworkExObj);
+                selectCount--;
+            }
+        }
+        setupData(false);
+        notifyDataSetChanged();
+    }
+
+    public void doAllSelImg(){
+        for(CircleHomeWorkExWrapperObj homeWorkExWrapperObj : listData){
+            for(CircleHomeworkExObj homeworkExObj : homeWorkExWrapperObj.getHomeworkList()){
+                if(!selMedias.contains(homeworkExObj)){
+                    selMedias.add(homeworkExObj);
+                    selectCount++;
+                }
+            }
+        }
+
+        setupData(true);
+        notifyDataSetChanged();
+    }
+
+    //处理全部选中/全部不选中
+    private void setupData(boolean allSelect) {
+        int size = listData.size();
+        lineEnd = new int[size];
+        everyGroupUnSelImgSize = new int[size];
+
+        if(allSelect){
+            for(CircleHomeWorkExWrapperObj homeWorkExWrapperObj : listData){
+                for(CircleHomeworkExObj homeworkExObj : homeWorkExWrapperObj.getHomeworkList()){
+                    if(!selMedias.contains(homeworkExObj))selMedias.add(homeworkExObj);
+                }
+            }
+        }
+//        else {
+//            selTimeLines.clear();
+//        }
+
+        for (int i = 0; i < size; i++) {
+            int imgCount = listData.get(i).getHomeworkList().size();
+            if(allSelect){
+                everyGroupUnSelImgSize[i] = 0;
+            } else {
+                everyGroupUnSelImgSize[i] = imgCount;//默认所有都没有选中
+                for (CircleHomeworkExObj circleTimeLineExObj : selMedias) {
+                    if (listData.get(i).getHomeworkList().contains(circleTimeLineExObj)) {
+                        everyGroupUnSelImgSize[i]--;
+                    }
+                }
+            }
+
+            //每个PhotoGroupItem需要多少行
+            lineEnd[i] = imgCount / COLUMN_NUM + (imgCount % COLUMN_NUM > 0 ? 1 : 0) + 1;
+
+            //每个PhotoGroupItem的最大行号
+            if (i > 0) {
+                lineEnd[i] += lineEnd[i - 1];
+            }
+        }
+        Log.e("timesAdapter : ", String.valueOf(lineEnd[lineEnd.length - 1]));
+    }
+
+    public List<CircleHomeworkExObj> getHomeworkExObjList(){
+        List<CircleHomeworkExObj> timeLineObjList = new ArrayList<>();
+        for(CircleHomeWorkExWrapperObj timeLineWrapObj : getListData()){
+            timeLineObjList.addAll(timeLineWrapObj.getHomeworkList());
+        }
+        return timeLineObjList;
     }
 
     public List<CircleHomeworkExObj> getSelImgs() {
         return selMedias;
+    }
+
+    public int getSelectCount() {
+        return selectCount;
     }
 
     public void setSelImgs(ArrayList<CircleHomeworkExObj> imgs) {

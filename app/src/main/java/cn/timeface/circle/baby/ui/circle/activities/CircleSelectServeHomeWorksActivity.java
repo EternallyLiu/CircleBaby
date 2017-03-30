@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -258,15 +259,17 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
 
         if(currentFragment instanceof CircleSelectBabyFragment){
             ((CircleSelectBabyFragment) currentFragment).setActivityResult(requestCode, resultCode, data);
+            ((CircleSelectBabyFragment) currentFragment).setAllSelHomeWorks(allSelHomeWorks);
         } else if(currentFragment instanceof CircleSelectSchoolTaskFragment){
             ((CircleSelectSchoolTaskFragment) currentFragment).setActivityResult(requestCode, resultCode, data);
+            ((CircleSelectSchoolTaskFragment) currentFragment).setAllSelHomeWorks(allSelHomeWorks);
         } else {
             Log.e(TAG, "not known fragment");
         }
 
         if(allSelHomeWorks.size() > 0){
             rlPhotoTip.setVisibility(View.VISIBLE);
-            tvSelCount.setText("已选择" + allSelHomeWorks.size() + "条记录");
+            tvSelCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_time_select_count), String.valueOf(allSelHomeWorks.size()))));
         } else {
             rlPhotoTip.setVisibility(View.GONE);
         }

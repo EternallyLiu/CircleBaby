@@ -100,4 +100,12 @@ public class CircleHomeworkExObj implements Parcelable {
         }
         return tfoResourceObjs;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof CircleHomeworkExObj){
+            return ((CircleHomeworkExObj) obj).getHomework().equals(getHomework());
+        }
+        return super.equals(obj);
+    }
 }
