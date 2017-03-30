@@ -15,7 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +46,6 @@ import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.GetCircleAllBabyObj;
-import cn.timeface.circle.baby.ui.circle.bean.RelateBabyObj;
 import cn.timeface.circle.baby.ui.circle.timelines.dialog.CircleBabyDialog;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.guides.GuideHelper;
@@ -508,53 +509,6 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private GuideHelper guideHelper = null;
 
 
-    /**
-     * 标签导航
-     *
-     * @return
-     */
-    private GuideHelper.TipData getTagTipData() {
-        if (inflate == null) inflate = LayoutInflater.from(getActivity());
-        View view = inflate.inflate(R.layout.guide_bigimage_tag_tip, null);
-        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
-        GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, tag);
-        tipData.setLocation(Gravity.TOP | Gravity.CENTER_HORIZONTAL, DeviceUtil.dpToPx(getResources(), 80), -DeviceUtil.dpToPx(getResources(), 5));
-        return tipData;
-    }
-
-    /**
-     * 添加喜欢导航
-     *
-     * @return
-     */
-    private GuideHelper.TipData getLikeTipData() {
-        if (inflate == null) inflate = LayoutInflater.from(getActivity());
-        View view = inflate.inflate(R.layout.guide_bigimage_like_tip, null);
-        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
-        GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, love);
-        tipData.setLocation(Gravity.TOP | Gravity.CENTER_HORIZONTAL, DeviceUtil.dpToPx(getResources(), 80), -DeviceUtil.dpToPx(getResources(), 5));
-        return tipData;
-    }
-
-    private void initGuideHelper(List<GuideHelper.TipData> list) {
-        if (guideHelper == null)
-            guideHelper = new GuideHelper(getActivity());
-        for (GuideHelper.TipData tipData : list)
-            guideHelper.addPage(false, tipData);
-    }
-
-    private void showGuide() {
-        if (type == CIRCLE_MEDIA_IMAGE_NONE) return;
-        if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
-            return;
-        }
-        Observable.defer(() -> Observable.just(getTagTipData(), getLikeTipData())).filter(tipData -> tipData != null)
-                .toList().filter(tipDatas -> tipDatas != null && tipDatas.size() > 0).doOnNext(tipDatas -> initGuideHelper(tipDatas))
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(list -> guideHelper.show(false), throwable -> LogUtil.showError(throwable));
-
-    }
-
     @Override
     public void submit() {
         deleteTip();
@@ -666,5 +620,77 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             tvBabys.setText(builder);
             EventBus.getDefault().post(new CircleMediaEvent(mediaObj));
         }
+    }
+
+    /**
+     * 标签导航
+     *
+     * @return
+     */
+    private GuideHelper.TipData getTagTipData() {
+        if (!GuideUtils.checkVersion(getClass().getSimpleName())) {
+            return null;
+        }
+        if (inflate == null) inflate = LayoutInflater.from(getActivity());
+        View view = inflate.inflate(R.layout.guide_bigimage_tag_tip, null);
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, tag);
+        tipData.setLocation(Gravity.TOP | Gravity.CENTER_HORIZONTAL, DeviceUtil.dpToPx(getResources(), 80), -DeviceUtil.dpToPx(getResources(), 5));
+        return tipData;
+    }
+
+    /**
+     * 添加喜欢导航
+     *
+     * @return
+     */
+    private GuideHelper.TipData getLikeTipData() {
+        if (!GuideUtils.checkVersion(getClass().getSimpleName() + "_like")) {
+            return null;
+        }
+        if (inflate == null) inflate = LayoutInflater.from(getActivity());
+        View view = inflate.inflate(R.layout.guide_bigimage_like_tip, null);
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        ImageView cut = (ImageView) view.findViewById(R.id.cut);
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) cut.getLayoutParams();
+        params.leftMargin = DeviceUtil.dpToPx(getResources(), type == CIRCLE_MEDIA_IMAGE_EDITOR ? 130 : 180);
+
+        GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, love);
+        tipData.setLocation(Gravity.TOP | Gravity.CENTER, type == CIRCLE_MEDIA_IMAGE_EDITOR ? -DeviceUtil.dpToPx(getResources(), 160) : DeviceUtil.dpToPx(getResources(), 0), -DeviceUtil.dpToPx(getResources(), 5));
+        return tipData;
+    }
+
+    /**
+     * 添加圈宝宝导航
+     *
+     * @return
+     */
+    private GuideHelper.TipData getCircleTipData() {
+        if (type != CIRCLE_MEDIA_IMAGE_EDITOR) return null;
+        if (!GuideUtils.checkVersion(getClass().getSimpleName() + "_circle")) {
+            return null;
+        }
+        if (inflate == null) inflate = LayoutInflater.from(getActivity());
+        View view = inflate.inflate(R.layout.guide_bigimage_circle_tip, null);
+        view.findViewById(R.id.next).setOnClickListener(v -> guideHelper.nextPage());
+        GuideHelper.TipData tipData = new GuideHelper.TipData(view, Gravity.TOP | Gravity.CENTER_HORIZONTAL, tvRelateBaby);
+        tipData.setLocation(Gravity.TOP | Gravity.LEFT, DeviceUtil.dpToPx(getResources(), 30), -DeviceUtil.dpToPx(getResources(), 5));
+        return tipData;
+    }
+
+    private void initGuideHelper(List<GuideHelper.TipData> list) {
+        if (guideHelper == null)
+            guideHelper = new GuideHelper(getActivity());
+        for (GuideHelper.TipData tipData : list)
+            guideHelper.addPage(false, tipData);
+    }
+
+    private void showGuide() {
+        if (type == CIRCLE_MEDIA_IMAGE_NONE) return;
+        Observable.defer(() -> Observable.just(getTagTipData(), getLikeTipData(), getCircleTipData())).filter(tipData -> tipData != null)
+                .toList().filter(tipDatas -> tipDatas != null && tipDatas.size() > 0).doOnNext(tipDatas -> initGuideHelper(tipDatas))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(list -> guideHelper.show(false), throwable -> LogUtil.showError(throwable));
+
     }
 }
