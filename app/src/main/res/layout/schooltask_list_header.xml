@@ -3,14 +3,20 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:background="@color/bg_color3"
               android:orientation="vertical">
 
-    <ImageView
+    <com.github.rayboot.widget.ratioview.RatioImageView
         android:id="@+id/iv_icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="fitCenter"/>
+        android:background="@drawable/bg_none_photo"
+        android:gravity="center"
+        android:scaleType="fitXY"
+        app:fixRatio="fixWidth"
+        app:heightRatio="1"
+        app:widthRatio="2" />
 
     <RelativeLayout
         android:layout_width="match_parent"
