@@ -111,7 +111,7 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
 
     @Override
     public void onClick(View view) {
-        BookObj bookObj = (BookObj) view.getTag(R.string.tag_obj);
+        CircleBookObj bookObj = (CircleBookObj) view.getTag(R.string.tag_obj);
 
         switch (view.getId()) {
             case R.id.iv_menu:
@@ -170,7 +170,7 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
                             bookObj.getOpenBookType(),
                             null,
                             "",
-                            false,
+                            true,
                             bookObj.getBaby().getBabyId(), keys, values, 0);
                 }
                 break;
@@ -200,11 +200,11 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
                             bookObj.getBaby().getBabyId(),
                             bookObj.getAuthor().getNickName(),
                             bookObj.getBookName());
-                }//圈照片书
-                if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO) {
+                } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO) {
+                    //圈照片书
                     CircleSelectSeverAlbumsActivity.open(
                             getActivity(),
-                            String.valueOf(FastData.getCircleId()),
+                            String.valueOf(bookObj.getCircleNumber()),
                             bookObj.getBookType(),
                             String.valueOf(bookObj.getBookId()),
                             bookObj.getOpenBookType(),
@@ -217,12 +217,12 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
                             bookObj.getOpenBookType(),
                             String.valueOf(bookObj.getBookId()),
                             String.valueOf(bookObj.getOpenBookId()),
-                            String.valueOf(FastData.getCircleId())
+                            String.valueOf(bookObj.getCircleNumber())
                     );
                     //家校纪念册
                 } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL) {
                     CircleSelectServerHomeWorksEditActivity.openEdit(
-                            getActivity(), String.valueOf(FastData.getCircleId()), String.valueOf(bookObj.getBookId()),
+                            getActivity(), String.valueOf(bookObj.getCircleNumber()), String.valueOf(bookObj.getBookId()),
                             String.valueOf(bookObj.getOpenBookId())
                     );
                 } else {

@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.timeface.open.R.id;
 import cn.timeface.circle.baby.constants.CountlyEventHelper;
 import cn.timeface.circle.baby.events.BookOptionEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
@@ -36,6 +39,7 @@ public class MyPODActivity extends PODActivity {
     private String bookId;//localBookId
     private int babyId;
     private int localBookType;
+    private ImageView ivEdit;
 
     public static void open(Context context, String bookId , String openBookId,int localBookType, int openBookType, List<TFOPublishObj> publishObjs, String dataList, boolean edit, int babyId, ArrayList<String> keys, ArrayList<String> values, int rebuild) {
         Intent intent = new Intent(context, MyPODActivity.class);
@@ -58,6 +62,12 @@ public class MyPODActivity extends PODActivity {
         super.onCreate(savedInstanceState);
         dataList = getIntent().getStringExtra("dataList");
         edit = getIntent().getBooleanExtra("edit", false);
+        ivEdit = (ImageView) this.findViewById(id.iv_edit);
+        if (edit) {
+            ivEdit.setVisibility(View.VISIBLE);
+        } else {
+            ivEdit.setVisibility(View.GONE);
+        }
         babyId = getIntent().getIntExtra("babyId", 0);
         this.localBookType = getIntent().getIntExtra("local_book_type", 0);
         bookId = getIntent().getStringExtra("bookId");
