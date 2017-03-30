@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:text="老师"
         android:gravity="center"
+        android:textSize="@dimen/text_normal"
         android:textColor="@color/bg_color1" />
 
     <TextView
@@ -19,6 +20,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:text="老师"
+        android:textSize="@dimen/text_normal"
         android:gravity="center"
         android:textColor="@color/text_color4" />
 
@@ -29,6 +31,7 @@
         android:layout_toLeftOf="@id/tv_count"
         android:paddingRight="15dp"
         android:text="展开全部成员"
+        android:textSize="@dimen/text_small"
         android:gravity="center"
         android:textColor="@color/bg_color1" />
 
