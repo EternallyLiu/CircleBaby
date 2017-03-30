@@ -24,6 +24,8 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleContentObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
 import cn.timeface.circle.baby.ui.images.views.FlowLayout;
@@ -55,13 +57,14 @@ public class HomeWorkActivity extends BaseAppCompatActivity implements View.OnCl
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
-    private CircleHomeworkObj homeworkObj;
+    private long homeworkId;
     private LayoutInflater inflater;
     private int paddingImage;
+    private CircleHomeworkObj homeworkObj;
 
-    public static void open(Context context, CircleHomeworkObj homeworkObj) {
+    public static void open(Context context, long homeworkId) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(CircleHomeworkObj.class.getSimpleName(), homeworkObj);
+        bundle.putLong(CircleHomeworkObj.class.getSimpleName(), homeworkId);
         context.startActivity(new Intent(context, HomeWorkActivity.class).putExtras(bundle));
     }
 
@@ -73,11 +76,29 @@ public class HomeWorkActivity extends BaseAppCompatActivity implements View.OnCl
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        init();
+        homeworkId = getIntent().getLongExtra(CircleHomeworkObj.class.getSimpleName(), 0);
+        reqData();
     }
 
-    private void init() {
-        homeworkObj = getIntent().getParcelableExtra(CircleHomeworkObj.class.getSimpleName());
+    private void reqData() {
+        addSubscription(apiService.submitHomeworkDetal(homeworkId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(homeWorkSubmitResponse -> {
+                    if (homeWorkSubmitResponse.success()) {
+                        homeworkObj = homeWorkSubmitResponse.getHomework();
+                        init(homeworkObj);
+                    } else {
+                        ToastUtil.showToast(this, homeWorkSubmitResponse.getInfo());
+                        finish();
+                    }
+                }, throwable -> {
+                    ToastUtil.showToast(this, "未知错误，获取作业信息失败");
+                    finish();
+                    LogUtil.showError(throwable);
+                }));
+    }
+
+    private void init(CircleHomeworkObj homeworkObj) {
         LogUtil.showLog("json:" + JSONUtils.parse2JSONString(homeworkObj));
         title.setText(DateUtil.formatDate("MM月dd日 EE", homeworkObj.getCreateDate()));
         tvName.setText(homeworkObj.getBabyInfo().getRealName());

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +48,7 @@ public class CircleSchoolTaskDetailObj extends CircleSchoolTaskObj implements Pa
     };
 
     public List<CircleHomeworkObj> getHomeworkList() {
+        if (homeworkList==null)homeworkList=new ArrayList<>(0);
         return homeworkList;
     }
 

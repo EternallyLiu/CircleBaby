@@ -35,6 +35,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskDetailObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.SchoolTaskDetailAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 
 /**
@@ -60,12 +61,12 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
 
     private static final int PAGE_SIZE = 20;
 
-    private CircleSchoolTaskObj currentTaskObj = null;
+    private long currentTaskId;
     private long clickToolBarLastTime;
 
-    public static void open(Context context, CircleSchoolTaskObj task) {
+    public static void open(Context context, long taskId) {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(CircleSchoolTaskObj.class.getSimpleName(), task);
+        bundle.putLong(CircleSchoolTaskObj.class.getSimpleName(), taskId);
         context.startActivity(new Intent(context, SchoolTaskDetailActivity.class).putExtras(bundle));
     }
 
@@ -83,8 +84,7 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
     }
 
     private void init() {
-        currentTaskObj = getIntent().getParcelableExtra(CircleSchoolTaskObj.class.getSimpleName());
-        ivSubmitTask.setVisibility(currentTaskObj.getIsCommit() == 0 ? View.VISIBLE : View.GONE);
+        currentTaskId = getIntent().getLongExtra(CircleSchoolTaskObj.class.getSimpleName(), 0);
         adapter = new SchoolTaskDetailAdapter(this);
         adapter.setItemClickLister(this);
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -116,15 +116,13 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
 
     private void setDataList(CircleSchoolTaskDetailObj taskObj) {
         if (currentPage == 1) {
-            adapter.addList(true, taskObj.getHomeworkList(), 0, currentTaskObj);
+            adapter.addList(true, taskObj.getHomeworkList(), 0, taskObj);
         } else {
             adapter.addList(taskObj.getHomeworkList());
         }
-        if (currentTaskObj.getIsCommit() != taskObj.getIsCommit()) {
-            currentTaskObj.setIsCommit(taskObj.getIsCommit());
-            ivSubmitTask.setVisibility(currentTaskObj.getIsCommit() != 0 ? View.VISIBLE : View.GONE);
-            adapter.updateItem(currentTaskObj);
-        }
+        taskObj.setIsCommit(taskObj.getIsCommit());
+        ivSubmitTask.setVisibility(taskObj.getIsCommit() == 0 ? View.VISIBLE : View.GONE);
+        adapter.updateItem(taskObj);
     }
 
     @Override
@@ -143,17 +141,22 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
     }
 
     private void reqData() {
-        addSubscription(apiService.teacherHomeworkDetal(currentTaskObj.getTaskId(), currentPage, PAGE_SIZE)
+        addSubscription(apiService.teacherHomeworkDetal(currentTaskId, currentPage, PAGE_SIZE)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .doOnNext(homeWorkDetailResponse -> helper.finishTFPTRRefresh())
                 .subscribe(homeWorkDetailResponse -> {
                     if (homeWorkDetailResponse.success()) {
                         setDataList(homeWorkDetailResponse.getSchoolTaskDetailObj());
-                    } else ToastUtil.showToast(this, homeWorkDetailResponse.getInfo());
+                    } else {
+                        if (currentPage == 1) {
+                            adapter.addList(true, new ArrayList());
+                        }
+                        ToastUtil.showToast(this, homeWorkDetailResponse.getInfo());
+                    }
                 }, throwable -> {
                     helper.finishTFPTRRefresh();
                     if (currentPage == 1) {
-                        adapter.addList(true, new ArrayList(), 0, currentTaskObj);
+                        adapter.addList(true, new ArrayList());
                     }
                 }));
     }
@@ -176,13 +179,13 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
     @Override
     public void onItemClick(View view, int position) {
         if (position > 0) {
-            HomeWorkActivity.open(this, adapter.getItem(position));
+            HomeWorkActivity.open(this, ((CircleHomeworkObj) adapter.getItem(position)).getHomeworkId());
         }
     }
 
     @OnClick(R.id.iv_submit_task)
     public void onViewClicked() {
-        PublishActivity.open(this, new CircleHomeworkObj(currentTaskObj.getTaskId(), currentTaskObj.getTitle()));
+        PublishActivity.open(this, new CircleHomeworkObj(currentTaskId, ((CircleSchoolTaskObj) adapter.getItem(0)).getTitle()));
     }
 
     @OnClick(R.id.toolbar)

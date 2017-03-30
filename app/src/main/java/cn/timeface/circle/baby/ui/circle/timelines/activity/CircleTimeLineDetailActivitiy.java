@@ -115,10 +115,17 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     private Menu currentMenu;
     private ImageActionDialog actionDialog;
     private DeleteDialog deleteDialog;
+    private long currentTimeLineId = 0;
 
     public static void open(Context context, CircleTimelineObj timelineObj) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(CircleTimelineObj.class.getSimpleName(), timelineObj);
+        context.startActivity(new Intent(context, CircleTimeLineDetailActivitiy.class).putExtras(bundle));
+    }
+
+    public static void open(Context context, long currentTimeLineId) {
+        Bundle bundle = new Bundle();
+        bundle.putLong("id", currentTimeLineId);
         context.startActivity(new Intent(context, CircleTimeLineDetailActivitiy.class).putExtras(bundle));
     }
 
@@ -133,8 +140,12 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         title.setText("动态详情");
         currentTimeLineObj = getIntent().getParcelableExtra(CircleTimelineObj.class.getSimpleName());
+        currentTimeLineId = getIntent().getLongExtra("id", 0);
+        if (currentTimeLineObj != null)
+            currentTimeLineId = currentTimeLineObj.getCircleTimelineId();
         init();
-        initRecyclerView();
+        reqData();
+//        initRecyclerView();
 
     }
 

@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right|center_vertical"
-                android:padding="@dimen/size_6"
+                android:padding="@dimen/size_10"
                 android:text="子涵"
                 android:textColor="@color/text"
                 android:textSize="@dimen/text_small"/>
@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:padding="@dimen/size_6"
+                android:padding="@dimen/size_10"
                 android:text="子涵"
                 android:textColor="@color/text"
                 android:textSize="@dimen/text_small"/>
@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_4"
                 android:background="@color/white"
-                android:padding="@dimen/size_6"
+                android:padding="@dimen/size_10"
                 android:textColor="@color/text"
                 android:textSize="@dimen/text_small"/>
 
