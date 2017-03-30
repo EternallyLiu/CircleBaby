@@ -2,7 +2,10 @@ package cn.timeface.circle.baby.ui.circle.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -23,11 +26,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseRecyclerAdapter;
-import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeWorkExWrapperObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
-import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 
 /**
  * 圈作品选择homework adapter
@@ -40,17 +41,19 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
     int[] lineEnd;//用于存储每个PhotoGroupItem的最大行号
     final int COLUMN_NUM = 1;
     final int maxCount;
+    String taskId;
 
     List<CircleHomeworkExObj> selMedias = new ArrayList<>(10);//用于存储所有选中的图片
     int[] everyGroupUnSelImgSize;//每组数据没有被选中照片的张数，用于快速判断是否全选的状态
-    int contentType;
 
-    public CircleSelectHomeWorkAdapter(Context mContext, List<CircleHomeWorkExWrapperObj> listData, int maxCount, List<CircleHomeworkExObj> mediaObjs) {
+    public CircleSelectHomeWorkAdapter(
+            Context mContext,
+            List<CircleHomeWorkExWrapperObj> listData,
+            int maxCount, List<CircleHomeworkExObj> mediaObjs, String taskId) {
         super(mContext, listData);
         this.maxCount = maxCount;
-//        this.clickListener = clickListener;
-//        this.selMedias = mediaObjs;
         this.selMedias = mediaObjs;
+        this.taskId = taskId;
         setupData();
     }
 
@@ -96,8 +99,16 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
         if (viewType == TYPE_TITLE) {
             TitleViewHolder holder = ((TitleViewHolder) viewHolder);
             holder.tvTitle.setText(item.getDate());
+            Drawable drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_time_clock);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            if(!TextUtils.isEmpty(taskId)){
+                holder.tvTitle.setCompoundDrawables(null, null, null, null);
+                holder.tvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.text_color9));
+            } else {
+                holder.tvTitle.setCompoundDrawables(drawable, null, null, null);
+                holder.tvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.text_color12));
+            }
             holder.cbTitleAllSel.setTag(R.string.tag_index, position);
-
             holder.cbTitleAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
         } else if (viewType == TYPE_PHOTOS) {
             CircleSelectHomeWorkAdapter.HomeworkViewHolder holder = ((CircleSelectHomeWorkAdapter.HomeworkViewHolder) viewHolder);
@@ -115,16 +126,17 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
                     holder.flImage.setVisibility(View.GONE);
                 }
                 DateUtils.formatDateTime(mContext, timeLineObj.getHomework().getCreateDate(), DateUtils.FORMAT_SHOW_WEEKDAY);
-                holder.tvTitle.setText(DateUtils.formatDateTime(mContext, timeLineObj.getHomework().getCreateDate(), DateUtils.FORMAT_SHOW_DATE)
-                        + DateUtils.formatDateTime(mContext, timeLineObj.getHomework().getCreateDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
+                if(!TextUtils.isEmpty(taskId)){
+                    holder.tvTitle.setText(DateUtils.formatDateTime(mContext, timeLineObj.getHomework().getCreateDate(), DateUtils.FORMAT_SHOW_DATE)
+                            + DateUtils.formatDateTime(mContext, timeLineObj.getHomework().getCreateDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
+                } else {
+                    holder.tvTitle.setText(timeLineObj.getSchoolTaskName());
+                }
                 holder.tvImgCount.setText(String.valueOf(timeLineObj.getHomework().getMediaList().size()) + "张");
                 holder.tvContent.setText(timeLineObj.getHomework().getContent());
                 holder.cbSelect.setTag(R.string.tag_ex, dataPosition);
                 holder.cbSelect.setTag(R.string.tag_obj, timeLineObj);
-
                 holder.cbSelect.setChecked(selMedias.contains(timeLineObj));
-//                if(clickListener != null) holder.llRoot.setOnClickListener(clickListener);
-//                holder.llRoot.setTag(R.string.tag_obj, timeLineObj);
             }
         }
     }
@@ -208,7 +220,6 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
                     doUnSelImg(dataIndex, item);
                 }
             }
-//            EventBus.getDefault().post(new PhotoSelectCountEvent(selMedias.size()));
             notifyDataSetChanged();
         }
     };
@@ -229,7 +240,6 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
             } else {
                 doUnSelImg(dataIndex, img);
             }
-//            EventBus.getDefault().post(new PhotoSelectCountEvent(selMedias.size()));
             notifyDataSetChanged();
         }
     };
@@ -254,14 +264,10 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
             }
         }
-//        setupSelectData(img);
-//        EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_MEDIA_MEDIA, true, img));
     }
 
     private void doUnSelImg(int dataIndex, CircleHomeworkExObj img) {
         if (selMedias.contains(img)) {
-            //取消上传
-//            UploadAllPicService.addUrgent(App.getInstance(), img);
             selMedias.remove(img);
             everyGroupUnSelImgSize[dataIndex] += 1;
             if (everyGroupUnSelImgSize[dataIndex] == 1) {
@@ -269,8 +275,6 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
                 notifyItemChanged(getTitleLineFromDataIndex(dataIndex) + getHeaderCount());
             }
         }
-//        setupUnSelectData(img);
-//        EventBus.getDefault().post(new SelectMediaEvent(SelectMediaEvent.TYPE_MEDIA_MEDIA, false, img));
     }
 
     public List<CircleHomeworkExObj> getSelImgs() {
