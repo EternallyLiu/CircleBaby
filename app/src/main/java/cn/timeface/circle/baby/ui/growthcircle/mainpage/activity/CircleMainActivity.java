@@ -33,6 +33,7 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.HomwWorkListActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
@@ -41,6 +42,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
@@ -166,25 +168,12 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     private void setupCircleInfo(CircleIndexInfoResponse circleIndexInfo) {
         this.circleObj = circleIndexInfo.getGrowthCircle();
         adapter.setHeaderInfo(circleIndexInfo);
-//        tvCircleName.setText(circleObj.getCircleName());
-//        Glide.with(this)
-//                .load(circleObj.getCircleCoverUrl())
-//                .centerCrop()
-//                .into(ivCircleCover);
-//
-//        // 圈作业
-//        if (circleIndexInfo.getLastSchoolTask() != null
-//                && circleIndexInfo.getLastSchoolTask().getTeacher() != null) {
-//            rlHomework.setVisibility(View.VISIBLE);
-//            tvHomework.setText("“" + circleIndexInfo.getLastSchoolTask().getTeacher().getCircleNickName()
-//                    + "” 发起了新的作业 “" + circleIndexInfo.getLastSchoolTask().getTitle() + "”");
-//            tvHomeworkDetail.setOnClickListener(v -> {
-//                // 跳转作业详情
-//                HomwWorkListActivity.open(this);
-//            });
-//        } else {
-//            rlHomework.setVisibility(View.GONE);
-//        }
+        DeleteDialog deleteDialog=new DeleteDialog(this);
+        deleteDialog.setMessage(String.format("大家已经帮你圈出了%d张有关%s的照片哦",circleIndexInfo.getRelateMediaCount(),FastData.getBabyObj().getRealName()));
+        deleteDialog.getSubmit().setText("去看看");
+        deleteDialog.setCancelTip("不看了");
+//        CirclePhotoActivity.open();
+//        deleteDialog.setSubmitListener(()->);
     }
 
     private void reqData(long circleId) {
