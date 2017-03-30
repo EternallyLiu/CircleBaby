@@ -99,8 +99,9 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         context.startActivity(intent);
     }
 
-    public static void open(Context context, String babyName, int babyId, boolean atBaby) {
+    public static void open(Context context, long circleId, String babyName, int babyId, boolean atBaby) {
         Intent intent = new Intent(context, CirclePhotoActivity.class);
+        intent.putExtra("circle_id", circleId);
         intent.putExtra("baby_name", babyName);
         intent.putExtra("baby_id", babyId);
         intent.putExtra("at_baby", atBaby);
