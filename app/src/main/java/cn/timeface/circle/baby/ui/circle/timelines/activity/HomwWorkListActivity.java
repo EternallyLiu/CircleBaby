@@ -31,6 +31,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.events.HomeWorkListEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
+import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
 
 /**
  * author : wangshuai Created on 2017/3/23
@@ -85,6 +86,9 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
         });
         adapter = new SchoolTaskAdapter(this);
         adapter.setItemClickLister(this);
+        adapter.setEmptyItem(new EmptyItem(1004));
+        adapter.getEmptyItem().setOperationType(1);
+        adapter.notifyDataSetChanged();
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         helper = new TFPTRRecyclerViewHelper(this, contentRecyclerView, swipeRefresh);
         helper.setTFPTRMode(TFPTRRecyclerViewHelper.Mode.PULL_FORM_START)
@@ -116,7 +120,9 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
         addSubscription(apiService.homeWorkList(FastData.getCircleId(), currentPage, PAGE_SIZE)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .doOnNext(homeWorkListResponse -> helper.finishTFPTRRefresh())
+                .doOnNext(homeWorkListResponse -> adapter.getEmptyItem().setOperationType(2))
                 .subscribe(homeWorkListResponse -> {
+                    adapter.getEmptyItem().setOperationType(0);
                     if (homeWorkListResponse.success()) {
                         if (homeWorkHeader == null)
                             homeWorkHeader = new CircleHomeWorkHeader(homeWorkListResponse.getGrowthCircle(), homeWorkListResponse.getHasTeacherCertification(), homeWorkListResponse.getLastSubmitHomework());
@@ -135,6 +141,9 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
                     } else ToastUtil.showToast(this, homeWorkListResponse.getInfo());
                     adapter.setHashSubmit(homeWorkHeader.getLastSubmitHomework().getSubmitter() != null);
                 }, throwable -> {
+                    adapter.getEmptyItem().setThrowable(throwable);
+                    adapter.getEmptyItem().setOperationType(-1);
+                    adapter.notifyDataSetChanged();
                     helper.finishTFPTRRefresh();
                     LogUtil.showError(throwable);
                 }));

@@ -193,7 +193,6 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                 .subscribe(
                         response -> {
                             adapter.getEmptyItem().setOperationType(0);
-                            adapter.notifyDataSetChanged();
                             tfptrListViewHelper.finishTFPTRRefresh();
                             if (response.success()) {
                                 setupListData(response.getDataList());
