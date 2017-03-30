@@ -20,6 +20,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
@@ -32,7 +33,7 @@ import cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker;
  * author : wangshuai Created on 2017/3/22
  * email : wangs1992321@gmail.com
  */
-public class SchoolTaskAdapter extends BaseAdapter {
+public class SchoolTaskAdapter extends BaseEmptyAdapter {
 
     public static final int TYPE_CIRCLE_HEADER = 1992;
     private final int paddingImage;
@@ -64,24 +65,38 @@ public class SchoolTaskAdapter extends BaseAdapter {
     }
 
     @Override
-    public void initView(View contentView, int position) {
-        Object it = getItem(position);
-        if (it instanceof HomeWorkListObj) {
-            doSchoolTask(contentView, position);
-        } else if (it instanceof CircleHomeWorkHeader) {
-            CircleHomeWorkHeader header = (CircleHomeWorkHeader) it;
-            ImageView ivIcon = ViewHolder.getView(contentView, R.id.iv_icon);
-            TextView tvName = ViewHolder.getView(contentView, R.id.tv_name);
-            Button btnPublishSchooltask = ViewHolder.getView(contentView, R.id.btn_publish_schooltask);
-            btnPublishSchooltask.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 2 ? View.VISIBLE : View.GONE);
-            btnPublishSchooltask.setOnClickListener(this);
-            TextView tvLastTask = ViewHolder.getView(contentView, R.id.tv_last_homework);
-            tvLastTask.setVisibility(header.getLastSubmitHomework().getSubmitter() == null ? View.GONE : View.VISIBLE);
-            GlideUtil.displayImage(header.getGrowthCircle().getCircleCoverUrl(), ivIcon, true);
-            tvName.setText(header.getGrowthCircle().getCircleName());
-            if (header.getLastSubmitHomework().getSubmitter() != null)
-                tvLastTask.setText(String.format("%s上传了作业 \"%s\"", header.getLastSubmitHomework().getSubmitter().getCircleNickName(), header.getLastSubmitHomework().getTitle()));
+    public void addEmpty() {
+        if (getEmptyItem() != null && containObj(getEmptyItem())) {
+            if (getRealItemSize() > 2) deleteItem(getEmptyItem());
+        } else if (getEmptyItem() != null && !containObj(getEmptyItem())) {
+            if (getRealItemSize() <= 1) add(getEmptyItem());
         }
+    }
+
+    @Override
+    public void initView(View contentView, int position) {
+        if (getItemViewType(position) == EMPTY_CODE) {
+            doEmpty(contentView);
+        } else {
+            Object it = getItem(position);
+            if (it instanceof HomeWorkListObj) {
+                doSchoolTask(contentView, position);
+            } else if (it instanceof CircleHomeWorkHeader) {
+                CircleHomeWorkHeader header = (CircleHomeWorkHeader) it;
+                ImageView ivIcon = ViewHolder.getView(contentView, R.id.iv_icon);
+                TextView tvName = ViewHolder.getView(contentView, R.id.tv_name);
+                Button btnPublishSchooltask = ViewHolder.getView(contentView, R.id.btn_publish_schooltask);
+                btnPublishSchooltask.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 2 ? View.VISIBLE : View.GONE);
+                btnPublishSchooltask.setOnClickListener(this);
+                TextView tvLastTask = ViewHolder.getView(contentView, R.id.tv_last_homework);
+                tvLastTask.setVisibility(header.getLastSubmitHomework().getSubmitter() == null ? View.GONE : View.VISIBLE);
+                GlideUtil.displayImage(header.getGrowthCircle().getCircleCoverUrl(), ivIcon, true);
+                tvName.setText(header.getGrowthCircle().getCircleName());
+                if (header.getLastSubmitHomework().getSubmitter() != null)
+                    tvLastTask.setText(String.format("%s上传了作业 \"%s\"", header.getLastSubmitHomework().getSubmitter().getCircleNickName(), header.getLastSubmitHomework().getTitle()));
+            }
+        }
+
 
     }
 

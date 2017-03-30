@@ -1391,6 +1391,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
     public void deleteRemoteBook() {
         view.addSubscription(
         model.deleteRemoteCalendar(String.valueOf(remoteBook.getId()), String.valueOf(remoteBook.getBook_type()))
+                .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(baseResponse -> {
                     view.getCurrentActivity().finish();
                 }, throwable -> {

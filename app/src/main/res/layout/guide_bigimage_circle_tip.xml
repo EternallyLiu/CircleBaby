@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="400dp"
-                android:layout_height="200dp">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/cut"
-        android:layout_width="48dp"
-        android:layout_height="103dp"
+        android:layout_width="58dp"
+        android:layout_height="46dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="140dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/guide_bigimage_like_cut"/>
+        android:layout_marginLeft="176dp"
+        android:src="@drawable/guide_bigimage_circle_cut" />
 
     <ImageView
         android:id="@+id/next"
         android:layout_width="124dp"
         android:layout_height="36dp"
         android:layout_above="@+id/cut"
-        android:layout_marginBottom="@dimen/size_12"
         android:layout_marginLeft="96dp"
+        android:layout_marginBottom="@dimen/size_12"
         android:scaleType="fitCenter"
-        android:src="@drawable/guide_know"/>
+        android:src="@drawable/guide_know" />
 
     <ImageView
+        android:layout_marginLeft="@dimen/size_36"
         android:id="@+id/tip"
-        android:layout_width="303dp"
-        android:layout_height="28dp"
+        android:layout_width="195dp"
+        android:layout_height="45dp"
         android:layout_above="@+id/next"
         android:layout_marginBottom="@dimen/size_12"
-        android:layout_marginRight="@dimen/size_24"
-        android:layout_marginLeft="@dimen/size_36"
         android:scaleType="fitCenter"
-        android:src="@drawable/guide_bigimage_like_tip"/>
+        android:src="@drawable/guide_bigimage_circle_tip" />
 
 </RelativeLayout>
