@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_circle_activity"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/shape_circle_activity_bg"
     android:clickable="true"
     android:gravity="center"
-    android:layout_margin="@dimen/size_8">
+    android:paddingRight="@dimen/size_8"
+    android:paddingTop="@dimen/size_8"
+    >
 
-    <ImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/iv_circle_activity"
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_160"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        app:riv_corner_radius="5dp"
+        app:riv_border_width="1dp"
+        app:riv_border_color="#0000"
+        app:riv_mutate_background="true"
+        app:riv_tile_mode="repeat"
+        app:oval="true"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:background="@drawable/shape_circle_activity_bg"
+        android:layout_alignLeft="@+id/iv_circle_activity"
+        android:layout_alignRight="@+id/iv_circle_activity"
+        android:layout_alignTop="@+id/iv_circle_activity"
+        android:layout_alignBottom="@+id/iv_circle_activity"
         android:gravity="center"
         android:orientation="vertical">
 

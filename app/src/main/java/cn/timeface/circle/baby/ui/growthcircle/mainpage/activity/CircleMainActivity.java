@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -35,7 +35,6 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
-import cn.timeface.circle.baby.ui.circle.timelines.activity.HomwWorkListActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
@@ -57,6 +56,16 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.tv_back)
+    TextView tvBack;
+    @Bind(R.id.iv_more)
+    ImageView ivMore;
+    @Bind(R.id.rl_title)
+    RelativeLayout rlTitle;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.iv_publish)
+    ImageView ivPublish;
 
     private int currentPage = 1;
     private static final int PAGE_SIZE = 20;
@@ -85,7 +94,9 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_main);
         ButterKnife.bind(this);
-
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         setupPTR();
         initHeaderFooter();
 
@@ -213,12 +224,9 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         else adapter.addList(dataList);
     }
 
-    @OnClick({R.id.tv_back, R.id.iv_more, R.id.iv_publish})
+    @OnClick({R.id.iv_more, R.id.iv_publish})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_back:
-                onBackPressed();
-                break;
             case R.id.iv_more:
                 showMoreDialog();
                 break;

@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.events.UpdateMemberDetailEvent;
 import cn.timeface.circle.baby.events.UpdateMemberEvent;
 import cn.timeface.circle.baby.events.UpdateNameEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
@@ -163,7 +164,11 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
     }
 
     private void setUpView() {
-        rvContent.setLayoutManager(new StaggeredGridLayoutManager(5, StaggeredGridLayoutManager.VERTICAL));
+        if (DeviceUtil.getScreenWidth(this) > 720) {
+            rvContent.setLayoutManager(new StaggeredGridLayoutManager(5, StaggeredGridLayoutManager.VERTICAL));
+        } else {
+            rvContent.setLayoutManager(new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL));
+        }
         ArrayList<GroupMemberSection> menuSections = new ArrayList<>();
 
         adapter = new GroupMemberAdapter(R.layout.view_home_content, R.layout.layout_main_menu_header, menuSections);

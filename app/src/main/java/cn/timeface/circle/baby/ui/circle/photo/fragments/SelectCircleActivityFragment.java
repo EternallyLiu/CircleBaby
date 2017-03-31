@@ -109,14 +109,14 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
         if (circleActivityAdapter == null) {
             circleActivityAdapter = new CircleActivityAdapter(getActivity(), AlbumObjs, clickListener);
             rvContent.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-            rvContent.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
-                    sizeResId(R.dimen.view_space_normal).
-                    color(android.R.color.transparent).
-                    build());
-            rvContent.addItemDecoration(new VerticalDividerItemDecoration.Builder(getActivity()).
-                    sizeResId(R.dimen.view_space_normal).
-                    color(android.R.color.transparent).
-                    build());
+//            rvContent.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getActivity()).
+//                    sizeResId(R.dimen.view_space_normal).
+//                    color(android.R.color.transparent).
+//                    build());
+//            rvContent.addItemDecoration(new VerticalDividerItemDecoration.Builder(getActivity()).
+//                    sizeResId(R.dimen.view_space_normal).
+//                    color(android.R.color.transparent).
+//                    build());
             rvContent.setAdapter(circleActivityAdapter);
         } else {
             circleActivityAdapter.setListData(AlbumObjs);

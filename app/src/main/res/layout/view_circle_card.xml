@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:fixRatio="fixWidth"
-                app:heightRatio="334"
+                app:heightRatio="294"
                 app:widthRatio="640">
 
                 <com.makeramen.roundedimageview.RoundedImageView

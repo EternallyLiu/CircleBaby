@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,47 +8,61 @@
     android:fitsSystemWindows="false"
     tools:context=".ui.growthcircle.mainpage.activity.CircleMainActivity">
 
-    <RelativeLayout
-        android:id="@+id/rl_title"
+    <android.support.design.widget.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/bg_color1">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <TextView
-            android:id="@+id/tv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:clickable="true"
-            android:drawableLeft="@drawable/back"
-            android:drawablePadding="@dimen/size_4"
-            android:gravity="center"
-            android:padding="@dimen/view_space_normal"
-            android:text="返回"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/text_medium" />
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ToolbarColor"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-        <ImageView
-            android:id="@+id/iv_more"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:scaleType="center"
-            android:src="@drawable/more" />
-    </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rl_title"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <TextView
+                    android:id="@+id/tv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="成长圈"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_medium" />
+
+                <ImageView
+                    android:id="@+id/iv_more"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:clickable="true"
+                    android:scaleType="center"
+                    android:src="@drawable/more" />
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rl_title">
+        android:layout_below="@id/appbar_layout">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:background="@color/alabaster"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/alabaster" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <ImageView
