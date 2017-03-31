@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/size_6">
+    >
 
     <TextView
-        android:layout_marginTop="@dimen/size_6"
+        android:layout_margin="8dp"
         android:id="@+id/tag_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,15 +13,17 @@
         android:padding="@dimen/size_10"
         android:text="@string/tag"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_normal" />
+        android:textSize="@dimen/text_small" />
 
     <ImageView
         android:id="@+id/delete"
-        android:layout_width="@dimen/size_15"
-        android:layout_height="@dimen/size_15"
-        android:layout_toRightOf="@+id/tag_name"
-        android:layout_alignParentTop="true"
-        android:scaleType="fitCenter"
+        android:layout_width="@dimen/size_24"
+        android:layout_height="@dimen/size_24"
+        android:layout_marginTop="-10dp"
+        android:layout_marginRight="-10dp"
+        android:layout_alignTop="@+id/tag_name"
+        android:layout_alignRight="@+id/tag_name"
+        android:scaleType="center"
         android:src="@drawable/cancel_image" />
 
 </RelativeLayout>

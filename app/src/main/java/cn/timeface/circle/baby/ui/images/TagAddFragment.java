@@ -124,8 +124,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_activity_edit_complete, menu);
         MenuItem item = menu.findItem(R.id.edit_complete);
-        item.setTitle("保存");
-        LogUtil.showLog("执行=====" + item.isEnabled() + "--" + item.isVisible());
+        item.setTitle("完成");
         super.onCreateOptionsMenu(menu, inflater);
     }
 

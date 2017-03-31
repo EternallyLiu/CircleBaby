@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/size_12"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/size_4"
-    android:paddingRight="@dimen/size_4"
+              android:paddingLeft="@dimen/size_12"
+              android:paddingRight="@dimen/size_12"
     android:paddingTop="@dimen/size_4">
 
     <TextView

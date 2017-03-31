@@ -339,8 +339,9 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
             case R.id.tv_delete:
                 if (deleteDialog == null) {
                     deleteDialog = new DeleteDialog(context());
-                    deleteDialog.setMessage("您确定删除这条圈动态么？");
+                    deleteDialog.setMessage("删除动态后，相关评论和照片也会被删除。已生成的圈作品不会受到影响。");
                     deleteDialog.setMessageGravity(Gravity.CENTER);
+                    deleteDialog.getSubmit().setText("确认删除");
                 }
                 deleteDialog.setSubmitListener(() -> Observable.defer(() -> Observable.just((CircleTimelineObj) v.getTag(R.id.recycler_item_click_tag)))
                         .filter(circleTimeLineObj -> circleTimeLineObj != null)

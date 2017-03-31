@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -20,6 +22,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.Utils;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.timelines.events.ActiveSelectEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.views.InputListenerEditText;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
@@ -80,6 +83,7 @@ public class CreateActiveActivity extends BaseAppCompatActivity implements Input
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(createActiveResponse -> {
                     if (createActiveResponse.success()) {
+                        EventBus.getDefault().post(new ActiveSelectEvent(createActiveResponse.getActivityAlbum()));
                         finish();
                     } else {
                         ToastUtil.showToast(this, createActiveResponse.getInfo());

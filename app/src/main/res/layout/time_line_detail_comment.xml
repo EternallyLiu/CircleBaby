@@ -1,9 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_commment_menu"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:padding="@dimen/size_6"
+                android:id="@+id/rl_commment_menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_tag_color"
+                android:paddingLeft="@dimen/size_12"
+                android:paddingRight="@dimen/size_12"
+                android:paddingTop="@dimen/size_6"
     >
 
     <TextView
@@ -11,17 +13,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/comment_relation"
-        android:textSize="@dimen/text_normal" />
+        android:textSize="@dimen/text_small_13"/>
 
     <TextView
         android:id="@+id/tv_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_relative"
+        android:layout_marginBottom="@dimen/size_10"
         android:layout_marginTop="@dimen/size_6"
         android:lineSpacingExtra="@dimen/size_6"
         android:textColor="@color/comment_content"
-        android:textSize="@dimen/text_normal" />
+        android:textSize="@dimen/text_normal"/>
 
     <TextView
         android:id="@+id/tv_time"
@@ -32,5 +35,11 @@
         android:layout_gravity="right|end"
         android:text="04-23 22:51"
         android:textColor="@color/comment_time"
-        android:textSize="@dimen/text_small" />
+        android:textSize="@dimen/text_small"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_comment"
+        android:background="@color/stroke"/>
 </RelativeLayout>

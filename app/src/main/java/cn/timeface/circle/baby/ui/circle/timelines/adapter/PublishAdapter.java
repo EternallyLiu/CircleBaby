@@ -181,7 +181,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         TextView tvActive = ViewHolder.getView(view, R.id.tv_active);
         view.setOnClickListener(this);
         CircleTimelineObj timelineObj = (CircleTimelineObj) contentObj;
-        if (timelineObj.getActivityAlbum() == null) {
+        if (timelineObj.getActivityAlbum() == null || TextUtils.isEmpty(timelineObj.getActivityAlbum().getAlbumName())) {
             tvActive.setText(R.string.unjoin_active_tip);
         } else tvActive.setText(timelineObj.getActivityAlbum().getAlbumName());
     }
@@ -243,7 +243,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             etInput.setText("");
         }
         if (getType() != TYPE_TIMELINE) {
-            etInput.setHint("请输入作业描述（选填）");
+            etInput.setHint("请输入作业描述");
         } else etInput.setHint(R.string.please_input_want_say);
         int size = Utils.getByteSize(contentObj.getContent());
         int count = size / 2;

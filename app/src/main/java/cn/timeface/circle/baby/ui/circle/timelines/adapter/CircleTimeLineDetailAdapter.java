@@ -42,12 +42,13 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
 
     private CircleTimeLineGridStagger lookup;
 
-    private int imagePadding = 8;
+    private int imagePadding = 8, imageMargin = 12;
     private int columWidth;
 
     public CircleTimeLineDetailAdapter(Context activity) {
         super(activity);
         imagePadding = (int) context().getResources().getDimension(R.dimen.size_4);
+        imageMargin = (int) context().getResources().getDimension(R.dimen.size_12);
     }
 
     @Override
@@ -167,8 +168,8 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
         }
         contentView.setLayoutParams(params);
         if (lookup.isShowSmail())
-            contentView.setPadding(0, 0, position % lookup.getColumCount() == lookup.getColumCount() - 1 ? 0 : imagePadding, imagePadding);
-        else contentView.setPadding(0, 0, 0, imagePadding);
+            contentView.setPadding(position%lookup.getColumCount()==1?imageMargin:0, 0, position % lookup.getColumCount() == 0 ? imageMargin : imagePadding, imagePadding);
+        else contentView.setPadding(imageMargin, 0, imageMargin, imagePadding);
         ImageView icon = ViewHolder.getView(contentView, R.id.icon);
         GlideUtil.setImage(mediaObj.getImgUrl(), icon, R.drawable.bg_default_holder_img, true);
     }
@@ -180,7 +181,7 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
         String relationName = comment.getCommentUserInfo().getCircleNickName();
         SpannableStringBuilder msb = new SpannableStringBuilder();
         msb.append(relationName)
-                .setSpan(new ForegroundColorSpan(Color.parseColor("#000000")), 0, relationName.length(),
+                .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), 0, relationName.length(),
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//第一个人名
         if (comment.getToCommentUserInfo() != null && !TextUtils.isEmpty(comment.getToCommentUserInfo().getCircleNickName())) {
             msb.append("回复");
