@@ -46,8 +46,10 @@
             android:singleLine="true"
             android:layout_toLeftOf="@+id/tv_homework_detail"
             android:background="@android:color/white"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/text_color12"
-            android:textSize="@dimen/text_normal"
+            android:textSize="14sp"
             tools:text="王老师" />
 
         <TextView
@@ -60,7 +62,10 @@
             android:background="@drawable/selector_btn_login"
             android:clickable="true"
             android:gravity="center"
-            android:padding="@dimen/view_space_normal"
+            android:paddingLeft="@dimen/view_space_normal"
+            android:paddingRight="@dimen/view_space_normal"
+            android:paddingTop="@dimen/view_space_small"
+            android:paddingBottom="@dimen/view_space_small"
             android:text="查看作业"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_normal" />

@@ -293,7 +293,7 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
                         tfStateView.showException(getEmptyItem().getThrowable());
                         break;
                     case 0:
-                        tfStateView.empty(R.string.circle_no_dynamic);
+                        tfStateView.empty(R.string.circle_no_dynamic, R.drawable.ic_dynamic_empty);
                         break;
                     case 1:
                         tfStateView.loading();
