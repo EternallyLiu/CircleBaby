@@ -96,7 +96,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
         WindowManager m = window.getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = window.getAttributes();
-        p.width = d.getWidth();
+        p.width = App.mScreenWidth;
         p.height = App.mScreenHeight / 3 * 2;
         p.dimAmount = 0;
         window.setAttributes(p);

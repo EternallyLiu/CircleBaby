@@ -76,7 +76,7 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
         WindowManager m = window.getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = window.getAttributes();
-        p.width = d.getWidth();
+        p.width = App.mScreenWidth;
         p.height = App.mScreenHeight / 3 * 2;
         p.dimAmount = 0;
         window.setAttributes(p);
@@ -126,7 +126,7 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
                 if (TextUtils.isEmpty(babyName)) {
                     ToastUtil.showToast(getContext(), "宝贝名字不能为空");
                     return;
-                } else if (Utils.getByteSize(babyName) > 16) {
+                } else if (Utils.getByteSize(babyName) > 12) {
                     ToastUtil.showToast(getContext(), String.format("%s" + getContext().getString(R.string.input_max_tip), "宝贝名字", 16));
                     return;
                 } else if (!TextUtils.isEmpty(babyNames) && babyNames.contains(babyName)) {
