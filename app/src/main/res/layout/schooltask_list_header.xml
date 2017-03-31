@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:background="@color/bg_color3"
               android:orientation="vertical">
 
@@ -16,7 +16,7 @@
         android:scaleType="fitXY"
         app:fixRatio="fixWidth"
         app:heightRatio="1"
-        app:widthRatio="2" />
+        app:widthRatio="2"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -32,12 +32,12 @@
             android:gravity="left|center_vertical"
             android:maxLines="2"
             android:textColor="@color/text"
-            android:textSize="@dimen/text_normal"/>
+            android:textSize="@dimen/text_small"/>
 
         <Button
             android:id="@+id/btn_publish_schooltask"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/size_30"
+            android:layout_height="@dimen/size_26"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/dialog_delete_button_2"
@@ -45,7 +45,7 @@
             android:padding="@dimen/size_4"
             android:text="发布作业"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_normal"/>
+            android:textSize="@dimen/text_small"/>
 
     </RelativeLayout>
 
@@ -53,11 +53,11 @@
         android:id="@+id/tv_last_homework"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_14"
+        android:layout_marginTop="@dimen/size_10"
         android:background="@color/white"
         android:gravity="left|center_vertical"
         android:maxLines="2"
-        android:padding="@dimen/size_10"
-        android:textColor="@color/text"
-        android:textSize="@dimen/text_normal"/>
+        android:padding="@dimen/size_12"
+        android:textColor="@color/jumbo"
+        android:textSize="@dimen/text_small_12"/>
 </LinearLayout>
