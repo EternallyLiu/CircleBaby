@@ -48,4 +48,8 @@ public class TFStateView extends StateView {
         setState(new ErrorViewContent(HttpStatusCodes.NO_MORE_DATA, R.drawable.nodata, resId, null, 0, 0));
     }
 
+    public void empty(int resId, int drawableId) {
+        setState(new ErrorViewContent(HttpStatusCodes.NO_MORE_DATA, drawableId, resId, null, 0, 0));
+    }
+
 }
