@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text"
-        android:textSize="18sp"
+        android:textSize="16sp"
         tools:text="寒假为父母做一件事" />
 
     <TextView
