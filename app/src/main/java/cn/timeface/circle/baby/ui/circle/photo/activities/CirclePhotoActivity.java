@@ -125,7 +125,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         }
         user = getIntent().getBooleanExtra("user", false);
         atBaby = getIntent().getBooleanExtra("at_baby", false);
-        babyId = getIntent().getIntExtra("baby_id",0);
+        babyId = getIntent().getIntExtra("baby_id", 0);
         babyName = getIntent().getStringExtra("baby_name");
     }
 
@@ -246,9 +246,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     public void clickCirclePhotoView(View view) {
         ArrayList<String> paths = new ArrayList<>();
         CircleMediaObj mediaObj = (CircleMediaObj) view.getTag(R.string.tag_obj);
-        if(mediaList == null){
-            mediaList = (ArrayList<CircleMediaObj>) view.getTag(R.string.tag_ex);
-        }
+        mediaList = (ArrayList<CircleMediaObj>) view.getTag(R.string.tag_ex);
         for (int i = 0; i < mediaList.size(); i++) {
             paths.add(mediaList.get(i).getImgUrl());
         }
@@ -339,7 +337,7 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
             tvContent.setText(circleUserInfo.getCircleNickName());
             showContentEx(CirclePhotoFragment.newInstance(TypeConstants.PHOTO_TYPE_USER, circleUserInfo.getCircleId(), Long.valueOf(circleUserInfo.getCircleUserId())));
             canBack = false;
-        }else if(atBaby){
+        } else if (atBaby) {
             tvContentType.setVisibility(View.GONE);
             tvContent.setVisibility(View.VISIBLE);
             tvContent.setText(babyName);
