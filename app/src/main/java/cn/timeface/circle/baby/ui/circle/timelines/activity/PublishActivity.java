@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +62,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEven
 import cn.timeface.circle.baby.ui.circle.timelines.events.HomeWorkListEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleGridStaggerLookup;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import rx.Observable;
@@ -166,7 +168,26 @@ public class PublishActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.complete)
             sendTimeLine();
+        else if (item.getItemId() == android.R.id.home) {
+            DeleteDialog dialog = new DeleteDialog(this);
+            dialog.setMessage("离开后编辑内容会丢失，您确定这么做吗？");
+            dialog.setSubmitListener(() -> onBackPressed());
+            dialog.show();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            DeleteDialog dialog = new DeleteDialog(this);
+            dialog.setMessage("离开后编辑内容会丢失，您确定这么做吗？");
+            dialog.setSubmitListener(() -> onBackPressed());
+            dialog.show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void reqData() {

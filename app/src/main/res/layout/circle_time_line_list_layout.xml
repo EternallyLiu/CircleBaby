@@ -104,6 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rl_pic_count"
             android:paddingBottom="@dimen/size_4"
+            android:lineSpacingExtra="@dimen/size_2"
             android:paddingTop="@dimen/size_4"
             android:textColor="@color/text"
             android:textSize="@dimen/text_small"/>

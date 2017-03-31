@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:gravity="left"
+        android:lineSpacingExtra="@dimen/size_2"
         android:hint="@string/please_input_want_say"
         android:minHeight="@dimen/size_160"
         android:paddingBottom="@dimen/size_10"
