@@ -87,7 +87,7 @@
             android:id="@+id/tv_babys"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right|center_vertical"
+            android:gravity="left|center_vertical"
             android:padding="@dimen/size_4"
             android:textColor="@color/aluminum"
             android:textSize="@dimen/text_small"/>

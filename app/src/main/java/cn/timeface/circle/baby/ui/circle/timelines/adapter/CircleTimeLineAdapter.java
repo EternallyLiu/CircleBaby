@@ -30,6 +30,7 @@ import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -146,6 +147,7 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
         RelativeLayout rlPicCount = ViewHolder.getView(contentView, R.id.rl_pic_count);
         tvDelete.setTag(R.id.recycler_item_click_tag, timelineObj);
         tvDelete.setOnClickListener(this);
+        tvDelete.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 1 || timelineObj.getPublisher().getCircleUserId() == FastData.getCircleUserId() ? View.VISIBLE : View.GONE);
         int count = doGrid(gv, position, timelineObj.getMediaList());
         if (count < timelineObj.getMediaList().size()) {
             rlPicCount.setVisibility(View.VISIBLE);

@@ -24,6 +24,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -546,6 +547,15 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             return true;
         } else
             return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            setResult(RESULT_OK, getIntent());
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void checkCameraPermission() {

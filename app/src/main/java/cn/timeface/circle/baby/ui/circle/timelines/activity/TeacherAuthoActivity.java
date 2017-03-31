@@ -22,6 +22,8 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.TearcherOpproverAdapter;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -97,12 +99,14 @@ public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseA
                 .doOnNext(teacherAuthObjQueryCirclePhotoResponse -> helper.finishTFPTRRefresh())
                 .doOnNext(teacherAuthObjQueryCirclePhotoResponse -> adapter.getEmptyItem().setOperationType(2))
                 .subscribe(teacherAuthObjQueryCirclePhotoResponse -> {
+                    LogUtil.showLog("result:"+ JSONUtils.parse2JSONString(teacherAuthObjQueryCirclePhotoResponse));
                     if (teacherAuthObjQueryCirclePhotoResponse.success()) {
                         adapter.addList(true, teacherAuthObjQueryCirclePhotoResponse.getDataList());
                     } else
                         ToastUtil.showToast(this, teacherAuthObjQueryCirclePhotoResponse.getInfo());
                     adapter.getEmptyItem().setOperationType(0);
                 }, throwable -> {
+                    LogUtil.showError(throwable);
                     adapter.getEmptyItem().setThrowable(throwable);
                     adapter.getEmptyItem().setOperationType(-1);
                     helper.finishTFPTRRefresh();

@@ -92,7 +92,7 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
     private void setData(List<CircleMediaObj> mediaObjs) {
         if (serverTimesAdapter == null) {
             serverTimesAdapter = new CircleSelectServerTimeMediaAdapter(this, mediaObjs, selMedias);
-            rvContent.setLayoutManager(new GridLayoutManager(this, 3));
+            rvContent.setLayoutManager(new GridLayoutManager(this, 4));
             rvContent.setAdapter(serverTimesAdapter);
         } else {
             serverTimesAdapter.setListData(mediaObjs);

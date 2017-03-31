@@ -10,6 +10,7 @@
     android:paddingRight="@dimen/view_space_normal">
 
     <TextView
+        android:textSize="18sp"
         android:drawablePadding="@dimen/size_12"
         android:drawableLeft="@drawable/ic_time_clock"
         android:id="@+id/tv_title"
@@ -17,8 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Medium Text"
-        android:textColor="@color/gray_normal"
-        android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+        android:textColor="@color/gray_normal" />
 
     <CheckBox
         android:id="@+id/cb_title_all_sel"
@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:button="@drawable/selector_item_photo_select"
         android:paddingLeft="@dimen/view_space_normal"
-        android:paddingRight="@dimen/view_space_normal"
         android:text="全选"
         android:textColor="@color/bg_color1" />
 </LinearLayout>

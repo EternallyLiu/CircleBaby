@@ -18,6 +18,7 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.bean.TeacherAuthObj;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
@@ -45,6 +46,15 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
         return 0;
     }
 
+    @Override
+    public void addEmpty() {
+        if (getEmptyItem() != null && containObj(getEmptyItem())) {
+            if (getRealItemSize() > 1) deleteItem(getEmptyItem());
+        } else if (getEmptyItem() != null && !containObj(getEmptyItem())) {
+            if (getRealItemSize() <= 0) add(getEmptyItem());
+        }
+    }
+
     private void agreeTearcher(int postion) {
         TeacherAuthObj item = getItem(postion);
         ApiFactory.getApi().getApiService().checkTeacher(item.getTeacher().getCircleUserId())
@@ -57,6 +67,7 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
 
     @Override
     public void initView(View contentView, int position) {
+        LogUtil.showLog("position===" + position + "---type==" + getItemViewType(position));
         switch (getItemViewType(position)) {
             case BaseEmptyAdapter.EMPTY_CODE:
                 TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
@@ -64,8 +75,6 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                 if (emptyLayoutParams == null) {
                     emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
-//                emptyLayoutParams.width = App.mScreenWidth;
-//                emptyLayoutParams.height = App.mScreenHeight;
                 contentView.setLayoutParams(emptyLayoutParams);
                 switch (getEmptyItem().getOperationType()) {
                     case -1:
@@ -82,8 +91,9 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                         break;
                 }
                 break;
-            default:
+            case 0:
                 TeacherAuthObj item = getItem(position);
+                LogUtil.showLog("item:" + JSONUtils.parse2JSONString(item));
                 ImageView ivIcon = ViewHolder.getView(contentView, R.id.iv_icon);
                 TextView tvMessage = ViewHolder.getView(contentView, R.id.tv_message);
                 ImageView ivIcon1 = ViewHolder.getView(contentView, R.id.iv_icon_1);

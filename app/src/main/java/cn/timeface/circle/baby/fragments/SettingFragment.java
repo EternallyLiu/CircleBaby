@@ -234,9 +234,10 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 break;
 
             case R.id.btn_sign_out:
-                BabyObj.deleteAll();
+                FastData.setBabyId(0);
                 FastData.clearCircleData();
                 FastData.setUserFrom(-1);
+                FastData.clearUserInfo();
                 LoginActivity.open(getActivity());
                 getActivity().finish();
                 EventBus.getDefault().post(new LogoutEvent());

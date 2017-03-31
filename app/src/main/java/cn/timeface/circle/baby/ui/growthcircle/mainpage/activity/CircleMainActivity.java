@@ -33,6 +33,7 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
@@ -40,6 +41,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
@@ -138,9 +140,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     private void setupData() {
         adapter.getEmptyItem().setOperationType(1);
         adapter.notifyDataSetChanged();
-//        reqInfo(circleId);
-//        reqData(circleId);
-        apiService.queryCircleIndexInfo(circleId)
+        addSubscription(apiService.queryCircleIndexInfo(circleId)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(response -> {
                     if (response.success()) {
@@ -156,7 +156,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                     LogUtil.showError(throwable);
                     ToastUtil.showToast(this, "未知错误，获取圈信息失败，请稍后重试！");
                     finish();
-                });
+                }));
     }
 
     private void initHeaderFooter() {
@@ -177,25 +177,20 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     private void setupCircleInfo(CircleIndexInfoResponse circleIndexInfo) {
         this.circleObj = circleIndexInfo.getGrowthCircle();
         adapter.setHeaderInfo(circleIndexInfo);
-//        tvCircleName.setText(circleObj.getCircleName());
-//        Glide.with(this)
-//                .load(circleObj.getCircleCoverUrl())
-//                .centerCrop()
-//                .into(ivCircleCover);
-//
-//        // 圈作业
-//        if (circleIndexInfo.getLastSchoolTask() != null
-//                && circleIndexInfo.getLastSchoolTask().getTeacher() != null) {
-//            rlHomework.setVisibility(View.VISIBLE);
-//            tvHomework.setText("“" + circleIndexInfo.getLastSchoolTask().getTeacher().getCircleNickName()
-//                    + "” 发起了新的作业 “" + circleIndexInfo.getLastSchoolTask().getTitle() + "”");
-//            tvHomeworkDetail.setOnClickListener(v -> {
-//                // 跳转作业详情
-//                HomwWorkListActivity.open(this);
-//            });
-//        } else {
-//            rlHomework.setVisibility(View.GONE);
-//        }
+        if (circleIndexInfo.getHasRelate() == 1)
+            addSubscription(apiService.queryBabyInfoDetail(FastData.getBabyId())
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(babyInfoResponse -> {
+                        if (babyInfoResponse.success()) {
+                            FastData.setBabyObj(babyInfoResponse.getBabyInfo());
+                            DeleteDialog deleteDialog = new DeleteDialog(this);
+                            deleteDialog.setMessage(String.format("大家已经帮你圈出了%d张有关%s的照片哦", circleIndexInfo.getRelateMediaCount(), FastData.getBabyObj().getRealName()));
+                            deleteDialog.getSubmit().setText("去看看");
+                            deleteDialog.setCancelTip("不看了");
+                            deleteDialog.setSubmitListener(() -> CirclePhotoActivity.open(this, circleIndexInfo.getGrowthCircle().getCircleId(), FastData.getBabyRealName(), FastData.getBabyObj().getBabyId(), true));
+                            deleteDialog.show();
+                        }
+                    }, throwable -> LogUtil.showError(throwable)));
     }
 
     private void reqData(long circleId) {
@@ -204,7 +199,6 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                 .subscribe(
                         response -> {
                             adapter.getEmptyItem().setOperationType(0);
-                            adapter.notifyDataSetChanged();
                             tfptrListViewHelper.finishTFPTRRefresh();
                             if (response.success()) {
                                 setupListData(response.getDataList());

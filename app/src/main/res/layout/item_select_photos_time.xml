@@ -4,18 +4,21 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/view_space_normal">
+    android:paddingBottom="12dp"
+    android:paddingLeft="@dimen/view_space_normal"
+    android:paddingRight="@dimen/view_space_normal"
+    android:paddingTop="12dp">
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="0dp"
-        android:drawableLeft="@drawable/ic_time_clock"
-        android:drawablePadding="@dimen/size_12"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:drawableLeft="@drawable/ic_time_clock"
+        android:drawablePadding="@dimen/size_12"
         android:text="Medium Text"
-        android:textColor="@color/gray_normal"
-        android:textAppearance="?android:attr/textAppearanceMediumInverse" />
+        android:textAppearance="?android:attr/textAppearanceMediumInverse"
+        android:textColor="@color/text_color12" />
 
     <CheckBox
         android:id="@+id/cb_title_all_sel"
@@ -23,7 +26,6 @@
         android:layout_height="wrap_content"
         android:button="@drawable/selector_item_photo_select"
         android:paddingLeft="@dimen/view_space_normal"
-        android:paddingRight="@dimen/view_space_normal"
         android:text="全选"
         android:textColor="@color/bg_color1" />
 </LinearLayout>

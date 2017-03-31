@@ -158,7 +158,7 @@ public class PublishActivity extends BaseAppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_complete, menu);
-        menu.findItem(R.id.complete).setTitle(R.string.comfirm);
+        menu.findItem(R.id.complete).setTitle(type == PublishAdapter.TYPE_WORK ? R.string.comfirm : R.string.publish);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -203,12 +203,8 @@ public class PublishActivity extends BaseAppCompatActivity {
 
     private void sendHomwWork() {
         CircleHomeworkObj homework = (CircleHomeworkObj) adapter.getContentObj();
-        if (homework.getMediaList().size() <= 0 && TextUtils.isEmpty(homework.getContent())) {
-            ToastUtil.showToast(this, "作业内容不能为空");
-            return;
-        }
         if (Utils.getByteSize(homework.getContent()) > 1200) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 1200));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 600));
             return;
         }
         for (ImgObj imgObj : adapter.getSelImage()) {
@@ -258,10 +254,10 @@ public class PublishActivity extends BaseAppCompatActivity {
             ToastUtil.showToast(this, getString(R.string.school_title_input_tip));
             return;
         } else if (Utils.getByteSize(schoolTask.getTitle()) > 20) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 20));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 10));
             return;
         } else if (Utils.getByteSize(schoolTask.getContent()) > 1200) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 1200));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 600));
             return;
         }
         for (ImgObj imgObj : adapter.getSelImage()) {
@@ -315,10 +311,10 @@ public class PublishActivity extends BaseAppCompatActivity {
             timelineObj.setCreateDate(System.currentTimeMillis());
         }
         if (Utils.getByteSize(timelineObj.getTitle()) > 20) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 20));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 10));
             return;
         } else if (Utils.getByteSize(timelineObj.getContent()) > 400) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "内容", 400));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "内容", 200));
             return;
         }
         for (ImgObj imgObj : adapter.getSelImage()) {
