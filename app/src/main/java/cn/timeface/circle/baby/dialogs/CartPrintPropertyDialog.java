@@ -658,7 +658,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                         response -> {
                             isQuery = false;
                             mProgressBar.setVisibility(View.GONE);
-                            btnAddCart.setBackgroundResource(R.drawable.selector_common_blue);
+                            btnAddCart.setBackgroundResource(R.drawable.selector_common_green);
                             btnBuyNow.setBackgroundResource(R.drawable.selector_common_yellow);
                             btnOk.setBackgroundResource(R.drawable.selector_blue_btn_bg);
                             btnAddCart.setClickable(true);
@@ -671,7 +671,7 @@ public class CartPrintPropertyDialog extends DialogFragment implements IEventBus
                             }
                         },
                         throwable -> {
-                            btnAddCart.setBackgroundResource(R.drawable.selector_common_blue);
+                            btnAddCart.setBackgroundResource(R.drawable.selector_common_green);
                             btnBuyNow.setBackgroundResource(R.drawable.selector_common_yellow);
                             btnOk.setBackgroundResource(R.drawable.selector_blue_btn_bg);
                             btnAddCart.setClickable(true);

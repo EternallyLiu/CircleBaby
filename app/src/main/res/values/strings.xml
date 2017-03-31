@@ -107,7 +107,7 @@
     <string name="select_region">选择地区</string>
     <string name="reset_psw">重置密码</string>
     <string name="video_edit">裁剪视频</string>
-    <string name="add_member">开成长圈,扫描上图二维码\n或输入邀请码即可加入您心仪的成长圈</string>
+    <string name="add_member">扫描上图二维码\n或输入邀请码即可加入您心仪的成长圈</string>
 
     <string name="price">价格:</string>
     <string name="price_promotion">活动价:</string>
