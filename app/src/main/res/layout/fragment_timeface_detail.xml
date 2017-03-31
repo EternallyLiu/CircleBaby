@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_color2">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_color2">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/head" />
+        layout="@layout/head"/>
 
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -20,7 +20,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/content_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:padding="@dimen/size_10"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <cn.timeface.circle.baby.ui.timelines.views.EmptyDataView
@@ -28,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/rl_bottom"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/back_up"
@@ -39,7 +40,7 @@
         android:layout_marginBottom="@dimen/size_12"
         android:layout_marginRight="@dimen/size_12"
         android:scaleType="fitCenter"
-        android:src="@drawable/back_up" />
+        android:src="@drawable/back_up"/>
 
     <RelativeLayout
         android:id="@+id/rl_botton"
@@ -61,7 +62,7 @@
             android:imeOptions="actionSend"
             android:padding="@dimen/view_space_normal"
             android:singleLine="true"
-            android:textSize="@dimen/text_normal" />
+            android:textSize="@dimen/text_normal"/>
 
         <cn.timeface.circle.baby.ui.timelines.views.SelectImageView
             android:id="@+id/add_like"
@@ -72,7 +73,7 @@
             android:padding="@dimen/size_4"
             android:scaleType="fitCenter"
             app:selectDrawable="@drawable/time_line_cool"
-            app:unselectDrawable="@drawable/time_line_cool_no" />
+            app:unselectDrawable="@drawable/time_line_cool_no"/>
 
         <ImageView
             android:id="@+id/add_comment"
@@ -82,7 +83,7 @@
             android:layout_centerVertical="true"
             android:padding="@dimen/size_4"
             android:scaleType="fitCenter"
-            android:src="@drawable/timeline_comment" />
+            android:src="@drawable/timeline_comment"/>
     </RelativeLayout>
 
 </RelativeLayout>

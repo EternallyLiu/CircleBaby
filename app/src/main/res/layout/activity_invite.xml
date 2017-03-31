@@ -49,6 +49,7 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="@string/add_member"
+        android:lineSpacingExtra="8dp"
         android:textColor="@color/text"
         android:textSize="@dimen/text_small" />
 
@@ -63,4 +64,5 @@
         android:text="分享邀请函"
         android:textColor="@color/white"
         android:textSize="@dimen/text_normal" />
+
 </LinearLayout>

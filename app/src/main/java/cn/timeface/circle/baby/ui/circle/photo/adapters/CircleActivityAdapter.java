@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class CircleActivityAdapter extends BaseRecyclerAdapter<CircleActivityAlb
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.iv_circle_activity)
-        ImageView ivCircleActivity;
+        RoundedImageView ivCircleActivity;
         @Bind(R.id.tv_circlracticity_name)
         TextView tvCirclracticityName;
         @Bind(R.id.tv_circlracticity_count)

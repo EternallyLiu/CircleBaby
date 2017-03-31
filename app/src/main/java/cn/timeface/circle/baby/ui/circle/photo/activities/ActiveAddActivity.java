@@ -73,10 +73,9 @@ public class ActiveAddActivity extends BasePresenterAppCompatActivity implements
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
+                            ToastUtil.showToast(response.getInfo());
                             if (response.success()) {
                                 finish();
-                            } else {
-                                ToastUtil.showToast(response.getInfo());
                             }
                         },
                         throwable -> {

@@ -371,6 +371,13 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         switch (view.getId()) {
             case R.id.et_input_title:
                 Observable.defer(() -> Observable.just(content))
+                        .doOnNext(s -> {
+                            if (Utils.getByteSize(s) >= 20) {
+                                s = Utils.subString(s, 20);
+                                view.setText(s);
+                                view.setSelection(s.length());
+                            }
+                        })
                         .doOnNext(s -> contentObj.setTitle(s))
                         .filter(s -> view.getTag(R.id.recycler_item_input_tag) != null)
                         .doOnNext(s -> {
@@ -388,6 +395,13 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                 break;
             case R.id.et_input:
                 Observable.defer(() -> Observable.just(content))
+                        .doOnNext(s -> {
+                            if (Utils.getByteSize(s) >= (getType() == TYPE_TIMELINE ? 400 : 1200)) {
+                                s = Utils.subString(s, getType() == TYPE_TIMELINE ? 400 : 1200);
+                                view.setText(s);
+                                view.setSelection(s.length());
+                            }
+                        })
                         .doOnNext(s -> contentObj.setContent(s))
                         .filter(s -> view.getTag(R.id.recycler_item_input_tag) != null)
                         .doOnNext(s -> {

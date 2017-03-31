@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="bottom"
+            android:singleLine="true"
             android:layout_toLeftOf="@+id/tv_homework_detail"
             android:background="@android:color/white"
             android:ellipsize="end"

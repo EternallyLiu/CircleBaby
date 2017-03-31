@@ -875,6 +875,24 @@ public class Utils {
         return count;
     }
 
+    public static String subString(String text, int size) {
+        if (TextUtils.isEmpty(text))
+            return null;
+        int count = 0;
+        char[] c = text.toCharArray();
+        int index = 0;
+        for (int i = 0; i < c.length; i++) {
+            if (isMatch(REGEX_CHZ, c[i] + ""))
+                count += 2;
+            else count++;
+            if (count > size) {
+                index = i;
+                break;
+            } else index = i;
+        }
+        return text.substring(0, index < text.length() - 1 ? index + 1 : index);
+    }
+
     /**
      * @param string 待验证文本
      * @return 是否符合汉字
