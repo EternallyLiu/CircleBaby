@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/size_4">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_6"
+                android:background="@color/white"
+                android:paddingBottom="@dimen/size_18"
+    >
 
     <ImageView
         android:id="@+id/iv_icon"
         android:layout_width="@dimen/size_36"
         android:layout_height="@dimen/size_36"
-        android:layout_margin="@dimen/size_6"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_18"
         android:scaleType="fitCenter"/>
 
     <TextView
         android:id="@+id/tv_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_8"
+        android:layout_alignTop="@+id/iv_icon"
+        android:layout_marginLeft="@dimen/size_10"
         android:layout_toRightOf="@+id/iv_icon"
-        android:textColor="@color/aluminum"
+        android:lineSpacingExtra="@dimen/size_2"
+        android:textColor="@color/text"
         android:textSize="@dimen/text_normal"/>
 
     <ImageView
@@ -26,7 +32,8 @@
         android:layout_height="@dimen/size_36"
         android:layout_alignLeft="@+id/tv_message"
         android:layout_below="@+id/tv_message"
-        android:layout_marginRight="@dimen/size_4"
+        android:layout_marginRight="@dimen/size_8"
+        android:layout_marginTop="@dimen/size_10"
         android:scaleType="fitCenter"/>
 
     <ImageView
@@ -34,7 +41,8 @@
         android:layout_width="@dimen/size_36"
         android:layout_height="@dimen/size_36"
         android:layout_below="@+id/tv_message"
-        android:layout_marginRight="@dimen/size_4"
+        android:layout_marginRight="@dimen/size_8"
+        android:layout_marginTop="@dimen/size_10"
         android:layout_toRightOf="@+id/iv_icon_1"
         android:scaleType="fitCenter"/>
 
@@ -43,7 +51,8 @@
         android:layout_width="@dimen/size_36"
         android:layout_height="@dimen/size_36"
         android:layout_below="@+id/tv_message"
-        android:layout_marginRight="@dimen/size_4"
+        android:layout_marginRight="@dimen/size_8"
+        android:layout_marginTop="@dimen/size_10"
         android:layout_toRightOf="@+id/iv_icon_2"
         android:scaleType="fitCenter"/>
 
@@ -54,6 +63,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tv_message"
         android:layout_marginRight="@dimen/size_4"
+        android:layout_marginTop="@dimen/size_10"
         android:background="@drawable/dialog_delete_button_2"
         android:padding="@dimen/size_4"
         android:text="我同意"
