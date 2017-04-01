@@ -4,9 +4,11 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.EditText;
 
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.open.api.bean.response.Tag;
 
 /**
  * author : wangshuai Created on 2017/3/16
@@ -31,12 +33,12 @@ public class InputListenerEditText extends EditText implements TextWatcher {
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+        Log.e("emoji: ", s.toString());
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+        Log.e("emoji: ", s.toString());
     }
 
     @Override
