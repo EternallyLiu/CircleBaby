@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +19,9 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleByUserAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleUserObj;
+import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleByUserAdapter;
 
 /**
  * 圈照片按发布人fragment
@@ -33,6 +34,8 @@ public class SelectCircleUserFragment extends BasePresenterFragment {
 
     View.OnClickListener clickListener;
     CircleByUserAdapter circleByUserAdapter;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
     private long circleId;
     private List<QueryByCircleUserObj> data = new ArrayList<>();
 
@@ -77,6 +80,10 @@ public class SelectCircleUserFragment extends BasePresenterFragment {
     }
 
     private void setData(List<QueryByCircleUserObj> objs) {
+        if(objs.size()>0){
+            llNoData.setVisibility(View.VISIBLE);
+            return;
+        }
         if (circleByUserAdapter == null) {
             rvContent.setLayoutManager(new GridLayoutManager(getActivity(), 2));
             circleByUserAdapter = new CircleByUserAdapter(getActivity(), objs, clickListener);

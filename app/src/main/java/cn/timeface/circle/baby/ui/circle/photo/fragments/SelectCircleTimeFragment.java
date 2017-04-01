@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,9 +20,8 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleByTimeAdapter;
-import cn.timeface.circle.baby.ui.circle.bean.CirclePhotoMonthObj;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleTimeObj;
+import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleByTimeAdapter;
 
 /**
  * 圈照片按时间fragment
@@ -36,6 +36,8 @@ public class SelectCircleTimeFragment extends BasePresenterFragment {
     CircleByTimeAdapter circleByTimeAdapter;
     @Bind(R.id.tv_count)
     TextView tvCount;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
     private long circleId;
     private List<QueryByCircleTimeObj> data = new ArrayList<>();
 
@@ -80,6 +82,10 @@ public class SelectCircleTimeFragment extends BasePresenterFragment {
     }
 
     private void setData(List<QueryByCircleTimeObj> objs) {
+        if(objs.size() == 0){
+            llNoData.setVisibility(View.VISIBLE);
+            return;
+        }
         if (circleByTimeAdapter == null) {
             rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
             circleByTimeAdapter = new CircleByTimeAdapter(getActivity(), objs, clickListener);

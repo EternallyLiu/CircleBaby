@@ -29,6 +29,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.bean.TitleBean;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleTimeLineGridStagger;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.LikeAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
@@ -118,7 +119,7 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
             title.setText(item.getTitle());
             title.setVisibility(View.VISIBLE);
         }
-        tvCreater.setText(item.getUserInfo().getCircleNickName());
+        tvCreater.setText(String.format("%s上传", item.getUserInfo().getCircleNickName()));
 
     }
 
@@ -168,7 +169,7 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
         }
         contentView.setLayoutParams(params);
         if (lookup.isShowSmail())
-            contentView.setPadding(position%lookup.getColumCount()==1?imageMargin:0, 0, position % lookup.getColumCount() == 0 ? imageMargin : imagePadding, imagePadding);
+            contentView.setPadding(position % lookup.getColumCount() == 1 ? imageMargin : 0, 0, position % lookup.getColumCount() == 0 ? imageMargin : imagePadding, imagePadding);
         else contentView.setPadding(imageMargin, 0, imageMargin, imagePadding);
         ImageView icon = ViewHolder.getView(contentView, R.id.icon);
         GlideUtil.setImage(mediaObj.getImgUrl(), icon, R.drawable.bg_default_holder_img, true);
@@ -180,16 +181,15 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
         TextView tvRelative = ViewHolder.getView(contentView, R.id.tv_relative);
         String relationName = comment.getCommentUserInfo().getCircleNickName();
         SpannableStringBuilder msb = new SpannableStringBuilder();
-        msb.append(relationName)
-                .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), 0, relationName.length(),
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);//第一个人名
         if (comment.getToCommentUserInfo() != null && !TextUtils.isEmpty(comment.getToCommentUserInfo().getCircleNickName())) {
             msb.append("回复");
             msb.append(comment.getToCommentUserInfo().getCircleNickName())
                     .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), msb.length() - comment.getToCommentUserInfo().getCircleNickName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            msb.setSpan(SpannableUtils.getTextSize(context(), R.dimen.text_small_13), msb.length() - comment.getToCommentUserInfo().getCircleNickName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            msb.append(": ");
         }
-        tvRelative.setText(msb);
-        tvComment.setText(comment.getCommentContent());
+        tvRelative.setText(relationName);
+        tvComment.setText(msb.append(comment.getCommentContent()));
         tvTime.setText(DateUtil.formatDate("MM月dd日 HH:mm", comment.getCommentDate()));
     }
 

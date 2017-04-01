@@ -8,11 +8,6 @@
         android:id="@+id/appbar_layout"
         layout="@layout/layout_toolbar" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_color6"
-        android:layout_marginTop="@dimen/size_24"/>
 
     <RelativeLayout
         android:id="@+id/ll_time_now"
@@ -50,7 +45,7 @@
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
     <RelativeLayout
         android:id="@+id/ll_time_shot"
@@ -89,7 +84,7 @@
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
     <RelativeLayout
         android:id="@+id/ll_time_set"
@@ -129,7 +124,7 @@
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="1px"
         android:background="@color/bg_color6" />
 
 </LinearLayout>

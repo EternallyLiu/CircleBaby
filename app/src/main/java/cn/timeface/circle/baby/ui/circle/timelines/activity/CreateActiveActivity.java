@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -45,6 +47,7 @@ public class CreateActiveActivity extends BaseAppCompatActivity implements Input
     TextView tvTextCount;
     @Bind(R.id.submit)
     Button submit;
+    private String albumName;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, CreateActiveActivity.class));
@@ -70,7 +73,7 @@ public class CreateActiveActivity extends BaseAppCompatActivity implements Input
 
     @OnClick(R.id.submit)
     public void onClick() {
-        String albumName = etInput.getText().toString();
+        albumName = etInput.getText().toString();
         if (albumName != null) albumName = albumName.trim();
         if (TextUtils.isEmpty(albumName)) {
             ToastUtil.showToast(this, getString(R.string.input_content_cannot_null));
@@ -94,11 +97,19 @@ public class CreateActiveActivity extends BaseAppCompatActivity implements Input
     @Override
     public void callBack(EditText view, String content) {
         int size = Utils.getByteSize(content);
+        if (size > MAX_INPUT_LENGHT * 2 && content.length() > MAX_INPUT_LENGHT) {
+            etInput.setText(albumName);
+            etInput.setSelection(albumName.length());
+        } else
+            albumName = content;
+        size = Utils.getByteSize(albumName);
         int count = size / 2;
         if (size % 2 != 0) count++;
+        if (count > MAX_INPUT_LENGHT) count = MAX_INPUT_LENGHT;
         SpannableStringBuilder builder = new SpannableStringBuilder(String.format("%d / %d", count, MAX_INPUT_LENGHT));
         if (count > MAX_INPUT_LENGHT)
             builder.setSpan(SpannableUtils.getTextColor(this, R.color.sea_buckthorn), 0, String.valueOf(count).length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
         tvTextCount.setText(builder);
     }
+
 }
