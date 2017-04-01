@@ -187,7 +187,7 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
         }
         tvSubmit.setTextColor(ContextCompat.getColor(this, isJoined ?
                 R.color.text_color16 : android.R.color.white));
-        tvSubmit.setBackgroundResource(isJoined ? R.drawable.selector_ios_btn_empty
+        tvSubmit.setBackgroundResource(isJoined ? R.drawable.selector_ios_btn_empty_no_margin
                 : R.drawable.selector_btn_login);
     }
 

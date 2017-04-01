@@ -96,7 +96,9 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
         Log.d("-------->", "-------->onNotificationMessageClicked: " + mMessage);
         if (!TextUtils.isEmpty(mMessage)) {
-            handlePushMessage(context, mMessage);
+            if (!isAppForground(context)) {
+                handlePushMessage(context, mMessage);
+            }
         }
     }
 

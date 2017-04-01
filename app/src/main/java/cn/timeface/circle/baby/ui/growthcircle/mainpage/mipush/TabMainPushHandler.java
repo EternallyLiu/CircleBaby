@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import cn.timeface.circle.baby.App;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.objs.MiPushMsgInfoObj;
@@ -142,6 +143,9 @@ public class TabMainPushHandler implements IEventBus {
         Context context = App.getInstance().getTopActivity();
         if (context == null) return;
 
+        if (context instanceof TabMainActivity) {
+            ((TabMainActivity) context).setClearCircleCache(true);
+        }
         switch (pushMsgInfo.getType()) {
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_MEMBER: // 新成员加图（定位圈首页）
                 // 仅携带circleId

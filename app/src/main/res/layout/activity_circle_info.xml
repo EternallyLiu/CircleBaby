@@ -14,13 +14,14 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/fl_bottom"
         android:layout_below="@id/appbar_layout">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/view_space_medium"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/view_space_normal">
 
             <com.github.rayboot.widget.ratioview.RatioImageView
                 android:id="@+id/iv_circle_cover"
@@ -249,11 +250,11 @@
                     tools:text="123456" />
             </LinearLayout>
 
-
         </LinearLayout>
     </ScrollView>
 
     <FrameLayout
+        android:id="@+id/fl_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -263,16 +264,14 @@
             android:id="@+id/tv_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="@dimen/view_space_normal"
-            android:layout_marginRight="@dimen/view_space_normal"
+            android:layout_margin="@dimen/view_space_normal"
             android:background="@drawable/selector_btn_login"
             android:clickable="true"
             android:gravity="center"
-            android:padding="12dp"
+            android:padding="@dimen/view_space_normal"
             android:text="@string/join_growth_circle"
             android:textColor="@android:color/white"
             android:textSize="@dimen/text_normal"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </FrameLayout>
 </RelativeLayout>

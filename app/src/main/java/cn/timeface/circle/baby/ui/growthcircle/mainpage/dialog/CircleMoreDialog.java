@@ -87,7 +87,7 @@ public class CircleMoreDialog extends DialogFragment {
     }
 
     @OnClick({R.id.tv_circle_info, R.id.tv_share, R.id.tv_production,
-            R.id.tv_photos, R.id.tv_member_manager, R.id.tv_publish_homework})
+            R.id.tv_photos, R.id.tv_member_manager, R.id.tv_publish_homework, R.id.tv_teacher_auth})
     public void onClick(View view) {
         dismiss();
         switch (view.getId()) {

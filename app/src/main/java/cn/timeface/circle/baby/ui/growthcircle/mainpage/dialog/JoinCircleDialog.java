@@ -48,12 +48,10 @@ public class JoinCircleDialog extends DialogFragment {
         ButterKnife.bind(this, loadingView);
 
         if (!TextUtils.isEmpty(joinMessage)) {
-            etMessage.setHint(joinMessage);
-            etMessage.setText(joinMessage);
+            setJoinMessage(joinMessage);
         }
         if (!TextUtils.isEmpty(childrenName)) {
-            etChildrenName.setHint(childrenName);
-            etChildrenName.setText(childrenName);
+            setChildrenName(childrenName);
         }
         if (positiveListener != null) {
             tvSubmit.setOnClickListener(positiveListener);
@@ -64,16 +62,22 @@ public class JoinCircleDialog extends DialogFragment {
 
     public void setJoinMessage(String joinMessage) {
         this.joinMessage = joinMessage;
-        etMessage.setHint(joinMessage);
-        etMessage.setText(joinMessage);
-        etMessage.setEnabled(false);
+
+        if (etMessage != null) {
+            etMessage.setHint(joinMessage);
+            etMessage.setText(joinMessage);
+            etMessage.setEnabled(false);
+        }
     }
 
     public void setChildrenName(String childrenName) {
         this.childrenName = childrenName;
-        etChildrenName.setHint(childrenName);
-        etChildrenName.setText(childrenName);
-        etChildrenName.setEnabled(false);
+
+        if (etChildrenName != null) {
+            etChildrenName.setHint(childrenName);
+            etChildrenName.setText(childrenName);
+            etChildrenName.setEnabled(false);
+        }
     }
 
     public void setPositiveListener(View.OnClickListener positiveListener) {

@@ -500,6 +500,10 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
 
     private boolean clearCircleCache = false;
 
+    public void setClearCircleCache(boolean clearCircleCache) {
+        this.clearCircleCache = clearCircleCache;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
