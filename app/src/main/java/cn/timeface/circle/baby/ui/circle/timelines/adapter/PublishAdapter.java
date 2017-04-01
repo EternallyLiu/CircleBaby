@@ -50,6 +50,7 @@ import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * author : wangshuai Created on 2017/3/15
@@ -372,7 +373,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             case R.id.et_input_title:
                 Observable.defer(() -> Observable.just(content))
                         .doOnNext(s -> {
-                            if (Utils.getByteSize(s) >= 20) {
+                            if (Utils.getByteSize(s) > 20) {
                                 s = Utils.subString(s, 20);
                                 view.setText(s);
                                 view.setSelection(s.length());
@@ -385,7 +386,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                             int size = Utils.getByteSize(s);
                             int count = size / 2;
                             if (size % 2 != 0) count++;
-                            SpannableStringBuilder builder = new SpannableStringBuilder(String.format("%d / 10", count));
+                            SpannableStringBuilder builder = new SpannableStringBuilder(String.format("%d / 10", count > 10 ? 10 : count));
                             if (count > 10) {
                                 builder.setSpan(SpannableUtils.getTextColor(context(), R.color.sea_buckthorn), 0, String.valueOf(count).length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                             }
