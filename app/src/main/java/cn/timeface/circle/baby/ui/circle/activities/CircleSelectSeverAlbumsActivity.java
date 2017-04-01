@@ -217,7 +217,7 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
                                             keys.add("book_title");
 
                                             String author = FastData.getUserName();
-                                            String bookName = FastData.getBabyNickName() + "的照片书";
+                                            String bookName = FastData.getBabyNickName() + "的圈照片书";
                                             values.add(author);
                                             values.add(bookName);
 

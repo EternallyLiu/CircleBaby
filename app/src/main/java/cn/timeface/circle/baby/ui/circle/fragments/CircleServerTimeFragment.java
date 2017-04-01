@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerTimesAdapter
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineWrapperObj;
+import cn.timeface.circle.baby.views.StateView;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -73,6 +74,7 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
         this.timeLineObjs = getArguments().getParcelableArrayList("time_lines");
         this.circleId = getArguments().getString("circle_id");
         if(mediaObjs == null) mediaObjs = new ArrayList<>();
+        stateView.setOnRetryListener(() -> reqData());
 //        rvContent.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //            @Override
 //            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

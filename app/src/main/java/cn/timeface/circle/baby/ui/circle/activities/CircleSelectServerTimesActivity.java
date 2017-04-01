@@ -183,7 +183,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                     response -> {
                                         if (response.success()) {
                                             //跳转开放平台POD接口；
-                                            String bookName = FastData.getBabyNickName() + "的时光书";
+                                            String bookName = FastData.getBabyNickName() + "的圈时光书";
 
                                             //按月份分组时光
                                             HashMap<String, List<CircleTimeLineExObj>> timelineMap = new HashMap<>();
