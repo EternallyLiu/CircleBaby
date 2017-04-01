@@ -127,7 +127,7 @@ public class SchoolTaskAdapter extends BaseEmptyAdapter {
         marker.setDrawEnd(true);
         if (hashSubmit) {
             marker.setDrawBegin(true);
-        } else marker.setDrawBegin(position == 1);
+        } else marker.setDrawBegin(position != 1);
     }
 
     private void doMediaList(GridLayout gridLayout, int position, List<? extends MediaObj> list) {

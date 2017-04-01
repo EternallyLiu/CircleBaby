@@ -139,7 +139,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
                             adapter.addList(homeWorkListResponse.getDataList());
                         }
                     } else ToastUtil.showToast(this, homeWorkListResponse.getInfo());
-                    adapter.setHashSubmit(homeWorkHeader.getLastSubmitHomework().getSubmitter() != null);
+                    adapter.setHashSubmit(homeWorkHeader.getLastSubmitHomework() != null && homeWorkHeader.getLastSubmitHomework().getSubmitter() != null);
                 }, throwable -> {
                     adapter.getEmptyItem().setThrowable(throwable);
                     adapter.getEmptyItem().setOperationType(-1);
