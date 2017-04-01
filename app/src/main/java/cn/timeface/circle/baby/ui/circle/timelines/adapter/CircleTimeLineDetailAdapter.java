@@ -186,10 +186,10 @@ public class CircleTimeLineDetailAdapter extends BaseAdapter {
             msb.append(comment.getToCommentUserInfo().getCircleNickName())
                     .setSpan(new ForegroundColorSpan(Color.parseColor("#727272")), msb.length() - comment.getToCommentUserInfo().getCircleNickName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             msb.setSpan(SpannableUtils.getTextSize(context(), R.dimen.text_small_13), msb.length() - comment.getToCommentUserInfo().getCircleNickName().length(), msb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+            msb.append(": ");
         }
         tvRelative.setText(relationName);
-        tvComment.setText(msb.append(": ").append(comment.getCommentContent()));
+        tvComment.setText(msb.append(comment.getCommentContent()));
         tvTime.setText(DateUtil.formatDate("MM月dd日 HH:mm", comment.getCommentDate()));
     }
 
