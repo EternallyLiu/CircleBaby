@@ -861,7 +861,7 @@
     <string name="select_active_media_count_tip">已有照片%d张</string>
     <string name="activity_select_active_tip">选择活动相册</string>
     <string name="add_active_album">添加相册</string>
-    <string name="input_create_actve_tip">请输入活动名称</string>
+    <string name="input_create_actve_tip">请输入活动相册名称</string>
     <string name="activity_create_active_title">添加活动相册</string>
     <string name="input_content_cannot_null">你输入的内容不能为空</string>
     <string name="pic_select_max_tip">最多只能选%d张照片</string>
@@ -896,7 +896,7 @@
     <string name="please_input_baby_real_name_tip">小贴士： 请填写宝贝真实姓名</string>
     <string name="activity_look_homework">查看作业</string>
     <string name="activity_teacher_author_title">教师认证</string>
-    <string name="teacher_empty_message">暂时没有需要处理的认证消息</string>
+    <string name="teacher_empty_message">暂无教师认证信息</string>
     <string name="please_send_some_pic">发张照片吧~</string>
     <string name="active_album_null">您还没有活动相册哦~</string>
     <string name="do_not_get_datat">没有获取到数据</string>

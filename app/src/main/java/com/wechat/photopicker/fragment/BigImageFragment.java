@@ -457,7 +457,8 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
                                 mediaObj.setIsFavorite(mediaObj.getIsFavorite() == 1 ? 0 : 1);
                                 tvLikeCount.setText("+ " + response.getFavoritecount());
                                 ivImageLike.changeStatus(mediaObj.getIsFavorite() == 1 ? R.drawable.image_liked : R.drawable.image_like);
-                                EventBus.getDefault().register(new CircleMediaEvent((CircleMediaObj) mediaObj));
+                                LogUtil.showLog("event post==" + mediaObj.getId());
+                                EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) mediaObj));
                             }
 
                         }, throwable -> {

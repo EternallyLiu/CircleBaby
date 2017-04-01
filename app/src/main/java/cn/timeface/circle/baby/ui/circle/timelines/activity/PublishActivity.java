@@ -241,7 +241,7 @@ public class PublishActivity extends BaseAppCompatActivity {
             return;
         }
         if (homework.getMediaList().size() <= 0 && TextUtils.isEmpty(homework.getContent())) {
-            ToastUtil.showToast(this, "作业内容不能为空\n");
+            ToastUtil.showToast(this, "作业内容不能为空");
             return;
         }
         showProgress();
@@ -425,6 +425,7 @@ public class PublishActivity extends BaseAppCompatActivity {
         ImageView ivLoad = (ImageView) view.findViewById(R.id.pb_loading);
         TextView tvProgress = (TextView) view.findViewById(R.id.tv_progress);
         tvProgress.setText("正在发送请求~~");
+        view.findViewById(R.id.tv_loading_msg).setVisibility(View.GONE);
         ((Animatable) ivLoad.getDrawable()).start();
         return view;
     }
