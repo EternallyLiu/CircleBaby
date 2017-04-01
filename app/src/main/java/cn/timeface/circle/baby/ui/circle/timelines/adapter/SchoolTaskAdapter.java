@@ -89,10 +89,12 @@ public class SchoolTaskAdapter extends BaseEmptyAdapter {
                 btnPublishSchooltask.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 2 ? View.VISIBLE : View.GONE);
                 btnPublishSchooltask.setOnClickListener(this);
                 TextView tvLastTask = ViewHolder.getView(contentView, R.id.tv_last_homework);
-                tvLastTask.setVisibility(header.getLastSubmitHomework().getSubmitter() == null ? View.GONE : View.VISIBLE);
+                if (header.getLastSubmitHomework() != null && header.getLastSubmitHomework().getSubmitter() != null)
+                    tvLastTask.setVisibility(View.VISIBLE);
+                else tvLastTask.setVisibility(View.GONE);
                 GlideUtil.displayImage(header.getGrowthCircle().getCircleCoverUrl(), ivIcon, true);
                 tvName.setText(header.getGrowthCircle().getCircleName());
-                if (header.getLastSubmitHomework().getSubmitter() != null)
+                if (header.getLastSubmitHomework() != null && header.getLastSubmitHomework().getSubmitter() != null)
                     tvLastTask.setText(String.format("%s上传了作业 \"%s\"", header.getLastSubmitHomework().getSubmitter().getCircleNickName(), header.getLastSubmitHomework().getTitle()));
             }
         }
