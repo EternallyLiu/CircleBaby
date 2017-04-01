@@ -78,6 +78,8 @@
         android:layout_below="@+id/title"
         android:paddingBottom="@dimen/size_10"
         android:paddingLeft="@dimen/size_10"
+        android:maxLines="4"
+        android:ellipsize="end"
         android:lineSpacingExtra="@dimen/size_2"
         android:paddingRight="@dimen/size_10"
         android:text="作业描述"

@@ -372,12 +372,14 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         switch (view.getId()) {
             case R.id.et_input_title:
                 Observable.defer(() -> Observable.just(content))
-                        .doOnNext(s -> {
-                            if (Utils.getByteSize(s) > 20) {
-                                s = Utils.subString(s, 20);
+                        .filter(s -> {
+                            if (!s.equals(contentObj.getTitle()) && Utils.getByteSize(s) > 20 && s.length() > 10) {
+                                s = contentObj.getTitle();
                                 view.setText(s);
                                 view.setSelection(s.length());
+                                return false;
                             }
+                            return true;
                         })
                         .doOnNext(s -> contentObj.setTitle(s))
                         .filter(s -> view.getTag(R.id.recycler_item_input_tag) != null)
@@ -396,12 +398,14 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                 break;
             case R.id.et_input:
                 Observable.defer(() -> Observable.just(content))
-                        .doOnNext(s -> {
-                            if (Utils.getByteSize(s) >= (getType() == TYPE_TIMELINE ? 400 : 1200)) {
-                                s = Utils.subString(s, getType() == TYPE_TIMELINE ? 400 : 1200);
+                        .filter(s -> {
+                            if (!s.equals(contentObj.getTitle()) && Utils.getByteSize(s) > (getType() == TYPE_TIMELINE ? 400 : 1200) && s.length() > (getType() == TYPE_TIMELINE ? 400 : 1200)) {
+                                s = contentObj.getContent();
                                 view.setText(s);
                                 view.setSelection(s.length());
+                                return false;
                             }
+                            return true;
                         })
                         .doOnNext(s -> contentObj.setContent(s))
                         .filter(s -> view.getTag(R.id.recycler_item_input_tag) != null)
@@ -410,7 +414,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                             int size = Utils.getByteSize(s);
                             int count = size / 2;
                             if (size % 2 != 0) count++;
-                            SpannableStringBuilder builder = new SpannableStringBuilder(String.format("%d / %d", count, getType() == TYPE_TIMELINE ? 200 : 600));
+                            SpannableStringBuilder builder = new SpannableStringBuilder(String.format("%d / %d", count > (getType() == TYPE_TIMELINE ? 200 : 600) ? getType() == TYPE_TIMELINE ? 200 : 600 : count, getType() == TYPE_TIMELINE ? 200 : 600));
                             if (count > (getType() == TYPE_TIMELINE ? 200 : 600)) {
                                 builder.setSpan(SpannableUtils.getTextColor(context(), R.color.sea_buckthorn), 0, String.valueOf(count).length() + 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
                             }
@@ -419,6 +423,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                         .subscribe(s -> LogUtil.showLog(s), throwable -> LogUtil.showError(throwable));
                 break;
         }
+
     }
 
     public Observable<CircleContentObj> getSendContent() {
