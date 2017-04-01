@@ -20,6 +20,7 @@ import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
 import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.TeacherAuthoActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleInfoActivity;
 import cn.timeface.circle.baby.views.ShareDialog;
 
@@ -37,6 +38,8 @@ public class CircleMoreDialog extends DialogFragment {
     TextView tvMemberManager;
     @Bind(R.id.tv_publish_homework)
     TextView tvPublishHomework;
+    @Bind(R.id.tv_teacher_auth)
+    TextView tvTeacherAuth;
 
     private GrowthCircleObj circleObj;
 
@@ -84,7 +87,7 @@ public class CircleMoreDialog extends DialogFragment {
     }
 
     @OnClick({R.id.tv_circle_info, R.id.tv_share, R.id.tv_production,
-            R.id.tv_photos, R.id.tv_member_manager, R.id.tv_publish_homework})
+            R.id.tv_photos, R.id.tv_member_manager, R.id.tv_publish_homework, R.id.tv_teacher_auth})
     public void onClick(View view) {
         dismiss();
         switch (view.getId()) {
@@ -106,6 +109,9 @@ public class CircleMoreDialog extends DialogFragment {
                 break;
             case R.id.tv_publish_homework:
                 PublishActivity.openSchoolTask(getContext());
+                break;
+            case R.id.tv_teacher_auth:
+                TeacherAuthoActivity.open(getContext());
                 break;
         }
     }

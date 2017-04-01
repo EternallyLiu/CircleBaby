@@ -104,6 +104,8 @@ import cn.timeface.circle.baby.ui.circle.response.QueryBindingBabyResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleByTimeResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleLastActivityResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
+import cn.timeface.circle.baby.ui.circle.response.QueryCircleStatusResponse;
+import cn.timeface.circle.baby.ui.circle.response.QueryCircleTeacherAuthResponse;
 import cn.timeface.circle.baby.ui.circle.response.TeacherAuthIsHasResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.ActiveSelectListResponse;
@@ -1267,6 +1269,44 @@ public interface ApiService {
      */
     @GET("babyCircle/queryByCircleNumOrName")
     Observable<CircleSearchListResponse> queryByCircleNumOrName(@Query("circleName") String circleName);
+
+    /**
+     * 查询成员是否被认证成为/取消认证老师
+     *
+     * @param circleId 圈ID
+     * @return
+     */
+    @GET("circleMember/isTeachAuth")
+    Observable<QueryCircleTeacherAuthResponse> queryTeacherAuth(@Query("circleId") long circleId);
+
+    /**
+     * 用户已确认收到老师身份的变化
+     *
+     * @param circleId 圈ID
+     * @return
+     */
+    @GET("circleMember/teachChange")
+    Observable<BaseResponse> receivedTeacherChanged(@Query("circleId") long circleId);
+
+    /**
+     * 查询当前缓存的圈子是否被解散/被移除
+     *
+     * @param circleId 圈ID
+     * @return
+     */
+    @GET("circleMember/isRemoveOrDisband")
+    Observable<QueryCircleStatusResponse> queryCircleStatus(@Query("circleId") long circleId);
+
+    /**
+     * 设置解散/被移除消息已读
+     *
+     * @param circleId 圈ID
+     * @param type     类别 2 ：被移除 3 ：圈子被解散
+     * @return
+     */
+    @GET("circleMsg/read")
+    Observable<BaseResponse> receivedCircleStatusChanged(@Query("circleId") long circleId,
+                                                         @Query("type") int type);
 
     /**
      * 按照圈中的宝宝查询

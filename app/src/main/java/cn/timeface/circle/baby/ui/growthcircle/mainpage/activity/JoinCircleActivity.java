@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -17,16 +19,18 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.dialogs.TFDialog;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.network.NetworkError;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.JoinCircleCommitEvent;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Subscription;
 
 /**
  * 加入圈子
  */
-public class JoinCircleActivity extends BaseAppCompatActivity {
+public class JoinCircleActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -94,6 +98,11 @@ public class JoinCircleActivity extends BaseAppCompatActivity {
         dialog.setMessage(errorMsg);
         dialog.setPositiveButton("确定", v -> dialog.dismiss());
         dialog.show(getSupportFragmentManager(), "ErrorDialog");
+    }
+
+    @Subscribe
+    public void onEvent(JoinCircleCommitEvent event) {
+        finish();
     }
 
     @Override

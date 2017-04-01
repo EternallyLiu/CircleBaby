@@ -1,7 +1,9 @@
 package cn.timeface.circle.baby;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import android.view.WindowManager;
@@ -51,6 +53,8 @@ public class App extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         app = this;
+        initActivityLifecycleListener();
+
         //数据库ORM
         FlowManager.init(new FlowConfig.Builder(this).build());
 
@@ -73,7 +77,7 @@ public class App extends MultiDexApplication {
         MiPushUtil.init(this);
         try {
             ShareSDK.initSDK(this);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e("App", "ShareSDK init error!");
         }
         UploadService.setRecorder(new SimpleUploadRecorder());
@@ -100,18 +104,18 @@ public class App extends MultiDexApplication {
         initBugly();
         initCountly();
 
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
     }
 
-    private void initBugly(){
+    private void initBugly() {
         CrashReport.setIsDevelopmentDevice(getApplicationContext(), BuildConfig.DEBUG);
         CrashReport.initCrashReport(getApplicationContext(), "52ae73854c", BuildConfig.DEBUG);
         CrashReport.setUserId(getApplicationContext(), FastData.getUserId());
     }
 
-    private void initCountly(){
+    private void initCountly() {
         Countly.sharedInstance().init(this, "http://analytics.v5time.net", "557039698820881ee2c993f3acfdc438f30f44ff");
         Countly.sharedInstance().setViewTracking(true);
         Countly.sharedInstance().enableCrashReporting();
@@ -149,6 +153,46 @@ public class App extends MultiDexApplication {
 
     public static MiPushMessageReceiver.DemoHandler getHandler() {
         return handler;
+    }
+
+    // 栈顶Activity
+    private Activity topActivity;
+
+    public Activity getTopActivity() {
+        return topActivity;
+    }
+
+    private void initActivityLifecycleListener() {
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                topActivity = activity;
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+            }
+        });
     }
 
 }

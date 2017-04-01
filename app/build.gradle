@@ -175,6 +175,7 @@ dependencies {
     compile 'com.jakewharton.timber:timber:4.3.1'
     compile 'com.zhy:highlight:1.1.0'
     compile 'com.makeramen:roundedimageview:2.3.0'
+    compile 'com.github.ikidou:TypeBuilder:1.0'
     compile 'com.trello:rxlifecycle:0.3.0'
     compile 'com.trello:rxlifecycle-components:0.3.0'
     compile 'com.tencent.bugly:crashreport:latest.release'

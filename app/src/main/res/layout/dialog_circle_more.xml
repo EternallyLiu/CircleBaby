@@ -102,5 +102,20 @@
         android:textColor="@color/text"
         android:textSize="16sp"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/line_color"/>
 
+    <TextView
+        android:id="@+id/tv_teacher_auth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_click_able"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="@dimen/view_space_medium"
+        android:text="@string/activity_teacher_author_title"
+        android:textColor="@color/text"
+        android:textSize="16sp"/>
 </LinearLayout>

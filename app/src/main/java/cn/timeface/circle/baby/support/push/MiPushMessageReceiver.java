@@ -19,14 +19,27 @@ import com.xiaomi.mipush.sdk.PushMessageReceiver;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.activities.LoginActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
+import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.events.UnreadMsgEvent;
+import cn.timeface.circle.baby.support.api.models.objs.MiPushMsgChangeObj;
+import cn.timeface.circle.baby.support.api.models.objs.MiPushMsgInfoObj;
 import cn.timeface.circle.baby.support.api.models.objs.MiPushMsgObj;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
+import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
+import ikidou.reflect.TypeBuilder;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * 小米推送的receiver
@@ -59,20 +72,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         }
 
         if (!TextUtils.isEmpty(mMessage)) {
-            MiPushMsgObj pushMsgObj = null;
-            try {
-                pushMsgObj = new Gson().fromJson(mMessage, MiPushMsgObj.class);
-            } catch (JsonSyntaxException e) {
-                e.printStackTrace();
-            }
-            if (pushMsgObj != null) {
-                if (pushMsgObj.getMsgChange() != null
-                        // 这里判断UserID是个坑，服务端不能按照DeviceID推送，后期需要优化
-                        && TextUtils.equals(pushMsgObj.getMsgChange().getUserId(), FastData.getUserId())) {
-                    // 未读消息数量变化
-                    EventBus.getDefault().post(new UnreadMsgEvent(pushMsgObj.getMsgChange().getUnReadMsgCount()));
-                }
-            }
+            handlePassThroughMessage(mMessage);
         }
     }
 
@@ -80,18 +80,25 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
     public void onNotificationMessageClicked(Context context, MiPushMessage message) {
         mMessage = message.getContent();
         mToastInfo = message.getDescription();
-        if (!TextUtils.isEmpty(mMessage)) {
-            Message msg = Message.obtain();
-            msg.obj = mMessage;
-            msg.what = DETAIL;
-            App.getHandler().sendMessage(msg);
-        } else {
-            App.getHandler().sendEmptyMessage(MESSAGE);
-        }
+//        if (!TextUtils.isEmpty(mMessage)) {
+//            Message msg = Message.obtain();
+//            msg.obj = mMessage;
+//            msg.what = DETAIL;
+//            App.getHandler().sendMessage(msg);
+//        } else {
+//            App.getHandler().sendEmptyMessage(MESSAGE);
+//        }
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();
         } else if (!TextUtils.isEmpty(message.getAlias())) {
             mAlias = message.getAlias();
+        }
+
+        Log.d("-------->", "-------->onNotificationMessageClicked: " + mMessage);
+        if (!TextUtils.isEmpty(mMessage)) {
+            if (!isAppForground(context)) {
+                handlePushMessage(context, mMessage);
+            }
         }
     }
 
@@ -198,5 +205,207 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
             }
         }
         return true;
+    }
+
+    /**
+     * 处理推送消息
+     */
+    private void handlePushMessage(Context context, String content) {
+        Observable.just(content)
+                .map((Func1<String, MiPushMsgObj>) s -> parseJsonObject(s, Object.class))
+                .map(pushMsgObj -> {
+                    MiPushMsgInfoObj msgInfoObj = new MiPushMsgInfoObj(pushMsgObj.getDataType());
+                    switch (pushMsgObj.getDataType()) {
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_MEMBER: // 新成员加图（定位圈首页）
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_TEACHER_AUTHORIZATION: // 管理员发起老师认证（定位到认证列表页面）
+                            // 仅携带circleId
+                            MiPushMsgObj<Long> circleID = parseJsonObject(content, Long.class);
+                            if (circleID != null && circleID.getInfo() > 0) {
+                                msgInfoObj.setCircleId(circleID.getInfo());
+                                return msgInfoObj;
+                            }
+                            break;
+
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_TEACHER_NEW_PRODUCTION: // 老师创建新作品（定位到该作品的预览页）
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_PRODUCTION_REFERENCED: // 发布的照片被别人引用做书并订单支付成功（定位到该作品的预览页）
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_SHCOOL_BOOK: //每学期系统自动生成的家校纪念册 （定位到该作品的预览页）
+                            // 携带开放平台的bookId、bookType
+                            MiPushMsgObj<MiPushMsgInfoObj> production = parseJsonObject(content, MiPushMsgInfoObj.class);
+                            if (production != null && production.getInfo() != null) {
+                                msgInfoObj.setBookId(production.getInfo().getBookId());
+                                msgInfoObj.setBookType(production.getInfo().getBookType());
+                                return msgInfoObj;
+                            }
+                            break;
+
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_TEACHER_NEW_TIME_LINE: // 老师发布动态（定位到该条动态）
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_COMMENTS: // 发布信息被评论（定位到该条动态）
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_GOOD: // 发布信息被点赞（定位到该条动态）
+                            // 携带开放平台的circleId、circleTimeId（圈时光id）
+                            MiPushMsgObj<MiPushMsgInfoObj> circleTime = parseJsonObject(content, MiPushMsgInfoObj.class);
+                            if (circleTime != null && circleTime.getInfo() != null) {
+                                msgInfoObj.setCircleId(circleTime.getInfo().getCircleId());
+                                msgInfoObj.setCircleTimeId(circleTime.getInfo().getCircleTimeId());
+                                return msgInfoObj;
+                            }
+                            break;
+
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_SCHOOL_TASK: // 老师发起新作业（定位到作业该详情页）
+                            // 携带circleId、taskId（布置的作业的id）
+                            MiPushMsgObj<MiPushMsgInfoObj> schoolTask = parseJsonObject(content, MiPushMsgInfoObj.class);
+                            if (schoolTask != null && schoolTask.getInfo() != null) {
+                                msgInfoObj.setCircleId(schoolTask.getInfo().getCircleId());
+                                msgInfoObj.setTaskId(schoolTask.getInfo().getTaskId());
+                                return msgInfoObj;
+                            }
+                            break;
+
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_MEMBER_REMOVED: // 被圈主移出（定位圈列表页）
+                            // 不携带参数，点击直接定位到圈列表页并清空本地圈缓存数据
+                            return msgInfoObj;
+
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_PHOTO_TAGGED: // 发布的照片被别人加标签（定位到该图片的预览页）
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_PHOTO_LIKED: // 发布的照片被别人加喜欢（定位到该图片的预览页）
+                            // 仅携带图片id
+                            MiPushMsgObj<Long> photoID = parseJsonObject(content, Long.class);
+                            if (photoID != null && photoID.getInfo() > 0) {
+                                msgInfoObj.setPhotoId(photoID.getInfo());
+                                return msgInfoObj;
+                            }
+                            break;
+
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_HOMEWORK_COMMENTS: // 老师点评了宝宝的作业（定位到作业该详情页）
+                            // 仅携带homeworkId
+                            MiPushMsgObj<Long> homeworkID = parseJsonObject(content, Long.class);
+                            if (homeworkID != null && homeworkID.getInfo() > 0) {
+                                msgInfoObj.setHomeworkId(homeworkID.getInfo());
+                                return msgInfoObj;
+                            }
+                            break;
+                    }
+
+                    return null;
+                })
+                .compose(SchedulersCompat.applyComputationSchedulers())
+                .subscribe(
+                        msgInfoObj -> {
+                            if (msgInfoObj != null) {
+                                if (TextUtils.isEmpty(FastData.getUserId())) {
+                                    Intent intent = new Intent(context, LoginActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                } else if (App.getInstance().getTopActivity() == null) {
+                                    Log.i("-------->", "-------->getTopActivity is null");
+                                    TabMainActivity.openCircleFromPush(context, msgInfoObj);
+                                } else {
+                                    Log.i("-------->", "-------->getTopActivity not null");
+                                    TabMainActivity.openCircle(App.getInstance().getTopActivity(), msgInfoObj);
+                                }
+                            }
+                        },
+                        throwable -> {
+                            Log.e("MiPushMessageReceiver", "handlePushMessage: ", throwable);
+                        }
+                );
+    }
+
+    /**
+     * 处理透传消息
+     */
+    private void handlePassThroughMessage(String content) {
+        Observable.just(content)
+                .map((Func1<String, MiPushMsgObj>) s -> parseJsonObject(s, Object.class))
+                .map(pushMsgObj -> {
+                    CirclePassThroughMessageEvent ptMessageEvent = new CirclePassThroughMessageEvent(pushMsgObj.getIdentifier());
+                    switch (pushMsgObj.getIdentifier()) {
+                        case MiPushConstant.TYPE_UNREAD_MSG: // 未读消息
+                            MiPushMsgObj<MiPushMsgChangeObj> unreadMsg = parseJsonObject(content, MiPushMsgChangeObj.class);
+
+                            if (unreadMsg != null && unreadMsg.getInfo() != null) {
+                                // 这里判断UserID是个坑，服务端不能按照DeviceID推送，后期需要优化
+                                if (TextUtils.equals(unreadMsg.getInfo().getUserId(), FastData.getUserId())) {
+                                    // 未读消息数量变化
+                                    EventBus.getDefault().post(
+                                            new UnreadMsgEvent(unreadMsg.getInfo().getUnReadMsgCount())
+                                    );
+                                }
+                            }
+                            break;
+                        case MiPushConstant.TYPE_CIRCLE_MEMBER_REMOVED: // 删除成员
+                            MiPushMsgObj<GrowthCircleObj> memberDeleted = parseJsonObject(content, GrowthCircleObj.class);
+                            if (memberDeleted != null) {
+                                ptMessageEvent.circleObj = memberDeleted.getInfo();
+                                return ptMessageEvent;
+                            }
+                            break;
+                        case MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION: // 新的教师认证
+                            return ptMessageEvent;
+                        case MiPushConstant.TYPE_CIRCLE_SCHOOL_TASK: // 新的作业
+                            MiPushMsgObj<CircleSchoolTaskObj> schoolTask = parseJsonObject(content, CircleSchoolTaskObj.class);
+                            if (schoolTask != null) {
+                                ptMessageEvent.schoolTaskObj = schoolTask.getInfo();
+                                return ptMessageEvent;
+                            }
+                            break;
+                        case MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZED: // 成为老师身份
+                        case MiPushConstant.TYPE_CIRCLE_TEACHER_UNAUTHORIZED: // 取消老师身份
+                            MiPushMsgObj<CircleUserInfo> teacherAuthorize = parseJsonObject(content, CircleUserInfo.class);
+                            if (teacherAuthorize != null && teacherAuthorize.getInfo() != null) {
+                                ptMessageEvent.circleUserInfo = teacherAuthorize.getInfo();
+
+                                // 推送的圈和用户本地缓存的圈一致才弹窗提示，否则不提示
+                                if (ptMessageEvent.circleUserInfo.getCircleId() == FastData.getCircleId()) {
+                                    return ptMessageEvent;
+                                }
+                            }
+                            break;
+                        case MiPushConstant.TYPE_CIRCLE_DISBANDED: // 圈子解散
+                            MiPushMsgObj<GrowthCircleObj> disbanded = parseJsonObject(content, GrowthCircleObj.class);
+                            if (disbanded != null) {
+                                ptMessageEvent.circleObj = disbanded.getInfo();
+
+                                return ptMessageEvent;
+                            }
+                            break;
+                        case MiPushConstant.TYPE_CIRCLE_COMMIT_HOMEWORK: // 最近提交作业
+                            MiPushMsgObj<CircleHomeworkObj> commitHomework = parseJsonObject(content, CircleHomeworkObj.class);
+                            if (commitHomework != null) {
+                                ptMessageEvent.homeworkObj = commitHomework.getInfo();
+
+                                return ptMessageEvent;
+                            }
+                            break;
+                    }
+
+                    return null;
+                })
+                .compose(SchedulersCompat.applyComputationSchedulers())
+                .subscribe(
+                        event -> {
+                            Log.d("MiPushMessageReceiver", "handlePassThroughMessage -> post event ? " + (event != null));
+                            if (event != null) {
+                                EventBus.getDefault().post(event);
+                            }
+                        },
+                        throwable -> {
+                            Log.e("MiPushMessageReceiver", "handlePassThroughMessage: ", throwable);
+                        }
+                );
+    }
+
+
+    private <T> MiPushMsgObj<T> parseJsonObject(String jsonString, Class<T> clazz) {
+        Type type = TypeBuilder
+                .newInstance(MiPushMsgObj.class)
+                .addTypeParam(clazz)
+                .build();
+        MiPushMsgObj<T> obj = null;
+        try {
+            obj = new Gson().fromJson(jsonString, type);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            Log.e("MiPushMessageReceiver", "parseJsonObject: ", e);
+        }
+        return obj;
     }
 }
