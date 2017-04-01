@@ -330,45 +330,71 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
 
     private void deleteTip(MediaTipObj currentTip, View parent) {
         if (type == BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR) {
-            addSubscription(apiService.deleteCircleLabel(currentMediaObj.getId(), currentTip.getTipId())
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-                        if (response.success()) {
-                            if (currentMediaObj.getTips().contains(currentTip))
-                                currentMediaObj.getTips().remove(currentTip);
-                            if (selectList.contains(currentTip)) {
-                                flowLayout.removeView(parent);
-                                selectList.remove(currentTip);
-                                if (selectList.size() == 4) {
-                                    flowLayout.addView(input);
-                                    input.setVisibility(View.VISIBLE);
+            if (currentMediaObj.getId() <= 0) {
+                if (currentMediaObj.getTips().contains(currentTip))
+                    currentMediaObj.getTips().remove(currentTip);
+                if (selectList.contains(currentTip)) {
+                    flowLayout.removeView(parent);
+                    selectList.remove(currentTip);
+                    if (selectList.size() == 4) {
+                        flowLayout.addView(input);
+                        input.setVisibility(View.VISIBLE);
+                    }
+                }
+                EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) currentMediaObj));
+            } else
+                addSubscription(apiService.deleteCircleLabel(currentMediaObj.getId(), currentTip.getTipId())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                if (currentMediaObj.getTips().contains(currentTip))
+                                    currentMediaObj.getTips().remove(currentTip);
+                                if (selectList.contains(currentTip)) {
+                                    flowLayout.removeView(parent);
+                                    selectList.remove(currentTip);
+                                    if (selectList.size() == 4) {
+                                        flowLayout.addView(input);
+                                        input.setVisibility(View.VISIBLE);
+                                    }
                                 }
-                            }
-                            EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) currentMediaObj));
-                        } else ToastUtil.showToast(getActivity(), response.getInfo());
+                                EventBus.getDefault().post(new CircleMediaEvent((CircleMediaObj) currentMediaObj));
+                            } else ToastUtil.showToast(getActivity(), response.getInfo());
 
-                    }, throwable -> {
-                    }));
+                        }, throwable -> {
+                        }));
         } else {
-            addSubscription(apiService.deleteLabel(currentMediaObj.getId() + "", currentTip.getTipId() + "")
-                    .compose(SchedulersCompat.applyIoSchedulers())
-                    .subscribe(response -> {
-                        if (response.success()) {
-                            if (currentMediaObj.getTips().contains(currentTip))
-                                currentMediaObj.getTips().remove(currentTip);
-                            if (selectList.contains(currentTip)) {
-                                flowLayout.removeView(parent);
-                                selectList.remove(currentTip);
-                                if (selectList.size() == 4) {
-                                    flowLayout.addView(input);
-                                    input.setVisibility(View.VISIBLE);
+            if (currentMediaObj.getId() <= 0) {
+                if (currentMediaObj.getTips().contains(currentTip))
+                    currentMediaObj.getTips().remove(currentTip);
+                if (selectList.contains(currentTip)) {
+                    flowLayout.removeView(parent);
+                    selectList.remove(currentTip);
+                    if (selectList.size() == 4) {
+                        flowLayout.addView(input);
+                        input.setVisibility(View.VISIBLE);
+                    }
+                }
+                EventBus.getDefault().post(currentMediaObj);
+            } else
+                addSubscription(apiService.deleteLabel(currentMediaObj.getId() + "", currentTip.getTipId() + "")
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(response -> {
+                            if (response.success()) {
+                                if (currentMediaObj.getTips().contains(currentTip))
+                                    currentMediaObj.getTips().remove(currentTip);
+                                if (selectList.contains(currentTip)) {
+                                    flowLayout.removeView(parent);
+                                    selectList.remove(currentTip);
+                                    if (selectList.size() == 4) {
+                                        flowLayout.addView(input);
+                                        input.setVisibility(View.VISIBLE);
+                                    }
                                 }
-                            }
-                            EventBus.getDefault().post(currentMediaObj);
-                        } else ToastUtil.showToast(getActivity(), response.getInfo());
+                                EventBus.getDefault().post(currentMediaObj);
+                            } else ToastUtil.showToast(getActivity(), response.getInfo());
 
-                    }, throwable -> {
-                    }));
+                        }, throwable -> {
+                        }));
         }
     }
 
@@ -387,7 +413,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
                 break;
             case R.id.delete:
                 if (tipObj.getTipId() > 0) {
-                    deleteTip(tipObj,parent);
+                    deleteTip(tipObj, parent);
                 } else {
                     if (selectList.contains(tipObj)) {
                         flowLayout.removeView(parent);

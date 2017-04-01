@@ -271,15 +271,17 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     public void loadFinish(int code) {
     }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe
     public void onEvent(CircleMediaEvent event) {
+        LogUtil.showLog("event test=="+event.getType()+"---"+event.getMediaObj().getId());
         if (event.getType() == 0 && event.getMediaObj() != null) {
             for (int i = 0; i < adapter.getRealItemSize(); i++) {
-                Object item = adapter.getData().get(i);
-                if (item != null && item instanceof CircleTimelineObj) {
-                    CircleTimelineObj timelineObj = (CircleTimelineObj) item;
+                if (adapter.getItemViewType(i) == 1) {
+                    CircleTimelineObj timelineObj = adapter.getItem(i);
+                    LogUtil.showLog("position====" + i);
                     if (timelineObj.getMediaList().contains(event.getMediaObj())) {
                         int index = timelineObj.getMediaList().indexOf(event.getMediaObj());
+                        LogUtil.showLog("media index=="+index);
                         timelineObj.getMediaList().get(index).setTips(event.getMediaObj().getTips());
                         timelineObj.getMediaList().get(index).setIsFavorite(event.getMediaObj().getIsFavorite());
                         timelineObj.getMediaList().get(index).setFavoritecount(event.getMediaObj().getFavoritecount());

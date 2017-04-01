@@ -886,11 +886,13 @@ public class Utils {
                 count += 2;
             else count++;
             if (count > size) {
-                index = i;
+                index = i - 1;
                 break;
             } else index = i;
         }
-        return text.substring(0, index < text.length() - 1 ? index + 1 : index);
+        if (index >= text.length()) index = text.length();
+        else index = text.length() - 1;
+        return text.substring(0, index);
     }
 
     /**

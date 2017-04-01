@@ -14,9 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/topBar"
         android:background="@color/white"
-        android:textSize="@dimen/text_normal"
         android:hint="@string/input_create_actve_tip"
-        android:padding="@dimen/size_6"/>
+        android:maxLines="1"
+        android:padding="@dimen/size_6"
+        android:textSize="@dimen/text_normal"/>
 
     <TextView
         android:id="@+id/tv_text_count"
@@ -30,15 +31,15 @@
 
     <Button
         android:id="@+id/submit"
-        android:textSize="@dimen/text_normal"
-        android:paddingTop="@dimen/size_2"
-        android:paddingBottom="@dimen/size_2"
-        android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_ok"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/size_24"
-        android:background="@drawable/selector_btn_login"/>
-    
+        android:background="@drawable/selector_btn_login"
+        android:paddingBottom="@dimen/size_2"
+        android:paddingTop="@dimen/size_2"
+        android:text="@string/dialog_ok"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_normal"/>
+
 </RelativeLayout>
