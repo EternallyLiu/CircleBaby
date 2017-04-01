@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,8 @@ import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
-import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleByBabyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.QueryByCircleBabyObj;
+import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleByBabyAdapter;
 
 /**
  * 圈照片按圈中宝宝fragment
@@ -33,10 +34,12 @@ public class SelectCircleBabyFragment extends BasePresenterFragment {
 
     View.OnClickListener clickListener;
     CircleByBabyAdapter circleByBabyAdapter;
+    @Bind(R.id.ll_no_data)
+    LinearLayout llNoData;
     private long circleId;
     private List<QueryByCircleBabyObj> data = new ArrayList<>();
 
-    public static SelectCircleBabyFragment newInstance(View.OnClickListener clickListener,long circleId) {
+    public static SelectCircleBabyFragment newInstance(View.OnClickListener clickListener, long circleId) {
         SelectCircleBabyFragment selectUserFragment = new SelectCircleBabyFragment();
         selectUserFragment.clickListener = clickListener;
         Bundle bundle = new Bundle();
@@ -63,7 +66,7 @@ public class SelectCircleBabyFragment extends BasePresenterFragment {
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
-                            if(response.success()){
+                            if (response.success()) {
                                 setData(response.getDataList());
                             } else {
                                 ToastUtil.showToast(response.getInfo());
@@ -77,6 +80,10 @@ public class SelectCircleBabyFragment extends BasePresenterFragment {
     }
 
     private void setData(List<QueryByCircleBabyObj> objs) {
+        if(objs.size()>0){
+            llNoData.setVisibility(View.VISIBLE);
+            return;
+        }
         if (circleByBabyAdapter == null) {
             rvContent.setLayoutManager(new GridLayoutManager(getActivity(), 2));
             circleByBabyAdapter = new CircleByBabyAdapter(getActivity(), objs, clickListener);

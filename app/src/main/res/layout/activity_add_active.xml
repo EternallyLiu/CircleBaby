@@ -29,7 +29,9 @@
         android:layout_marginRight="@dimen/size_12"
         android:background="@drawable/shape_etcount_bg"
         android:padding="@dimen/size_12"
-        android:hint="1~8个汉字"/>
+        android:hint="1~8个汉字"
+        android:singleLine="true"
+        android:maxLength="8"/>
 
     <Button
         android:id="@+id/btn_ok"
