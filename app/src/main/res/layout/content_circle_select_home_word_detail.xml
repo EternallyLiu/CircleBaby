@@ -9,7 +9,9 @@
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?actionBarSize" />
+        android:layout_marginTop="?actionBarSize"
+        android:clipToPadding="false"
+        android:paddingBottom="42dp" />
 
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"
@@ -50,5 +52,4 @@
             tools:text="已选6条记录" />
 
     </RelativeLayout>
-
 </RelativeLayout>
