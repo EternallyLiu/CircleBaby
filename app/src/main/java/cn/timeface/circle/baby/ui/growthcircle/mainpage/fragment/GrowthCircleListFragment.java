@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -44,6 +45,8 @@ public class GrowthCircleListFragment extends BaseFragment implements IEventBus 
 
     @Bind(R.id.sv_no_data)
     SwipeRefreshLayout svNoData;
+    @Bind(R.id.tv_create)
+    TextView tvCreate;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh_layout)
@@ -185,6 +188,7 @@ public class GrowthCircleListFragment extends BaseFragment implements IEventBus 
 
     private void showEmptyView(boolean show) {
         svNoData.setVisibility(show ? View.VISIBLE : View.GONE);
+        tvCreate.setVisibility(show ? View.VISIBLE : View.GONE);
         swipeRefreshLayout.setVisibility(show ? View.GONE : View.VISIBLE);
         recyclerView.setVisibility(show ? View.GONE : View.VISIBLE);
     }

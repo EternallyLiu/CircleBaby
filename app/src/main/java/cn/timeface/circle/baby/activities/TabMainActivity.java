@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.LoadMediaService;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.CountlyEventHelper;
+import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.dialogs.PublishDialog;
 import cn.timeface.circle.baby.events.ConfirmRelationEvent;
 import cn.timeface.circle.baby.events.EventTabMainWake;
@@ -48,6 +49,7 @@ import cn.timeface.circle.baby.fragments.MineFragment;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.api.models.DistrictModel;
 import cn.timeface.circle.baby.support.api.models.objs.BabyObj;
+import cn.timeface.circle.baby.support.api.models.objs.MiPushMsgInfoObj;
 import cn.timeface.circle.baby.support.api.models.responses.DistrictListResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.managers.services.SavePicInfoService;
@@ -58,7 +60,9 @@ import cn.timeface.circle.baby.ui.babyInfo.beans.BabyAttentionEvent;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.growth.fragments.PrintGrowthHomeFragment;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleMainActivity;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.fragment.GrowthCircleListFragment;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.mipush.TabMainPushHandler;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
@@ -100,6 +104,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
     private DeleteDialog dialog;
     private TFProgressDialog tfprogress;
 
+    // 透传消息处理
+    private TabMainPushHandler tabMainPushHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +127,7 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                 });
 
         setupBottomMenu();
-        if(FastData.getBabyObj() == null){
+        if (FastData.getBabyObj() == null) {
             ChangeBabyActivity.open(this);
         } else {
             showContent(TAB1);
@@ -151,12 +158,19 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
                         startService(new Intent(this, LoadMediaService.class));
                     }
                 });
+
+        tabMainPushHandler = new TabMainPushHandler();
+        tabMainPushHandler.register();
+        reqCircleStatus();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        if (tabMainPushHandler != null) {
+            tabMainPushHandler.unregister();
+        }
     }
 
     public static void open(Context context) {
@@ -437,4 +451,76 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             PublishActivity.open(this, PublishActivity.PHOTO);
         } else FragmentBridgeActivity.open(this, KithFragment.class.getSimpleName());
     }
+
+    // 查询当前缓存的圈子是否被解散/被移除
+    private void reqCircleStatus() {
+        if (FastData.getCircleId() != 0 && GrowthCircleObj.getInstance() != null) {
+            GrowthCircleObj circleObj = GrowthCircleObj.getInstance();
+            Subscription s = apiService.queryCircleStatus(circleObj.getCircleId())
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(
+                            response -> {
+                                if (response.success()) {
+                                    if (response.isRemoved() || response.isDisband()) {
+                                        FastData.clearCircleData();
+
+                                        CirclePassThroughMessageEvent event = new CirclePassThroughMessageEvent(response.isRemoved() ?
+                                                MiPushConstant.TYPE_CIRCLE_MEMBER_REMOVED :
+                                                MiPushConstant.TYPE_CIRCLE_DISBANDED
+                                        );
+                                        event.circleObj = circleObj;
+                                        EventBus.getDefault().post(event);
+                                    }
+                                }
+                            },
+                            throwable -> {
+                                Log.e(TAG, "queryCircleStatus: ", throwable);
+                            }
+                    );
+            addSubscription(s);
+        }
+    }
+
+
+    public static void openCircleFromPush(Context context, MiPushMsgInfoObj msgInfo) {
+        Intent intent = new Intent(context, TabMainActivity.class);
+        intent.putExtra("open_circle_tab", true);
+        intent.putExtra("MiPushMsgInfoObj", msgInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void openCircle(Context context, MiPushMsgInfoObj msgInfo) {
+        Intent intent = new Intent(context, TabMainActivity.class);
+        intent.putExtra("open_circle_tab", true);
+        intent.putExtra("MiPushMsgInfoObj", msgInfo);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+
+    private boolean clearCircleCache = false;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.i("-------->", "-------->open_circle_tab: " + getIntent().getBooleanExtra("open_circle_tab", false));
+        if (getIntent().getBooleanExtra("open_circle_tab", false)) {
+            getIntent().putExtra("open_circle_tab", false);
+            rgMain.check(R.id.rb_growth_circle);
+            if (getIntent().getSerializableExtra("MiPushMsgInfoObj") != null) {
+                MiPushMsgInfoObj pushMsgInfo = (MiPushMsgInfoObj) getIntent().getSerializableExtra("MiPushMsgInfoObj");
+                if (tabMainPushHandler != null) {
+                    tabMainPushHandler.handleCirclePushMessage(pushMsgInfo);
+                }
+            }
+        }
+
+        Log.i("-------->", "-------->clearCircleCache: " + clearCircleCache);
+        if (clearCircleCache) {
+            clearCircleCache = false;
+            FastData.clearCircleData();
+        }
+    }
+
 }

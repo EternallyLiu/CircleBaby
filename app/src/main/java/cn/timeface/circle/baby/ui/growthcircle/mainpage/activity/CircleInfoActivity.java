@@ -36,6 +36,7 @@ import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActiv
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.adapter.CircleInfoMemberGridAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.JoinCircleDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.JoinCircleCommitEvent;
 import cn.timeface.circle.baby.views.NoScrollGridView;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import rx.Subscription;
@@ -227,9 +228,12 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
             if (joinDialog == null) {
                 joinDialog = JoinCircleDialog.getInstance();
             }
-            joinDialog.setJoinMessage("我是" + FastData.getBabyNickName()
-                    + "的" + FastData.getRelationName());
-            joinDialog.setChildrenName(FastData.getBabyRealName());
+
+            if (!TextUtils.isEmpty(FastData.getBabyRealName())) {
+                joinDialog.setJoinMessage("我是" + FastData.getBabyRealName()
+                        + "的" + FastData.getRelationName());
+                joinDialog.setChildrenName(FastData.getBabyRealName());
+            }
             joinDialog.setPositiveListener(v -> {
                 if (TextUtils.isEmpty(joinDialog.getJoinMessage())) {
                     Toast.makeText(this, "请输入加圈留言", Toast.LENGTH_SHORT).show();
@@ -257,12 +261,12 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
                             dismissProgressDialog();
                             Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
                             if (response.success()) {
-                                EventBus.getDefault().post(
-                                        new CircleChangedEvent(circleId,
-                                                CircleChangedEvent.TYPE_JOINED)
-                                );
-                                showProgressDialog();
-                                reqData(circleObj.getCircleId());
+                                // 更新宝宝真实姓名
+                                if (TextUtils.isEmpty(FastData.getBabyRealName())) {
+                                    FastData.setBabyRealName(babyRealName);
+                                }
+                                EventBus.getDefault().post(new JoinCircleCommitEvent());
+                                finish();
                             }
                         },
                         throwable -> {

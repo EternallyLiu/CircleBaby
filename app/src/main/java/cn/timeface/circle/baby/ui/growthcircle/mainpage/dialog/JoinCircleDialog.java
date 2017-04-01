@@ -64,10 +64,16 @@ public class JoinCircleDialog extends DialogFragment {
 
     public void setJoinMessage(String joinMessage) {
         this.joinMessage = joinMessage;
+        etMessage.setHint(joinMessage);
+        etMessage.setText(joinMessage);
+        etMessage.setEnabled(false);
     }
 
     public void setChildrenName(String childrenName) {
         this.childrenName = childrenName;
+        etChildrenName.setHint(childrenName);
+        etChildrenName.setText(childrenName);
+        etChildrenName.setEnabled(false);
     }
 
     public void setPositiveListener(View.OnClickListener positiveListener) {

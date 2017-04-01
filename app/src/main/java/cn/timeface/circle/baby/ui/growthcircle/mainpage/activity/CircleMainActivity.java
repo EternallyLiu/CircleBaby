@@ -5,13 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -34,13 +33,13 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.response.CircleIndexInfoResponse;
-import cn.timeface.circle.baby.ui.circle.timelines.activity.HomwWorkListActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.mipush.CircleMainPushHandler;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
@@ -55,6 +54,8 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.iv_publish)
+    ImageView ivPublish;
 
     private int currentPage = 1;
     private static final int PAGE_SIZE = 20;
@@ -74,8 +75,23 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     private long circleId;
     private GrowthCircleObj circleObj;
 
+    // 透传消息处理
+    private CircleMainPushHandler circleMainPushHandler;
+
     public static void open(Context context) {
         context.startActivity(new Intent(context, CircleMainActivity.class));
+    }
+
+    public static void open(Context context, long circleId) {
+        Intent intent = new Intent(context, CircleMainActivity.class);
+        intent.putExtra("circle_id", circleId);
+        context.startActivity(intent);
+    }
+
+    public static void openFromPush(Context context) {
+        Intent intent = new Intent(context, CircleMainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 
     @Override
@@ -87,8 +103,15 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         setupPTR();
         initHeaderFooter();
 
-        circleId = FastData.getCircleId();
+        circleId = getIntent().getLongExtra("circle_id", 0);
+        if (circleId <= 0) {
+            circleId = FastData.getCircleId();
+        }
+
         setupData();
+
+        circleMainPushHandler = new CircleMainPushHandler();
+        circleMainPushHandler.register();
     }
 
     private void setupPTR() {
@@ -112,10 +135,12 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
 
             @Override
             public void onScrollUp(int firstVisibleItem) {
+                ivPublish.setVisibility(View.GONE);
             }
 
             @Override
             public void onScrollDown(int firstVisibleItem) {
+                ivPublish.setVisibility(View.VISIBLE);
             }
         };
 
@@ -280,10 +305,12 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     @Subscribe
     public void onEvent(CircleChangedEvent event) {
         if (event.type == CircleChangedEvent.TYPE_QUIT
-                || event.type == CircleChangedEvent.TYPE_DISBANDED
-                || event.type == CircleChangedEvent.TYPE_INFO_CHANGED) {
+                || event.type == CircleChangedEvent.TYPE_DISBANDED) {
             FastData.clearCircleData();
             finish();
+        } else if (event.type == CircleChangedEvent.TYPE_INFO_CHANGED) {
+            // 刷新数据
+            setupData();
         }
     }
 
@@ -297,5 +324,8 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        if (circleMainPushHandler != null) {
+            circleMainPushHandler.unregister();
+        }
     }
 }

@@ -102,7 +102,7 @@ public class CreateCircleActivity extends BaseAppCompatActivity {
                                         new CircleChangedEvent(response.getCircleId(),
                                                 CircleChangedEvent.TYPE_CREATED)
                                 );
-                                showCreatedDialog();
+                                showCreatedDialog(response.getCircleId());
                             } else {
                                 Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
                             }
@@ -154,11 +154,12 @@ public class CreateCircleActivity extends BaseAppCompatActivity {
         inputRealNameDialog.show(getSupportFragmentManager(), "JoinCircleDialog");
     }
 
-    private void showCreatedDialog() {
+    private void showCreatedDialog(long circleId) {
         TFDialog dialog = TFDialog.getInstance();
         dialog.setMessage("你已成功创建圈子！");
         dialog.setPositiveButton("确定", v -> {
             dialog.dismiss();
+            CircleMainActivity.open(this, circleId);
             finish();
         });
         dialog.setCancelable(false);

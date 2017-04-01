@@ -20,6 +20,7 @@ import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
 import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.TeacherAuthoActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleInfoActivity;
 import cn.timeface.circle.baby.views.ShareDialog;
 
@@ -37,6 +38,8 @@ public class CircleMoreDialog extends DialogFragment {
     TextView tvMemberManager;
     @Bind(R.id.tv_publish_homework)
     TextView tvPublishHomework;
+    @Bind(R.id.tv_teacher_auth)
+    TextView tvTeacherAuth;
 
     private GrowthCircleObj circleObj;
 
@@ -106,6 +109,9 @@ public class CircleMoreDialog extends DialogFragment {
                 break;
             case R.id.tv_publish_homework:
                 PublishActivity.openSchoolTask(getContext());
+                break;
+            case R.id.tv_teacher_auth:
+                TeacherAuthoActivity.open(getContext());
                 break;
         }
     }

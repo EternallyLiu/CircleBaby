@@ -91,7 +91,8 @@ public class TFPTRRecyclerViewHelper {
 //                        Glide.with(mContext).resumeRequests();
 
                         //加载更多
-                        if (lastVisibleItem + 1 == recyclerView.getAdapter().getItemCount()
+                        if (recyclerView.getAdapter() != null
+                                && lastVisibleItem + 1 == recyclerView.getAdapter().getItemCount()
                                 && !isLoad
                                 && recyclerView.getAdapter().getItemCount() > 1) {
                             doLoadMore();

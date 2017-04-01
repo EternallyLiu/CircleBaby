@@ -78,22 +78,24 @@
                     android:id="@+id/iv_intro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="130dp"
                     android:adjustViewBounds="true"
                     android:src="@drawable/bg_growth_circle_empty" />
-
-                <TextView
-                    android:id="@+id/tv_create"
-                    style="@style/TimeFaceTheme.IOS.Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/view_space_xlarge"
-                    android:layout_marginTop="@dimen/view_space_medium"
-                    android:clickable="true"
-                    android:text="马上创建"
-                    android:textSize="@dimen/text_normal" />
             </LinearLayout>
         </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/tv_create"
+        style="@style/TimeFaceTheme.IOS.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/view_space_xlarge"
+        android:clickable="true"
+        android:text="马上创建"
+        android:textSize="@dimen/text_normal"
+        android:visibility="gone" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
@@ -117,6 +119,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title"
+        android:background="@android:color/white"
         app:ev_showRetryButton="false"
         app:ev_showSubtitle="false" />
 </RelativeLayout>

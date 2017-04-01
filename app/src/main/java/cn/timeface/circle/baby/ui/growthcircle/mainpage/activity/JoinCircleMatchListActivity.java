@@ -11,6 +11,8 @@ import android.view.View;
 
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +20,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.adapter.JoinCircleMatchAdapter;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.JoinCircleCommitEvent;
 
 /**
  * 加入圈子 -> 匹配到的圈子
  */
-public class JoinCircleMatchListActivity extends BaseAppCompatActivity {
+public class JoinCircleMatchListActivity extends BaseAppCompatActivity implements IEventBus {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -77,6 +81,11 @@ public class JoinCircleMatchListActivity extends BaseAppCompatActivity {
             GrowthCircleObj item = (GrowthCircleObj) v.getTag(R.string.tag_obj);
             CircleInfoActivity.open(this, item);
         }
+    }
+
+    @Subscribe
+    public void onEvent(JoinCircleCommitEvent event) {
+        finish();
     }
 
     @Override

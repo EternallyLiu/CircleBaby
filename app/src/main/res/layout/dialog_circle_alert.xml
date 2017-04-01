@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="40dp"
@@ -11,7 +12,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:background="@drawable/bg_dialog">
 
         <LinearLayout
@@ -27,12 +27,13 @@
             android:paddingTop="@dimen/view_space_normal">
 
             <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/view_space_normal"
                 android:gravity="center"
                 android:padding="@dimen/view_space_small"
-                android:text="加圈申请"
+                android:text="提示"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_normal"
                 android:visibility="visible" />
@@ -43,50 +44,15 @@
                 android:background="#9b9b9b" />
 
             <TextView
+                android:id="@+id/tv_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/view_space_normal"
                 android:paddingTop="@dimen/view_space_normal"
-                android:text="加圈留言"
                 android:textColor="@color/text"
-                android:textSize="@dimen/text_normal" />
-
-            <EditText
-                android:id="@+id/et_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_create_circle_edit_bg"
-                android:hint=""
-                android:maxLength="16"
-                android:maxLines="1"
-                android:padding="@dimen/view_space_normal"
-                android:textColor="@color/text"
-                android:textColorHint="@color/text_color_hint"
-                android:textSize="@dimen/text_normal" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingBottom="@dimen/view_space_normal"
-                android:paddingTop="@dimen/view_space_normal"
-                android:text="请输入孩子的真实姓名"
-                android:textColor="@color/text"
-                android:textSize="@dimen/text_normal" />
-
-            <EditText
-                android:id="@+id/et_children_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_create_circle_edit_bg"
-                android:hint="请在此输入孩子姓名"
-                android:maxLength="16"
-                android:maxLines="1"
-                android:padding="@dimen/view_space_normal"
-                android:textColor="@color/text"
-                android:textColorHint="@color/text_color_hint"
-                android:textSize="@dimen/text_normal" />
+                android:textSize="@dimen/text_normal"
+                tools:text="圈子被解散了" />
 
             <TextView
                 android:id="@+id/tv_submit"
