@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,6 +62,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEven
 import cn.timeface.circle.baby.ui.circle.timelines.events.HomeWorkListEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleGridStaggerLookup;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import rx.Observable;
@@ -158,7 +160,7 @@ public class PublishActivity extends BaseAppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_complete, menu);
-        menu.findItem(R.id.complete).setTitle(R.string.comfirm);
+        menu.findItem(R.id.complete).setTitle(type == PublishAdapter.TYPE_WORK ? R.string.comfirm : R.string.publish);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -166,7 +168,26 @@ public class PublishActivity extends BaseAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.complete)
             sendTimeLine();
+        else if (item.getItemId() == android.R.id.home) {
+            DeleteDialog dialog = new DeleteDialog(this);
+            dialog.setMessage("离开后编辑内容会丢失，您确定这么做吗？");
+            dialog.setSubmitListener(() -> onBackPressed());
+            dialog.show();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            DeleteDialog dialog = new DeleteDialog(this);
+            dialog.setMessage("离开后编辑内容会丢失，您确定这么做吗？");
+            dialog.setSubmitListener(() -> onBackPressed());
+            dialog.show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void reqData() {
@@ -203,12 +224,8 @@ public class PublishActivity extends BaseAppCompatActivity {
 
     private void sendHomwWork() {
         CircleHomeworkObj homework = (CircleHomeworkObj) adapter.getContentObj();
-        if (homework.getMediaList().size() <= 0 && TextUtils.isEmpty(homework.getContent())) {
-            ToastUtil.showToast(this, "作业内容不能为空");
-            return;
-        }
         if (Utils.getByteSize(homework.getContent()) > 1200) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 1200));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 600));
             return;
         }
         for (ImgObj imgObj : adapter.getSelImage()) {
@@ -258,10 +275,10 @@ public class PublishActivity extends BaseAppCompatActivity {
             ToastUtil.showToast(this, getString(R.string.school_title_input_tip));
             return;
         } else if (Utils.getByteSize(schoolTask.getTitle()) > 20) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 20));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 10));
             return;
         } else if (Utils.getByteSize(schoolTask.getContent()) > 1200) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 1200));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "作业描述", 600));
             return;
         }
         for (ImgObj imgObj : adapter.getSelImage()) {
@@ -315,10 +332,10 @@ public class PublishActivity extends BaseAppCompatActivity {
             timelineObj.setCreateDate(System.currentTimeMillis());
         }
         if (Utils.getByteSize(timelineObj.getTitle()) > 20) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 20));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "标题", 10));
             return;
         } else if (Utils.getByteSize(timelineObj.getContent()) > 400) {
-            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "内容", 400));
+            ToastUtil.showToast(this, String.format("%s" + getString(R.string.input_max_tip), "内容", 200));
             return;
         }
         for (ImgObj imgObj : adapter.getSelImage()) {

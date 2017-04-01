@@ -163,7 +163,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         if (index >= 0 && index >= contentObj.getMediaList().size()) {
             index = index - contentObj.getMediaList().size();
             if (index >= 0 && index < selImage.size()) {
-                ivImg.setTag(R.id.recycler_item_click_tag, index+contentObj.getMediaList().size());
+                ivImg.setTag(R.id.recycler_item_click_tag, index + contentObj.getMediaList().size());
                 GlideUtil.displayImage(selImage.get(index).getLocalPath(), ivImg, false);
             } else {
                 ivImg.setTag(R.id.recycler_item_click_tag, -1);
@@ -181,7 +181,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         TextView tvActive = ViewHolder.getView(view, R.id.tv_active);
         view.setOnClickListener(this);
         CircleTimelineObj timelineObj = (CircleTimelineObj) contentObj;
-        if (timelineObj.getActivityAlbum() == null) {
+        if (timelineObj.getActivityAlbum() == null || TextUtils.isEmpty(timelineObj.getActivityAlbum().getAlbumName())) {
             tvActive.setText(R.string.unjoin_active_tip);
         } else tvActive.setText(timelineObj.getActivityAlbum().getAlbumName());
     }
@@ -219,6 +219,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             } else {
                 etInput.setText("");
                 tvTextCount.setText("0 / 10");
+                etInput.setHint(getType() == TYPE_TIMELINE ? "请输入标题（可不填）" : "请输入作业标题（必填）");
             }
             int size = Utils.getByteSize(contentObj.getTitle());
             int count = size / 2;
@@ -242,8 +243,8 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             etInput.setText("");
         }
         if (getType() != TYPE_TIMELINE) {
-            etInput.setHint("请输入作业描述（选填）");
-        }
+            etInput.setHint("请输入作业描述");
+        } else etInput.setHint(R.string.please_input_want_say);
         int size = Utils.getByteSize(contentObj.getContent());
         int count = size / 2;
         if (size % 2 != 0) count++;
@@ -355,7 +356,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                                 for (ImgObj imgObj : selImage) {
                                     list.add(imgObj.getCircleMediaObj());
                                 }
-                                FragmentBridgeActivity.openBigimageFragment(context(), 0, list, MediaObj.getUrls(list), index, getType()==TYPE_TIMELINE?BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR:BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, false, true);
+                                FragmentBridgeActivity.openBigimageFragment(context(), 0, list, MediaObj.getUrls(list), index, getType() == TYPE_TIMELINE ? BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR : BigImageFragment.CIRCLE_MEDIA_IMAGE_NONE, false, true);
                             }
                         }, throwable -> LogUtil.showError(throwable));
                 break;
@@ -370,6 +371,13 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
         switch (view.getId()) {
             case R.id.et_input_title:
                 Observable.defer(() -> Observable.just(content))
+                        .doOnNext(s -> {
+                            if (Utils.getByteSize(s) >= 20) {
+                                s = Utils.subString(s, 20);
+                                view.setText(s);
+                                view.setSelection(s.length());
+                            }
+                        })
                         .doOnNext(s -> contentObj.setTitle(s))
                         .filter(s -> view.getTag(R.id.recycler_item_input_tag) != null)
                         .doOnNext(s -> {
@@ -387,6 +395,13 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
                 break;
             case R.id.et_input:
                 Observable.defer(() -> Observable.just(content))
+                        .doOnNext(s -> {
+                            if (Utils.getByteSize(s) >= (getType() == TYPE_TIMELINE ? 400 : 1200)) {
+                                s = Utils.subString(s, getType() == TYPE_TIMELINE ? 400 : 1200);
+                                view.setText(s);
+                                view.setSelection(s.length());
+                            }
+                        })
                         .doOnNext(s -> contentObj.setContent(s))
                         .filter(s -> view.getTag(R.id.recycler_item_input_tag) != null)
                         .doOnNext(s -> {

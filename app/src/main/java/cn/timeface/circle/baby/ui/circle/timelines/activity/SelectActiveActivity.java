@@ -14,12 +14,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -35,7 +37,7 @@ import cn.timeface.circle.baby.views.DividerItemDecoration;
  * author : wangshuai Created on 2017/3/16
  * email : wangs1992321@gmail.com
  */
-public class SelectActiveActivity extends BaseAppCompatActivity {
+public class SelectActiveActivity extends BaseAppCompatActivity implements IEventBus{
 
     @Bind(R.id.title)
     TextView title;
@@ -114,6 +116,12 @@ public class SelectActiveActivity extends BaseAppCompatActivity {
                     adapter.getEmptyItem().setOperationType(-1);
                     LogUtil.showError(throwable);
                 }));
+    }
+
+    @Subscribe
+    public void onEvent(ActiveSelectEvent event){
+        if (event.getType()==0)
+            finish();
     }
 
     @Override

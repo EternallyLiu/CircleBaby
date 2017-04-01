@@ -63,7 +63,7 @@
                 android:padding="@dimen/view_space_normal"
                 android:textColor="@color/text"
                 android:textColorHint="@color/text_color_hint"
-                android:textSize="@dimen/text_normal" />
+                android:textSize="@dimen/text_small" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                 android:gravity="center_vertical"
                 android:paddingBottom="@dimen/view_space_normal"
                 android:paddingTop="@dimen/view_space_normal"
-                android:text="请输入孩子的真实姓名"
+                android:text="请输入孩子真实姓名"
                 android:textColor="@color/text"
                 android:textSize="@dimen/text_normal" />
 
@@ -86,17 +86,15 @@
                 android:padding="@dimen/view_space_normal"
                 android:textColor="@color/text"
                 android:textColorHint="@color/text_color_hint"
-                android:textSize="@dimen/text_normal" />
+                android:textSize="@dimen/text_small" />
 
             <TextView
                 android:id="@+id/tv_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/view_space_large"
                 android:layout_marginBottom="@dimen/view_space_medium"
-                android:layout_marginLeft="@dimen/view_space_normal"
-                android:layout_marginRight="@dimen/view_space_medium"
                 android:layout_marginTop="@dimen/view_space_medium"
-                android:background="@drawable/dialog_btn_orange"
+                android:background="@drawable/dialog_btn_main"
                 android:gravity="center"
                 android:minWidth="120dp"
                 android:padding="@dimen/view_space_small"

@@ -43,10 +43,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_gravity="bottom"
+            android:singleLine="true"
             android:layout_toLeftOf="@+id/tv_homework_detail"
             android:background="@android:color/white"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/text_color12"
-            android:textSize="@dimen/text_normal"
+            android:textSize="14sp"
             tools:text="王老师" />
 
         <TextView

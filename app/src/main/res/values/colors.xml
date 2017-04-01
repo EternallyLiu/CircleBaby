@@ -165,4 +165,6 @@
     <color name="iron">#CCCCCC</color>
     <color name="possible_result_points">#c0ffbd21</color>
     <color name="lily_white">#EBEBEB</color>
+    <color name="jumbo">#858585</color>
+    <color name="star_dust">#A0A0A0</color>
 </resources>

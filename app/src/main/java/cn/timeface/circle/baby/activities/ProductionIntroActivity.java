@@ -22,6 +22,9 @@ import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServeHomeWorksActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectServerTimesActivity;
+import cn.timeface.circle.baby.ui.circle.activities.CircleSelectSeverAlbumsActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerTimeActivity;
 
@@ -155,6 +158,26 @@ public class ProductionIntroActivity extends BaseAppCompatActivity {
                 CreateCalendarDialog createCalendarDialog = CreateCalendarDialog.newInstance();
                 createCalendarDialog.setCancelable(true);
                 createCalendarDialog.show(getSupportFragmentManager(), "CreateCalendarDialog");
+                break;
+
+            //家校纪念册
+            case BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL:
+                CircleSelectServeHomeWorksActivity.open(this, String.valueOf(FastData.getCircleId()));
+                break;
+
+            //圈时光书
+            case BookModel.CIRCLE_BOOK_TYPE_TIME:
+                CircleSelectServerTimesActivity.open(
+                        this, BookModel.CIRCLE_BOOK_TYPE_TIME, 
+                        TypeConstants.OPEN_BOOK_TYPE_CIRCLE_TIME_BOOK,
+                        "", "", String.valueOf(FastData.getCircleId()));
+                break;
+
+            //圈照片书
+            case BookModel.CIRCLE_BOOK_TYPE_PHOTO:
+                CircleSelectSeverAlbumsActivity.open(
+                        this, String.valueOf(FastData.getCircleId()),
+                        BookModel.CIRCLE_BOOK_TYPE_PHOTO, "", 0, "");
                 break;
         }
     }

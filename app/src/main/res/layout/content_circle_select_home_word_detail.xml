@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/bg_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_color2">
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="?actionBarSize"
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="?actionBarSize" />
 
     <cn.timeface.circle.baby.views.TFStateView
         android:id="@+id/tf_stateView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <RelativeLayout
         android:id="@+id/rl_photo_tip"
@@ -36,6 +36,7 @@
             android:paddingRight="@dimen/view_space_normal"
             android:text="全选"
             android:textColor="@color/white"
+            android:textSize="16sp"
             android:visibility="visible" />
 
         <TextView

@@ -41,7 +41,6 @@ public class InputListenerEditText extends EditText implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        LogUtil.showLog("s==="+s.toString());
         if (getInputCallBack() != null) getInputCallBack().callBack(this, s.toString());
     }
 

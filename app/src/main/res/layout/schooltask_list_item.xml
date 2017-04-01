@@ -20,8 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:paddingBottom="@dimen/size_24"
-            android:paddingTop="@dimen/size_12"
+            android:paddingBottom="@dimen/size_34"
+            android:paddingTop="@dimen/size_20"
             timeLine:beginLine="@color/lily_white"
             timeLine:endLine="@color/lily_white"
             timeLine:lineSize="@dimen/size_2"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/size_4"
-            android:layout_marginTop="@dimen/size_8"
+            android:layout_marginTop="@dimen/size_16"
             android:layout_toRightOf="@+id/line"
             android:gravity="center_vertical"
             android:orientation="vertical">
@@ -45,16 +45,18 @@
                 android:layout_above="@+id/v_center"
                 android:gravity="center_vertical"
                 android:textColor="@color/text"
-                android:textSize="@dimen/text_normal"
-                tools:something="2017年03月"/>
+                android:textSize="@dimen/text_small"
+                />
 
             <TextView
                 android:id="@+id/tv_date_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_4"
                 android:gravity="right|center_vertical"
-                android:textSize="@dimen/text_small"
-                tools:something="由汪老师发起"/>
+                android:textColor="@color/star_dust"
+                android:textSize="@dimen/text_small_12"
+                />
         </LinearLayout>
     </RelativeLayout>
 
@@ -62,8 +64,8 @@
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
-        android:padding="@dimen/size_10"
         android:layout_height="wrap_content"
+        android:padding="@dimen/size_10"
         android:text="标题"
         android:textColor="@color/black"
         android:textSize="@dimen/text_normal"
@@ -74,9 +76,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:paddingLeft="@dimen/size_10"
-        android:paddingRight="@dimen/size_10"
         android:paddingBottom="@dimen/size_10"
+        android:paddingLeft="@dimen/size_10"
+        android:lineSpacingExtra="@dimen/size_2"
+        android:paddingRight="@dimen/size_10"
         android:text="作业描述"
         android:textColor="@color/aluminum"
         android:textSize="@dimen/text_small"/>
@@ -103,19 +106,19 @@
 
         <TextView
             android:id="@+id/tv_commited"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/size_61"
+            android:layout_height="@dimen/size_20"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/homework_commited"
-            android:gravity="right|center_vertical"
+            android:gravity="center"
             android:paddingBottom="@dimen/size_2"
-            android:paddingLeft="@dimen/size_6"
-            android:paddingRight="@dimen/size_6"
+            android:paddingLeft="@dimen/size_12"
+            android:paddingRight="@dimen/size_12"
             android:paddingTop="@dimen/size_2"
             android:text="已提交"
-            android:textColor="@color/sea_buckthorn"
-            android:textSize="@dimen/text_normal"/>
+            android:textColor="@color/red"
+            android:textSize="@dimen/text_small_10"/>
     </RelativeLayout>
 
 

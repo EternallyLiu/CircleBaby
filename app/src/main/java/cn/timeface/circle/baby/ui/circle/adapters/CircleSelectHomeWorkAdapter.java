@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.ui.circle.adapters;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -104,12 +105,15 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
             holder.tvTitle.setText(item.getDate());
             Drawable drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_time_clock);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            Paint paint = holder.tvTitle.getPaint();
             if(!TextUtils.isEmpty(taskId)){
                 holder.tvTitle.setCompoundDrawables(null, null, null, null);
                 holder.tvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.text_color9));
+                paint.setFakeBoldText(true);
             } else {
                 holder.tvTitle.setCompoundDrawables(drawable, null, null, null);
                 holder.tvTitle.setTextColor(ContextCompat.getColor(mContext, R.color.text_color12));
+                paint.setFakeBoldText(false);
             }
             holder.cbTitleAllSel.setTag(R.string.tag_index, position);
             holder.cbTitleAllSel.setChecked(everyGroupUnSelImgSize[dataPosition] == 0);
@@ -129,11 +133,14 @@ public class CircleSelectHomeWorkAdapter extends BaseRecyclerAdapter<CircleHomeW
                     holder.flImage.setVisibility(View.GONE);
                 }
                 DateUtils.formatDateTime(mContext, timeLineObj.getHomework().getCreateDate(), DateUtils.FORMAT_SHOW_WEEKDAY);
+                Paint paint = holder.tvTitle.getPaint();
                 if(!TextUtils.isEmpty(taskId)){
                     holder.tvTitle.setText(DateUtils.formatDateTime(mContext, timeLineObj.getHomework().getCreateDate(), DateUtils.FORMAT_SHOW_DATE)
                             + DateUtils.formatDateTime(mContext, timeLineObj.getHomework().getCreateDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
+                    paint.setFakeBoldText(false);
                 } else {
                     holder.tvTitle.setText(timeLineObj.getSchoolTaskName());
+                    paint.setFakeBoldText(true);
                 }
                 holder.tvImgCount.setText(String.valueOf(timeLineObj.getHomework().getMediaList().size()) + "张");
                 holder.tvContent.setText(timeLineObj.getHomework().getContent());

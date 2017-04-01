@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_color8"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg_tag_color"
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
 
-    <include layout="@layout/head" />
+    <include layout="@layout/head"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,53 +15,58 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/size_10">
 
-            <include layout="@layout/tag_item_content" />
+            <include layout="@layout/tag_item_content"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/size_11"
+                android:layout_marginTop="@dimen/size_11"
+                android:background="@color/alabaster"
+                android:padding="@dimen/size_12"
                 android:text="@string/tag_history"
                 android:textColor="@color/black_overlay"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_small"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/size_12"
                 android:layout_marginRight="@dimen/size_12"
-                android:background="@color/sea_buckthorn" />
+                android:background="@color/stroke"/>
 
             <cn.timeface.circle.baby.ui.images.views.FlowLayout
                 android:id="@+id/tag_his"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_4"
-                android:padding="@dimen/size_6" />
+                android:background="@color/alabaster"
+                android:padding="@dimen/size_12"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/size_11"
+                android:padding="@dimen/size_12"
+                android:layout_marginTop="@dimen/size_11"
+                android:background="@color/alabaster"
                 android:text="@string/tag_give_tip"
                 android:textColor="@color/black_overlay"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_small"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/size_12"
                 android:layout_marginRight="@dimen/size_12"
-                android:background="@color/sea_buckthorn" />
+                android:background="@color/stroke"/>
 
             <cn.timeface.circle.baby.ui.images.views.FlowLayout
                 android:id="@+id/tag_suggest"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_4"
-                android:padding="@dimen/size_6" />
+                android:layout_height="match_parent"
+                android:background="@color/alabaster"
+                android:padding="@dimen/size_6"/>
 
         </LinearLayout>
     </ScrollView>

@@ -144,7 +144,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         if (currentTimeLineObj != null)
             currentTimeLineId = currentTimeLineObj.getCircleTimelineId();
         init();
-        reqData();
+//        reqData();
 //        initRecyclerView();
 
     }
@@ -254,8 +254,8 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
                 actionDialog.setClickListener(this);
                 actionDialog.isShared(true);
                 actionDialog.isDownload(false);
-                actionDialog.isDelete(true);
-                actionDialog.isEdit(true);
+                actionDialog.isDelete(FastData.getCircleUserInfo().getCircleUserType() == 1 || currentTimeLineObj.getPublisher().getCircleUserId() == FastData.getCircleUserId());
+                actionDialog.isEdit(FastData.getCircleUserInfo().getCircleUserType() == 1 || currentTimeLineObj.getPublisher().getCircleUserId() == FastData.getCircleUserId());
             }
             actionDialog.show();
         }
@@ -471,8 +471,9 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
             case 2:
                 if (deleteDialog == null) {
                     deleteDialog = new DeleteDialog(this);
-                    deleteDialog.setMessage("您确定删除这条圈动态么？");
+                    deleteDialog.setMessage("删除动态后，相关评论和照片也会被删除。已生成的圈作品不会受到影响。");
                     deleteDialog.setMessageGravity(Gravity.CENTER);
+                    deleteDialog.getSubmit().setText("确认删除");
                 }
                 deleteDialog.setSubmitListener(() -> addSubscription(apiService.deleteCircleTimeLine(currentTimeLineObj.getCircleTimelineId())
                         .compose(SchedulersCompat.applyIoSchedulers()).subscribe(baseResponse -> {

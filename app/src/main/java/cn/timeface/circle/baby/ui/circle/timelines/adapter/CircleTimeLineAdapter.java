@@ -30,6 +30,7 @@ import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.utils.DateUtil;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
@@ -146,6 +147,7 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
         RelativeLayout rlPicCount = ViewHolder.getView(contentView, R.id.rl_pic_count);
         tvDelete.setTag(R.id.recycler_item_click_tag, timelineObj);
         tvDelete.setOnClickListener(this);
+        tvDelete.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 1 || timelineObj.getPublisher().getCircleUserId() == FastData.getCircleUserId() ? View.VISIBLE : View.GONE);
         int count = doGrid(gv, position, timelineObj.getMediaList());
         if (count < timelineObj.getMediaList().size()) {
             rlPicCount.setVisibility(View.VISIBLE);
@@ -291,7 +293,7 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
                         tfStateView.showException(getEmptyItem().getThrowable());
                         break;
                     case 0:
-                        tfStateView.empty(R.string.circle_no_dynamic);
+                        tfStateView.empty(R.string.circle_no_dynamic, R.drawable.ic_dynamic_empty);
                         break;
                     case 1:
                         tfStateView.loading();
@@ -337,8 +339,9 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
             case R.id.tv_delete:
                 if (deleteDialog == null) {
                     deleteDialog = new DeleteDialog(context());
-                    deleteDialog.setMessage("您确定删除这条圈动态么？");
+                    deleteDialog.setMessage("删除动态后，相关评论和照片也会被删除。已生成的圈作品不会受到影响。");
                     deleteDialog.setMessageGravity(Gravity.CENTER);
+                    deleteDialog.getSubmit().setText("确认删除");
                 }
                 deleteDialog.setSubmitListener(() -> Observable.defer(() -> Observable.just((CircleTimelineObj) v.getTag(R.id.recycler_item_click_tag)))
                         .filter(circleTimeLineObj -> circleTimeLineObj != null)
