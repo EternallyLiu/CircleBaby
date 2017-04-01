@@ -8,11 +8,18 @@
         android:id="@+id/toolbar_layout"
         layout="@layout/layout_toolbar" />
 
-    <WebView
-        android:id="@+id/web_view"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar_layout" />
+        android:clipToPadding="false"
+        android:paddingBottom="40dp">
+
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar_layout" />
+    </android.support.v4.widget.NestedScrollView>
 
     <TextView
         android:id="@+id/tv_create"
