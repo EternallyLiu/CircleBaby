@@ -134,7 +134,18 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
 
         long circleUserId = circleUserInfo.getCircleUserId();
         int circleUserType = circleUserInfo.getCircleUserType();
-        if (circleUserIdself == circleUserId && circleUserType == 1) {
+        if (circleUserIdself == circleUserId && circleUserType == 1&&circleUserInfo.getCircleExpertType()==2) {
+            getSupportActionBar().setTitle("我的圈资料");
+            tvBtnUp.setText("修改宝宝姓名");
+            tvBtnMid.setText("修改昵称");
+            tvBtnDown.setVisibility(View.GONE);
+            tvBtnUp.setVisibility(View.VISIBLE);
+            tvBtnMid.setVisibility(View.VISIBLE);
+            rvCloseCircle.setVisibility(View.GONE);
+            tvWantReason.setVisibility(View.GONE);
+            tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
+            tvBtnMid.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
+        } else if (circleUserIdself == circleUserId && circleUserType == 1) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改宝宝姓名");
             tvBtnMid.setText("修改昵称");
@@ -252,7 +263,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvBtnUp.setOnClickListener(v -> joinCheck(1));
             tvBtnDown.setOnClickListener(v -> joinCheck(0));
         } else {
-            getSupportActionBar().setTitle("我的圈资料");
+            getSupportActionBar().setTitle("TA的圈资料");
             tvBtnDown.setVisibility(View.GONE);
             tvBtnUp.setVisibility(View.GONE);
             tvBtnMid.setVisibility(View.GONE);

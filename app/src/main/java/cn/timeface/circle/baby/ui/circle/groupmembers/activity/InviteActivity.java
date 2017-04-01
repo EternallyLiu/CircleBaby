@@ -16,10 +16,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.response.QrcodeResponse;
 import cn.timeface.circle.baby.views.ShareDialog;
+import cn.timeface.common.utils.ShareSdkUtil;
 import rx.Subscription;
 import rx.functions.Action1;
 
@@ -81,7 +83,8 @@ public class InviteActivity extends BaseAppCompatActivity {
 
     @OnClick(R.id.tv_share_circle)
     public void clickShare(View view) {
-        new ShareDialog(this).share("成长圈", "快把这个成长圈分给你的朋友吧！"
-                , "http://img1.timeface.cn/uploads/avator/default.png", "http://img1.timeface.cn/uploads/avator/default.png");
+        new ShareDialog(this).share(FastData.getUserName()+"请你加圈", GrowthCircleObj.getInstance().getCircleName()+FastData.getUserName()+"邀请你加入，在这里一起记录宝宝的学习成长时光！"
+                , ShareSdkUtil.getImgStrByResource(this, R.mipmap.ic_launcher),
+                " http://stg3.v5time.net/baby/growthCircleShare/index.html?circleId="+circleObj.getCircleId()+"&circleMemberId="+ FastData.getUserId());
     }
 }

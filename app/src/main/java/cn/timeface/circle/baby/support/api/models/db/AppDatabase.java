@@ -11,5 +11,5 @@ public class AppDatabase {
 
     public static final String NAME = "AppDatabase";
 
-    public static final int VERSION = 13;
+    public static final int VERSION = 14;
 }

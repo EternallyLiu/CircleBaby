@@ -46,12 +46,12 @@ public class PhotosShowAdapter extends RecyclerView.Adapter<PhotosShowAdapter.Vi
                 .error(R.mipmap.ic_broken_image_black_48dp)
                 .into(holder.mImageView);
 
-        holder.mImageView.setOnClickListener(new View.OnClickListener() {
+        /*holder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mOnPhotoClickListener.onClick(v,position,false);
             }
-        });
+        });*/
     }
     public void addAllDate(ArrayList<String> mPathList){
         this.mPathList.addAll(mPathList);

@@ -53,8 +53,19 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
     protected String circleAvatarUrl; //成长圈用户头像
     @Column
     protected String circleNickName;  //成长圈用户昵称
+    @Column
+    protected int circleExpertType;  //用户的副类型
 
     public CircleUserInfo() {
+    }
+
+    public CircleUserInfo(long circleUserId, long circleId, int circleUserType, String circleAvatarUrl, String circleNickName, int circleExpertType) {
+        this.circleUserId = circleUserId;
+        this.circleId = circleId;
+        this.circleUserType = circleUserType;
+        this.circleAvatarUrl = circleAvatarUrl;
+        this.circleNickName = circleNickName;
+        this.circleExpertType = circleExpertType;
     }
 
     public CircleUserInfo(int circleUserType, String circleAvatarUrl, String circleNickName) {
@@ -77,6 +88,26 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
 
     public void setCircleAvatarUrl(String circleAvatarUrl) {
         this.circleAvatarUrl = circleAvatarUrl;
+    }
+
+    public static CircleUserInfo getCurrentUserInfo() {
+        return currentUserInfo;
+    }
+
+    public static void setCurrentUserInfo(CircleUserInfo currentUserInfo) {
+        CircleUserInfo.currentUserInfo = currentUserInfo;
+    }
+
+    public int getCircleExpertType() {
+        return circleExpertType;
+    }
+
+    public void setCircleExpertType(int circleExpertType) {
+        this.circleExpertType = circleExpertType;
+    }
+
+    public static Creator<CircleUserInfo> getCREATOR() {
+        return CREATOR;
     }
 
     public String getCircleNickName() {
@@ -158,6 +189,7 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         dest.writeInt(this.circleUserType);
         dest.writeString(this.circleAvatarUrl);
         dest.writeString(this.circleNickName);
+        dest.writeInt(this.circleExpertType);
     }
 
     protected CircleUserInfo(Parcel in) {
@@ -166,6 +198,7 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         this.circleUserType = in.readInt();
         this.circleAvatarUrl = in.readString();
         this.circleNickName = in.readString();
+        this.circleExpertType = in.readInt();
     }
 
     public static final Creator<CircleUserInfo> CREATOR = new Creator<CircleUserInfo>() {

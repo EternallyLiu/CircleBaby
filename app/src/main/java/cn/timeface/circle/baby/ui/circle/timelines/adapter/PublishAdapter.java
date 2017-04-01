@@ -19,7 +19,6 @@ import com.wechat.photopicker.fragment.BigImageFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
@@ -41,7 +40,6 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimelineObj;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.SelectActiveActivity;
-import cn.timeface.circle.baby.ui.circle.timelines.bean.ItemObj;
 import cn.timeface.circle.baby.ui.circle.timelines.views.CircleGridStaggerLookup;
 import cn.timeface.circle.baby.ui.circle.timelines.views.InputListenerEditText;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
@@ -50,7 +48,6 @@ import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * author : wangshuai Created on 2017/3/15
