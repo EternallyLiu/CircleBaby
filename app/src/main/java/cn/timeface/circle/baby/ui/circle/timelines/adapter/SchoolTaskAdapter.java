@@ -1,6 +1,10 @@
 package cn.timeface.circle.baby.ui.circle.timelines.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -16,18 +20,25 @@ import java.util.List;
 import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleHomeWorkHeader;
+import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
 import cn.timeface.circle.baby.ui.timelines.views.TimeLineMarker;
+import rx.Observable;
 
 /**
  * author : wangshuai Created on 2017/3/22
@@ -112,6 +123,11 @@ public class SchoolTaskAdapter extends BaseEmptyAdapter {
         TextView tvDetail = ViewHolder.getView(contentView, R.id.tv_detail);
         GridLayout glImageList = ViewHolder.getView(contentView, R.id.gl_image_list);
         TextView tvSubmitCount = ViewHolder.getView(contentView, R.id.tv_commit_count);
+        TextView tvDelete = ViewHolder.getView(contentView, R.id.tv_delete);
+
+        tvDelete.setVisibility(FastData.getCircleUserId() == item.getSchoolTask().getTeacher().getCircleUserId() ? View.VISIBLE : View.GONE);
+        tvDelete.setTag(R.id.recycler_item_click_tag, position);
+        tvDelete.setOnClickListener(this);
 
         if (item.getSchoolTask().getMediaList().size() <= 0) {
             glImageList.setVisibility(View.GONE);
@@ -163,9 +179,38 @@ public class SchoolTaskAdapter extends BaseEmptyAdapter {
         this.hashSubmit = hashSubmit;
     }
 
+    private void deleteTask(View view) {
+        Observable.defer(() -> Observable.just(((int) view.getTag(R.id.recycler_item_click_tag))))
+                .map(integer -> (HomeWorkListObj) getItem(integer))
+                .flatMap(homeWorkListObj -> ApiFactory.getApi().getApiService().deleteTask(homeWorkListObj.getSchoolTask().getTaskId()).doOnNext(baseResponse -> {
+                    if (baseResponse.success()) deleteItem(homeWorkListObj);
+                })).compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(baseResponse -> {
+                    if (!baseResponse.success())
+                        ToastUtil.showToast(context(), baseResponse.getInfo());
+                }, throwable -> LogUtil.showError(throwable));
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_delete:
+                try {
+                    int position = (int) v.getTag(R.id.recycler_item_click_tag);
+                    HomeWorkListObj homeWorkListObj = getItem(position);
+                    if (homeWorkListObj != null) {
+                        DeleteDialog deleteDialog = new DeleteDialog(context());
+                        deleteDialog.setMessage(R.string.delete_task_tip);
+                        SpannableStringBuilder builder = new SpannableStringBuilder(String.format("是否删除\"%s\"", homeWorkListObj.getSchoolTask().getTitle()));
+                        builder.setSpan(SpannableUtils.getTextStyle(Typeface.BOLD), 0, builder.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                        deleteDialog.setTitle(builder);
+                        deleteDialog.getTitle().setTextColor(Color.parseColor("#333333"));
+                        deleteDialog.setSubmitListener(() -> deleteTask(v));
+                        deleteDialog.show();
+                    }
+                } catch (Exception e) {
+                }
+                break;
             case R.id.icon:
                 try {
                     int position = (int) v.getTag(R.id.recycler_item_input_tag);

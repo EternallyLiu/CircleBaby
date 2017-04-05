@@ -1949,4 +1949,12 @@ public interface ApiService {
 
     @GET("index/scanLogin")
     Observable<BaseResponse> scanLogin(@Query("code") String code);
+
+    /**
+     * 删除老师布置的作业
+     * @param taskId
+     * @return
+     */
+    @POST("homework/delTask")
+    Observable<BaseResponse> deleteTask(@Query("taskId") long taskId);
 }

@@ -81,6 +81,10 @@ public class DeleteDialog extends BaseDialog implements View.OnClickListener {
         if (this.message != null && !TextUtils.isEmpty(message))
             this.message.setText(message);
     }
+    public void setMessage(int msgId) {
+        if (this.message != null)
+            this.message.setText(msgId);
+    }
 
     public void setMessageGravity(int gravity) {
         if (this.message != null)
