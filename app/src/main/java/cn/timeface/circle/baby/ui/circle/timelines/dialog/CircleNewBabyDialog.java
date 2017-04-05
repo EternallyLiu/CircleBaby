@@ -115,11 +115,12 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
     private void newBaby(String babyName) {
         ApiFactory.getApi().getApiService().addBaby(FastData.getCircleId(), Uri.encode(babyName))
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(baseResponse -> {
-                    if (baseResponse.success()) {
+                .subscribe(circleAddBabyResponse -> {
+                    if (circleAddBabyResponse.success()) {
+                        GetCircleAllBabyObj babyObj=new GetCircleAllBabyObj(circleAddBabyResponse.getBabyAvatarUrl(),circleAddBabyResponse.getBabyName(),circleAddBabyResponse.getCircleBabyId(),1);
+                        if (getAddCallBack()!=null)getAddCallBack().addcalback(babyObj);
                         dismiss();
-                        ;
-                    } else ToastUtil.showToast(getContext(), baseResponse.getInfo());
+                    } else ToastUtil.showToast(getContext(), circleAddBabyResponse.getInfo());
                 }, throwable -> LogUtil.showError(throwable));
     }
 
@@ -162,5 +163,19 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
     @Override
     public void afterTextChanged(Editable s) {
 
+    }
+
+    private AddCallBack addCallBack;
+
+    public AddCallBack getAddCallBack() {
+        return addCallBack;
+    }
+
+    public void setAddCallBack(AddCallBack addCallBack) {
+        this.addCallBack = addCallBack;
+    }
+
+    public interface AddCallBack{
+        public void addcalback(GetCircleAllBabyObj babyObj);
     }
 }

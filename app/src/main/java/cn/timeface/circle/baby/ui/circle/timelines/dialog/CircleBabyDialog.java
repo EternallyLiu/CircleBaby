@@ -46,7 +46,7 @@ import rx.Subscription;
  * author : wangshuai Created on 2017/3/20
  * email : wangs1992321@gmail.com
  */
-public class CircleBabyDialog extends BaseDialog implements View.OnClickListener, BaseAdapter.OnItemClickLister {
+public class CircleBabyDialog extends BaseDialog implements View.OnClickListener, BaseAdapter.OnItemClickLister, CircleNewBabyDialog.AddCallBack {
 
     private RecyclerView contentRecyclerView;
     private Button btnSubmit;
@@ -131,10 +131,11 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
         } else {
             if (newDialog == null) {
                 newDialog = new CircleNewBabyDialog(getContext());
+                newDialog.setAddCallBack(this);
                 newDialog.setOnDismissListener(new OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        updateBabys();
+//                        updateBabys();
                         if (rightMove == null)
                             rightMove = AnimationUtils.loadAnimation(getContext(), R.anim.dialog_right_move);
                         mView.setVisibility(View.VISIBLE);
@@ -226,6 +227,15 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
 
     public void setCircleBabyCallBack(CircleBabyCallBack circleBabyCallBack) {
         this.circleBabyCallBack = circleBabyCallBack;
+    }
+
+    @Override
+    public void addcalback(GetCircleAllBabyObj babyObj) {
+        if (babyObj != null) {
+            if (adapter.containObj(babyObj)) adapter.updateItem(babyObj);
+            else if (adapter.getRealItemSize() > 0)
+                adapter.add(adapter.getRealItemSize() - 1, babyObj);
+        }
     }
 
     public interface CircleBabyCallBack {

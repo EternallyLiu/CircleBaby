@@ -11,10 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
@@ -22,6 +26,7 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.TearcherOpproverAdapter;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
@@ -111,6 +116,13 @@ public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseA
                     adapter.getEmptyItem().setOperationType(-1);
                     helper.finishTFPTRRefresh();
                 }));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(CirclePassThroughMessageEvent event) {
+        if (event.type==MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION){
+            reqData();
+        }
     }
 
     @Override

@@ -109,6 +109,7 @@ import cn.timeface.circle.baby.ui.circle.response.QueryCircleTeacherAuthResponse
 import cn.timeface.circle.baby.ui.circle.response.TeacherAuthIsHasResponse;
 import cn.timeface.circle.baby.ui.circle.response.UpdateTimeLineResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.ActiveSelectListResponse;
+import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleAddBabyResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleMediaResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleSchoolTaskResponse;
 import cn.timeface.circle.baby.ui.circle.timelines.responses.CircleTimeLineDetailResponse;
@@ -1416,7 +1417,7 @@ public interface ApiService {
      * @return
      */
     @GET("circle/addBaby")
-    Observable<BaseResponse> addBaby(
+    Observable<CircleAddBabyResponse> addBaby(
             @Query("circleId") long circleId,
             @Query("babyName") String babyName);
 

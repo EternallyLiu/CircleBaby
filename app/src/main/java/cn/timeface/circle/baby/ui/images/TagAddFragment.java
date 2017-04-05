@@ -10,8 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,12 +20,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.wechat.photopicker.fragment.BigImageFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +40,6 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.images.views.FlowLayout;
 import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
-import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
-import cn.timeface.circle.baby.ui.timelines.beans.MediaUpdateEvent;
 
 /**
  * author : wangshuai Created on 2017/1/16
@@ -66,6 +60,14 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     FlowLayout tagHis;
     @Bind(R.id.tag_suggest)
     FlowLayout tagSuggest;
+    @Bind(R.id.tv_his_tag)
+    TextView tvHisTag;
+    @Bind(R.id.v_his_tag)
+    View vHisTag;
+    @Bind(R.id.tv_tag)
+    TextView tvTag;
+    @Bind(R.id.v_tag)
+    View vTag;
     private int type = 0;
 
     private List<MediaTipObj> hisList = null;
@@ -161,6 +163,9 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
         if (tagHis.getChildCount() > 0)
             tagHis.removeAllViews();
         if (hisList != null || hisList.size() > 0) {
+            tvHisTag.setVisibility(View.VISIBLE);
+            vHisTag.setVisibility(View.VISIBLE);
+            tagHis.setVisibility(View.VISIBLE);
             for (int i = 0; i < hisList.size(); i++) {
                 View view = addTips(hisList.get(i));
                 TextView tagNmae = (TextView) view.findViewById(R.id.tag_name);
@@ -172,6 +177,10 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
                 tagNmae.setTextColor(getTextColor());
                 tagHis.addView(view);
             }
+        } else {
+            tvHisTag.setVisibility(View.GONE);
+            vHisTag.setVisibility(View.GONE);
+            tagHis.setVisibility(View.GONE);
         }
 
     }
@@ -180,6 +189,9 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
         if (tagSuggest.getChildCount() > 0)
             tagSuggest.removeAllViews();
         if (recommentList != null || recommentList.size() > 0) {
+            tvTag.setVisibility(View.VISIBLE);
+            vTag.setVisibility(View.VISIBLE);
+            tagSuggest.setVisibility(View.VISIBLE);
             for (int i = 0; i < recommentList.size(); i++) {
                 View view = addTips(recommentList.get(i));
                 TextView tagNmae = (TextView) view.findViewById(R.id.tag_name);
@@ -192,6 +204,10 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
                 tagSuggest.addView(view);
 
             }
+        } else {
+            tvTag.setVisibility(View.GONE);
+            vTag.setVisibility(View.GONE);
+            tagSuggest.setVisibility(View.GONE);
         }
 
     }

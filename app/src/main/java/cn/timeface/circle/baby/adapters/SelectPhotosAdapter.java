@@ -23,6 +23,8 @@ import cn.timeface.circle.baby.events.PhotoSelectCountEvent;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
 import cn.timeface.circle.baby.support.api.models.objs.PhotoGroupItem;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.PhotoSelectImageView;
 
 
@@ -203,7 +205,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
             int line = (int) v.getTag(R.string.tag_index);
             int dataIndex = getDataPosition(line);
             boolean isChecked = ((CheckBox) v).isChecked();
-            if(isChecked){
+            if (isChecked) {
                 if (selImgs.size() + listData.get(dataIndex).getImgList().size() > maxCount) {
                     ToastUtil.showToast("最多只能选" + maxCount + "张照片");
                     ((CheckBox) v).setChecked(false);
@@ -228,6 +230,7 @@ public class SelectPhotosAdapter extends BaseRecyclerAdapter<PhotoGroupItem> {
         public void onClick(View v) {
             CheckBox cb = (CheckBox) v;
             PhotoModel img = (PhotoModel) v.getTag(R.string.tag_obj);
+            LogUtil.showLog("PhotoModel", JSONUtils.parse2JSONString(img));
             int dataIndex = (int) v.getTag(R.string.tag_ex);
             if (cb.isChecked()) {
                 if (selImgs.size() + 1 > maxCount) {
