@@ -349,25 +349,15 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (delete || download)
-            inflater.inflate(R.menu.menu_timeline_detail, menu);
+            inflater.inflate(R.menu.menu_download, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    private ImageActionDialog dialog = null;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_more:
-                if (dialog == null) {
-                    dialog = new ImageActionDialog(getActivity());
-                    dialog.setClickListener(this);
-                    dialog.isShared(false);
-                    dialog.isDownload(download);
-                    dialog.isDelete(delete);
-                    dialog.isEdit(false);
-                }
-                dialog.show();
+            case R.id.action_download:
+                saveImage();
                 break;
         }
         return super.onOptionsItemSelected(item);
