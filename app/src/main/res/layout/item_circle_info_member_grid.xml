@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.github.rayboot.widget.ratioview.RatioFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:fixRatio="fixWidth"
-    app:heightRatio="1"
-    app:widthRatio="1">
+    android:background="@color/white"
+    android:clickable="true"
+    android:gravity="center"
+    android:onClick="clickCircleMember"
+    android:orientation="vertical"
+    android:paddingBottom="10dp">
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/iv_avatar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:onClick="clickCircleMember"
-        android:scaleType="center"
-        android:src="@drawable/bg_none_photo"
-        app:riv_mutate_background="true"
-        app:riv_oval="true" />
-</com.github.rayboot.widget.ratioview.RatioFrameLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_content_img"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_child_img"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp" />
+
+    <ImageView
+        android:id="@+id/iv_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:src="@drawable/ic_menu" />
+
+</RelativeLayout>

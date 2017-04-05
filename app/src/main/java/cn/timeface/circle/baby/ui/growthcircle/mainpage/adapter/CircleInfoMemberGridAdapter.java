@@ -4,9 +4,9 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
-import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.List;
 
@@ -14,14 +14,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.adapters.base.BaseListAdapter;
-import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
-import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
+import cn.timeface.circle.baby.ui.circle.bean.MemberDataObj;
+import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CircleInfoMemberGridAdapter extends BaseListAdapter<CircleBabyBriefObj> {
+public class CircleInfoMemberGridAdapter extends BaseListAdapter<MemberDataObj> {
 
     private static final int MAX_COUNT = 10;
 
-    public CircleInfoMemberGridAdapter(Context context, List<CircleBabyBriefObj> listData) {
+
+
+    public CircleInfoMemberGridAdapter(Context context, List<MemberDataObj> listData) {
         super(context, listData);
     }
 
@@ -42,27 +44,40 @@ public class CircleInfoMemberGridAdapter extends BaseListAdapter<CircleBabyBrief
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (position - 1 == MAX_COUNT) {
-            holder.ivAvatar.setScaleType(ImageView.ScaleType.CENTER);
-            holder.ivAvatar.setImageResource(R.drawable.ic_menu);
-            holder.ivAvatar.setTag(R.string.tag_obj, null);
+        if (position + 1 == MAX_COUNT) {
+            holder.ivChildImg.setVisibility(View.GONE);
+            holder.ivContentImg.setVisibility(View.GONE);
+            holder.iv_menu.setVisibility(View.VISIBLE);
+            holder.iv_menu.setTag(R.string.tag_obj, null);
         } else {
-            CircleBabyBriefObj item = listData.get(position);
-
+            holder.ivChildImg.setVisibility(View.VISIBLE);
+            holder.ivContentImg.setVisibility(View.VISIBLE);
+            holder.iv_menu.setVisibility(View.GONE);
+            MemberDataObj item = listData.get(position);
             Glide.with(mContext)
-                    .load(item.getBabyAvatarUrl())
+                    .load(item.getUserInfo().getCircleAvatarUrl())
                     .centerCrop()
-                    .into(holder.ivAvatar);
+                    .into(holder.ivContentImg);
+            Glide.with(mContext)
+                    .load(item.getBabyBrief().getBabyAvatarUrl())
+                    .centerCrop()
+                    .into(holder.ivChildImg);
 
-            holder.ivAvatar.setTag(R.string.tag_obj, item);
+            holder.ivContentImg.setTag(R.string.tag_obj, item);
         }
 
         return convertView;
     }
 
     static class ViewHolder {
-        @Bind(R.id.iv_avatar)
-        RoundedImageView ivAvatar;
+        @Bind(R.id.iv_content_img)
+        CircleImageView ivContentImg;
+        @Bind(R.id.iv_child_img)
+        CircleImageView ivChildImg;
+        @Bind(R.id.iv_menu)
+        ImageView iv_menu;
+        @Bind(R.id.ll_root)
+        RelativeLayout llRoot;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

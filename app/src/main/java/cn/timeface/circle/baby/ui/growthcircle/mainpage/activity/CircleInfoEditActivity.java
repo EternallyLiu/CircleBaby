@@ -190,7 +190,7 @@ public class CircleInfoEditActivity extends BaseAppCompatActivity implements IEv
         circleDetailObj.setCirclePublic(rgPublish.getCheckedRadioButtonId() == R.id.rb_publish);
 
         // 精简数据，这个接口用不到这俩字段
-        circleDetailObj.setBabyList(null);
+        //circleDetailObj.setBabyList(null);
         circleDetailObj.setMemberList(null);
 
         String circleDetailInfo = new Gson().toJson(circleDetailObj);
