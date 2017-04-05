@@ -70,7 +70,7 @@ public class CircleHomeworkExObj implements Parcelable {
     public TFOPublishObj toTFOPublishObj(){
         TFOPublishObj tfoPublishObj = new TFOPublishObj();
         tfoPublishObj.setTitle(getHomework().getTitle());
-        tfoPublishObj.setContent(getHomework().getContent());
+        tfoPublishObj.setContent(getHomework().getContent().replace("\n", "<br/>"));
         tfoPublishObj.setResourceList(toTFOResourceObjs());
         TFOCustomData tfoCustomData = new TFOCustomData();
         StringBuffer sbCustomData = new StringBuffer();

@@ -57,6 +57,13 @@ public class MyPODActivity extends PODActivity {
         context.startActivity(intent);
     }
 
+    public static void open(Context context, String openBookId, int openBookType){
+        Intent intent = new Intent(context, MyPODActivity.class);
+        intent.putExtra("book_type", openBookType);//开放平台booktype
+        intent.putExtra("book_id", openBookId);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
