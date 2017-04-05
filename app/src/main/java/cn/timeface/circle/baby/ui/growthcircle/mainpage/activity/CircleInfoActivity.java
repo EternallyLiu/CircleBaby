@@ -18,6 +18,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,6 +35,7 @@ import cn.timeface.circle.baby.support.utils.network.NetworkError;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleDetailObj;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.bean.MemberDataObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.adapter.CircleInfoMemberGridAdapter;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.JoinCircleDialog;
@@ -79,6 +83,7 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
 
     private TFProgressDialog progressDialog;
     private JoinCircleDialog joinDialog;
+    private List<MemberDataObj> memberInfoList;
 
     public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, CircleInfoActivity.class);
@@ -96,6 +101,7 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
         getSupportActionBar().setTitle("");
 
         circleObj = getIntent().getParcelableExtra("circle_obj");
+        memberInfoList = new ArrayList<>();
 
         if (circleObj != null) {
             setupData(circleObj);
@@ -176,7 +182,8 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
 
         if (circleDetailObj.getMemberList() != null
                 && circleDetailObj.getMemberList().size() > 0) {
-            memberList.setAdapter(new CircleInfoMemberGridAdapter(this, circleDetailObj.getBabyList()));
+            memberInfoList.addAll(circleDetailObj.getMemberList());
+            memberList.setAdapter(new CircleInfoMemberGridAdapter(this, memberInfoList));
         }
 
         tvSubmit.setVisibility(View.VISIBLE);
