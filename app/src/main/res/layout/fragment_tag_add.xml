@@ -21,6 +21,7 @@
             <include layout="@layout/tag_item_content"/>
 
             <TextView
+                android:id="@+id/tv_his_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_11"
@@ -31,6 +32,7 @@
                 android:textSize="@dimen/text_small"/>
 
             <View
+                android:id="@+id/v_his_tag"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/size_12"
@@ -45,6 +47,7 @@
                 android:padding="@dimen/size_12"/>
 
             <TextView
+                android:id="@+id/tv_tag"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/size_12"
@@ -55,6 +58,7 @@
                 android:textSize="@dimen/text_small"/>
 
             <View
+                android:id="@+id/v_tag"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="@dimen/size_12"

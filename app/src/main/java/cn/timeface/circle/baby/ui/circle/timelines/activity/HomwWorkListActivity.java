@@ -12,12 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -29,6 +31,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.adapter.SchoolTaskAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleHomeWorkHeader;
 import cn.timeface.circle.baby.ui.circle.timelines.events.HomeWorkListEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
@@ -147,6 +150,16 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
                     helper.finishTFPTRRefresh();
                     LogUtil.showError(throwable);
                 }));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(CirclePassThroughMessageEvent event) {
+        if (event.type == MiPushConstant.TYPE_CIRCLE_COMMIT_HOMEWORK || event.type == MiPushConstant.TYPE_CIRCLE_SCHOOL_TASK) {
+            currentPage = 1;
+            reqData();
+        }else if (event.type==MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION){
+            ivDot.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

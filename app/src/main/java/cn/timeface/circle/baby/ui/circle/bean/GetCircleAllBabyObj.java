@@ -23,6 +23,13 @@ public class GetCircleAllBabyObj extends BaseObj implements Parcelable {
     public GetCircleAllBabyObj() {
     }
 
+    public GetCircleAllBabyObj(String babyAvatarUrl, String babyName, long circleBabyId, int selected) {
+        this.babyAvatarUrl = babyAvatarUrl;
+        this.babyName = babyName;
+        this.circleBabyId = circleBabyId;
+        this.selected = selected;
+    }
+
     public long getCircleBabyId() {
         return circleBabyId;
     }

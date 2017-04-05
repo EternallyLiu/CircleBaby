@@ -98,7 +98,6 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
 
     @Override
     public void initView(View contentView, int position) {
-        LogUtil.showLog("position=====" + position + "-----" + getViewType(position));
         switch (getViewType(position)) {
             case ITEM_TYPE_INPUT_TITLE:
                 doTitle(contentView, position);

@@ -1,5 +1,6 @@
 package com.wechat.photopicker.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -117,6 +118,20 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private int allDetailsListPosition;
     private CircleBabyDialog circleBabyDialog;
 
+    /**
+     *
+     * @param context
+     * @param mediaObj
+     * @param type  BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR/CIRCLE_MEDIA_IMAGE_NONE
+     * @param download
+     * @param delete
+     */
+    public static void open(Context context, MediaObj mediaObj, int type, boolean download, boolean delete) {
+        ArrayList<MediaObj> list = new ArrayList<>(0);
+        list.add(mediaObj);
+        FragmentBridgeActivity.openBigimageFragment(context, 0, list, MediaObj.getUrls(list), 0, type, download, delete);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +159,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         }
         if (mPaths.size() > 0 && mPaths != null) {
             mPhotoPagerAdapter = new PhotoPagerAdapter(getActivity(), mPaths);
+            mPhotoPagerAdapter.setMediaObjs(mMedias);
             mPhotoPagerAdapter.setClickListener(this);
         }
         mViewPager.setAdapter(mPhotoPagerAdapter);
@@ -564,8 +580,11 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @Override
     public void imageClcik() {
-        if (llBotton != null)
+        if (toolbar != null)
+            toolbar.setVisibility(toolbar.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+        if (llBotton != null) {
             llBotton.setVisibility(llBotton.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+        }
         if (type == CIRCLE_MEDIA_IMAGE_NONE) llBotton.setVisibility(View.GONE);
     }
 

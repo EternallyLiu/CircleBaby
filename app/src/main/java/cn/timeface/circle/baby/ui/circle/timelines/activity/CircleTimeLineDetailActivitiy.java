@@ -43,9 +43,11 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.support.api.ApiFactory;
@@ -53,6 +55,7 @@ import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleCommentObj;
@@ -72,6 +75,7 @@ import cn.timeface.circle.baby.ui.timelines.beans.LikeUserList;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.GridStaggerLookup;
 import cn.timeface.circle.baby.ui.timelines.views.SelectImageView;
+import cn.timeface.circle.baby.views.ShareDialog;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -486,9 +490,17 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
                     deleteDialog.show();
                 break;
             case 4:
-
+                share();
                 break;
         }
+    }
+
+    private void share(){
+        String imgUrl = "";
+        String title = FastData.getBabyNickName() + "长大了";
+        String content = FastData.getBabyNickName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyNickName() + "的新变化";
+        String url = getString(R.string.share_url_circle_time_line, currentTimeLineId);;
+        new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_laucher_quadrate), url);
     }
 
     @Override

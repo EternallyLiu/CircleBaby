@@ -423,9 +423,9 @@ public class PublishActivity extends BaseAppCompatActivity {
     private View initProgress() {
         View view = View.inflate(this, R.layout.view_upload_progress, null);
         ImageView ivLoad = (ImageView) view.findViewById(R.id.pb_loading);
-        TextView tvProgress = (TextView) view.findViewById(R.id.tv_progress);
+        TextView tvProgress = (TextView) view.findViewById(R.id.tv_loading_msg);
         tvProgress.setText("正在发送请求~~");
-        view.findViewById(R.id.tv_loading_msg).setVisibility(View.GONE);
+        view.findViewById(R.id.tv_progress).setVisibility(View.GONE);
         ((Animatable) ivLoad.getDrawable()).start();
         return view;
     }

@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -35,6 +36,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskDetailObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.SchoolTaskDetailAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 
@@ -175,6 +177,13 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(CirclePassThroughMessageEvent event) {
+        if (event.type == MiPushConstant.TYPE_CIRCLE_COMMIT_HOMEWORK && event.schoolTaskObj != null && event.schoolTaskObj.getTaskId() == currentTaskId) {
+            currentPage = 1;
+            reqData();
+        }
+    }
 
     @Override
     public void onItemClick(View view, int position) {

@@ -13,6 +13,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.api.models.db.PhotoModel;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import uk.co.senab.photoview.PhotoView;
@@ -29,6 +30,9 @@ public class PhotoPagerAdapter extends PagerAdapter implements View.OnClickListe
     private List<String> mPaths;
     private PhotoView imgView;
 
+    private List<MediaObj> mediaObjs;
+
+
     public PhotoPagerAdapter(Context context, List<String> paths) {
         mContext = context;
         mPaths = paths;
@@ -42,6 +46,8 @@ public class PhotoPagerAdapter extends PagerAdapter implements View.OnClickListe
         imgView.setOnClickListener(this);
         GlideUtil.displayImage(mPaths.get(position), imgView, true);
         container.addView(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if (getMediaObjs()!=null)
+            imgView.setRotationTo(getMediaObjs().get(position).getImageOrientation());
         imgView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override
             public void onPhotoTap(View view, float x, float y) {
@@ -95,5 +101,13 @@ public class PhotoPagerAdapter extends PagerAdapter implements View.OnClickListe
                 break;
         }
 
+    }
+
+    public List<MediaObj> getMediaObjs() {
+        return mediaObjs;
+    }
+
+    public void setMediaObjs(List<MediaObj> mediaObjs) {
+        this.mediaObjs = mediaObjs;
     }
 }

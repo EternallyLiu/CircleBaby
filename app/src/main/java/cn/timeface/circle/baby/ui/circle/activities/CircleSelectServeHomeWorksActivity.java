@@ -33,6 +33,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.dialogs.CircleSelectSchoolTaskTypeDialog;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleSelectBabyFragment;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleSelectSchoolTaskFragment;
@@ -160,10 +161,10 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                                             keys.add("stu_name");
                                             values.add(author);
                                             values.add(bookName);
-                                            values.add(DateUtil.getAge(FastData.getBabyBithday(), minHomework.getHomework().getCreateDate())
+                                            values.add(DateUtil.getAgeMonth(FastData.getBabyBithday(), minHomework.getHomework().getCreateDate())
                                                     + "～"
-                                                    + DateUtil.getAge(FastData.getBabyBithday(), maxHomework.getHomework().getCreateDate()));
-                                            values.add("班级：" + FastData.getCircleUserInfo().getCircleNickName());
+                                                    + DateUtil.getAgeMonth(FastData.getBabyBithday(), maxHomework.getHomework().getCreateDate()));
+                                            values.add("班级：" + GrowthCircleObj.getInstance().getCircleName());
                                             values.add("姓名：" + FastData.getBabyNickName());
 
                                             //成长语录插页数据，content_list第一条数据为寄语

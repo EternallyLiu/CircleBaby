@@ -156,7 +156,7 @@ public class CreateCircleActivity extends BaseAppCompatActivity {
 
     private void showCreatedDialog(long circleId) {
         TFDialog dialog = TFDialog.getInstance();
-        dialog.setMessage("你已成功创建圈子！");
+        dialog.setMessage("您已成功创建圈子！");
         dialog.setTitle("提示");
         dialog.setPositiveButton("确定", v -> {
             dialog.dismiss();
