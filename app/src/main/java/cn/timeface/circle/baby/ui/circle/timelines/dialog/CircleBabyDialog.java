@@ -139,6 +139,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
                             rightMove = AnimationUtils.loadAnimation(getContext(), R.anim.dialog_right_move);
                         mView.setVisibility(View.VISIBLE);
                         mView.startAnimation(rightMove);
+                        adapter.notifyDataSetChanged();
                     }
                 });
             }

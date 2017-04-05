@@ -4,7 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -41,13 +43,14 @@ import rx.Subscription;
  * author : wangshuai Created on 2017/3/20
  * email : wangs1992321@gmail.com
  */
-public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListener {
+public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListener, TextWatcher {
 
     private ClearableEditText etInput;
     private Button btnSubmit;
     private String babyNames;
     private Subscription currentSubscription;
     private DeleteDialog deleteDialog;
+    private String babyName;
 
 
     public CircleNewBabyDialog(Context context) {
@@ -71,6 +74,8 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
         btnSubmit = (Button) mView.findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(this);
         etInput = (ClearableEditText) mView.findViewById(R.id.et_input);
+
+        etInput.addTextChangedListener(this);
 
         Window window = getWindow();
         WindowManager m = window.getWindowManager();
@@ -122,7 +127,7 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-                String babyName = etInput.getText().toString();
+                babyName = etInput.getText().toString();
                 if (TextUtils.isEmpty(babyName)) {
                     ToastUtil.showToast(getContext(), "宝贝名字不能为空");
                     return;
@@ -142,5 +147,20 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
 
                 break;
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }
