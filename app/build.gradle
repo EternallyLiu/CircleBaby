@@ -185,12 +185,12 @@ dependencies {
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.5.0'
-    compile 'com.google.zxing:core:3.2.1'
     testCompile 'junit:junit:4.12'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    compile project(':libzxing')
 }
 
 

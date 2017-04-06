@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import butterknife.Bind;
@@ -17,6 +16,7 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.response.QrcodeResponse;
@@ -67,9 +67,10 @@ public class InviteActivity extends BaseAppCompatActivity {
                     @Override
                     public void call(QrcodeResponse qrcodeResponse) {
                         if (qrcodeResponse.success()) {
-                            Glide.with(InviteActivity.this)
-                                    .load(qrcodeResponse.getQRcodeUrl())
-                                    .into(ivImg);
+                            GlideUtil.displayImage(qrcodeResponse.getQRcodeUrl(),ivImg);
+//                            Glide.with(InviteActivity.this)
+//                                    .load(qrcodeResponse.getQRcodeUrl())
+//                                    .into(ivImg);
                         }
                     }
                 }, new Action1<Throwable>() {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:timeLine="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:timeLine="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rl_time_line"
@@ -65,24 +65,33 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_time_line"
         android:padding="@dimen/size_10"
-        android:text="标题"
         android:textColor="@color/black"
         android:textSize="@dimen/text_normal"
         android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/size_10"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/title"
+        android:textSize="@dimen/text_small"
+        android:text="@string/school_task_tv_delete_tip"/>
 
     <TextView
         android:id="@+id/tv_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:paddingBottom="@dimen/size_10"
-        android:paddingLeft="@dimen/size_10"
-        android:maxLines="4"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/size_2"
+        android:maxLines="4"
+        android:paddingBottom="@dimen/size_10"
+        android:paddingLeft="@dimen/size_10"
         android:paddingRight="@dimen/size_10"
-        android:text="作业描述"
         android:textColor="@color/aluminum"
         android:textSize="@dimen/text_small"/>
 
@@ -90,11 +99,13 @@
     <GridLayout
         android:id="@+id/gl_image_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></GridLayout>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_detail"></GridLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/gl_image_list"
         android:padding="@dimen/size_10">
 
         <TextView
@@ -118,10 +129,10 @@
             android:paddingLeft="@dimen/size_12"
             android:paddingRight="@dimen/size_12"
             android:paddingTop="@dimen/size_2"
-            android:text="已提交"
+            android:text="@string/submited"
             android:textColor="@color/red"
             android:textSize="@dimen/text_small_10"/>
     </RelativeLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

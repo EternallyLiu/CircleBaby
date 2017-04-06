@@ -2,7 +2,6 @@ package cn.timeface.circle.baby.ui.circle.groupmembers.adapter;
 
 import android.view.View;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
@@ -10,6 +9,7 @@ import java.util.List;
 
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.inteface.OnItemClickListener;
 import cn.timeface.circle.baby.ui.circle.groupmembers.section.GroupMemberSection;
@@ -68,21 +68,23 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
             CircleImageView view = baseViewHolder.getView(R.id.iv_content_img);
             CircleImageView viewChild = baseViewHolder.getView(R.id.iv_child_img);
             if (menemberInfo.getUserInfo().getCircleUserType() == 4) {
-                Glide.with(mContext)
-                        .load(R.drawable.ic_add_member)
-                        .into(view);
+                GlideUtil.displayImage(null,view,R.drawable.ic_add_member);
+//                Glide.with(mContext)
+//                        .load(R.drawable.ic_add_member)
+//                        .into(view);
                 viewChild.setVisibility(View.GONE);
             } else {
                 viewChild.setVisibility(View.VISIBLE);
                 if (menemberInfo.getUserInfo() != null) {
-                    Glide.with(mContext)
-                            .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
-                            .into(view);
+                    GlideUtil.displayImage(menemberInfo.getUserInfo().getCircleAvatarUrl(),view);
+//                    Glide.with(mContext)
+//                            .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
+//                            .into(view);
                 }
-
-                Glide.with(mContext)
-                        .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
-                        .into(viewChild);
+                GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(),viewChild);
+//                Glide.with(mContext)
+//                        .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
+//                        .into(viewChild);
             }
 
             if (menemberInfo.getUserInfo().getCircleUserType() == 1) {

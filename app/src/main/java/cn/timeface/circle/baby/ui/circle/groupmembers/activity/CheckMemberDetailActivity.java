@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -30,6 +29,7 @@ import cn.timeface.circle.baby.events.UpdateMemberEvent;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
@@ -114,16 +114,18 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     private void setPhotoView() {
         //GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(), ivChildImg);
         if (!menemberInfo.getBabyBrief().getBabyAvatarUrl().equals("")) {
-            Glide.with(this)
-                    .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
-                    .error(R.drawable.ic_launcher)
-                    .into(ivChildImg);
+            GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(),ivChildImg,R.drawable.ic_launcher);
+//            Glide.with(this)
+//                    .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
+//                    .error(R.drawable.ic_launcher)
+//                    .into(ivChildImg);
         }
         if (!menemberInfo.getUserInfo().getCircleAvatarUrl().equals("")) {
-            Glide.with(this)
-                    .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
-                    .error(R.drawable.ic_launcher)
-                    .into(ivContentImg);
+           GlideUtil.displayImage(menemberInfo.getUserInfo().getCircleAvatarUrl(),ivContentImg,R.drawable.ic_launcher);
+//            Glide.with(this)
+//                    .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
+//                    .error(R.drawable.ic_launcher)
+//                    .into(ivContentImg);
         }
     }
 

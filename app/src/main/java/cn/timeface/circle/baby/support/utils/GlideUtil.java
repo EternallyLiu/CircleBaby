@@ -44,7 +44,7 @@ public class GlideUtil {
             } else {
                 url = url + "@600w_600h_1l_1o";
             }
-            Glide.with(context).using(new TFStringUrlLoader(imageView.getContext())).load(url).asBitmap().error(R.drawable.bg_default_holder_img).placeholder(R.drawable.bg_default_holder_img).into(imageView);
+            Glide.with(imageView.getContext()).using(new TFStringUrlLoader(imageView.getContext())).load(url).asBitmap().error(R.drawable.bg_default_holder_img).placeholder(R.drawable.bg_default_holder_img).into(imageView);
         } else
             Glide.with(imageView.getContext()).load(url).asBitmap().error(R.drawable.ic_launcher).placeholder(R.drawable.ic_launcher).into(imageView);
     }
@@ -79,7 +79,7 @@ public class GlideUtil {
 
     public static void displayImage(String url, ImageView imageView, int id) {
         if (TextUtils.isEmpty(url) || imageView == null) {
-            imageView.setImageResource(id);
+            Glide.with(imageView.getContext()).load(id).into(imageView);
             return;
         }
         displayImage(url, imageView);
@@ -173,6 +173,20 @@ public class GlideUtil {
                 Glide.with(imageView.getContext()).load(url).thumbnail(0.1f).fitCenter().crossFade().into(imageView);
             else
                 Glide.with(imageView.getContext()).load(url).thumbnail(0.1f).centerCrop().crossFade().into(imageView);
+        }
+    }
+
+    public static void displayImage(String url, ImageView imageView, int rid, boolean fitCenter) {
+        if (url.startsWith("http")) {
+            if (fitCenter)
+                Glide.with(imageView.getContext()).using(new TFStringUrlLoader(imageView.getContext())).load(url).thumbnail(0.1f).placeholder(rid).error(rid).fitCenter().crossFade().into(imageView);
+            else
+                Glide.with(imageView.getContext()).using(new TFStringUrlLoader(imageView.getContext())).load(url).thumbnail(0.1f).placeholder(rid).error(rid).centerCrop().crossFade().into(imageView);
+        } else {
+            if (fitCenter)
+                Glide.with(imageView.getContext()).load(url).thumbnail(0.1f).fitCenter().placeholder(rid).error(rid).crossFade().into(imageView);
+            else
+                Glide.with(imageView.getContext()).load(url).thumbnail(0.1f).centerCrop().placeholder(rid).error(rid).crossFade().into(imageView);
         }
     }
 

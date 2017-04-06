@@ -1430,7 +1430,7 @@ public interface ApiService {
      * @param mediaId
      * @return
      */
-    @GET("circle/atBaby")
+    @POST("circle/atBaby")
     Observable<BaseResponse> atBaby(
             @Query("circleId") long circleId,
             @Query("babyName") String babyName,
@@ -1715,10 +1715,11 @@ public interface ApiService {
      * @param mediaId
      * @return
      */
+    @FormUrlEncoded
     @POST("circle/atBaby")
-    Observable<CircleMediaResponse> circleAtBaby(@Query("babys") String babys,
-                                                 @Query("circleId") long circleId,
-                                                 @Query("mediaId") long mediaId);
+    Observable<CircleMediaResponse> circleAtBaby(@Field("babys") String babys,
+                                                 @Field("circleId") long circleId,
+                                                 @Field("mediaId") long mediaId);
 
     /**
      * 按某种条件查询时光列表
@@ -1949,4 +1950,12 @@ public interface ApiService {
 
     @GET("index/scanLogin")
     Observable<BaseResponse> scanLogin(@Query("code") String code);
+
+    /**
+     * 删除老师布置的作业
+     * @param taskId
+     * @return
+     */
+    @POST("homework/delTask")
+    Observable<BaseResponse> deleteTask(@Query("taskId") long taskId);
 }
