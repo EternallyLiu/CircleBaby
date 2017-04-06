@@ -567,7 +567,6 @@
             android:label="@string/input_pc"
             android:theme="@style/AppTheme"/>
 
-        <activity android:name="cn.timeface.circle.baby.views.barcodescanner.CaptureActivity"/>
         <activity
             android:name="cn.timeface.circle.baby.ui.circle.activities.AddCircleBookActivity"
             android:label="@string/add_circle_book"
