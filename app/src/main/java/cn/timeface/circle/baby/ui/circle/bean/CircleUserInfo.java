@@ -132,17 +132,28 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         this.circleUserType = circleUserType;
     }
 
+    /**
+     * 判断是否为老师
+     *
+     * @return
+     */
     public boolean isTeacher() {
-        return circleUserType == 2;
+        return circleUserType == 2 && FastData.getCircleObj() != null && FastData.getCircleObj().getCircleId() == getCircleId();
     }
 
+    /**
+     * 判断是否为创建者
+     *
+     * @return
+     */
     public boolean isCreater() {
-        return circleUserType == 1;
+        return FastData.getCircleObj() != null && FastData.getCircleObj().getCircleCreateUserId() == getCircleUserId();
     }
 
     public static void deleteAll() {
         SQLite.delete().from(CircleUserInfo.class).query();
     }
+
 
     @Override
     public boolean equals(Object o) {

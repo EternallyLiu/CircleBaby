@@ -639,6 +639,14 @@ public class FastData extends Remember {
         }
     }
 
+    /**
+     * 获取当前圈信息
+     * @return
+     */
+    public static GrowthCircleObj getCircleObj(){
+        return GrowthCircleObj.getInstance();
+    }
+
     private static final String CIRCLE_USER_INFO_ID = "circle_user_info_id";
 
     public static long getCircleUserId() {

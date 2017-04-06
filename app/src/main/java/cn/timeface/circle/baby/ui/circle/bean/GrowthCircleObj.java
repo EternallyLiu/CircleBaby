@@ -71,14 +71,6 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         return getInstance();
     }
 
-    public static GrowthCircleObj getCurrentGrowthCircleObj() {
-        return currentGrowthCircleObj;
-    }
-
-    public static void setCurrentGrowthCircleObj(GrowthCircleObj currentGrowthCircleObj) {
-        GrowthCircleObj.currentGrowthCircleObj = currentGrowthCircleObj;
-    }
-
     public int getCircleCreateUserId() {
         return circleCreateUserId;
     }
