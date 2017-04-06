@@ -313,7 +313,8 @@ public class SelectPhotoActivity extends BaseAppCompatActivity implements IEvent
             List<PhotoModel> imgList = item.getImgList();
             List<PhotoModel> photoModels = new ArrayList<>();
             for (PhotoModel photoModel : imgList) {
-                if (ImageFactory.photoFilter(photoModel.getLocalPath())) {
+                if (ImageFactory.photoFilter(photoModel.getLocalPath())
+                        && (photoModel.getWidth() > 0 && photoModel.getHeight() > 0)) {
                     photoModels.add(photoModel);
                 }
             }
