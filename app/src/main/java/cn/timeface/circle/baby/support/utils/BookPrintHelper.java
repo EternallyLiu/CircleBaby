@@ -1,6 +1,5 @@
 package cn.timeface.circle.baby.support.utils;
 
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -109,17 +108,56 @@ public class BookPrintHelper {
 
             case TypeConstant.PRINT_CODE_LIMIT_LESS:
                 progressDialog.dismiss();
-                tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
-                        + "页数为" + pageNum + "页，低于24页的最低印刷限制，请添加内容后再提交印刷。");
-                tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                switch (bookType) {
+                    case BookModel.CIRCLE_BOOK_TYPE_PHOTO:
+                        tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                                + "页数为" + pageNum + "页，低于16页的最低印刷限制，请添加内容后再提交印刷。");
+                        tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                        break;
+                    case BookModel.CIRCLE_BOOK_TYPE_TIME:
+                        tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                                + "页数为" + pageNum + "页，低于24页的最低印刷限制，请添加内容后再提交印刷。");
+                        tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                        break;
+                    case BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL:
+                        tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                                + "页数为" + pageNum + "页，低于16页的最低印刷限制，请添加内容后再提交印刷。");
+                        tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                        break;
+                    default:
+                        tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                                + "页数为" + pageNum + "页，低于24页的最低印刷限制，请添加内容后再提交印刷。");
+                        tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                }
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_MORE:
                 progressDialog.dismiss();
-                tougueDialog.setMessage("大于60页，不可印刷");
-                tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
-                        + "页数为" + pageNum + "页，已超过60页的印刷限制，请修改后再提交印刷。");
-                tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                switch (bookType) {
+                    case BookModel.CIRCLE_BOOK_TYPE_PHOTO:
+                        tougueDialog.setMessage("大于60页，不可印刷");
+                        tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                                + "页数为" + pageNum + "页，已超过300页的印刷限制，请修改后再提交印刷。");
+                        tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                        break;
+                    case BookModel.CIRCLE_BOOK_TYPE_TIME:
+                        tougueDialog.setMessage("大于60页，不可印刷");
+                        tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                                + "页数为" + pageNum + "页，已超过100页的印刷限制，请修改后再提交印刷。");
+                        tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                        break;
+                    case BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL:
+                        tougueDialog.setMessage("大于60页，不可印刷");
+                        tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                                + "页数为" + pageNum + "页，已超过60页的印刷限制，请修改后再提交印刷。");
+                        tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                        break;
+                    default:
+                        tougueDialog.setMessage("大于60页，不可印刷");
+                        tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
+                                + "页数为" + pageNum + "页，已超过60页的印刷限制，请修改后再提交印刷。");
+                        tougueDialog.show(context.getSupportFragmentManager(), "dialog");
+                }
                 break;
 
             case TypeConstant.PRINT_CODE_LIMIT_8806:

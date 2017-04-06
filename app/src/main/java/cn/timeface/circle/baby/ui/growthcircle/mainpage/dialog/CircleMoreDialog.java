@@ -13,6 +13,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.ui.circle.activities.CircleBookActivity;
@@ -98,7 +99,7 @@ public class CircleMoreDialog extends DialogFragment {
             case R.id.tv_share:
                 new ShareDialog(getActivity()).share(FastData.getUserName()+"请你加圈", GrowthCircleObj.getInstance().getCircleName()+FastData.getUserName()+"邀请你加入，在这里一起记录宝宝的学习成长时光！"
                         , ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_laucher_quadrate),
-                        " http://stg3.v5time.net/baby/growthCircleShare/index.html?circleId="+circleObj.getCircleId()+"&circleMemberId="+ FastData.getUserId());
+                        BuildConfig.API_URL+"growthCircleShare/index.html?circleId="+circleObj.getCircleId()+"&circleMemberId="+ FastData.getUserId());
                 break;
             case R.id.tv_production:
                 CircleBookActivity.open(getActivity(), circleObj.getCircleId());

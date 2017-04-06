@@ -146,7 +146,7 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
      *
      * @return
      */
-    public boolean isCreater() {
+    public boolean isCreator() {
         return FastData.getCircleObj() != null && FastData.getCircleObj().getCircleCreateUserId() == getCircleUserId();
     }
 
