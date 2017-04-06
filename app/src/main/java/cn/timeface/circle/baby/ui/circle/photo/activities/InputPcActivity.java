@@ -11,6 +11,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
@@ -18,6 +24,8 @@ import cn.timeface.circle.baby.activities.ForgetPasswordActivity;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.common.utils.encode.AES;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -86,14 +94,25 @@ public class InputPcActivity extends BasePresenterAppCompatActivity implements V
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
             String result = data.getStringExtra("result");
-            if (result.length() > 6) {
-                result = result.substring(result.length() - 6, result.length());
-            }
+            LogUtil.showLog(result);
+
+//            if (result.length() > 6) {
+//                result = result.substring(result.indexOf("?"));
+//            }
+            LogUtil.showLog("result index sub:" + result);
             scanLogin(result);
         }
     }
 
     private void scanLogin(String qrCode) {
+        String result = new AES().decrypt(qrCode);
+        try {
+            JSONObject obj = new JSONObject(result);
+            qrCode = obj.getString("code");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        LogUtil.showLog("result:" + result);
         apiService.scanLogin(qrCode)
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(

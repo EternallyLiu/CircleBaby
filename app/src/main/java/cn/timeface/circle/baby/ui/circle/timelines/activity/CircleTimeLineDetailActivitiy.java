@@ -495,11 +495,11 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         }
     }
 
-    private void share(){
+    private void share() {
         String imgUrl = "";
         String title = FastData.getBabyNickName() + "长大了";
         String content = FastData.getBabyNickName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyNickName() + "的新变化";
-        String url = getString(R.string.share_url_circle_time_line, currentTimeLineId);;
+        String url = BuildConfig.API_URL + getString(R.string.share_url_circle_time_line, currentTimeLineId);
         new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_laucher_quadrate), url);
     }
 
