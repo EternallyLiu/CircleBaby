@@ -5,9 +5,8 @@ import android.os.Parcelable;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
 
 /**
  * 成长圈详情对象
@@ -17,12 +16,19 @@ import cn.timeface.circle.baby.ui.circle.groupmembers.bean.CircleBabyBriefObj;
 public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable {
     protected String circleDescription;           //圈描述
     protected int mediaAchievement;               //图片超过比例
-    protected List<CircleUserInfo> memberList;    //圈中用户列表 (不超过10个)
-    protected List<CircleBabyBriefObj> babyList;    //圈中所有宝宝 (不超过10个)
+    protected List<MemberDataObj> memberList;
     protected String rule;                        //圈规则
     protected int wrokAchievement;                //作品超过比例
 
     public GrowthCircleDetailObj() {
+    }
+
+    public GrowthCircleDetailObj(String circleDescription, int mediaAchievement, List<MemberDataObj> memberList, String rule, int wrokAchievement) {
+        this.circleDescription = circleDescription;
+        this.mediaAchievement = mediaAchievement;
+        this.memberList = memberList;
+        this.rule = rule;
+        this.wrokAchievement = wrokAchievement;
     }
 
     public String getCircleDescription() {
@@ -41,20 +47,12 @@ public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable
         this.mediaAchievement = mediaAchievement;
     }
 
-    public List<CircleUserInfo> getMemberList() {
+    public List<MemberDataObj> getMemberList() {
         return memberList;
     }
 
-    public void setMemberList(List<CircleUserInfo> memberList) {
+    public void setMemberList(List<MemberDataObj> memberList) {
         this.memberList = memberList;
-    }
-
-    public List<CircleBabyBriefObj> getBabyList() {
-        return babyList;
-    }
-
-    public void setBabyList(List<CircleBabyBriefObj> babyList) {
-        this.babyList = babyList;
     }
 
     public String getRule() {
@@ -73,6 +71,10 @@ public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable
         this.wrokAchievement = wrokAchievement;
     }
 
+    public static Creator<GrowthCircleDetailObj> getCREATOR() {
+        return CREATOR;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -83,8 +85,7 @@ public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable
         super.writeToParcel(dest, flags);
         dest.writeString(this.circleDescription);
         dest.writeInt(this.mediaAchievement);
-        dest.writeTypedList(this.memberList);
-        dest.writeTypedList(this.babyList);
+        dest.writeList(this.memberList);
         dest.writeString(this.rule);
         dest.writeInt(this.wrokAchievement);
     }
@@ -93,8 +94,8 @@ public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable
         super(in);
         this.circleDescription = in.readString();
         this.mediaAchievement = in.readInt();
-        this.memberList = in.createTypedArrayList(CircleUserInfo.CREATOR);
-        this.babyList = in.createTypedArrayList(CircleBabyBriefObj.CREATOR);
+        this.memberList = new ArrayList<MemberDataObj>();
+        in.readList(this.memberList, MemberDataObj.class.getClassLoader());
         this.rule = in.readString();
         this.wrokAchievement = in.readInt();
     }

@@ -161,6 +161,27 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         SQLite.delete().from(GrowthCircleObj.class).query();
     }
 
+    /**
+     * 是否为圈创建者
+     */
+    public boolean isCreator() {
+        return joinType == 0;
+    }
+
+    /**
+     * 是否为公开圈
+     */
+    public boolean isPublic() {
+        return openLever == 1;
+    }
+
+    /**
+     * 设置为公开圈
+     */
+    public void setCirclePublic(boolean circlePublic) {
+        this.openLever = circlePublic ? 1 : 0;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -206,26 +227,4 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
             return new GrowthCircleObj[size];
         }
     };
-
-    /**
-     * 是否为圈创建者
-     */
-    public boolean isCreator() {
-        return joinType == 0;
-    }
-
-    /**
-     * 是否为公开圈
-     */
-    public boolean isPublic() {
-        return openLever == 1;
-    }
-
-    /**
-     * 设置为公开圈
-     */
-    public void setCirclePublic(boolean circlePublic) {
-        this.openLever = circlePublic ? 1 : 0;
-    }
-
 }
