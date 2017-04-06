@@ -71,10 +71,6 @@ public class GrowthCircleDetailObj extends GrowthCircleObj implements Parcelable
         this.wrokAchievement = wrokAchievement;
     }
 
-    public static Creator<GrowthCircleDetailObj> getCREATOR() {
-        return CREATOR;
-    }
-
     @Override
     public int describeContents() {
         return 0;
