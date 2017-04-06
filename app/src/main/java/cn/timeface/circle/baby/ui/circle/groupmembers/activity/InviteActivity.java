@@ -13,6 +13,7 @@ import com.github.rayboot.widget.ratioview.RatioImageView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -85,7 +86,7 @@ public class InviteActivity extends BaseAppCompatActivity {
     @OnClick(R.id.tv_share_circle)
     public void clickShare(View view) {
         new ShareDialog(this).share(FastData.getUserName()+"请你加圈", GrowthCircleObj.getInstance().getCircleName()+FastData.getUserName()+"邀请你加入，在这里一起记录宝宝的学习成长时光！"
-                , ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_laucher_quadrate),
-                " http://stg3.v5time.net/baby/growthCircleShare/index.html?circleId="+circleObj.getCircleId()+"&circleMemberId="+ FastData.getUserId());
+                , ShareSdkUtil.getImgStrByResource(this, R.mipmap.ic_launcher),
+                BuildConfig.API_URL+"growthCircleShare/index.html?circleId="+circleObj.getCircleId()+"&circleMemberId="+ FastData.getUserId());
     }
 }
