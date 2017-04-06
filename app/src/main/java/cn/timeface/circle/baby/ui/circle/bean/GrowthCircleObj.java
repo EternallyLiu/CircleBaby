@@ -46,6 +46,8 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
     protected int openLever;          //0 - 私有圈 1- 公有圈
     @Column
     protected int workCount;          //圈中书的数量
+    @Column
+    protected int circleCreateUserId; //圈创建者id
 
     public GrowthCircleObj() {
     }
@@ -67,6 +69,18 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
     public static GrowthCircleObj refreshInstance() {
         currentGrowthCircleObj = null;
         return getInstance();
+    }
+
+    public int getCircleCreateUserId() {
+        return circleCreateUserId;
+    }
+
+    public void setCircleCreateUserId(int circleCreateUserId) {
+        this.circleCreateUserId = circleCreateUserId;
+    }
+
+    public static Creator<GrowthCircleObj> getCREATOR() {
+        return CREATOR;
     }
 
     public long getCircleId() {
@@ -200,6 +214,7 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         dest.writeInt(this.memberCount);
         dest.writeInt(this.openLever);
         dest.writeInt(this.workCount);
+        dest.writeInt(this.circleCreateUserId);
     }
 
     protected GrowthCircleObj(Parcel in) {
@@ -214,6 +229,7 @@ public class GrowthCircleObj extends BaseModel implements Parcelable {
         this.memberCount = in.readInt();
         this.openLever = in.readInt();
         this.workCount = in.readInt();
+        this.circleCreateUserId = in.readInt();
     }
 
     public static final Creator<GrowthCircleObj> CREATOR = new Creator<GrowthCircleObj>() {

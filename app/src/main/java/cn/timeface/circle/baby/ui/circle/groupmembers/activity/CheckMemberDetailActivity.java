@@ -33,6 +33,7 @@ import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.adapter.PhotosShowAdapter;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
@@ -136,7 +137,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
 
         long circleUserId = circleUserInfo.getCircleUserId();
         int circleUserType = circleUserInfo.getCircleUserType();
-        if (circleUserIdself == circleUserId && circleUserType == 1&&circleUserInfo.getCircleExpertType()==2) {
+        if (circleUserIdself == circleUserId && circleUserId == GrowthCircleObj.getInstance().getCircleCreateUserId()&&circleUserType==2) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改宝宝姓名");
             tvBtnMid.setText("修改昵称");
@@ -147,7 +148,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
             tvBtnMid.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
-        } else if (circleUserIdself == circleUserId && circleUserType == 1) {
+        } else if (circleUserIdself == circleUserId && circleUserId == GrowthCircleObj.getInstance().getCircleCreateUserId()) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改宝宝姓名");
             tvBtnMid.setText("修改昵称");

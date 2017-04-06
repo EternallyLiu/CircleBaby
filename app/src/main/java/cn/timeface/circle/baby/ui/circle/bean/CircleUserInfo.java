@@ -48,24 +48,21 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
     @Column
     protected long circleId;          //成长圈id
     @Column
-    protected int circleUserType;     //成长圈用户类型  1-创建者 2-老师 3-普通成员
+    protected int circleUserType;     //成长圈用户类型  2-老师 3-普通成员
     @Column
     protected String circleAvatarUrl; //成长圈用户头像
     @Column
     protected String circleNickName;  //成长圈用户昵称
-    @Column
-    protected int circleExpertType;  //用户的副类型
 
     public CircleUserInfo() {
     }
 
-    public CircleUserInfo(long circleUserId, long circleId, int circleUserType, String circleAvatarUrl, String circleNickName, int circleExpertType) {
+    public CircleUserInfo(long circleUserId, long circleId, int circleUserType, String circleAvatarUrl, String circleNickName) {
         this.circleUserId = circleUserId;
         this.circleId = circleId;
         this.circleUserType = circleUserType;
         this.circleAvatarUrl = circleAvatarUrl;
         this.circleNickName = circleNickName;
-        this.circleExpertType = circleExpertType;
     }
 
     public CircleUserInfo(int circleUserType, String circleAvatarUrl, String circleNickName) {
@@ -98,13 +95,6 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         CircleUserInfo.currentUserInfo = currentUserInfo;
     }
 
-    public int getCircleExpertType() {
-        return circleExpertType;
-    }
-
-    public void setCircleExpertType(int circleExpertType) {
-        this.circleExpertType = circleExpertType;
-    }
 
     public static Creator<CircleUserInfo> getCREATOR() {
         return CREATOR;
@@ -142,17 +132,28 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         this.circleUserType = circleUserType;
     }
 
+    /**
+     * 判断是否为老师
+     *
+     * @return
+     */
     public boolean isTeacher() {
-        return circleUserType == 2;
+        return circleUserType == 2 && FastData.getCircleObj() != null && FastData.getCircleObj().getCircleId() == getCircleId();
     }
 
+    /**
+     * 判断是否为创建者
+     *
+     * @return
+     */
     public boolean isCreater() {
-        return circleUserType == 1;
+        return FastData.getCircleObj() != null && FastData.getCircleObj().getCircleCreateUserId() == getCircleUserId();
     }
 
     public static void deleteAll() {
         SQLite.delete().from(CircleUserInfo.class).query();
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -189,7 +190,6 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         dest.writeInt(this.circleUserType);
         dest.writeString(this.circleAvatarUrl);
         dest.writeString(this.circleNickName);
-        dest.writeInt(this.circleExpertType);
     }
 
     protected CircleUserInfo(Parcel in) {
@@ -198,7 +198,6 @@ public class CircleUserInfo extends BaseModel implements Parcelable {
         this.circleUserType = in.readInt();
         this.circleAvatarUrl = in.readString();
         this.circleNickName = in.readString();
-        this.circleExpertType = in.readInt();
     }
 
     public static final Creator<CircleUserInfo> CREATOR = new Creator<CircleUserInfo>() {

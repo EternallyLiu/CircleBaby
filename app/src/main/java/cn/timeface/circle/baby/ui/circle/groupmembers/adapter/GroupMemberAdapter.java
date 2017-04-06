@@ -10,6 +10,7 @@ import java.util.List;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.inteface.OnItemClickListener;
 import cn.timeface.circle.baby.ui.circle.groupmembers.section.GroupMemberSection;
@@ -87,7 +88,7 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
 //                        .into(viewChild);
             }
 
-            if (menemberInfo.getUserInfo().getCircleUserType() == 1) {
+            if (menemberInfo.getUserInfo().getCircleUserId() == GrowthCircleObj.getInstance().getCircleCreateUserId()) {
                 baseViewHolder.setVisible(R.id.iv_create_member, true);
             } else if (FastData.getCircleUserInfo().getCircleUserId() == menemberInfo.getUserInfo().getCircleUserId()) {
                 baseViewHolder.setVisible(R.id.iv_mine_self, true);

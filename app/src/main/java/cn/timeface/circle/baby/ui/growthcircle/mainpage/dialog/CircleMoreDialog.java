@@ -97,7 +97,7 @@ public class CircleMoreDialog extends DialogFragment {
                 break;
             case R.id.tv_share:
                 new ShareDialog(getActivity()).share(FastData.getUserName()+"请你加圈", GrowthCircleObj.getInstance().getCircleName()+FastData.getUserName()+"邀请你加入，在这里一起记录宝宝的学习成长时光！"
-                        , ShareSdkUtil.getImgStrByResource(getActivity(), R.mipmap.ic_launcher),
+                        , ShareSdkUtil.getImgStrByResource(getActivity(), R.drawable.ic_laucher_quadrate),
                         " http://stg3.v5time.net/baby/growthCircleShare/index.html?circleId="+circleObj.getCircleId()+"&circleMemberId="+ FastData.getUserId());
                 break;
             case R.id.tv_production:

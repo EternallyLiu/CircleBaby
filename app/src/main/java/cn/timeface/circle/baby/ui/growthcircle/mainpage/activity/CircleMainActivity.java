@@ -120,9 +120,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         if (circleId <= 0) {
             circleId = FastData.getCircleId();
         }
-
         setupData();
-
         circleMainPushHandler = new CircleMainPushHandler();
         circleMainPushHandler.register();
     }
