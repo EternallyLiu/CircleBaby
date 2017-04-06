@@ -117,6 +117,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     private int allDetailsListPosition;
     private CircleBabyDialog circleBabyDialog;
+    private ImageActionDialog dialog;
 
     /**
      *
@@ -348,7 +349,9 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (delete || download)
+        if (delete && download){
+            inflater.inflate(R.menu.menu_timeline_detail, menu);
+        }else
             inflater.inflate(R.menu.menu_download, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -358,6 +361,17 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         switch (item.getItemId()) {
             case R.id.action_download:
                 saveImage();
+                break;
+            case R.id.action_more:
+                if (dialog == null) {
+                    dialog = new ImageActionDialog(getActivity());
+                    dialog.setClickListener(this);
+                    dialog.isShared(false);
+                    dialog.isDownload(download);
+                    dialog.isDelete(delete);
+                    dialog.isEdit(false);
+                }
+                dialog.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
