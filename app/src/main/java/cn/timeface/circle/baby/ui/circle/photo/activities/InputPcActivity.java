@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,9 +16,8 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.ForgetPasswordActivity;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
-import cn.timeface.circle.baby.support.utils.FastBlur;
 import cn.timeface.circle.baby.support.utils.FastData;
-import cn.timeface.circle.baby.views.barcodescanner.CaptureActivity;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -59,7 +59,7 @@ public class InputPcActivity extends BasePresenterAppCompatActivity implements V
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        tvAccount.setText("账号："+ FastData.getAccount());
+        tvAccount.setText("账号：" + FastData.getAccount());
 
         ivScan.setOnClickListener(this);
         btnForget.setOnClickListener(this);
@@ -71,11 +71,42 @@ public class InputPcActivity extends BasePresenterAppCompatActivity implements V
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_scan:
-                CaptureActivity.open(this);
+//                CaptureActivity.open(this);
+                Intent intent = new Intent(this, com.xys.libzxing.zxing.activity.CaptureActivity.class);
+                startActivityForResult(intent, 1);
                 break;
             case R.id.btn_forget:
                 ForgetPasswordActivity.open(this);
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            String result = data.getStringExtra("result");
+            if (result.length() > 6) {
+                result = result.substring(result.length() - 6, result.length());
+            }
+            scanLogin(result);
+        }
+    }
+
+    private void scanLogin(String qrCode) {
+        apiService.scanLogin(qrCode)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            if (response.success()) {
+                                showToast("登录成功");
+                            } else {
+                                showToast(response.getInfo());
+                            }
+                        },
+                        throwable -> {
+                            Log.e(TAG, throwable.getLocalizedMessage());
+                        }
+                );
     }
 }
