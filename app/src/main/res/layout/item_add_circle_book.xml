@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/iv_menu"
                 android:textColor="@color/text"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_medium"
                 tools:text="家校纪念册" />
 
             <TextView
@@ -55,7 +55,7 @@
                 android:layout_marginTop="@dimen/size_12"
                 android:text="成长经历，老师点评，永久保存"
                 android:textColor="@color/text_color12"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_small" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
                     android:clickable="true"
                     android:text="立即制作"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/text_normal" />
 
                 <TextView
                     android:id="@+id/tv_detail"
@@ -79,7 +79,7 @@
                     android:layout_marginLeft="@dimen/view_space_large"
                     android:text="了解详情"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/text_normal" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
