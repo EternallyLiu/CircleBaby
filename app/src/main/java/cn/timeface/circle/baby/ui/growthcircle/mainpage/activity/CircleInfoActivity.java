@@ -199,8 +199,11 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
     }
 
     public void clickCircleMember(View view) {
-        // 进入成员管理页面
-        GroupMembersActivity.open(this, circleObj);
+        // 非圈成员不能查看圈成员管理页面
+        if (isJoined) {
+            // 进入成员管理页面
+            GroupMembersActivity.open(this, circleObj);
+        }
     }
 
     @OnClick(R.id.tv_submit)

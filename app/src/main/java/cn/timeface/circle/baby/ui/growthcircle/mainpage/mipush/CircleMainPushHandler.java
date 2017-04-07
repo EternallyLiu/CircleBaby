@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import cn.timeface.circle.baby.App;
+import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleMainActivity;
@@ -96,7 +97,7 @@ public class CircleMainPushHandler implements IEventBus {
                                 );
 
                                 // 退出到圈列表并刷新数据
-                                CircleMainActivity.openFromPush(context);
+                                TabMainActivity.openClearTop(context);
                                 EventBus.getDefault().post(
                                         new CircleChangedEvent(event.circleObj.getCircleId(),
                                                 event.type == MiPushConstant.TYPE_CIRCLE_MEMBER_REMOVED ?

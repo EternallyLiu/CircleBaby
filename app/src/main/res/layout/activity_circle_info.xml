@@ -14,9 +14,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_above="@+id/fl_bottom"
+        android:layout_below="@id/appbar_layout">
 
         <LinearLayout
             android:layout_width="match_parent"

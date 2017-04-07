@@ -96,8 +96,14 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
         Log.d("-------->", "-------->onNotificationMessageClicked: " + mMessage);
         if (!TextUtils.isEmpty(mMessage)) {
-            if (!isAppForground(context)) {
-                handlePushMessage(context, mMessage);
+            if (!isAppForeground(context)) {
+                if (TextUtils.isEmpty(FastData.getUserId())) {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } else {
+                    handlePushMessage(context, mMessage);
+                }
             }
         }
     }
@@ -174,7 +180,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 //                String s = (String) msg.obj;
 //                DynamicDetailActivity.open(FireApp.getApp(), Intent.FLAG_ACTIVITY_NEW_TASK, s);
 //            } else if (msg.what == MESSAGE) {
-            if (isAppForground(context)) {
+            if (isAppForeground(context)) {
                 Log.v("MiPushMessageReceiver", "在前台");
 //                Toast.makeText(context, mToastInfo, Toast.LENGTH_LONG).show();
             } else {
@@ -195,7 +201,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         }
     }
 
-    public static boolean isAppForground(Context mContext) {
+    public static boolean isAppForeground(Context mContext) {
         ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
         if (!tasks.isEmpty()) {
@@ -290,15 +296,11 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
                 .subscribe(
                         msgInfoObj -> {
                             if (msgInfoObj != null) {
-                                if (TextUtils.isEmpty(FastData.getUserId())) {
-                                    Intent intent = new Intent(context, LoginActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    context.startActivity(intent);
-                                } else if (App.getInstance().getTopActivity() == null) {
-                                    Log.i("-------->", "-------->getTopActivity is null");
+                                if (App.getInstance().getTopActivity() == null) {
+                                    Log.d("-------->", "-------->getTopActivity is null");
                                     TabMainActivity.openCircleFromPush(context, msgInfoObj);
                                 } else {
-                                    Log.i("-------->", "-------->getTopActivity not null");
+                                    Log.d("-------->", "-------->getTopActivity not null");
                                     TabMainActivity.openCircle(App.getInstance().getTopActivity(), msgInfoObj);
                                 }
                             }

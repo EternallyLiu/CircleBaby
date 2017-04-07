@@ -151,12 +151,6 @@ public class CircleInfoEditActivity extends BaseAppCompatActivity implements IEv
         if (!TextUtils.isEmpty(content)) {
             et.setText(content);
         }
-
-        // 解决ScrollView中嵌套多行EditText不能上下滑动的问题
-        et.setOnTouchListener((v, event) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;
-        });
     }
 
     @OnClick({R.id.iv_circle_cover, R.id.tv_submit})

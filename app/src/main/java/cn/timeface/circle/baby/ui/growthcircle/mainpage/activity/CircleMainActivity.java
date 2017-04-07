@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -14,8 +15,8 @@ import android.widget.Toast;
 
 import com.github.rayboot.widget.ratioview.RatioImageView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
@@ -41,6 +43,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.mipush.CircleMainPushHandler;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -125,6 +128,8 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
 
         circleMainPushHandler = new CircleMainPushHandler();
         circleMainPushHandler.register();
+
+        reqTeacherAuth(circleId);
     }
 
     private void setupPTR() {
@@ -242,11 +247,34 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         addSubscription(s);
     }
 
-
     private void setupListData(List<CircleTimelineObj> dataList) {
         if (currentPage <= 1)
             adapter.addList(true, dataList);
         else adapter.addList(dataList);
+    }
+
+    // 查询成员是否被认证成为/取消认证老师
+    private void reqTeacherAuth(long circleId) {
+        Subscription s = apiService.queryTeacherAuth(circleId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            if (response.success()) {
+                                if (response.isAuthorized() || response.isUnAuthorized()) {
+                                    CirclePassThroughMessageEvent event = new CirclePassThroughMessageEvent(response.isAuthorized() ?
+                                            MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION :
+                                            MiPushConstant.TYPE_CIRCLE_TEACHER_UNAUTHORIZED
+                                    );
+                                    event.circleUserInfo = response.getUserInfo();
+                                    EventBus.getDefault().post(event);
+                                }
+                            }
+                        },
+                        throwable -> {
+                            Log.e(TAG, "queryTeacherAuth: ", throwable);
+                        }
+                );
+        addSubscription(s);
     }
 
     @OnClick({R.id.iv_more, R.id.iv_publish})

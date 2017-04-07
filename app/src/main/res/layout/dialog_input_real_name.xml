@@ -71,7 +71,7 @@
                 android:layout_height="@dimen/view_space_large"
                 android:layout_marginBottom="@dimen/view_space_medium"
                 android:layout_marginLeft="@dimen/view_space_normal"
-                android:layout_marginRight="@dimen/view_space_medium"
+                android:layout_marginRight="@dimen/view_space_normal"
                 android:layout_marginTop="@dimen/view_space_medium"
                 android:background="@drawable/dialog_btn_orange"
                 android:gravity="center"

@@ -3,11 +3,14 @@ package cn.timeface.circle.baby.ui.growthcircle.mainpage.mipush;
 import android.content.Context;
 import android.util.Log;
 
+import com.wechat.photopicker.fragment.BigImageFragment;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import cn.timeface.circle.baby.App;
+import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.TabMainActivity;
 import cn.timeface.circle.baby.constants.MiPushConstant;
 import cn.timeface.circle.baby.support.api.ApiFactory;
@@ -16,6 +19,10 @@ import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.CircleTimeLineDetailActivitiy;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.HomeWorkActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.SchoolTaskDetailActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.activity.TeacherAuthoActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.activity.CircleMainActivity;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleAlertDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
@@ -131,9 +138,12 @@ public class TabMainPushHandler implements IEventBus {
 
     /*-------------------------------------------推送消息处理-------------------------------------------*/
     public void handleCirclePushMessage(MiPushMsgInfoObj pushMsgInfo) {
-        if (FastData.getCircleId() != pushMsgInfo.getCircleId()) {
-            // 先获取最新圈数据
+        if (pushMsgInfo.getCircleId() > 0 && FastData.getCircleId() != pushMsgInfo.getCircleId()) {
+            // 当前圈子未缓存，先获取最新圈数据
             reqCircleInfo(pushMsgInfo);
+        } else if (pushMsgInfo.getType() == MiPushConstant.PUSH_TYPE_CIRCLE_NEW_PHOTO_LIKED
+                || pushMsgInfo.getType() == MiPushConstant.PUSH_TYPE_CIRCLE_NEW_PHOTO_TAGGED) {
+            reqCirclePhotoDetail(pushMsgInfo);
         } else {
             dispatchCirclePushMessage(pushMsgInfo);
         }
@@ -144,7 +154,7 @@ public class TabMainPushHandler implements IEventBus {
         if (context == null) return;
 
         if (context instanceof TabMainActivity) {
-            ((TabMainActivity) context).setClearCircleCache(true);
+            ((TabMainActivity) context).setClearCircleCacheFlag(true);
         }
         switch (pushMsgInfo.getType()) {
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_MEMBER: // 新成员加图（定位圈首页）
@@ -153,30 +163,30 @@ public class TabMainPushHandler implements IEventBus {
                 break;
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_TEACHER_AUTHORIZATION: // 管理员发起老师认证（定位到认证列表页面）
                 // 仅携带circleId
-
+                TeacherAuthoActivity.open(context);
                 break;
             case MiPushConstant.PUSH_TYPE_CIRCLE_TEACHER_NEW_PRODUCTION: // 老师创建新作品（定位到该作品的预览页）
             case MiPushConstant.PUSH_TYPE_CIRCLE_PRODUCTION_REFERENCED: // 发布的照片被别人引用做书并订单支付成功（定位到该作品的预览页）
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_SHCOOL_BOOK: //每学期系统自动生成的家校纪念册 （定位到该作品的预览页）
                 // 携带开放平台的bookId、bookType
-
+                MyPODActivity.open(context, pushMsgInfo.getBookId(), pushMsgInfo.getBookType());
                 break;
 
             case MiPushConstant.PUSH_TYPE_CIRCLE_TEACHER_NEW_TIME_LINE: // 老师发布动态（定位到该条动态）
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_COMMENTS: // 发布信息被评论（定位到该条动态）
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_GOOD: // 发布信息被点赞（定位到该条动态）
                 // 携带开放平台的circleId、circleTimeId（圈时光id）
-
+                CircleTimeLineDetailActivitiy.open(context, pushMsgInfo.getCircleTimeId());
                 break;
 
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_SCHOOL_TASK: // 老师发起新作业（定位到作业该详情页）
                 // 携带circleId、taskId（布置的作业的id）
-
+                SchoolTaskDetailActivity.open(context, pushMsgInfo.getTaskId());
                 break;
 
             case MiPushConstant.PUSH_TYPE_CIRCLE_MEMBER_REMOVED: // 被圈主移出（定位圈列表页）
                 // 不携带参数，点击直接定位到圈列表页并清空本地圈缓存数据
-
+                TabMainActivity.openClearTop(context);
                 break;
 
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_PHOTO_TAGGED: // 发布的照片被别人加标签（定位到该图片的预览页）
@@ -187,7 +197,7 @@ public class TabMainPushHandler implements IEventBus {
 
             case MiPushConstant.PUSH_TYPE_CIRCLE_HOMEWORK_COMMENTS: // 老师点评了宝宝的作业（定位到作业该详情页）
                 // 仅携带homeworkId
-
+                HomeWorkActivity.open(context, pushMsgInfo.getHomeworkId());
                 break;
         }
     }
@@ -198,9 +208,35 @@ public class TabMainPushHandler implements IEventBus {
                 .subscribe(
                         response -> {
                             if (response.success()) {
+                                FastData.clearCircleData();
                                 FastData.setGrowthCircleObj(response.getGrowthCircle());
                                 FastData.setCircleUserInfo(response.getUserInfo());
                                 dispatchCirclePushMessage(pushMsgInfo);
+                            }
+                        },
+                        throwable -> {
+                            Log.e(TAG, "reqCircleInfo: ", throwable);
+                        }
+                );
+    }
+
+    private void reqCirclePhotoDetail(MiPushMsgInfoObj pushMsgInfo) {
+        apiService.queryCirclePhotoById(pushMsgInfo.getPhotoId())
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            if (response.success()) {
+                                // 发布的照片被别人加标签（定位到该图片的预览页）
+                                // 发布的照片被别人加喜欢（定位到该图片的预览页）
+
+                                Context context = App.getInstance().getTopActivity();
+                                if (context == null) return;
+
+                                if (context instanceof TabMainActivity) {
+                                    ((TabMainActivity) context).setClearCircleCacheFlag(true);
+                                }
+                                BigImageFragment.open(context, response.getCircleMedia(),
+                                        BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR, true, false);
                             }
                         },
                         throwable -> {

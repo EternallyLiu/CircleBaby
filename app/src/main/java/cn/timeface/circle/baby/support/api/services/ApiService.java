@@ -93,8 +93,8 @@ import cn.timeface.circle.baby.ui.circle.response.CircleMemberListResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePhotoBookResponse;
 import cn.timeface.circle.baby.ui.circle.response.CirclePublishResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSchoolTaskListResponse;
-import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.CircleSearchListResponse;
+import cn.timeface.circle.baby.ui.circle.response.CircleTimeLinesResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkDetailResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkListResponse;
 import cn.timeface.circle.baby.ui.circle.response.HomeWorkPublishResponse;
@@ -103,6 +103,7 @@ import cn.timeface.circle.baby.ui.circle.response.QrcodeResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryBindingBabyResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleByTimeResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleLastActivityResponse;
+import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoByIdResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleStatusResponse;
 import cn.timeface.circle.baby.ui.circle.response.QueryCircleTeacherAuthResponse;
@@ -1923,6 +1924,15 @@ public interface ApiService {
     @POST("circleMedia/delLabel")
     Observable<BaseResponse> deleteCircleLabel(@Query("mediaId") long mediaId,
                                                @Query("tipId") long tips);
+
+    /**
+     * 获取图片信息
+     *
+     * @param mediaId
+     * @return
+     */
+    @POST("circleMedia/getById")
+    Observable<QueryCirclePhotoByIdResponse> queryCirclePhotoById(@Query("mediaId") long mediaId);
 
     /**
      * 查询绑定了家长的宝宝列表

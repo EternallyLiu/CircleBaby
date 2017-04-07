@@ -6,7 +6,7 @@ package cn.timeface.circle.baby.constants;
 public class MiPushConstant {
 
     /*---------------------------PUSH消息类型---------------------------*/
-    public static final int PUSH_TYPE_CIRCLE_NEW_MEMBER = 103; // 新成员加图（定位圈首页）
+    public static final int PUSH_TYPE_CIRCLE_NEW_MEMBER = 103; // 新成员加圈（定位圈首页）
     public static final int PUSH_TYPE_CIRCLE_TEACHER_NEW_PRODUCTION = 117; // 老师创建新作品（定位到该作品的预览页）
     public static final int PUSH_TYPE_CIRCLE_TEACHER_NEW_TIME_LINE = 104; // 老师发布动态（定位到该条动态）
     public static final int PUSH_TYPE_CIRCLE_NEW_TEACHER_AUTHORIZATION = 105; // 管理员发起老师认证（定位到认证列表页面）

@@ -29,6 +29,13 @@ public class QueryCircleTeacherAuthResponse extends BaseResponse {
         this.userInfo = userInfo;
     }
 
+    public boolean isAuthorized() {
+        return authentication == 2;
+    }
+
+    public boolean isUnAuthorized() {
+        return authentication == 3;
+    }
 
     @Override
     public int describeContents() {

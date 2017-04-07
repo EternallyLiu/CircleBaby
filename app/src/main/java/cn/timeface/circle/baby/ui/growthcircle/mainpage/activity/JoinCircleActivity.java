@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.ui.growthcircle.mainpage.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -66,7 +67,7 @@ public class JoinCircleActivity extends BaseAppCompatActivity implements IEventB
     }
 
     private void reqData(String circleName) {
-        Subscription s = apiService.queryByCircleNumOrName(circleName)
+        Subscription s = apiService.queryByCircleNumOrName(Uri.encode(circleName))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {

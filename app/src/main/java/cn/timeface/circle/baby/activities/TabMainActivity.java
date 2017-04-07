@@ -481,27 +481,42 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         }
     }
 
-
+    /**
+     * 应用未启动状态下打开圈列表（NEW_TASK），并跳转到目标页面，再次返回需要清空圈缓存数据
+     */
     public static void openCircleFromPush(Context context, MiPushMsgInfoObj msgInfo) {
         Intent intent = new Intent(context, TabMainActivity.class);
-        intent.putExtra("open_circle_tab", true);
+        intent.putExtra("open_circle_activity", true);
         intent.putExtra("MiPushMsgInfoObj", msgInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
+    /**
+     * 返回圈列表，并跳转到目标页面，再次返回需要清空圈缓存数据
+     */
     public static void openCircle(Context context, MiPushMsgInfoObj msgInfo) {
         Intent intent = new Intent(context, TabMainActivity.class);
-        intent.putExtra("open_circle_tab", true);
+        intent.putExtra("open_circle_activity", true);
         intent.putExtra("MiPushMsgInfoObj", msgInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
 
-    private boolean clearCircleCache = false;
+    /**
+     * 返回圈列表，并清空圈缓存数据
+     */
+    public static void openClearTop(Context context) {
+        Intent intent = new Intent(context, TabMainActivity.class);
+        intent.putExtra("open_circle_tab", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
 
-    public void setClearCircleCache(boolean clearCircleCache) {
-        this.clearCircleCache = clearCircleCache;
+    private boolean clearCircleCacheFlag = false; // 再次返回圈列表需要清空圈缓存数据
+
+    public void setClearCircleCacheFlag(boolean clearCircleCacheFlag) {
+        this.clearCircleCacheFlag = clearCircleCacheFlag;
     }
 
     @Override
@@ -509,9 +524,15 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         super.onResume();
 
         Log.i("-------->", "-------->open_circle_tab: " + getIntent().getBooleanExtra("open_circle_tab", false));
+        Log.i("-------->", "-------->open_circle_activity: " + getIntent().getBooleanExtra("open_circle_activity", false));
         if (getIntent().getBooleanExtra("open_circle_tab", false)) {
+            // 返回圈列表，并清空圈缓存数据
             getIntent().putExtra("open_circle_tab", false);
+            FastData.clearCircleData();
             rgMain.check(R.id.rb_growth_circle);
+        } else if (getIntent().getBooleanExtra("open_circle_activity", false)) {
+            // 返回圈列表，并跳转到目标页面，再次返回需要清空圈缓存数据
+            getIntent().putExtra("open_circle_activity", false);
             if (getIntent().getSerializableExtra("MiPushMsgInfoObj") != null) {
                 MiPushMsgInfoObj pushMsgInfo = (MiPushMsgInfoObj) getIntent().getSerializableExtra("MiPushMsgInfoObj");
                 if (tabMainPushHandler != null) {
@@ -520,10 +541,11 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
             }
         }
 
-        Log.i("-------->", "-------->clearCircleCache: " + clearCircleCache);
-        if (clearCircleCache) {
-            clearCircleCache = false;
+        Log.i("-------->", "-------->clearCircleCacheFlag: " + clearCircleCacheFlag);
+        if (clearCircleCacheFlag) {
+            clearCircleCacheFlag = false;
             FastData.clearCircleData();
+            rgMain.check(R.id.rb_growth_circle);
         }
     }
 
