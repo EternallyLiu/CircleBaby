@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerTimesAdapter
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleTimeLineWrapperObj;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.StateView;
 import cn.timeface.circle.baby.views.TFStateView;
 
@@ -105,7 +106,7 @@ public class CircleServerTimeFragment extends BasePresenterFragment implements V
                                 },
                                 throwable -> {
                                     stateView.showException(throwable);
-                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                    LogUtil.showError(throwable);
                                 }
                         )
         );

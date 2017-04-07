@@ -79,7 +79,7 @@
     <string name="share_url_generalmap">babyShare/generalMap.html?timeId=%1$d</string>
     <string name="share_url_diary">babyShare/diary.html?timeId=%1$d</string>
     <string name="share_url_video">babyShare/video.html?timeId=%1$d</string>
-    <string name="share_url_circle_time_line">http://stg3.v5time.net/baby/babyShare/groupPicture.html?timeId=%d&#038;type=2</string>
+    <string name="share_url_circle_time_line">babyShare/groupPicture.html?timeId=%d&#038;type=2</string>
 
 
     <string name="picker_photo">选择图片</string>
