@@ -32,6 +32,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObjWrapper;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.growth.adapters.SelectServerPhotosAdapter;
+import cn.timeface.circle.baby.views.StateView;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -81,6 +82,7 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
         albumId = getIntent().getStringExtra("album_id");
         selMedias = getIntent().getParcelableArrayListExtra("select_medias");
         getSupportActionBar().setTitle(albumName);
+        stateView.setOnRetryListener(() -> reqDate());
         reqDate();
     }
 
@@ -110,9 +112,9 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
         addSubscription(
                 apiService.queryAlbumPhotos(albumId)
                         .compose(SchedulersCompat.applyIoSchedulers())
-                        .doOnCompleted(() -> stateView.finish())
                         .subscribe(
                                 response -> {
+                                    stateView.finish();
                                     if (response.success()) {
                                         setData(response.getDataList());
                                     } else {
@@ -120,6 +122,7 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
                                     }
                                 },
                                 throwable -> {
+                                    stateView.showException(throwable);
                                     Log.e(TAG, throwable.getLocalizedMessage());
                                 }
                         )
@@ -139,6 +142,9 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
         } else {
             serverPhotosAdapter.setListData(mediaWrapObjs);
             serverPhotosAdapter.notifyDataSetChanged();
+        }
+        if(serverPhotosAdapter.getListData().isEmpty()){
+            stateView.empty();
         }
     }
 

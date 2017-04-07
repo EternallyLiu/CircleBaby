@@ -8,16 +8,32 @@
         android:id="@+id/topBar"
         layout="@layout/head"/>
 
+    <TextView
+        android:id="@+id/tv_input_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topBar"
+        android:layout_marginBottom="@dimen/size_10"
+        android:layout_marginLeft="@dimen/size_10"
+        android:layout_marginTop="@dimen/size_10"
+        android:gravity="left|center_vertical"
+        android:maxLines="1"
+        android:text="@string/input_create_actve_tip"
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_medium"/>
+
     <cn.timeface.circle.baby.ui.circle.timelines.views.InputListenerEditText
         android:id="@+id/et_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/topBar"
-        android:background="@color/white"
-        android:hint="@string/input_create_actve_tip"
+        android:layout_below="@+id/tv_input_tip"
+        android:layout_marginLeft="@dimen/size_10"
+        android:layout_marginRight="@dimen/size_10"
+        android:background="@drawable/input_bg_new_baby"
         android:maxLines="1"
-        android:padding="@dimen/size_6"
-        android:textSize="@dimen/text_normal"/>
+        android:padding="@dimen/size_10"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_medium"/>
 
     <TextView
         android:id="@+id/tv_text_count"
@@ -25,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/et_input"
         android:layout_below="@+id/et_input"
+        android:layout_marginRight="@dimen/size_10"
         android:layout_marginTop="@dimen/size_4"
         android:text="0 / 8"
         android:textSize="@dimen/text_small_10"/>

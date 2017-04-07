@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -136,7 +135,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
 
         long circleUserId = circleUserInfo.getCircleUserId();
         int circleUserType = circleUserInfo.getCircleUserType();
-        if (circleUserIdself == circleUserId && circleUserType == 1&&circleUserInfo.getCircleExpertType()==2) {
+        if (circleUserIdself == circleUserId && circleUserInfo.isCreator()&&circleUserInfo.isTeacher()) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改宝宝姓名");
             tvBtnMid.setText("修改昵称");
@@ -147,7 +146,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
             tvBtnMid.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
-        } else if (circleUserIdself == circleUserId && circleUserType == 1) {
+        } else if (circleUserIdself == circleUserId &&circleUserInfo.isCreator()) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改宝宝姓名");
             tvBtnMid.setText("修改昵称");
@@ -169,7 +168,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
             });
-        } else if (circleUserIdself == circleUserId && circleUserTypeSelf == 2) {
+        } else if (circleUserIdself == circleUserId && circleUserSelf.isTeacher()) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改昵称");
             tvBtnDown.setVisibility(View.GONE);
@@ -178,7 +177,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
-        } else if (circleUserIdself == circleUserId && circleUserType == 2) {
+        } else if (circleUserIdself == circleUserId && circleUserInfo.isTeacher()) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改昵称");
             tvBtnDown.setVisibility(View.GONE);
@@ -252,7 +251,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                 tfDialog.show(getSupportFragmentManager(), "");
             });
 
-        } else if (circleUserTypeSelf == 1 && circleUserType == 5) {
+        } else if (circleUserSelf.isCreator() && circleUserType == 5) {
             getSupportActionBar().setTitle("入圈申请");
             tvBtnUp.setText("同意加入");
             tvBtnDown.setText("拒绝加入");

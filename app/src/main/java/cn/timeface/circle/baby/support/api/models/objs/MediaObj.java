@@ -10,6 +10,7 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.support.api.models.base.BaseObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
@@ -185,8 +186,9 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public int getH() {
+        if (h == 0) h = App.mScreenWidth / 3;
         if (imageOrientation == ExifInterface.ORIENTATION_ROTATE_90 || imageOrientation == ExifInterface.ORIENTATION_ROTATE_270)
-            return w;
+            return w == 0 ? App.mScreenWidth / 3 : w;
         return h;
     }
 
@@ -195,8 +197,9 @@ public class MediaObj extends BaseObj implements Parcelable {
     }
 
     public int getW() {
+        if (w == 0) w = App.mScreenWidth / 3;
         if (imageOrientation == ExifInterface.ORIENTATION_ROTATE_90 || imageOrientation == ExifInterface.ORIENTATION_ROTATE_270)
-            return h;
+            return h == 0 ? App.mScreenWidth / 3 : h;
         return w;
     }
 

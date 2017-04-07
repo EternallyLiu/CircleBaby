@@ -3,7 +3,7 @@
                 android:id="@+id/rl_active"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_12"
+                android:background="@color/white"
     >
 
 
@@ -20,8 +20,8 @@
         android:gravity="left|center_vertical"
         android:lines="1"
         android:text="@string/circle_publish_select_acctive_tip"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_medium"/>
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_small_13"/>
 
     <ImageView
         android:id="@+id/iv_right"
@@ -48,10 +48,12 @@
         android:layout_toRightOf="@+id/tv_tip"
         android:gravity="right|center_vertical"
         android:text="手工课"
-        android:textSize="@dimen/text_small"/>
+        android:textColor="@color/aluminum"
+        android:textSize="@dimen/text_small_13"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
-        android:background="@color/bg_color6"/>
+        android:layout_alignParentBottom="true"
+        android:background="@color/lily_white"/>
 </RelativeLayout>
