@@ -9,6 +9,7 @@
         layout="@layout/layout_toolbar" />
 
     <android.support.v4.widget.NestedScrollView
+        android:layout_marginTop="?actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
