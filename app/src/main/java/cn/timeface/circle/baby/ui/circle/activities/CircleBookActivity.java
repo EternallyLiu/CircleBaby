@@ -193,12 +193,7 @@ public class CircleBookActivity extends BasePresenterAppCompatActivity implement
                             bookObj,
                             bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
                     productionMenuDialog.show(getSupportFragmentManager(), "");
-                } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO && bookObj.getAuthor().getUserId().equals(FastData.getUserId())) {
-                    productionMenuDialog = ProductionMenuDialog.newInstance(
-                            bookObj,
-                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO && bookObj.getAuthor().getUserId().equals(FastData.getUserId()));
-                    productionMenuDialog.show(getSupportFragmentManager(), "");
-                } else {
+                } else{
                     productionMenuDialog = ProductionMenuDialog.newInstance(
                             bookObj,
                             bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO && bookObj.getAuthor().getUserId().equals(FastData.getUserId()));
