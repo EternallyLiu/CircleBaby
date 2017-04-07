@@ -119,7 +119,13 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                             bookObj,
                             bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
                     productionMenuDialog.show(getChildFragmentManager(), "");
+                } else {
+                    productionMenuDialog = ProductionMenuDialog.newInstance(
+                            bookObj,
+                            bookObj.getBookType() == BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK);
+                    productionMenuDialog.show(getChildFragmentManager(), "");
                 }
+
                 break;
 
             case R.id.tv_print:

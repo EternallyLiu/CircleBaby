@@ -120,11 +120,6 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
                             bookObj,
                             bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
                     productionMenuDialog.show(getChildFragmentManager(), "");
-                } else if (bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO) {
-                    productionMenuDialog = ProductionMenuDialog.newInstance(
-                            bookObj,
-                            bookObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO);
-                    productionMenuDialog.show(getChildFragmentManager(), "");
                 } else {
                     productionMenuDialog = ProductionMenuDialog.newInstance(
                             bookObj,
@@ -393,21 +388,20 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
 
     @Subscribe
     public void bookOptionEvent(BookOptionEvent optionEvent) {
-        if (optionEvent.getBookType() == bookType) {
-            //删除书籍操作
-            if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
-                for (int i = 0; i < bookListAdapter.getListData().size(); i++) {
-                    BookObj bookObj = bookListAdapter.getListData().get(i);
-                    if (TextUtils.equals(optionEvent.getBookId(), String.valueOf(bookObj.getBookId()))) {
-                        bookListAdapter.getListData().remove(i);
-                        bookListAdapter.notifyItemRemoved(i);
-                        break;
-                    }
+
+        //删除书籍操作
+        if (optionEvent.getOption() == BookOptionEvent.BOOK_OPTION_DELETE) {
+            for (int i = 0; i < circlcListAdapter.getListData().size(); i++) {
+                BookObj bookObj = circlcListAdapter.getListData().get(i);
+                if (TextUtils.equals(optionEvent.getBookId(), String.valueOf(bookObj.getBookId()))) {
+                    circlcListAdapter.getListData().remove(i);
+                    circlcListAdapter.notifyItemRemoved(i);
+                    break;
                 }
-                updateEmptyView();
-            } else {
-                bookPresenter.loadData(bookType, 2);
             }
+            updateEmptyView();
+        } else {
+            bookPresenter.loadData(bookType, 2);
         }
     }
 
