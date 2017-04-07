@@ -41,6 +41,7 @@ import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.adapter.CircleTimeLineAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleTimeLineEditEvent;
+import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CircleChangedEvent;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
@@ -331,6 +332,10 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         }
     }
 
+
+    public void onEvent(SchoolTaskEvent event){
+
+    }
 
     @Subscribe
     public void onEvent(CircleChangedEvent event) {

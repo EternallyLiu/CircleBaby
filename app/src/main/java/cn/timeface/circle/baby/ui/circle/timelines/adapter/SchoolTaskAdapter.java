@@ -80,7 +80,7 @@ public class SchoolTaskAdapter extends BaseEmptyAdapter {
         if (getEmptyItem() != null && containObj(getEmptyItem())) {
             if (getRealItemSize() > 2) deleteItem(getEmptyItem());
         } else if (getEmptyItem() != null && !containObj(getEmptyItem())) {
-            if (getRealItemSize() <= 1) add(getEmptyItem());
+            if (getRealItemSize() == 1) add(getEmptyItem());
         }
     }
 
