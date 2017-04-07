@@ -131,7 +131,6 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     private void setUpView() {
 
         long circleUserIdself = circleUserSelf.getCircleUserId();
-        int circleUserTypeSelf = circleUserSelf.getCircleUserType();
 
         long circleUserId = circleUserInfo.getCircleUserId();
         int circleUserType = circleUserInfo.getCircleUserType();
@@ -195,7 +194,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
-        } else if (circleUserTypeSelf == 1 && circleUserType == 2) {
+        } else if (circleUserSelf.isCreator()  && circleUserType == 2) {
             getSupportActionBar().setTitle("管理圈成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("取消教师认证");
@@ -221,7 +220,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
             });
-        } else if (circleUserTypeSelf == 1 && circleUserType == 3) {
+        } else if (circleUserSelf.isCreator()  && circleUserType == 3) {
             getSupportActionBar().setTitle("管理圈成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("教师认证");
@@ -272,7 +271,6 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvWantReason.setVisibility(View.GONE);
             tvGoSee.setOnClickListener(v -> CirclePhotoActivity.open(CheckMemberDetailActivity.this, circleUserInfo, true));
             reqPersonalPhotos();
-
         }
     }
 
