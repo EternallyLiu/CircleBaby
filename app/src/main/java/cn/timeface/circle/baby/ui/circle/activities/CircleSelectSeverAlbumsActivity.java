@@ -35,6 +35,7 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.CircleSelectServerAlbumAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObjWrapper;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.TFStateView;
 import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
@@ -121,9 +122,9 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
         addSubscription(
                 apiService.queryCircleAlbums(circleId)
                         .compose(SchedulersCompat.applyIoSchedulers())
-                        .doOnCompleted(() -> stateView.finish())
                         .subscribe(
                                 response -> {
+                                    stateView.finish();
                                     if (response.success()) {
                                         setData(response.getDataList());
                                     } else {
@@ -131,7 +132,8 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
                                     }
                                 },
                                 throwable -> {
-                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                    stateView.showException(throwable);
+                                    LogUtil.showError(TAG, throwable);
                                 }
                         )
         );

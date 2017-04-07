@@ -47,6 +47,8 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
     @Bind(R.id.view_pager)
     ViewPager viewPager;
 
+    MenuItem menuItemAdd;
+
     public static void open(Context context) {
         Intent intent = new Intent(context, MineBookActivityV2.class);
         context.startActivity(intent);
@@ -66,6 +68,7 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_mine_book, menu);
+        menuItemAdd = menu.findItem(R.id.action_add);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -149,6 +152,24 @@ public class MineBookActivityV2 extends BasePresenterAppCompatActivity implement
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                if(menuItemAdd == null) return;
+                if(adapter.getItem(position) instanceof CircleListFragment){
+                    menuItemAdd.setVisible(false);
+                } else {
+                    menuItemAdd.setVisible(true);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
     }
 
     public void doDialogItemClick(View view) {
