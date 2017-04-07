@@ -28,6 +28,7 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleActivityAdapter;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
  * 选择圈活动fragment
@@ -151,7 +152,8 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
                                 }
                             },
                             throwable -> {
-                                Log.e(TAG, throwable.getLocalizedMessage());
+//                                Log.e(TAG, throwable.getLocalizedMessage());
+                                LogUtil.showError(throwable);
                             }
                     );
         }
