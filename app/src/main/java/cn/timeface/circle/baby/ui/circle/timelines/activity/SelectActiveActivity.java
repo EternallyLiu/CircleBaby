@@ -78,8 +78,8 @@ public class SelectActiveActivity extends BaseAppCompatActivity implements IEven
         contentRecyclerView.setAdapter(adapter);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         contentRecyclerView.setLayoutManager(layoutManager);
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation(), R.color.divider_color);
-        contentRecyclerView.addItemDecoration(itemDecoration);
+//        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation(), R.color.divider_color);
+//        contentRecyclerView.addItemDecoration(itemDecoration);
 
     }
 

@@ -3,7 +3,6 @@
                 android:id="@+id/rl_active"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_12"
     >
 
 
@@ -52,6 +51,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.7dp"
-        android:background="@color/bg_color6"/>
+        android:layout_height="1px"
+        android:background="@color/bg_color6"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

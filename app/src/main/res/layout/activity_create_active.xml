@@ -13,11 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/topBar"
-        android:background="@color/white"
+        android:background="@drawable/shape_etcount_bg"
         android:hint="@string/input_create_actve_tip"
         android:maxLines="1"
-        android:padding="@dimen/size_6"
-        android:textSize="@dimen/text_normal"/>
+        android:padding="@dimen/size_12"
+        android:textSize="@dimen/text_normal"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_6"/>
 
     <TextView
         android:id="@+id/tv_text_count"

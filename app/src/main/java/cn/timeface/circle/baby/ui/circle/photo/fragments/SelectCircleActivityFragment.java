@@ -14,9 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
-import com.yqritc.recyclerviewflexibledivider.VerticalDividerItemDecoration;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,6 +135,7 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(
                             response -> {
+                                ToastUtil.showToast(response.getInfo());
                                 if (response.success()) {
                                     if (response.getDataList().size() > 0) {
                                         setData(response.getDataList());
@@ -146,8 +144,6 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
                                         llNoData.setVisibility(View.VISIBLE);
                                         tvMsg.setText("没有搜索到相关活动哦");
                                     }
-                                } else {
-                                    ToastUtil.showToast(response.getInfo());
                                 }
                             },
                             throwable -> {

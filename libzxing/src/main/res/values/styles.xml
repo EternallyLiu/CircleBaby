@@ -2,19 +2,42 @@
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
     -->
     <style name="AppBaseTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
+            backward-compatibility can go here.
+
         -->
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#F79646</item>
+        <item name="colorPrimaryDark">#F79646</item>
+        <item name="colorAccent">#F79646</item>
+        <item name="android:windowBackground">@null</item>
+
+        <item name="android:dialogTheme">@style/AppTheme.DialogTheme1</item>
     </style>
+
+    <style name="AppTheme.DialogTheme1" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">#F79646</item>
+        <item name="colorPrimaryDark">#F79646</item>
+        <item name="colorAccent">#F79646</item>
+    </style>
+
+    <style name="ToolbarColor1" parent="AppTheme">
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay1" parent="ThemeOverlay.AppCompat.Light"/>
 
 </resources>
