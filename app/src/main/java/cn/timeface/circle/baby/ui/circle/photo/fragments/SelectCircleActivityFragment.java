@@ -152,7 +152,6 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
                                 }
                             },
                             throwable -> {
-//                                Log.e(TAG, throwable.getLocalizedMessage());
                                 LogUtil.showError(throwable);
                             }
                     );

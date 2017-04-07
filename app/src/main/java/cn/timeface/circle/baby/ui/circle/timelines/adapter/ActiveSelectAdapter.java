@@ -7,6 +7,7 @@ import android.widget.TextView;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
 import cn.timeface.circle.baby.views.TFStateView;
@@ -31,24 +32,23 @@ public class ActiveSelectAdapter extends BaseEmptyAdapter {
     }
 
     @Override
+    public void addEmpty() {
+        if (getEmptyItem() != null && containObj(getEmptyItem())) {
+            if (getRealItemSize() > 1) {
+                deleteItem(getEmptyItem());
+
+            }
+        } else if (getEmptyItem() != null && !containObj(getEmptyItem())) {
+            if (getRealItemSize() == 0) add(getEmptyItem());
+        }
+    }
+
+    @Override
     public void initView(View contentView, int position) {
+        LogUtil.showLog("view type==="+getItemViewType(position));
         switch (getItemViewType(position)) {
             case BaseEmptyAdapter.EMPTY_CODE:
-                TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
-                switch (getEmptyItem().getOperationType()) {
-                    case -1:
-                        tfStateView.showException(getEmptyItem().getThrowable());
-                        break;
-                    case 0:
-                        tfStateView.empty(R.string.active_album_null);
-                        break;
-                    case 1:
-                        tfStateView.loading();
-                        break;
-                    case 2:
-                        tfStateView.finish();
-                        break;
-                }
+                doEmpty(contentView);
                 break;
             default:
                 CircleActivityAlbumObj activityAlbumObj = getItem(position);
