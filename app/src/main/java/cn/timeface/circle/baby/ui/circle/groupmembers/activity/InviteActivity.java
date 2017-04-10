@@ -87,6 +87,6 @@ public class InviteActivity extends BaseAppCompatActivity {
     public void clickShare(View view) {
         new ShareDialog(this).share(FastData.getUserName()+"请你加圈", GrowthCircleObj.getInstance().getCircleName()+FastData.getUserName()+"邀请你加入，在这里一起记录宝宝的学习成长时光！"
                 , ShareSdkUtil.getImgStrByResource(this, R.mipmap.ic_launcher),
-                BuildConfig.API_URL+"growthCircleShare/index.html?circleId="+circleObj.getCircleId()+"&circleMemberId="+ FastData.getUserId());
+                BuildConfig.API_URL+"growthCircleShare/index.html?circleId="+circleObj.getCircleId()+"&circleMemberId="+ FastData.getCircleUserInfo().getCircleUserId());
     }
 }
