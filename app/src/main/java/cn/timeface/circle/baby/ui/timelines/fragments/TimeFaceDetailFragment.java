@@ -3,17 +3,17 @@ package cn.timeface.circle.baby.ui.timelines.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -46,7 +46,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
-import cn.timeface.circle.baby.activities.TimeLineDetailActivity;
 import cn.timeface.circle.baby.activities.VideoPlayActivity;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
 import cn.timeface.circle.baby.events.CommentSubmit;
@@ -60,7 +59,6 @@ import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
-import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
 import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
@@ -78,7 +76,7 @@ import rx.functions.Func1;
  * author : wangshuai Created on 2017/2/7
  * email : wangs1992321@gmail.com
  */
-public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.LoadDataFinish, BaseAdapter.OnItemClickLister, View.OnClickListener, TextView.OnEditorActionListener, View.OnFocusChangeListener {
+public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.LoadDataFinish, BaseAdapter.OnItemClickLister, View.OnClickListener, TextView.OnEditorActionListener, View.OnFocusChangeListener, TextWatcher {
 
 
     @Bind(R.id.back_up)
@@ -101,6 +99,8 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     ImageView addComment;
     @Bind(R.id.rl_botton)
     RelativeLayout rlBotton;
+    @Bind(R.id.tv_submit_comment)
+    TextView tvSubmitComment;
     private TimeLineObj currentTimeLineObj = null;
     private TimeLineDetailAdapter adapter = null;
     private TFPTRRecyclerViewHelper helper;
@@ -142,6 +142,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         initRecyclerView();
         etCommment.setOnEditorActionListener(this);
         etCommment.setOnFocusChangeListener(this);
+        etCommment.addTextChangedListener(this);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -529,6 +530,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
             ToastUtil.showToast("请填写评论内容");
             return;
         }
+        tvSubmitComment.setEnabled(false);
         apiService.comment(URLEncoder.encode(s), System.currentTimeMillis(), currentTimeLineObj.getTimeId(), commmentId)
                 .filter(new Func1<BaseResponse, Boolean>() {
                     @Override
@@ -549,7 +551,9 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                             etCommment.setText("");
                         }
                     }
+                    tvSubmitComment.setEnabled(true);
                 }, error -> {
+                    tvSubmitComment.setEnabled(true);
                     Log.e(TAG, "comment");
                     error.printStackTrace();
                 });
@@ -577,7 +581,39 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             showKeyboard();
-        } else hideKeyboard();
+            if (etCommment != null)
+                doSubmitApear(etCommment.getText().toString());
+        } else {
+            if (tvSubmitComment != null) tvSubmitComment.setVisibility(View.GONE);
+            hideKeyboard();
+        }
+
+    }
+
+    @OnClick(R.id.tv_submit_comment)
+    public void onViewClicked() {
+        sendComment();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    private void doSubmitApear(String s) {
+        if (s != null && !TextUtils.isEmpty(s.trim())) {
+            tvSubmitComment.setVisibility(View.VISIBLE);
+        } else tvSubmitComment.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        doSubmitApear(s.toString());
     }
 }
 

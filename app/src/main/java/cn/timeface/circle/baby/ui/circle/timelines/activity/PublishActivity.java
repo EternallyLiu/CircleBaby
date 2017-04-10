@@ -485,7 +485,7 @@ public class PublishActivity extends BaseAppCompatActivity {
                         adapter.getSelImage().clear();
                         adapter.getSelImage().addAll(selImages);
                         adapter.notifyDataSetChanged();
-                    } else if (type == PublishAdapter.TYPE_TIMELINE && adapter.getContentObj().getMediaList().size() <= 0)
+                    } else if (type == PublishAdapter.TYPE_TIMELINE && adapter.getSelImage().size() <= 0 && adapter.getContentObj().getMediaList().size() <= 0)
                         finish();
                     break;
                 case TIME:

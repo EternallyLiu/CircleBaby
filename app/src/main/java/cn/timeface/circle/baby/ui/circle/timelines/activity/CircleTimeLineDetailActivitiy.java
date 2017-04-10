@@ -12,8 +12,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -36,8 +37,6 @@ import com.wechat.photopicker.fragment.BigImageFragment;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.math.BigInteger;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -47,12 +46,6 @@ import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
-import cn.timeface.circle.baby.constants.TypeConstants;
-import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
-import cn.timeface.circle.baby.events.CommentSubmit;
-import cn.timeface.circle.baby.support.api.ApiFactory;
-import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
-import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
@@ -70,20 +63,16 @@ import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.images.views.ImageActionDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
-import cn.timeface.circle.baby.ui.timelines.adapters.TimeLineDetailAdapter;
-import cn.timeface.circle.baby.ui.timelines.beans.LikeUserList;
 import cn.timeface.circle.baby.ui.timelines.views.EmptyDataView;
 import cn.timeface.circle.baby.ui.timelines.views.GridStaggerLookup;
 import cn.timeface.circle.baby.ui.timelines.views.SelectImageView;
 import cn.timeface.circle.baby.views.ShareDialog;
-import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * author : wangshuai Created on 2017/3/21
  * email : wangs1992321@gmail.com
  */
-public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister, BaseAdapter.LoadDataFinish, SwipeRefreshLayout.OnRefreshListener, ImageActionDialog.ClickCallBack, TextView.OnEditorActionListener, View.OnFocusChangeListener, View.OnClickListener {
+public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister, BaseAdapter.LoadDataFinish, SwipeRefreshLayout.OnRefreshListener, ImageActionDialog.ClickCallBack, TextView.OnEditorActionListener, View.OnFocusChangeListener, View.OnClickListener, TextWatcher {
 
     @Bind(R.id.title)
     TextView title;
@@ -105,6 +94,8 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     ImageView addComment;
     @Bind(R.id.rl_botton)
     RelativeLayout rlBotton;
+    @Bind(R.id.tv_submit_comment)
+    TextView tvSubmitComment;
 
     private long commmentId;
     private boolean commentable = false;
@@ -163,6 +154,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         swipeRefresh.setOnRefreshListener(this);
         etCommment.setOnEditorActionListener(this);
         etCommment.setOnFocusChangeListener(this);
+        etCommment.addTextChangedListener(this);
     }
 
     private void initRecyclerView() {
@@ -437,7 +429,8 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
             ToastUtil.showToast("请填写评论内容");
             return;
         }
-        apiService.circleComment(currentTimeLineObj.getCircleTimelineId(), Uri.encode(s), System.currentTimeMillis(), commmentId > 0 ? commmentId + "" : "")
+        tvSubmitComment.setEnabled(false);
+        addSubscription(apiService.circleComment(currentTimeLineObj.getCircleTimelineId(), Uri.encode(s), System.currentTimeMillis(), commmentId > 0 ? commmentId + "" : "")
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(circleCommentResponse -> {
                     if (circleCommentResponse.success()) {
@@ -451,9 +444,11 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
                             commmentId = 0;
                         }
                     }
+                    if (tvSubmitComment!=null)tvSubmitComment.setEnabled(true);
                 }, error -> {
+                    if (tvSubmitComment!=null)tvSubmitComment.setEnabled(true);
                     error.printStackTrace();
-                });
+                }));
     }
 
     @Override
@@ -507,6 +502,37 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             showKeyboard();
-        } else hideKeyboard();
+            if (etCommment != null)
+                doSubmitApear(etCommment.getText().toString());
+        } else {
+            if (tvSubmitComment != null) tvSubmitComment.setVisibility(View.GONE);
+            hideKeyboard();
+        }
+    }
+
+    private void doSubmitApear(String s) {
+        if (s != null && !TextUtils.isEmpty(s.trim())) {
+            tvSubmitComment.setVisibility(View.VISIBLE);
+        } else tvSubmitComment.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.tv_submit_comment)
+    public void onViewClicked() {
+        sendComment();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        doSubmitApear(s.toString());
     }
 }
