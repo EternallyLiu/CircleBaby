@@ -66,6 +66,7 @@ public class FamilyMemberInfoFragment extends BaseFragment implements View.OnCli
         View view = inflater.inflate(R.layout.fragment_familymemberinfo, container, false);
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
+        toolbar.setTitle(R.string.family_Info);
         ActionBar actionBar = getActionBar();
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);

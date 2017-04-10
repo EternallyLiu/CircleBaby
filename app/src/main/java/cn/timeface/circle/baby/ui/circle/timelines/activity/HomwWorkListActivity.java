@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.timeface.circle.baby.App;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.MiPushConstant;
@@ -42,16 +43,12 @@ import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
  */
 public class HomwWorkListActivity extends BaseAppCompatActivity implements IEventBus, BaseAdapter.OnItemClickLister {
 
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
-    @Bind(R.id.tv_right)
-    TextView tvRight;
     @Bind(R.id.iv_dot)
     ImageView ivDot;
 
@@ -72,11 +69,10 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homework_list);
         ButterKnife.bind(this);
+        toolbar.setTitle("教师认证");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText(R.string.activity_homework_title);
-        tvRight.setText("教师认证");
         init();
         reqData();
     }

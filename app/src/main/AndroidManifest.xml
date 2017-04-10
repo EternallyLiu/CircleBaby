@@ -422,7 +422,7 @@
         <activity
             android:name=".ui.babyInfo.activity.BigNameActivity"
             android:label="@string/baby_real_name_title"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.growth.activities.ProductionListActivity"
             android:label="@string/title_activity_book_list"

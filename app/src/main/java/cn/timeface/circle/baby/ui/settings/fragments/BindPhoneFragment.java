@@ -49,8 +49,6 @@ import rx.Subscription;
 
 public class BindPhoneFragment extends BaseFragment implements View.OnClickListener {
 
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.current_phone)
@@ -103,7 +101,7 @@ public class BindPhoneFragment extends BaseFragment implements View.OnClickListe
         currentPhone.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         codeTip.setVisibility(TextUtils.isEmpty(phoneNumber) ? View.GONE : View.VISIBLE);
         codeTipRed.setVisibility(View.GONE);
-        title.setText(TextUtils.isEmpty(phoneNumber) ? "验证手机号" : "修改手机号");
+        toolbar.setTitle(TextUtils.isEmpty(phoneNumber) ? "验证手机号" : "修改手机号");
         if (!TextUtils.isEmpty(phoneNumber)) {
             String replace = phoneNumber.substring(3, 7);
             currentPhone.setText(getString(R.string.bind_current_phone_tip) + phoneNumber.replace(replace, "****"));

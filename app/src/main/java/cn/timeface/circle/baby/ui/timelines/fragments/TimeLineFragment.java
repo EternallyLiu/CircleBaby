@@ -40,8 +40,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItemClickLister ,BaseAdapter.LoadDataFinish,IPTRRecyclerListener,EmptyDataView.EmptyCallBack {
-    @Bind(R.id.title)
-    TextView title;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.list)
@@ -76,7 +75,7 @@ public class TimeLineFragment extends BaseFragment implements BaseAdapter.OnItem
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
-        title.setText(FastData.getBabyObj().getNickName() + "的成长记录");
+        toolbar.setTitle(FastData.getBabyObj().getNickName() + "的成长记录");
         adapter = new TimeLineSelectAdapter(getActivity());
         adapter.setLoadDataFinish(this);
         list.setAdapter(adapter);

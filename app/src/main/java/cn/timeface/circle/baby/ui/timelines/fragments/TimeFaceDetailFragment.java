@@ -83,8 +83,6 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 
     @Bind(R.id.back_up)
     ImageView backUp;
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
@@ -138,7 +136,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         ButterKnife.bind(this, contentView);
         setActionBar(toolbar);
         initActionBar();
-        title.setText(FastData.getBabyObj().getNickName());
+        toolbar.setTitle(FastData.getBabyObj().getNickName());
         initRecyclerView();
         etCommment.setOnEditorActionListener(this);
         etCommment.setOnFocusChangeListener(this);

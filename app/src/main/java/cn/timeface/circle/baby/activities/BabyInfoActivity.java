@@ -66,8 +66,6 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
 
     @Bind(R.id.btn_save)
     Button btnSave;
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.iv_avatar)
@@ -133,7 +131,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText("宝宝信息");
+        toolbar.setTitle("宝宝信息");
 
         userInfo = FastData.getUserInfo();
         babyObj = userInfo.getBabyObj();

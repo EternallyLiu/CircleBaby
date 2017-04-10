@@ -126,8 +126,7 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         String titleStr = getIntent().getStringExtra("title");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText(titleStr);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);;
 //        getSupportActionBar().setTitle(title);
         //toolbar.setNavigationIcon(R.drawable.ic_back);
         albumId = getIntent().getStringExtra("albumId");

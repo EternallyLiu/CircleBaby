@@ -47,9 +47,6 @@ import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
  */
 public class TagAddFragment extends BaseFragment implements TextWatcher, View.OnClickListener {
 
-
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.input)
@@ -102,7 +99,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
             actionBar.setDisplayShowTitleEnabled(false);
         }
         input.addTextChangedListener(this);
-        title.setText(R.string.tag_add_title);
+        toolbar.setTitle(R.string.tag_add_title);
         reqData();
         if (currentMediaObj == null) {
             ToastUtil.showToast("对不起！图片信息不能为空");

@@ -31,9 +31,6 @@ import cn.timeface.circle.baby.views.ShareDialog;
 
 public class InviteFragment extends BaseFragment implements View.OnClickListener {
 
-
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.tv_code)
@@ -72,7 +69,7 @@ public class InviteFragment extends BaseFragment implements View.OnClickListener
         ButterKnife.bind(this, view);
         setActionBar(toolbar);
         initActionBar();
-        title.setText("邀请");
+        toolbar.setTitle("邀请");
         reqData();
         btnWx.setOnClickListener(this);
         btnQq.setOnClickListener(this);

@@ -41,6 +41,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Log.d("Base", getClass().getSimpleName());
         Countly.sharedInstance().setViewTracking(true);
         Countly.sharedInstance().enableCrashReporting();
         if (this instanceof IEventBus) {

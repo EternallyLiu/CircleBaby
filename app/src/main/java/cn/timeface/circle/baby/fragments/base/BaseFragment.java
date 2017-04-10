@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -36,6 +37,7 @@ public class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LogUtil.showLog(getClass().getName());
+        Log.d("Base", getClass().getSimpleName());
         if (this instanceof IEventBus) {
             EventBus.getDefault().register(this);
         }

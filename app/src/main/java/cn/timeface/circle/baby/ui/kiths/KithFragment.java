@@ -44,8 +44,6 @@ import cn.timeface.circle.baby.views.DividerItemDecoration;
  */
 public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClickLister, EmptyDataView.EmptyCallBack, BaseAdapter.LoadDataFinish {
 
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.recyclerView)
@@ -78,7 +76,7 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
-        title.setText(String.format("%s的一家", FastData.getBabyObj().getNickName()));
+        toolbar.setTitle(String.format("%s的一家", FastData.getBabyObj().getNickName()));
         adapter = new KithsAdapter(getActivity());
         adapter.setLoadDataFinish(this);
         emptyDataView.setErrorDrawable(R.drawable.net_empty);

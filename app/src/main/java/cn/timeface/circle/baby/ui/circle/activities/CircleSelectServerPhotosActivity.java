@@ -76,7 +76,6 @@ public class CircleSelectServerPhotosActivity extends BasePresenterAppCompatActi
         setContentView(R.layout.activity_circle_select_server_photos);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         albumName = getIntent().getStringExtra("album_name");
         albumId = getIntent().getStringExtra("album_id");

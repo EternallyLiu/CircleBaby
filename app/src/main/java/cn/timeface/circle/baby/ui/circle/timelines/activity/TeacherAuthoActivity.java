@@ -39,8 +39,6 @@ import cn.timeface.circle.baby.views.TFStateView;
  */
 public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseAdapter.LoadDataFinish {
 
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
@@ -64,7 +62,7 @@ public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseA
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText(R.string.activity_teacher_author_title);
+        toolbar.setTitle(R.string.activity_teacher_author_title);
         init();
     }
 

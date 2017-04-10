@@ -50,8 +50,6 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
     TFStateView tfStateView;
     @Bind(R.id.sv)
     ScrollView sv;
-    @Bind(R.id.title)
-    TextView title;
     private List<CloudAlbumObj> dataList = new ArrayList<>(8);
     private CloudAlbumListAdapter albumListAdapter;
     private boolean showGuide;
@@ -64,7 +62,7 @@ public class CloudAlbumActivity extends BaseAppCompatActivity implements IEventB
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText("云相册");
+        toolbar.setTitle("云相册");
         setupAlbumView();
         tfStateView.setOnRetryListener(this::reqCloudAlbumImages);
         tfStateView.loading();

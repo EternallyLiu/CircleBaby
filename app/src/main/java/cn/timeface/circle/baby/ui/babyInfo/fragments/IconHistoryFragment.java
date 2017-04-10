@@ -29,8 +29,6 @@ import rx.schedulers.Schedulers;
 
 public class IconHistoryFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.list)
@@ -61,7 +59,7 @@ public class IconHistoryFragment extends BaseFragment implements SwipeRefreshLay
         list.setItemAnimator(new DefaultItemAnimator());
         list.setAdapter(adapter);
         reqData();
-        title.setText(R.string.baby_icon_his_title);
+        toolbar.setTitle(R.string.baby_icon_his_title);
         swipeRefresh.setOnRefreshListener(this);
         return view;
     }

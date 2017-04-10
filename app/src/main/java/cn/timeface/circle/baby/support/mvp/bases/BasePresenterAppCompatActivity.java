@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
@@ -43,6 +44,7 @@ public abstract class BasePresenterAppCompatActivity extends RxAppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        Log.d("Base", getClass().getSimpleName());
         Countly.sharedInstance().setViewTracking(true);
         Countly.sharedInstance().enableCrashReporting();
         apiService = ApiFactory.getApi().getApiService();

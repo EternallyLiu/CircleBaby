@@ -40,8 +40,6 @@ import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
  */
 public class NotifyPwdFragment extends BaseFragment implements View.OnFocusChangeListener, View.OnClickListener {
 
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_old_password)
@@ -74,7 +72,7 @@ public class NotifyPwdFragment extends BaseFragment implements View.OnFocusChang
         }
         etNewPassword.setOnFocusChangeListener(this);
         etNewPasswordAgain.setOnFocusChangeListener(this);
-        title.setText(R.string.notify_password);
+        toolbar.setTitle(R.string.notify_password);
         btnSubmit.setOnClickListener(this);
         tfProgressDialog=TFProgressDialog.getInstance("");
         return view;

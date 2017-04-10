@@ -29,16 +29,6 @@
         android:paddingRight="@dimen/size_6">
 
         <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="标题"
-            android:textColor="@color/text_color1"
-            android:textSize="@dimen/text_normal"/>
-
-        <TextView
             android:id="@+id/tv_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
