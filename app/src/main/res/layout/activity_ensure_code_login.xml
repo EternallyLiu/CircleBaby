@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color2"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/appbar_layout"
+        layout="@layout/layout_toolbar" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/iv_code_login"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/size_72"/>
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_36"
+        android:background="@drawable/selector_btn_login"
+        android:text="@string/ensure_web_login"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_medium"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/login_cancle"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/text_medium"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/size_6"/>
+
+</LinearLayout>

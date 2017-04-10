@@ -754,6 +754,7 @@
     <string name="add_active">添加活动相册</string>
     <string name="input_pc">导入电脑照片</string>
     <string name="add_circle_book">新增圈作品</string>
+    <string name="ensure_login_web">二维码登录</string>
 
     <string name="complete">完成</string>
 
@@ -906,4 +907,6 @@
     <string name="school_task_tv_delete_tip">删除该作业</string>
     <string name="delete_task_tip">警告：删除后，家长提交的作业信息将被清空</string>
     <string name="submited">已提交</string>
+    <string name="ensure_web_login">登录电脑端成长印记</string>
+    <string name="login_cancle">取消登录</string>
 </resources>
