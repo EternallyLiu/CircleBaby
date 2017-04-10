@@ -3,6 +3,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 import android.media.ExifInterface;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -20,7 +21,7 @@ import cn.timeface.open.api.bean.obj.TFOResourceObj;
  * email : sunyw10@gmail.com
  */
 @JsonObject(fieldDetectionPolicy = JsonObject.FieldDetectionPolicy.NONPRIVATE_FIELDS_AND_ACCESSORS)
-public class MediaObj extends BaseObj implements Parcelable {
+public class MediaObj extends BaseObj implements Parcelable , Comparable {
     private String content;//图片描述
     private int h;//长度
     private int w;//宽度
@@ -351,6 +352,8 @@ public class MediaObj extends BaseObj implements Parcelable {
         return false;
     }
 
+
+
     @Override
     public int hashCode() {
         int result = content != null ? content.hashCode() : 0;
@@ -440,4 +443,17 @@ public class MediaObj extends BaseObj implements Parcelable {
             return new MediaObj[size];
         }
     };
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        MediaObj another = (MediaObj) o;
+
+        if(getPhotographTime() > another.getPhotographTime()){
+            return 1;
+        } else if(getPhotographTime() == another.getPhotographTime()){
+            return 0;
+        } else {
+            return -1;
+        }
+    }
 }

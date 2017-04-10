@@ -21,6 +21,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -182,6 +183,8 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                             .subscribe(
                                     response -> {
                                         if (response.success()) {
+                                            Collections.sort(allSelectTimeLines);
+
                                             //跳转开放平台POD接口；
                                             String bookName = FastData.getBabyNickName() + "的圈时光书";
 

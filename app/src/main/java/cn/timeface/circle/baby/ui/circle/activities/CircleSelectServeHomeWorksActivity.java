@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -115,6 +116,8 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                             .subscribe(
                                     response -> {
                                         if (response.success()) {
+                                            Collections.sort(allSelHomeWorks);
+
                                             //跳转开放平台POD接口；
                                             String author = FastData.getUserName();
                                             String bookName = FastData.getBabyNickName() + "的家校纪念册";
