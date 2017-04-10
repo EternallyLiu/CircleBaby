@@ -212,6 +212,9 @@ public class PublishActivity extends BaseAppCompatActivity {
         }
     }
 
+    /**
+     * 删除本地MediaObj对象
+     */
     private void clearGCMedia() {
         int size = adapter.getContentObj().getMediaList().size();
         for (int i = 0; i < size; ) {

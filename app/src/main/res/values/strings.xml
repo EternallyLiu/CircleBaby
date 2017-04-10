@@ -909,4 +909,5 @@
     <string name="submited">已提交</string>
     <string name="ensure_web_login">登录电脑端成长印记</string>
     <string name="login_cancle">取消登录</string>
+    <string name="download">下载</string>
 </resources>
