@@ -371,7 +371,6 @@ public class PublishActivity extends BaseAppCompatActivity {
                     .doOnNext(circleTimeLineDetailResponse -> hideProgress())
                     .subscribe(
                             circleTimeLineDetailResponse -> {
-                                LogUtil.showLog("info:" + circleTimeLineDetailResponse.getInfo());
                                 if (circleTimeLineDetailResponse.success()) {
                                     EventBus.getDefault().post(new CircleTimeLineEditEvent(circleTimeLineDetailResponse.getCircleTimelineInfo()));
                                     if (list.size() > 0)
