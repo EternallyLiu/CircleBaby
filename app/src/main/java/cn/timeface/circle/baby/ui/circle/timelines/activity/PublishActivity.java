@@ -245,7 +245,10 @@ public class PublishActivity extends BaseAppCompatActivity {
             return;
         }
         showProgress();
-        UploadService.start(this, type, list);
+        if (list.size() <= 0) {
+            doHomeWork();
+        } else
+            UploadService.start(this, type, list);
     }
 
     private void doHomeWork() {
@@ -298,7 +301,10 @@ public class PublishActivity extends BaseAppCompatActivity {
             return;
         }
         showProgress();
-        UploadService.start(this, type, list);
+        if (list.size() <= 0)
+            doSchool();
+        else
+            UploadService.start(this, type, list);
     }
 
     private void doSchool() {

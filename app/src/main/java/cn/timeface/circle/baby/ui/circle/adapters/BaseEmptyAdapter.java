@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import java.util.Collection;
 
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseViewHolder;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
@@ -103,11 +104,12 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
                     parent, false), this);
     }
 
-    protected void doEmpty(View contentView){
+    protected void doEmpty(View contentView) {
+        LogUtil.showLog("doEmpty");
         TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
         emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
         if (emptyLayoutParams == null) {
-            emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
         contentView.setLayoutParams(emptyLayoutParams);
         switch (getEmptyItem().getOperationType()) {

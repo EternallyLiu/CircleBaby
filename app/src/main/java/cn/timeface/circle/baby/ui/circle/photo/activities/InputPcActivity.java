@@ -79,7 +79,6 @@ public class InputPcActivity extends BasePresenterAppCompatActivity implements V
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_scan:
-//                CaptureActivity.open(this);
                 Intent intent = new Intent(this, com.xys.libzxing.zxing.activity.CaptureActivity.class);
                 startActivityForResult(intent, 1);
                 break;
@@ -94,12 +93,6 @@ public class InputPcActivity extends BasePresenterAppCompatActivity implements V
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
             String result = data.getStringExtra("result");
-            LogUtil.showLog(result);
-
-//            if (result.length() > 6) {
-//                result = result.substring(result.indexOf("?"));
-//            }
-            LogUtil.showLog("result index sub:" + result);
             scanLogin(result);
         }
     }
@@ -109,23 +102,11 @@ public class InputPcActivity extends BasePresenterAppCompatActivity implements V
         try {
             JSONObject obj = new JSONObject(result);
             qrCode = obj.getString("code");
+            if (qrCode != null && !qrCode.isEmpty()) {
+                EnsureCodeLoginActivity.open(this, qrCode);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        LogUtil.showLog("result:" + result);
-        apiService.scanLogin(qrCode)
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(
-                        response -> {
-                            if (response.success()) {
-                                showToast("登录成功");
-                            } else {
-                                showToast(response.getInfo());
-                            }
-                        },
-                        throwable -> {
-                            Log.e(TAG, throwable.getLocalizedMessage());
-                        }
-                );
     }
 }

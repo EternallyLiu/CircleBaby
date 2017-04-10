@@ -571,6 +571,10 @@
             android:name="cn.timeface.circle.baby.ui.circle.activities.AddCircleBookActivity"
             android:label="@string/add_circle_book"
             android:theme="@style/AppTheme"/>
+        <activity
+            android:name="cn.timeface.circle.baby.ui.circle.photo.activities.EnsureCodeLoginActivity"
+            android:label="@string/ensure_login_web"
+            android:theme="@style/AppTheme"/>
         <activity android:name="cn.timeface.circle.baby.ui.circle.activities.CircleBookActivity"/>
 
         <service android:name=".ui.timelines.services.UploadVideoService"/>

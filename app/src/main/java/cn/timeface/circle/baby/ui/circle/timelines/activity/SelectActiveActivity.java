@@ -80,6 +80,7 @@ public class SelectActiveActivity extends BaseAppCompatActivity implements IEven
         contentRecyclerView.setLayoutManager(layoutManager);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation(), R.color.divider_color);
         contentRecyclerView.addItemDecoration(itemDecoration);
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -106,14 +107,16 @@ public class SelectActiveActivity extends BaseAppCompatActivity implements IEven
     private void reqData() {
         addSubscription(apiService.queryActiveList(FastData.getCircleId())
                 .compose(SchedulersCompat.applyIoSchedulers())
-                .doOnNext(activeSelectListResponse -> adapter.getEmptyItem().setOperationType(2))
+                .doOnNext(activeSelectListResponse -> adapter.getEmptyItem().setOperationType(0))
                 .subscribe(activeSelectListResponse -> {
                     if (activeSelectListResponse.success()) {
                         adapter.addList(true, activeSelectListResponse.getDataList());
                     } else ToastUtil.showToast(this, activeSelectListResponse.getInfo());
+                    adapter.notifyDataSetChanged();
                 }, throwable -> {
                     adapter.getEmptyItem().setThrowable(throwable);
                     adapter.getEmptyItem().setOperationType(-1);
+                    adapter.notifyDataSetChanged();
                     LogUtil.showError(throwable);
                 }));
     }
