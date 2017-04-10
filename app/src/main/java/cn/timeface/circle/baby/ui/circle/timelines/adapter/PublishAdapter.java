@@ -213,6 +213,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             TextView tvTextCount = ViewHolder.getView(view, R.id.tv_text_count);
             if (!TextUtils.isEmpty(contentObj.getTitle())) {
                 etInput.setText(contentObj.getTitle());
+                etInput.setSelection(contentObj.getTitle().length(),contentObj.getTitle().length());
             } else {
                 etInput.setText("");
                 tvTextCount.setText("0 / 10");
