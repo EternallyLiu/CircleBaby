@@ -21,6 +21,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -241,6 +242,7 @@ public class SelectServerTimeActivity extends BasePresenterAppCompatActivity imp
                             .subscribe(
                                     response -> {
                                         if (response.success()) {
+                                            Collections.sort(allSelectTimeLines);
                                             //跳转开放平台POD接口；
 
                                             //按月份分组时光

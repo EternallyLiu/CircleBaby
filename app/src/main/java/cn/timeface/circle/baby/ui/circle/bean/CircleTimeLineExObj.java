@@ -2,13 +2,14 @@ package cn.timeface.circle.baby.ui.circle.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * circle time line 补充
  * author : sunyanwei Created on 17-3-20
  * email : sunyanwei@timeface.cn
  */
-public class CircleTimeLineExObj implements Parcelable {
+public class CircleTimeLineExObj implements Parcelable, Comparable {
     private CircleTimelineObj circleTimeline;
     private String publishDate;
     private String week;
@@ -83,5 +84,17 @@ public class CircleTimeLineExObj implements Parcelable {
         }
 
         return false;
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        CircleTimeLineExObj another = (CircleTimeLineExObj) o;
+        if(getCircleTimeline().getRecordDate() > another.getCircleTimeline().getRecordDate()){
+            return 1;
+        } else if(getCircleTimeline().getRecordDate() == another.getCircleTimeline().getRecordDate()){
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }
