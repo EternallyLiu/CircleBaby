@@ -291,8 +291,8 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 //            if (adapter.getRealItemSize() >= 0)
 //                contentRecyclerView.scrollToPosition(0);
             if (lookup.isShowSmail())
-                item.setTitle("查看大图");
-            else item.setTitle("浏览小图");
+                item.setTitle(R.string.look_big_pic_list);
+            else item.setTitle(R.string.look_smail_pic_list);
         }
         return super.onOptionsItemSelected(item);
     }

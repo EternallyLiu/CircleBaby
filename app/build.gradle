@@ -33,7 +33,7 @@ android {
     buildTypes {
         debug {
 //            buildConfigField "String", "API_URL", '"http://www.timeface.cn/baby/"'
-            buildConfigField "String", "API_URL", '"http://stg2.v5time.net/baby/"'
+            buildConfigField "String", "API_URL", '"http://stg3.v5time.net/baby/"'
 //            buildConfigField "String", "API_URL", '"http://192.168.7.182:8081/baby/"'
             buildConfigField "boolean", "SHOW_LOG", 'true'
             buildConfigField "String", "SERVER_API_VERSION", '"3"'

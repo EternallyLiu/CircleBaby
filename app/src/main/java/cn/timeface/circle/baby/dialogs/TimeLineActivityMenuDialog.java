@@ -71,10 +71,10 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         if (timelineobj.getType() == 1) {
             tvDownload.setVisibility(View.VISIBLE);
         }
-        if (timelineobj.getAuthor().getUserId().equals(FastData.getUserId())) {
+        if (TextUtils.isEmpty(timelineobj.getGrowthCricleName()) && timelineobj.getAuthor().getUserId().equals(FastData.getUserId())) {
             tvEdit.setVisibility(View.VISIBLE);
             tvDlete.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             tvEdit.setVisibility(View.GONE);
             tvDlete.setVisibility(View.GONE);
         }
@@ -116,13 +116,13 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         tvDlete.setOnClickListener(v -> {
             dismiss();
             new AlertDialog.Builder(context)
-                    .setTitle("确定删除这条记录吗?")
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    .setTitle(R.string.do_you_delet)
+                    .setNegativeButton(R.string.dialog_cancle, new OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                    }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    }).setPositiveButton(R.string.dialog_submit, new OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     ApiService apiService = ApiFactory.getApi().getApiService();
