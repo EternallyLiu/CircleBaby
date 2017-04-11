@@ -105,13 +105,11 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
     }
 
     protected void doEmpty(View contentView) {
-        LogUtil.showLog("doEmpty");
         TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
         emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
         if (emptyLayoutParams == null) {
             emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
-        contentView.setLayoutParams(emptyLayoutParams);
         switch (getEmptyItem().getOperationType()) {
             case -1:
                 tfStateView.showException(getEmptyItem().getThrowable());
@@ -120,12 +118,14 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
                 tfStateView.empty(R.string.do_not_get_datat);
                 break;
             case 1:
+                emptyLayoutParams.height=RecyclerView.LayoutParams.MATCH_PARENT;
                 tfStateView.loading();
                 break;
             case 2:
                 tfStateView.finish();
                 break;
         }
+        contentView.setLayoutParams(emptyLayoutParams);
     }
 
     public EmptyItem getEmptyItem() {

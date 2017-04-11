@@ -38,11 +38,6 @@ public class GlideUtil {
             return;
         }
         if (url.startsWith("http") || url.startsWith("www")) {
-            if (url.endsWith("@.jpg")) {
-                url = url.replace("@.jpg", "@600w_600h_1l_1o");
-            } else {
-                url = url + "@600w_600h_1l_1o";
-            }
             Glide.with(imageView.getContext()).using(new TFStringUrlLoader(imageView.getContext())).load(url).asBitmap().error(R.drawable.bg_default_holder_img).placeholder(R.drawable.bg_default_holder_img).into(imageView);
         } else
             Glide.with(imageView.getContext()).load(url).asBitmap().error(R.drawable.ic_launcher).placeholder(R.drawable.ic_launcher).into(imageView);

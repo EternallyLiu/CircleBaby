@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import cn.timeface.open.api.bean.obj.TFOResourceObj;
 /**
  * Created by lidonglin on 2016/5/9.
  */
-public class TimeLineObj extends BaseObj implements Parcelable {
+public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
 
 
     String age;                             //年龄描述
@@ -345,4 +346,16 @@ public class TimeLineObj extends BaseObj implements Parcelable {
             return new TimeLineObj[size];
         }
     };
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        TimeLineObj another = (TimeLineObj) o;
+        if(getDotime() > another.getDotime()){
+            return 1;
+        } else if(getDotime() == another.getDotime()) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
 }

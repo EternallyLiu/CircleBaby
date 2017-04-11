@@ -57,7 +57,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             tfoUserObj.setPhone(FastData.getAccount());
             tfoUserObj.setUserId(FastData.getUserId());
             TFOpen.init(this, new TFOpenConfig.Builder(TypeConstant.APP_ID, TypeConstant.APP_SECRET, tfoUserObj)
-                    .debug(BuildConfig.DEBUG).build()
+                    .debug(BuildConfig.OPEN_DEBUG).build()
             );
         }
     }

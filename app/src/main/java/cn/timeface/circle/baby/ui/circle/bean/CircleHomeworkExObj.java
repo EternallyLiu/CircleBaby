@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.ui.circle.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import cn.timeface.open.api.bean.obj.TFOResourceObj;
  * author : sunyanwei Created on 17-3-22
  * email : sunyanwei@timeface.cn
  */
-public class CircleHomeworkExObj implements Parcelable {
+public class CircleHomeworkExObj implements Parcelable, Comparable{
     private CircleHomeworkObj homework;
     private String schoolTaskName;
 
@@ -107,5 +108,17 @@ public class CircleHomeworkExObj implements Parcelable {
             return ((CircleHomeworkExObj) obj).getHomework().equals(getHomework());
         }
         return super.equals(obj);
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        CircleHomeworkExObj another = (CircleHomeworkExObj) o;
+        if(getHomework().getCreateDate() > another.getHomework().getCreateDate()){
+            return 1;
+        } else if(getHomework().getCreateDate() == another.getHomework().getCreateDate()){
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }

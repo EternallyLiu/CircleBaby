@@ -305,8 +305,7 @@ public class CircleListFragment extends BasePresenterFragment implements BookPre
                 break;
             case BookModel.CIRCLE_BOOK_TYPE_TIME:
                 btnCreate.setVisibility(View.GONE);
-                tvEmptyInfo.setText(hasPic ? babyName + "的成长圈作品为空哦，赶紧制作一本属于" + babyName + "的成长圈作品吧~"
-                        : babyName + "的成长圈作品为空哦，赶紧发布内容，制作一本吧~");
+                tvEmptyInfo.setText(babyName + "的成长圈作品为空哦，赶紧制作一本属于" + babyName + "的成长圈作品吧~");
                 btnCreate.setText(hasPic ? "立即制作" : "立即上传");
                 break;
         }

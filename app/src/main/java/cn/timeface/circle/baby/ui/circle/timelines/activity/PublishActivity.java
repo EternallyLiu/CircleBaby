@@ -212,6 +212,9 @@ public class PublishActivity extends BaseAppCompatActivity {
         }
     }
 
+    /**
+     * 删除本地MediaObj对象
+     */
     private void clearGCMedia() {
         int size = adapter.getContentObj().getMediaList().size();
         for (int i = 0; i < size; ) {
@@ -368,7 +371,6 @@ public class PublishActivity extends BaseAppCompatActivity {
                     .doOnNext(circleTimeLineDetailResponse -> hideProgress())
                     .subscribe(
                             circleTimeLineDetailResponse -> {
-                                LogUtil.showLog("info:" + circleTimeLineDetailResponse.getInfo());
                                 if (circleTimeLineDetailResponse.success()) {
                                     EventBus.getDefault().post(new CircleTimeLineEditEvent(circleTimeLineDetailResponse.getCircleTimelineInfo()));
                                     if (list.size() > 0)
@@ -485,7 +487,7 @@ public class PublishActivity extends BaseAppCompatActivity {
                         adapter.getSelImage().clear();
                         adapter.getSelImage().addAll(selImages);
                         adapter.notifyDataSetChanged();
-                    } else if (type == PublishAdapter.TYPE_TIMELINE && adapter.getContentObj().getMediaList().size() <= 0)
+                    } else if (type == PublishAdapter.TYPE_TIMELINE && adapter.getSelImage().size() <= 0 && adapter.getContentObj().getMediaList().size() <= 0)
                         finish();
                     break;
                 case TIME:
