@@ -916,4 +916,5 @@
     <string name="look_smail_pic_list">浏览小图</string>
     <string name="do_you_delet">确定删除这条记录吗?</string>
     <string name="get_baby_faild">无法获取到宝宝信息</string>
+    <string name="tab_main_title_1">成长轴</string>
 </resources>

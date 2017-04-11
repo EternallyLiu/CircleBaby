@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_color8"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg_color8"
+              android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -28,7 +28,7 @@
                 android:drawablePadding="@dimen/size_6"
                 android:text="返回"
                 android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_medium"/>
 
             <TextView
                 android:id="@+id/tv_title"
@@ -37,7 +37,7 @@
                 android:layout_gravity="center"
                 android:text="创建宝宝"
                 android:textColor="@color/text_color1"
-                android:textSize="@dimen/text_large" />
+                android:textSize="@dimen/text_large"/>
 
             <TextView
                 android:id="@+id/tv_next"
@@ -47,7 +47,7 @@
                 android:layout_marginRight="@dimen/size_12"
                 android:text="完成"
                 android:textColor="@drawable/selector_textcolor_white"
-                android:textSize="@dimen/text_medium" />
+                android:textSize="@dimen/text_medium"/>
 
         </FrameLayout>
 
@@ -59,14 +59,14 @@
         android:layout_height="@dimen/size_80"
         android:layout_gravity="center"
         android:layout_margin="@dimen/size_12"
-        android:src="@drawable/baby_avater" />
+        android:src="@drawable/ic_laucher_quadrate"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="点击上传宝宝头像"
-        android:textSize="@dimen/text_small" />
+        android:textSize="@dimen/text_small"/>
 
 
     <EditText
@@ -78,12 +78,12 @@
         android:drawableLeft="@drawable/baby_name"
         android:drawablePadding="@dimen/size_12"
         android:hint="请输入宝宝的小名"
-        android:padding="@dimen/size_12" />
+        android:padding="@dimen/size_12"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/bg_color6" />
+        android:background="@color/bg_color6"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -95,7 +95,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/baby_gender" />
+            android:src="@drawable/baby_gender"/>
 
         <RadioButton
             android:id="@+id/rb_girl"
@@ -105,7 +105,7 @@
             android:layout_marginLeft="@dimen/size_12"
             android:text="女孩"
             android:textColor="@color/text_color2"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"/>
 
         <RadioButton
             android:id="@+id/rb_boy"
@@ -115,7 +115,7 @@
             android:layout_marginLeft="@dimen/size_12"
             android:text="男孩"
             android:textColor="@color/text_color2"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"/>
 
         <RadioButton
             android:id="@+id/rb_both"
@@ -125,14 +125,14 @@
             android:layout_marginLeft="@dimen/size_12"
             android:text="龙凤胎"
             android:textColor="@color/text_color2"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"/>
     </LinearLayout>
 
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/bg_color6" />
+        android:background="@color/bg_color6"/>
 
     <TextView
         android:id="@+id/et_birthday"
@@ -144,12 +144,12 @@
         android:gravity="center_vertical"
         android:hint="请输入宝宝的生日"
         android:padding="@dimen/size_12"
-        android:textSize="@dimen/text_medium" />
+        android:textSize="@dimen/text_medium"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/bg_color6" />
+        android:background="@color/bg_color6"/>
 
     <TextView
         android:id="@+id/et_relationship"
@@ -161,7 +161,7 @@
         android:gravity="center_vertical"
         android:hint="请选择你和宝宝的关系"
         android:padding="@dimen/size_12"
-        android:textSize="@dimen/text_medium" />
+        android:textSize="@dimen/text_medium"/>
 
     <RelativeLayout
         android:id="@+id/rl_focus"
@@ -181,14 +181,14 @@
             android:gravity="center_vertical"
             android:padding="@dimen/size_12"
             android:text="亲友已经创建过宝宝，去关注他"
-            android:textSize="@dimen/text_medium" />
+            android:textSize="@dimen/text_medium"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/edit" />
+            android:src="@drawable/edit"/>
 
     </RelativeLayout>
 </LinearLayout>
