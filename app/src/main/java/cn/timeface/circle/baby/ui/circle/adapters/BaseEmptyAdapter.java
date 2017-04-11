@@ -115,9 +115,11 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
             tfStateView.setOnRetryListener(getRetryListener());
         switch (getEmptyItem().getOperationType()) {
             case -1:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
                 tfStateView.showException(getEmptyItem().getThrowable());
                 break;
             case 0:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
                 tfStateView.empty(R.string.do_not_get_datat);
                 break;
             case 1:
@@ -125,6 +127,7 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
                 tfStateView.loading();
                 break;
             case 2:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
                 tfStateView.finish();
                 break;
         }
