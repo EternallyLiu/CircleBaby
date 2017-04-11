@@ -14,6 +14,8 @@ import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.circle.groupmembers.bean.MenemberInfo;
 import cn.timeface.circle.baby.ui.circle.groupmembers.inteface.OnItemClickListener;
 import cn.timeface.circle.baby.ui.circle.groupmembers.section.GroupMemberSection;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -69,7 +71,7 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
             CircleImageView view = baseViewHolder.getView(R.id.iv_content_img);
             CircleImageView viewChild = baseViewHolder.getView(R.id.iv_child_img);
             if (menemberInfo.getUserInfo().getCircleUserType() == 4) {
-                GlideUtil.displayImage(null,view,R.drawable.ic_add_member);
+                GlideUtil.displayImage(null, view, R.drawable.ic_add_member);
 //                Glide.with(mContext)
 //                        .load(R.drawable.ic_add_member)
 //                        .into(view);
@@ -77,12 +79,13 @@ public class GroupMemberAdapter extends BaseSectionQuickAdapter<GroupMemberSecti
             } else {
                 viewChild.setVisibility(View.VISIBLE);
                 if (menemberInfo.getUserInfo() != null) {
-                    GlideUtil.displayImage(menemberInfo.getUserInfo().getCircleAvatarUrl(),view);
+                    GlideUtil.displayImage(menemberInfo.getUserInfo().getCircleAvatarUrl(), view);
 //                    Glide.with(mContext)
 //                            .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
 //                            .into(view);
                 }
-                GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(),viewChild);
+                if (menemberInfo.getBabyBrief()==null) LogUtil.showLog("babymenber", JSONUtils.parse2JSONString(menemberInfo));
+                GlideUtil.displayImage(menemberInfo.getBabyBrief() == null ? null : menemberInfo.getBabyBrief().getBabyAvatarUrl(), viewChild, R.drawable.ic_laucher_quadrate);
 //                Glide.with(mContext)
 //                        .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
 //                        .into(viewChild);
