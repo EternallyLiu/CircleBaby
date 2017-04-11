@@ -14,6 +14,7 @@ import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseViewHolder;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
+import cn.timeface.circle.baby.views.StateView;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -110,6 +111,8 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
         if (emptyLayoutParams == null) {
             emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
+        if (getRetryListener() != null)
+            tfStateView.setOnRetryListener(getRetryListener());
         switch (getEmptyItem().getOperationType()) {
             case -1:
                 tfStateView.showException(getEmptyItem().getThrowable());
@@ -118,7 +121,7 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
                 tfStateView.empty(R.string.do_not_get_datat);
                 break;
             case 1:
-                emptyLayoutParams.height=RecyclerView.LayoutParams.MATCH_PARENT;
+                emptyLayoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
                 tfStateView.loading();
                 break;
             case 2:
@@ -130,6 +133,16 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
 
     public EmptyItem getEmptyItem() {
         return emptyItem;
+    }
+
+    private StateView.RetryListener retryListener;
+
+    public StateView.RetryListener getRetryListener() {
+        return retryListener;
+    }
+
+    public void setRetryListener(StateView.RetryListener retryListener) {
+        this.retryListener = retryListener;
     }
 
     public void setEmptyItem(EmptyItem emptyItem) {
