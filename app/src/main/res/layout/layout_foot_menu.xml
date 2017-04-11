@@ -30,7 +30,7 @@
             android:drawablePadding="@dimen/size_2"
             android:drawableTop="@drawable/selector_home_babytime"
             android:padding="@dimen/view_space_normal"
-            android:text="时光轴"
+            android:text="@string/tab_main_title_1"
             android:textColor="@drawable/selector_home_mine_textcolor" />
 
         <RadioButton

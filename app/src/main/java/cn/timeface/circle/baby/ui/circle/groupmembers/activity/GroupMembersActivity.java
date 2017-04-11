@@ -30,6 +30,7 @@ import cn.timeface.circle.baby.events.UpdateNameEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
@@ -203,6 +204,10 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
                             InviteActivity.open(GroupMembersActivity.this, circleObj);
                             break;
                         default:
+                            if (t.getBabyBrief()==null){
+                                ToastUtil.showToast(GroupMembersActivity.this,getString(R.string.get_baby_faild));
+                                return;
+                            }
                             CheckMemberDetailActivity.open(GroupMembersActivity.this, t);
                     }
                 }

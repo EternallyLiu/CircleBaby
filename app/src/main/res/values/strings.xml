@@ -910,4 +910,11 @@
     <string name="ensure_web_login">登录电脑端成长印记</string>
     <string name="login_cancle">取消登录</string>
     <string name="download">下载</string>
+    <string name="time_line_send_tip">发布于</string>
+    <string name="time_line_send_circle">同步于</string>
+    <string name="look_big_pic_list">查看大图</string>
+    <string name="look_smail_pic_list">浏览小图</string>
+    <string name="do_you_delet">确定删除这条记录吗?</string>
+    <string name="get_baby_faild">无法获取到宝宝信息</string>
+    <string name="tab_main_title_1">成长轴</string>
 </resources>

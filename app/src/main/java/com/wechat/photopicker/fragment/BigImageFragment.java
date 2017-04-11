@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -28,6 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -416,20 +418,20 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         tfProgressDialog.setTvMessage("保存图片中…");
         if (tfProgressDialog.isHidden())
             tfProgressDialog.show(getChildFragmentManager(), "");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ImageFactory.saveImage(path, file1);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        tfProgressDialog.dismiss();
-                        Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
-//                        save.setEnabled(true);
+        Observable.defer(() -> Observable.just(file1))
+                .map(file2 -> ImageFactory.saveImage(path, file1))
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnNext(s1 -> {
+                    try {
+                        MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), s1, getString(R.string.app_name), getString(R.string.app_name));
+                    } catch (FileNotFoundException e) {
+                        LogUtil.showError(e);
                     }
-                });
-            }
-        }).start();
+                })
+                .subscribe(s1 -> {
+                    tfProgressDialog.dismiss();
+                    Toast.makeText(getContext(), "已保存到baby文件夹下", Toast.LENGTH_SHORT).show();
+                }, throwable -> LogUtil.showError(throwable));
     }
 
     private List<MediaTipObj> tips;

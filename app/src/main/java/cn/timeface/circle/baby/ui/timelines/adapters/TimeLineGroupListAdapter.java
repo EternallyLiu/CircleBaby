@@ -266,6 +266,7 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
         TextView picCount = ViewHolder.getView(contentView, R.id.pic_count);
         RelativeLayout rlPicCount = ViewHolder.getView(contentView, R.id.rl_pic_count);
         TextView tvMilestonename = ViewHolder.getView(contentView, R.id.tv_milestonename);
+        TextView tvSendTip = ViewHolder.getView(contentView, R.id.tv_send_tip);
         View milestoneLine = ViewHolder.getView(contentView, R.id.milestone_line);
 
         milestoneLine.setVisibility(View.GONE);
@@ -283,8 +284,9 @@ public class TimeLineGroupListAdapter extends BaseAdapter {
             tvContent.setVisibility(View.VISIBLE);
             tvContent.setText(item.getContent());
         }
+        tvSendTip.setText(TextUtils.isEmpty(item.getGrowthCricleName()) ? R.string.time_line_send_tip : R.string.time_line_send_circle);
         tvAuthor.setText(item.getAuthor().getRelationName());
-        tvDate.setText(DateUtil.formatDate("MM-dd kk:mm", item.getDate()));
+        tvDate.setText(TextUtils.isEmpty(item.getGrowthCricleName()) ? DateUtil.formatDate("MM-dd kk:mm", item.getDate()) : item.getGrowthCricleName());
         iconLike.setImageResource(item.getLike() == 1 ? R.drawable.time_line_cool : R.drawable.time_line_cool_no);
         tvCommentcount.setText(item.getCommentCount() + "");
         tvLikecount.setText(item.getLikeCount() + "");

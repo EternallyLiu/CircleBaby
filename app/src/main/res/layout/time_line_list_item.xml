@@ -126,9 +126,10 @@
                     android:text="爸爸" />
 
                 <TextView
+                    android:id="@+id/tv_send_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="发布于 " />
+                    android:text="@string/time_line_send_tip" />
 
                 <TextView
                     android:id="@+id/tv_date"

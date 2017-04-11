@@ -24,6 +24,7 @@ import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.adapters.AddCircleBookAdapter;
 import cn.timeface.circle.baby.ui.circle.photo.bean.CircleBookTypeObj;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
 /**
  * 添加圈作品
@@ -57,7 +58,7 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
     }
 
     private void reqData() {
-        apiService.circleBookTypeList()
+        addSubscription(apiService.circleBookTypeList()
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
@@ -68,9 +69,9 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
                             }
                         },
                         throwable -> {
-                            Log.e(TAG, throwable.getLocalizedMessage());
+                            LogUtil.showError(TAG, throwable);
                         }
-                );
+                ));
     }
 
     private void setData(List<CircleBookTypeObj> dataList) {
@@ -99,13 +100,13 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
     @Override
     public void onClick(View view) {
         CircleBookTypeObj typeObj = (CircleBookTypeObj) view.getTag(R.string.tag_obj);
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.tv_creat:
                 //家校纪念册
-                if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL){
+                if (typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_FAMILY_SCHOOL) {
                     CircleSelectServeHomeWorksActivity.open(this, String.valueOf(FastData.getCircleId()));
-                //圈照片书
-                } else if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO){
+                    //圈照片书
+                } else if (typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_PHOTO) {
                     CircleSelectSeverAlbumsActivity.open(
                             this,
                             String.valueOf(FastData.getCircleId()),
@@ -113,8 +114,8 @@ public class AddCircleBookActivity extends BaseAppCompatActivity implements View
                             "",
                             175,
                             "");
-                //圈时光书
-                } else if(typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME) {
+                    //圈时光书
+                } else if (typeObj.getBookType() == BookModel.CIRCLE_BOOK_TYPE_TIME) {
                     CircleSelectServerTimesActivity.open(
                             this,
                             BookModel.CIRCLE_BOOK_TYPE_TIME,
