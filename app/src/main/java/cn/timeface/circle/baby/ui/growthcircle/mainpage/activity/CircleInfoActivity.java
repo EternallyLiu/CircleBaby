@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.ui.growthcircle.mainpage.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -182,6 +183,7 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
 
         if (circleDetailObj.getMemberList() != null
                 && circleDetailObj.getMemberList().size() > 0) {
+            memberInfoList.clear();
             memberInfoList.addAll(circleDetailObj.getMemberList());
             memberList.setAdapter(new CircleInfoMemberGridAdapter(this, memberInfoList));
         }
@@ -264,7 +266,7 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
     }
 
     private void reqJoinCircle(long circleId, String leaveWords, String babyRealName) {
-        Subscription s = apiService.joinCircle(circleId, babyRealName, leaveWords)
+        Subscription s = apiService.joinCircle(circleId, Uri.encode(babyRealName), Uri.encode(leaveWords))
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
