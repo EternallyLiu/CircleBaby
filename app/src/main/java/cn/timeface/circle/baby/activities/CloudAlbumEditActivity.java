@@ -81,8 +81,6 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     private static final int REQ_SELECT_COVER = 203;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.recyclerView)
     RecyclerView recyclerView;
     @Bind(R.id.fab)
@@ -126,7 +124,8 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
         String titleStr = getIntent().getStringExtra("title");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);;
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle(titleStr);
 //        getSupportActionBar().setTitle(title);
         //toolbar.setNavigationIcon(R.drawable.ic_back);
         albumId = getIntent().getStringExtra("albumId");

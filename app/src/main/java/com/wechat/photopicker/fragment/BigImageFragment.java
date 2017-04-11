@@ -72,8 +72,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     public static int CIRCLE_MEDIA_IMAGE_EDITOR = 1009;
     public static int CIRCLE_MEDIA_IMAGE_NONE = 1010;
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.vp_big_image)
@@ -320,7 +319,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     };
 
     private void initListener() {
-        tvTitle.setText(mCurrenItem + 1 + "/" + mPaths.size());
+        toolbar.setTitle(mCurrenItem + 1 + "/" + mPaths.size());
 //        tvDownload.setOnClickListener(this);
 //        tvDelete.setOnClickListener(this);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -332,7 +331,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             @Override
             public void onPageSelected(int position) {
                 position = position + 1;
-                tvTitle.setText(position + "/" + mPaths.size());
+                toolbar.setTitle(position + "/" + mPaths.size());
                 initTips();
                 initLikeCount();
             }

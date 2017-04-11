@@ -74,8 +74,6 @@ import cn.timeface.circle.baby.views.ShareDialog;
  */
 public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity implements BaseAdapter.OnItemClickLister, BaseAdapter.LoadDataFinish, SwipeRefreshLayout.OnRefreshListener, ImageActionDialog.ClickCallBack, TextView.OnEditorActionListener, View.OnFocusChangeListener, View.OnClickListener, TextWatcher {
 
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
@@ -133,7 +131,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText("动态详情");
+        toolbar.setTitle("动态详情");
         currentTimeLineObj = getIntent().getParcelableExtra(CircleTimelineObj.class.getSimpleName());
         currentTimeLineId = getIntent().getLongExtra("id", 0);
         if (currentTimeLineObj != null)

@@ -137,7 +137,7 @@ public class PublishActivity extends BaseAppCompatActivity {
 
         switch (type) {
             case PublishAdapter.TYPE_TIMELINE:
-                title.setText(R.string.send_circle_time_line_title);
+                toolbar.setTitle(R.string.send_circle_time_line_title);
                 CircleTimelineObj timelineObj = bundle.getParcelable(CircleTimelineObj.class.getSimpleName());
                 adapter.setContentObj(timelineObj);
                 if (timelineObj == null)
