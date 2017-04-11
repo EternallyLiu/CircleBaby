@@ -282,26 +282,7 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
                 doHeader(contentView, position, getItem(position));
                 break;
             case BaseEmptyAdapter.EMPTY_CODE:
-                TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
-                emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
-                if (emptyLayoutParams == null) {
-                    emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                }
-                contentView.setLayoutParams(emptyLayoutParams);
-                switch (getEmptyItem().getOperationType()) {
-                    case -1:
-                        tfStateView.showException(getEmptyItem().getThrowable());
-                        break;
-                    case 0:
-                        tfStateView.empty(R.string.circle_no_dynamic, R.drawable.ic_dynamic_empty);
-                        break;
-                    case 1:
-                        tfStateView.loading();
-                        break;
-                    case 2:
-                        tfStateView.finish();
-                        break;
-                }
+                doEmpty(contentView);
                 break;
         }
 

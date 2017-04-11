@@ -904,9 +904,10 @@
     <string name="active_album_null">您还没有活动相册哦~</string>
     <string name="do_not_get_datat">没有获取到数据</string>
     <string name="please_input_want_say">请输入想说的话~</string>
-    <string name="school_task_tv_delete_tip">删除该作业</string>
+    <string name="school_task_tv_delete_tip">删除作业</string>
     <string name="delete_task_tip">警告：删除后，家长提交的作业信息将被清空</string>
     <string name="submited">已提交</string>
     <string name="ensure_web_login">登录电脑端成长印记</string>
     <string name="login_cancle">取消登录</string>
+    <string name="download">下载</string>
 </resources>

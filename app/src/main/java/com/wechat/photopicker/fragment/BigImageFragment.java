@@ -120,10 +120,9 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private ImageActionDialog dialog;
 
     /**
-     *
      * @param context
      * @param mediaObj
-     * @param type  BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR/CIRCLE_MEDIA_IMAGE_NONE
+     * @param type     BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR/CIRCLE_MEDIA_IMAGE_NONE
      * @param download
      * @param delete
      */
@@ -349,10 +348,12 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (delete && download){
+        if (delete && download) {
             inflater.inflate(R.menu.menu_timeline_detail, menu);
-        }else
+        } else {
             inflater.inflate(R.menu.menu_download, menu);
+            menu.findItem(R.id.action_download).setTitle(download ? R.string.download : R.string.delete_name);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -360,7 +361,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_download:
-                saveImage();
+                click(null, download ? 3 : 2);
                 break;
             case R.id.action_more:
                 if (dialog == null) {

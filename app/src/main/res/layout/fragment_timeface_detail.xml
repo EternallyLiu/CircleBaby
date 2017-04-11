@@ -84,6 +84,21 @@
             android:padding="@dimen/size_4"
             android:scaleType="fitCenter"
             android:src="@drawable/timeline_comment"/>
+
+        <TextView
+            android:id="@+id/tv_submit_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/et_commment"
+            android:layout_alignLeft="@+id/add_like"
+            android:layout_alignRight="@+id/add_comment"
+            android:layout_alignTop="@+id/et_commment"
+            android:background="@drawable/dialog_delete_button_2"
+            android:text="@string/report_send"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_normal"/>
     </RelativeLayout>
 
 </RelativeLayout>
