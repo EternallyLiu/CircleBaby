@@ -319,7 +319,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     };
 
     private void initListener() {
-        toolbar.setTitle(mCurrenItem + 1 + "/" + mPaths.size());
+        getActionBar().setTitle(mCurrenItem + 1 + "/" + mPaths.size());
 //        tvDownload.setOnClickListener(this);
 //        tvDelete.setOnClickListener(this);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -331,7 +331,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             @Override
             public void onPageSelected(int position) {
                 position = position + 1;
-                toolbar.setTitle(position + "/" + mPaths.size());
+                getActionBar().setTitle(position + "/" + mPaths.size());
                 initTips();
                 initLikeCount();
             }
