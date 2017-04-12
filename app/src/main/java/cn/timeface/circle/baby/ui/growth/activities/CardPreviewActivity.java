@@ -24,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
@@ -115,20 +116,34 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
 
             //删除
             case R.id.action_delete:
-                apiService.delCard("[" + cardObj.getCardId() + "]")
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(
-                                response -> {
-                                    if (response.success()) {
-                                        finish();
-                                    } else {
-                                        showToast(response.getInfo());
-                                    }
-                                },
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setTitle("提示");
+                tfDialog.setMessage("删除后不可撤销，确认要删除吗？");
+                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        apiService.delCard("[" + cardObj.getCardId() + "]")
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .subscribe(
+                                        response -> {
+                                            if (response.success()) {
+                                                finish();
+                                            } else {
+                                                showToast(response.getInfo());
+                                            }
+                                        },
 
-                                throwable -> {
-                                    Log.e(TAG, "delCard:");
-                                });
+                                        throwable -> {
+                                            Log.e(TAG, "delCard:");
+                                        });
+                    }
+                }).show(getSupportFragmentManager(),"");
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -662,6 +662,12 @@
     <string name="quit_growth_circle">退出圈子</string>
     <string name="disband_growth_circle">解散圈子</string>
 
+    <string name="milestone_create">新建里程碑</string>
+    <string name="milestone_share">分享里程碑</string>
+    <string name="milestone_book">里程碑成书</string>
+    <string name="milestone_add_content">新增内容</string>
+    <string name="milestone_delete">删除</string>
+
 
     <string name="JANUARY">一月</string>
     <string name="FEBRUARY">二月</string>
