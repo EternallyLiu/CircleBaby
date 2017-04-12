@@ -208,7 +208,7 @@ public class TabMainPushHandler implements IEventBus {
                 .subscribe(
                         response -> {
                             if (response.success()) {
-                                FastData.clearCircleData();
+//                                FastData.clearCircleData();
                                 FastData.setGrowthCircleObj(response.getGrowthCircle());
                                 FastData.setCircleUserInfo(response.getUserInfo());
                                 dispatchCirclePushMessage(pushMsgInfo);

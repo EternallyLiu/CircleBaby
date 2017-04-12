@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -190,6 +191,7 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
                             .subscribe(
                                     response -> {
                                         if(response.success()){
+                                            Collections.sort(allSelectMedias);
                                             //跳转开放平台POD接口；
 
                                             List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();

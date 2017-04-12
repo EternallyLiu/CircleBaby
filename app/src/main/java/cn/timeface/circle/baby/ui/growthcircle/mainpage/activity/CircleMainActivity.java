@@ -17,6 +17,7 @@ import com.github.rayboot.widget.ratioview.RatioImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -178,7 +179,8 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                         setupCircleInfo(response);
                         reqData(circleId);
                     } else {
-                        Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
+                        ToastUtil.showToast(this,response.getInfo());
+                        finish();
                     }
                 }, throwable -> {
                     NetworkError.showException(this, throwable);
@@ -206,6 +208,9 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     private void setupCircleInfo(CircleIndexInfoResponse circleIndexInfo) {
         this.circleObj = circleIndexInfo.getGrowthCircle();
         adapter.setHeaderInfo(circleIndexInfo);
+        if (adapter.containObj(adapter.getHeaderInfo())) {
+            adapter.updateItem(adapter.getHeaderInfo());
+        }
         if (circleIndexInfo.getHasRelate() == 1)
             addSubscription(apiService.queryBabyInfoDetail(FastData.getBabyId())
                     .compose(SchedulersCompat.applyIoSchedulers())
@@ -300,7 +305,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
 
     @Subscribe
     public void onEvent(CircleMediaEvent event) {
-        LogUtil.showLog("event test=="+event.getType()+"---"+event.getMediaObj().getId());
+        LogUtil.showLog("event test==" + event.getType() + "---" + event.getMediaObj().getId());
         if (event.getType() == 0 && event.getMediaObj() != null) {
             for (int i = 0; i < adapter.getRealItemSize(); i++) {
                 if (adapter.getItemViewType(i) == 1) {
@@ -308,7 +313,7 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
                     LogUtil.showLog("position====" + i);
                     if (timelineObj.getMediaList().contains(event.getMediaObj())) {
                         int index = timelineObj.getMediaList().indexOf(event.getMediaObj());
-                        LogUtil.showLog("media index=="+index);
+                        LogUtil.showLog("media index==" + index);
                         timelineObj.getMediaList().get(index).setTips(event.getMediaObj().getTips());
                         timelineObj.getMediaList().get(index).setIsFavorite(event.getMediaObj().getIsFavorite());
                         timelineObj.getMediaList().get(index).setFavoritecount(event.getMediaObj().getFavoritecount());
@@ -333,8 +338,34 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
     }
 
 
-    public void onEvent(SchoolTaskEvent event){
+    private void refreshHeader() {
+        addSubscription(apiService.queryCircleIndexInfo(circleId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(response -> {
+                    if (response.success()) {
+                        FastData.setGrowthCircleObj(response.getGrowthCircle());
+                        FastData.setCircleUserInfo(response.getUserInfo());
+                        setupCircleInfo(response);
+                    } else {
+                        Toast.makeText(this, response.info, Toast.LENGTH_SHORT).show();
+                    }
+                }, throwable -> {
+                    NetworkError.showException(this, throwable);
+                    LogUtil.showError(throwable);
+                    ToastUtil.showToast(this, "未知错误，获取圈信息失败，请稍后重试！");
+                }));
+    }
 
+    @Subscribe
+    public void onEvent(SchoolTaskEvent event) {
+        refreshHeader();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvent(CirclePassThroughMessageEvent event) {
+        if (event.type == MiPushConstant.TYPE_CIRCLE_COMMIT_HOMEWORK || event.type == MiPushConstant.TYPE_CIRCLE_SCHOOL_TASK) {
+            refreshHeader();
+        }
     }
 
     @Subscribe

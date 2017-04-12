@@ -14,6 +14,7 @@ import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseViewHolder;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
+import cn.timeface.circle.baby.views.StateView;
 import cn.timeface.circle.baby.views.TFStateView;
 
 /**
@@ -105,31 +106,46 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
     }
 
     protected void doEmpty(View contentView) {
-        LogUtil.showLog("doEmpty");
         TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
         emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
         if (emptyLayoutParams == null) {
             emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
-        contentView.setLayoutParams(emptyLayoutParams);
+        if (getRetryListener() != null)
+            tfStateView.setOnRetryListener(getRetryListener());
         switch (getEmptyItem().getOperationType()) {
             case -1:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
                 tfStateView.showException(getEmptyItem().getThrowable());
                 break;
             case 0:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
                 tfStateView.empty(R.string.do_not_get_datat);
                 break;
             case 1:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
                 tfStateView.loading();
                 break;
             case 2:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
                 tfStateView.finish();
                 break;
         }
+        contentView.setLayoutParams(emptyLayoutParams);
     }
 
     public EmptyItem getEmptyItem() {
         return emptyItem;
+    }
+
+    private StateView.RetryListener retryListener;
+
+    public StateView.RetryListener getRetryListener() {
+        return retryListener;
+    }
+
+    public void setRetryListener(StateView.RetryListener retryListener) {
+        this.retryListener = retryListener;
     }
 
     public void setEmptyItem(EmptyItem emptyItem) {

@@ -213,6 +213,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             TextView tvTextCount = ViewHolder.getView(view, R.id.tv_text_count);
             if (!TextUtils.isEmpty(contentObj.getTitle())) {
                 etInput.setText(contentObj.getTitle());
+                etInput.setSelection(contentObj.getTitle().length(), contentObj.getTitle().length());
             } else {
                 etInput.setText("");
                 tvTextCount.setText("0 / 10");
@@ -318,6 +319,9 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
 
     public void setLookup(CircleGridStaggerLookup lookup) {
         this.lookup = lookup;
+        if (contentObj != null && contentObj instanceof CircleTimelineObj) {
+            this.lookup.setSync(((CircleTimelineObj) contentObj).getIsSync() == 0 ? false : true);
+        }
     }
 
     @Override

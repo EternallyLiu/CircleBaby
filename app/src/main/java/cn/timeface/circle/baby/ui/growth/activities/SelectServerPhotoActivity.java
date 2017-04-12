@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -236,6 +237,8 @@ public class SelectServerPhotoActivity extends BasePresenterAppCompatActivity im
                             .subscribe(
                                     response -> {
                                         if(response.success()){
+
+                                            Collections.sort(allSelectMedias);
                                             //跳转开放平台POD接口；
 
                                             List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();

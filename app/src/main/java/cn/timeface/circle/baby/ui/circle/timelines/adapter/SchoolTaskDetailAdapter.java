@@ -122,7 +122,7 @@ public class SchoolTaskDetailAdapter extends BaseEmptyAdapter {
 
         doMediaList(glImageList, position, item.getMediaList());
 
-        tvCreater.setText(item.getSubmitter().getCircleNickName());
+        tvCreater.setText(String.format("%s的作业",item.getBabyInfo().getRealName()));
         tvDetail.setText(item.getContent());
         tvDetail.setVisibility(TextUtils.isEmpty(item.getContent()) ? View.GONE : View.VISIBLE);
     }

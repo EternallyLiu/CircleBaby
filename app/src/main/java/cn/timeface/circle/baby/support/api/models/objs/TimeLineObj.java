@@ -2,6 +2,7 @@ package cn.timeface.circle.baby.support.api.models.objs;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import cn.timeface.open.api.bean.obj.TFOResourceObj;
 /**
  * Created by lidonglin on 2016/5/9.
  */
-public class TimeLineObj extends BaseObj implements Parcelable {
+public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
 
 
     String age;                             //年龄描述
@@ -36,6 +37,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     int type;                       //0 照片 1 视频 2 日记 3 识图
     String content;                 //时光内容
     NearLocationObj locationInfo;
+    String growthCricleName;
     private int allDetailsListPosition;
 
     public int getAllDetailsListPosition() {
@@ -228,6 +230,13 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         return tfoContentObj;
     }
 
+    public String getGrowthCricleName() {
+        return growthCricleName;
+    }
+
+    public void setGrowthCricleName(String growthCricleName) {
+        this.growthCricleName = growthCricleName;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -285,6 +294,18 @@ public class TimeLineObj extends BaseObj implements Parcelable {
     }
 
     @Override
+    public int compareTo(@NonNull Object o) {
+        TimeLineObj another = (TimeLineObj) o;
+        if (getDotime() > another.getDotime()) {
+            return 1;
+        } else if (getDotime() == another.getDotime()) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -309,6 +330,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         dest.writeInt(this.type);
         dest.writeString(this.content);
         dest.writeParcelable(this.locationInfo, flags);
+        dest.writeString(this.growthCricleName);
         dest.writeInt(this.allDetailsListPosition);
     }
 
@@ -331,6 +353,7 @@ public class TimeLineObj extends BaseObj implements Parcelable {
         this.type = in.readInt();
         this.content = in.readString();
         this.locationInfo = in.readParcelable(NearLocationObj.class.getClassLoader());
+        this.growthCricleName = in.readString();
         this.allDetailsListPosition = in.readInt();
     }
 

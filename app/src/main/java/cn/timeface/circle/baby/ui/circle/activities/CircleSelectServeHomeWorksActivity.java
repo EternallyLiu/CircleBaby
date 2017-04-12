@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -38,6 +39,7 @@ import cn.timeface.circle.baby.ui.circle.dialogs.CircleSelectSchoolTaskTypeDialo
 import cn.timeface.circle.baby.ui.circle.fragments.CircleSelectBabyFragment;
 import cn.timeface.circle.baby.ui.circle.fragments.CircleSelectSchoolTaskFragment;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 
 /**
  * 圈作品家校纪念册选择作业
@@ -115,6 +117,8 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                             .subscribe(
                                     response -> {
                                         if (response.success()) {
+                                            Collections.sort(allSelHomeWorks);
+
                                             //跳转开放平台POD接口；
                                             String author = FastData.getUserName();
                                             String bookName = FastData.getBabyNickName() + "的家校纪念册";
@@ -179,9 +183,17 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
 
                                             //成长语录插页数据，content_list第二条数据为简介
                                             TFOPublishObj tfoPublishObjSummary = new TFOPublishObj();
+                                            List<TFOResourceObj> avatarResources = new ArrayList<>(1);
+                                            TFOResourceObj avatarResourceObj = new TFOResourceObj();
+                                            avatarResourceObj.setImageUrl(FastData.getBabyAvatar());
+                                            avatarResourceObj.setImageOrientation(response.getImageRotation());
+                                            avatarResourceObj.setImageHeight(response.getImageHeight());
+                                            avatarResourceObj.setImageWidth(response.getImageWidth());
+                                            avatarResources.add(avatarResourceObj);
                                             tfoPublishObjSummary.setContent(
                                                     FastData.getBabyNickName() + FastData.getBabyAge() + "，是一个活波可爱的小宝宝，在" +
                                                             FastData.getBabyNickName() + "成长的过程中经常会“语出惊人”，有时让我们很吃惊，宝宝小小的脑袋瓜怎么会冒出这么有意思的想法，在这里我们记录了洋洋仔成长中的童言趣语，一起来看看吧~");
+                                            tfoPublishObjSummary.setResourceList(avatarResources);
                                             tfoPublishObjs.add(1, tfoPublishObjSummary);
 
                                             finish();
@@ -191,6 +203,8 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                                                     TypeConstants.OPEN_BOOK_TYPE_CIRCLE_HOME_SCHOOL_BOOK, tfoPublishObjs, sbTaskIds.toString(),
                                                     true, FastData.getBabyId(), keys, values,
                                                     TextUtils.isEmpty(bookId) ? 1 : 2);
+                                        } else {
+                                            ToastUtil.showToast(response.info);
                                         }
                                     },
                                     throwable -> Log.e(TAG, throwable.getLocalizedMessage())
