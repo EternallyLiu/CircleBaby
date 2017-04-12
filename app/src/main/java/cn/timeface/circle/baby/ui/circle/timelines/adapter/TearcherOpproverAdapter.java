@@ -57,17 +57,44 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
 
     private void agreeTearcher(int postion) {
         TeacherAuthObj item = getItem(postion);
-        ApiFactory.getApi().getApiService().checkTeacher(item.getTeacher().getCircleUserId())
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(baseResponse -> {
-                    if (baseResponse.success()) deleteItem(postion);
-                    else ToastUtil.showToast(context(), baseResponse.getInfo());
-                }, throwable -> LogUtil.showError(throwable));
+        switch (item.getState()) {
+            case 1:
+                if (!FastData.getCircleUserInfo().isCreator())
+                    ApiFactory.getApi().getApiService().checkTeacher(item.getTeacher().getCircleUserId())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(baseResponse -> {
+                                if (baseResponse.success()) deleteItem(postion);
+                                else ToastUtil.showToast(context(), baseResponse.getInfo());
+                            }, throwable -> LogUtil.showError(throwable));
+                else
+                    ApiFactory.getApi().getApiService().cancelTeacher(FastData.getCircleId(), item.getTeacher().getCircleUserId())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(baseResponse -> {
+                                if (baseResponse.success()) deleteItem(postion);
+                                else ToastUtil.showToast(context(), baseResponse.getInfo());
+                            }, throwable -> LogUtil.showError(throwable));
+                break;
+            case 2:
+                ApiFactory.getApi().getApiService().cancelTeacher(FastData.getCircleId(), item.getTeacher().getCircleUserId())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(baseResponse -> {
+                            if (baseResponse.success()) deleteItem(postion);
+                            else ToastUtil.showToast(context(), baseResponse.getInfo());
+                        }, throwable -> LogUtil.showError(throwable));
+                break;
+            case 3:
+                ApiFactory.getApi().getApiService().start(0, FastData.getCircleId(), item.getTeacher().getCircleUserId())
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(baseResponse -> {
+                            if (baseResponse.success()) deleteItem(postion);
+                            else ToastUtil.showToast(context(), baseResponse.getInfo());
+                        }, throwable -> LogUtil.showError(throwable));
+                break;
+        }
     }
 
     @Override
     public void initView(View contentView, int position) {
-        LogUtil.showLog("position===" + position + "---type==" + getItemViewType(position));
         switch (getItemViewType(position)) {
             case BaseEmptyAdapter.EMPTY_CODE:
                 TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
@@ -93,14 +120,18 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                 break;
             case 0:
                 TeacherAuthObj item = getItem(position);
-                LogUtil.showLog("item:" + JSONUtils.parse2JSONString(item));
                 ImageView ivIcon = ViewHolder.getView(contentView, R.id.iv_icon);
                 TextView tvMessage = ViewHolder.getView(contentView, R.id.tv_message);
                 ImageView ivIcon1 = ViewHolder.getView(contentView, R.id.iv_icon_1);
                 ImageView ivIcon2 = ViewHolder.getView(contentView, R.id.iv_icon_2);
                 ImageView ivIcon3 = ViewHolder.getView(contentView, R.id.iv_icon_3);
                 Button btnSubmit = ViewHolder.getView(contentView, R.id.btn_agree);
-                btnSubmit.setOnClickListener(view -> agreeTearcher(position));
+                if (!FastData.getCircleUserInfo().isCreator() && item.getState() == 1)
+                    btnSubmit.setOnClickListener(view -> agreeTearcher(position));
+                btnSubmit.setEnabled(item.getState() == 1 ? true : false);
+                btnSubmit.setText(item.getState() == 1 ? R.string.agree_teacher : item.getState() == 2 ? R.string.agreed : R.string.agree_complete);
+                btnSubmit.setEnabled(FastData.getCircleUserInfo().isCreator() ? true : btnSubmit.isEnabled());
+                btnSubmit.setText(FastData.getCircleUserInfo().isCreator() ? context().getString(R.string.cancel_agree) : btnSubmit.getText());
                 GlideUtil.displayImageCircle(item.getTeacher().getCircleAvatarUrl(), ivIcon);
                 tvMessage.setText(String.format("%s 老师申请入驻%s 已通过家长%d/3", item.getTeacher().getCircleNickName(), GrowthCircleObj.getInstance().getCircleName(), item.getAgreeUserList().size()));
                 switch (item.getAgreeUserList().size()) {

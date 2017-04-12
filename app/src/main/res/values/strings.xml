@@ -917,4 +917,9 @@
     <string name="do_you_delet">确定删除这条记录吗?</string>
     <string name="get_baby_faild">无法获取到宝宝信息</string>
     <string name="tab_main_title_1">成长轴</string>
+    <string name="agree_teacher">我同意</string>
+    <string name="agree_complete">已完成</string>
+    <string name="agreed">已同意</string>
+    <string name="cancel_agree">取消认证</string>
+
 </resources>
