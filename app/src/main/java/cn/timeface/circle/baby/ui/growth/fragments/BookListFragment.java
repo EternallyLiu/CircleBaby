@@ -165,7 +165,7 @@ public class BookListFragment extends BasePresenterFragment implements BookPrese
                             bookObj.getOpenBookType(),
                             null,
                             "",
-                            false,
+                            true,
                             bookObj.getBaby().getBabyId(), keys, values, 0);
                 }
                 break;

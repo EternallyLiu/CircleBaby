@@ -120,18 +120,32 @@ public class ProductionMenuDialog extends DialogFragment implements View.OnClick
 
         //删除
         } else if (view.getId() == R.id.tv_delete) {
-            ((BasePresenterAppCompatActivity) getActivity()).addSubscription(
-                    apiService.deleteBook(String.valueOf(bookObj.getBookId()))
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .doOnUnsubscribe(()->dismiss())
-                            .subscribe(response -> {
-                                if (response.success()) {
-                                    EventBus.getDefault().post(new BookOptionEvent(BookOptionEvent.BOOK_OPTION_DELETE, bookObj.getBookType(), String.valueOf(bookObj.getBookId())));
-                                } else {
-                                    ToastUtil.showToast(response.getInfo());
-                                }
-                            }, error -> Log.e(ProductionMenuDialog.class.getSimpleName(), "deleteBook:"))
-            );
+            TFDialog tfDialog = TFDialog.getInstance();
+            tfDialog.setTitle("提示");
+            tfDialog.setMessage("删除后不可撤销，确认要删除吗？");
+            tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tfDialog.dismiss();
+                }
+            });
+            tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((BasePresenterAppCompatActivity) getActivity()).addSubscription(
+                            apiService.deleteBook(String.valueOf(bookObj.getBookId()))
+                                    .compose(SchedulersCompat.applyIoSchedulers())
+                                    .doOnUnsubscribe(()->dismiss())
+                                    .subscribe(response -> {
+                                        if (response.success()) {
+                                            EventBus.getDefault().post(new BookOptionEvent(BookOptionEvent.BOOK_OPTION_DELETE, bookObj.getBookType(), String.valueOf(bookObj.getBookId())));
+                                        } else {
+                                            ToastUtil.showToast(response.getInfo());
+                                        }
+                                    }, error -> Log.e(ProductionMenuDialog.class.getSimpleName(), "deleteBook:"))
+                    );
+                }
+            }).show(getChildFragmentManager(), "");
         }
     }
 }

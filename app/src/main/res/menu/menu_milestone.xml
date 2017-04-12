@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/item_share"
+        android:id="@+id/item_more"
         android:icon="@drawable/more"
         android:title="@null"
         app:showAsAction="ifRoom"/>
