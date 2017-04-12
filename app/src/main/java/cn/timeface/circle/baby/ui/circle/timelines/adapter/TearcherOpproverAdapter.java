@@ -57,6 +57,7 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
 
     private void agreeTearcher(int postion) {
         TeacherAuthObj item = getItem(postion);
+        LogUtil.showLog(item.getState()+"");
         switch (item.getState()) {
             case 1:
                 if (!FastData.getCircleUserInfo().isCreator())
@@ -74,21 +75,23 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                                 else ToastUtil.showToast(context(), baseResponse.getInfo());
                             }, throwable -> LogUtil.showError(throwable));
                 break;
-            case 2:
-                ApiFactory.getApi().getApiService().cancelTeacher(FastData.getCircleId(), item.getTeacher().getCircleUserId())
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(baseResponse -> {
-                            if (baseResponse.success()) deleteItem(postion);
-                            else ToastUtil.showToast(context(), baseResponse.getInfo());
-                        }, throwable -> LogUtil.showError(throwable));
-                break;
             case 3:
-                ApiFactory.getApi().getApiService().start(0, FastData.getCircleId(), item.getTeacher().getCircleUserId())
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(baseResponse -> {
-                            if (baseResponse.success()) deleteItem(postion);
-                            else ToastUtil.showToast(context(), baseResponse.getInfo());
-                        }, throwable -> LogUtil.showError(throwable));
+                if (FastData.getCircleUserInfo().isCreator())
+                    ApiFactory.getApi().getApiService().start(0, FastData.getCircleId(), item.getTeacher().getCircleUserId())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(baseResponse -> {
+                                if (baseResponse.success()) deleteItem(postion);
+                                else ToastUtil.showToast(context(), baseResponse.getInfo());
+                            }, throwable -> LogUtil.showError(throwable));
+                break;
+            default:
+                if (FastData.getCircleUserInfo().isCreator())
+                    ApiFactory.getApi().getApiService().cancelTeacher(FastData.getCircleId(), item.getTeacher().getCircleUserId())
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .subscribe(baseResponse -> {
+                                if (baseResponse.success()) deleteItem(postion);
+                                else ToastUtil.showToast(context(), baseResponse.getInfo());
+                            }, throwable -> LogUtil.showError(throwable));
                 break;
         }
     }
@@ -126,8 +129,7 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                 ImageView ivIcon2 = ViewHolder.getView(contentView, R.id.iv_icon_2);
                 ImageView ivIcon3 = ViewHolder.getView(contentView, R.id.iv_icon_3);
                 Button btnSubmit = ViewHolder.getView(contentView, R.id.btn_agree);
-                if (!FastData.getCircleUserInfo().isCreator() && item.getState() == 1)
-                    btnSubmit.setOnClickListener(view -> agreeTearcher(position));
+                btnSubmit.setOnClickListener(view -> agreeTearcher(position));
                 btnSubmit.setEnabled(item.getState() == 1 ? true : false);
                 btnSubmit.setText(item.getState() == 1 ? R.string.agree_teacher : item.getState() == 2 ? R.string.agreed : R.string.agree_complete);
                 btnSubmit.setEnabled(FastData.getCircleUserInfo().isCreator() ? true : btnSubmit.isEnabled());

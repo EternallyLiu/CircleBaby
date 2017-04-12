@@ -163,7 +163,7 @@ public class TabMainPushHandler implements IEventBus {
                 break;
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_TEACHER_AUTHORIZATION: // 管理员发起老师认证（定位到认证列表页面）
                 // 仅携带circleId
-                TeacherAuthoActivity.open(context);
+                TeacherAuthoActivity.open(context, pushMsgInfo.getCircleId());
                 break;
             case MiPushConstant.PUSH_TYPE_CIRCLE_TEACHER_NEW_PRODUCTION: // 老师创建新作品（定位到该作品的预览页）
             case MiPushConstant.PUSH_TYPE_CIRCLE_PRODUCTION_REFERENCED: // 发布的照片被别人引用做书并订单支付成功（定位到该作品的预览页）

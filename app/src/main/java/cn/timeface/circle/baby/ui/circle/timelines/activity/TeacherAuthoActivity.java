@@ -70,7 +70,7 @@ public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseA
                     }, throwable -> {
                     });
         else
-            context.startActivity(new Intent(context, TeacherAuthoActivity.class));
+            open(context);
     }
 
     @Override
