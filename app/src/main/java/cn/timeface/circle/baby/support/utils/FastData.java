@@ -641,9 +641,10 @@ public class FastData extends Remember {
 
     /**
      * 获取当前圈信息
+     *
      * @return
      */
-    public static GrowthCircleObj getCircleObj(){
+    public static GrowthCircleObj getCircleObj() {
         return GrowthCircleObj.getInstance();
     }
 
@@ -658,9 +659,11 @@ public class FastData extends Remember {
     }
 
     public static void setCircleUserInfo(CircleUserInfo userInfo) {
-        setCircleUserId(userInfo.getCircleUserId());
-        userInfo.save();
-        CircleUserInfo.refresh();
+        if (userInfo != null) {
+            setCircleUserId(userInfo.getCircleUserId());
+            userInfo.save();
+            CircleUserInfo.refresh();
+        }
     }
 
     public static CircleUserInfo getCircleUserInfo() {
