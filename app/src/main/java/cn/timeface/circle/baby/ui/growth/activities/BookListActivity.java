@@ -285,7 +285,7 @@ public class BookListActivity extends ProductionListActivity implements BookPres
                             bookObj.getOpenBookType(),
                             null,
                             "",
-                            false,
+                            true,
                             bookObj.getBaby().getBabyId(), keys, values, 0);
                 }
                 break;
