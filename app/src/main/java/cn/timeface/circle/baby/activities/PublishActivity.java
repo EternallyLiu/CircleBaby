@@ -190,6 +190,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         publishType = getIntent().getIntExtra("publish_type", NOMAL);
         cardObj = getIntent().getParcelableExtra("mediaObj");
         cardObjs = getIntent().getParcelableArrayListExtra("mediaObjs");
+        milestone = getIntent().getParcelableExtra("mileStone");
+        if(milestone != null){
+            tvMileStone.setText(milestone.getMilestone());
+            if (photoRecodes.size() > 0) {
+                photoRecodes.get(0).setMileStone(milestone);
+            }
+        }
 
         rlMileStone.setOnClickListener(this);
         rlTime.setOnClickListener(this);
@@ -325,6 +332,13 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
     public static void open(Context context, List<CardObj> mediaObjs) {
         Intent intent = new Intent(context, PublishActivity.class);
         intent.putParcelableArrayListExtra("mediaObjs", (ArrayList<? extends Parcelable>) mediaObjs);
+        context.startActivity(intent);
+    }
+
+    public static void open(Context context,int type, Milestone mileStone) {
+        Intent intent = new Intent(context, PublishActivity.class);
+        intent.putExtra("publish_type", type);
+        intent.putExtra("mileStone", mileStone);
         context.startActivity(intent);
     }
 
