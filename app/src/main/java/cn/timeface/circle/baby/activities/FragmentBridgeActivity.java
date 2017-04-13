@@ -29,7 +29,6 @@ import cn.timeface.circle.baby.fragments.DiaryTextFragment;
 import cn.timeface.circle.baby.fragments.FamilyMemberFragment;
 import cn.timeface.circle.baby.fragments.FamilyMemberInfoFragment;
 import cn.timeface.circle.baby.fragments.InviteFragment;
-import cn.timeface.circle.baby.fragments.MessageFragment;
 import cn.timeface.circle.baby.fragments.SelectAddressFragment;
 import cn.timeface.circle.baby.fragments.SettingFragment;
 import cn.timeface.circle.baby.fragments.SettingMsgFragment;
@@ -44,6 +43,7 @@ import cn.timeface.circle.baby.ui.babyInfo.fragments.IconHistoryFragment;
 import cn.timeface.circle.baby.ui.images.TagAddFragment;
 import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
+import cn.timeface.circle.baby.ui.settings.fragments.MyMessageFragment;
 import cn.timeface.circle.baby.ui.settings.fragments.NotifyPwdFragment;
 import cn.timeface.circle.baby.ui.timelines.fragments.LocationListFragment;
 import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
@@ -304,7 +304,8 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
                 return new FamilyMemberFragment();
 
             case "MessageFragment":
-                return new MessageFragment();
+            case "MyMessageFragment":
+                return new MyMessageFragment();
 
             case "SystemMessageFragment":
                 return new SystemMessageFragment();

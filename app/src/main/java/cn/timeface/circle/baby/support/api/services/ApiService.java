@@ -120,6 +120,7 @@ import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
+import cn.timeface.circle.baby.ui.settings.response.MyMessageResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.QueryLocationInfoResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.SendTimeLineResponse;
@@ -1971,4 +1972,9 @@ public interface ApiService {
 
     @POST("teacherAuth/cancelAuth")
     Observable<BaseResponse> cancelTeacher(@Query("circleId") long circleId,@Query("circleUserId") long circleUserId);
+
+
+    @POST("babyMsgInfo/queryMsgList")
+    Observable<MyMessageResponse> queryMsgList(@Query("currentPage") int currentPage,
+                                               @Query("pageSize") int pageSize);
 }
