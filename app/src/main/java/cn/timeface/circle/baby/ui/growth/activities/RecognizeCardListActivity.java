@@ -314,6 +314,11 @@ public class RecognizeCardListActivity extends ProductionListActivity implements
                     }
                 }
             }
+            if (selectCards.size() > 0) {
+                btnAskPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
+            } else {
+                btnAskPrint.setText("申请印刷");
+            }
         }
     }
 
