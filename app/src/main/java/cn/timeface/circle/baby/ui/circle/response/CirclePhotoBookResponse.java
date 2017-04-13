@@ -1,5 +1,7 @@
 package cn.timeface.circle.baby.ui.circle.response;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -14,7 +16,18 @@ public class CirclePhotoBookResponse extends BaseResponse {
     private List<CircleActivityAlbumObjWrapper> dataList;
 
     public List<CircleActivityAlbumObjWrapper> getDataList() {
-        return dataList;
+        if(dataList == null){
+            return new ArrayList<>();
+        } else {
+            Iterator iterator = dataList.iterator();
+            while (iterator.hasNext()){
+                CircleActivityAlbumObjWrapper albumObjWrapper = (CircleActivityAlbumObjWrapper) iterator.next();
+                if(albumObjWrapper.getActivityAlbum().getMediaCount() <= 0){
+                    iterator.remove();
+                }
+            }
+            return dataList;
+        }
     }
 
     public void setDataList(List<CircleActivityAlbumObjWrapper> dataList) {

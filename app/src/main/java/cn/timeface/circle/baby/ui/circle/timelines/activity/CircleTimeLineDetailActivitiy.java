@@ -46,6 +46,7 @@ import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
@@ -117,9 +118,12 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     }
 
     public static void open(Context context, long currentTimeLineId) {
-        Bundle bundle = new Bundle();
-        bundle.putLong("id", currentTimeLineId);
-        context.startActivity(new Intent(context, CircleTimeLineDetailActivitiy.class).putExtras(bundle));
+        ApiFactory.getApi().getApiService().queryCircleTimeLineDetail(currentTimeLineId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(circleTimeLineDetailResponse -> {
+                    if (circleTimeLineDetailResponse.success())
+                        open(context,circleTimeLineDetailResponse.getCircleTimelineInfo());
+                },throwable -> LogUtil.showError(throwable));
     }
 
     @Override
@@ -197,7 +201,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     }
 
     private void reqData() {
-        addSubscription(apiService.queryCircleTimeLineDetail(currentTimeLineObj.getCircleTimelineId()).compose(SchedulersCompat.applyIoSchedulers())
+        addSubscription(apiService.queryCircleTimeLineDetail(currentTimeLineId).compose(SchedulersCompat.applyIoSchedulers())
                 .doOnNext(circleTimeLineDetailResponse -> addLike.setEnabled(true))
                 .doOnNext(circleTimeLineDetailResponse -> swipeRefresh.setRefreshing(false))
                 .subscribe(circleTimeLineDetailResponse -> {
@@ -205,6 +209,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
                         currentTimeLineObj = circleTimeLineDetailResponse.getCircleTimelineInfo();
                         EventBus.getDefault().post(new CircleTimeLineEditEvent(currentTimeLineObj));
                         initRecyclerView();
+                        doMenu();
                     } else ToastUtil.showToast(this, circleTimeLineDetailResponse.getInfo());
                 }, throwable -> {
                     addLike.setEnabled(true);
@@ -226,7 +231,7 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
     }
 
     private void doMenu() {
-        if (currentMenu != null && currentTimeLineObj.getMediaList().size() > GridStaggerLookup.MAX_MEDIA_SIZE_SHOW_GRID)
+        if (currentMenu != null && currentTimeLineObj != null && currentTimeLineObj.getMediaList().size() > GridStaggerLookup.MAX_MEDIA_SIZE_SHOW_GRID)
             currentMenu.findItem(R.id.action_smail_image).setVisible(true);
         else if (currentMenu != null)
             currentMenu.findItem(R.id.action_smail_image).setVisible(false);
@@ -442,9 +447,9 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
                             commmentId = 0;
                         }
                     }
-                    if (tvSubmitComment!=null)tvSubmitComment.setEnabled(true);
+                    if (tvSubmitComment != null) tvSubmitComment.setEnabled(true);
                 }, error -> {
-                    if (tvSubmitComment!=null)tvSubmitComment.setEnabled(true);
+                    if (tvSubmitComment != null) tvSubmitComment.setEnabled(true);
                     error.printStackTrace();
                 }));
     }

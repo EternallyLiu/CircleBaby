@@ -8,6 +8,7 @@ import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import rx.Observable;
 
 
 /**
@@ -349,6 +350,7 @@ public class FastData extends Remember {
             setPhoneNumber(userObj.getPhoneNumber());
             setUniId(userObj.getUniId());
             BabyObj.saveAll(userObj.getBabies());
+            setBabyCount(userObj.getBabies().size());
         }
     }
 
@@ -641,9 +643,10 @@ public class FastData extends Remember {
 
     /**
      * 获取当前圈信息
+     *
      * @return
      */
-    public static GrowthCircleObj getCircleObj(){
+    public static GrowthCircleObj getCircleObj() {
         return GrowthCircleObj.getInstance();
     }
 
@@ -658,9 +661,11 @@ public class FastData extends Remember {
     }
 
     public static void setCircleUserInfo(CircleUserInfo userInfo) {
-        setCircleUserId(userInfo.getCircleUserId());
-        userInfo.save();
-        CircleUserInfo.refresh();
+        if (userInfo != null) {
+            setCircleUserId(userInfo.getCircleUserId());
+            userInfo.save();
+            CircleUserInfo.refresh();
+        }
     }
 
     public static CircleUserInfo getCircleUserInfo() {

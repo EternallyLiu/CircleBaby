@@ -1766,6 +1766,18 @@ public interface ApiService {
                                    @Query("circleMemberId") long circleMemberId);
 
     /**
+     * 接口详情 (id: 7758) 复制URL
+     * 接口名称 发起/取消 某个成员的教师认证
+     * 请求类型 get
+     * 请求Url  /teacherAuth/start
+     */
+    @POST("teacherAuth/start")
+    Observable<BaseResponse> startCertification(@Query("certification") long certification,
+                                                @Query("circleId") long circleId,
+                                                @Query("circleMemberId") long circleMemberId,
+                                                @Query("name") String name);
+
+    /**
      * 接口详情 (id: 7757) 复制URL
      * 接口名称 移除某个成员
      * 请求类型 post
@@ -1788,6 +1800,7 @@ public interface ApiService {
 
     /**
      * 圈照片书（查找圈内活动相册列表）
+     *
      * @param circleId
      * @return
      */
@@ -1796,6 +1809,7 @@ public interface ApiService {
 
     /**
      * 圈照片书（查找圈内活动相册列表）
+     *
      * @param activityAlbumId
      * @return
      */
@@ -1804,6 +1818,7 @@ public interface ApiService {
 
     /**
      * 圈照片书（查找圈内活动相册列表）
+     *
      * @param circleId
      * @return
      */
@@ -1815,6 +1830,7 @@ public interface ApiService {
 
     /**
      * 按宝宝查询家庭作业
+     *
      * @param circleId
      * @return
      */
@@ -1884,6 +1900,7 @@ public interface ApiService {
     @GET("circle/book/list")
     Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList(@Query("circleId") long circleId,
                                                                        @Query("permissionType") int permissionType);
+
     @GET("circle/book/list")
     Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList();
 
@@ -1936,6 +1953,7 @@ public interface ApiService {
 
     /**
      * 查询绑定了家长的宝宝列表
+     *
      * @param circleId
      * @return
      */
@@ -1944,6 +1962,7 @@ public interface ApiService {
 
     /**
      * 获取书中的所有时光信息
+     *
      * @param bookId
      * @return
      */
@@ -1952,6 +1971,7 @@ public interface ApiService {
 
     /**
      * 获取书中的所有作业
+     *
      * @param bookId
      * @return
      */
@@ -1963,9 +1983,13 @@ public interface ApiService {
 
     /**
      * 删除老师布置的作业
+     *
      * @param taskId
      * @return
      */
     @POST("homework/delTask")
     Observable<BaseResponse> deleteTask(@Query("taskId") long taskId);
+
+    @POST("teacherAuth/cancelAuth")
+    Observable<BaseResponse> cancelTeacher(@Query("circleId") long circleId,@Query("circleUserId") long circleUserId);
 }

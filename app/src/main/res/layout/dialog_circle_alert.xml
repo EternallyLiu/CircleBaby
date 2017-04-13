@@ -47,7 +47,7 @@
                 android:id="@+id/tv_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:paddingBottom="@dimen/view_space_normal"
                 android:paddingTop="@dimen/view_space_normal"
                 android:textColor="@color/text"

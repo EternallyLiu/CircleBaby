@@ -129,7 +129,7 @@ public class SplashActivity extends BaseAppCompatActivity {
                         response -> {
                         }
                         , error -> {
-                            Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                         });
         addSubscription(s);
 
