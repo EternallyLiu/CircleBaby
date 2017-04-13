@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.settings.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -7,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
@@ -23,6 +26,7 @@ import cn.timeface.circle.baby.support.utils.ptr.TFPTRRecyclerViewHelper;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.settings.adapters.MyMessageAdapter;
 import cn.timeface.circle.baby.ui.settings.beans.MessageBean;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
@@ -46,9 +50,24 @@ public class MyMessageFragment extends BaseFragment implements BaseAdapter.OnIte
     private final int PAGESIZE = 20;
     private int currentPage = 1;
 
+    private int type = 0;//消息列表,1001、系统消息
+
+    public static void open(Context content) {
+        FragmentBridgeActivity.open(content, MyMessageFragment.class.getSimpleName());
+    }
+
+    public static void openSystem(Context context) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", 1001);
+        FragmentBridgeActivity.open(context, MyMessageFragment.class.getSimpleName(), bundle);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle.containsKey("type"))
+            type = bundle.getInt("type");
         setHasOptionsMenu(true);
     }
 
@@ -86,14 +105,16 @@ public class MyMessageFragment extends BaseFragment implements BaseAdapter.OnIte
                     public void onTFPullDownToRefresh(View refreshView) {
                         adapter.getEmptyItem().setOperationType(1);
                         adapter.notifyDataSetChanged();
-                        currentPage=1;
+                        currentPage = 1;
                         reqData();
                     }
 
                     @Override
                     public void onTFPullUpToRefresh(View refreshView) {
-                        currentPage++;
-                        reqData();
+                        if (type != 1001) {
+                            currentPage++;
+                            reqData();
+                        }
                     }
 
                     @Override
@@ -108,22 +129,42 @@ public class MyMessageFragment extends BaseFragment implements BaseAdapter.OnIte
     }
 
     private void setDataList(List<MessageBean> list) {
-        adapter.addList(currentPage == 1, list);
+        if (type == 1001) adapter.addList(true, list);
+        else
+            adapter.addList(currentPage == 1, list);
     }
 
     private void reqData() {
-        addSubscription(apiService.queryMsgList(currentPage, PAGESIZE).compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(myMessageResponse -> {
-                    adapter.getEmptyItem().setOperationType(0);
-                    adapter.notifyDataSetChanged();
-                    if (myMessageResponse.success()) setDataList(myMessageResponse.getDataList());
-                    else ToastUtil.showToast(getActivity(), myMessageResponse.getInfo());
-                }, throwable -> {
-                    adapter.getEmptyItem().setOperationType(0);
-                    adapter.getEmptyItem().setThrowable(throwable);
-                    adapter.notifyDataSetChanged();
-                    helper.finishTFPTRRefresh();
-                }));
+        if (type == 1001)
+            addSubscription(apiService.querySystemMessage().compose(SchedulersCompat.applyIoSchedulers())
+                    .doOnNext(myMessageResponse -> helper.finishTFPTRRefresh())
+                    .subscribe(myMessageResponse -> {
+                        adapter.getEmptyItem().setOperationType(0);
+                        adapter.notifyDataSetChanged();
+                        if (myMessageResponse.success())
+                            setDataList(myMessageResponse.getDataList());
+                        else ToastUtil.showToast(getActivity(), myMessageResponse.getInfo());
+                    }, throwable -> {
+                        adapter.getEmptyItem().setOperationType(0);
+                        adapter.getEmptyItem().setThrowable(throwable);
+                        adapter.notifyDataSetChanged();
+                        helper.finishTFPTRRefresh();
+                    }));
+        else
+            addSubscription(apiService.queryMsgList(currentPage, PAGESIZE).compose(SchedulersCompat.applyIoSchedulers())
+                    .doOnNext(myMessageResponse -> helper.finishTFPTRRefresh())
+                    .subscribe(myMessageResponse -> {
+                        adapter.getEmptyItem().setOperationType(0);
+                        adapter.notifyDataSetChanged();
+                        if (myMessageResponse.success())
+                            setDataList(myMessageResponse.getDataList());
+                        else ToastUtil.showToast(getActivity(), myMessageResponse.getInfo());
+                    }, throwable -> {
+                        adapter.getEmptyItem().setOperationType(0);
+                        adapter.getEmptyItem().setThrowable(throwable);
+                        adapter.notifyDataSetChanged();
+                        helper.finishTFPTRRefresh();
+                    }));
     }
 
     @Override
@@ -134,6 +175,23 @@ public class MyMessageFragment extends BaseFragment implements BaseAdapter.OnIte
 
     @Override
     public void onItemClick(View view, int position) {
-        if (adapter.getItemViewType(position)==)
+        if (adapter.getItemViewType(position) == 1001) {
+            MessageBean item = adapter.getItem(position);
+            LogUtil.showLog("message",JSONUtils.parse2JSONString(item));
+            if (type != 1001 && item.getIdentifier() >= 3000 && item.getIdentifier() < 4000) {
+                openSystem(getActivity());
+            } else {
+                addSubscription(apiService.read(item.getMessageId(), 0).compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(baseResponse -> {
+                            if (baseResponse.success()) {
+                                item.setIsRead(1);
+                                adapter.updateItem(item);
+                            }
+                        }, throwable -> LogUtil.showError(throwable)));
+
+                item.skip(getActivity());
+
+            }
+        }
     }
 }

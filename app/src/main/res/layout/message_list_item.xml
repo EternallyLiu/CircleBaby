@@ -7,6 +7,8 @@
                 android:background="@color/text_color1"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/size_6"
+                android:paddingLeft="@dimen/size_10"
+                android:paddingRight="@dimen/size_10"
                 android:paddingBottom="@dimen/size_12">
 
     <ImageView
@@ -14,7 +16,9 @@
         android:layout_width="@dimen/size_36"
         android:layout_height="@dimen/size_36"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_12"
+        android:layout_marginBottom="@dimen/size_12"
+        android:layout_marginRight="@dimen/size_12"
         android:src="@color/bg_color5" />
 
     <ImageView
@@ -40,13 +44,14 @@
             android:id="@+id/tv_relation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_small"
+            android:textSize="@dimen/text_small_13"
             android:textColor="@color/bg_color1"/>
         <TextView
             android:id="@+id/tv_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_small_12"
+            android:textSize="@dimen/text_small"
+            android:textColor="@color/text"
             android:layout_marginTop="@dimen/size_6"
             android:layout_marginBottom="@dimen/size_6"
             />

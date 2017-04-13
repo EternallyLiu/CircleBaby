@@ -1977,4 +1977,8 @@ public interface ApiService {
     @POST("babyMsgInfo/queryMsgList")
     Observable<MyMessageResponse> queryMsgList(@Query("currentPage") int currentPage,
                                                @Query("pageSize") int pageSize);
+
+    //获取系统消息列表
+    @GET("babyMsgInfo/querySystemMsgList")
+    Observable<MyMessageResponse> querySystemMessage();
 }
