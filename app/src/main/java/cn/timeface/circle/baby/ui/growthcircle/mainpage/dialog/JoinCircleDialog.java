@@ -5,7 +5,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.support.utils.FastData;
 
 
 public class JoinCircleDialog extends DialogFragment {
@@ -47,9 +50,6 @@ public class JoinCircleDialog extends DialogFragment {
         View loadingView = inflater.inflate(R.layout.dialog_join_circle, container, false);
         ButterKnife.bind(this, loadingView);
 
-        if (!TextUtils.isEmpty(joinMessage)) {
-            setJoinMessage(joinMessage);
-        }
         if (!TextUtils.isEmpty(childrenName)) {
             setChildrenName(childrenName);
         }
@@ -57,17 +57,22 @@ public class JoinCircleDialog extends DialogFragment {
             tvSubmit.setOnClickListener(positiveListener);
         }
 
+        etChildrenName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                setJoinMessage(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         return loadingView;
-    }
-
-    public void setJoinMessage(String joinMessage) {
-        this.joinMessage = joinMessage;
-
-        if (etMessage != null) {
-            etMessage.setHint(joinMessage);
-            etMessage.setText(joinMessage);
-            etMessage.setEnabled(false);
-        }
     }
 
     public void setChildrenName(String childrenName) {
@@ -77,6 +82,24 @@ public class JoinCircleDialog extends DialogFragment {
             etChildrenName.setHint(childrenName);
             etChildrenName.setText(childrenName);
             etChildrenName.setEnabled(false);
+        }
+
+        setJoinMessage(childrenName);
+    }
+
+    private void setJoinMessage(String childrenName) {
+        if (TextUtils.isEmpty(childrenName)) {
+            this.joinMessage = "";
+            if (etMessage != null) {
+                etMessage.setHint(joinMessage);
+                etMessage.setText(joinMessage);
+            }
+        } else {
+            this.joinMessage = "我是" + childrenName + "的" + FastData.getRelationName();
+            if (etMessage != null) {
+                etMessage.setHint(joinMessage);
+                etMessage.setText(joinMessage);
+            }
         }
     }
 
