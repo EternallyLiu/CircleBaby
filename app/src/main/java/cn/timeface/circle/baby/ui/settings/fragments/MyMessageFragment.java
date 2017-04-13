@@ -177,7 +177,6 @@ public class MyMessageFragment extends BaseFragment implements BaseAdapter.OnIte
     public void onItemClick(View view, int position) {
         if (adapter.getItemViewType(position) == 1001) {
             MessageBean item = adapter.getItem(position);
-            LogUtil.showLog("message",JSONUtils.parse2JSONString(item));
             if (type != 1001 && item.getIdentifier() >= 3000 && item.getIdentifier() < 4000) {
                 openSystem(getActivity());
             } else {

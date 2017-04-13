@@ -158,7 +158,7 @@ public class MessageBean {
                 OrderDetailActivity.open(context, getInfoValue("uId"));
                 break;
             case MiPushConstant.NOTICE_TYPE_NEW_ACTIVITY:
-
+                FragmentBridgeActivity.openWebViewFragment(context,getInfoValue("url"),getTitle());
                 break;
             case MiPushConstant.NOTICE_TYPE_NORMAL_MSG:
                 break;
