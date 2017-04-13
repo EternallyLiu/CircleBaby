@@ -129,7 +129,7 @@ public class CircleSelectBabyFragment extends BasePresenterFragment implements V
                     CircleSelectHomeWorkDetailActivity.open4Result(
                             getActivity(),
                             ((CircleSelectServeHomeWorksActivity) getActivity()).REQUEST_CODE_SELECT_HOME_WORK,
-                            circleId, babyObj.getBabyId(), allSelHomeWorks);
+                            circleId, babyObj.getBabyId(), allSelHomeWorks, babyObj.getBabyName());
                 }
                 break;
         }
