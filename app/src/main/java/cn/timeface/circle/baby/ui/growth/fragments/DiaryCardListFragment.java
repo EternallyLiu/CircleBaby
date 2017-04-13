@@ -17,6 +17,7 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -32,6 +33,7 @@ import cn.timeface.circle.baby.events.CartBuyNowEvent;
 import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.DiaryCardObj;
+import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
@@ -316,5 +318,20 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Iterator iterator = selectCards.iterator();
+        //去掉没选择的
+        while (iterator.hasNext()) {
+            KnowledgeCardObj knowledgeCardObj = (KnowledgeCardObj) iterator.next();
+            if (!knowledgeCardObj.select()) {
+                iterator.remove();
+            }
+        }
+        cardPresenter.loadDiaryCard();
     }
 }

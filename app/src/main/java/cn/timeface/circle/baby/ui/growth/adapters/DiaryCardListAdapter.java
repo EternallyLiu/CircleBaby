@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,8 +56,10 @@ public class DiaryCardListAdapter extends BaseRecyclerAdapter<DiaryCardObj> {
         holder.ivSelect.setSelected(cardObj.select());
         holder.ivSelect.setTag(R.string.tag_obj, cardObj);
         holder.ivSelect.setTag(R.string.tag_index, position);
+        holder.flRoot.setTag(R.string.tag_obj, cardObj);
         if(clickListener != null){
             holder.ivSelect.setOnClickListener(clickListener);
+            holder.flRoot.setOnClickListener(clickListener);
         }
     }
 
@@ -75,6 +78,8 @@ public class DiaryCardListAdapter extends BaseRecyclerAdapter<DiaryCardObj> {
         RatioImageView ivImg;
         @Bind(R.id.iv_select)
         ImageView ivSelect;
+        @Bind(R.id.fl_root)
+        FrameLayout flRoot;
 
         ViewHolder(View view) {
             super(view);
