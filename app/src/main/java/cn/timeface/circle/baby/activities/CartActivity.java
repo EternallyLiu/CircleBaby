@@ -90,6 +90,7 @@ public class CartActivity extends BaseAppCompatActivity implements IEventBus {
 
     private void setupView() {
         RecyclerView recyclerView = rlRecyclerView.getRecyclerView();
+        rlRecyclerView.getLoadMoreView().setVisibility(View.GONE);
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, LinearLayoutManager.VERTICAL, R.color.bg7);
         itemDecoration.setItemSize(getResources().getDimensionPixelOffset(R.dimen.view_space_normal));
         recyclerView.addItemDecoration(itemDecoration);
