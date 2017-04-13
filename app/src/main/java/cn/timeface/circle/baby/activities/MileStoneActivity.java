@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -31,9 +32,11 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.dialogs.MileStoneMoreDialog;
 import cn.timeface.circle.baby.dialogs.MilestoneMenuDialog;
 import cn.timeface.circle.baby.events.MilestoneRefreshEvent;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.models.objs.MilestoneTimeObj;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneTimeResponse;
+import cn.timeface.circle.baby.support.mvp.model.BookModel;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.DeviceUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -45,6 +48,9 @@ import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.TFStateView;
+import cn.timeface.open.api.bean.obj.TFOContentObj;
+import cn.timeface.open.api.bean.obj.TFOPublishObj;
+import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MileStoneActivity extends BaseAppCompatActivity implements IEventBus, View.OnClickListener {
@@ -72,6 +78,8 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
     private int width;
     private int measuredHeight;
     private MilestoneTimeResponse milestoneTimeResponse;
+    List<MediaObj> mediaObjs = new ArrayList<>();
+    private String bookName;
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, MileStoneActivity.class));
@@ -331,7 +339,47 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
                 new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_laucher_quadrate), url);
                 break;
             case R.id.tv_milestone_book:
-                ToastUtil.showToast("里程碑成书");
+
+                if(mediaObjs.size() == 0){
+                    ToastUtil.showToast("里程碑里还没有照片");
+                    return;
+                }
+
+                List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
+                StringBuffer sb = new StringBuffer("{\"dataList\":[");
+                int index = 0;
+                for (MediaObj mediaObj : mediaObjs) {
+                    index++;
+                    TFOResourceObj tfoResourceObj = mediaObj.toTFOResourceObj();
+                    tfoResourceObjs.add(tfoResourceObj);
+                    sb.append(mediaObj.getId());
+                    if (index < mediaObjs.size()) {
+                        sb.append(",");
+                    } else {
+                        sb.append("]}");
+                    }
+                }
+
+                List<TFOContentObj> tfoContentObjs1 = new ArrayList<>();
+                TFOContentObj tfoContentObj;
+                tfoContentObj = new TFOContentObj("", tfoResourceObjs);
+                tfoContentObjs1.add(tfoContentObj);
+
+                ArrayList<String> keys = new ArrayList<>();
+                ArrayList<String> values = new ArrayList<>();
+                keys.add("book_author");
+                keys.add("book_title");
+                bookName = FastData.getBabyNickName() + "的成长里程碑";
+                values.add(bookName);
+                values.add(FastData.getUserName());
+
+                TFOPublishObj tfoPublishObj = new TFOPublishObj(bookName, tfoContentObjs1);
+                List<TFOPublishObj> tfoPublishObjs = new ArrayList<>();
+                tfoPublishObjs.add(tfoPublishObj);
+
+                MyPODActivity.open(this, "", "", BookModel.BOOK_TYPE_HARDCOVER_PHOTO_BOOK, 44, tfoPublishObjs, sb.toString(), true, FastData.getBabyId(), keys, values, 1);
+                finish();
+
                 break;
         }
     }
