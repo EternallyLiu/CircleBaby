@@ -350,7 +350,7 @@ public class FastData extends Remember {
             setPhoneNumber(userObj.getPhoneNumber());
             setUniId(userObj.getUniId());
             BabyObj.saveAll(userObj.getBabies());
-            setBabyCount(userObj.getBabycount());
+            setBabyCount(userObj.getBabies().size());
         }
     }
 
