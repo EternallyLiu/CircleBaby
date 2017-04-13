@@ -69,7 +69,7 @@ public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseA
                         }
                     }, throwable -> {
                     });
-        else
+        else if (circleId > 0 && FastData.getCircleId() > 0)
             open(context);
     }
 
