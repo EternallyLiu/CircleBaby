@@ -208,7 +208,6 @@ public class MyOrderConfirmActivity extends BaseAppCompatActivity implements IEv
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         orderId = getIntent().getStringExtra("orderId");
         original = getIntent().getIntExtra("original", 0);
         baseObjs = (List<PrintPropertyTypeObj>) getIntent().getSerializableExtra("baseObjs");
