@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.circle.groupmembers.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,10 +8,15 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -22,6 +28,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.dialogs.CertificationTeacherDialog;
 import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.events.UpdateMemberDetailEvent;
 import cn.timeface.circle.baby.events.UpdateMemberEvent;
@@ -82,7 +89,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     PhotosShowAdapter adapter;
     ArrayList<String> mPathList;
     MenemberInfo menemberInfo;
-
+    ProgressDialog progressDialog;
 
     public static void open(Context context, MenemberInfo menemberInfo) {
         Intent intent = new Intent(context, CheckMemberDetailActivity.class);
@@ -113,14 +120,14 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     private void setPhotoView() {
         //GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(), ivChildImg);
         if (!menemberInfo.getBabyBrief().getBabyAvatarUrl().equals("")) {
-            GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(),ivChildImg,R.drawable.ic_launcher);
+            GlideUtil.displayImage(menemberInfo.getBabyBrief().getBabyAvatarUrl(), ivChildImg, R.drawable.ic_launcher);
 //            Glide.with(this)
 //                    .load(menemberInfo.getBabyBrief().getBabyAvatarUrl())
 //                    .error(R.drawable.ic_launcher)
 //                    .into(ivChildImg);
         }
         if (!menemberInfo.getUserInfo().getCircleAvatarUrl().equals("")) {
-           GlideUtil.displayImage(menemberInfo.getUserInfo().getCircleAvatarUrl(),ivContentImg,R.drawable.ic_launcher);
+            GlideUtil.displayImage(menemberInfo.getUserInfo().getCircleAvatarUrl(), ivContentImg, R.drawable.ic_launcher);
 //            Glide.with(this)
 //                    .load(menemberInfo.getUserInfo().getCircleAvatarUrl())
 //                    .error(R.drawable.ic_launcher)
@@ -134,7 +141,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
 
         long circleUserId = circleUserInfo.getCircleUserId();
         int circleUserType = circleUserInfo.getCircleUserType();
-        if (circleUserIdself == circleUserId && circleUserInfo.isCreator()&&circleUserInfo.isTeacher()) {
+        if (circleUserIdself == circleUserId && circleUserInfo.isCreator() && circleUserInfo.isTeacher()) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改宝宝姓名");
             tvBtnMid.setText("修改昵称");
@@ -145,7 +152,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
             tvBtnMid.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
-        } else if (circleUserIdself == circleUserId &&circleUserInfo.isCreator()) {
+        } else if (circleUserIdself == circleUserId && circleUserInfo.isCreator()) {
             getSupportActionBar().setTitle("我的圈资料");
             tvBtnUp.setText("修改宝宝姓名");
             tvBtnMid.setText("修改昵称");
@@ -157,7 +164,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
             tvBtnMid.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 1));
-            tvBtnDown.setOnClickListener(v -> {
+           /* tvBtnDown.setOnClickListener(v -> {
                 TFDialog tfDialog = TFDialog.getInstance();
                 tfDialog.setMessage("是否发起认证" + circleUserInfo.getCircleNickName() + "的教师资格");
                 tfDialog.setNegativeButton("取消", v12 -> tfDialog.dismiss());
@@ -166,6 +173,31 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                     tfDialog.dismiss();
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
+            });*/
+            tvBtnDown.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CertificationTeacherDialog dialog = CertificationTeacherDialog.getInstance();
+                    String s = "您将认证" + circleUserInfo.getCircleNickName() + "为老师";
+                    SpannableString spanString = new SpannableString(s);
+                    ForegroundColorSpan span = new ForegroundColorSpan(CheckMemberDetailActivity.this.getResources().getColor(R.color.colorPrimary));
+                    int start = s.indexOf("证");
+                    int end = s.indexOf("为");
+                    spanString.setSpan(span, start + 1, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    dialog.setTitle(spanString);
+                    dialog.setNegativeButton("取消", v110 -> dialog.dismiss());
+                    dialog.setPositiveButton("确定", v19 -> {
+                        String editContent = dialog.getEditContent();
+                        if (TextUtils.isEmpty(editContent)) {
+                            Toast.makeText(CheckMemberDetailActivity.this, "教师名不能为空", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        start(1, dialog.getEditContent());
+                        dialog.dismiss();
+
+                    });
+                    dialog.show(getSupportFragmentManager(), "");
+                }
             });
         } else if (circleUserIdself == circleUserId && circleUserSelf.isTeacher()) {
             getSupportActionBar().setTitle("我的圈资料");
@@ -194,7 +226,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
             rvCloseCircle.setVisibility(View.GONE);
             tvWantReason.setVisibility(View.GONE);
             tvBtnUp.setOnClickListener(v -> ChangNameActivity.open(CheckMemberDetailActivity.this, circleUserInfo, 2));
-        } else if (circleUserSelf.isCreator()  && circleUserType == 2) {
+        } else if (circleUserSelf.isCreator() && circleUserType == 2) {
             getSupportActionBar().setTitle("管理圈成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("取消教师认证");
@@ -215,12 +247,12 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                 tfDialog.setMessage("是否取消认证" + circleUserInfo.getCircleNickName() + "的教师资格");
                 tfDialog.setNegativeButton("取消", v15 -> tfDialog.dismiss());
                 tfDialog.setPositiveButton("确定", v16 -> {
-                    start(0);
+                    start(0, "");
                     tfDialog.dismiss();
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
             });
-        } else if (circleUserSelf.isCreator()  && circleUserType == 3) {
+        } else if (circleUserSelf.isCreator() && circleUserType == 3) {
             getSupportActionBar().setTitle("管理圈成员");
             tvBtnUp.setText("移除成员");
             tvBtnDown.setText("教师认证");
@@ -239,7 +271,7 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
             });
-            tvBtnDown.setOnClickListener(v -> {
+            /*tvBtnDown.setOnClickListener(v -> {
                 TFDialog tfDialog = TFDialog.getInstance();
                 tfDialog.setMessage("是否发起认证" + circleUserInfo.getCircleNickName() + "的教师资格");
                 tfDialog.setNegativeButton("取消", v19 -> tfDialog.dismiss());
@@ -248,6 +280,31 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                     tfDialog.dismiss();
                 });
                 tfDialog.show(getSupportFragmentManager(), "");
+            });*/
+            tvBtnDown.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CertificationTeacherDialog dialog = CertificationTeacherDialog.getInstance();
+                    String s = "您将认证" + circleUserInfo.getCircleNickName() + "为老师";
+                    SpannableString spanString = new SpannableString(s);
+                    ForegroundColorSpan span = new ForegroundColorSpan(CheckMemberDetailActivity.this.getResources().getColor(R.color.colorPrimary));
+                    int start = s.indexOf("证");
+                    int end = s.indexOf("为");
+                    spanString.setSpan(span, start + 1, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    dialog.setTitle(spanString);
+                    dialog.setNegativeButton("取消", v110 -> dialog.dismiss());
+                    dialog.setPositiveButton("确定", v19 -> {
+                        String editContent = dialog.getEditContent();
+                        if (TextUtils.isEmpty(editContent)) {
+                            Toast.makeText(CheckMemberDetailActivity.this, "教师名不能为空", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        start(1, dialog.getEditContent());
+                        dialog.dismiss();
+
+                    });
+                    dialog.show(getSupportFragmentManager(), "");
+                }
             });
 
         } else if (circleUserSelf.isCreator() && circleUserType == 5) {
@@ -311,8 +368,10 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
     }
 
     private void joinCheck(int type) {
+        showProgress();
         Subscription subscribe = apiService.joinCircleCheck(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnTerminate(() -> dismissProgress())
                 .subscribe(baseResponse -> {
                     if (baseResponse.success()) {
                         if (type == 1) {
@@ -324,52 +383,98 @@ public class CheckMemberDetailActivity extends BaseAppCompatActivity implements 
                             EventBus.getDefault().post(new UpdateMemberEvent());
                             finish();
                         }
+                    } else {
+                        ToastUtil.showToast(this, baseResponse.info);
                     }
                 }, throwable -> {
-
+                    ToastUtil.showToast(this, throwable.getMessage());
                 });
         addSubscription(subscribe);
     }
 
-    private void start(int type) {
-        Subscription subscribe = apiService.start(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
-                .compose(SchedulersCompat.applyIoSchedulers())
-                .subscribe(baseResponse -> {
-                    if (baseResponse.success()) {
-                        if (type == 1) {
+    private void start(int type, String name) {
+        showProgress();
+        if (type == 1) {
+            Subscription subscribe = apiService.startCertification(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId(), name)
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .doOnTerminate(() -> dismissProgress())
+                    .subscribe(baseResponse -> {
+                        if (baseResponse.success()) {
                             ToastUtil.showToast(CheckMemberDetailActivity.this, "认证成功,等待审核");
                             EventBus.getDefault().post(new UpdateMemberEvent());
                             finish();
-                        } else {
+                        }else {
+                            ToastUtil.showToast(this, baseResponse.info);
+                        }
+                    }, throwable -> {
+                        ToastUtil.showToast(this, throwable.getMessage());
+                    });
+            addSubscription(subscribe);
+
+        } else {
+            Subscription subscribe = apiService.start(type, circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .doOnTerminate(() -> dismissProgress())
+                    .subscribe(baseResponse -> {
+                        if (baseResponse.success()) {
                             ToastUtil.showToast(CheckMemberDetailActivity.this, "取消认证成功,等待审核");
                             EventBus.getDefault().post(new UpdateMemberEvent());
                             finish();
+                        }else {
+                            ToastUtil.showToast(this, baseResponse.info);
                         }
-                    }
-                }, throwable -> {
 
-                });
-        addSubscription(subscribe);
+                    }, throwable -> {
+                        ToastUtil.showToast(this, throwable.getMessage());
+                    });
+            addSubscription(subscribe);
+        }
     }
 
     private void removeMember() {
+        showProgress();
         Subscription subscribe = apiService.removeMember(circleUserInfo.getCircleId(), circleUserInfo.getCircleUserId())
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnTerminate(() -> dismissProgress())
                 .subscribe(baseResponse -> {
                     if (baseResponse.success()) {
                         ToastUtil.showToast(CheckMemberDetailActivity.this, "操作成功");
                         EventBus.getDefault().post(new UpdateMemberEvent());
                         finish();
+                    } else {
+                        ToastUtil.showToast(this, baseResponse.info);
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        ToastUtil.showToast(CheckMemberDetailActivity.this, throwable.getMessage());
                     }
                 });
         addSubscription(subscribe);
     }
+    public void showProgress() {
+        showProgress(R.string.loading);
+    }
 
+    public void showProgress(int resId) {
+        showProgress(getString(resId));
+    }
+
+    public void showProgress(String msg) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(msg);
+        } else {
+            progressDialog.setMessage(msg);
+        }
+        progressDialog.show();
+    }
+
+    public void dismissProgress() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
     @Subscribe
     public void onEvent(UpdateMemberDetailEvent event) {
         MenemberInfo menemberInfo = event.getMenemberInfo();

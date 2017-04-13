@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.circle.groupmembers.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -61,6 +62,7 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
     List<MenemberInfo> appliUserInfoList;
     GrowthCircleObj circleObj;
     MenemberInfo menemberInfo;
+    ProgressDialog progressDialog;
 
     public static void open(Context context, GrowthCircleObj circleObj) {
         Intent intent = new Intent(context, GroupMembersActivity.class);
@@ -88,8 +90,10 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
     }
 
     private void reqContent() {
+        showProgress();
         Subscription subscribe = apiService.memberList(circleObj.getCircleId())
                 .compose(SchedulersCompat.applyIoSchedulers())
+                .doOnTerminate(() -> dismissProgress())
                 .subscribe(new Action1<MemberListResponse>() {
                     @Override
                     public void call(MemberListResponse memberListResponse) {
@@ -100,12 +104,14 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
                             teacherUserInfoList = memberListResponse.getTeachers();
                             ArrayList<GroupMemberSection> content = getContent();
                             adapter.setNewData(content);
+                        } else {
+                            ToastUtil.showToast(GroupMembersActivity.this, memberListResponse.getInfo());
                         }
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-
+                        ToastUtil.showToast(GroupMembersActivity.this, throwable.getMessage());
                     }
                 });
         addSubscription(subscribe);
@@ -231,6 +237,30 @@ public class GroupMembersActivity extends BaseAppCompatActivity implements IEven
         });
     }
 
+
+    public void showProgress() {
+        showProgress(R.string.loading);
+    }
+
+    public void showProgress(int resId) {
+        showProgress(getString(resId));
+    }
+
+    public void showProgress(String msg) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(msg);
+        } else {
+            progressDialog.setMessage(msg);
+        }
+        progressDialog.show();
+    }
+
+    public void dismissProgress() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
     @Subscribe
     public void onEvent(UpdateMemberEvent event) {
         if (normalUserInfoList.size() > 0) {

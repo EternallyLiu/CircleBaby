@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.circle.groupmembers.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +41,8 @@ public class ChangNameActivity extends BaseAppCompatActivity {
     @Bind(R.id.appbar_layout)
     AppBarLayout appbarLayout;
 
+    ProgressDialog progressDialog;
+
     public static void open(Context context, CircleUserInfo circleUserInfo, int type) {
         Intent intent = new Intent(context, ChangNameActivity.class);
         intent.putExtra("circleUserInfo", circleUserInfo);
@@ -68,35 +71,67 @@ public class ChangNameActivity extends BaseAppCompatActivity {
         }
         switch (type) {
             case 2:
+                showProgress();
                 Subscription subscribe = apiService.updateBabyRealName(FastData.getBabyId(), s)
                         .compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnTerminate(() -> dismissProgress())
                         .subscribe(baseResponse -> {
                             if (baseResponse.success()) {
                                 ToastUtil.showToast(ChangNameActivity.this, "操作成功");
                                 EventBus.getDefault().post(new UpdateMemberEvent());
                                 EventBus.getDefault().post(new UpdateNameEvent());
                                 finish();
+                            } else {
+                                ToastUtil.showToast(this, baseResponse.info);
                             }
                         }, throwable -> {
-
+                            ToastUtil.showToast(this, throwable.getMessage());
                         });
                 addSubscription(subscribe);
                 break;
             case 1:
+                showProgress();
                 Subscription subscribe1 = apiService.updateNickname(circleUserInfo.getCircleId(), s, circleUserInfo.getCircleUserId())
                         .compose(SchedulersCompat.applyIoSchedulers())
+                        .doOnTerminate(() -> dismissProgress())
                         .subscribe(baseResponse -> {
                             if (baseResponse.success()) {
                                 ToastUtil.showToast(ChangNameActivity.this, "操作成功");
                                 EventBus.getDefault().post(new UpdateMemberEvent());
                                 EventBus.getDefault().post(new UpdateNameEvent());
                                 finish();
+                            } else {
+                                ToastUtil.showToast(this, baseResponse.info);
                             }
                         }, throwable -> {
-
+                            ToastUtil.showToast(this, throwable.getMessage());
                         });
                 addSubscription(subscribe1);
                 break;
+        }
+    }
+
+    public void showProgress() {
+        showProgress(R.string.loading);
+    }
+
+    public void showProgress(int resId) {
+        showProgress(getString(resId));
+    }
+
+    public void showProgress(String msg) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(msg);
+        } else {
+            progressDialog.setMessage(msg);
+        }
+        progressDialog.show();
+    }
+
+    public void dismissProgress() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 }

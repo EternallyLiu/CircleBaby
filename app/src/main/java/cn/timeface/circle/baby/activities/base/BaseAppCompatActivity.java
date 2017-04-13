@@ -4,7 +4,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.umeng.analytics.MobclickAgent;
@@ -13,9 +12,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.constants.TypeConstant;
-import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.services.ApiService;
+import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.open.TFOpen;
