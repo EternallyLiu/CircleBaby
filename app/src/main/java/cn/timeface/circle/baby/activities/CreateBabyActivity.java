@@ -54,8 +54,6 @@ import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreateBabyActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
-    @Bind(R.id.tv_next)
-    TextView tvNext;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.iv_avatar)
@@ -89,6 +87,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     private String objectKey = "";
     private int relationId;
     private boolean showFocus;
+    private MenuItem menuItem;
 
     public static void open(Context context, boolean showFocus) {
         Intent intent = new Intent(context, CreateBabyActivity.class);
@@ -121,8 +120,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         } else {
             rlFocus.setVisibility(View.GONE);
         }
-        tvNext.setText("完成");
-        tvNext.setOnClickListener(this);
+
         ivAvatar.setOnClickListener(this);
         rbGirl.setOnClickListener(this);
         rbBoth.setOnClickListener(this);
@@ -224,8 +222,8 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                         outFile = new File(outPath);
                     }
                     Glide.with(this).load(outFile).into(ivAvatar);
-                    tvNext.setText("上传中");
-                    tvNext.setEnabled(false);
+                    menuItem.setTitle("上传中");
+                    menuItem.setEnabled(false);
                     uploadImage(outFile.getAbsolutePath());
                     break;
             }
@@ -255,8 +253,8 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvNext.setText("下一步");
-                                tvNext.setEnabled(true);
+                                menuItem.setTitle("下一步");
+                                menuItem.setEnabled(true);
                             }
                         });
 //                recorder.oneFileCompleted(uploadTaskInfo.getInfoId(), uploadFileObj.getObjectKey());
@@ -329,7 +327,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                 ToastUtil.showToast("给宝宝设置一个好看的头像吧~");
                 return true;
             }
-            tvNext.setEnabled(false);
+            menuItem.setEnabled(false);
             long time = DateUtil.getTime(birthday, "yyyy-MM-dd");
             String encode = null;
             try {
@@ -349,7 +347,7 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                             } else {
                                 ToastUtil.showToast(userLoginResponse.getInfo());
                             }
-                            tvNext.setEnabled(true);
+                            menuItem.setEnabled(true);
                         }, throwable -> {
                             Log.e(TAG, "createBaby:", throwable);
                         });
@@ -363,6 +361,8 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_create_baby,menu);
+        menuItem = menu.findItem(R.id.finish_create_baby);
+        menuItem.setTitle("完成");
         return super.onCreateOptionsMenu(menu);
     }
 }
