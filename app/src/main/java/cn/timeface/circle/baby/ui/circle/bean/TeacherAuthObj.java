@@ -20,41 +20,18 @@ public class TeacherAuthObj extends BaseObj implements Parcelable {
     protected List<CircleUserInfo> agreeUserList;
     protected String circleName;
     protected CircleUserInfo teacher;
+    private int state;
 
     public TeacherAuthObj() {
     }
 
-    public TeacherAuthObj(Parcel in) {
-        super(in);
-        agreeUserList = in.createTypedArrayList(CircleUserInfo.CREATOR);
-        circleName = in.readString();
-        teacher = in.readParcelable(CircleUserInfo.class.getClassLoader());
+    public int getState() {
+        return state;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeTypedList(agreeUserList);
-        dest.writeString(circleName);
-        dest.writeParcelable(teacher, flags);
+    public void setState(int state) {
+        this.state = state;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<TeacherAuthObj> CREATOR = new Creator<TeacherAuthObj>() {
-        @Override
-        public TeacherAuthObj createFromParcel(Parcel in) {
-            return new TeacherAuthObj(in);
-        }
-
-        @Override
-        public TeacherAuthObj[] newArray(int size) {
-            return new TeacherAuthObj[size];
-        }
-    };
 
     public List<CircleUserInfo> getAgreeUserList() {
         if (agreeUserList == null) agreeUserList = new ArrayList<>(0);
@@ -84,4 +61,38 @@ public class TeacherAuthObj extends BaseObj implements Parcelable {
     public static Creator<TeacherAuthObj> getCREATOR() {
         return CREATOR;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeTypedList(this.agreeUserList);
+        dest.writeString(this.circleName);
+        dest.writeParcelable(this.teacher, flags);
+        dest.writeInt(this.state);
+    }
+
+    protected TeacherAuthObj(Parcel in) {
+        super(in);
+        this.agreeUserList = in.createTypedArrayList(CircleUserInfo.CREATOR);
+        this.circleName = in.readString();
+        this.teacher = in.readParcelable(CircleUserInfo.class.getClassLoader());
+        this.state = in.readInt();
+    }
+
+    public static final Creator<TeacherAuthObj> CREATOR = new Creator<TeacherAuthObj>() {
+        @Override
+        public TeacherAuthObj createFromParcel(Parcel source) {
+            return new TeacherAuthObj(source);
+        }
+
+        @Override
+        public TeacherAuthObj[] newArray(int size) {
+            return new TeacherAuthObj[size];
+        }
+    };
 }

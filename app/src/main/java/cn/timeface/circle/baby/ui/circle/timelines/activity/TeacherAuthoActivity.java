@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.constants.MiPushConstant;
+import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.ptr.IPTRRecyclerListener;
@@ -52,6 +53,22 @@ public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseA
 
     public static void open(Context context) {
         context.startActivity(new Intent(context, TeacherAuthoActivity.class));
+    }
+
+    public static void open(Context context, long circleId) {
+        if (circleId > 0 && FastData.getCircleId() <= 0)
+            ApiFactory.getApi().getApiService().queryCircleIndexInfo(circleId)
+                    .compose(SchedulersCompat.applyIoSchedulers())
+                    .subscribe(circleIndexInfoResponse -> {
+                        if (circleIndexInfoResponse.success()) {
+                            FastData.setGrowthCircleObj(circleIndexInfoResponse.getGrowthCircle());
+                            FastData.setCircleUserInfo(circleIndexInfoResponse.getUserInfo());
+                            open(context);
+                        }
+                    }, throwable -> {
+                    });
+        else if (circleId > 0 && FastData.getCircleId() > 0)
+            open(context);
     }
 
     @Override
@@ -102,7 +119,7 @@ public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseA
                 .doOnNext(teacherAuthObjQueryCirclePhotoResponse -> helper.finishTFPTRRefresh())
                 .doOnNext(teacherAuthObjQueryCirclePhotoResponse -> adapter.getEmptyItem().setOperationType(2))
                 .subscribe(teacherAuthObjQueryCirclePhotoResponse -> {
-                    LogUtil.showLog("result:"+ JSONUtils.parse2JSONString(teacherAuthObjQueryCirclePhotoResponse));
+                    LogUtil.showLog("result:" + JSONUtils.parse2JSONString(teacherAuthObjQueryCirclePhotoResponse));
                     if (teacherAuthObjQueryCirclePhotoResponse.success()) {
                         adapter.addList(true, teacherAuthObjQueryCirclePhotoResponse.getDataList());
                     } else
@@ -118,7 +135,7 @@ public class TeacherAuthoActivity extends BaseAppCompatActivity implements BaseA
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(CirclePassThroughMessageEvent event) {
-        if (event.type==MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION){
+        if (event.type == MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION) {
             reqData();
         }
     }

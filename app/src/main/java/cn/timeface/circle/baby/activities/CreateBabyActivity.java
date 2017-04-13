@@ -172,9 +172,6 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(userLoginResponse -> {
                                 if (userLoginResponse.success()) {
-//                                    if (showFocus) {
-//                                        TabMainActivity.open(this);
-//                                    }
                                     if (userLoginResponse.getUserInfo().getBabycount() <= 1)
                                         TabMainActivity.open(this, 1);
                                     else EventBus.getDefault().post(new BabyAttentionEvent(BabyAttentionEvent.TYPE_CREATE_BABY));

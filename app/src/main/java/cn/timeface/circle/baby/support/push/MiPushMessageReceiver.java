@@ -37,6 +37,8 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.common.utils.DeviceUuidFactory;
 import ikidou.reflect.TypeBuilder;
 import rx.Observable;
 import rx.functions.Func1;
@@ -62,7 +64,6 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
     @Override
     public void onReceivePassThroughMessage(Context context, MiPushMessage message) {
-        System.out.println("===== onReceivePassThroughMessage ====");
         mMessage = message.getContent();
         Log.d("-------->", "-------->onReceivePassThroughMessage mMessage: " + mMessage);
         if (!TextUtils.isEmpty(message.getTopic())) {
@@ -96,6 +97,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
         Log.d("-------->", "-------->onNotificationMessageClicked: " + mMessage);
         if (!TextUtils.isEmpty(mMessage)) {
+            LogUtil.showLog("-------->",isAppForeground(context)+"");
             if (!isAppForeground(context)) {
                 if (TextUtils.isEmpty(FastData.getUserId())) {
                     Intent intent = new Intent(context, LoginActivity.class);
@@ -129,6 +131,8 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mRegId = cmdArg1;
+                MiPushClient.setAlias(context.getApplicationContext(), new DeviceUuidFactory(
+                        context.getApplicationContext()).getDeviceId(), null);
             }
         } else if (MiPushClient.COMMAND_SET_ALIAS.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
@@ -162,6 +166,8 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mRegId = cmdArg1;
+                MiPushClient.setAlias(context.getApplicationContext(), new DeviceUuidFactory(
+                        context.getApplicationContext()).getDeviceId(), null);
             }
         }
     }
@@ -176,15 +182,12 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
         @Override
         public void handleMessage(Message msg) {
-//            if (msg.what == DETAIL) {
-//                String s = (String) msg.obj;
-//                DynamicDetailActivity.open(FireApp.getApp(), Intent.FLAG_ACTIVITY_NEW_TASK, s);
-//            } else if (msg.what == MESSAGE) {
+            LogUtil.showLog("-------->","处理业务逻辑");
             if (isAppForeground(context)) {
-                Log.v("MiPushMessageReceiver", "在前台");
+                Log.v("-------->", "在前台");
 //                Toast.makeText(context, mToastInfo, Toast.LENGTH_LONG).show();
             } else {
-                Log.v("MiPushMessageReceiver", "不在前台");
+                Log.v("-------->", "不在前台");
                 if (!TextUtils.isEmpty(FastData.getUserId())) {
                     Intent intent = new Intent(context, TabMainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -204,6 +207,12 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
     public static boolean isAppForeground(Context mContext) {
         ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+        LogUtil.showLog("-------->","-------->"+(tasks==null?"null":tasks.size()+"--"+tasks.isEmpty()));
+        if (tasks!=null){
+            for (ActivityManager.RunningTaskInfo info:tasks){
+                LogUtil.showLog("-------->","info  activiry=="+info.topActivity.getClassName());
+            }
+        }
         if (!tasks.isEmpty()) {
             ComponentName topActivity = tasks.get(0).topActivity;
             if (!topActivity.getPackageName().equals(mContext.getPackageName())) {
@@ -234,7 +243,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
                         case MiPushConstant.PUSH_TYPE_CIRCLE_TEACHER_NEW_PRODUCTION: // 老师创建新作品（定位到该作品的预览页）
                         case MiPushConstant.PUSH_TYPE_CIRCLE_PRODUCTION_REFERENCED: // 发布的照片被别人引用做书并订单支付成功（定位到该作品的预览页）
-                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_SHCOOL_BOOK: //每学期系统自动生成的家校纪念册 （定位到该作品的预览页）
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_SCHOOL_BOOK: //每学期系统自动生成的家校纪念册 （定位到该作品的预览页）
                             // 携带开放平台的bookId、bookType
                             MiPushMsgObj<MiPushMsgInfoObj> production = parseJsonObject(content, MiPushMsgInfoObj.class);
                             if (production != null && production.getInfo() != null) {
@@ -306,7 +315,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
                             }
                         },
                         throwable -> {
-                            Log.e("MiPushMessageReceiver", "handlePushMessage: ", throwable);
+                            Log.e("-------->", "handlePushMessage: ", throwable);
                         }
                 );
     }

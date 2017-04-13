@@ -37,6 +37,7 @@ public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
     int type;                       //0 照片 1 视频 2 日记 3 识图
     String content;                 //时光内容
     NearLocationObj locationInfo;
+    String growthCricleName;
     private int allDetailsListPosition;
 
     public int getAllDetailsListPosition() {
@@ -229,6 +230,13 @@ public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
         return tfoContentObj;
     }
 
+    public String getGrowthCricleName() {
+        return growthCricleName;
+    }
+
+    public void setGrowthCricleName(String growthCricleName) {
+        this.growthCricleName = growthCricleName;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -286,6 +294,18 @@ public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
     }
 
     @Override
+    public int compareTo(@NonNull Object o) {
+        TimeLineObj another = (TimeLineObj) o;
+        if (getDotime() > another.getDotime()) {
+            return 1;
+        } else if (getDotime() == another.getDotime()) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
@@ -310,6 +330,7 @@ public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
         dest.writeInt(this.type);
         dest.writeString(this.content);
         dest.writeParcelable(this.locationInfo, flags);
+        dest.writeString(this.growthCricleName);
         dest.writeInt(this.allDetailsListPosition);
     }
 
@@ -332,6 +353,7 @@ public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
         this.type = in.readInt();
         this.content = in.readString();
         this.locationInfo = in.readParcelable(NearLocationObj.class.getClassLoader());
+        this.growthCricleName = in.readString();
         this.allDetailsListPosition = in.readInt();
     }
 
@@ -346,16 +368,4 @@ public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
             return new TimeLineObj[size];
         }
     };
-
-    @Override
-    public int compareTo(@NonNull Object o) {
-        TimeLineObj another = (TimeLineObj) o;
-        if(getDotime() > another.getDotime()){
-            return 1;
-        } else if(getDotime() == another.getDotime()) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
 }

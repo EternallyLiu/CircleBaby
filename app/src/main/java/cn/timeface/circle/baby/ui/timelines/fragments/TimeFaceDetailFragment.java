@@ -53,6 +53,7 @@ import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.TimelineEditEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
 import cn.timeface.circle.baby.support.api.models.objs.CommentObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
@@ -164,8 +165,16 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         super.onDestroy();
     }
 
+    public static void open(Context context, int timeId) {
+        ApiFactory.getApi().getApiService().queryBabyTimeDetail(timeId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(timeDetailResponse -> {
+                    if (timeDetailResponse.success())
+                        open(context, timeDetailResponse.getTimeInfo());
+                }, throwable -> LogUtil.showError(throwable));
+    }
+
     public static void open(Context context, TimeLineObj timeLineObj) {
-        LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
         Bundle bundle = new Bundle();
         bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
         FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
@@ -289,8 +298,8 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
 //            if (adapter.getRealItemSize() >= 0)
 //                contentRecyclerView.scrollToPosition(0);
             if (lookup.isShowSmail())
-                item.setTitle("查看大图");
-            else item.setTitle("浏览小图");
+                item.setTitle(R.string.look_big_pic_list);
+            else item.setTitle(R.string.look_smail_pic_list);
         }
         return super.onOptionsItemSelected(item);
     }

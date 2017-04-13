@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.support.api.models.responses;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.timeface.circle.baby.support.api.models.base.BaseResponse;
@@ -32,7 +33,7 @@ public class MyOrderListResponse extends BaseResponse {
     }
 
     public List<OrderObj> getDataList() {
-        return dataList;
+        return dataList == null ? new ArrayList<>() : dataList;
     }
 
     public void setDataList(List<OrderObj> dataList) {

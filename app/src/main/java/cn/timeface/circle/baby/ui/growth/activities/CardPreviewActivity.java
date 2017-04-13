@@ -24,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
+import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
@@ -62,10 +63,20 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
     private CardObj cardObj;
     private TFProgressDialog tfProgressDialog;
     private final int REQUEST_CODE_EDIT_CARD = 100;
+    private final int RECOGNIZE_CARD = 0;
+    private final int DIARY_CARD = 1;
+    private int cardType = 0;
 
     public static void open(Context context, CardObj cardObj) {
         Intent intent = new Intent(context, CardPreviewActivity.class);
         intent.putExtra("card", cardObj);
+        context.startActivity(intent);
+    }
+
+    public static void open(Context context, CardObj cardObj,int cardType) {
+        Intent intent = new Intent(context, CardPreviewActivity.class);
+        intent.putExtra("card", cardObj);
+        intent.putExtra("card_type",cardType);
         context.startActivity(intent);
     }
 
@@ -78,12 +89,22 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(FastData.getBabyNickName() + "的识图卡片");
         cardObj = getIntent().getParcelableExtra("card");
+        cardType = getIntent().getIntExtra("card_type",RECOGNIZE_CARD);
+        if(cardType == DIARY_CARD){
+            getSupportActionBar().setTitle(FastData.getBabyNickName() + "的日记卡片");
+        }
         if (cardObj != null) initView();//编辑 cardobj为null
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_card_preview, menu);
+        MenuItem share = menu.findItem(R.id.action_share);
+        MenuItem edit = menu.findItem(R.id.action_edit);
+        if(cardType == DIARY_CARD){
+            share.setVisible(false);
+            edit.setVisible(false);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -115,20 +136,34 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
 
             //删除
             case R.id.action_delete:
-                apiService.delCard("[" + cardObj.getCardId() + "]")
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(
-                                response -> {
-                                    if (response.success()) {
-                                        finish();
-                                    } else {
-                                        showToast(response.getInfo());
-                                    }
-                                },
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setTitle("提示");
+                tfDialog.setMessage("删除后不可撤销，确认要删除吗？");
+                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        apiService.delCard("[" + cardObj.getCardId() + "]")
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .subscribe(
+                                        response -> {
+                                            if (response.success()) {
+                                                finish();
+                                            } else {
+                                                showToast(response.getInfo());
+                                            }
+                                        },
 
-                                throwable -> {
-                                    Log.e(TAG, "delCard:");
-                                });
+                                        throwable -> {
+                                            Log.e(TAG, "delCard:");
+                                        });
+                    }
+                }).show(getSupportFragmentManager(),"");
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -400,7 +400,7 @@ public class ImageFactory {
 
     public static String saveImage(Bitmap bitmap) {
 
-        if (bitmap==null)return null;
+        if (bitmap == null) return null;
         String fileName = System.currentTimeMillis() + ".jpg";
 //        File file = new File("/mnt/sdcard/baby");
         File file = new File(Environment.getExternalStorageDirectory().getPath() + "/baby");
@@ -424,14 +424,15 @@ public class ImageFactory {
         return outDir.toString();
 
     }
+
     public static String saveImageCache(Bitmap bitmap) {
 
-        if (bitmap==null)
+        if (bitmap == null)
             return null;
 
         String fileName = UUID.randomUUID().toString() + ".jpg";
 //        File file = new File("/mnt/sdcard/baby");
-        File file = new File(Environment.getExternalStorageDirectory().getPath() +File.separator+ "baby"+File.separator+"cache");
+        File file = new File(Environment.getExternalStorageDirectory().getPath() + File.separator + "baby" + File.separator + "cache");
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -453,11 +454,13 @@ public class ImageFactory {
     }
 
     public static String saveImage(String path, File file) {
+        InputStream is = null;
+        FileOutputStream fos = null;
         try {
-            InputStream is = new URL(path).openStream();
+            is = new URL(path).openStream();
             byte[] bytes = new byte[1024];
             int len;
-            FileOutputStream fos = new FileOutputStream(file);
+            fos = new FileOutputStream(file);
             while ((len = is.read(bytes)) != -1) {
                 fos.write(bytes, 0, len);
             }
@@ -465,6 +468,12 @@ public class ImageFactory {
             is.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) is.close();
+                if (fos != null) fos.close();
+            } catch (Exception e) {
+            }
         }
         return file.toString();
 
