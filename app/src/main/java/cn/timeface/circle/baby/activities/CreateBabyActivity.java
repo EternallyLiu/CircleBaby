@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -52,12 +54,6 @@ import cn.timeface.circle.baby.ui.babyInfo.fragments.CreateBabyFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CreateBabyActivity extends BaseAppCompatActivity implements View.OnClickListener, IEventBus {
-
-
-    @Bind(R.id.tv_back)
-    TextView tvBack;
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
     @Bind(R.id.tv_next)
     TextView tvNext;
     @Bind(R.id.toolbar)
@@ -106,6 +102,18 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         setContentView(R.layout.activity_createbaby);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("创建宝宝");
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CreateBabyActivity.this.finish();
+            }
+        });
+
+        toolbar.setOnMenuItemClickListener(new MenuOnclickListener());
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         showFocus = getIntent().getBooleanExtra("showFocus", true);
         if (showFocus) {
@@ -114,7 +122,6 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
             rlFocus.setVisibility(View.GONE);
         }
         tvNext.setText("完成");
-        tvBack.setOnClickListener(this);
         tvNext.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);
         rbGirl.setOnClickListener(this);
@@ -129,68 +136,6 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_back:
-                this.finish();
-                break;
-            case R.id.tv_next:
-                String name = etName.getText().toString().trim();
-                String birthday = etBirthday.getText().toString().trim();
-                String relation = etRelationship.getText().toString().trim();
-                if (TextUtils.isEmpty(name)) {
-                    Toast.makeText(this, "请填写宝宝小名", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (Utils.isHz(name)) {
-                    if (name.length() > 16) {
-                        Toast.makeText(this, "宝宝小名不能超过16个英文字母，请修改", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                } else {
-                    if (name.length() > 8) {
-                        Toast.makeText(this, "宝宝小名不能超过8个汉字，请修改", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-                if (TextUtils.isEmpty(birthday)) {
-                    Toast.makeText(this, "请填写宝宝生日", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(relation)) {
-                    Toast.makeText(this, "请设置与宝宝关系", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(objectKey)) {
-                    ToastUtil.showToast("给宝宝设置一个好看的头像吧~");
-                    return;
-                }
-                tvNext.setEnabled(false);
-                long time = DateUtil.getTime(birthday, "yyyy-MM-dd");
-                String encode = null;
-                try {
-                    encode = URLEncoder.encode(name, Charset.defaultCharset().name());
-                    apiService.createBaby(time, gender, objectKey, encode, relationId)
-                            .compose(SchedulersCompat.applyIoSchedulers())
-                            .subscribe(userLoginResponse -> {
-                                if (userLoginResponse.success()) {
-//                                    if (showFocus) {
-//                                        TabMainActivity.open(this);
-//                                    }
-                                    if (userLoginResponse.getUserInfo().getBabycount() <= 1)
-                                        TabMainActivity.open(this, 1);
-                                    else EventBus.getDefault().post(new BabyAttentionEvent(BabyAttentionEvent.TYPE_CREATE_BABY));
-                                    FastData.setUserInfo(userLoginResponse.getUserInfo());
-                                    finish();
-                                } else {
-                                    ToastUtil.showToast(userLoginResponse.getInfo());
-                                }
-                                tvNext.setEnabled(true);
-                            }, throwable -> {
-                                Log.e(TAG, "createBaby:", throwable);
-                            });
-                } catch (UnsupportedEncodingException e) {
-                    Log.e(TAG, "createBaby", e);
-                }
-                break;
             case R.id.iv_avatar:
                 startPhotoPick();
                 break;
@@ -348,5 +293,76 @@ public class CreateBabyActivity extends BaseAppCompatActivity implements View.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    class MenuOnclickListener implements Toolbar.OnMenuItemClickListener{
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            String name = etName.getText().toString().trim();
+            String birthday = etBirthday.getText().toString().trim();
+            String relation = etRelationship.getText().toString().trim();
+            if (TextUtils.isEmpty(name)) {
+                Toast.makeText(CreateBabyActivity.this, "请填写宝宝小名", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if (Utils.isHz(name)) {
+                if (name.length() > 16) {
+                    Toast.makeText(CreateBabyActivity.this, "宝宝小名不能超过16个英文字母，请修改", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            } else {
+                if (name.length() > 8) {
+                    Toast.makeText(CreateBabyActivity.this, "宝宝小名不能超过8个汉字，请修改", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            }
+            if (TextUtils.isEmpty(birthday)) {
+                Toast.makeText(CreateBabyActivity.this, "请填写宝宝生日", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if (TextUtils.isEmpty(relation)) {
+                Toast.makeText(CreateBabyActivity.this, "请设置与宝宝关系", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            if (TextUtils.isEmpty(objectKey)) {
+                ToastUtil.showToast("给宝宝设置一个好看的头像吧~");
+                return true;
+            }
+            tvNext.setEnabled(false);
+            long time = DateUtil.getTime(birthday, "yyyy-MM-dd");
+            String encode = null;
+            try {
+                encode = URLEncoder.encode(name, Charset.defaultCharset().name());
+                apiService.createBaby(time, gender, objectKey, encode, relationId)
+                        .compose(SchedulersCompat.applyIoSchedulers())
+                        .subscribe(userLoginResponse -> {
+                            if (userLoginResponse.success()) {
+//                                    if (showFocus) {
+//                                        TabMainActivity.open(this);
+//                                    }
+                                if (userLoginResponse.getUserInfo().getBabycount() <= 1)
+                                    TabMainActivity.open(CreateBabyActivity.this, 1);
+                                else EventBus.getDefault().post(new BabyAttentionEvent(BabyAttentionEvent.TYPE_CREATE_BABY));
+                                FastData.setUserInfo(userLoginResponse.getUserInfo());
+                                finish();
+                            } else {
+                                ToastUtil.showToast(userLoginResponse.getInfo());
+                            }
+                            tvNext.setEnabled(true);
+                        }, throwable -> {
+                            Log.e(TAG, "createBaby:", throwable);
+                        });
+            } catch (UnsupportedEncodingException e) {
+                Log.e(TAG, "createBaby", e);
+            }
+            return true;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_create_baby,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

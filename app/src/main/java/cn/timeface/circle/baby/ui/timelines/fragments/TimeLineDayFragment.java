@@ -60,15 +60,12 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
 
     @Bind(R.id.back_up)
     ImageView backUp;
-
     @Bind(R.id.ll_menu)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
     RecyclerView contentRecyclerView;
     @Bind(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.empty)
     EmptyDataView empty;
     private TimeLineGroupListAdapter adapter;
@@ -111,7 +108,7 @@ public class TimeLineDayFragment extends BaseFragment implements BaseAdapter.Loa
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
-        title.setText(FastData.getBabyObj().getNickName() + "的成长记录");
+        toolbar.setTitle(FastData.getBabyObj().getNickName() + "的成长记录");
         adapter = new TimeLineGroupListAdapter(getActivity());
         adapter.setIntentCalender(false);
         adapter.setLoadDataFinish(this);

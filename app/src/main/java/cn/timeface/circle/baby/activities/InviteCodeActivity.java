@@ -42,11 +42,6 @@ import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 
 public class InviteCodeActivity extends BaseAppCompatActivity implements View.OnClickListener, DeleteDialog.SubmitListener, DeleteDialog.CloseListener {
 
-
-    @Bind(R.id.tv_back)
-    TextView tvBack;
-    @Bind(R.id.tv_title)
-    TextView tvTitle;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_code)
@@ -67,10 +62,20 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invitecode);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("请输入邀请码");
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InviteCodeActivity.this.finish();
+            }
+        });
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        tvBack.setOnClickListener(this);
         btnTest.setOnClickListener(this);
 
     }
@@ -79,9 +84,6 @@ public class InviteCodeActivity extends BaseAppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_back:
-                this.finish();
-                break;
             case R.id.btn_test:
                 String code = etCode.getText().toString().trim();
                 if (TextUtils.isEmpty(code)) {
