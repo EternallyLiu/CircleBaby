@@ -63,10 +63,20 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
     private CardObj cardObj;
     private TFProgressDialog tfProgressDialog;
     private final int REQUEST_CODE_EDIT_CARD = 100;
+    private final int RECOGNIZE_CARD = 0;
+    private final int DIARY_CARD = 1;
+    private int cardType = 0;
 
     public static void open(Context context, CardObj cardObj) {
         Intent intent = new Intent(context, CardPreviewActivity.class);
         intent.putExtra("card", cardObj);
+        context.startActivity(intent);
+    }
+
+    public static void open(Context context, CardObj cardObj,int cardType) {
+        Intent intent = new Intent(context, CardPreviewActivity.class);
+        intent.putExtra("card", cardObj);
+        intent.putExtra("card_type",cardType);
         context.startActivity(intent);
     }
 
@@ -79,12 +89,22 @@ public class CardPreviewActivity extends BasePresenterAppCompatActivity implemen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(FastData.getBabyNickName() + "的识图卡片");
         cardObj = getIntent().getParcelableExtra("card");
+        cardType = getIntent().getIntExtra("card_type",RECOGNIZE_CARD);
+        if(cardType == DIARY_CARD){
+            getSupportActionBar().setTitle(FastData.getBabyNickName() + "的日记卡片");
+        }
         if (cardObj != null) initView();//编辑 cardobj为null
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_activity_card_preview, menu);
+        MenuItem share = menu.findItem(R.id.action_share);
+        MenuItem edit = menu.findItem(R.id.action_edit);
+        if(cardType == DIARY_CARD){
+            share.setVisible(false);
+            edit.setVisible(false);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -15,6 +15,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +31,7 @@ import cn.timeface.circle.baby.events.CartItemClickEvent;
 import cn.timeface.circle.baby.events.DiaryPublishEvent;
 import cn.timeface.circle.baby.support.api.models.objs.CardObj;
 import cn.timeface.circle.baby.support.api.models.objs.DiaryCardObj;
+import cn.timeface.circle.baby.support.api.models.objs.KnowledgeCardObj;
 import cn.timeface.circle.baby.support.api.models.responses.EditBookResponse;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.mvp.model.BookModel;
@@ -39,6 +41,7 @@ import cn.timeface.circle.baby.support.utils.BookPrintHelper;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.adapters.DiaryCardListAdapter;
+import cn.timeface.circle.baby.ui.growth.events.CardEditEvent;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -275,8 +278,26 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
             } else {
                 btnAskPrint.setText("申请印刷");
             }
+        }else if(view.getId() == R.id.fl_root){
+            CardObj cardObj = (CardObj) view.getTag(R.string.tag_obj);
+            CardPreviewActivity.open(this, cardObj, 1);
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Iterator iterator = selectCards.iterator();
+        //去掉没选择的
+        while (iterator.hasNext()) {
+            KnowledgeCardObj knowledgeCardObj = (KnowledgeCardObj) iterator.next();
+            if (!knowledgeCardObj.select()) {
+                iterator.remove();
+            }
+        }
+        cardPresenter.loadDiaryCard();
     }
 
     @Subscribe
@@ -297,6 +318,31 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
             selectCards.add(event.getDiaryCardObj());
             btnAskPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
             cardPresenter.loadDiaryCard();
+        }
+    }
+
+    @Subscribe
+    public void CardSelectEvent(CardEditEvent event) {
+        if (diaryCardListAdapter != null && !diaryCardListAdapter.getListData().isEmpty()) {
+            for (DiaryCardObj cardObj : diaryCardListAdapter.getListData()) {
+                if (cardObj.getCardId() == event.getCardId()) {
+                    cardObj.setSelect(event.getSelect());
+
+                    if (cardObj.select() && !selectCards.contains(cardObj)) {
+                        selectCards.add(cardObj);
+                    }
+
+                    if (!cardObj.select() && selectCards.contains(cardObj)) {
+                        selectCards.remove(cardObj);
+                    }
+                }
+            }
+            diaryCardListAdapter.notifyDataSetChanged();
+            if (selectCards.size() > 0) {
+                btnAskPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
+            } else {
+                btnAskPrint.setText("申请印刷");
+            }
         }
     }
 }
