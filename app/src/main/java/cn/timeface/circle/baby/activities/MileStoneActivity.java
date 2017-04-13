@@ -28,6 +28,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.timeface.circle.baby.BuildConfig;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
+import cn.timeface.circle.baby.dialogs.MileStoneMoreDialog;
 import cn.timeface.circle.baby.dialogs.MilestoneMenuDialog;
 import cn.timeface.circle.baby.events.MilestoneRefreshEvent;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
@@ -39,12 +40,14 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.support.utils.Remember;
 import cn.timeface.circle.baby.support.utils.ShareSdkUtil;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.growthcircle.mainpage.dialog.CircleMoreDialog;
 import cn.timeface.circle.baby.views.ShareDialog;
 import cn.timeface.circle.baby.views.TFStateView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MileStoneActivity extends BaseAppCompatActivity implements IEventBus{
+public class MileStoneActivity extends BaseAppCompatActivity implements IEventBus, View.OnClickListener {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.appbar_layout)
@@ -84,7 +87,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
         tfStateView.setOnRetryListener(() -> reqData());
         tfStateView.loading();
         initView();
-        reqData();
+//        reqData();
         ShareSDK.initSDK(this);
     }
 
@@ -125,7 +128,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
                     if (tfStateView != null) {
                         tfStateView.finish();
                     }
-                    Log.e(TAG, "milestone:",throwable);
+                    Log.e(TAG, "milestone:", throwable);
                     throwable.printStackTrace();
                 });
     }
@@ -133,6 +136,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
     @Override
     protected void onResume() {
         super.onResume();
+        reqData();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -155,21 +159,9 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
             onBackPressed();
-        } else if (item.getItemId() == R.id.item_share) {
-            String imgUrl = "";
-            for (MilestoneTimeObj obj : milestoneTimeResponse.getDataList()){
-                imgUrl = obj.getImgUrl();
-                if(!TextUtils.isEmpty(imgUrl)){
-                    break;
-                }
-            }
-            if(TextUtils.isEmpty(imgUrl)){
-                imgUrl = FastData.getBabyAvatar();
-            }
-            String title = FastData.getBabyNickName() + "成长里程碑";
-            String content = FastData.getBabyNickName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑";
-            String url = BuildConfig.API_URL+getString(R.string.share_url_milestone,FastData.getBabyId());
-            new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this,R.drawable.ic_laucher_quadrate), url);
+        } else if (item.getItemId() == R.id.item_more) {
+            new MileStoneMoreDialog(this).show(this);
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -196,12 +188,12 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
             @Override
             public void onClick(View v) {
                 MileStoneInfoActivity.open(MileStoneActivity.this, obj.getMilestone(), obj.getMilestoneId());
-                if(obj.getIsRead()==0){
+                if (obj.getIsRead() == 0) {
                     milestoneRead(obj.getMilestoneId());
                 }
             }
         });
-        if(obj.getTimelineCount() == 0){
+        /*if (obj.getTimelineCount() == 0) {
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -209,7 +201,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
                     return true;
                 }
             });
-        }
+        }*/
         return view;
     }
 
@@ -235,12 +227,12 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
             @Override
             public void onClick(View v) {
                 MileStoneInfoActivity.open(MileStoneActivity.this, obj.getMilestone(), obj.getMilestoneId());
-                if(obj.getIsRead()==0){
+                if (obj.getIsRead() == 0) {
                     milestoneRead(obj.getMilestoneId());
                 }
             }
         });
-        if(obj.getTimelineCount() == 0){
+        /*if (obj.getTimelineCount() == 0) {
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -248,7 +240,7 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
                     return true;
                 }
             });
-        }
+        }*/
         return view;
     }
 
@@ -315,4 +307,32 @@ public class MileStoneActivity extends BaseAppCompatActivity implements IEventBu
         reqData();
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_milestone_create:
+                Intent intent = new Intent(MileStoneActivity.this, MilestoneDiyActivity.class);
+                startActivityForResult(intent, 1);
+                break;
+            case R.id.tv_milestone_share:
+                String imgUrl = "";
+                for (MilestoneTimeObj obj : milestoneTimeResponse.getDataList()) {
+                    imgUrl = obj.getImgUrl();
+                    if (!TextUtils.isEmpty(imgUrl)) {
+                        break;
+                    }
+                }
+                if (TextUtils.isEmpty(imgUrl)) {
+                    imgUrl = FastData.getBabyAvatar();
+                }
+                String title = FastData.getBabyNickName() + "成长里程碑";
+                String content = FastData.getBabyNickName() + FastData.getBabyAge() + "啦！" + "一起回顾成长中的里程碑";
+                String url = BuildConfig.API_URL + getString(R.string.share_url_milestone, FastData.getBabyId());
+                new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_laucher_quadrate), url);
+                break;
+            case R.id.tv_milestone_book:
+                ToastUtil.showToast("里程碑成书");
+                break;
+        }
+    }
 }

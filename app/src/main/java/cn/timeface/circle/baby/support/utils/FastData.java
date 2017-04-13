@@ -8,6 +8,7 @@ import cn.timeface.circle.baby.support.api.models.objs.UserObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import rx.Observable;
 
 
 /**
@@ -349,7 +350,7 @@ public class FastData extends Remember {
             setPhoneNumber(userObj.getPhoneNumber());
             setUniId(userObj.getUniId());
             BabyObj.saveAll(userObj.getBabies());
-            setBabyCount(userObj.getBabycount());
+            setBabyCount(userObj.getBabies().size());
         }
     }
 

@@ -1989,4 +1989,7 @@ public interface ApiService {
      */
     @POST("homework/delTask")
     Observable<BaseResponse> deleteTask(@Query("taskId") long taskId);
+
+    @POST("teacherAuth/cancelAuth")
+    Observable<BaseResponse> cancelTeacher(@Query("circleId") long circleId,@Query("circleUserId") long circleUserId);
 }

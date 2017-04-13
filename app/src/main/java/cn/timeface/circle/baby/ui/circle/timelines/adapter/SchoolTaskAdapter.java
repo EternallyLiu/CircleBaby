@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.wechat.photopicker.fragment.BigImageFragment;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import cn.timeface.circle.baby.App;
@@ -32,6 +34,7 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.HomeWorkListObj;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.bean.CircleHomeWorkHeader;
+import cn.timeface.circle.baby.ui.circle.timelines.events.SchoolTaskEvent;
 import cn.timeface.circle.baby.ui.images.views.DeleteDialog;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
@@ -183,7 +186,10 @@ public class SchoolTaskAdapter extends BaseEmptyAdapter {
         Observable.defer(() -> Observable.just(((int) view.getTag(R.id.recycler_item_click_tag))))
                 .map(integer -> (HomeWorkListObj) getItem(integer))
                 .flatMap(homeWorkListObj -> ApiFactory.getApi().getApiService().deleteTask(homeWorkListObj.getSchoolTask().getTaskId()).doOnNext(baseResponse -> {
-                    if (baseResponse.success()) deleteItem(homeWorkListObj);
+                    if (baseResponse.success()) {
+                        deleteItem(homeWorkListObj);
+                        EventBus.getDefault().post(new SchoolTaskEvent(SchoolTaskEvent.SCHOOLTASK_DELETE,homeWorkListObj.getSchoolTask()));
+                    }
                 })).compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(baseResponse -> {
                     if (!baseResponse.success())

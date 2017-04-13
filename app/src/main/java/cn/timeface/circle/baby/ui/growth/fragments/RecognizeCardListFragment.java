@@ -313,6 +313,11 @@ public class RecognizeCardListFragment extends BasePresenterFragment implements 
                     }
                 }
             }
+            if (selectCards.size() > 0) {
+                btnAskForPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
+            } else {
+                btnAskForPrint.setText("申请印刷");
+            }
         }
     }
 

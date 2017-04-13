@@ -33,7 +33,7 @@
                 android:layout_marginBottom="@dimen/view_space_normal"
                 android:layout_marginLeft="@dimen/view_space_normal"
                 android:layout_marginTop="@dimen/view_space_normal"
-                android:gravity="left"
+                android:gravity="center"
                 android:padding="@dimen/view_space_small"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_normal"
