@@ -242,15 +242,9 @@ public class CircleInfoActivity extends BaseAppCompatActivity implements IEventB
             }
 
             if (!TextUtils.isEmpty(FastData.getBabyRealName())) {
-                joinDialog.setJoinMessage("我是" + FastData.getBabyRealName()
-                        + "的" + FastData.getRelationName());
                 joinDialog.setChildrenName(FastData.getBabyRealName());
             }
             joinDialog.setPositiveListener(v -> {
-                if (TextUtils.isEmpty(joinDialog.getJoinMessage())) {
-                    Toast.makeText(this, "请输入加圈留言", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 if (TextUtils.isEmpty(joinDialog.getChildrenName())) {
                     Toast.makeText(this, "请输入孩子的真实姓名", Toast.LENGTH_SHORT).show();
                     return;
