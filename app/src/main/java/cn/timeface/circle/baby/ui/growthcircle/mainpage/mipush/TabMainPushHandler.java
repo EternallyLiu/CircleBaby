@@ -222,7 +222,7 @@ public class TabMainPushHandler implements IEventBus {
     }
 
     private void reqCirclePhotoDetail(MiPushMsgInfoObj pushMsgInfo) {
-        apiService.queryCirclePhotoById(pushMsgInfo.getPhotoId())
+        apiService.queryCirclePhotoById(pushMsgInfo.getMediaId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
