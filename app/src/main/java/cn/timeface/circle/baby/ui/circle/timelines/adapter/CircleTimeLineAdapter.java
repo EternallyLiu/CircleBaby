@@ -290,6 +290,37 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
     }
 
     @Override
+    protected void doEmpty(View contentView) {
+        TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
+        emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
+        if (emptyLayoutParams == null) {
+            emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+        if (getRetryListener() != null)
+            tfStateView.setOnRetryListener(getRetryListener());
+        switch (getEmptyItem().getOperationType()) {
+            case -1:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+                tfStateView.showException(getEmptyItem().getThrowable());
+                break;
+            case 0:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+                tfStateView.empty(R.string.circle_no_dynamic,R.drawable.ic_dynamic_empty);
+
+                break;
+            case 1:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
+                tfStateView.loading();
+                break;
+            case 2:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT;
+                tfStateView.finish();
+                break;
+        }
+        contentView.setLayoutParams(emptyLayoutParams);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_like:
