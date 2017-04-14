@@ -85,7 +85,11 @@ public class CircleBookListAdapter extends BaseRecyclerAdapter<CircleBookObj> {
             holder.ivMask.setVisibility(View.VISIBLE);
             holder.tvPagenum.setVisibility(View.VISIBLE);
             holder.tvAuthor.setVisibility(bookObj.showAuthor() ? View.VISIBLE : View.GONE);
-            holder.tvCreattime.setText("创建时间: " + DateUtil.getYear2(bookObj.getCreateTime()));
+            if(bookObj.getUpdateTime() > bookObj.getCreateTime()){
+                holder.tvCreattime.setText("最后编辑: " + DateUtil.getYear2(bookObj.getUpdateTime()));
+            } else {
+                holder.tvCreattime.setText("创建时间: " + DateUtil.getYear2(bookObj.getCreateTime()));
+            }
         }
 
         holder.tvTitle.setText(bookObj.getBookName());

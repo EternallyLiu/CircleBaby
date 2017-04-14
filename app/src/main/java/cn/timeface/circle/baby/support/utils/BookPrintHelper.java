@@ -137,7 +137,7 @@ public class BookPrintHelper {
                     case BookModel.CIRCLE_BOOK_TYPE_PHOTO:
                         tougueDialog.setMessage("大于60页，不可印刷");
                         tougueDialog.setMessage("您的" + BookModel.getGrowthBookName(bookType)
-                                + "页数为" + pageNum + "页，已超过300页的印刷限制，请修改后再提交印刷。");
+                                + "页数为" + pageNum + "页，已超过60页的印刷限制，请修改后再提交印刷。");
                         tougueDialog.show(context.getSupportFragmentManager(), "dialog");
                         break;
                     case BookModel.CIRCLE_BOOK_TYPE_TIME:

@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.support.api.models.responses.LocationInfoResponse
 import cn.timeface.circle.baby.support.api.models.responses.LoginResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.MilestoneObjResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MineBookListResponse;
@@ -120,6 +121,7 @@ import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
+import cn.timeface.circle.baby.ui.settings.response.MyMessageResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.QueryLocationInfoResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.SendTimeLineResponse;
@@ -274,6 +276,15 @@ public interface ApiService {
     //里程碑删除
     @GET("babyTime/delMilestone")
     Observable<BaseResponse> delMilestone(@Query("id") int id);
+
+    //将某个时光移除里程碑
+    @GET("milestone/removeTime")
+    Observable<BaseResponse> removeTimeFormMilestone(@Query("milestoneId") int milestoneId,
+                                                     @Query("timeId") int timeId);
+
+    //里程碑名字推荐
+    @GET("milestone/recommendList")
+    Observable<MilestoneObjResponse> recommendListOfMilestone();
 
     //亲友团-修改亲友信息
     @GET("baby/updateFamilyRelationshipInfo")
@@ -1992,4 +2003,13 @@ public interface ApiService {
 
     @POST("teacherAuth/cancelAuth")
     Observable<BaseResponse> cancelTeacher(@Query("circleId") long circleId,@Query("circleUserId") long circleUserId);
+
+
+    @POST("babyMsgInfo/queryMsgList")
+    Observable<MyMessageResponse> queryMsgList(@Query("currentPage") int currentPage,
+                                               @Query("pageSize") int pageSize);
+
+    //获取系统消息列表
+    @GET("babyMsgInfo/querySystemMsgList")
+    Observable<MyMessageResponse> querySystemMessage();
 }

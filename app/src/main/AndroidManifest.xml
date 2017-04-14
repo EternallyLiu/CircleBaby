@@ -383,7 +383,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.MilestoneDiyActivity"
-            android:label="自定义"
+            android:label="@string/milestone_add"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.CloudAlbumPhotoSelectActivity"

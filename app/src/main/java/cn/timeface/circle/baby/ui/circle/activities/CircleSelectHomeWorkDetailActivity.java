@@ -56,6 +56,7 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
     CircleSelectHomeWorkAdapter selectHomeWorkAdapter;
     long babyId;
     String circleId;
+    String babyName;
     List<CircleHomeworkExObj> allSelHomeWorks;
 
     public void open(Context context, String circleId, long babyId) {
@@ -65,10 +66,13 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         context.startActivity(intent);
     }
 
-    public static void open4Result(Context context, int reqCode, String circleId, long babyId, List<CircleHomeworkExObj> allSelHomeWorks) {
+    public static void open4Result(
+            Context context, int reqCode, String circleId, long babyId,
+            List<CircleHomeworkExObj> allSelHomeWorks, String babyName) {
         Intent intent = new Intent(context, CircleSelectHomeWorkDetailActivity.class);
         intent.putExtra("circle_id", circleId);
         intent.putExtra("baby_id", babyId);
+        intent.putExtra("baby_name", babyName);
         intent.putParcelableArrayListExtra("all_sel_home_works", (ArrayList<? extends Parcelable>) allSelHomeWorks);
         ((Activity) context).startActivityForResult(intent, reqCode);
     }
@@ -80,12 +84,13 @@ public class CircleSelectHomeWorkDetailActivity extends BasePresenterAppCompatAc
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(FastData.getBabyNickName() + "的作业");
         circleId = getIntent().getStringExtra("circle_id");
         babyId = getIntent().getLongExtra("baby_id", 0);
+        babyName = getIntent().getStringExtra("baby_name");
         this.allSelHomeWorks = getIntent().getParcelableArrayListExtra("all_sel_home_works");
         cbAllSel.setOnClickListener(this);
 
+        getSupportActionBar().setTitle(babyName + "的作业");
         if (!getIntent().hasExtra("task_id")) reqData();
     }
 

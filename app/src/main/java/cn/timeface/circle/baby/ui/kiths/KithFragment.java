@@ -1,5 +1,6 @@
 package cn.timeface.circle.baby.ui.kiths;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -57,6 +58,10 @@ public class KithFragment extends BaseFragment implements BaseAdapter.OnItemClic
     private ArrayList<String> relationNames;
     private DefaultLoadMoreView loadMoreView;
     private TFPTRRecyclerViewHelper helper;
+
+    public static void openFromPush(Context context) {
+        FragmentBridgeActivity.openWithNewTask(context, "KithFragment", null);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

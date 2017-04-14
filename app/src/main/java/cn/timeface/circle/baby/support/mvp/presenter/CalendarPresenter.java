@@ -401,7 +401,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
         ).subscribe(response -> {
 
             view.hideLoading();
-            if (TextUtils.isDigitsOnly(response.dataId)) {
+            if (!TextUtils.isEmpty(response.dataId) && TextUtils.isDigitsOnly(response.dataId)) {
                 CalendarPreviewActivity.open(view.getCurrentActivity(),
                         bookModel.getBookId(), String.valueOf(BookModel.BOOK_TYPE_CALENDAR), response.dataId);
                 if (view instanceof CalendarActivity) {
@@ -1093,10 +1093,10 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
         }
 
         view.showLoading();
-        TFOBookElementModel elementModel = data.getParcelableExtra(TFOConstant.ELEMENT_MODEL);
+        List<TFOBookElementModel> elementModels = data.getParcelableArrayListExtra(TFOConstant.ELEMENT_MODEL_LIST);
         String contentId = data.getStringExtra(TFOConstant.CONTENT_ID);
 
-        if (elementModel == null || TextUtils.isEmpty(contentId)) {
+        if (elementModels == null || elementModels.size() == 0 || TextUtils.isEmpty(contentId)) {
             throw new Exception("element model is null.");
         }
 
@@ -1112,7 +1112,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
         ).flatMap(ele -> {
 
             bookModel.replaceElement(
-                    elementModel, ele
+                    elementModels.get(0), ele
             );
 
             List<TFOBookContentModel> cms = getCurrentContentModels();
@@ -1143,7 +1143,7 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
 
         String contentId = data.getStringExtra(TFOConstant.CONTENT_ID);
 
-        if (data.getParcelableExtra(TFOConstant.ELEMENT_MODEL) == null || TextUtils.isEmpty(contentId)) {
+        if (data.getParcelableArrayListExtra(TFOConstant.ELEMENT_MODEL_LIST) == null ||data.getParcelableArrayListExtra(TFOConstant.ELEMENT_MODEL_LIST).size() == 0 || TextUtils.isEmpty(contentId)) {
             throw new Exception("element model is null.");
         }
 
@@ -1157,21 +1157,21 @@ public class CalendarPresenter extends BasePresenter<CalendarPresentation.View, 
         }).first(
 
         ).flatMap(tfoBookElementModel -> {
-            TFOBookElementModel elementModel = data.getParcelableExtra(TFOConstant.ELEMENT_MODEL);
-            if (TextUtils.isEmpty(elementModel.getElementContent())) {
-                elementModel.setElementContent("请输入文字");
+            List<TFOBookElementModel> elementModels = data.getParcelableArrayListExtra(TFOConstant.ELEMENT_MODEL_LIST);
+            if (TextUtils.isEmpty(elementModels.get(0).getElementContent())) {
+                elementModels.get(0).setElementContent("请输入文字");
             }
             return model.updateElement(bookModel.getBookId(), contentId, tfoBookElementModel,
-                    elementModel.getElementContent());
+                    elementModels.get(0).getElementContent());
         }).flatMap(response -> {
 
-            TFOBookElementModel elementModel = data.getParcelableExtra(TFOConstant.ELEMENT_MODEL);
+            List<TFOBookElementModel> elementModels = data.getParcelableArrayListExtra(TFOConstant.ELEMENT_MODEL_LIST);
             bookModel.replaceElement(response.getData().getElementModel(),
                     elementsMap.get(contentId).get(
                             response.getData().getElementModel().getElementName()
                     ));
 
-            return Observable.just(elementModel);
+            return Observable.just(elementModels.get(0));
         }).flatMap(ele -> {
 
             return model.updateContents(bookModel.getBookId(), getCurrentContentModels());

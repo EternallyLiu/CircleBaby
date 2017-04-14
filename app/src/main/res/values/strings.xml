@@ -667,6 +667,7 @@
     <string name="milestone_book">里程碑成书</string>
     <string name="milestone_add_content">新增内容</string>
     <string name="milestone_delete">删除</string>
+    <string name="milestone_add">新增里程碑</string>
 
 
     <string name="JANUARY">一月</string>
@@ -928,5 +929,6 @@
     <string name="agree_complete">已完成</string>
     <string name="agreed">已同意</string>
     <string name="cancel_agree">取消认证</string>
+    <string name="read_all">全部已读</string>
 
 </resources>
