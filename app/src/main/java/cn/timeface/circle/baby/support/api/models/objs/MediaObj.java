@@ -67,6 +67,10 @@ public class MediaObj extends BaseObj implements Parcelable , Comparable {
     public MediaObj() {
     }
 
+    public MediaObj(String localPath) {
+        this.localPath = localPath;
+    }
+
     public MediaObj(String imgUrl, String localPath) {
         this.imgUrl = imgUrl;
         this.localPath = localPath;

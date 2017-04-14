@@ -42,6 +42,7 @@ import cn.timeface.circle.baby.activities.base.BaseAppCompatActivity;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.events.UploadEvent;
 import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.managers.services.UploadMediaService;
 import cn.timeface.circle.baby.support.managers.services.UploadService;
 import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -374,7 +375,7 @@ public class PublishActivity extends BaseAppCompatActivity {
                                 if (circleTimeLineDetailResponse.success()) {
                                     EventBus.getDefault().post(new CircleTimeLineEditEvent(circleTimeLineDetailResponse.getCircleTimelineInfo()));
                                     if (list.size() > 0)
-                                        UploadService.start(this, list);
+                                        UploadMediaService.start(this,timelineObj);
                                     finish();
                                 } else {
                                     clearGCMedia();
@@ -394,7 +395,7 @@ public class PublishActivity extends BaseAppCompatActivity {
                             timelineObj.setCircleTimelineId(timeLineSendResponse.getCircleTimeline().getCircleTimelineId());
                             timelineObj.setPublisher(FastData.getCircleUserInfo());
                             if (list.size() > 0)
-                                UploadService.start(this, list);
+                                UploadMediaService.start(this,timelineObj);
                             EventBus.getDefault().post(new CircleTimeLineEditEvent(2, timelineObj));
                             finish();
                         } else {

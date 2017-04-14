@@ -34,6 +34,7 @@ import cn.timeface.circle.baby.support.api.models.PushItem;
 import cn.timeface.circle.baby.support.api.models.responses.PushResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.support.managers.receivers.DownloadCompleteReceiver;
+import cn.timeface.circle.baby.support.managers.services.UploadMediaService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.NotificationUtil;
 import cn.timeface.circle.baby.support.utils.Once;
@@ -106,7 +107,7 @@ public class SplashActivity extends BaseAppCompatActivity {
             finish();
             return;
         }
-
+        UploadMediaService.start(this);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
