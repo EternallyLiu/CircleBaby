@@ -182,6 +182,19 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                 );
     }
 
+    public static void open(Context context, int timeId) {
+        apiService.queryBabyTimeDetail(timeId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(
+                        response -> {
+                            if (response.success()) {
+                                open(context, response.getTimeInfo());
+                            }
+                        },
+                        throwable -> LogUtil.showError(throwable)
+                );
+    }
+
     public static void open(Context context, TimeLineObj timeLineObj) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
