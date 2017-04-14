@@ -489,7 +489,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                     @Override
                     public void onClick(View view) {
                         tfDialog.dismiss();
-                        ApiFactory.getApi().getApiService().removeTimeFormMilestone(currentTimeLineObj.getMilestoneId(),currentTimeLineObj.getTimeId())
+                        apiService.removeTimeFormMilestone(currentTimeLineObj.getMilestoneId(),currentTimeLineObj.getTimeId())
                                 .compose(SchedulersCompat.applyIoSchedulers())
                                 .subscribe(response -> {
                                     if (response.success()) {
