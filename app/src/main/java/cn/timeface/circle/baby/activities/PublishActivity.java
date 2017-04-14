@@ -185,7 +185,7 @@ public class PublishActivity extends BaseAppCompatActivity implements View.OnCli
         initLocation();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle("发布动态");
+        toolbar.setTitle("测试toolbar");
         tfProgressDialog = TFProgressDialog.getInstance("");
 
         publishType = getIntent().getIntExtra("publish_type", NOMAL);

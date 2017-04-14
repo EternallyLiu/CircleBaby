@@ -52,8 +52,6 @@ public class HomeWorkActivity extends BaseAppCompatActivity implements View.OnCl
     TextView tvTearcherReview;
     @Bind(R.id.tv_title)
     TextView tvTitle;
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
@@ -100,7 +98,7 @@ public class HomeWorkActivity extends BaseAppCompatActivity implements View.OnCl
 
     private void init(CircleHomeworkObj homeworkObj) {
         LogUtil.showLog("json:" + JSONUtils.parse2JSONString(homeworkObj));
-        title.setText(DateUtil.formatDate("MM月dd日 EE", homeworkObj.getCreateDate()));
+        toolbar.setTitle(DateUtil.formatDate("MM月dd日 EE", homeworkObj.getCreateDate()));
         tvName.setText(homeworkObj.getBabyInfo().getRealName());
         tvDetail.setText(homeworkObj.getContent());
         tvTearcherReview.setVisibility(TextUtils.isEmpty(homeworkObj.getTeacherReview()) ? View.GONE : View.VISIBLE);

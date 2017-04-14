@@ -144,12 +144,12 @@ public class PublishActivity extends BaseAppCompatActivity {
                     SelectPhotoActivity.openForResult(this, adapter.getSelImage(), PublishAdapter.MAX_PIC_TIMELINE_COUNT, PublishActivity.PICTURE);
                 break;
             case PublishAdapter.TYPE_SCHOOL:
-                title.setText(R.string.send_circle_school_title);
+                toolbar.setTitle(R.string.send_circle_school_title);
                 CircleSchoolTaskObj schoolTaskObj = bundle.getParcelable(CircleSchoolTaskObj.class.getSimpleName());
                 adapter.setContentObj(schoolTaskObj);
                 break;
             case PublishAdapter.TYPE_WORK:
-                title.setText(R.string.send_circle_homework_title);
+                toolbar.setTitle(R.string.send_circle_homework_title);
                 CircleHomeworkObj homeWork = bundle.getParcelable(CircleHomeworkObj.class.getSimpleName());
                 adapter.setContentObj(homeWork);
                 break;

@@ -45,9 +45,6 @@ import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
  * email : wangs1992321@gmail.com
  */
 public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements IEventBus, BaseAdapter.OnItemClickLister {
-
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
@@ -80,7 +77,7 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText(R.string.activity_look_homework);
+        getSupportActionBar().setTitle(R.string.activity_look_homework);
         init();
         reqData();
     }
