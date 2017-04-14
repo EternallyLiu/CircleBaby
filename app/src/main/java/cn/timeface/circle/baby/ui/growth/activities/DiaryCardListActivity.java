@@ -278,7 +278,7 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
             } else {
                 btnAskPrint.setText("申请印刷");
             }
-        }else if(view.getId() == R.id.fl_root){
+        }else if(view.getId() == R.id.fl_root && canSelect){
             CardObj cardObj = (CardObj) view.getTag(R.string.tag_obj);
             CardPreviewActivity.open(this, cardObj, 1);
         }
@@ -292,8 +292,8 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
         Iterator iterator = selectCards.iterator();
         //去掉没选择的
         while (iterator.hasNext()) {
-            KnowledgeCardObj knowledgeCardObj = (KnowledgeCardObj) iterator.next();
-            if (!knowledgeCardObj.select()) {
+            DiaryCardObj diaryCardObj = (DiaryCardObj) iterator.next();
+            if (!diaryCardObj.select()) {
                 iterator.remove();
             }
         }
@@ -337,7 +337,6 @@ public class DiaryCardListActivity extends ProductionListActivity implements Car
                     }
                 }
             }
-            diaryCardListAdapter.notifyDataSetChanged();
             if (selectCards.size() > 0) {
                 btnAskPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
             } else {

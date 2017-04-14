@@ -94,7 +94,8 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
      */
     private void setupSelectData(MediaObj mediaObj){
         for (int i = 0; i < listData.size(); i++) {
-            if(listData.get(i).getMediaList().contains(mediaObj)){
+            if(listData.get(i).getMediaList().contains(mediaObj)
+                    && everyGroupUnSelImgSize[i] > 0){
                 everyGroupUnSelImgSize[i]--;
             } else {
                 continue;
@@ -108,7 +109,8 @@ public class SelectServerPhotosAdapter extends BaseRecyclerAdapter<MediaWrapObj>
      */
     private void setupUnSelectData(MediaObj mediaObj){
         for (int i = 0; i < listData.size(); i++) {
-            if(listData.get(i).getMediaList().contains(mediaObj)){
+            if(listData.get(i).getMediaList().contains(mediaObj)
+                    && everyGroupUnSelImgSize[i] < listData.get(i).getMediaList().size()){
                 everyGroupUnSelImgSize[i]++;
             } else {
                 continue;

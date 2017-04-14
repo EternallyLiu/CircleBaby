@@ -59,12 +59,9 @@ public class CircleSelectServerTimeMediaAdapter extends BaseRecyclerAdapter<Circ
         return new Animator[0];
     }
 
-    private View.OnClickListener onCheckedListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            CircleMediaObj mediaObj = (CircleMediaObj) view.getTag(R.string.tag_obj);
-            EventBus.getDefault().post(new CircleSelectMediaEvent(CircleSelectMediaEvent.TYPE_TIME_MEDIA, ((CheckBox)view).isChecked(), mediaObj));
-        }
+    private View.OnClickListener onCheckedListener = view -> {
+        CircleMediaObj mediaObj = (CircleMediaObj) view.getTag(R.string.tag_obj);
+        EventBus.getDefault().post(new CircleSelectMediaEvent(CircleSelectMediaEvent.TYPE_TIME_MEDIA, ((CheckBox)view).isChecked(), mediaObj));
     };
 
     class ViewHolder extends RecyclerView.ViewHolder {

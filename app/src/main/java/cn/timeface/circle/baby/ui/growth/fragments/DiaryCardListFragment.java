@@ -46,6 +46,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.growth.adapters.DiaryCardListAdapter;
+import cn.timeface.circle.baby.ui.growth.events.CardEditEvent;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
 import rx.functions.Func1;
@@ -327,11 +328,35 @@ public class DiaryCardListFragment extends BasePresenterFragment implements Card
         Iterator iterator = selectCards.iterator();
         //去掉没选择的
         while (iterator.hasNext()) {
-            KnowledgeCardObj knowledgeCardObj = (KnowledgeCardObj) iterator.next();
-            if (!knowledgeCardObj.select()) {
+            DiaryCardObj diaryCardObj = (DiaryCardObj) iterator.next();
+            if (!diaryCardObj.select()) {
                 iterator.remove();
             }
         }
         cardPresenter.loadDiaryCard();
+    }
+
+    @Subscribe
+    public void CardSelectEvent(CardEditEvent event) {
+        if (diaryCardListAdapter != null && !diaryCardListAdapter.getListData().isEmpty()) {
+            for (DiaryCardObj cardObj : diaryCardListAdapter.getListData()) {
+                if (cardObj.getCardId() == event.getCardId()) {
+                    cardObj.setSelect(event.getSelect());
+
+                    if (cardObj.select() && !selectCards.contains(cardObj)) {
+                        selectCards.add(cardObj);
+                    }
+
+                    if (!cardObj.select() && selectCards.contains(cardObj)) {
+                        selectCards.remove(cardObj);
+                    }
+                }
+            }
+            if (selectCards.size() > 0) {
+                btnAskForPrint.setText("（已选" + selectCards.size() + "张）申请印刷");
+            } else {
+                btnAskForPrint.setText("申请印刷");
+            }
+        }
     }
 }

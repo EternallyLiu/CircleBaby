@@ -497,8 +497,8 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
 
     private void share() {
         String imgUrl = "";
-        String title = FastData.getBabyNickName() + "长大了";
-        String content = FastData.getBabyNickName() + FastData.getBabyAge() + "了" + ",快来看看" + FastData.getBabyNickName() + "的新变化";
+        String title = currentTimeLineObj.getPublisher().getCircleNickName() + "向您分享了"+FastData.getCircleObj().getCircleName();
+        String content = currentTimeLineObj.getPublisher().getCircleNickName()+"分享了"+FastData.getBabyObj().getRealName()+"在"+FastData.getCircleObj().getCircleName()+"的最新动态，你也来看看吧!";
         String url = BuildConfig.API_URL + getString(R.string.share_url_circle_time_line, currentTimeLineId);
         new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_laucher_quadrate), url);
     }
