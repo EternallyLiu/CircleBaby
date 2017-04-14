@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.support.api.models.responses.LocationInfoResponse
 import cn.timeface.circle.baby.support.api.models.responses.LoginResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneInfoResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneListResponse;
+import cn.timeface.circle.baby.support.api.models.responses.MilestoneObjResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MilestoneTimeResponse;
 import cn.timeface.circle.baby.support.api.models.responses.MineBookListResponse;
@@ -120,6 +121,7 @@ import cn.timeface.circle.baby.ui.growth.responses.PrintGrowthHomeResponse;
 import cn.timeface.circle.baby.ui.images.beans.AddTagResponse;
 import cn.timeface.circle.baby.ui.images.beans.LikeResponse;
 import cn.timeface.circle.baby.ui.images.beans.TipResponse;
+import cn.timeface.circle.baby.ui.settings.response.MyMessageResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.NearLocalResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.QueryLocationInfoResponse;
 import cn.timeface.circle.baby.ui.timelines.beans.SendTimeLineResponse;
@@ -274,6 +276,15 @@ public interface ApiService {
     //里程碑删除
     @GET("babyTime/delMilestone")
     Observable<BaseResponse> delMilestone(@Query("id") int id);
+
+    //将某个时光移除里程碑
+    @GET("milestone/removeTime")
+    Observable<BaseResponse> removeTimeFormMilestone(@Query("milestoneId") int milestoneId,
+                                                     @Query("timeId") int timeId);
+
+    //里程碑名字推荐
+    @GET("milestone/recommendList")
+    Observable<MilestoneObjResponse> recommendListOfMilestone();
 
     //亲友团-修改亲友信息
     @GET("baby/updateFamilyRelationshipInfo")
@@ -1766,6 +1777,18 @@ public interface ApiService {
                                    @Query("circleMemberId") long circleMemberId);
 
     /**
+     * 接口详情 (id: 7758) 复制URL
+     * 接口名称 发起/取消 某个成员的教师认证
+     * 请求类型 get
+     * 请求Url  /teacherAuth/start
+     */
+    @POST("teacherAuth/start")
+    Observable<BaseResponse> startCertification(@Query("certification") long certification,
+                                                @Query("circleId") long circleId,
+                                                @Query("circleMemberId") long circleMemberId,
+                                                @Query("name") String name);
+
+    /**
      * 接口详情 (id: 7757) 复制URL
      * 接口名称 移除某个成员
      * 请求类型 post
@@ -1788,6 +1811,7 @@ public interface ApiService {
 
     /**
      * 圈照片书（查找圈内活动相册列表）
+     *
      * @param circleId
      * @return
      */
@@ -1796,6 +1820,7 @@ public interface ApiService {
 
     /**
      * 圈照片书（查找圈内活动相册列表）
+     *
      * @param activityAlbumId
      * @return
      */
@@ -1804,6 +1829,7 @@ public interface ApiService {
 
     /**
      * 圈照片书（查找圈内活动相册列表）
+     *
      * @param circleId
      * @return
      */
@@ -1815,6 +1841,7 @@ public interface ApiService {
 
     /**
      * 按宝宝查询家庭作业
+     *
      * @param circleId
      * @return
      */
@@ -1884,6 +1911,7 @@ public interface ApiService {
     @GET("circle/book/list")
     Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList(@Query("circleId") long circleId,
                                                                        @Query("permissionType") int permissionType);
+
     @GET("circle/book/list")
     Observable<QueryCirclePhotoResponse<CircleBookObj>> circleBookList();
 
@@ -1936,6 +1964,7 @@ public interface ApiService {
 
     /**
      * 查询绑定了家长的宝宝列表
+     *
      * @param circleId
      * @return
      */
@@ -1944,6 +1973,7 @@ public interface ApiService {
 
     /**
      * 获取书中的所有时光信息
+     *
      * @param bookId
      * @return
      */
@@ -1952,6 +1982,7 @@ public interface ApiService {
 
     /**
      * 获取书中的所有作业
+     *
      * @param bookId
      * @return
      */
@@ -1963,6 +1994,7 @@ public interface ApiService {
 
     /**
      * 删除老师布置的作业
+     *
      * @param taskId
      * @return
      */
@@ -1971,4 +2003,13 @@ public interface ApiService {
 
     @POST("teacherAuth/cancelAuth")
     Observable<BaseResponse> cancelTeacher(@Query("circleId") long circleId,@Query("circleUserId") long circleUserId);
+
+
+    @POST("babyMsgInfo/queryMsgList")
+    Observable<MyMessageResponse> queryMsgList(@Query("currentPage") int currentPage,
+                                               @Query("pageSize") int pageSize);
+
+    //获取系统消息列表
+    @GET("babyMsgInfo/querySystemMsgList")
+    Observable<MyMessageResponse> querySystemMessage();
 }

@@ -214,7 +214,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     }
 
     private void reqData() {
-        apiService.queryBabyTimeDetail(currentTimeLineObj.getTimeId())
+        addSubscription(apiService.queryBabyTimeDetail(currentTimeLineObj.getTimeId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(timeDetailResponse -> {
                     if (timeDetailResponse.success()) {
@@ -230,7 +230,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                         swipeRefresh.setRefreshing(false);
                     Log.e("TimeLineDetailActivity", "queryBabyTimeDetail:");
                     error.printStackTrace();
-                });
+                }));
     }
 
     private void initRecyclerView() {

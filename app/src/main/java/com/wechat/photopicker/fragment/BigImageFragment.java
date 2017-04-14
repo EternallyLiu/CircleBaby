@@ -40,6 +40,7 @@ import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.events.TimeEditPhotoDeleteEvent;
 import cn.timeface.circle.baby.fragments.base.BaseFragment;
+import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.api.models.objs.MediaTipObj;
 import cn.timeface.circle.baby.support.utils.FastData;
@@ -132,6 +133,16 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
         ArrayList<MediaObj> list = new ArrayList<>(0);
         list.add(mediaObj);
         FragmentBridgeActivity.openBigimageFragment(context, 0, list, MediaObj.getUrls(list), 0, type, download, delete);
+    }
+
+    public static void open(Context context, long mediaId, boolean download, boolean delete) {
+        ApiFactory.getApi().getApiService().queryCirclePhotoById(mediaId)
+                .compose(SchedulersCompat.applyIoSchedulers())
+                .subscribe(queryCirclePhotoByIdResponse -> {
+                    if (queryCirclePhotoByIdResponse.success())
+                        open(context, queryCirclePhotoByIdResponse.getCircleMedia(), BigImageFragment.CIRCLE_MEDIA_IMAGE_EDITOR, download, delete);
+                    else ToastUtil.showToast(context,queryCirclePhotoByIdResponse.getInfo());
+                }, throwable -> LogUtil.showError(throwable));
     }
 
     @Override

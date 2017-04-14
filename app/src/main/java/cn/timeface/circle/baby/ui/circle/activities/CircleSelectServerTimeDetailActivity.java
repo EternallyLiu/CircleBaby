@@ -43,8 +43,6 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
     TextView tvCancel;
     @Bind(R.id.tv_date)
     TextView tvDate;
-    @Bind(R.id.tv_select_all)
-    TextView tvSelectAll;
     @Bind(R.id.tv_finish)
     TextView tvFinish;
     @Bind(R.id.toolbar)
@@ -81,11 +79,10 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
         tvDate.setText(DateUtil.formatDate("MM月dd日", timeLineObj.getCircleTimeline().getRecordDate()) + DateUtils.formatDateTime(this, timeLineObj.getCircleTimeline().getRecordDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
         tvTitle.setText(timeLineObj.getCircleTimeline().getContent());
         tvCancel.setOnClickListener(this);
-        tvSelectAll.setOnClickListener(this);
         tvFinish.setOnClickListener(this);
         cbSelectAll.setOnClickListener(this);
+        cbSelectAll.setChecked(isAllSelect());
 
-        tvSelectAll.setText(isAllSelect() ? "取消全选" : "全选");
         setData(timeLineObj.getCircleTimeline().getMediaList());
     }
 
@@ -107,24 +104,6 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
                 finish();
                 break;
 
-            case R.id.tv_select_all:
-                if(tvSelectAll.getText().toString().equals("全选")){
-                    if(!selMedias.containsAll(timeLineObj.getCircleTimeline().getMediaList())){
-                        selMedias.addAll(timeLineObj.getCircleTimeline().getMediaList());
-                    }
-                    EventBus.getDefault().post(new CircleSelectMediaListEvent(CircleSelectMediaListEvent.TYPE_TIME_MEDIA, true, timeLineObj.getCircleTimeline().getMediaList()));
-                    tvSelectAll.setText("取消全选");
-                } else {
-                    if(selMedias.containsAll(timeLineObj.getCircleTimeline().getMediaList())){
-                        selMedias.removeAll(timeLineObj.getCircleTimeline().getMediaList());
-                    }
-                    tvSelectAll.setText("全选");
-                    EventBus.getDefault().post(new CircleSelectMediaListEvent(CircleSelectMediaListEvent.TYPE_TIME_MEDIA, false, timeLineObj.getCircleTimeline().getMediaList()));
-                }
-                EventBus.getDefault().post(new CircleSelectTimeLineEvent(isTimeSelect(), timeLineObj));
-                serverTimesAdapter.notifyDataSetChanged();
-                break;
-
             case R.id.tv_finish:
                 finish();
                 break;
@@ -137,6 +116,7 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
                     EventBus.getDefault().post(new CircleSelectMediaListEvent(
                             CircleSelectMediaListEvent.TYPE_TIME_MEDIA,
                             true, timeLineObj.getCircleTimeline().getMediaList()));
+                    EventBus.getDefault().post(new CircleSelectTimeLineEvent(true, timeLineObj));
                 } else {
                     if(selMedias.containsAll(timeLineObj.getCircleTimeline().getMediaList())){
                         selMedias.removeAll(timeLineObj.getCircleTimeline().getMediaList());
@@ -144,7 +124,9 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
                     EventBus.getDefault().post(new CircleSelectMediaListEvent(
                             CircleSelectMediaListEvent.TYPE_TIME_MEDIA,
                             false, timeLineObj.getCircleTimeline().getMediaList()));
+                    EventBus.getDefault().post(new CircleSelectTimeLineEvent(false, timeLineObj));
                 }
+                serverTimesAdapter.notifyDataSetChanged();
                 break;
         }
     }
@@ -180,9 +162,9 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
         }
 
         if(isAllSelect()){
-            tvSelectAll.setText("取消全选");
+            cbSelectAll.setChecked(true);
         } else {
-            tvSelectAll.setText("全选");
+            cbSelectAll.setChecked(false);
         }
 
         EventBus.getDefault().post(new CircleSelectTimeLineEvent(isTimeSelect(), timeLineObj));
