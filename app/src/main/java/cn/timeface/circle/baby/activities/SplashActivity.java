@@ -39,6 +39,7 @@ import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.NotificationUtil;
 import cn.timeface.circle.baby.support.utils.Once;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DeviceUtil;
@@ -133,6 +134,7 @@ public class SplashActivity extends BaseAppCompatActivity {
 //                            Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                         });
         addSubscription(s);
+        addSubscription(apiService.registerPush().compose(SchedulersCompat.applyIoSchedulers()).subscribe(baseResponse -> {},throwable -> {}));
 
     }
 

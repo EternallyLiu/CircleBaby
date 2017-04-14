@@ -57,7 +57,7 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
 
     private void agreeTearcher(int postion) {
         TeacherAuthObj item = getItem(postion);
-        LogUtil.showLog(item.getState()+"");
+        LogUtil.showLog(item.getState() + "");
         switch (item.getState()) {
             case 1:
                 if (!FastData.getCircleUserInfo().isCreator())
@@ -131,7 +131,7 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                 Button btnSubmit = ViewHolder.getView(contentView, R.id.btn_agree);
                 btnSubmit.setOnClickListener(view -> agreeTearcher(position));
                 btnSubmit.setEnabled(item.getState() == 1 ? true : false);
-                btnSubmit.setText(item.getState() == 1 ? R.string.agree_teacher : item.getState() == 2 ? R.string.agreed : R.string.agree_complete);
+                btnSubmit.setText(item.getAgreeUserList().size() < 3 && item.getAgreeUserList().contains(FastData.getCircleUserInfo()) ? (item.getState() == 1 ? R.string.agree_teacher : item.getState() == 2 ? R.string.agreed : R.string.agree_complete) : R.string.agree_teacher);
                 btnSubmit.setEnabled(FastData.getCircleUserInfo().isCreator() ? true : btnSubmit.isEnabled());
                 btnSubmit.setText(FastData.getCircleUserInfo().isCreator() ? context().getString(R.string.cancel_agree) : btnSubmit.getText());
                 GlideUtil.displayImageCircle(item.getTeacher().getCircleAvatarUrl(), ivIcon);

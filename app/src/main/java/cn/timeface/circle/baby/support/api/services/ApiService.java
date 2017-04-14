@@ -2012,4 +2012,8 @@ public interface ApiService {
     //获取系统消息列表
     @GET("babyMsgInfo/querySystemMsgList")
     Observable<MyMessageResponse> querySystemMessage();
+
+    @POST("auth/deviceBinding")
+    Observable<BaseResponse> registerPush();
+
 }
