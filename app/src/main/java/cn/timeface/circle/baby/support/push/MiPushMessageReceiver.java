@@ -37,7 +37,9 @@ import cn.timeface.circle.baby.ui.circle.bean.CircleSchoolTaskObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleUserInfo;
 import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
 import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughMessageEvent;
+import cn.timeface.circle.baby.ui.kiths.KithFragment;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.fragments.TimeFaceDetailFragment;
 import cn.timeface.common.utils.DeviceUuidFactory;
 import ikidou.reflect.TypeBuilder;
 import rx.Observable;
@@ -97,7 +99,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
         Log.d("-------->", "-------->onNotificationMessageClicked: " + mMessage);
         if (!TextUtils.isEmpty(mMessage)) {
-            LogUtil.showLog("-------->",isAppForeground(context)+"");
+            LogUtil.showLog("-------->", isAppForeground(context) + "");
             if (!isAppForeground(context)) {
                 if (TextUtils.isEmpty(FastData.getUserId())) {
                     Intent intent = new Intent(context, LoginActivity.class);
@@ -182,7 +184,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
         @Override
         public void handleMessage(Message msg) {
-            LogUtil.showLog("-------->","处理业务逻辑");
+            LogUtil.showLog("-------->", "处理业务逻辑");
             if (isAppForeground(context)) {
                 Log.v("-------->", "在前台");
 //                Toast.makeText(context, mToastInfo, Toast.LENGTH_LONG).show();
@@ -207,10 +209,10 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
     public static boolean isAppForeground(Context mContext) {
         ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
-        LogUtil.showLog("-------->","-------->"+(tasks==null?"null":tasks.size()+"--"+tasks.isEmpty()));
-        if (tasks!=null){
-            for (ActivityManager.RunningTaskInfo info:tasks){
-                LogUtil.showLog("-------->","info  activiry=="+info.topActivity.getClassName());
+        LogUtil.showLog("-------->", "-------->" + (tasks == null ? "null" : tasks.size() + "--" + tasks.isEmpty()));
+        if (tasks != null) {
+            for (ActivityManager.RunningTaskInfo info : tasks) {
+                LogUtil.showLog("-------->", "info  activity==" + info.topActivity.getClassName());
             }
         }
         if (!tasks.isEmpty()) {
@@ -229,8 +231,10 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
         Observable.just(content)
                 .map((Func1<String, MiPushMsgObj>) s -> parseJsonObject(s, Object.class))
                 .map(pushMsgObj -> {
-                    MiPushMsgInfoObj msgInfoObj = new MiPushMsgInfoObj(pushMsgObj.getDataType());
-                    switch (pushMsgObj.getDataType()) {
+                    MiPushMsgInfoObj msgInfoObj = new MiPushMsgInfoObj(pushMsgObj.getIdentifier());
+                    switch (pushMsgObj.getIdentifier()) {
+
+                        /*---------------------------成长圈PUSH消息类型---------------------------*/
                         case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_MEMBER: // 新成员加图（定位圈首页）
                         case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_TEACHER_AUTHORIZATION: // 管理员发起老师认证（定位到认证列表页面）
                             // 仅携带circleId
@@ -281,10 +285,11 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
 
                         case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_PHOTO_TAGGED: // 发布的照片被别人加标签（定位到该图片的预览页）
                         case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_PHOTO_LIKED: // 发布的照片被别人加喜欢（定位到该图片的预览页）
-                            // 仅携带图片id
-                            MiPushMsgObj<Long> photoID = parseJsonObject(content, Long.class);
-                            if (photoID != null && photoID.getInfo() > 0) {
-                                msgInfoObj.setPhotoId(photoID.getInfo());
+                            // 携带circleId、mediaId
+                            MiPushMsgObj<MiPushMsgInfoObj> circlePhoto = parseJsonObject(content, MiPushMsgInfoObj.class);
+                            if (circlePhoto != null && circlePhoto.getInfo() != null) {
+                                msgInfoObj.setCircleId(circlePhoto.getInfo().getCircleId());
+                                msgInfoObj.setMediaId(circlePhoto.getInfo().getMediaId());
                                 return msgInfoObj;
                             }
                             break;
@@ -297,6 +302,25 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
                                 return msgInfoObj;
                             }
                             break;
+
+
+                        /*---------------------------亲友圈PUSH消息类型---------------------------*/
+                        case MiPushConstant.PUSH_TYPE_NEW_MEMBER:// 新成员加入（定位到亲友团页面）
+                            // 不携带参数，点击直接跳转到亲友团页面
+                            return msgInfoObj;
+                        case MiPushConstant.PUSH_TYPE_TIME_GOOD:// 动态被赞（定位到该条动态）
+                        case MiPushConstant.PUSH_TYPE_TIME_COMMENT:// 动态被评论（定位到该条动态）
+                        case MiPushConstant.PUSH_TYPE_NEW_TIME_PUBLISH:// 发布新动态（定位到该条动态）
+                            // 携带timeId、mediaType、mediaUrl
+                            MiPushMsgObj<MiPushMsgInfoObj> timeObj = parseJsonObject(content, MiPushMsgInfoObj.class);
+                            if (timeObj != null && timeObj.getInfo() != null) {
+                                msgInfoObj.setTimeId(timeObj.getInfo().getTimeId());
+                                msgInfoObj.setMediaType(timeObj.getInfo().getMediaType());
+                                msgInfoObj.setMediaUrl(timeObj.getInfo().getMediaUrl());
+                                return msgInfoObj;
+                            }
+                            break;
+
                     }
 
                     return null;
@@ -305,12 +329,23 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
                 .subscribe(
                         msgInfoObj -> {
                             if (msgInfoObj != null) {
-                                if (App.getInstance().getTopActivity() == null) {
-                                    Log.d("-------->", "-------->getTopActivity is null");
-                                    TabMainActivity.openCircleFromPush(context, msgInfoObj);
+                                if (msgInfoObj.isKithPush()) {
+                                    Log.d("-------->", "-------->亲友圈推送");
+                                    // 亲友圈推送
+                                    if (msgInfoObj.getType() == MiPushConstant.PUSH_TYPE_NEW_MEMBER) {
+                                        KithFragment.openFromPush(context);
+                                    } else {
+                                        TimeFaceDetailFragment.openFromPush(context, msgInfoObj.getTimeId());
+                                    }
                                 } else {
-                                    Log.d("-------->", "-------->getTopActivity not null");
-                                    TabMainActivity.openCircle(App.getInstance().getTopActivity(), msgInfoObj);
+                                    // 成长圈推送
+                                    if (App.getInstance().getTopActivity() == null) {
+                                        Log.d("-------->", "-------->getTopActivity is null");
+                                        TabMainActivity.openCircleFromPush(context, msgInfoObj);
+                                    } else {
+                                        Log.d("-------->", "-------->getTopActivity not null");
+                                        TabMainActivity.openCircle(App.getInstance().getTopActivity(), msgInfoObj);
+                                    }
                                 }
                             }
                         },
