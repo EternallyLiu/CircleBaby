@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.activities.TimeLineEditActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
 import cn.timeface.circle.baby.events.HomeRefreshEvent;
+import cn.timeface.circle.baby.events.MilestoneRefreshEvent;
 import cn.timeface.circle.baby.support.api.ApiFactory;
 import cn.timeface.circle.baby.support.api.models.objs.TimeLineObj;
 import cn.timeface.circle.baby.support.api.services.ApiService;
@@ -50,9 +51,10 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
     private TextView tvDownload;
     private RelativeLayout tvShare;
     private RelativeLayout tvCancel;
+    private RelativeLayout tvOut;
 
     private int allDetailsListPosition;
-
+    private View.OnClickListener onClickListener;
     public TimeLineActivityMenuDialog(Context context) {
         super(context, R.style.TFDialogStyle);
         this.context = context;
@@ -62,6 +64,13 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
     public TimeLineActivityMenuDialog(Context context, int theme) {
         super(context, theme);
         this.context = context;
+        init();
+    }
+
+    public TimeLineActivityMenuDialog(Context context, View.OnClickListener onClickListener) {
+        super(context, R.style.TFDialogStyle);
+        this.context = context;
+        this.onClickListener = onClickListener;
         init();
     }
 
@@ -89,6 +98,7 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         tvDownload = ButterKnife.findById(mView, R.id.tv_download);
         tvShare = ButterKnife.findById(mView, R.id.rl_share);
         tvCancel = ButterKnife.findById(mView, R.id.rl_cancel);
+        tvOut = ButterKnife.findById(mView, R.id.rl_out);
 
         initListener();
 
@@ -200,6 +210,13 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
         tvCancel.setOnClickListener(v -> {
             dismiss();
         });
+
+        tvOut.setOnClickListener(v -> {
+            dismiss();
+            if(onClickListener!=null){
+                onClickListener.onClick(tvOut);
+            }
+        });
     }
 
     public int getAllDetailsListPosition() {
@@ -208,6 +225,15 @@ public class TimeLineActivityMenuDialog extends BaseDialog {
 
     public TimeLineActivityMenuDialog setAllDetailsListPosition(int allDetailsListPosition) {
         this.allDetailsListPosition = allDetailsListPosition;
+        return this;
+    }
+
+    public TimeLineActivityMenuDialog setMilestoneInit() {
+        tvEdit.setVisibility(View.GONE);
+        tvDlete.setVisibility(View.GONE);
+        tvDownload.setVisibility(View.GONE);
+        tvShare.setVisibility(View.GONE);
+        tvOut.setVisibility(View.VISIBLE);
         return this;
     }
 }
