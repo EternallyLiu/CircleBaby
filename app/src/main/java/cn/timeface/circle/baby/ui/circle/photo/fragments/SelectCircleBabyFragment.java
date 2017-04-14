@@ -80,7 +80,9 @@ public class SelectCircleBabyFragment extends BasePresenterFragment {
     }
 
     private void setData(List<QueryByCircleBabyObj> objs) {
-        if(objs.size()>0){
+        if(objs.size() > 0){
+            llNoData.setVisibility(View.GONE);
+        }else{
             llNoData.setVisibility(View.VISIBLE);
             return;
         }
