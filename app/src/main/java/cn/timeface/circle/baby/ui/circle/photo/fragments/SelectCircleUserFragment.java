@@ -80,7 +80,9 @@ public class SelectCircleUserFragment extends BasePresenterFragment {
     }
 
     private void setData(List<QueryByCircleUserObj> objs) {
-        if(objs.size()>0){
+        if(objs.size() > 0){
+            llNoData.setVisibility(View.GONE);
+        }else{
             llNoData.setVisibility(View.VISIBLE);
             return;
         }

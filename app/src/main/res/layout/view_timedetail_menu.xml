@@ -93,6 +93,27 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_top_btn"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="42dp"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_out"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="移出里程碑"
+            android:textColor="@color/text_color3"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/rl_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

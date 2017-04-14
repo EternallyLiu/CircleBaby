@@ -61,4 +61,14 @@
             android:visibility="gone" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/iv_cover"
+        android:text="时光详情"
+        android:textColor="#3B3B3B"
+        android:textSize="@dimen/text_medium"
+        />
 </RelativeLayout>
