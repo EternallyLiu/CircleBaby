@@ -60,6 +60,14 @@ public class ForgetPasswordActivity extends BaseAppCompatActivity implements IEv
         setContentView(R.layout.activity_forget_password);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ForgetPasswordActivity.this.finish();
+            }
+        });
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

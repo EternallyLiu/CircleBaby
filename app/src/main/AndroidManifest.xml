@@ -213,6 +213,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ForgetPasswordActivity"
+            android:label="忘记密码"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SetPasswordActivity"
