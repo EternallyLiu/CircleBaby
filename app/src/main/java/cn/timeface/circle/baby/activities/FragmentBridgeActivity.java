@@ -203,6 +203,13 @@ public class FragmentBridgeActivity extends BaseAppCompatActivity {
         context.startActivity(intent);
     }
 
+    public static void openWithNewTask(Context context, String fragmentName, Bundle fragmentArgs) {
+        Intent intent = generateIntent(context, fragmentName);
+        intent.putExtras(fragmentArgs);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
     public static void open(Context context, String fragmentName, String actionBarTitle, Bundle fragmentArgs) {
         Intent intent = generateIntent(context, fragmentName);
         intent.putExtra(ACTION_BAR_TITLE, actionBarTitle);

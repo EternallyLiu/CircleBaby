@@ -138,7 +138,7 @@ public class TabMainPushHandler implements IEventBus {
 
     /*-------------------------------------------推送消息处理-------------------------------------------*/
     public void handleCirclePushMessage(MiPushMsgInfoObj pushMsgInfo) {
-        if (pushMsgInfo.getCircleId() > 0 && FastData.getCircleObj() != null && FastData.getCircleUserInfo() != null && FastData.getCircleUserId() > 0 && FastData.getCircleId() != pushMsgInfo.getCircleId()) {
+        if (pushMsgInfo.getCircleId() > 0 && FastData.getCircleId() != pushMsgInfo.getCircleId()) {
             // 当前圈子未缓存，先获取最新圈数据
             reqCircleInfo(pushMsgInfo);
         } else if (pushMsgInfo.getType() == MiPushConstant.PUSH_TYPE_CIRCLE_NEW_PHOTO_LIKED
@@ -221,7 +221,7 @@ public class TabMainPushHandler implements IEventBus {
     }
 
     private void reqCirclePhotoDetail(MiPushMsgInfoObj pushMsgInfo) {
-        apiService.queryCirclePhotoById(pushMsgInfo.getPhotoId())
+        apiService.queryCirclePhotoById(pushMsgInfo.getMediaId())
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(
                         response -> {
