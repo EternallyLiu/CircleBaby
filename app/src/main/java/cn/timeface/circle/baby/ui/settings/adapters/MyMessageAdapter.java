@@ -18,7 +18,6 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.settings.beans.MessageBean;
-import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
@@ -120,7 +119,6 @@ public class MyMessageAdapter extends BaseEmptyAdapter {
             }
             if (spannableString != null) builder.append(spannableString);
             builder.append(item.getContent());
-            LogUtil.showLog(spannableString.length()+"");
             builder.setSpan(SpannableUtils.getTextColor(context(), R.color.sea_buckthorn), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             tvContent.setText(builder);
         } else if (item.getIdentifier() >= 3000 && item.getIdentifier() < 4000) {
