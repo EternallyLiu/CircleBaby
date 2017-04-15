@@ -373,7 +373,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             case R.id.et_input_title:
                 Observable.defer(() -> Observable.just(content))
                         .filter(s -> {
-                            if (!s.equals(contentObj.getTitle()) && Utils.getByteSize(s) > 20 && s.length() > 10) {
+                            if (!s.equals(contentObj.getTitle()) && Utils.getStringLength(s) > 20) {
                                 s = contentObj.getTitle();
                                 view.setText(s);
                                 view.setSelection(s.length());
@@ -399,7 +399,7 @@ public class PublishAdapter extends BaseAdapter implements InputListenerEditText
             case R.id.et_input:
                 Observable.defer(() -> Observable.just(content))
                         .filter(s -> {
-                            if (!s.equals(contentObj.getTitle()) && Utils.getByteSize(s) > (getType() == TYPE_TIMELINE ? 400 : 1200) && s.length() > (getType() == TYPE_TIMELINE ? 200 : 600)) {
+                            if (!s.equals(contentObj.getTitle()) && Utils.getStringLength(s) > (getType() == TYPE_TIMELINE ? 400 : 1200)) {
                                 s = contentObj.getContent();
                                 view.setText(s);
                                 view.setSelection(s.length());
