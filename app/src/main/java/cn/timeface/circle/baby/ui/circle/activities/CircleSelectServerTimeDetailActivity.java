@@ -76,7 +76,8 @@ public class CircleSelectServerTimeDetailActivity extends BasePresenterAppCompat
 
         timeLineObj = getIntent().getParcelableExtra("time_line_obj");
         selMedias = getIntent().getParcelableArrayListExtra("medias");
-        tvDate.setText(DateUtil.formatDate("MM月dd日", timeLineObj.getCircleTimeline().getRecordDate()) + DateUtils.formatDateTime(this, timeLineObj.getCircleTimeline().getRecordDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
+        tvDate.setText(DateUtil.formatDate("MM月dd日", timeLineObj.getCircleTimeline().getCreateDate())
+                + DateUtils.formatDateTime(this, timeLineObj.getCircleTimeline().getCreateDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
         tvTitle.setText(timeLineObj.getCircleTimeline().getContent());
         tvCancel.setOnClickListener(this);
         tvFinish.setOnClickListener(this);

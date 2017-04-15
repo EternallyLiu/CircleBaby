@@ -172,17 +172,19 @@ public class CircleTimelineObj extends CircleContentObj implements Parcelable {
         this.like = like;
     }
 
-    public TFOContentObj toTFOContentObj() {
-        TFOContentObj tfoContentObj = new TFOContentObj(DateUtil.formatDate("yyyy-MM-dd hh:kk:mm", getRecordDate()), toTFOResourceObjs());
+    public TFOContentObj toTFOContentObj(List<CircleMediaObj> selectMedias) {
+        TFOContentObj tfoContentObj = new TFOContentObj(DateUtil.formatDate("yyyy-MM-dd hh:kk:mm", getCreateDate()), toTFOResourceObjs(selectMedias));
         tfoContentObj.setContent(getContent());
         tfoContentObj.setExtra_mes(getTitle());
         return tfoContentObj;
     }
 
-    public List<TFOResourceObj> toTFOResourceObjs() {
+    public List<TFOResourceObj> toTFOResourceObjs(List<CircleMediaObj> selectMedias) {
         List<TFOResourceObj> tfoResourceObjs = new ArrayList<>();
-        for (MediaObj mediaObj : getMediaList()) {
-            tfoResourceObjs.add(mediaObj.toTFOResourceObj());
+        for (CircleMediaObj mediaObj : getMediaList()) {
+            if(selectMedias.contains(mediaObj)){
+                tfoResourceObjs.add(mediaObj.toTFOResourceObj());
+            }
         }
         return tfoResourceObjs;
     }
