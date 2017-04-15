@@ -98,38 +98,41 @@ public class BigNameActivity extends BaseAppCompatActivity implements View.OnCli
                     ToastUtil.showToast(getString(R.string.baby_real_name_submit_null));
                     return;
                 }
-                String n = mBabyObj.getName();
-                long time = mBabyObj.getBithday();
-                String b = mBabyObj.getBlood();
-                String s = mBabyObj.getAvatar();
-                int baby = s.indexOf("baby");
-                String objectKey = "";
-                if (baby > 0)
-                    objectKey = s.substring(baby);
-                apiService.editBabyInfo(time, URLEncoder.encode(b), mBabyObj.getGender(), URLEncoder.encode(n),
-                        URLEncoder.encode(realName), mBabyObj.getShowRealName() + "", objectKey)
-                        .compose(SchedulersCompat.applyIoSchedulers())
-                        .subscribe(response -> {
-                            if (response.success()) {
-                                apiService.queryBabyInfoDetail(mBabyObj.getBabyId())
-                                        .compose(SchedulersCompat.applyIoSchedulers())
-                                        .subscribe(babyInfoResponse -> {
-                                            if (babyInfoResponse.success()) {
-                                                mBabyObj = babyInfoResponse.getBabyInfo();
-                                                FastData.setBabyObj(mBabyObj);
-                                                EventBus.getDefault().post(new HomeRefreshEvent());
-                                                EventBus.getDefault().post(mBabyObj);
-                                                finish();
-                                            }
-                                        }, throwable -> {
-                                            Log.e(TAG, "queryBabyInfoDetail:", throwable);
-                                        });
-                            }
-                            btnSubmit.setEnabled(true);
-                            tvCount.setEnabled(true);
-                        }, throwable -> {
-                            Log.e(TAG, "editBabyInfo:", throwable);
-                        });
+                mBabyObj.setRealName(realName);
+                EventBus.getDefault().post(mBabyObj);
+                finish();
+//                String n = mBabyObj.getName();
+//                long time = mBabyObj.getBithday();
+//                String b = mBabyObj.getBlood();
+//                String s = mBabyObj.getAvatar();
+//                int baby = s.indexOf("baby");
+//                String objectKey = "";
+//                if (baby > 0)
+//                    objectKey = s.substring(baby);
+//                apiService.editBabyInfo(time, URLEncoder.encode(b), mBabyObj.getGender(), URLEncoder.encode(n),
+//                        URLEncoder.encode(realName), mBabyObj.getShowRealName() + "", objectKey)
+//                        .compose(SchedulersCompat.applyIoSchedulers())
+//                        .subscribe(response -> {
+//                            if (response.success()) {
+//                                apiService.queryBabyInfoDetail(mBabyObj.getBabyId())
+//                                        .compose(SchedulersCompat.applyIoSchedulers())
+//                                        .subscribe(babyInfoResponse -> {
+//                                            if (babyInfoResponse.success()) {
+//                                                mBabyObj = babyInfoResponse.getBabyInfo();
+//                                                FastData.setBabyObj(mBabyObj);
+//                                                EventBus.getDefault().post(new HomeRefreshEvent());
+//                                                EventBus.getDefault().post(mBabyObj);
+//                                                finish();
+//                                            }
+//                                        }, throwable -> {
+//                                            Log.e(TAG, "queryBabyInfoDetail:", throwable);
+//                                        });
+//                            }
+//                            btnSubmit.setEnabled(true);
+//                            tvCount.setEnabled(true);
+//                        }, throwable -> {
+//                            Log.e(TAG, "editBabyInfo:", throwable);
+//                        });
                 break;
             case R.id.back:
                 finish();
