@@ -26,6 +26,8 @@ public class UploadTaskProgress extends BaseModel implements Parcelable {
     public static final int TYPE_CIRCLETIMELINE = 90002;
     public static final int TYPE_LOCAL_URL = 90003;
 
+    public static final int TYPE_MEDIALIST = 90004;
+
     public static void saveTask(UploadTaskProgress taskProgress) {
         if (taskProgress != null) taskProgress.save();
     }

@@ -67,46 +67,58 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                     ApiFactory.getApi().getApiService().checkTeacher(item.getTeacher().getCircleUserId())
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(baseResponse -> {
+                                EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
                                 if (baseResponse.success()) {
-                                    EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
                                     deleteItem(postion);
                                 }
                                 else ToastUtil.showToast(context(), baseResponse.getInfo());
-                            }, throwable -> LogUtil.showError(throwable));
+                            }, throwable -> {
+                                EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
+                                LogUtil.showError(throwable);
+                            });
                 else
                     ApiFactory.getApi().getApiService().cancelTeacher(FastData.getCircleId(), item.getTeacher().getCircleUserId())
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(baseResponse -> {
+                                EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
                                 if (baseResponse.success()) {
-                                    EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
                                     deleteItem(postion);
                                 }
                                 else ToastUtil.showToast(context(), baseResponse.getInfo());
-                            }, throwable -> LogUtil.showError(throwable));
+                            }, throwable -> {
+                                EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
+                                LogUtil.showError(throwable);
+                            });
                 break;
             case 3:
                 if (FastData.getCircleUserInfo().isCreator())
                     ApiFactory.getApi().getApiService().start(0, FastData.getCircleId(), item.getTeacher().getCircleUserId())
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(baseResponse -> {
+                                EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
                                 if (baseResponse.success()) {
-                                    EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
                                     deleteItem(postion);
                                 }
                                 else ToastUtil.showToast(context(), baseResponse.getInfo());
-                            }, throwable -> LogUtil.showError(throwable));
+                            }, throwable -> {
+                                EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
+                                LogUtil.showError(throwable);
+                            });
                 break;
             default:
                 if (FastData.getCircleUserInfo().isCreator())
                     ApiFactory.getApi().getApiService().cancelTeacher(FastData.getCircleId(), item.getTeacher().getCircleUserId())
                             .compose(SchedulersCompat.applyIoSchedulers())
                             .subscribe(baseResponse -> {
+                                EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
                                 if (baseResponse.success()) {
-                                    EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
                                     deleteItem(postion);
                                 }
                                 else ToastUtil.showToast(context(), baseResponse.getInfo());
-                            }, throwable -> LogUtil.showError(throwable));
+                            }, throwable -> {
+                                EventBus.getDefault().post(new CirclePassThroughMessageEvent(MiPushConstant.TYPE_CIRCLE_TEACHER_AUTHORIZATION));
+                                LogUtil.showError(throwable);
+                            });
                 break;
         }
     }
@@ -150,7 +162,7 @@ public class TearcherOpproverAdapter extends BaseEmptyAdapter {
                 btnSubmit.setEnabled(FastData.getCircleUserInfo().isCreator() ? true : btnSubmit.isEnabled());
                 btnSubmit.setText(FastData.getCircleUserInfo().isCreator() ? context().getString(R.string.cancel_agree) : btnSubmit.getText());
                 GlideUtil.displayImageCircle(item.getTeacher().getCircleAvatarUrl(), ivIcon);
-                tvMessage.setText(String.format("%s 已通过家长%d/3", item.getMessage(),item.getAgreeUserList().size()));
+                tvMessage.setText(item.getMessage());
                 switch (item.getAgreeUserList().size()) {
                     case 0:
                         ivIcon1.setVisibility(View.GONE);

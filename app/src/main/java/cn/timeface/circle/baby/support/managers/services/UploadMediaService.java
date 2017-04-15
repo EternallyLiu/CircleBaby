@@ -54,6 +54,16 @@ public class UploadMediaService extends IntentService {
         context.startService(intent);
     }
 
+    public static void start(Context context, UploadTaskProgress taskProgress) {
+        if (taskProgress == null) return;
+        taskProgress.save();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(UploadTaskProgress.class.getSimpleName(), taskProgress);
+        Intent intent = new Intent(context, UploadMediaService.class);
+        intent.putExtras(bundle);
+        context.startService(intent);
+    }
+
     public static void start(Context context, TimeLineObj timeLineObj) {
         UploadTaskProgress taskProgress = new UploadTaskProgress(String.valueOf(timeLineObj.getTimeId()) + String.valueOf(UploadTaskProgress.TYPE_TIMELINE)
                 , timeLineObj.getTimeId()
@@ -139,7 +149,6 @@ public class UploadMediaService extends IntentService {
                 } catch (Exception e) {
                     LogUtil.showError(e);
                 }
-
                 break;
         }
 

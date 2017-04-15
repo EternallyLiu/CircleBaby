@@ -53,13 +53,17 @@ public class CircleByTimeMenuDialog extends BaseDialog {
         tvInputMobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (circleByTimeMenuListener!=null)
                 circleByTimeMenuListener.inputMobile();
+                dismiss();
             }
         });
         tvInputPc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (circleByTimeMenuListener!=null)
                 circleByTimeMenuListener.inputPc();
+                dismiss();
             }
         });
     }
