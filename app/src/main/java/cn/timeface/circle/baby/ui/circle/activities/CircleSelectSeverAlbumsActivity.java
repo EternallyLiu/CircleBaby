@@ -42,7 +42,6 @@ import cn.timeface.open.api.bean.obj.TFOContentObj;
 import cn.timeface.open.api.bean.obj.TFOPublishObj;
 import cn.timeface.open.api.bean.obj.TFOResourceObj;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -106,7 +105,10 @@ public class CircleSelectSeverAlbumsActivity extends BasePresenterAppCompatActiv
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(
                             response -> {
-                                allSelectMedias = response.getDataList();
+                                if(response.success()){
+                                    allSelectMedias = response.getDataList();
+                                    initPhotoTip();
+                                }
                             },
                             throwable -> {
                                 Log.e(TAG, throwable.getLocalizedMessage());
