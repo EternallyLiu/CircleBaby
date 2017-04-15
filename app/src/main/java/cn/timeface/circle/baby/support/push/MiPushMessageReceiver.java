@@ -237,6 +237,7 @@ public class MiPushMessageReceiver extends PushMessageReceiver {
                         /*---------------------------成长圈PUSH消息类型---------------------------*/
                         case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_MEMBER: // 新成员加图（定位圈首页）
                         case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_TEACHER_AUTHORIZATION: // 管理员发起老师认证（定位到认证列表页面）
+                        case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_JOIN_APPLY: // 新成员申请加入，给圈主push （定位到圈成员管理页）
                             // 仅携带circleId
                             MiPushMsgObj<Long> circleID = parseJsonObject(content, Long.class);
                             if (circleID != null && circleID.getInfo() > 0) {
