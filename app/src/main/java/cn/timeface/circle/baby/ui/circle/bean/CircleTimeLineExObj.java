@@ -89,9 +89,9 @@ public class CircleTimeLineExObj implements Parcelable, Comparable {
     @Override
     public int compareTo(@NonNull Object o) {
         CircleTimeLineExObj another = (CircleTimeLineExObj) o;
-        if(getCircleTimeline().getRecordDate() > another.getCircleTimeline().getRecordDate()){
+        if(getCircleTimeline().getCreateDate() > another.getCircleTimeline().getCreateDate()){
             return 1;
-        } else if(getCircleTimeline().getRecordDate() == another.getCircleTimeline().getRecordDate()){
+        } else if(getCircleTimeline().getCreateDate() == another.getCircleTimeline().getCreateDate()){
             return 0;
         } else {
             return -1;

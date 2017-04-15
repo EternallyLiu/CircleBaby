@@ -3,12 +3,14 @@ package cn.timeface.circle.baby.ui.circle.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkExObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleHomeworkObj;
@@ -54,6 +56,7 @@ public class CircleSelectServerHomeWorksEditActivity extends CircleSelectServeHo
                                             dataList.add(homeworkExObj);
                                         }
                                         this.allSelHomeWorks = dataList;
+                                        tvSelCount.setText(Html.fromHtml(String.format(getString(R.string.select_server_time_select_count), String.valueOf(allSelHomeWorks.size()))));
                                     }
                                     if (selectSchoolTaskFragment == null) {
                                         selectSchoolTaskFragment = CircleSelectSchoolTaskFragment.newInstance(circleId, allSelHomeWorks);
