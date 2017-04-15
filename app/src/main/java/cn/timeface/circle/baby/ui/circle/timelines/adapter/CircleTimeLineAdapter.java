@@ -147,7 +147,7 @@ public class CircleTimeLineAdapter extends BaseEmptyAdapter {
         RelativeLayout rlPicCount = ViewHolder.getView(contentView, R.id.rl_pic_count);
         tvDelete.setTag(R.id.recycler_item_click_tag, timelineObj);
         tvDelete.setOnClickListener(this);
-        tvDelete.setVisibility(FastData.getCircleUserInfo().getCircleUserType() == 1 || timelineObj.getPublisher().getCircleUserId() == FastData.getCircleUserId() ? View.VISIBLE : View.GONE);
+        tvDelete.setVisibility(FastData.getCircleUserInfo().isCreator()|| timelineObj.getPublisher().getCircleUserId() == FastData.getCircleUserId() ? View.VISIBLE : View.GONE);
         int count = doGrid(gv, position, timelineObj.getMediaList());
         if (count < timelineObj.getMediaList().size()) {
             rlPicCount.setVisibility(View.VISIBLE);

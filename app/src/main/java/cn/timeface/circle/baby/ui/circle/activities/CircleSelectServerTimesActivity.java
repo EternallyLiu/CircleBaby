@@ -141,6 +141,9 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                         if (response.success()) {
                                             this.allSelectTimeLines.addAll(response.getDataList());
 
+                                            for(CircleTimeLineExObj timeLineExObj : response.getDataList()){
+                                                this.allSelectMedias.addAll(timeLineExObj.getCircleTimeline().getMediaList());
+                                            }
                                             tfStateView.setVisibility(View.GONE);
                                             allTimeFragment = CircleServerTimeFragment.newInstance(
                                                     CircleSelectTimeTypeDialog.TIME_TYPE_ALL,
@@ -191,7 +194,7 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                             //按月份分组时光
                                             HashMap<String, List<CircleTimeLineExObj>> timelineMap = new HashMap<>();
                                             for (CircleTimeLineExObj timeLineExObj : allSelectTimeLines) {
-                                                String key = DateUtil.formatDate("yyyy-MM", timeLineExObj.getCircleTimeline().getRecordDate());
+                                                String key = DateUtil.formatDate("yyyy-MM", timeLineExObj.getCircleTimeline().getCreateDate());
                                                 if (timelineMap.containsKey(key)) {
                                                     timelineMap.get(key).add(timeLineExObj);
                                                 } else {
@@ -213,9 +216,9 @@ public class CircleSelectServerTimesActivity extends BasePresenterAppCompatActiv
                                                 List<CircleTimeLineExObj> timeLineObjs = (List<CircleTimeLineExObj>) entry.getValue();
 
                                                 //content list，代表一个时光
-                                                List<TFOContentObj> tfoContentObjs = new ArrayList<>(allSelectTimeLines.size());
-                                                for (CircleTimeLineExObj timeLineObj : allSelectTimeLines) {
-                                                    tfoContentObjs.add(timeLineObj.getCircleTimeline().toTFOContentObj());
+                                                List<TFOContentObj> tfoContentObjs = new ArrayList<>(timeLineObjs.size());
+                                                for (CircleTimeLineExObj timeLineObj : timeLineObjs) {
+                                                    tfoContentObjs.add(timeLineObj.getCircleTimeline().toTFOContentObj(allSelectMedias));
                                                 }
 
                                                 TFOPublishObj tfoPublishObj = new TFOPublishObj(key, tfoContentObjs);

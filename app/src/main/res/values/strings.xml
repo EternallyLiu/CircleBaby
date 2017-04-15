@@ -906,7 +906,7 @@
     <string name="please_input_baby_real_name_tip">小贴士： 请填写宝贝真实姓名</string>
     <string name="activity_look_homework">查看作业</string>
     <string name="activity_teacher_author_title">教师认证</string>
-    <string name="teacher_empty_message">暂无教师认证信息</string>
+    <string name="teacher_empty_message">暂无教师认证信息,\n圈创建者可在圈成员管理中进入圈成员详情页发起教师认证</string>
     <string name="please_send_some_pic">发张照片吧~</string>
     <string name="active_album_null">您还没有活动相册哦~</string>
     <string name="do_not_get_datat">没有获取到数据</string>
@@ -925,9 +925,11 @@
     <string name="get_baby_faild">无法获取到宝宝信息</string>
     <string name="tab_main_title_1">成长轴</string>
     <string name="agree_teacher">我同意</string>
-    <string name="agree_complete">已完成</string>
+    <string name="agree_complete">认证通过</string>
     <string name="agreed">已同意</string>
     <string name="cancel_agree">取消认证</string>
     <string name="read_all">全部已读</string>
+
+    <string name="message_no_data">天啦噜！内容是空的，你看不到我了！</string>
 
 </resources>

@@ -1,11 +1,13 @@
 package cn.timeface.circle.baby.ui.settings.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,10 +18,10 @@ import cn.timeface.circle.baby.support.utils.DateUtil;
 import cn.timeface.circle.baby.support.utils.GlideUtil;
 import cn.timeface.circle.baby.ui.circle.adapters.BaseEmptyAdapter;
 import cn.timeface.circle.baby.ui.settings.beans.MessageBean;
-import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.Utils.SpannableUtils;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.ViewHolder;
+import cn.timeface.circle.baby.views.TFStateView;
 
 /**
  * author : wangshuai Created on 2017/4/13
@@ -50,6 +52,35 @@ public class MyMessageAdapter extends BaseEmptyAdapter {
                 doMessage(contentView, position);
                 break;
         }
+    }
+
+    protected void doEmpty(View contentView) {
+        TFStateView tfStateView = ViewHolder.getView(contentView, R.id.tf_stateView);
+        emptyLayoutParams = (RecyclerView.LayoutParams) contentView.getLayoutParams();
+        if (emptyLayoutParams == null) {
+            emptyLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+        if (getRetryListener() != null)
+            tfStateView.setOnRetryListener(getRetryListener());
+        switch (getEmptyItem().getOperationType()) {
+            case -1:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
+                tfStateView.showException(getEmptyItem().getThrowable());
+                break;
+            case 0:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
+                tfStateView.empty(R.string.message_no_data);
+                break;
+            case 1:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
+                tfStateView.loading();
+                break;
+            case 2:
+                emptyLayoutParams.height = RecyclerView.LayoutParams.MATCH_PARENT;
+                tfStateView.finish();
+                break;
+        }
+        contentView.setLayoutParams(emptyLayoutParams);
     }
 
     private void doMessage(View contentView, int position) {
@@ -88,7 +119,6 @@ public class MyMessageAdapter extends BaseEmptyAdapter {
             }
             if (spannableString != null) builder.append(spannableString);
             builder.append(item.getContent());
-            LogUtil.showLog(spannableString.length()+"");
             builder.setSpan(SpannableUtils.getTextColor(context(), R.color.sea_buckthorn), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             tvContent.setText(builder);
         } else if (item.getIdentifier() >= 3000 && item.getIdentifier() < 4000) {

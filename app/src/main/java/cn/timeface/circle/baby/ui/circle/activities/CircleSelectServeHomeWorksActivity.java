@@ -151,8 +151,16 @@ public class CircleSelectServeHomeWorksActivity extends BaseAppCompatActivity
                                                 sbHomeworkIds.append(",");
                                             }
 
-                                            sbTaskIds.replace(sbTaskIds.lastIndexOf(","), sbTaskIds.lastIndexOf(",") + 1, "],");
-                                            sbHomeworkIds.replace(sbHomeworkIds.lastIndexOf(","), sbHomeworkIds.lastIndexOf(",") + 1, "],");
+                                            if(sbTaskIds.lastIndexOf(",") > 0){
+                                                sbTaskIds.replace(sbTaskIds.lastIndexOf(","), sbTaskIds.lastIndexOf(",") + 1, "],");
+                                            } else {
+                                                sbTaskIds.append("],");
+                                            }
+                                            if(sbHomeworkIds.lastIndexOf(",") > 0){
+                                                sbHomeworkIds.replace(sbHomeworkIds.lastIndexOf(","), sbHomeworkIds.lastIndexOf(",") + 1, "],");
+                                            } else {
+                                                sbHomeworkIds.append("],");
+                                            }
                                             sbTaskIds.append(sbHomeworkIds)
                                                     .append("\"circleId\":").append(circleId).append("}");
 

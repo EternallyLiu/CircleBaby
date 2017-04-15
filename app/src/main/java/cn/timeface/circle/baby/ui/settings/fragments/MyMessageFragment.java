@@ -149,7 +149,7 @@ public class MyMessageFragment extends BaseFragment implements BaseAdapter.OnIte
                     .doOnNext(myMessageResponse -> helper.finishTFPTRRefresh())
                     .subscribe(myMessageResponse -> {
                         adapter.getEmptyItem().setOperationType(0);
-                        adapter.notifyDataSetChanged();
+//                        adapter.notifyDataSetChanged();
                         if (myMessageResponse.success())
                             setDataList(myMessageResponse.getDataList());
                         else ToastUtil.showToast(getActivity(), myMessageResponse.getInfo());

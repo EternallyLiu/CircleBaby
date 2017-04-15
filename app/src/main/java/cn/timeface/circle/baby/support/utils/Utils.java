@@ -875,6 +875,22 @@ public class Utils {
         return count;
     }
 
+    /**
+     * 计算字符串长度
+     * @param str
+     * @return
+     */
+    public static int getStringLength(String str) {
+        int count = 0;
+        int length = str.length();
+        for (int i = 0; i < length; i++) {
+            if (getByteSize(str.substring(i, i + 1)) <= 1) {
+                count++;
+            } else count += 2;
+        }
+        return count;
+    }
+
     public static String subString(String text, int size) {
         if (TextUtils.isEmpty(text))
             return null;

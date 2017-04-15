@@ -26,6 +26,7 @@ import cn.timeface.circle.baby.ui.circle.bean.GetCirclePhotoByUserObj;
 import cn.timeface.circle.baby.ui.circle.photo.adapters.CirclePhotosAdapter;
 import cn.timeface.circle.baby.ui.circle.response.QueryCirclePhotoResponse;
 import cn.timeface.circle.baby.ui.growth.activities.SelectServerPhotoActivity;
+import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.views.TFStateView;
 import rx.Observable;
 
@@ -180,7 +181,7 @@ public class CirclePhotoFragment extends BasePresenterFragment {
                                     }
                                 },
                                 throwable -> {
-                                    Log.e(TAG, throwable.getLocalizedMessage());
+                                    LogUtil.showError(throwable);
                                 }
                         )
         );

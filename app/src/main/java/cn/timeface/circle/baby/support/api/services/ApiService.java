@@ -2002,7 +2002,7 @@ public interface ApiService {
     Observable<BaseResponse> deleteTask(@Query("taskId") long taskId);
 
     @POST("teacherAuth/cancelAuth")
-    Observable<BaseResponse> cancelTeacher(@Query("circleId") long circleId,@Query("circleUserId") long circleUserId);
+    Observable<BaseResponse> cancelTeacher(@Query("circleId") long circleId, @Query("circleUserId") long circleUserId);
 
 
     @POST("babyMsgInfo/queryMsgList")
@@ -2015,5 +2015,15 @@ public interface ApiService {
 
     @POST("auth/deviceBinding")
     Observable<BaseResponse> registerPush();
+
+    /**
+     * 导入手机照片
+     * @param circleId
+     * @param medias
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("circleMedia/batchAdd")
+    Observable<BaseResponse> uploadSomeMedia(@Field("circleId") long circleId, @Field("medias") String medias);
 
 }
