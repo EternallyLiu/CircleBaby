@@ -119,8 +119,9 @@ public class MyMessageAdapter extends BaseEmptyAdapter {
             }
             if (spannableString != null) builder.append(spannableString);
             builder.append(item.getContent());
-            if (spannableString != null)
+            if (spannableString != null){
                 builder.setSpan(SpannableUtils.getTextColor(context(), R.color.sea_buckthorn), 0, spannableString.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
             tvContent.setText(builder);
         } else if (item.getIdentifier() >= 3000 && item.getIdentifier() < 4000) {
             tvRelative.setTextColor(context().getResources().getColor(R.color.dodger_blue));
