@@ -73,6 +73,7 @@ public class BigNameActivity extends BaseAppCompatActivity implements View.OnCli
         ivSwichBigName.setChecked(mBabyObj.getShowRealName() == 0);
         tvMine.setText(R.string.baby_real_name_title);
         tvCount.setText(R.string.baby_real_name_save);
+        tvCount.setVisibility(View.GONE);
         rlSettingBigName.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         tvCount.setOnClickListener(this);

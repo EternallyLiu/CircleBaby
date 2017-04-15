@@ -40,7 +40,7 @@ import rx.subjects.PublishSubject;
  * email : sy0725work@gmail.com
  */
 public class OSSManager {
-    static OSSManager ossManager;
+    private static volatile OSSManager ossManager;
     private final OSS oss;
     private final String bucket;
     private final String endPoint;
@@ -94,7 +94,11 @@ public class OSSManager {
 
     public static OSSManager getOSSManager(Context context) {
         if (ossManager == null) {
-            ossManager = new OSSManager(context);
+            synchronized (OSSManager.class) {
+                if (ossManager == null) {
+                    ossManager = new OSSManager(context.getApplicationContext());
+                }
+            }
         }
         return ossManager;
     }

@@ -47,6 +47,7 @@ import butterknife.OnClick;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
 import cn.timeface.circle.baby.activities.VideoPlayActivity;
+import cn.timeface.circle.baby.dialogs.TFDialog;
 import cn.timeface.circle.baby.dialogs.TimeLineActivityMenuDialog;
 import cn.timeface.circle.baby.events.CommentSubmit;
 import cn.timeface.circle.baby.events.DeleteTimeLineEvent;
@@ -112,6 +113,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     private LikeUserList likeUserList;
 
     private boolean isEditor;
+    private boolean isMilestone = false;
     private boolean commentable = false;
     private GridLayoutManager layoutmanager;
 
@@ -124,6 +126,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
             currentTimeLineObj = bundle.getParcelable(TimeLineObj.class.getName());
         }
         isEditor = bundle.getBoolean("isEditor", true);
+        isMilestone = bundle.getBoolean("isMilestone", false);
         if (bundle != null && bundle.containsKey("allDetailsListPosition"))
             allDetailsListPosition = bundle.getInt("allDetailsListPosition", -1);
         commentable = bundle.getBoolean("commentable", false);
@@ -138,7 +141,7 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         ButterKnife.bind(this, contentView);
         setActionBar(toolbar);
         initActionBar();
-        title.setText(FastData.getBabyObj().getNickName());
+        title.setText(isMilestone? currentTimeLineObj.getMilestone() : FastData.getBabyObj().getNickName());
         initRecyclerView();
         etCommment.setOnEditorActionListener(this);
         etCommment.setOnFocusChangeListener(this);
@@ -205,6 +208,15 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
         LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
         Bundle bundle = new Bundle();
         bundle.putBoolean("isEditor", isEditor);
+        bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
+        FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
+    }
+
+    public static void open(Context context, TimeLineObj timeLineObj, boolean isEditor,boolean isMilestone) {
+        LogUtil.showLog(timeLineObj == null ? "null" : timeLineObj.getMediaList().size() + "");
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isEditor", isEditor);
+        bundle.putBoolean("isMilestone", isMilestone);
         bundle.putParcelable(TimeLineObj.class.getName(), timeLineObj);
         FragmentBridgeActivity.open(context, TimeFaceDetailFragment.class.getSimpleName(), bundle);
     }
@@ -312,7 +324,11 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_more) {
-            new TimeLineActivityMenuDialog(getActivity()).setAllDetailsListPosition(allDetailsListPosition).share(currentTimeLineObj);
+            if(isMilestone){
+                new TimeLineActivityMenuDialog(getActivity(),this).setMilestoneInit().show();
+            }else{
+                new TimeLineActivityMenuDialog(getActivity()).setAllDetailsListPosition(allDetailsListPosition).share(currentTimeLineObj);
+            }
         } else if (item.getItemId() == R.id.action_smail_image) {
             lookup.setShowSmail(!lookup.isShowSmail());
             adapter.notifyDataSetChanged();
@@ -458,6 +474,35 @@ public class TimeFaceDetailFragment extends BaseFragment implements BaseAdapter.
                     etCommment.setFocusableInTouchMode(true);
                     showKeyboard();
                 }
+                break;
+            case R.id.rl_out:
+                TFDialog tfDialog = TFDialog.getInstance();
+                tfDialog.setTitle("提示");
+                tfDialog.setMessage("确定把这条记录移出里程碑吗？");
+                tfDialog.setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tfDialog.dismiss();
+                    }
+                });
+                tfDialog.setPositiveButton("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        tfDialog.dismiss();
+                        apiService.removeTimeFormMilestone(currentTimeLineObj.getMilestoneId(),currentTimeLineObj.getTimeId())
+                                .compose(SchedulersCompat.applyIoSchedulers())
+                                .subscribe(response -> {
+                                    if (response.success()) {
+                                        getActivity().finish();
+                                    } else {
+                                        ToastUtil.showToast(response.getInfo());
+                                    }
+                                }, error -> {
+                                    Log.e("MilestoneMenuDialog", "delMilestone:");
+                                    error.printStackTrace();
+                                });
+                    }
+                }).show(getChildFragmentManager(),"");
                 break;
         }
     }

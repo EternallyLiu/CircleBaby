@@ -124,8 +124,8 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
                 .compose(SchedulersCompat.applyIoSchedulers())
                 .subscribe(circleTimeLineDetailResponse -> {
                     if (circleTimeLineDetailResponse.success())
-                        open(context,circleTimeLineDetailResponse.getCircleTimelineInfo());
-                },throwable -> LogUtil.showError(throwable));
+                        open(context, circleTimeLineDetailResponse.getCircleTimelineInfo());
+                }, throwable -> LogUtil.showError(throwable));
     }
 
     @Override
@@ -497,8 +497,8 @@ public class CircleTimeLineDetailActivitiy extends BaseAppCompatActivity impleme
 
     private void share() {
         String imgUrl = "";
-        String title = currentTimeLineObj.getPublisher().getCircleNickName() + "向您分享了"+FastData.getCircleObj().getCircleName();
-        String content = currentTimeLineObj.getPublisher().getCircleNickName()+"分享了"+FastData.getBabyObj().getRealName()+"在"+FastData.getCircleObj().getCircleName()+"的最新动态，你也来看看吧!";
+        String title = FastData.getCircleUserInfo().getCircleNickName() + "向您分享了一条圈动态";
+        String content = FastData.getCircleUserInfo().getCircleNickName() + "分享了" + FastData.getCircleObj().getCircleName() + "中的一条动态，你也来看看吧!";
         String url = BuildConfig.API_URL + getString(R.string.share_url_circle_time_line, currentTimeLineId);
         new ShareDialog(this).share(title, content, ShareSdkUtil.getImgStrByResource(this, R.drawable.ic_laucher_quadrate), url);
     }

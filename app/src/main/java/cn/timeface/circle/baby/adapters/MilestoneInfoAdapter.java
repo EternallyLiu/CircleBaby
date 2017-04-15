@@ -69,7 +69,7 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         holder.ivCover.setLayoutParams(layoutParams);
         holder.rlMilestone.setLayoutParams(layoutParams);
         holder.tvTime.setText(DateUtil.formatDate("yyyy年MM月dd日",item.getDate()));
-
+        holder.tvContent.setText(item.getContent());
         if(item.getType()==1){
             holder.ivVideo.setVisibility(View.VISIBLE);
         }else{
@@ -94,6 +94,8 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
         ImageView ivCover;
         @Bind(R.id.tv_time)
         TextView tvTime;
+        @Bind(R.id.tv_content)
+        TextView tvContent;
         @Bind(R.id.iv_video)
         ImageView ivVideo;
         @Bind(R.id.rl_milestone)
@@ -111,7 +113,7 @@ public class MilestoneInfoAdapter extends BaseRecyclerAdapter<TimeLineObj> {
 
         @Override
         public void onClick(View v) {
-            TimeFaceDetailFragment.open(v.getContext(),timeLineObj,false);
+            TimeFaceDetailFragment.open(v.getContext(),timeLineObj,true,true);
 //            TimeLineDetailActivity.open(context,timeLineObj);
         }
     }

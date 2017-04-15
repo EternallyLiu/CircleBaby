@@ -86,13 +86,7 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
                 .subscribe(
                         response -> {
                             if (response.success()) {
-                                if (response.getDataList().size() > 0) {
-                                    llNoData.setVisibility(View.GONE);
-                                    setData(response.getDataList());
-                                } else {
-                                    llNoData.setVisibility(View.VISIBLE);
-                                }
-
+                                setData(response.getDataList());
                             } else {
                                 ToastUtil.showToast(response.getInfo());
                             }
@@ -104,6 +98,12 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
     }
 
     private void setData(List<CircleActivityAlbumObj> AlbumObjs) {
+        if (AlbumObjs.size() > 0) {
+            llNoData.setVisibility(View.GONE);
+        } else {
+            llNoData.setVisibility(View.VISIBLE);
+            return;
+        }
         if (circleActivityAdapter == null) {
             circleActivityAdapter = new CircleActivityAdapter(getActivity(), AlbumObjs, clickListener);
             rvContent.setLayoutManager(new GridLayoutManager(getActivity(), 2));
