@@ -27,6 +27,7 @@ import cn.timeface.circle.baby.support.api.models.objs.MyUploadFileObj;
 import cn.timeface.circle.baby.support.oss.OSSManager;
 import cn.timeface.circle.baby.support.oss.uploadservice.UploadFileObj;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.UploadTaskProgress;
 
 public class UploadService extends Service {
 
@@ -52,6 +53,9 @@ public class UploadService extends Service {
         Intent intent = new Intent(context, UploadService.class);
         intent.putStringArrayListExtra("localurls", (ArrayList<String>) localUrls);
         context.startService(intent);
+        long taskId=System.currentTimeMillis();
+        UploadTaskProgress taskProgress = new UploadTaskProgress( taskId+ "" + UploadTaskProgress.TYPE_LOCAL_URL, taskId, localUrls);
+        taskProgress.save();
     }
 
     public static void start(Context context, int timeId, List<String> localUrls) {
@@ -59,6 +63,8 @@ public class UploadService extends Service {
         intent.putStringArrayListExtra("localurls", (ArrayList<String>) localUrls);
         intent.putExtra("timeId", timeId);
         context.startService(intent);
+        UploadTaskProgress taskProgress = new UploadTaskProgress(timeId + "" + UploadTaskProgress.TYPE_LOCAL_URL, timeId, localUrls);
+        taskProgress.save();
     }
 
     public static void stop(Context context) {
@@ -88,7 +94,7 @@ public class UploadService extends Service {
     }
 
     private void uploadNext() {
-        LogUtil.showLog("urlArray size:"+urlArray.size());
+        LogUtil.showLog("urlArray size:" + urlArray.size());
         if (isCompeleteUpload && (localUrls == null || localUrls.size() <= 0)) {
             if (urlArray.size() > 0) {
                 currentTimeId = urlArray.keyAt(0);
@@ -96,8 +102,8 @@ public class UploadService extends Service {
                 count = 0;
                 uploadImage(localUrls.get(count));
                 urlArray.remove(currentTimeId);
-            }else stopSelf();
-            LogUtil.showLog("currentTimeid=="+currentTimeId+"----");
+            } else stopSelf();
+            LogUtil.showLog("currentTimeid==" + currentTimeId + "----");
         }
     }
 
@@ -105,7 +111,7 @@ public class UploadService extends Service {
         if (TextUtils.isEmpty(path)) {
             return;
         }
-        LogUtil.showLog("count ============ " + count+"------size:"+localUrls.size());
+        LogUtil.showLog("count ============ " + count + "------size:" + localUrls.size());
         OSSManager ossManager = OSSManager.getOSSManager(this);
         isCompeleteUpload = false;
         new Thread() {
@@ -189,7 +195,6 @@ public class UploadService extends Service {
                             model.setNeedUpload(false);
                             model.update();
                         }
-                        LogUtil.showLog("uploadImage  objectKey============ " + objectKey);
                     } catch (Exception e) {
                         LogUtil.showError(e);
                     }

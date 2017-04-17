@@ -225,7 +225,7 @@ public class TimeLineObj extends BaseObj implements Parcelable, Comparable {
     }
 
     public TFOContentObj toTFOContentObj() {
-        TFOContentObj tfoContentObj = new TFOContentObj(DateUtil.formatDate("yyyy-MM-dd hh:kk:mm", getDate()), toTFOResourceObjs());
+        TFOContentObj tfoContentObj = new TFOContentObj(DateUtil.formatDate("yyyy-MM-dd hh:kk:mm", getDotime()), toTFOResourceObjs());
         tfoContentObj.setContent(getContent());
         return tfoContentObj;
     }

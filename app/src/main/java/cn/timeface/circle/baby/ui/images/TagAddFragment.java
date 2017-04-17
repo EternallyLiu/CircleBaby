@@ -159,7 +159,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     private void initHisList() {
         if (tagHis.getChildCount() > 0)
             tagHis.removeAllViews();
-        if (hisList != null || hisList.size() > 0) {
+        if (hisList != null && hisList.size() > 0) {
             tvHisTag.setVisibility(View.VISIBLE);
             vHisTag.setVisibility(View.VISIBLE);
             tagHis.setVisibility(View.VISIBLE);
@@ -185,7 +185,7 @@ public class TagAddFragment extends BaseFragment implements TextWatcher, View.On
     private void initRecomment() {
         if (tagSuggest.getChildCount() > 0)
             tagSuggest.removeAllViews();
-        if (recommentList != null || recommentList.size() > 0) {
+        if (recommentList != null && recommentList.size() > 0) {
             tvTag.setVisibility(View.VISIBLE);
             vTag.setVisibility(View.VISIBLE);
             tagSuggest.setVisibility(View.VISIBLE);

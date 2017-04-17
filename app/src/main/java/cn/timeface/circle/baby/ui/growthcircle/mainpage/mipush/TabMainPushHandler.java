@@ -19,6 +19,8 @@ import cn.timeface.circle.baby.support.api.services.ApiService;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
+import cn.timeface.circle.baby.ui.circle.bean.GrowthCircleObj;
+import cn.timeface.circle.baby.ui.circle.groupmembers.activity.GroupMembersActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.CircleTimeLineDetailActivitiy;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.HomeWorkActivity;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.SchoolTaskDetailActivity;
@@ -165,6 +167,10 @@ public class TabMainPushHandler implements IEventBus {
             case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_TEACHER_AUTHORIZATION: // 管理员发起老师认证（定位到认证列表页面）
                 // 仅携带circleId
                 TeacherAuthoActivity.open(context, pushMsgInfo.getCircleId());
+                break;
+            case MiPushConstant.PUSH_TYPE_CIRCLE_NEW_JOIN_APPLY: // 新成员申请加入，给圈主push （定位到圈成员管理页）
+                // 仅携带circleId
+                GroupMembersActivity.open(context, GrowthCircleObj.getInstance());
                 break;
             case MiPushConstant.PUSH_TYPE_CIRCLE_TEACHER_NEW_PRODUCTION: // 老师创建新作品（定位到该作品的预览页）
             case MiPushConstant.PUSH_TYPE_CIRCLE_PRODUCTION_REFERENCED: // 发布的照片被别人引用做书并订单支付成功（定位到该作品的预览页）

@@ -126,6 +126,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public int getCount() {
+        if (listData == null) listData = new ArrayList<T>(0);
         return listData.size();
     }
 

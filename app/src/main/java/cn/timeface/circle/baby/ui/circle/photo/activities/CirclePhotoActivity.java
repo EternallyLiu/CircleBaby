@@ -1,16 +1,24 @@
 package cn.timeface.circle.baby.ui.circle.photo.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,14 +28,22 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.timeface.circle.baby.R;
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.SelectPhotoActivity;
 import cn.timeface.circle.baby.constants.TypeConstants;
+import cn.timeface.circle.baby.support.api.models.objs.ImgObj;
+import cn.timeface.circle.baby.support.api.models.objs.MediaObj;
 import cn.timeface.circle.baby.support.managers.listeners.IEventBus;
+import cn.timeface.circle.baby.support.managers.services.UploadMediaService;
 import cn.timeface.circle.baby.support.mvp.bases.BasePresenterAppCompatActivity;
+import cn.timeface.circle.baby.support.utils.FastData;
+import cn.timeface.circle.baby.support.utils.ToastUtil;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
 import cn.timeface.circle.baby.ui.circle.bean.CircleMediaObj;
 import cn.timeface.circle.baby.ui.circle.bean.CirclePhotoMonthObj;
@@ -42,9 +58,13 @@ import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleBabyFragmen
 import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleTimeFragment;
 import cn.timeface.circle.baby.ui.circle.photo.fragments.SelectCircleUserFragment;
 import cn.timeface.circle.baby.ui.circle.timelines.activity.PublishActivity;
+import cn.timeface.circle.baby.ui.circle.timelines.adapter.PublishAdapter;
 import cn.timeface.circle.baby.ui.circle.timelines.events.CircleMediaEvent;
+import cn.timeface.circle.baby.ui.timelines.Utils.JSONUtils;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
+import cn.timeface.circle.baby.ui.timelines.beans.UploadTaskProgress;
 import cn.timeface.circle.baby.views.TFStateView;
+import rx.Observable;
 
 /**
  * 圈照片
@@ -84,7 +104,29 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
     private ArrayList<CircleMediaObj> mediaList;
     private int babyId;
     private String babyName;
+    private AlertDialog progressDialog;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_circle_photo);
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
+        tfStateView.finish();
+        tvContentType.setOnClickListener(this);
+        circleId = getIntent().getLongExtra("circle_id", 0);
+        circleUserInfo = getIntent().getParcelableExtra("circleUserInfo");
+        if (circleUserInfo != null) {
+            circleId = circleUserInfo.getCircleId();
+        }
+        user = getIntent().getBooleanExtra("user", false);
+        atBaby = getIntent().getBooleanExtra("at_baby", false);
+        babyId = getIntent().getIntExtra("baby_id", 0);
+        babyName = getIntent().getStringExtra("baby_name");
+    }
 
     public static void open(Context context, long circleId) {
         Intent intent = new Intent(context, CirclePhotoActivity.class);
@@ -106,27 +148,6 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         intent.putExtra("baby_id", babyId);
         intent.putExtra("at_baby", atBaby);
         context.startActivity(intent);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_circle_photo);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("");
-        tfStateView.finish();
-        tvContentType.setOnClickListener(this);
-        circleId = getIntent().getLongExtra("circle_id", 0);
-        circleUserInfo = getIntent().getParcelableExtra("circleUserInfo");
-        if (circleUserInfo != null) {
-            circleId = circleUserInfo.getCircleId();
-        }
-        user = getIntent().getBooleanExtra("user", false);
-        atBaby = getIntent().getBooleanExtra("at_baby", false);
-        babyId = getIntent().getIntExtra("baby_id", 0);
-        babyName = getIntent().getStringExtra("baby_name");
     }
 
     @Override
@@ -378,9 +399,77 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
         }
     }
 
+
     @Override
     public void inputMobile() {
-        PublishActivity.open(this);
+//        PublishActivity.open(this);
+        SelectPhotoActivity.openForResult(this, new ArrayList<ImgObj>(0), PublishAdapter.MAX_PIC_TIMELINE_COUNT, PublishActivity.PICTURE);
+    }
+
+    private void hideProgress() {
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+
+    private void showProgress() {
+        if (progressDialog == null) {
+            progressDialog = new AlertDialog.Builder(this).setView(initProgress()).show();
+            progressDialog.setCanceledOnTouchOutside(false);
+            Window window = progressDialog.getWindow();
+            window.setGravity(Gravity.CENTER);
+            window.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#00000000")));
+            window.setWindowAnimations(R.style.bottom_dialog_animation);
+        }
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+    }
+
+    private View initProgress() {
+        View view = View.inflate(this, R.layout.view_upload_progress, null);
+        ImageView ivLoad = (ImageView) view.findViewById(R.id.pb_loading);
+        TextView tvProgress = (TextView) view.findViewById(R.id.tv_loading_msg);
+        tvProgress.setText("正在发送请求~~");
+        view.findViewById(R.id.tv_progress).setVisibility(View.GONE);
+        ((Animatable) ivLoad.getDrawable()).start();
+        return view;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (PublishActivity.PICTURE == requestCode) {
+            if (data != null) {
+                ArrayList<ImgObj> selImages = data.getParcelableArrayListExtra("result_select_image_list");
+                if (selImages != null && selImages.size() > 0) {
+                    showProgress();
+                    addSubscription(Observable.defer(() -> Observable.from(selImages))
+                            .filter(imgObj -> imgObj != null)
+                            .map(imgObj -> imgObj.getMediaObj())
+                            .toList()
+                            .filter(list -> list != null && list.size() > 0)
+                            .flatMap(list -> {
+                                ArrayList<String> arrayList = new ArrayList<String>();
+                                for (MediaObj mediaObj : list)
+                                    arrayList.add(mediaObj.getLocalPath());
+                                long time = System.currentTimeMillis();
+                                UploadMediaService.start(this, new UploadTaskProgress(time + "" + UploadTaskProgress.TYPE_LOCAL_URL, time, arrayList));
+                                return apiService.uploadSomeMedia(FastData.getCircleId(), Uri.encode(JSONUtils.parse2JSONString(list)));
+                            })
+                            .compose(SchedulersCompat.applyIoSchedulers())
+                            .doOnNext(baseResponse -> hideProgress())
+                            .subscribe(baseResponse -> {
+                                if (!baseResponse.success()) {
+                                    ToastUtil.showToast(this, baseResponse.getInfo());
+                                }
+                            }, throwable -> {
+                                hideProgress();
+                                LogUtil.showError(throwable);
+                            }));
+                }
+            }
+        }
     }
 
     @Override

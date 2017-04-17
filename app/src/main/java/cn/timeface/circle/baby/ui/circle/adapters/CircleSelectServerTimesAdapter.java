@@ -164,9 +164,8 @@ public class CircleSelectServerTimesAdapter extends BaseRecyclerAdapter<CircleTi
                 } else {
                     holder.flImage.setVisibility(View.GONE);
                 }
-                DateUtils.formatDateTime(mContext, timeLineObj.getCircleTimeline().getRecordDate(), DateUtils.FORMAT_SHOW_WEEKDAY);
-                holder.tvTitle.setText(DateUtils.formatDateTime(mContext, timeLineObj.getCircleTimeline().getRecordDate(), DateUtils.FORMAT_SHOW_DATE)
-                        + DateUtils.formatDateTime(mContext, timeLineObj.getCircleTimeline().getRecordDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
+                holder.tvTitle.setText(DateUtils.formatDateTime(mContext, timeLineObj.getCircleTimeline().getCreateDate(), DateUtils.FORMAT_SHOW_DATE)
+                        + DateUtils.formatDateTime(mContext, timeLineObj.getCircleTimeline().getCreateDate(), DateUtils.FORMAT_SHOW_WEEKDAY));
                 holder.tvImgCount.setText(String.valueOf(timeLineObj.getCircleTimeline().getMediaList().size()) + "张");
                 holder.tvContent.setText(timeLineObj.getCircleTimeline().getContent());
                 holder.cbSelect.setTag(R.string.tag_ex, dataPosition);

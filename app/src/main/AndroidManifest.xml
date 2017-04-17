@@ -666,6 +666,7 @@
                 <data android:mimeType="video/*" />
             </intent-filter>
         </receiver>
+        <service android:name=".support.managers.services.UploadMediaService"/>
     </application>
 
 </manifest>
