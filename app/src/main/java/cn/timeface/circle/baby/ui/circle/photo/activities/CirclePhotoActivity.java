@@ -399,4 +399,8 @@ public class CirclePhotoActivity extends BasePresenterAppCompatActivity implemen
             mediaList.get(index).setRelateBabys(event.getMediaObj().getRelateBabys());
         }
     }
+
+    public TextView getTvContentType() {
+        return tvContentType;
+    }
 }

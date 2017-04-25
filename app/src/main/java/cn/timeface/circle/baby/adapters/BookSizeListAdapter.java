@@ -29,7 +29,6 @@ public class BookSizeListAdapter extends BaseRecyclerAdapter<CardBookSizeObj> {
 
     public BookSizeListAdapter(Context mContext, List<CardBookSizeObj> listData) {
         super(mContext, listData);
-
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener) {

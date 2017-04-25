@@ -38,9 +38,6 @@ import cn.timeface.circle.baby.views.DividerItemDecoration;
  * email : wangs1992321@gmail.com
  */
 public class SelectActiveActivity extends BaseAppCompatActivity implements IEventBus{
-
-    @Bind(R.id.title)
-    TextView title;
     @Bind(R.id.topBar)
     Toolbar toolbar;
     @Bind(R.id.content_recycler_view)
@@ -63,7 +60,7 @@ public class SelectActiveActivity extends BaseAppCompatActivity implements IEven
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        title.setText(R.string.activity_select_active_tip);
+        toolbar.setTitle(R.string.activity_select_active_tip);
         adapter = new ActiveSelectAdapter(this);
         adapter.setEmptyItem(new EmptyItem(1001));
         adapter.getEmptyItem().setOperationType(1);

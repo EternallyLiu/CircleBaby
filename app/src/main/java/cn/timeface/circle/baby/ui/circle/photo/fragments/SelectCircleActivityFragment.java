@@ -1,9 +1,11 @@
 package cn.timeface.circle.baby.ui.circle.photo.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ import cn.timeface.circle.baby.support.mvp.bases.BasePresenterFragment;
 import cn.timeface.circle.baby.support.utils.ToastUtil;
 import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.circle.bean.CircleActivityAlbumObj;
+import cn.timeface.circle.baby.ui.circle.photo.activities.CirclePhotoActivity;
 import cn.timeface.circle.baby.ui.circle.photo.adapters.CircleActivityAdapter;
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 
@@ -132,6 +135,10 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
     public void onClick(View view) {
         if (view.getId() == R.id.iv_search) {
             String key = etSearch.getText().toString();
+
+            if (key != null && !TextUtils.isEmpty(key)) {
+                initActivityTitle();
+            }
             apiService.searchCircleActivity(circleId, key)
                     .compose(SchedulersCompat.applyIoSchedulers())
                     .subscribe(
@@ -153,5 +160,14 @@ public class SelectCircleActivityFragment extends BasePresenterFragment implemen
                     );
         }
 
+    }
+
+    private void initActivityTitle() {
+        CirclePhotoActivity circlePhotoActivity = (CirclePhotoActivity) getActivity();
+        TextView tv_title = circlePhotoActivity.getTvContentType();
+        tv_title.setTextColor(Color.WHITE);
+        tv_title.setText(getString(R.string.search_result));
+        tv_title.setEnabled(false);
+        tv_title.setCompoundDrawables(null, null, null, null);
     }
 }

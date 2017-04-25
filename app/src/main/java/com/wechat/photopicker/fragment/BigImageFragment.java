@@ -120,6 +120,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     private int allDetailsListPosition;
     private CircleBabyDialog circleBabyDialog;
     private ImageActionDialog dialog;
+    private String currentPage;
 
     /**
      * @param context
@@ -333,6 +334,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
 
     private void initListener() {
         getActionBar().setTitle(mCurrenItem + 1 + "/" + mPaths.size());
+        currentPage = mCurrenItem + 1 + "/" + mPaths.size();
 //        tvDownload.setOnClickListener(this);
 //        tvDelete.setOnClickListener(this);
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -345,6 +347,7 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
             public void onPageSelected(int position) {
                 position = position + 1;
                 getActionBar().setTitle(position + "/" + mPaths.size());
+                currentPage = position + "/" + mPaths.size();
                 initTips();
                 initLikeCount();
             }
@@ -609,7 +612,30 @@ public class BigImageFragment extends BaseFragment implements ImageActionDialog.
     public void onClick() {
         if (type == CIRCLE_MEDIA_IMAGE_EDITOR) {
             if (circleBabyDialog == null) {
-                circleBabyDialog = new CircleBabyDialog(getActivity(), (CircleMediaObj) mMedias.get(mViewPager.getCurrentItem()));
+                circleBabyDialog = new CircleBabyDialog(getActivity(), (CircleMediaObj) mMedias.get(mViewPager.getCurrentItem())){
+                    @Override
+                    public void afterDialogDismiss() {
+                        toolbar.setTitle(currentPage);
+                    }
+
+                    @Override
+                    public void beforeDialogShow() {
+                        super.beforeDialogShow();
+                        toolbar.setTitle(getString(R.string.circle_baby));
+                    }
+
+                    @Override
+                    public void beforeShowCircleNewBabyDialog() {
+                        super.beforeShowCircleNewBabyDialog();
+                        toolbar.setTitle(getString(R.string.add_new_member));
+                    }
+
+                    @Override
+                    public void afterDismissCircleNewBabyDialog() {
+                        super.afterDismissCircleNewBabyDialog();
+                        beforeDialogShow();
+                    }
+                };
                 circleBabyDialog.setCircleBabyCallBack(this);
             } else
                 circleBabyDialog.setMediaObj((CircleMediaObj) mMedias.get(mViewPager.getCurrentItem()));

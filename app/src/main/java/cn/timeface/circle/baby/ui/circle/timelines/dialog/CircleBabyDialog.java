@@ -46,7 +46,7 @@ import rx.Subscription;
  * author : wangshuai Created on 2017/3/20
  * email : wangs1992321@gmail.com
  */
-public class CircleBabyDialog extends BaseDialog implements View.OnClickListener, BaseAdapter.OnItemClickLister, CircleNewBabyDialog.AddCallBack {
+public abstract class CircleBabyDialog extends BaseDialog implements View.OnClickListener, BaseAdapter.OnItemClickLister, CircleNewBabyDialog.AddCallBack {
 
     private RecyclerView contentRecyclerView;
     private Button btnSubmit;
@@ -130,7 +130,19 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
             }
         } else {
             if (newDialog == null) {
-                newDialog = new CircleNewBabyDialog(getContext());
+                newDialog = new CircleNewBabyDialog(getContext()){
+                    @Override
+                    public void BeforeShow() {
+                        super.BeforeShow();
+                        beforeShowCircleNewBabyDialog();
+                    }
+
+                    @Override
+                    public void AfterDismiss() {
+                        super.AfterDismiss();
+                        afterDismissCircleNewBabyDialog();
+                    }
+                };
                 newDialog.setAddCallBack(this);
                 newDialog.setOnDismissListener(new OnDismissListener() {
                     @Override
@@ -176,6 +188,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
             currentSubscription.unsubscribe();
             currentSubscription = null;
         }
+        afterDialogDismiss();
         super.dismiss();
     }
 
@@ -206,6 +219,7 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
     @Override
     public void show() {
         super.show();
+        beforeDialogShow();
         updateBabys();
     }
 
@@ -242,4 +256,15 @@ public class CircleBabyDialog extends BaseDialog implements View.OnClickListener
         public void circleResult(List<GetCircleAllBabyObj> babys, long mediaId);
     }
 
+    //可以在此方法里做dialog消失的时候执行的操作
+    public void afterDialogDismiss(){}
+
+    //可以在此方法里做dialog显示的时候的需要的操作
+    public void beforeDialogShow() {}
+
+    //在显示CircleNewBabyDialog之前需要执行的操作
+    public void beforeShowCircleNewBabyDialog(){}
+
+    //在CircleNewBabyDialog消失之后需要执行的操作
+    public void afterDismissCircleNewBabyDialog() {}
 }

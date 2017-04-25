@@ -26,6 +26,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <RelativeLayout
+                android:visibility="gone"
                 android:id="@+id/rl_title"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize">

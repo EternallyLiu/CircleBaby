@@ -930,5 +930,8 @@
     <string name="agreed">已同意</string>
     <string name="cancel_agree">取消认证</string>
     <string name="read_all">全部已读</string>
+    <string name="circle_baby">圈宝宝</string>
+    <string name="add_new_member">新增成员</string>
+    <string name="search_result">搜索结果</string>
 
 </resources>

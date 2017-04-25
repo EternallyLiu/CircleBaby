@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;

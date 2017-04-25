@@ -7,6 +7,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -115,7 +117,9 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_circle_main);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
+        toolbar.setTitle(getString(R.string.growth_circle));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         setupPTR();
@@ -281,12 +285,25 @@ public class CircleMainActivity extends BaseAppCompatActivity implements IEventB
         addSubscription(s);
     }
 
-    @OnClick({R.id.iv_more, R.id.iv_publish})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_more:
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_activity_circle_main,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.circle_main:
                 showMoreDialog();
                 break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick({R.id.iv_publish})
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.iv_publish:
                 PublishActivity.open(this);
                 break;

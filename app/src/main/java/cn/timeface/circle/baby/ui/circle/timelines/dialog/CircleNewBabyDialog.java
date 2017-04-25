@@ -43,7 +43,7 @@ import rx.Subscription;
  * author : wangshuai Created on 2017/3/20
  * email : wangs1992321@gmail.com
  */
-public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListener, TextWatcher {
+public abstract class CircleNewBabyDialog extends BaseDialog implements View.OnClickListener, TextWatcher {
 
     private ClearableEditText etInput;
     private Button btnSubmit;
@@ -97,11 +97,13 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
             currentSubscription = null;
         }
         super.dismiss();
+        AfterDismiss();
     }
 
     @Override
     public void show() {
         super.show();
+        BeforeShow();
     }
 
     public String getBabyNames() {
@@ -178,4 +180,10 @@ public class CircleNewBabyDialog extends BaseDialog implements View.OnClickListe
     public interface AddCallBack{
         public void addcalback(GetCircleAllBabyObj babyObj);
     }
+
+    //表示需要在Dialog展示前执行的操作
+    public void BeforeShow(){}
+
+    //表示在Dialog消失的时候需要执行什么操作
+    public void AfterDismiss(){}
 }
