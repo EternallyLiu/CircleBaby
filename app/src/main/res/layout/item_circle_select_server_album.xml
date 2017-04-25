@@ -17,9 +17,9 @@
         android:src="@drawable/bg_default_holder_img" />
 
     <LinearLayout
-        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/view_space_medium"
         android:layout_toLeftOf="@+id/cb_select"
@@ -29,6 +29,7 @@
             android:id="@+id/tv_album_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
             android:ellipsize="end"
             android:gravity="right"
             android:maxLines="1"
@@ -40,6 +41,7 @@
             android:id="@+id/tv_album_photo_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
             android:layout_marginTop="@dimen/view_space_small"
             android:ellipsize="end"
             android:gravity="right"
@@ -50,7 +52,6 @@
     </LinearLayout>
 
     <CheckBox
-        android:visibility="gone"
         android:id="@+id/cb_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,6 +59,7 @@
         android:layout_centerVertical="true"
         android:button="@drawable/selector_item_photo_select"
         android:gravity="center"
-        android:textColor="@color/bg_color1" />
+        android:textColor="@color/bg_color1"
+        android:visibility="gone" />
 
 </RelativeLayout>

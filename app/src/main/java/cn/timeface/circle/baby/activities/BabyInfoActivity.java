@@ -229,6 +229,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
             switch (requestCode) {
                 case TypeConstants.EDIT_NAME:
                     tvName.setText(input);
+                    this.babyObj.setName(input);
                     break;
                 case TypeConstants.EDIT_BLOOD:
                     tvBlood.setText(input);
@@ -319,6 +320,8 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                         monthOfYear = monthOfYear + 1;
                         String brithday = year + "-" + monthOfYear + "-" + dayOfMonth;
                         tvBrithday.setText(brithday);
+                        long time = DateUtil.getTime(brithday, "yyyy-MM-dd");
+                        babyObj.setBithday(time);
                     }
                 }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
@@ -339,6 +342,7 @@ public class BabyInfoActivity extends BaseAppCompatActivity implements View.OnCl
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         tvBlood.setText(charSequences[which]);
+                        babyObj.setBlood(charSequences[which].toString());
                     }
                 }).show();
                 break;

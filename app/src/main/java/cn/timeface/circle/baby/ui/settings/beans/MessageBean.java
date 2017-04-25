@@ -8,6 +8,7 @@ import com.wechat.photopicker.fragment.BigImageFragment;
 import java.util.Map;
 
 import cn.timeface.circle.baby.activities.FragmentBridgeActivity;
+import cn.timeface.circle.baby.activities.MyOrderConfirmActivity;
 import cn.timeface.circle.baby.activities.MyPODActivity;
 import cn.timeface.circle.baby.activities.OrderDetailActivity;
 import cn.timeface.circle.baby.constants.MiPushConstant;
@@ -155,7 +156,7 @@ public class MessageBean {
             case MiPushConstant.NOTICE_TYPE_ORDER_CHECK_NOT_PASS:
             case MiPushConstant.NOTICE_TYPE_ORDER_PAY_SUCCESS:
             case MiPushConstant.NOTICE_TYPE_ORDER_NOT_PAY:
-                OrderDetailActivity.open(context, getInfoValue("uId"));
+                OrderDetailActivity.open(context, getInfoValue("uid"));
                 break;
             case MiPushConstant.NOTICE_TYPE_NEW_ACTIVITY:
                 FragmentBridgeActivity.openWebViewFragment(context,getInfoValue("url"),getTitle());

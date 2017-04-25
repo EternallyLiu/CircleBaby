@@ -19,6 +19,7 @@ public class MiPushConstant {
     public static final int PUSH_TYPE_CIRCLE_NEW_PHOTO_LIKED = 2010; // 发布的照片被别人加喜欢（定位到该图片的预览页）
     public static final int PUSH_TYPE_CIRCLE_MEMBER_REMOVED = 2011; // 被圈主移出（定位圈列表页）
     public static final int PUSH_TYPE_CIRCLE_NEW_SCHOOL_BOOK = 2012; // 每月/每学期系统自动生成的家校纪念册 （定位到该作品的预览页）
+    public static final int PUSH_TYPE_CIRCLE_NEW_JOIN_APPLY = 2013; // 新成员申请加入，给圈主push （定位到圈成员管理页）
 
 
     /*---------------------------亲友圈PUSH消息类型---------------------------*/

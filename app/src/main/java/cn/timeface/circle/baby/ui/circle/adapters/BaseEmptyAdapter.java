@@ -25,7 +25,7 @@ public abstract class BaseEmptyAdapter extends BaseAdapter {
     public static final int EMPTY_CODE = -0xeeffffee;
 
     private EmptyItem emptyItem;
-    private RecyclerView.LayoutParams emptyLayoutParams;
+    protected RecyclerView.LayoutParams emptyLayoutParams;
 
     public BaseEmptyAdapter(Context activity) {
         super(activity);

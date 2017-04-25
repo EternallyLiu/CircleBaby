@@ -522,6 +522,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             currentPage = 1;
             reqData(currentPage);
         }
+        addSubscription(apiService.registerPush().compose(SchedulersCompat.applyIoSchedulers()).subscribe(baseResponse -> {},throwable -> {}));
     }
 
 

@@ -40,9 +40,14 @@ public class BottomMenuDialog extends DialogFragment {
     Button cancel;
     private OnMenuClickListener menuClickListener;
 
-    public static BottomMenuDialog getInstance() {
-        return new BottomMenuDialog();
+    public static BottomMenuDialog getInstance(int type) {
+        Bundle bundle=new Bundle();
+        bundle.putInt("type",type);
+        BottomMenuDialog dialog=new BottomMenuDialog();
+        dialog.setArguments(bundle);
+        return dialog;
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +60,8 @@ public class BottomMenuDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_from_bottom, container, false);
         ButterKnife.bind(this, view);
+        Bundle bundle=getArguments();
+        setType(bundle.getInt("type"));
         return view;
     }
 
@@ -80,6 +87,21 @@ public class BottomMenuDialog extends DialogFragment {
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT);
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    }
+
+    private void setType(int type){
+        rlAddContent.setVisibility(View.GONE);
+        switch (type){
+            case 0:
+                break;
+            case 1:
+                rlEditState.setVisibility(View.GONE);
+                rlDeleteAlbum.setVisibility(View.GONE);
+                break;
+            case 2:
+                rlBookPre.setVisibility(View.GONE);
+                break;
+        }
     }
 
     public void setOnMenuClick(OnMenuClickListener menuClickListener) {

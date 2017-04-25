@@ -34,10 +34,12 @@ import cn.timeface.circle.baby.support.api.models.PushItem;
 import cn.timeface.circle.baby.support.api.models.responses.PushResponse;
 import cn.timeface.circle.baby.support.api.models.responses.UpdateResponse;
 import cn.timeface.circle.baby.support.managers.receivers.DownloadCompleteReceiver;
+import cn.timeface.circle.baby.support.managers.services.UploadMediaService;
 import cn.timeface.circle.baby.support.utils.FastData;
 import cn.timeface.circle.baby.support.utils.NotificationUtil;
 import cn.timeface.circle.baby.support.utils.Once;
 import cn.timeface.circle.baby.support.utils.Utils;
+import cn.timeface.circle.baby.support.utils.rxutils.SchedulersCompat;
 import cn.timeface.circle.baby.ui.settings.fragments.BindPhoneFragment;
 import cn.timeface.circle.baby.views.dialog.TFProgressDialog;
 import cn.timeface.common.utils.DeviceUtil;
@@ -106,7 +108,7 @@ public class SplashActivity extends BaseAppCompatActivity {
             finish();
             return;
         }
-
+        UploadMediaService.start(this);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
         Remember.init(this, BuildConfig.APPLICATION_ID + "_remember");
@@ -132,6 +134,7 @@ public class SplashActivity extends BaseAppCompatActivity {
 //                            Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                         });
         addSubscription(s);
+        addSubscription(apiService.registerPush().compose(SchedulersCompat.applyIoSchedulers()).subscribe(baseResponse -> {},throwable -> {}));
 
     }
 

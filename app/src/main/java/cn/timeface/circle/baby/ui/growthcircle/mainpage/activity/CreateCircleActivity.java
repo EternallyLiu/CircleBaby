@@ -70,8 +70,8 @@ public class CreateCircleActivity extends BaseAppCompatActivity {
 
     private boolean checkData() {
         String circleName = etCircleName.getText().toString();
-        if (TextUtils.isEmpty(circleName)) {
-            Toast.makeText(this, "请输入圈名称", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(circleName) || TextUtils.isEmpty(circleName.trim())) {
+            Toast.makeText(this, "圈名称不能为空", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (CheckedUtil.isNumeric(circleName)) {

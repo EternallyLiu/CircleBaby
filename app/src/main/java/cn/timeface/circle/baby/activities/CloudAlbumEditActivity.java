@@ -211,15 +211,14 @@ public class CloudAlbumEditActivity extends BaseAppCompatActivity implements Bot
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit) {
-            if (type == 0) {
-                BottomMenuDialog menuDialog = BottomMenuDialog.getInstance();
+                BottomMenuDialog menuDialog = BottomMenuDialog.getInstance(type);
                 menuDialog.setOnMenuClick(this);
                 menuDialog.show(getSupportFragmentManager(), "");
-            } else if (type == 1) {
-                BottomMenuDialog2 menuDialog2 = BottomMenuDialog2.getInstance();
-                menuDialog2.setOnMenuClick(this);
-                menuDialog2.show(getSupportFragmentManager(), "");
-            }
+//            } else if (type == 1) {
+//                BottomMenuDialog2 menuDialog2 = BottomMenuDialog2.getInstance();
+//                menuDialog2.setOnMenuClick(this);
+//                menuDialog2.show(getSupportFragmentManager(), "");
+//            }
         } else if (item.getItemId() == android.R.id.home) {
             if (currentStateEdit) {
                 goCommState();

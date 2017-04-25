@@ -119,7 +119,9 @@ public class TabMainActivity extends BaseAppCompatActivity implements View.OnCli
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         int width = wm.getDefaultDisplay().getWidth() / 3;
         Remember.putInt("width", width);
-
+        addSubscription(apiService.registerPush().compose(SchedulersCompat.applyIoSchedulers()).subscribe(baseResponse -> {
+        }, throwable -> {
+        }));
         new RxPermissions(this).request(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
                 .subscribe(aBoolean -> {
                     if (aBoolean) {

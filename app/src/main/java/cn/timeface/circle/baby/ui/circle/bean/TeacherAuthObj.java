@@ -21,8 +21,17 @@ public class TeacherAuthObj extends BaseObj implements Parcelable {
     protected String circleName;
     protected CircleUserInfo teacher;
     private int state;
+    private String message;
 
     public TeacherAuthObj() {
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public int getState() {
@@ -74,6 +83,7 @@ public class TeacherAuthObj extends BaseObj implements Parcelable {
         dest.writeString(this.circleName);
         dest.writeParcelable(this.teacher, flags);
         dest.writeInt(this.state);
+        dest.writeString(this.message);
     }
 
     protected TeacherAuthObj(Parcel in) {
@@ -82,6 +92,7 @@ public class TeacherAuthObj extends BaseObj implements Parcelable {
         this.circleName = in.readString();
         this.teacher = in.readParcelable(CircleUserInfo.class.getClassLoader());
         this.state = in.readInt();
+        this.message = in.readString();
     }
 
     public static final Creator<TeacherAuthObj> CREATOR = new Creator<TeacherAuthObj>() {
