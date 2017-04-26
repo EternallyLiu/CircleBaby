@@ -7,8 +7,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -36,6 +39,7 @@ import cn.timeface.circle.baby.ui.growthcircle.mainpage.event.CirclePassThroughM
 import cn.timeface.circle.baby.ui.timelines.Utils.LogUtil;
 import cn.timeface.circle.baby.ui.timelines.adapters.BaseAdapter;
 import cn.timeface.circle.baby.ui.timelines.adapters.EmptyItem;
+import rx.subjects.PublishSubject;
 
 /**
  * author : wangshuai Created on 2017/3/23
@@ -51,6 +55,7 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
     SwipeRefreshLayout swipeRefresh;
     @Bind(R.id.iv_dot)
     ImageView ivDot;
+
 
     private SchoolTaskAdapter adapter = null;
     private TFPTRRecyclerViewHelper helper;
@@ -69,10 +74,10 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_homework_list);
         ButterKnife.bind(this);
-        toolbar.setTitle("教师认证");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitle(getString(R.string.circle_home_work));
         init();
         reqData();
     }
@@ -181,8 +186,19 @@ public class HomwWorkListActivity extends BaseAppCompatActivity implements IEven
         }
     }
 
-    @OnClick(R.id.tv_right)
-    public void onViewClicked() {
-        TeacherAuthoActivity.open(this);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home_work_list,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.teacher_confirm:
+                TeacherAuthoActivity.open(this);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -77,7 +77,7 @@ public class SchoolTaskDetailActivity extends BaseAppCompatActivity implements I
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setTitle(R.string.activity_look_homework);
+        toolbar.setTitle(R.string.activity_look_homework);
         init();
         reqData();
     }

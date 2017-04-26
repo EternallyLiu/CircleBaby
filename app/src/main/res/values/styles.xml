@@ -205,14 +205,15 @@
         </item>
     </style>
 
-    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
-        <!--兼容Api 21之前的版本 -->
+    <style name="OverflowMenu" parent="Widget.AppCompat.Light.PopupMenu.Overflow">
+        <!--设置menu菜单不遮挡actionbar-->
         <item name="overlapAnchor">false</item>
+        <item name="android:src">@drawable/more</item>
     </style>
 
     <style name="Theme.ToolBar.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textSize">16sp</item>
-        <!--设置menu菜单不遮挡actionbar-->
+        <!--溢出菜单样式-->
         <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
     </style>
 </resources>

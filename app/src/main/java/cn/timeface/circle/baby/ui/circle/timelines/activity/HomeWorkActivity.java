@@ -72,6 +72,7 @@ public class HomeWorkActivity extends BaseAppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_homework_detail);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+//        getSupportActionBar().setTitle(getString(R.string.circle_home_work));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         homeworkId = getIntent().getLongExtra(CircleHomeworkObj.class.getSimpleName(), 0);

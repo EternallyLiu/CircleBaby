@@ -935,5 +935,7 @@
     <string name="search_result">搜索结果</string>
 
     <string name="message_no_data">天啦噜！内容是空的，你看不到我了！</string>
+    <string name="circle_home_work">圈作业</string>
+    <string name="teacher_confirm">教师认证</string>
 
 </resources>

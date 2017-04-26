@@ -15,9 +15,7 @@
         android:gravity="center"
         android:minHeight="?attr/actionBarSize"
         android:paddingTop="@dimen/toolbar_padding_top"
-        android:theme="@style/ToolbarColor">
-
-    </android.support.v7.widget.Toolbar>
+        android:theme="@style/ToolbarColor"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
